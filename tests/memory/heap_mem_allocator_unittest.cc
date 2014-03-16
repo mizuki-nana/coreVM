@@ -11,25 +11,15 @@
 template<typename AllocationSchemeType>
 class heap_mem_allocator_unit_test : public ::testing::Test {
 protected:
-  virtual void SetUp() {
-    _allocator = new corevm::memory::heap_mem_allocator<AllocationSchemeType>(
-      HEAP_STORAGE_FOR_TEST
-    );
-  }
-
-  virtual void TearDown() {
-    // delete _allocator;
-  }
-
   void* _malloc_mem(size_t size) noexcept {
-    return _allocator->malloc_mem(size);
+    return _allocator.malloc_mem(size);
   }
 
   int _free_mem(void* ptr) noexcept {
-    return _allocator->free_mem(ptr);
+    return _allocator.free_mem(ptr);
   }
 
-  corevm::memory::heap_mem_allocator<AllocationSchemeType> *_allocator;
+  corevm::memory::heap_mem_allocator<HEAP_STORAGE_FOR_TEST, AllocationSchemeType> _allocator;
 };
 
 
@@ -44,11 +34,6 @@ typedef ::testing::Types<
 
 TYPED_TEST_CASE(heap_mem_allocator_unit_test, SequentialAllocationSchemeTypes);
 
-
-TYPED_TEST(heap_mem_allocator_unit_test, TestInitialization)
-{
-  assert(this->_allocator);
-}
 
 TYPED_TEST(heap_mem_allocator_unit_test, TestFirstMallocSuccessful)
 {

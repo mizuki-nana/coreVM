@@ -2,16 +2,24 @@
 #define COREVM_MEMORY_HEAP_MEM_ALLOCATOR_H_
 
 
+#include <cassert>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
+#include <new>
+#include <sys/types.h>
+
+
 namespace corevm {
 
 
 namespace memory {
 
 
-template<class mem_allocation_scheme_type>
+template<size_t N, class mem_allocation_scheme_type>
 class heap_mem_allocator {
 public:
-  heap_mem_allocator(size_t);
+  heap_mem_allocator();
   ~heap_mem_allocator();
 
   void* malloc_mem(size_t) noexcept;
@@ -21,19 +29,16 @@ private:
   size_t _total_size = 0;
   size_t _allocated_size = 0;
   void* _heap = nullptr;
-  mem_allocation_scheme_type *_allocator_scheme = nullptr;
+  mem_allocation_scheme_type _allocator_scheme;
 };
 
 
-template<class mem_allocation_scheme_type>
-corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::heap_mem_allocator(
-  size_t total_size
-):
-  _total_size(total_size),
-  _allocated_size(0)
+template<size_t N, class mem_allocation_scheme_type>
+corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::heap_mem_allocator():
+  _total_size(N),
+  _allocated_size(0),
+  _allocator_scheme(mem_allocation_scheme_type(_total_size))
 {
-  _allocator_scheme = new mem_allocation_scheme_type(_total_size);
-
   void* mem = malloc(_total_size);
 
   if(!mem) {
@@ -43,8 +48,8 @@ corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::heap_mem_allocat
   _heap = mem;
 }
 
-template<class mem_allocation_scheme_type>
-corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::~heap_mem_allocator()
+template<size_t N, class mem_allocation_scheme_type>
+corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::~heap_mem_allocator()
 {
   if(_heap) {
     free(_heap);
@@ -52,9 +57,9 @@ corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::~heap_mem_alloca
   }
 }
 
-template<class mem_allocation_scheme_type>
+template<size_t N, class mem_allocation_scheme_type>
 void*
-corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::malloc_mem(size_t size) noexcept
+corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::malloc_mem(size_t size) noexcept
 {
   void* ptr = nullptr;
 
@@ -66,7 +71,7 @@ corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::malloc_mem(size_
     return ptr;
   }
 
-  ssize_t offset = _allocator_scheme->malloc(size);
+  ssize_t offset = _allocator_scheme.malloc(size);
 
   if(offset >= 0) {
     char* base = static_cast<char*>(_heap);
@@ -78,16 +83,16 @@ corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::malloc_mem(size_
   return ptr;
 }
 
-template<class mem_allocation_scheme_type>
+template<size_t N, class mem_allocation_scheme_type>
 int
-corevm::memory::heap_mem_allocator<mem_allocation_scheme_type>::free_mem(void* ptr) noexcept
+corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::free_mem(void* ptr) noexcept
 {
   int res = -1;
   char* ptr_ = static_cast<char*>(ptr);
   char* heap_ = static_cast<char*>(_heap);
 
   size_t offset = ptr_ - heap_;
-  ssize_t size = _allocator_scheme->free(offset);
+  ssize_t size = _allocator_scheme.free(offset);
 
   // found, free that memory
   if(size > 0) {

@@ -13,7 +13,8 @@ SRC=\
 heap_mem_allocator_unittest.test: heap_mem_allocator_unittest.cc
 	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) heap_mem_allocator_unittest.cc -o heap_mem_allocator_unittest.test
 
-all: heap_mem_allocator_unittest.test
+all:\
+	heap_mem_allocator_unittest.test
 
 clean:
-	rm -rf heap_mem_allocator_unittest.test
+	rm -rf *.test
