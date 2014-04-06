@@ -2,6 +2,7 @@
 #define COREVM_TYPES_H_
 
 
+#include "native_array.h"
 #include "native_string.h"
 
 
@@ -23,7 +24,8 @@ enum native_types_enum {
   BOOLEAN   = 0x09,
   DECIMAL   = 0x10,
   DECIMAL2  = 0x11,
-  STRING    = 0x12
+  STRING    = 0x12,
+  ARRAY     = 0x13
 };
 
 
@@ -195,12 +197,26 @@ class string : public native_type_wrapper {
 public:
   typedef native_string value_type;
 
-  string();
+  string() {}
   string(value_type value) : value(value) {}
 
   virtual size_t size() const noexcept { return sizeof(value_type); }
 
   const native_types_enum type = native_types_enum::STRING;
+  value_type value;
+};
+
+
+class array : public native_type_wrapper {
+public:
+  typedef native_array value_type;
+
+  array() {}
+  array(value_type value) : value(value) {}
+
+  virtual size_t size() const noexcept { return sizeof(value_type); }
+
+  const native_types_enum type = native_types_enum::ARRAY;
   value_type value;
 };
 

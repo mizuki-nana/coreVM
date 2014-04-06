@@ -73,7 +73,10 @@ public:
 };
 
 
-class native_type_handle_positive_unittest : public native_type_handle_unittest {};
+class native_type_handle_unary_operator_unittest : public native_type_handle_unittest {};
+
+
+class native_type_handle_positive_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_positive_unittest, TestOnIntegerType)
@@ -96,14 +99,6 @@ TEST_F(native_type_handle_positive_unittest, TestOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_positive_unittest, TestOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_positive_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
 TEST_F(native_type_handle_positive_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -114,8 +109,24 @@ TEST_F(native_type_handle_positive_unittest, TestOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_positive_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_negation_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_positive_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_positive_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_positive_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_negation_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_negation_unittest, TestOnIntegerType)
@@ -138,14 +149,6 @@ TEST_F(native_type_handle_negation_unittest, TestOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_negation_unittest, TestOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_negation_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
 TEST_F(native_type_handle_negation_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -162,8 +165,24 @@ TEST_F(native_type_handle_negation_unittest, TestOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_negation_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_increment_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_negation_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_negation_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_negation_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_increment_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_increment_unittest, TestOnIntegerType)
@@ -186,14 +205,6 @@ TEST_F(native_type_handle_increment_unittest, TestOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_increment_unittest, TestOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_increment_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
 TEST_F(native_type_handle_increment_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -204,8 +215,24 @@ TEST_F(native_type_handle_increment_unittest, TestOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_increment_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_decrement_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_increment_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_increment_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_increment_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_decrement_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_decrement_unittest, TestOnIntegerType)
@@ -228,14 +255,6 @@ TEST_F(native_type_handle_decrement_unittest, TestOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_decrement_unittest, TestOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_decrement_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
 TEST_F(native_type_handle_decrement_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -246,8 +265,24 @@ TEST_F(native_type_handle_decrement_unittest, TestOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_decrement_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_logical_not_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_decrement_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_decrement_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_decrement_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_logical_not_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_logical_not_unittest, TestOnIntegerType)
@@ -270,14 +305,6 @@ TEST_F(native_type_handle_logical_not_unittest, TestOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_logical_not_unittest, TestOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_logical_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
 TEST_F(native_type_handle_logical_not_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -288,8 +315,24 @@ TEST_F(native_type_handle_logical_not_unittest, TestOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_logical_not_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_bitwise_not_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_logical_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_logical_not_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_logical_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_bitwise_not_unittest : public native_type_handle_unary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_not_unittest, TestOnIntegerType)
@@ -302,7 +345,7 @@ TEST_F(native_type_handle_bitwise_not_unittest, TestOnIntegerType)
   );
 }
 
-TEST_F(native_type_handle_bitwise_not_unittest, TestBitwiseNotOnDecimalType)
+TEST_F(native_type_handle_bitwise_not_unittest, TestOnDecimalType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal(3.14);
 
@@ -312,15 +355,7 @@ TEST_F(native_type_handle_bitwise_not_unittest, TestBitwiseNotOnDecimalType)
   );
 }
 
-TEST_F(native_type_handle_bitwise_not_unittest, TestBitwiseNotOnStringType)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-
-  apply_unary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
-}
-
-TEST_F(native_type_handle_bitwise_not_unittest, TestBitwiseNotOnBooleanType)
+TEST_F(native_type_handle_bitwise_not_unittest, TestOnBooleanType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
 
@@ -330,8 +365,27 @@ TEST_F(native_type_handle_bitwise_not_unittest, TestBitwiseNotOnBooleanType)
   );
 }
 
+TEST_F(native_type_handle_bitwise_not_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
 
-class native_type_handle_addition_unittest : public native_type_handle_unittest {};
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_bitwise_not_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+
+class native_type_handle_binary_operator_unittest : public native_type_handle_unittest {};
+
+
+class native_type_handle_addition_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_addition_unittest, TestBetweenIntegerTypes)
@@ -356,15 +410,6 @@ TEST_F(native_type_handle_addition_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_addition_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello ");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("world!!!");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_addition_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_addition_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -374,6 +419,24 @@ TEST_F(native_type_handle_addition_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_addition_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_addition_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello ");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("world!!!");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_addition_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_addition_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_addition_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_addition_unittest, TestAddtionBetweenTypesOfDifferentSizes)
@@ -401,7 +464,7 @@ TEST_F(native_type_handle_addition_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_subtraction_unittest : public native_type_handle_unittest {};
+class native_type_handle_subtraction_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_subtraction_unittest, TestBetweenIntegerTypes)
@@ -426,15 +489,6 @@ TEST_F(native_type_handle_subtraction_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_subtraction_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_subtraction_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_subtraction_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -444,6 +498,24 @@ TEST_F(native_type_handle_subtraction_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_subtraction_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_subtraction_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_subtraction_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_subtraction_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_subtraction_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_subtraction_unittest, TestBetweenTypesOfDifferentSizes)
@@ -472,7 +544,7 @@ TEST_F(native_type_handle_subtraction_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_multiplication_unittest : public native_type_handle_unittest {};
+class native_type_handle_multiplication_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_multiplication_unittest, TestBetweenIntegerTypes)
@@ -497,15 +569,6 @@ TEST_F(native_type_handle_multiplication_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_multiplication_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_multiplication_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_multiplication_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
@@ -515,6 +578,24 @@ TEST_F(native_type_handle_multiplication_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_multiplication_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_multiplication_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_multiplication_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_multiplication_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_multiplication_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_multiplication_unittest, TestBetweenTypesOfDifferentSizes)
@@ -543,7 +624,7 @@ TEST_F(native_type_handle_multiplication_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_division_unittest : public native_type_handle_unittest {};
+class native_type_handle_division_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_division_unittest, TestBetweenIntegerTypes)
@@ -568,15 +649,6 @@ TEST_F(native_type_handle_division_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_division_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_division_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_division_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -586,6 +658,24 @@ TEST_F(native_type_handle_division_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_division_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_division_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_division_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_division_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_division_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_division_unittest, TestBetweenTypesOfDifferentSizes)
@@ -614,7 +704,7 @@ TEST_F(native_type_handle_division_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_modulus_unittest : public native_type_handle_unittest {};
+class native_type_handle_modulus_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_modulus_unittest, TestBetweenIntegerTypes)
@@ -639,15 +729,6 @@ TEST_F(native_type_handle_modulus_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_modulus_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_modulus_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_modulus_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -657,6 +738,24 @@ TEST_F(native_type_handle_modulus_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_modulus_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_modulus_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_modulus_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_modulus_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_modulus_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_modulus_unittest, TestBetweenTypesOfDifferentSizes)
@@ -685,7 +784,7 @@ TEST_F(native_type_handle_modulus_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_logical_and_unittest : public native_type_handle_unittest {};
+class native_type_handle_logical_and_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_logical_and_unittest, TestBetweenIntegerTypes)
@@ -710,15 +809,6 @@ TEST_F(native_type_handle_logical_and_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_logical_and_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_logical_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_logical_and_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -728,6 +818,24 @@ TEST_F(native_type_handle_logical_and_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_logical_and_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_logical_and_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_logical_and_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_logical_and_unittest, TestBetweenTypesOfDifferentSizes)
@@ -756,7 +864,7 @@ TEST_F(native_type_handle_logical_and_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_logical_or_unittest : public native_type_handle_unittest {};
+class native_type_handle_logical_or_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_logical_or_unittest, TestBetweenIntegerTypes)
@@ -781,15 +889,6 @@ TEST_F(native_type_handle_logical_or_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_logical_or_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_logical_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_logical_or_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -799,6 +898,24 @@ TEST_F(native_type_handle_logical_or_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_logical_or_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_logical_or_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_logical_or_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_logical_or_unittest, TestBetweenTypesOfDifferentSizes)
@@ -827,7 +944,7 @@ TEST_F(native_type_handle_logical_or_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_bitwise_and_unittest : public native_type_handle_unittest {};
+class native_type_handle_bitwise_and_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenIntegerTypes)
@@ -852,15 +969,6 @@ TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_bitwise_and_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -870,6 +978,24 @@ TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_bitwise_and_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_bitwise_and_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_and_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenTypesOfDifferentSizes)
@@ -898,7 +1024,7 @@ TEST_F(native_type_handle_bitwise_and_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_bitwise_or_unittest : public native_type_handle_unittest {};
+class native_type_handle_bitwise_or_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenIntegerTypes)
@@ -923,15 +1049,6 @@ TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_bitwise_or_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -941,6 +1058,24 @@ TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_bitwise_or_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_bitwise_or_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_or_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenTypesOfDifferentSizes)
@@ -969,7 +1104,7 @@ TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_bitwise_xor_unittest : public native_type_handle_unittest {};
+class native_type_handle_bitwise_xor_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenIntegerTypes)
@@ -994,15 +1129,6 @@ TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_bitwise_xor_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_xor_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -1012,6 +1138,24 @@ TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_bitwise_xor_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_bitwise_xor_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_xor_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_xor_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_xor_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenTypesOfDifferentSizes)
@@ -1040,7 +1184,7 @@ TEST_F(native_type_handle_bitwise_xor_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_bitwise_left_shift_unittest : public native_type_handle_unittest {};
+class native_type_handle_bitwise_left_shift_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenIntegerTypes)
@@ -1065,15 +1209,6 @@ TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_bitwise_left_shift_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -1083,6 +1218,24 @@ TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_bitwise_left_shift_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_bitwise_left_shift_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_left_shift_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenTypesOfDifferentSizes)
@@ -1111,7 +1264,7 @@ TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenIncompatibleTy
 }
 
 
-class native_type_handle_bitwise_right_shift_unittest : public native_type_handle_unittest {};
+class native_type_handle_bitwise_right_shift_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenIntegerTypes)
@@ -1136,15 +1289,6 @@ TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenDecimalTypes)
   );
 }
 
-TEST_F(native_type_handle_bitwise_right_shift_unittest, TestWithStringTypes)
-{
-  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
-
-  apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
-}
-
 TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
@@ -1154,6 +1298,24 @@ TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenBooleanTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_bitwise_right_shift_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_bitwise_right_shift_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_right_shift_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenTypesOfDifferentSizes)
@@ -1182,7 +1344,7 @@ TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenIncompatibleT
 }
 
 
-class native_type_handle_eq_unittest : public native_type_handle_unittest {};
+class native_type_handle_eq_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_eq_unittest, TestBetweenIntegerTypes)
@@ -1204,6 +1366,17 @@ TEST_F(native_type_handle_eq_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 == 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_eq_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false == true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1229,14 +1402,20 @@ TEST_F(native_type_handle_eq_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_eq_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_eq_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+  typename corevm::types::native_type_handle h3 = h2;
 
-  const int64_t expected_value = false == true;
+  const bool expected_value = true;
   apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
-    h1, h2, expected_value
+    h1, h1, expected_value
+  );
+
+  const bool expected_value2 = true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
+    h2, h3, expected_value2
   );
 }
 
@@ -1266,7 +1445,7 @@ TEST_F(native_type_handle_eq_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_neq_unittest : public native_type_handle_unittest {};
+class native_type_handle_neq_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_neq_unittest, TestBetweenIntegerTypes)
@@ -1288,6 +1467,17 @@ TEST_F(native_type_handle_neq_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 != 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_neq_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_neq_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false != true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_neq_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1313,12 +1503,12 @@ TEST_F(native_type_handle_neq_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_neq_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_neq_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
 
-  const int64_t expected_value = false != true;
+  const bool expected_value = false;
   apply_binary_visitor_and_check_result<corevm::types::native_type_neq_visitor>(
     h1, h2, expected_value
   );
@@ -1350,7 +1540,7 @@ TEST_F(native_type_handle_neq_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_gt_unittest : public native_type_handle_unittest {};
+class native_type_handle_gt_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_gt_unittest, TestBetweenIntegerTypes)
@@ -1372,6 +1562,17 @@ TEST_F(native_type_handle_gt_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 > 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_gt_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_gt_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false > true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_gt_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1402,12 +1603,12 @@ TEST_F(native_type_handle_gt_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_gt_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_gt_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
 
-  const int64_t expected_value = false > true;
+  const bool expected_value = false;
   apply_binary_visitor_and_check_result<corevm::types::native_type_gt_visitor>(
     h1, h2, expected_value
   );
@@ -1439,7 +1640,7 @@ TEST_F(native_type_handle_gt_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_lt_unittest : public native_type_handle_unittest {};
+class native_type_handle_lt_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_lt_unittest, TestBetweenIntegerTypes)
@@ -1461,6 +1662,17 @@ TEST_F(native_type_handle_lt_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 < 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_lt_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_lt_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false < true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_lt_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1491,12 +1703,12 @@ TEST_F(native_type_handle_lt_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_lt_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_lt_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
 
-  const int64_t expected_value = false < true;
+  const bool expected_value = false;
   apply_binary_visitor_and_check_result<corevm::types::native_type_lt_visitor>(
     h1, h2, expected_value
   );
@@ -1529,7 +1741,7 @@ TEST_F(native_type_handle_lt_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_gte_unittest : public native_type_handle_unittest {};
+class native_type_handle_gte_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_gte_unittest, TestBetweenIntegerTypes)
@@ -1551,6 +1763,17 @@ TEST_F(native_type_handle_gte_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 >= 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_gte_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_gte_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false >= true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_gte_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1581,12 +1804,12 @@ TEST_F(native_type_handle_gte_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_gte_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_gte_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
 
-  const int64_t expected_value = false >= true;
+  const bool expected_value = true;
   apply_binary_visitor_and_check_result<corevm::types::native_type_gte_visitor>(
     h1, h2, expected_value
   );
@@ -1618,7 +1841,7 @@ TEST_F(native_type_handle_gte_unittest, TestBetweenIncompatibleTypes)
 }
 
 
-class native_type_handle_lte_unittest : public native_type_handle_unittest {};
+class native_type_handle_lte_unittest : public native_type_handle_binary_operator_unittest {};
 
 
 TEST_F(native_type_handle_lte_unittest, TestBetweenIntegerTypes)
@@ -1640,6 +1863,17 @@ TEST_F(native_type_handle_lte_unittest, TestBetweenDecimalTypes)
   const int64_t expected_value = (6.12 <= 2.0);
   apply_binary_visitor_and_check_result<corevm::types::native_type_lte_visitor>(
     h1, h2, expected_value, true
+  );
+}
+
+TEST_F(native_type_handle_lte_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  const int64_t expected_value = false <= true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_lte_visitor>(
+    h1, h2, expected_value
   );
 }
 
@@ -1670,12 +1904,12 @@ TEST_F(native_type_handle_lte_unittest, TestWithStringTypes)
   );
 }
 
-TEST_F(native_type_handle_lte_unittest, TestBetweenBooleanTypes)
+TEST_F(native_type_handle_lte_unittest, TestBetweenArrayTypes)
 {
-  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
-  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
 
-  const int64_t expected_value = false <= true;
+  const bool expected_value = true;
   apply_binary_visitor_and_check_result<corevm::types::native_type_lte_visitor>(
     h1, h2, expected_value
   );

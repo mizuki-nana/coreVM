@@ -25,7 +25,8 @@ using native_type_handle = typename boost::variant<
   corevm::types::boolean,
   corevm::types::decimal,
   corevm::types::decimal2,
-  corevm::types::string
+  corevm::types::string,
+  corevm::types::array
 >;
 
 
@@ -56,10 +57,9 @@ public:
     return corevm::types::boolean(op().template operator()<corevm::types::string>(lhs, rhs));
   }
 
-  template<typename T, typename U>
-  inline bool _both_operands_strings(const T& lhs, const U& rhs) const {
-    return lhs.type == corevm::types::native_types_enum::STRING &&
-      rhs.type == corevm::types::native_types_enum::STRING;
+  native_type_handle operator()(
+    const corevm::types::array& lhs, const corevm::types::array& rhs) const {
+    return corevm::types::boolean(op().template operator()<corevm::types::array>(lhs, rhs));
   }
 };
 

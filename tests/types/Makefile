@@ -12,11 +12,16 @@ native_string_unittest.test: native_string_unittest.cc
 	$(CXX) $(CFLAGS) $(LIBRARIES) native_string_unittest.cc -o native_string_unittest.test
 
 
+native_array_unittest.test: native_array_unittest.cc
+	$(CXX) $(CFLAGS) $(LIBRARIES) native_array_unittest.cc -o native_array_unittest.test
+
+
 native_type_handle_unittest.test: native_type_handle_unittest.cc
 	$(CXX) $(CFLAGS) $(LIBRARIES) native_type_handle_unittest.cc -o native_type_handle_unittest.test
 
 
 all: native_string_unittest.test \
+	   native_array_unittest.test \
 		 native_type_handle_unittest.test
 
 clean:
