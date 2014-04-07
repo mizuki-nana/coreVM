@@ -13,7 +13,7 @@ namespace memory {
 
 typedef struct __sequential_block_descriptor {
   size_t size;
-  size_t offset;
+  uint32_t offset;
   bool free;
 } sequential_block_descriptor;
 
@@ -32,9 +32,8 @@ public:
 
 protected:
   virtual iterator _find_fit(size_t) noexcept = 0;
-  virtual void _split(iterator, size_t, size_t) noexcept;
+  virtual void _split(iterator, size_t, uint32_t) noexcept;
   virtual void _combine_free_blocks() noexcept;
-  virtual void _print();
 
   std::list<sequential_block_descriptor> _blocks;
 };

@@ -20,15 +20,6 @@ corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(size_
   );
 }
 
-void
-corevm::memory::sequential_allocation_scheme::_print()
-{
-  for(iterator_type itr = begin(); itr != end(); ++itr) {
-    block_descriptor_type block = static_cast<block_descriptor_type>(*itr);
-    printf("[offset %zu] [size %zu] [free %d]\n", block.offset, block.size, block.free);
-  }
-}
-
 iterator_type
 corevm::memory::sequential_allocation_scheme::begin() noexcept
 {
@@ -43,7 +34,7 @@ corevm::memory::sequential_allocation_scheme::end() noexcept
 
 void
 corevm::memory::sequential_allocation_scheme::_split(
-  iterator_type itr, size_t size, size_t offset) noexcept
+  iterator_type itr, size_t size, uint32_t offset) noexcept
 {
   iterator_type itr_pos = itr;
   ++itr_pos;
@@ -93,11 +84,11 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
     *itr = block_found;
 
     if(block_found.size > size) {
-      this->_split(itr, block_found.size - size, block_found.offset + size);
+      this->_split(itr, block_found.size - size, static_cast<uint32_t>(block_found.offset + size));
       block_found.size = size;
     }
 
-    res = block_found.offset;
+    res = static_cast<ssize_t>(block_found.offset);
 
     *itr = block_found;
   }
@@ -274,7 +265,7 @@ corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
       // split
       block_found.size = block_found.size / 2;
       *itr = block_found;
-      this->_split(itr, block_found.size / 2, block_found.offset + block_found.size);
+      this->_split(itr, block_found.size / 2, static_cast<uint32_t>(block_found.offset + block_found.size));
       *itr = block_found;
     } else {
       // bingo! use this block

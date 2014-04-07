@@ -75,7 +75,7 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::malloc_mem(si
 
   if(offset >= 0) {
     char* base = static_cast<char*>(_heap);
-    ptr = base + offset;
+    ptr = base + static_cast<uint32_t>(offset);
     _allocated_size += size;
     assert(_allocated_size <= _total_size);
   }
@@ -96,7 +96,7 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::free_mem(void
 
   // found, free that memory
   if(size > 0) {
-    memset(ptr, 0, static_cast<size_t>(size));
+    memset(ptr, 0, static_cast<uint32_t>(size));
     _allocated_size -= size;
     assert(_allocated_size <= _total_size);
     res = 1;
