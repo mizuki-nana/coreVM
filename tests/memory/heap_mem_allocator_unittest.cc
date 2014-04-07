@@ -201,5 +201,5 @@ TYPED_TEST(heap_mem_allocator_true_sequential_unit_test, TestMallocAfterFree)
   ASSERT_EQ(1, res);
 
   p = this->_malloc_mem(new_chunk_size);
-  assert(p);
+  ASSERT_NE(nullptr, p);
 }

@@ -55,19 +55,27 @@ corevm::memory::sequential_allocation_scheme::_combine_free_blocks() noexcept
     iterator_type current = itr;
     iterator_type prev = --itr;
 
-    if(prev != this->end()) {
+    if(prev != this->end() && prev != this->begin()) {
       block_descriptor_type current_block = static_cast<block_descriptor_type>(*current);
       block_descriptor_type prev_block = static_cast<block_descriptor_type>(*prev);
 
       // merge
       if(current_block.free && prev_block.free) {
         prev_block.size += current_block.size;
-        this->_blocks.erase(current);
+        current_block.size = 0;
+        *current = current_block;
         *prev = prev_block;
       }
-
     }
   } /* end of while loop */
+
+  std::remove_if(
+    this->begin(),
+    this->end(),
+    [](const block_descriptor_type& block) -> bool {
+      return block.free == true && block.size == 0;
+    }
+  );
 }
 
 ssize_t
@@ -148,7 +156,7 @@ corevm::memory::best_fit_allocation_scheme::_find_fit(size_t size) noexcept
   iterator_type itr = std::min_element(
     this->begin(),
     this->end(),
-    [](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
+    [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
       if(block_a.free == false) {
         return false;
       }
@@ -157,9 +165,13 @@ corevm::memory::best_fit_allocation_scheme::_find_fit(size_t size) noexcept
         return true;
       }
 
-      return block_a.size <= block_b.size;
+      return block_a.size <= block_b.size && block_a.size >= size;
     }
   );
+
+  if(itr == this->end()) {
+    return itr;
+  }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
@@ -181,7 +193,7 @@ corevm::memory::worst_fit_allocation_scheme::_find_fit(size_t size) noexcept
   iterator_type itr = std::max_element(
     this->begin(),
     this->end(),
-    [](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
+    [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
       if(block_b.free == false) {
         return false;
       }
@@ -190,9 +202,13 @@ corevm::memory::worst_fit_allocation_scheme::_find_fit(size_t size) noexcept
         return true;
       }
 
-      return block_a.size <= block_b.size;
+      return block_a.size <= block_b.size && block_a.size >= size;
     }
   );
+
+  if(itr == this->end()) {
+    return itr;
+  }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
