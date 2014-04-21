@@ -55,10 +55,10 @@ public:
   explicit dynamic_object_heap();
   ~dynamic_object_heap();
 
-        iterator begin() noexcept;
+  iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
 
-        iterator end() noexcept;
+  iterator end() noexcept;
   const_iterator cend() const noexcept;
 
   template<typename Function>
@@ -81,7 +81,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
         return corevm::dyobj::id_to_hash(id);
       },
       [](dynamic_object_id_type id1, dynamic_object_id_type id2) {
-        return operator==(id1, id2);
+        return id1 == id2;
       }
     )
   )

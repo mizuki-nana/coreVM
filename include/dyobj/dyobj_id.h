@@ -2,7 +2,6 @@
 #define COREVM_DYOBJ_ID_H_
 
 #include <string>
-#include <boost/uuid/uuid.hpp>
 
 
 namespace corevm {
@@ -11,7 +10,7 @@ namespace corevm {
 namespace dyobj {
 
 
-typedef boost::uuids::uuid dyobj_id;
+typedef __uint128_t dyobj_id;
 
 
 corevm::dyobj::dyobj_id generate_dyobj_id();

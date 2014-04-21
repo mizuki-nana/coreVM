@@ -69,7 +69,7 @@ public:
     corevm::dyobj::dynamic_object_runtime_error(what_arg) {}
   explicit dynamic_object_attribute_cannot_be_deleted_error(corevm::dyobj::attr_key attr_key, corevm::dyobj::dyobj_id id):
     corevm::dyobj::dynamic_object_runtime_error(
-      str(boost::format("Attribute %u cannot be deleted from object") % attr_key % corevm::dyobj::id_to_string(id))
+      str(boost::format("Attribute %u cannot be deleted from object %s") % attr_key % corevm::dyobj::id_to_string(id))
     ),
     attr_key(attr_key),
     id(id)

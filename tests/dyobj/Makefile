@@ -9,8 +9,7 @@ LIBRARIES=$(LIBGTEST) $(LIBSNEAKER)
 
 SRC=\
 	../../src/memory/*.cc \
-	../../src/dyobj/*.cc  \
-	../../src/gc/*.cc
+	../../src/dyobj/*.cc
 
 dyobj_heap_alloc_policy_unittest.test: dyobj_heap_alloc_policy_unittest.cc
 	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) dyobj_heap_alloc_policy_unittest.cc -o dyobj_heap_alloc_policy_unittest.test

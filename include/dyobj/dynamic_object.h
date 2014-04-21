@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
+#include "../types/native_type_handle.h"
 #include "common.h"
 #include "dyobj_id.h"
 #include "errors.h"
@@ -23,7 +24,6 @@ namespace dyobj {
 template<class dynamic_object_manager>
 class dynamic_object {
 public:
-
   using attr_key_type = typename corevm::dyobj::attr_key;
   using dyobj_id_type = typename corevm::dyobj::dyobj_id;
 
@@ -33,8 +33,7 @@ public:
   using iterator = typename attr_map_type::iterator;
   using const_iterator = typename attr_map_type::const_iterator;
 
-  explicit dynamic_object();
-  explicit dynamic_object(dyobj_id_type);
+  explicit dynamic_object(dyobj_id_type&);
 
   ~dynamic_object();
 
@@ -51,6 +50,9 @@ public:
   corevm::dyobj::flag flags() const noexcept;
 
   dynamic_object_manager& manager() noexcept;
+
+  corevm::types::native_type_handle* get_ntvhdle() noexcept;
+  void set_ntvhdle(corevm::types::native_type_handle*) noexcept;
 
   bool get_flag(char) noexcept;
   void set_flag(char) noexcept;
@@ -70,24 +72,16 @@ public:
   void iterate(Function) noexcept;
 
 private:
-  dyobj_id_type _id;
+  dyobj_id_type& _id;
   corevm::dyobj::flag _flags;
   attr_map_type _attrs;
   dynamic_object_manager _manager;
+  corevm::types::native_type_handle* _ntvhdle = nullptr;
 };
 
 
 template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
-  _id(corevm::dyobj::generate_dyobj_id()),
-  _flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
-  _attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),
-  _manager(dynamic_object_manager())
-{
-}
-
-template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dyobj::dyobj_id id):
+corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dyobj::dyobj_id& id):
   _id(id),
   _flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   _attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),
@@ -163,6 +157,21 @@ dynamic_object_manager&
 corevm::dyobj::dynamic_object<dynamic_object_manager>::manager() noexcept
 {
   return this->_manager;
+}
+
+template<class dynamic_object_manager>
+corevm::types::native_type_handle*
+corevm::dyobj::dynamic_object<dynamic_object_manager>::get_ntvhdle() noexcept
+{
+  return this->_ntvhdle;
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_ntvhdle(
+  corevm::types::native_type_handle* ntvhdle) noexcept
+{
+  this->_ntvhdle = ntvhdle;
 }
 
 template<class dynamic_object_manager>

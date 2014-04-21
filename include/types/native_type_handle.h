@@ -45,7 +45,7 @@ class native_type_binary_visitor : public boost::static_visitor<native_type_hand
 public:
   template<typename T, typename U>
   native_type_handle operator()(const T& lhs, const U& rhs) const {
-    if(lhs.size() >= rhs.size()) {
+    if(sizeof(lhs) >= sizeof(rhs)) {
       return T(op().template operator()<T>(lhs, rhs));
     } else {
       return U(op().template operator()<U>(lhs, rhs));
