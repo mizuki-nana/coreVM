@@ -16,12 +16,13 @@ namespace dyobj {
 template<typename T, size_t N=COREVM_DEFAULT_HEAP_SIZE>
 class dyobj_heap_alloc_policy : public sneaker::allocator::standard_alloc_policy<T> {
 public:
-  using pointer = typename sneaker::allocator::standard_alloc_policy<T>::pointer;
-  using const_pointer = typename sneaker::allocator::standard_alloc_policy<T>::const_pointer;
-  using reference = typename sneaker::allocator::standard_alloc_policy<T>::reference;
-  using const_reference = typename sneaker::allocator::standard_alloc_policy<T>::const_reference;
-  using size_type = typename sneaker::allocator::standard_alloc_policy<T>::size_type;
-  using difference_type = typename sneaker::allocator::standard_alloc_policy<T>::difference_type;
+  using value_type                             = typename sneaker::allocator::standard_alloc_policy<T>::value_type;
+  using pointer                                = typename sneaker::allocator::standard_alloc_policy<T>::pointer;
+  using const_pointer                          = typename sneaker::allocator::standard_alloc_policy<T>::const_pointer;
+  using reference                              = typename sneaker::allocator::standard_alloc_policy<T>::reference;
+  using const_reference                        = typename sneaker::allocator::standard_alloc_policy<T>::const_reference;
+  using size_type                              = typename sneaker::allocator::standard_alloc_policy<T>::size_type;
+  using difference_type                        = typename sneaker::allocator::standard_alloc_policy<T>::difference_type;
   using propagate_on_container_move_assignment = typename sneaker::allocator::standard_alloc_policy<T>::propagate_on_container_move_assignment;
 
   inline explicit dyobj_heap_alloc_policy();

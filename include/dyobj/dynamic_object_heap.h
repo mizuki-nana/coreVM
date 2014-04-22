@@ -34,7 +34,7 @@ public:
     sneaker::functional::function<size_t, dynamic_object_id_type>,
     sneaker::functional::predicate<dynamic_object_id_type, dynamic_object_id_type>,
     corevm::dyobj::dyobj_heap_allocator<
-      std::pair<dynamic_object_id_type, dynamic_object_type>,
+      std::pair<const dynamic_object_id_type, dynamic_object_type>,
       COREVM_DEFAULT_HEAP_SIZE
     >
   >;

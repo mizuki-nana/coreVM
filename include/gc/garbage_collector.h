@@ -14,10 +14,10 @@ namespace gc {
 template<class garbage_collection_scheme>
 class garbage_collector {
 public:
-  using dynamic_object_heap = typename corevm::dyobj::dynamic_object_heap<
+  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<
     typename garbage_collection_scheme::dynamic_object_manager>;
 
-  explicit garbage_collector(dynamic_object_heap&);
+  explicit garbage_collector(dynamic_object_heap_type&);
 
   void gc() const noexcept;
 
@@ -25,13 +25,13 @@ protected:
   void free() noexcept;
 
   garbage_collection_scheme _gc_scheme;
-  dynamic_object_heap& _heap;
+  dynamic_object_heap_type& _heap;
 };
 
 
 template<class garbage_collection_scheme>
 corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
-  corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap& heap
+  corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap
 ):
   _heap(heap),
   _gc_scheme(garbage_collection_scheme())
@@ -52,7 +52,7 @@ void
 corevm::gc::garbage_collector<garbage_collection_scheme>::free() noexcept
 {
   using _dynamic_object_heap_type = typename
-    corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap;
+    corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type;
 
   using _dynamic_object_type = typename _dynamic_object_heap_type::dynamic_object_type;
 
