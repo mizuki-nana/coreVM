@@ -1,4 +1,5 @@
 #include <sneaker/testing/_unittest.h>
+#include "../test_helper.h"
 #include "../../include/types/native_type_handle.h"
 
 
@@ -55,7 +56,7 @@ public:
   void apply_unary_visitor_and_check_exception(
     corevm::types::native_type_handle& handle)
   {
-    ASSERT_THROW(
+    _ASSERT_THROW(
       corevm::types::apply_unary_visitor<visitor_type>(handle),
       exception_type
     );
@@ -65,7 +66,7 @@ public:
   void apply_binary_visitor_and_check_exception(
     corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs)
   {
-    ASSERT_THROW(
+    _ASSERT_THROW(
       corevm::types::apply_binary_visitor<visitor_type>(lhs, rhs),
       exception_type
     );

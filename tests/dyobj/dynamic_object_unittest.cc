@@ -71,9 +71,15 @@ TEST_F(dynamic_object_unit_test, TestGetAndSetAttrs)
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
+#ifdef __APPLE__
   ASSERT_THROW(obj.delattr(key1), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
   ASSERT_THROW(obj.delattr(key2), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
   ASSERT_THROW(obj.delattr(key3), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
+#else
+  ASSERT_ANY_THROW(obj.delattr(key1));
+  ASSERT_ANY_THROW(obj.delattr(key2));
+  ASSERT_ANY_THROW(obj.delattr(key3));
+#endif
 
   obj.putattr(key1, mock_attrs[key1]);
   obj.putattr(key2, mock_attrs[key2]);
@@ -95,6 +101,7 @@ TEST_F(dynamic_object_unit_test, TestGetAndSetAttrs)
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
+#ifdef __APPLE__
   ASSERT_THROW(obj.delattr(key1), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
   ASSERT_THROW(obj.delattr(key2), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
   ASSERT_THROW(obj.delattr(key3), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
@@ -102,6 +109,15 @@ TEST_F(dynamic_object_unit_test, TestGetAndSetAttrs)
   ASSERT_THROW(obj.getattr(key1), corevm::dyobj::dynamic_object_attribute_not_found_error);
   ASSERT_THROW(obj.getattr(key2), corevm::dyobj::dynamic_object_attribute_not_found_error);
   ASSERT_THROW(obj.getattr(key3), corevm::dyobj::dynamic_object_attribute_not_found_error);
+#else
+  ASSERT_ANY_THROW(obj.delattr(key1));
+  ASSERT_ANY_THROW(obj.delattr(key2));
+  ASSERT_ANY_THROW(obj.delattr(key3));
+
+  ASSERT_ANY_THROW(obj.getattr(key1));
+  ASSERT_ANY_THROW(obj.getattr(key2));
+  ASSERT_ANY_THROW(obj.getattr(key3));
+#endif
 }
 
 TEST_F(dynamic_object_unit_test, TestEquality)

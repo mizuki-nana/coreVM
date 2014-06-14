@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include <sneaker/testing/_unittest.h>
+#include "../test_helper.h"
 #include "../../include/types/errors.h"
 #include "../../include/types/native_array.h"
 
@@ -36,7 +37,7 @@ TEST_F(native_array_unittest, TestCopyConstructor)
 
 TEST_F(native_array_unittest, TestCopyConstructorOnIntegerType)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array = 123;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -44,7 +45,7 @@ TEST_F(native_array_unittest, TestCopyConstructorOnIntegerType)
 
 TEST_F(native_array_unittest, TestConvertingToIntegerType)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {int i = corevm::types::native_array(); i++;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -119,7 +120,8 @@ TEST_F(native_array_functionality_unittest, TestPushBack)
   ASSERT_EQ(fixture_element2, array.at(1));
   ASSERT_EQ(fixture_element3, array.at(2));
 
-  ASSERT_THROW(
+
+  _ASSERT_THROW(
     { array.at(3); },
     std::out_of_range
   );
@@ -133,7 +135,7 @@ class native_array_unary_operator_unittest : public native_array_operator_unitte
 
 TEST_F(native_array_unary_operator_unittest, TestPositiveOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; +array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -141,7 +143,7 @@ TEST_F(native_array_unary_operator_unittest, TestPositiveOperator)
 
 TEST_F(native_array_unary_operator_unittest, TestNegationOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; -array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -149,7 +151,7 @@ TEST_F(native_array_unary_operator_unittest, TestNegationOperator)
 
 TEST_F(native_array_unary_operator_unittest, TestIncrementOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; ++array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -157,7 +159,7 @@ TEST_F(native_array_unary_operator_unittest, TestIncrementOperator)
 
 TEST_F(native_array_unary_operator_unittest, TestDecrementOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; --array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -165,7 +167,7 @@ TEST_F(native_array_unary_operator_unittest, TestDecrementOperator)
 
 TEST_F(native_array_unary_operator_unittest, TestLogicalNotOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; !array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -173,7 +175,7 @@ TEST_F(native_array_unary_operator_unittest, TestLogicalNotOperator)
 
 TEST_F(native_array_unary_operator_unittest, TestBitwiseNotOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_array array; ~array;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -185,7 +187,7 @@ class native_array_binary_operator_unittest : public native_array_operator_unitt
 
 TEST_F(native_array_binary_operator_unittest, TestAdditionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -197,7 +199,7 @@ TEST_F(native_array_binary_operator_unittest, TestAdditionOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestSubtractionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -209,7 +211,7 @@ TEST_F(native_array_binary_operator_unittest, TestSubtractionOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestMultiplicationOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -221,7 +223,7 @@ TEST_F(native_array_binary_operator_unittest, TestMultiplicationOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestDivisionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -233,7 +235,7 @@ TEST_F(native_array_binary_operator_unittest, TestDivisionOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestLogicalANDOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -245,7 +247,7 @@ TEST_F(native_array_binary_operator_unittest, TestLogicalANDOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestLogicalOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -257,7 +259,7 @@ TEST_F(native_array_binary_operator_unittest, TestLogicalOROperator)
 
 TEST_F(native_array_binary_operator_unittest, TestBitwiseANDOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -269,7 +271,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseANDOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestBitwiseOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -281,7 +283,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseOROperator)
 
 TEST_F(native_array_binary_operator_unittest, TestBitwiseXOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -293,7 +295,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseXOROperator)
 
 TEST_F(native_array_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;
@@ -305,7 +307,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 
 TEST_F(native_array_binary_operator_unittest, TestBitwiseRightShiftOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_array array1;
       const corevm::types::native_array array2;

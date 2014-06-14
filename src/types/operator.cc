@@ -1,17 +1,17 @@
-#include "../../include/types/operator.h"
+#include "../../include/types/operators.h"
 
 
 /* decrement operator */
 
 template<>
 typename corevm::types::string::value_type
-decrement::operator()<corevm::types::string>(const corevm::types::string& handle) {
+corevm::types::decrement::operator()<corevm::types::string>(const corevm::types::string& handle) {
   return static_cast<typename corevm::types::string::value_type>(--handle.value);
 }
 
 template<>
 typename corevm::types::array::value_type
-decrement::operator()<corevm::types::array>(const corevm::types::array& handle) {
+corevm::types::decrement::operator()<corevm::types::array>(const corevm::types::array& handle) {
   return static_cast<typename corevm::types::array::value_type>(--handle.value);
 }
 
@@ -19,13 +19,13 @@ decrement::operator()<corevm::types::array>(const corevm::types::array& handle) 
 
 template<>
 typename corevm::types::string::value_type
-bitwise_not::operator()<corevm::types::string>(const corevm::types::string& handle) {
+corevm::types::bitwise_not::operator()<corevm::types::string>(const corevm::types::string& handle) {
   return static_cast<typename corevm::types::string::value_type>(~handle.value);
 }
 
 template<>
 typename corevm::types::array::value_type
-bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle) {
+corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle) {
   return static_cast<typename corevm::types::array::value_type>(~handle.value);
 }
 
@@ -33,7 +33,7 @@ bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle
 
 template<>
 typename corevm::types::string::value_type
-addition::operator()<corevm::types::string>(
+corevm::types::addition::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value + rhs.value);
@@ -43,7 +43,7 @@ addition::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-subtraction::operator()<corevm::types::string>(
+corevm::types::subtraction::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value - rhs.value);
@@ -53,7 +53,7 @@ subtraction::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-multiplication::operator()<corevm::types::string>(
+corevm::types::multiplication::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value * rhs.value);
@@ -63,7 +63,7 @@ multiplication::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-division::operator()<corevm::types::string>(
+corevm::types::division::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value / rhs.value);
@@ -73,7 +73,7 @@ division::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-modulus::operator()<corevm::types::string>(
+corevm::types::modulus::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value % rhs.value);
@@ -81,7 +81,7 @@ modulus::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::array::value_type
-modulus::operator()<corevm::types::array>(
+corevm::types::modulus::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value % rhs.value);
@@ -91,7 +91,7 @@ modulus::operator()<corevm::types::array>(
 
 template<>
 typename corevm::types::string::value_type
-logical_and::operator()<corevm::types::string>(
+corevm::types::logical_and::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value && rhs.value);
@@ -101,7 +101,7 @@ logical_and::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-logical_or::operator()<corevm::types::string>(
+corevm::types::logical_or::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value || rhs.value);
@@ -111,7 +111,7 @@ logical_or::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::string::value_type
-bitwise_and::operator()<corevm::types::string>(
+corevm::types::bitwise_and::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value & rhs.value);
@@ -119,7 +119,7 @@ bitwise_and::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::array::value_type
-bitwise_and::operator()<corevm::types::array>(
+corevm::types::bitwise_and::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value & rhs.value);
@@ -129,7 +129,7 @@ bitwise_and::operator()<corevm::types::array>(
 
 template<>
 typename corevm::types::string::value_type
-bitwise_or::operator()<corevm::types::string>(
+corevm::types::bitwise_or::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value | rhs.value);
@@ -137,7 +137,7 @@ bitwise_or::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::array::value_type
-bitwise_or::operator()<corevm::types::array>(
+corevm::types::bitwise_or::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value | rhs.value);
@@ -147,7 +147,7 @@ bitwise_or::operator()<corevm::types::array>(
 
 template<>
 typename corevm::types::string::value_type
-bitwise_xor::operator()<corevm::types::string>(
+corevm::types::bitwise_xor::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value ^ rhs.value);
@@ -155,7 +155,7 @@ bitwise_xor::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::array::value_type
-bitwise_xor::operator()<corevm::types::array>(
+corevm::types::bitwise_xor::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value ^ rhs.value);
@@ -165,7 +165,7 @@ bitwise_xor::operator()<corevm::types::array>(
 
 template<>
 typename corevm::types::string::value_type
-bitwise_left_shift::operator()<corevm::types::string>(
+corevm::types::bitwise_left_shift::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value << rhs.value);
@@ -173,7 +173,7 @@ bitwise_left_shift::operator()<corevm::types::string>(
 
 template<>
 typename corevm::types::array::value_type
-bitwise_left_shift::operator()<corevm::types::array>(
+corevm::types::bitwise_left_shift::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value << rhs.value);
@@ -183,14 +183,14 @@ bitwise_left_shift::operator()<corevm::types::array>(
 
 template<>
 typename corevm::types::string::value_type
-bitwise_right_shift::operator()<corevm::types::string>(
+corevm::types::bitwise_right_shift::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value >> rhs.value);
 }
 template<>
 typename corevm::types::array::value_type
-bitwise_right_shift::operator()<corevm::types::array>(
+corevm::types::bitwise_right_shift::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value >> rhs.value);

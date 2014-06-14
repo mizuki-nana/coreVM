@@ -39,9 +39,13 @@ public:
     std_vector_type(first, last, alloc) {}
 
   native_array(const std_vector_type& x) : std_vector_type(x) {}
-  native_array(const std_vector_type& x, const allocator_type& alloc) : std_vector_type(x, alloc) {}
   native_array(std_vector_type&& x) : std_vector_type(x) {}
+
+// TODO: resolve OS X macro
+#ifdef __APPLE__
+  native_array(const std_vector_type& x, const allocator_type& alloc) : std_vector_type(x, alloc) {}
   native_array(std_vector_type&& x, const allocator_type& alloc) : std_vector_type(x, alloc) {}
+#endif
   native_array(std::initializer_list<value_type> il,
     const allocator_type& alloc = allocator_type()) : std_vector_type(il, alloc) {}
 

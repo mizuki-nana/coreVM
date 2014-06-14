@@ -1,3 +1,4 @@
+#include <climits>
 #include <sneaker/testing/_unittest.h>
 #include "../../include/dyobj/dyobj_heap_alloc_policy.h"
 

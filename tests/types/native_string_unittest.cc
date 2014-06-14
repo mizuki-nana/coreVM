@@ -1,4 +1,5 @@
 #include <sneaker/testing/_unittest.h>
+#include "../test_helper.h"
 #include "../../include/types/errors.h"
 #include "../../include/types/native_string.h"
 
@@ -77,7 +78,7 @@ TEST_F(native_string_unittest, TestCopyConstructorOnCString)
 
 TEST_F(native_string_unittest, TestCopyConstructorOnIntegerType)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str = 123;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -85,7 +86,7 @@ TEST_F(native_string_unittest, TestCopyConstructorOnIntegerType)
 
 TEST_F(native_string_unittest, TestConvertingToIntegerType)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {int i = corevm::types::native_string("123"); i++;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -169,7 +170,7 @@ class native_string_unary_operator_unittest : public native_string_operator_unit
 
 TEST_F(native_string_unary_operator_unittest, TestPositiveOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); +str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -177,7 +178,7 @@ TEST_F(native_string_unary_operator_unittest, TestPositiveOperator)
 
 TEST_F(native_string_unary_operator_unittest, TestNegationOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); -str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -185,7 +186,7 @@ TEST_F(native_string_unary_operator_unittest, TestNegationOperator)
 
 TEST_F(native_string_unary_operator_unittest, TestIncrementOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); ++str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -193,7 +194,7 @@ TEST_F(native_string_unary_operator_unittest, TestIncrementOperator)
 
 TEST_F(native_string_unary_operator_unittest, TestDecrementOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); --str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -201,7 +202,7 @@ TEST_F(native_string_unary_operator_unittest, TestDecrementOperator)
 
 TEST_F(native_string_unary_operator_unittest, TestLogicalNotOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); !str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -209,7 +210,7 @@ TEST_F(native_string_unary_operator_unittest, TestLogicalNotOperator)
 
 TEST_F(native_string_unary_operator_unittest, TestBitwiseNotOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {const corevm::types::native_string str("123"); ~str;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -221,7 +222,7 @@ class native_string_binary_operator_unittest : public native_string_operator_uni
 
 TEST_F(native_string_binary_operator_unittest, TestAdditionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -233,7 +234,7 @@ TEST_F(native_string_binary_operator_unittest, TestAdditionOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestSubtractionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -245,7 +246,7 @@ TEST_F(native_string_binary_operator_unittest, TestSubtractionOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestMultiplicationOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -257,7 +258,7 @@ TEST_F(native_string_binary_operator_unittest, TestMultiplicationOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestDivisionOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -269,7 +270,7 @@ TEST_F(native_string_binary_operator_unittest, TestDivisionOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestLogicalANDOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -281,7 +282,7 @@ TEST_F(native_string_binary_operator_unittest, TestLogicalANDOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestLogicalOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -293,7 +294,7 @@ TEST_F(native_string_binary_operator_unittest, TestLogicalOROperator)
 
 TEST_F(native_string_binary_operator_unittest, TestBitwiseANDOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -305,7 +306,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseANDOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestBitwiseOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -317,7 +318,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseOROperator)
 
 TEST_F(native_string_binary_operator_unittest, TestBitwiseXOROperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -329,7 +330,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseXOROperator)
 
 TEST_F(native_string_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
@@ -341,7 +342,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 
 TEST_F(native_string_binary_operator_unittest, TestBitwiseRightShiftOperator)
 {
-  ASSERT_THROW(
+  _ASSERT_THROW(
     {
       const corevm::types::native_string str1("Hello ");
       const corevm::types::native_string str2("world!");
