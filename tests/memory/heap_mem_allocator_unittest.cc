@@ -203,3 +203,122 @@ TYPED_TEST(heap_mem_allocator_true_sequential_unit_test, TestMallocAfterFree)
   p = this->_malloc_mem(new_chunk_size);
   ASSERT_NE(nullptr, p);
 }
+
+
+#define BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE 1024
+
+class buddy_allocation_scheme_unittest : public ::testing::Test {
+protected:
+  corevm::memory::heap_mem_allocator<
+    BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE,
+    corevm::memory::buddy_allocation_scheme
+  > _allocator;
+
+  void validate() {
+    void* ptr = _allocator.malloc_mem(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE);
+    ASSERT_NE(nullptr, ptr);
+
+    int res = _allocator.free_mem(ptr);
+    ASSERT_EQ(1, res);
+  }
+};
+
+
+TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
+{
+  void* p1 = nullptr;
+  void* p2 = nullptr;
+
+  p1 = _allocator.malloc_mem(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
+  ASSERT_NE(nullptr, p1);
+
+  p2 = _allocator.malloc_mem(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
+  ASSERT_NE(nullptr, p2);
+
+  int res1 = _allocator.free_mem(p1);
+  int res2 = _allocator.free_mem(p2);
+
+  ASSERT_EQ(1, res1);
+  ASSERT_EQ(1, res2);
+
+  // Validation
+  this->validate();
+}
+
+TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
+{
+  /* This test is based on the example on page 1 in
+   * http://www.cs.fsu.edu/~engelen/courses/COP402003/p827.pdf
+   * */
+  void* ptrA = nullptr;
+  void* ptrB = nullptr;
+  void* ptrC = nullptr;
+  void* ptrD = nullptr;
+  int res = 0;
+
+  ptrA = _allocator.malloc_mem(70);
+  ASSERT_NE(nullptr, ptrA);
+
+  ptrB = _allocator.malloc_mem(35);
+  ASSERT_NE(nullptr, ptrB);
+
+  ptrC = _allocator.malloc_mem(80);
+  ASSERT_NE(nullptr, ptrC);
+
+  res = _allocator.free_mem(ptrA);
+  ASSERT_EQ(1, res);
+
+  ptrD = _allocator.malloc_mem(60);
+  ASSERT_NE(nullptr, ptrD);
+
+  res = _allocator.free_mem(ptrB);
+  ASSERT_EQ(1, res);
+
+  res = _allocator.free_mem(ptrD);
+  ASSERT_EQ(1, res);
+
+  res = _allocator.free_mem(ptrC);
+  ASSERT_EQ(1, res);
+
+  // Validation
+  this->validate();
+}
+
+TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
+{
+  /* This test is based on the example given in
+   * http://en.wikipedia.org/wiki/Buddy_memory_allocation#In_practice
+   */
+  void* ptrA = nullptr;
+  void* ptrB = nullptr;
+  void* ptrC = nullptr;
+  void* ptrD = nullptr;
+  int res = 0;
+
+  ptrA = _allocator.malloc_mem(34);
+  ASSERT_NE(nullptr, ptrA);
+
+  ptrB = _allocator.malloc_mem(66);
+  ASSERT_NE(nullptr, ptrB);
+
+  ptrC = _allocator.malloc_mem(35);
+  ASSERT_NE(nullptr, ptrC);
+
+  ptrD = _allocator.malloc_mem(67);
+  ASSERT_NE(nullptr, ptrD);
+
+  res = _allocator.free_mem(ptrB);
+  ASSERT_EQ(1, res);
+
+  res = _allocator.free_mem(ptrD);
+  ASSERT_EQ(1, res);
+
+  res = _allocator.free_mem(ptrA);
+  ASSERT_EQ(1, res);
+
+  res = _allocator.free_mem(ptrC);
+  ASSERT_EQ(1, res);
+
+  // Validation
+  this->validate();
+}

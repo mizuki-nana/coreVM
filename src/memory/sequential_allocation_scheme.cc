@@ -32,9 +32,27 @@ corevm::memory::sequential_allocation_scheme::end() noexcept
   return _blocks.end();
 }
 
+#ifdef __DEBUG__
+void
+corevm::memory::sequential_allocation_scheme::debug_print() noexcept
+{
+  printf("==============================\n");
+  iterator_type itr;
+  for(itr = begin(); itr != end(); itr++) {
+    block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
+    printf("Size [%lu] - Offset - [%d] - Free[ %d]\n",
+      descriptor.size,
+      descriptor.offset,
+      descriptor.free
+    );
+  }
+  printf("==============================\n");
+}
+#endif
+
 void
 corevm::memory::sequential_allocation_scheme::_split(
-  iterator_type itr, size_t size, uint32_t offset) noexcept
+  iterator_type itr, size_t size, uint64_t offset) noexcept
 {
   iterator_type itr_pos = itr;
   ++itr_pos;
@@ -92,7 +110,7 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
     *itr = block_found;
 
     if(block_found.size > size) {
-      this->_split(itr, block_found.size - size, static_cast<uint32_t>(block_found.offset + size));
+      this->_split(itr, block_found.size - size, static_cast<uint64_t>(block_found.offset + size));
       block_found.size = size;
     }
 
@@ -281,7 +299,7 @@ corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
       // split
       block_found.size = block_found.size / 2;
       *itr = block_found;
-      this->_split(itr, block_found.size / 2, static_cast<uint32_t>(block_found.offset + block_found.size));
+      this->_split(itr, block_found.size, static_cast<uint64_t>(block_found.offset + block_found.size));
       *itr = block_found;
     } else {
       // bingo! use this block
@@ -308,9 +326,10 @@ corevm::memory::buddy_allocation_scheme::_combine_free_blocks() noexcept
     has_freed_blocks = false;
 
     size_t i = 1;
-    for(iterator_type itr = begin(); itr != end(); ++itr, ++i) {
+    for(iterator_type itr = begin(); itr != end(); itr++, i++) {
       iterator_type current_itr = itr;
-      iterator_type next_itr = ++current_itr;
+      iterator_type next_itr = current_itr;
+      ++next_itr;
 
       if(itr != end() && next_itr != end() && i % 2 == 1) {
 
@@ -328,8 +347,6 @@ corevm::memory::buddy_allocation_scheme::_combine_free_blocks() noexcept
           *itr = combined_block;
 
           _blocks.erase(next_itr);
-
-          ++i;
 
           has_freed_blocks = true;
 

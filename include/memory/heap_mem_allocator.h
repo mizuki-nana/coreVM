@@ -25,6 +25,11 @@ public:
   void* malloc_mem(size_t) noexcept;
   int free_mem(void*) noexcept;
 
+#ifdef __DEBUG__
+  void debug_print() noexcept {
+    _allocator_scheme.debug_print();
+  }
+#endif
 private:
   size_t _total_size = 0;
   size_t _allocated_size = 0;

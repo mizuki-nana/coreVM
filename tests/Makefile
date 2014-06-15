@@ -44,7 +44,7 @@ types:
 	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: all
-all: memory types dyobj gc
+all: memory dyobj gc types
 
 .PHONY: clean
 clean:
