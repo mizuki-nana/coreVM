@@ -1,5 +1,6 @@
 CXX=`which clang++`
 CFLAGS=-Wall -std=c++11
+EXTRA_CFLAGS=-Wno-deprecated
 
 LIBGTEST=/usr/lib/libgtest.a
 LIBSNEAKER=/usr/local/lib/libsneaker.a
@@ -41,7 +42,7 @@ gc:
 
 .PHONY: types
 types:
-	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: all
 all: memory dyobj gc types
