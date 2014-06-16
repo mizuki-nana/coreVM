@@ -50,4 +50,4 @@ googletest:<br/>
 `Version 1.6.0`
 
 sneaker:<br/>
-`Version 0.17`
+`Version 0.2.1`
