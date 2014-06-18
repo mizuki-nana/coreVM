@@ -3,6 +3,7 @@
 
 
 #include "native_array.h"
+#include "native_map.h"
 #include "native_string.h"
 
 
@@ -25,7 +26,8 @@ enum native_types_enum {
   DECIMAL   = 0x10,
   DECIMAL2  = 0x11,
   STRING    = 0x12,
-  ARRAY     = 0x13
+  ARRAY     = 0x13,
+  MAP       = 0x14
 };
 
 
@@ -217,6 +219,20 @@ public:
   // virtual size_t size() const noexcept { return sizeof(value_type); }
 
   // const native_types_enum type = native_types_enum::ARRAY;
+  value_type value;
+};
+
+
+class map : public native_type_wrapper {
+public:
+  typedef native_map value_type;
+
+  map() {}
+  map(value_type value) : value(value) {}
+
+  // virtual size_t size() const noexcept { return sizeof(value_type); }
+
+  // const native_types_enum type = native_types_enum::MAP;
   value_type value;
 };
 

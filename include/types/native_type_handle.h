@@ -26,7 +26,8 @@ using native_type_handle = typename boost::variant<
   corevm::types::decimal,
   corevm::types::decimal2,
   corevm::types::string,
-  corevm::types::array
+  corevm::types::array,
+  corevm::types::map
 >;
 
 
@@ -60,6 +61,11 @@ public:
   native_type_handle operator()(
     const corevm::types::array& lhs, const corevm::types::array& rhs) const {
     return corevm::types::boolean(op().template operator()<corevm::types::array>(lhs, rhs));
+  }
+
+  native_type_handle operator()(
+    const corevm::types::map& lhs, const corevm::types::map& rhs) const {
+    return corevm::types::boolean(op().template operator()<corevm::types::map>(lhs, rhs));
   }
 };
 

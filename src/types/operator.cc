@@ -15,6 +15,12 @@ corevm::types::decrement::operator()<corevm::types::array>(const corevm::types::
   return static_cast<typename corevm::types::array::value_type>(--handle.value);
 }
 
+template<>
+typename corevm::types::map::value_type
+corevm::types::decrement::operator()<corevm::types::map>(const corevm::types::map& handle) {
+  return static_cast<typename corevm::types::map::value_type>(--handle.value);
+}
+
 /* bitwise NOT operator */
 
 template<>
@@ -27,6 +33,12 @@ template<>
 typename corevm::types::array::value_type
 corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle) {
   return static_cast<typename corevm::types::array::value_type>(~handle.value);
+}
+
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::map& handle) {
+  return static_cast<typename corevm::types::map::value_type>(~handle.value);
 }
 
 /* addition operator */
@@ -87,6 +99,14 @@ corevm::types::modulus::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value % rhs.value);
 }
 
+template<>
+typename corevm::types::map::value_type
+corevm::types::modulus::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value % rhs.value);
+}
+
 /* logical AND operator */
 
 template<>
@@ -125,6 +145,14 @@ corevm::types::bitwise_and::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value & rhs.value);
 }
 
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_and::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value & rhs.value);
+}
+
 /* bitwise OR operator */
 
 template<>
@@ -143,6 +171,15 @@ corevm::types::bitwise_or::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value | rhs.value);
 }
 
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_or::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value | rhs.value);
+}
+
+
 /* bitwise XOR operator */
 
 template<>
@@ -159,6 +196,14 @@ corevm::types::bitwise_xor::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value ^ rhs.value);
+}
+
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_xor::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value ^ rhs.value);
 }
 
 /* bitwise left shift operator */
@@ -179,6 +224,14 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value << rhs.value);
 }
 
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value << rhs.value);
+}
+
 /* bitwise right shift operator */
 
 template<>
@@ -188,10 +241,19 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value >> rhs.value);
 }
+
 template<>
 typename corevm::types::array::value_type
 corevm::types::bitwise_right_shift::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   return static_cast<typename corevm::types::array::value_type>(lhs.value >> rhs.value);
+}
+
+template<>
+typename corevm::types::map::value_type
+corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value >> rhs.value);
 }

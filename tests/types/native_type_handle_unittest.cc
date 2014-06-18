@@ -126,6 +126,14 @@ TEST_F(native_type_handle_positive_unittest, TestOnArrayType)
     corevm::types::native_type_positive_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
 }
 
+TEST_F(native_type_handle_positive_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_positive_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
 
 class native_type_handle_negation_unittest : public native_type_handle_unary_operator_unittest {};
 
@@ -182,6 +190,14 @@ TEST_F(native_type_handle_negation_unittest, TestOnArrayType)
     corevm::types::native_type_negation_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
 }
 
+TEST_F(native_type_handle_negation_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_negation_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
 
 class native_type_handle_increment_unittest : public native_type_handle_unary_operator_unittest {};
 
@@ -227,6 +243,14 @@ TEST_F(native_type_handle_increment_unittest, TestOnStringType)
 TEST_F(native_type_handle_increment_unittest, TestOnArrayType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_increment_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_increment_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_increment_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
@@ -282,6 +306,14 @@ TEST_F(native_type_handle_decrement_unittest, TestOnArrayType)
     corevm::types::native_type_decrement_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
 }
 
+TEST_F(native_type_handle_decrement_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_decrement_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
 
 class native_type_handle_logical_not_unittest : public native_type_handle_unary_operator_unittest {};
 
@@ -332,6 +364,14 @@ TEST_F(native_type_handle_logical_not_unittest, TestOnArrayType)
     corevm::types::native_type_logical_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
 }
 
+TEST_F(native_type_handle_logical_not_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_logical_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
 
 class native_type_handle_bitwise_not_unittest : public native_type_handle_unary_operator_unittest {};
 
@@ -377,6 +417,14 @@ TEST_F(native_type_handle_bitwise_not_unittest, TestOnStringType)
 TEST_F(native_type_handle_bitwise_not_unittest, TestOnArrayType)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
+}
+
+TEST_F(native_type_handle_bitwise_not_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_not_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1);
@@ -435,6 +483,15 @@ TEST_F(native_type_handle_addition_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_addition_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_addition_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_addition_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -514,6 +571,15 @@ TEST_F(native_type_handle_subtraction_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_subtraction_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_subtraction_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_subtraction_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -599,6 +665,15 @@ TEST_F(native_type_handle_multiplication_unittest, TestWithArrayTypes)
     corevm::types::native_type_multiplication_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
+TEST_F(native_type_handle_multiplication_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_multiplication_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_multiplication_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -674,6 +749,15 @@ TEST_F(native_type_handle_division_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_division_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_division_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_division_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -759,6 +843,15 @@ TEST_F(native_type_handle_modulus_unittest, TestWithArrayTypes)
     corevm::types::native_type_modulus_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
+TEST_F(native_type_handle_modulus_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_modulus_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_modulus_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -834,6 +927,15 @@ TEST_F(native_type_handle_logical_and_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_logical_and_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -919,6 +1021,15 @@ TEST_F(native_type_handle_logical_or_unittest, TestWithArrayTypes)
     corevm::types::native_type_logical_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
+TEST_F(native_type_handle_logical_or_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_logical_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_logical_or_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -994,6 +1105,15 @@ TEST_F(native_type_handle_bitwise_and_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_and_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_and_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -1079,6 +1199,15 @@ TEST_F(native_type_handle_bitwise_or_unittest, TestWithArrayTypes)
     corevm::types::native_type_bitwise_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
+TEST_F(native_type_handle_bitwise_or_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_or_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_bitwise_or_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -1154,6 +1283,15 @@ TEST_F(native_type_handle_bitwise_xor_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_xor_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_xor_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_xor_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -1239,6 +1377,15 @@ TEST_F(native_type_handle_bitwise_left_shift_unittest, TestWithArrayTypes)
     corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
+TEST_F(native_type_handle_bitwise_left_shift_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_bitwise_left_shift_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -1314,6 +1461,15 @@ TEST_F(native_type_handle_bitwise_right_shift_unittest, TestWithArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
+TEST_F(native_type_handle_bitwise_right_shift_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
@@ -1407,6 +1563,23 @@ TEST_F(native_type_handle_eq_unittest, TestBetweenArrayTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::array();
   typename corevm::types::native_type_handle h2 = corevm::types::array();
+  typename corevm::types::native_type_handle h3 = h2;
+
+  const bool expected_value = true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
+    h1, h1, expected_value
+  );
+
+  const bool expected_value2 = true;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_eq_visitor>(
+    h2, h3, expected_value2
+  );
+}
+
+TEST_F(native_type_handle_eq_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
   typename corevm::types::native_type_handle h3 = h2;
 
   const bool expected_value = true;
@@ -1515,6 +1688,17 @@ TEST_F(native_type_handle_neq_unittest, TestBetweenArrayTypes)
   );
 }
 
+TEST_F(native_type_handle_neq_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  const bool expected_value = false;
+  apply_binary_visitor_and_check_result<corevm::types::native_type_neq_visitor>(
+    h1, h2, expected_value
+  );
+}
+
 TEST_F(native_type_handle_neq_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -1615,6 +1799,15 @@ TEST_F(native_type_handle_gt_unittest, TestBetweenArrayTypes)
   );
 }
 
+TEST_F(native_type_handle_gt_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_gt_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_gt_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -1713,6 +1906,15 @@ TEST_F(native_type_handle_lt_unittest, TestBetweenArrayTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_lt_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_lt_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_lt_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_lt_unittest, TestBetweenTypesOfDifferentSizes)
@@ -1816,6 +2018,15 @@ TEST_F(native_type_handle_gte_unittest, TestBetweenArrayTypes)
   );
 }
 
+TEST_F(native_type_handle_gte_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_gte_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
+}
+
 TEST_F(native_type_handle_gte_unittest, TestBetweenTypesOfDifferentSizes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
@@ -1914,6 +2125,15 @@ TEST_F(native_type_handle_lte_unittest, TestBetweenArrayTypes)
   apply_binary_visitor_and_check_result<corevm::types::native_type_lte_visitor>(
     h1, h2, expected_value
   );
+}
+
+TEST_F(native_type_handle_lte_unittest, TestBetweenMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_lte_visitor, corevm::types::corevm_native_type_invalid_operator_error>(h1, h2);
 }
 
 TEST_F(native_type_handle_lte_unittest, TestBetweenTypesOfDifferentSizes)
