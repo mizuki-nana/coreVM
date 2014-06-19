@@ -3,13 +3,14 @@
 #include "../test_helper.h"
 #include "../../include/types/errors.h"
 #include "../../include/types/native_array.h"
+#include "../../include/types/types.h"
 
 
 class native_array_unittest : public ::testing::Test {
 protected:
-  const corevm::types::native_array::value_type fixture_element1 = static_cast<corevm::types::native_array::value_type>(1);
-  const corevm::types::native_array::value_type fixture_element2 = static_cast<corevm::types::native_array::value_type>(2);
-  const corevm::types::native_array::value_type fixture_element3 = static_cast<corevm::types::native_array::value_type>(3);
+  const corevm::types::int64::value_type fixture_element1 = static_cast<corevm::types::int64::value_type>(1);
+  const corevm::types::int64::value_type fixture_element2 = static_cast<corevm::types::int64::value_type>(2);
+  const corevm::types::int64::value_type fixture_element3 = static_cast<corevm::types::int64::value_type>(3);
 };
 
 

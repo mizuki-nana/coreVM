@@ -1,6 +1,7 @@
 #ifndef COREVM_NATIVE_STRING_H_
 #define COREVM_NATIVE_STRING_H_
 
+#include <string>
 #include "errors.h"
 
 
@@ -10,18 +11,16 @@ namespace corevm {
 namespace types {
 
 
-class native_string : public std::string {
-public:
-  native_string(): std::string() {}
-  native_string(const char* s): std::string(s) {}
-  native_string(const char* s, size_t n) : std::string(s, n) {}
-  native_string(size_t n, char c) : std::string(n, c) {}
-  native_string(const std::string& str, size_t pos, size_t len=std::string::npos) : std::string(str, pos, len) {}
-  native_string(const std::string& str) : std::string(str) {}
+using native_string_base = typename std::string;
 
-  template<class InputIterator>
-  native_string(InputIterator first, InputIterator last) : std::string(first, last) {}
-  native_string(std::string&& str) : std::string(str) {}
+
+class native_string : public native_string_base {
+public:
+  explicit native_string(): native_string_base() {}
+  native_string(const char* s): native_string_base(s) {}
+  native_string(const native_string_base& str) : native_string_base(str) {}
+
+  native_string(native_string_base&& str) : native_string_base(str) {}
 
   native_string(int8_t) {
     throw corevm::types::corevm_native_type_conversion_error("int8", "string");

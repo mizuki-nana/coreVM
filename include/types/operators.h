@@ -44,7 +44,6 @@ public:
 };
 
 
-// TODO: not sure if it's right to convert operand types to int64_t here...
 class decrement : public unary_op {
 public:
   template<typename R, typename T>

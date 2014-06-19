@@ -31,10 +31,7 @@ enum native_types_enum {
 };
 
 
-class native_type_wrapper {
-public:
-  // virtual size_t size() const noexcept=0;
-};
+class native_type_wrapper {};
 
 
 class int8 : public native_type_wrapper {
@@ -44,13 +41,6 @@ public:
   int8() : value(0) {}
   int8(value_type value) : value(value) {}
 
-  operator native_string() const {
-    throw 1;
-  }
-
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::INT8;
   value_type value;
 };
 
@@ -62,9 +52,6 @@ public:
   uint8() : value(0) {}
   uint8(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::UINT8;
   value_type value;
 };
 
@@ -76,9 +63,6 @@ public:
   int16() : value(0) {}
   int16(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::INT16;
   value_type value;
 };
 
@@ -90,9 +74,6 @@ public:
   uint16() : value(0) {}
   uint16(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::UINT16;
   value_type value;
 };
 
@@ -104,9 +85,6 @@ public:
   int32() : value(0) {}
   int32(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::INT32;
   value_type value;
 };
 
@@ -118,9 +96,6 @@ public:
   uint32() : value(0) {}
   uint32(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::UINT32;
   value_type value;
 };
 
@@ -132,9 +107,6 @@ public:
   int64() : value(0) {}
   int64(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::INT64;
   value_type value;
 };
 
@@ -146,9 +118,6 @@ public:
   uint64() : value(0) {}
   uint64(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::UINT64;
   value_type value;
 };
 
@@ -160,9 +129,6 @@ public:
   boolean() : value(true) {}
   boolean(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::BOOLEAN;
   value_type value;
 };
 
@@ -174,9 +140,6 @@ public:
   decimal() : value(static_cast<value_type>(0.0)) {}
   decimal(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::DECIMAL;
   value_type value;
 };
 
@@ -188,51 +151,39 @@ public:
   decimal2() : value(static_cast<value_type>(0.0)) {}
   decimal2(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::DECIMAL2;
   value_type value;
 };
 
 
 class string : public native_type_wrapper {
 public:
-  typedef native_string value_type;
+  typedef corevm::types::native_string value_type;
 
   string() {}
   string(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::STRING;
   value_type value;
 };
 
 
 class array : public native_type_wrapper {
 public:
-  typedef native_array value_type;
+  typedef corevm::types::native_array value_type;
 
   array() {}
   array(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::ARRAY;
   value_type value;
 };
 
 
 class map : public native_type_wrapper {
 public:
-  typedef native_map value_type;
+  typedef corevm::types::native_map value_type;
 
   map() {}
   map(value_type value) : value(value) {}
 
-  // virtual size_t size() const noexcept { return sizeof(value_type); }
-
-  // const native_types_enum type = native_types_enum::MAP;
   value_type value;
 };
 

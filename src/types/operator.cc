@@ -1,7 +1,7 @@
 #include "../../include/types/operators.h"
 
 
-/* decrement operator */
+/***************************** decrement operator *****************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -21,7 +21,7 @@ corevm::types::decrement::operator()<corevm::types::map>(const corevm::types::ma
   return static_cast<typename corevm::types::map::value_type>(--handle.value);
 }
 
-/* bitwise NOT operator */
+/***************************** bitwise NOT operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -41,7 +41,7 @@ corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::
   return static_cast<typename corevm::types::map::value_type>(~handle.value);
 }
 
-/* addition operator */
+/******************************* addition operator ****************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -51,7 +51,7 @@ corevm::types::addition::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value + rhs.value);
 }
 
-/* subtraction operator */
+/************************** subtraction operator ******************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -61,7 +61,7 @@ corevm::types::subtraction::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value - rhs.value);
 }
 
-/* multiplication operator */
+/************************** multiplication operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -71,7 +71,7 @@ corevm::types::multiplication::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value * rhs.value);
 }
 
-/* division operator */
+/***************************** division operator ******************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -81,7 +81,7 @@ corevm::types::division::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value / rhs.value);
 }
 
-/* modulus operator */
+/***************************** modulus operator *******************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -107,7 +107,7 @@ corevm::types::modulus::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value % rhs.value);
 }
 
-/* logical AND operator */
+/***************************** logical AND operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -117,7 +117,7 @@ corevm::types::logical_and::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value && rhs.value);
 }
 
-/* logical OR operator */
+/****************************** logical OR operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -127,7 +127,7 @@ corevm::types::logical_or::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value || rhs.value);
 }
 
-/* bitwise AND operator */
+/***************************** bitwise AND operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -153,7 +153,7 @@ corevm::types::bitwise_and::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value & rhs.value);
 }
 
-/* bitwise OR operator */
+/****************************** bitwise OR operator ***************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -179,8 +179,7 @@ corevm::types::bitwise_or::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value | rhs.value);
 }
 
-
-/* bitwise XOR operator */
+/**************************** bitwise XOR operator ****************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -206,7 +205,7 @@ corevm::types::bitwise_xor::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value ^ rhs.value);
 }
 
-/* bitwise left shift operator */
+/************************* bitwise left shift operator ************************/
 
 template<>
 typename corevm::types::string::value_type
@@ -232,7 +231,7 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value << rhs.value);
 }
 
-/* bitwise right shift operator */
+/*********************** bitwise right shift operator *************************/
 
 template<>
 typename corevm::types::string::value_type

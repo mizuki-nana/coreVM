@@ -11,43 +11,20 @@ namespace corevm {
 namespace types {
 
 
-typedef __int128_t element_type;
+typedef __uint128_t element_type;
 
 
-using std_vector_type = typename std::vector<element_type>;
+using native_array_base = typename std::vector<element_type>;
 
 
-// #define DEFAULT_INITIAL_ARRAY_SIZE 8
-
-
-class native_array : public std_vector_type {
+class native_array : public native_array_base {
 public:
-  explicit native_array(const allocator_type& alloc = allocator_type()) : std_vector_type(alloc) {}
+  explicit native_array() : native_array_base() {}
 
-  /*
-   * Cannot have this constructor because we need the implicit conversion to integer
-   * types to make native_type_handle work:
-   * explicit native_array(size_type n) : std_vector_type(n) {}
-   */
+  native_array(const native_array_base& x) : native_array_base(x) {}
+  native_array(native_array_base&& x) : native_array_base(x) {}
 
-  explicit native_array(
-    size_type n, const value_type& val, const allocator_type& alloc = allocator_type()):
-    std_vector_type(n, val, alloc) {}
-
-  template <class InputIterator>
-  native_array(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):
-    std_vector_type(first, last, alloc) {}
-
-  native_array(const std_vector_type& x) : std_vector_type(x) {}
-  native_array(std_vector_type&& x) : std_vector_type(x) {}
-
-// TODO: resolve OS X macro
-#ifdef __APPLE__
-  native_array(const std_vector_type& x, const allocator_type& alloc) : std_vector_type(x, alloc) {}
-  native_array(std_vector_type&& x, const allocator_type& alloc) : std_vector_type(x, alloc) {}
-#endif
-  native_array(std::initializer_list<value_type> il,
-    const allocator_type& alloc = allocator_type()) : std_vector_type(il, alloc) {}
+  native_array(std::initializer_list<value_type> il) : native_array_base(il) {}
 
   native_array(int8_t) {
     throw corevm::types::corevm_native_type_conversion_error("int8", "array");

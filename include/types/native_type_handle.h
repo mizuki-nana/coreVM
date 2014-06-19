@@ -131,9 +131,9 @@ apply_unary_visitor(corevm::types::native_type_handle& handle)
 template<class operator_visitor>
 corevm::types::native_type_handle
 apply_binary_visitor(
-  corevm::types::native_type_handle& h1, corevm::types::native_type_handle& h2)
+  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs)
 {
-  return boost::apply_visitor(operator_visitor(), h1, h2);
+  return boost::apply_visitor(operator_visitor(), lhs, rhs);
 }
 
 
