@@ -1,12 +1,7 @@
-#include <sneaker/testing/_unittest.h>
-#include "../test_helper.h"
-#include "../../include/types/interfaces.h"
+#include "native_type_interfaces_test_base.h"
 
 
-class native_type_interfaces_test : public ::testing::Test {};
-
-
-class native_type_unary_operator_interfaces_test : public native_type_interfaces_test {
+class native_type_unary_operator_interfaces_test : public native_type_interfaces_test_base {
 public:
   template<typename T, typename F>
   void apply_unary_operator_and_assert_result(corevm::types::native_type_handle& operand, F func, T expected_value)
@@ -68,7 +63,7 @@ TEST_F(native_type_unary_operator_interfaces_test, TestInvalidOperator)
 }
 
 
-class native_type_binary_operator_interfaces_test : public native_type_interfaces_test {
+class native_type_binary_operator_interfaces_test : public native_type_interfaces_test_base {
 public:
   template<typename T, typename F>
   void apply_binary_operator_and_assert_result(

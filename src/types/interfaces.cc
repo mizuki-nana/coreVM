@@ -165,3 +165,188 @@ void corevm::types::interface_apply_gte_operator(
 {
   __interface_apply_binary_operator<corevm::types::native_type_gte_visitor>(lhs, rhs, result);
 }
+
+/**************************** STRING OPERATIONS *******************************/
+
+void corevm::types::interface_string_get_size(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::int32 size = string_value.size();
+  result = size;
+}
+
+void corevm::types::interface_string_clear(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  string_value.clear();
+  operand = string_value;
+  result = string_value;
+}
+
+void corevm::types::interface_string_at(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& index, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  int32_t index_value = corevm::types::get_value_from_handle<int32_t>(index);
+
+  // TODO: handle std::out_of_range here.
+  char char_value = string_value.at(index_value);
+  corevm::types::uint32 result_value = char_value;
+  result = result_value;
+}
+
+void corevm::types::interface_string_append(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  string_value.append(other_string_value);
+  result = string_value;
+}
+
+void corevm::types::interface_string_pushback(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& c, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  char char_value = corevm::types::get_value_from_handle<char>(c);
+
+  string_value.push_back(char_value);
+  result = string_value;
+}
+
+void corevm::types::interface_string_insert_str(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  // TODO: handle errors here...
+  corevm::types::native_string result_value = string_value.insert(pos_value, other_string_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_insert_char(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& c, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+  char char_value = corevm::types::get_value_from_handle<char>(c);
+
+  // TODO: handle errors here...
+  corevm::types::native_string result_value = string_value.insert(pos_value, 1, char_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_erase(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+
+  // TODO: handle errors here...
+  corevm::types::native_string result_value = string_value.erase(pos_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_erase2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+  size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
+
+  // TODO: handle errors here...
+  corevm::types::native_string result_value = string_value.erase(pos_value, len_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_replace_str(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len,
+  corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+  size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
+  corevm::types::native_string str_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  // TODO: handle errors here...
+  corevm::types::native_string result_value = string_value.replace(pos_value, len_value, str_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_swap(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  string_value.swap(other_string_value);
+  result = string_value;
+}
+
+void corevm::types::interface_string_substr(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+
+  corevm::types::native_string result_value = string_value.substr(pos_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_substr2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+  size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
+
+  corevm::types::native_string result_value = string_value.substr(pos_value, len_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_find(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  corevm::types::uint32 result_value = string_value.find(other_string_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_find2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+
+  corevm::types::uint32 result_value = string_value.find(other_string_value, pos_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_rfind(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+
+  corevm::types::uint32 result_value = string_value.rfind(other_string_value);
+  result = result_value;
+}
+
+void corevm::types::interface_string_rfind2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
+  size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
+
+  corevm::types::uint32 result_value = string_value.rfind(other_string_value, pos_value);
+  result = result_value;
+}

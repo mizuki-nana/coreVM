@@ -1,5 +1,6 @@
 CXX=c++
 CXXFLAGS=-Wall -std=c++11
+EXTRA_CXXFLAGS=-Wno-deprecated
 AR=ar
 ARFLAGS=rvs
 
@@ -32,7 +33,7 @@ gc:
 
 .PHONY: types
 types:
-	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CXXFLAGS) -c $$f); done
+	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(EXTRA_CXXFLAGS) $(CXXFLAGS) -c $$f); done
 
 .PHONY: all
 all: memory dyobj gc types
