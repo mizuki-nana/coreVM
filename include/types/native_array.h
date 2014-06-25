@@ -11,7 +11,7 @@ namespace corevm {
 namespace types {
 
 
-typedef __uint128_t element_type;
+typedef uint64_t element_type;
 
 
 using native_array_base = typename std::vector<element_type>;

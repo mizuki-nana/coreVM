@@ -143,6 +143,36 @@ void interface_string_rfind2(
   corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
 
 
+/**************************** ARRAY OPERATIONS *******************************/
+
+void interface_array_size(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_array_empty(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_array_at(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& index, corevm::types::native_type_handle& result);
+
+void interface_array_front(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_array_back(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_array_append(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result);
+
+void interface_array_pop(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_array_swap(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result);
+
+void interface_array_clear(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+
 } /* end namespace types */
 
 

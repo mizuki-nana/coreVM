@@ -350,3 +350,85 @@ void corevm::types::interface_string_rfind2(
   corevm::types::uint32 result_value = string_value.rfind(other_string_value, pos_value);
   result = result_value;
 }
+
+
+/**************************** ARRAY OPERATIONS *******************************/
+
+void corevm::types::interface_array_size(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::int32 size = array_value.size();
+  result = size;
+}
+
+void corevm::types::interface_array_empty(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::boolean empty = array_value.empty();
+  result = empty;
+}
+
+void corevm::types::interface_array_at(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& index, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  size_t index_value = corevm::types::get_value_from_handle<size_t>(index);
+
+  // TODO: handle error here...
+  corevm::types::uint64 result_value = array_value.at(index_value);
+  result = result_value;
+}
+
+void corevm::types::interface_array_front(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::uint64 result_value = array_value.front();
+  result = result_value;
+}
+
+void corevm::types::interface_array_back(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::uint64 result_value = array_value.back();
+  result = result_value;
+}
+
+void corevm::types::interface_array_append(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::native_array::value_type data_value = corevm::types::get_value_from_handle<corevm::types::native_array::value_type>(data);
+
+  array_value.push_back(data_value);
+  result = array_value;
+}
+
+void corevm::types::interface_array_pop(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  array_value.pop_back();
+  result = array_value;
+}
+
+void corevm::types::interface_array_swap(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  corevm::types::native_array other_array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(other_operand);
+
+  array_value.swap(other_array_value);
+  result = array_value;
+}
+
+void corevm::types::interface_array_clear(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+  array_value.clear();
+  result = array_value;
+}
