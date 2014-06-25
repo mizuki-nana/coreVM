@@ -11,15 +11,11 @@ namespace corevm {
 namespace types {
 
 
-typedef __uint128_t native_map_key_type;
-typedef __uint128_t native_map_mapped_type;
+typedef uint64_t native_map_key_type;
+typedef uint64_t native_map_mapped_type;
 
 
-using native_map_base = typename std::unordered_map<
-  native_map_key_type,
-  native_map_mapped_type,
-  native_map_key_type(*)(native_map_key_type)
->;
+using native_map_base = typename std::unordered_map<native_map_key_type, native_map_mapped_type>;
 
 #ifndef DEFAULT_NATIVE_MAP_INITIAL_CAPACITY
   #define DEFAULT_NATIVE_MAP_INITIAL_CAPACITY 10
@@ -27,12 +23,7 @@ using native_map_base = typename std::unordered_map<
 
 class native_map : public native_map_base {
 public:
-  explicit native_map() : native_map_base(
-    DEFAULT_NATIVE_MAP_INITIAL_CAPACITY,
-    [](native_map_key_type key) -> native_map_key_type {
-      return key;
-    }
-  ) {}
+  explicit native_map() : native_map_base(DEFAULT_NATIVE_MAP_INITIAL_CAPACITY) {}
 
   native_map(const native_map_base& x) : native_map_base(x) {}
   native_map(native_map_base&& x) : native_map_base(x) {}

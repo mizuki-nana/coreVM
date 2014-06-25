@@ -143,7 +143,7 @@ void interface_string_rfind2(
   corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
 
 
-/**************************** ARRAY OPERATIONS *******************************/
+/***************************** ARRAY OPERATIONS *******************************/
 
 void interface_array_size(
   corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
@@ -171,6 +171,30 @@ void interface_array_swap(
 
 void interface_array_clear(
   corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+
+/****************************** MAP OPERATIONS ********************************/
+
+void interface_map_size(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_map_empty(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_map_at(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result);
+
+void interface_map_put(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result);
+
+void interface_map_erase(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result);
+
+void interface_map_clear(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_map_swap(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result);
 
 
 } /* end namespace types */

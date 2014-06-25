@@ -432,3 +432,72 @@ void corevm::types::interface_array_clear(
   array_value.clear();
   result = array_value;
 }
+
+/****************************** MAP OPERATIONS ********************************/
+
+void corevm::types::interface_map_size(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::uint32 result_value = map_value.size();
+  result = result_value;
+}
+
+void corevm::types::interface_map_empty(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::boolean result_value = map_value.empty();
+  result = result_value;
+}
+
+void corevm::types::interface_map_at(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::native_map::key_type key_value = corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
+
+  // TODO: handle error here...
+  corevm::types::uint64 result_value = map_value.at(key_value);
+  result = result_value;
+}
+
+void corevm::types::interface_map_put(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::native_map::key_type key_value = corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
+  corevm::types::native_map::mapped_type data_value = corevm::types::get_value_from_handle<corevm::types::native_map::mapped_type>(data);
+
+  map_value[key_value] = data_value;
+  result = map_value;
+}
+
+void corevm::types::interface_map_erase(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::native_map::key_type key_value = corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
+
+  // TODO: handle potential errors here...
+  map_value.erase(key_value);
+  result = map_value;
+}
+
+void corevm::types::interface_map_clear(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  map_value.clear();
+  result = map_value;
+}
+
+void corevm::types::interface_map_swap(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result)
+{
+  corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+  corevm::types::native_map other_map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(other_operand);
+
+  map_value.swap(other_map_value);
+  result = map_value;
+}
