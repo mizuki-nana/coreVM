@@ -105,6 +105,22 @@ public:
   native_array& operator>>(const native_array&) const {
     throw corevm::types::corevm_native_type_invalid_operator_error(">>", "array");
   }
+
+  reference at(size_type n) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return native_array_base::at(n);
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("Array index out of range");
+    }
+  }
+
+  const_reference at(size_type n) const throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return native_array_base::at(n);
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("Array index out of range");
+    }
+  }
 };
 
 

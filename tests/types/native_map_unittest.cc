@@ -118,20 +118,23 @@ TEST_F(native_map_unittest, TestEqualityBetweenIdenticalInstances)
 class native_map_functionality_unittest : public native_map_unittest {};
 
 
-TEST_F(native_map_functionality_unittest, TestPutAndGet)
+TEST_F(native_map_functionality_unittest, TestAtSuccessful)
+{
+  corevm::types::native_map map;
+  map[1] = 1;
+
+  ASSERT_EQ(1, map.at(1));
+}
+
+TEST_F(native_map_functionality_unittest, TestAtFailure)
 {
   corevm::types::native_map map;
 
-  map[1] = 1;
-  map[2] = 2;
-  map[3] = 3;
-
-  ASSERT_EQ(3, map.size());
-
-  ASSERT_EQ(1, map.at(1));
-  ASSERT_EQ(2, map.at(2));
-  ASSERT_EQ(3, map.at(3));
-}
+  _ASSERT_THROW(
+    { map.at(1); },
+    corevm::types::corevm_native_type_out_of_range_error
+  );
+} 
 
 
 class native_map_operator_unittest : public native_map_unittest {};

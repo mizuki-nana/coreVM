@@ -69,6 +69,13 @@ public:
 };
 
 
+class corevm_native_type_out_of_range_error : public corevm_native_type_error {
+public:
+  explicit corevm_native_type_out_of_range_error(const std::string& what_arg): corevm::types::corevm_native_type_error(what_arg) {}
+  explicit corevm_native_type_out_of_range_error(const char* what_arg): corevm::types::corevm_native_type_error(what_arg) {}
+};
+
+
 } /* end namespace types */
 
 

@@ -128,6 +128,26 @@ TEST_F(native_array_functionality_unittest, TestPushBack)
   );
 }
 
+TEST_F(native_array_functionality_unittest, TestAtSuccessful)
+{
+  const corevm::types::native_array array = {1, 2, 3};
+
+  corevm::types::native_array::value_type expected_result = 3;
+  corevm::types::native_array::value_type actual_result = array.at(2);
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(native_array_functionality_unittest, TestAtFailure)
+{
+  const corevm::types::native_array array = {1, 2, 3};
+
+  _ASSERT_THROW(
+    { array.at(100); },
+    corevm::types::corevm_type_native_type_out_of_range_error
+  );
+}
+
 
 class native_array_operator_unittest : public native_array_unittest {};
 

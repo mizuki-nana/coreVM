@@ -101,6 +101,62 @@ public:
   native_string& operator>>(const native_string&) const {
     throw corevm::types::corevm_native_type_invalid_operator_error(">>", "string");
   }
+
+  reference at(size_type n) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return native_string_base::at(n);
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  const_reference at(size_type n) const throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return native_string_base::at(n);
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  corevm::types::native_string& insert(size_type pos, const corevm::types::native_string& str) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return static_cast<corevm::types::native_string&>(native_string_base::insert(pos, str));
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  corevm::types::native_string& insert(size_type pos, size_type n, value_type c) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return static_cast<corevm::types::native_string&>(native_string_base::insert(pos, n, c));
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  corevm::types::native_string& erase(size_type pos) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return static_cast<corevm::types::native_string&>(native_string_base::erase(pos));
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  corevm::types::native_string& erase(size_type pos, size_type len) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return static_cast<corevm::types::native_string&>(native_string_base::erase(pos, len));
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
+
+  corevm::types::native_string& replace(size_type pos, size_type len, const corevm::types::native_string& str) throw(corevm::types::corevm_native_type_out_of_range_error) {
+    try {
+      return static_cast<corevm::types::native_string&>(native_string_base::replace(pos, len, str));
+    } catch (...) { // TODO: should only catch std::out_of_range here...
+      throw corevm::types::corevm_native_type_out_of_range_error("String index out of range");
+    }
+  }
 };
 
 

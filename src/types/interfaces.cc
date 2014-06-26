@@ -191,7 +191,6 @@ void corevm::types::interface_string_at(
   corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
   int32_t index_value = corevm::types::get_value_from_handle<int32_t>(index);
 
-  // TODO: handle std::out_of_range here.
   char char_value = string_value.at(index_value);
   corevm::types::uint32 result_value = char_value;
   result = result_value;
@@ -224,7 +223,6 @@ void corevm::types::interface_string_insert_str(
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
   corevm::types::native_string other_string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
 
-  // TODO: handle errors here...
   corevm::types::native_string result_value = string_value.insert(pos_value, other_string_value);
   result = result_value;
 }
@@ -236,7 +234,6 @@ void corevm::types::interface_string_insert_char(
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
   char char_value = corevm::types::get_value_from_handle<char>(c);
 
-  // TODO: handle errors here...
   corevm::types::native_string result_value = string_value.insert(pos_value, 1, char_value);
   result = result_value;
 }
@@ -247,7 +244,6 @@ void corevm::types::interface_string_erase(
   corevm::types::native_string string_value = corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
 
-  // TODO: handle errors here...
   corevm::types::native_string result_value = string_value.erase(pos_value);
   result = result_value;
 }
@@ -259,7 +255,6 @@ void corevm::types::interface_string_erase2(
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
   size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
 
-  // TODO: handle errors here...
   corevm::types::native_string result_value = string_value.erase(pos_value, len_value);
   result = result_value;
 }
@@ -273,7 +268,6 @@ void corevm::types::interface_string_replace_str(
   size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
   corevm::types::native_string str_value = corevm::types::get_value_from_handle<corevm::types::native_string>(str);
 
-  // TODO: handle errors here...
   corevm::types::native_string result_value = string_value.replace(pos_value, len_value, str_value);
   result = result_value;
 }
@@ -376,7 +370,6 @@ void corevm::types::interface_array_at(
   corevm::types::native_array array_value = corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
   size_t index_value = corevm::types::get_value_from_handle<size_t>(index);
 
-  // TODO: handle error here...
   corevm::types::uint64 result_value = array_value.at(index_value);
   result = result_value;
 }
@@ -457,7 +450,6 @@ void corevm::types::interface_map_at(
   corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
   corevm::types::native_map::key_type key_value = corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
 
-  // TODO: handle error here...
   corevm::types::uint64 result_value = map_value.at(key_value);
   result = result_value;
 }
@@ -479,7 +471,6 @@ void corevm::types::interface_map_erase(
   corevm::types::native_map map_value = corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
   corevm::types::native_map::key_type key_value = corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
 
-  // TODO: handle potential errors here...
   map_value.erase(key_value);
   result = map_value;
 }

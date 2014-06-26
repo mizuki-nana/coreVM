@@ -419,3 +419,91 @@ TEST_F(native_string_binary_operator_unittest, TestLTEOperator)
     }
   );
 }
+
+
+class native_string_functionality_unittest : public native_string_unittest {};
+
+
+TEST_F(native_string_functionality_unittest, TestAtSuccessful)
+{
+  const corevm::types::native_string str("Hello world!");
+
+  char expected_result = 'w';
+  char actual_result = str.at(6);
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(native_string_functionality_unittest, TestAtFailure)
+{
+  const corevm::types::native_string str("Hello world!");
+
+  _ASSERT_THROW(
+    { str.at(100); },
+    corevm::types::corevm_type_native_type_out_of_range_error
+  );
+}
+
+TEST_F(native_string_functionality_unittest, TestInsertSuccessful)
+{
+  corevm::types::native_string str1("Hello ");
+  const corevm::types::native_string str2("world!");
+
+  corevm::types::native_string& actual_result = str1.insert(6, str2);
+  const corevm::types::native_string expected_result("Hello world!");
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(native_string_functionality_unittest, TestInsertFailure)
+{
+  corevm::types::native_string str1("Hello ");
+  const corevm::types::native_string str2("world!");
+
+  _ASSERT_THROW(
+    { str1.insert(100, str2); },
+    corevm::types::corevm_type_native_type_out_of_range_error
+  );
+}
+
+TEST_F(native_string_functionality_unittest, TestEraseSuccessful)
+{
+  corevm::types::native_string str("Hello world");
+
+  corevm::types::native_string expected_result = "Hello";
+  corevm::types::native_string actual_result = str.erase(5);
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(native_string_functionality_unittest, TestEraseFailure)
+{
+  corevm::types::native_string str("Hello world");
+
+  _ASSERT_THROW(
+    { str.erase(100); },
+    corevm::types::corevm_type_native_type_out_of_range_error
+  );
+}
+
+TEST_F(native_string_functionality_unittest, TestReplaceSuccessful)
+{
+  corevm::types::native_string str1("this is a test string");
+  corevm::types::native_string str2("n example");
+
+  corevm::types::native_string expected_result = "this is an example string";
+  corevm::types::native_string actual_result = str1.replace(9, 5, str2);
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(native_string_functionality_unittest, TestReplaceFailure)
+{
+  corevm::types::native_string str1("Hello world");
+  corevm::types::native_string str2("!!!");
+
+  _ASSERT_THROW(
+    { str1.replace(100, 1, str2); },
+    corevm::types::corevm_type_native_type_out_of_range_error
+  );
+}
