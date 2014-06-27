@@ -9,6 +9,10 @@ SUBDIRS=$(SRC) $(TESTS)
 
 LIBCOREVM=libcorevm.a
 
+### Environment variables ###
+export GTEST_COLOR=true
+
+
 .PHONY: src
 src:
 	@$(MAKE) -C $(SRC) all
