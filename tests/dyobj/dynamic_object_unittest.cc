@@ -11,7 +11,7 @@ class dynamic_object_unit_test : public ::testing::Test {};
 
 TEST_F(dynamic_object_unit_test, TestInitialization)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
 
   ASSERT_EQ(0, obj.flags());
@@ -22,7 +22,7 @@ TEST_F(dynamic_object_unit_test, TestInitialization)
 
 TEST_F(dynamic_object_unit_test, TestGetAndSetFlags)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
 
   ASSERT_EQ(0, obj.flags());
@@ -50,16 +50,16 @@ TEST_F(dynamic_object_unit_test, TestGetAndSetFlags)
 
 TEST_F(dynamic_object_unit_test, TestGetAndSetAttrs)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
 
   corevm::dyobj::attr_key key1 = 123;
   corevm::dyobj::attr_key key2 = 456;
   corevm::dyobj::attr_key key3 = 789;
 
-  corevm::dyobj::dyobj_id obj_id1 = corevm::dyobj::generate_dyobj_id();
-  corevm::dyobj::dyobj_id obj_id2 = corevm::dyobj::generate_dyobj_id();
-  corevm::dyobj::dyobj_id obj_id3 = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id obj_id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id obj_id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id obj_id3 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
   std::map<corevm::dyobj::attr_key, corevm::dyobj::dyobj_id> mock_attrs = {
     {key1, obj_id1},
@@ -122,7 +122,7 @@ TEST_F(dynamic_object_unit_test, TestGetAndSetAttrs)
 
 TEST_F(dynamic_object_unit_test, TestEquality)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
 
   // ASSERT_EQ(obj, obj);
@@ -131,10 +131,10 @@ TEST_F(dynamic_object_unit_test, TestEquality)
 
 TEST_F(dynamic_object_unit_test, TestInequality)
 {
-  corevm::dyobj::dyobj_id id1 = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj1(id1);
 
-  corevm::dyobj::dyobj_id id2 = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj2(id2);
 
   // ASSERT_NE(obj1, obj2);
@@ -144,7 +144,7 @@ TEST_F(dynamic_object_unit_test, TestInequality)
 
 // TEST_F(dynamic_object_unit_test, TestSize)
 // {
-//   corevm::dyobj::dyobj_id id = corevm::dyobj::generate_dyobj_id();
+//   corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 //   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
 
 //   printf("Size of dyobj: %lu\n", sizeof(obj));

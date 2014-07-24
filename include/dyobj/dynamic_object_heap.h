@@ -5,14 +5,10 @@
 #include <stdexcept>
 #include <unordered_map>
 #include <sneaker/allocator/allocator.h>
-#include <sneaker/functional/function.h>
 #include "common.h"
 #include "dynamic_object.h"
 #include "dyobj_heap_allocator.h"
 #include "errors.h"
-
-
-#define DEFAULT_INITIAL_BUCKETS 16
 
 
 namespace corevm {
@@ -31,8 +27,8 @@ public:
   using dyobj_heap_map_type = typename std::unordered_map<
     dynamic_object_id_type,
     dynamic_object_type,
-    sneaker::functional::function<size_t, dynamic_object_id_type>,
-    sneaker::functional::predicate<dynamic_object_id_type, dynamic_object_id_type>,
+    std::hash<dynamic_object_id_type>,
+    std::equal_to<dynamic_object_id_type>,
     corevm::dyobj::dyobj_heap_allocator<
       std::pair<const dynamic_object_id_type, dynamic_object_type>,
       COREVM_DEFAULT_HEAP_SIZE
@@ -74,17 +70,7 @@ private:
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap():
-  _map(
-    dyobj_heap_map_type(
-      DEFAULT_INITIAL_BUCKETS,
-      [](dynamic_object_id_type id) -> size_t {
-        return corevm::dyobj::id_to_hash(id);
-      },
-      [](dynamic_object_id_type id1, dynamic_object_id_type id2) {
-        return id1 == id2;
-      }
-    )
-  )
+  _map()
 {
   // Do nothing here.
 }

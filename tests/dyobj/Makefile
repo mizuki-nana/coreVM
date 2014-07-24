@@ -7,21 +7,18 @@ LIBSNEAKER=/usr/local/lib/libsneaker.a
 
 LIBRARIES=$(LIBGTEST) $(LIBSNEAKER)
 
-SRC=\
-	../../src/memory/*.cc \
-	../../src/dyobj/*.cc
-
 dyobj_heap_alloc_policy_unittest.test: dyobj_heap_alloc_policy_unittest.cc
-	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) dyobj_heap_alloc_policy_unittest.cc -o dyobj_heap_alloc_policy_unittest.test
+	$(CXX) $(CFLAGS) $(LIBRARIES) dyobj_heap_alloc_policy_unittest.cc -o dyobj_heap_alloc_policy_unittest.test
 
 dyobj_heap_allocator_unittest.test: dyobj_heap_allocator_unittest.cc
-	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) dyobj_heap_allocator_unittest.cc -o dyobj_heap_allocator_unittest.test
+	$(CXX) $(CFLAGS) $(LIBRARIES) dyobj_heap_allocator_unittest.cc -o dyobj_heap_allocator_unittest.test
 
 dynamic_object_unittest.test: dynamic_object_unittest.cc
-	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) dynamic_object_unittest.cc -o dynamic_object_unittest.test
+	$(CXX) $(CFLAGS) $(LIBRARIES) dynamic_object_unittest.cc -o dynamic_object_unittest.test
 
 dynamic_object_heap_unittest.test: dynamic_object_heap_unittest.cc
-	$(CXX) $(CFLAGS) $(LIBRARIES) $(SRC) dynamic_object_heap_unittest.cc -o dynamic_object_heap_unittest.test
+	$(CXX) $(CFLAGS) $(LIBRARIES) dynamic_object_heap_unittest.cc -o dynamic_object_heap_unittest.test
+
 
 all:\
 	dyobj_heap_alloc_policy_unittest.test \
