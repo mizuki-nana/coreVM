@@ -14,8 +14,9 @@ MEMORY=./memory/
 DYOBJ=./dyobj/
 GC=./gc/
 TYPES=./types/
+RUNTIME=./runtime/
 
-SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES)
+SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME)
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -44,8 +45,12 @@ gc:
 types:
 	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
+.PHONY: runtime
+runtime:
+	-cd $(RUNTIME) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+
 .PHONY: all
-all: memory dyobj gc types
+all: memory dyobj gc types runtime
 
 .PHONY: clean
 clean:

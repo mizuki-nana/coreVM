@@ -51,6 +51,18 @@ public:
   explicit dynamic_object_heap();
   ~dynamic_object_heap();
 
+  size_type size() const noexcept {
+    return _map.size();
+  }
+
+  size_type max_size() const noexcept {
+    return _map.max_size();
+  }
+
+  iterator erase(const_iterator pos) {
+    return _map.erase(pos);
+  }
+
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
 

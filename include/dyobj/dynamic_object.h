@@ -72,7 +72,7 @@ public:
   void iterate(Function) noexcept;
 
 private:
-  dyobj_id_type& _id;
+  dyobj_id_type _id;
   corevm::dyobj::flag _flags;
   attr_map_type _attrs;
   dynamic_object_manager _manager;
