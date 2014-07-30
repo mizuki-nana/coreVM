@@ -45,6 +45,12 @@ public:
 
   static void tick_handler(void* arg);
 
+  void push_frame(corevm::runtime::frame& frame) {
+    _call_stack.push(frame);
+  }
+
+  corevm::runtime::frame& top_frame();
+
 private:
   bool _should_gc() const;
 

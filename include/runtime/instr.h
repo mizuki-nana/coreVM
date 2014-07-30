@@ -161,6 +161,14 @@ class process;
 class instr_handler {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&) = 0;
+protected:
+  template<typename InterfaceFunc>
+  void _execute_unary_operator_instr(
+    const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
+
+  template<typename InterfaceFunc>
+  void _execute_binary_operator_instr(
+    const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 };
 
 
@@ -199,31 +207,31 @@ class instr_handler_getargs : public instr_handler { virtual void execute(const 
 class instr_handler_getkwargs : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Arithmetic and logic instructions */
-class instr_handler_pos : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_neg : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_inc : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_dec : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_add : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_sub : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mul : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_div : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mod : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_pow : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_bnot : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_band : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_bor : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_bxor : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_bls : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_brs : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_eq : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_neq : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_gt : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_lt : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_gte : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_lte : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_lnot : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_land : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_lor : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_pos : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_neg : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_inc : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_dec : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_add : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_sub : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mul : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_div : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mod : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_pow : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_bnot : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_band : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_bor : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_bxor : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_bls : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_brs : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_eq : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_neq : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_gt : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_lt : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_gte : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_lte : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_lnot : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_land : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_lor : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Native type creation instructions */
 class instr_handler_int8 : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };

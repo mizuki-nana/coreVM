@@ -2,6 +2,7 @@
 #include <boost/format.hpp>
 #include "../../include/runtime/instr.h"
 #include "../../include/runtime/process.h"
+#include "../../include/types/interfaces.h"
 
 
 corevm::runtime::instr_info
@@ -30,6 +31,40 @@ corevm::runtime::instr_handler_meta::instr_to_string(const corevm::runtime::inst
 
 
 /*************************** INSTRUCTION HANDLERS *****************************/
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_unary_operator_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd = frame.pop_eval_stack();
+
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd, result);
+
+  frame.push_eval_stack(result);
+}
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_binary_operator_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle lhs = frame.pop_eval_stack();
+  corevm::types::native_type_handle rhs = frame.pop_eval_stack();
+
+  corevm::types::native_type_handle result;
+
+  interface_func(lhs, rhs, result);
+
+  frame.push_eval_stack(result);
+}
+
 
 void
 corevm::runtime::instr_handler_new::execute(
@@ -231,63 +266,99 @@ void
 corevm::runtime::instr_handler_pos::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_positive_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_neg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_negation_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_inc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_increment_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_dec::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_decrement_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_add::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_addition_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_sub::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_subtraction_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_mul::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_multiplication_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_div::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_division_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_mod::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_modulus_operator
+  );
 }
 
 void
@@ -301,105 +372,165 @@ void
 corevm::runtime::instr_handler_bnot::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_not_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_band::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_and_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_bor::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_or_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_bxor::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_xor_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_bls::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_left_shift_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_brs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_bitwise_right_shift_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_eq::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_eq_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_neq::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_neq_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_gt::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_gt_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_lt::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_lt_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_gte::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_gte_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_lte::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_lte_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_lnot::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_logical_not_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_land::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_logical_and_operator
+  );
 }
 
 void
 corevm::runtime::instr_handler_lor::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_logical_or_operator
+  );
 }
 
 void

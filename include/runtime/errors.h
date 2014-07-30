@@ -19,6 +19,14 @@ public:
 };
 
 
+class frame_not_found_error : public corevm::runtime::runtime_error {
+public:
+  explicit frame_not_found_error():
+    corevm::runtime::runtime_error("Expected frame not found")
+  {}
+};
+
+
 class evaluation_stack_empty_error : public corevm::runtime::runtime_error {
 public:
   explicit evaluation_stack_empty_error():

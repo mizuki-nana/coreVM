@@ -32,6 +32,16 @@ corevm::runtime::process::~process()
 {
 }
 
+corevm::runtime::frame&
+corevm::runtime::process::top_frame()
+{
+  if(_call_stack.empty()) {
+    throw corevm::runtime::frame_not_found_error();
+  }
+
+  return _call_stack.top();
+}
+
 void
 corevm::runtime::process::maybe_gc()
 {
