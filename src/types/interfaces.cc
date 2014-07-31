@@ -166,6 +166,101 @@ void corevm::types::interface_apply_gte_operator(
   __interface_apply_binary_operator<corevm::types::native_type_gte_visitor>(lhs, rhs, result);
 }
 
+/**************************** CONVERSION OPERATIONS ***************************/
+
+template<typename DstType>
+void __interface_apply_conversion(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  typename DstType::value_type original_value = corevm::types::get_value_from_handle<typename DstType::value_type>(operand);
+  operand = DstType(original_value);
+  result = operand;
+}
+
+void corevm::types::interface_to_int8(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::int8>(operand, result);
+}
+
+void corevm::types::interface_to_uint8(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::uint8>(operand, result);
+}
+
+void corevm::types::interface_to_int16(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::int16>(operand, result);
+}
+
+void corevm::types::interface_to_uint16(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::uint16>(operand, result);
+}
+
+void corevm::types::interface_to_int32(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::int32>(operand, result);
+}
+
+void corevm::types::interface_to_uint32(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::uint32>(operand, result);
+}
+
+void corevm::types::interface_to_int64(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::int64>(operand, result);
+}
+
+void corevm::types::interface_to_uint64(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::uint64>(operand, result);
+}
+
+void corevm::types::interface_to_bool(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::boolean>(operand, result);
+}
+
+void corevm::types::interface_to_dec1(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::decimal>(operand, result);
+}
+
+void corevm::types::interface_to_dec2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::decimal2>(operand, result);
+}
+
+void corevm::types::interface_to_str(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::string>(operand, result);
+}
+
+void corevm::types::interface_to_ary(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::array>(operand, result);
+}
+
+void corevm::types::interface_to_map(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result)
+{
+  __interface_apply_conversion<corevm::types::map>(operand, result);
+}
+
 /**************************** STRING OPERATIONS *******************************/
 
 void corevm::types::interface_string_get_size(

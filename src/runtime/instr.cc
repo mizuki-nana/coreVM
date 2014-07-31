@@ -65,6 +65,32 @@ corevm::runtime::instr_handler::_execute_binary_operator_instr(
   frame.push_eval_stack(result);
 }
 
+template<typename NativeType>
+void
+corevm::runtime::instr_handler::_execute_native_type_creation_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = NativeType();
+
+  frame.push_eval_stack(hndl);
+}
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd = frame.pop_eval_stack();
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd, result);
+
+  frame.push_eval_stack(result);
+}
 
 void
 corevm::runtime::instr_handler_new::execute(
@@ -537,196 +563,294 @@ void
 corevm::runtime::instr_handler_int8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::int8>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_uint8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::uint8>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_int16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::int16>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_uint16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::uint16>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_int32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::int32>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_uint32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::uint32>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_int64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::int64>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_uint64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::uint64>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_bool::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::boolean>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_dec1::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::decimal>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_dec2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::decimal2>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_str::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::string>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_ary::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::array>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_map::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_creation_instr<corevm::types::map>(
+    instr,
+    process
+  );
 }
 
 void
 corevm::runtime::instr_handler_2int8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_int8
+  );
 }
 
 void
 corevm::runtime::instr_handler_2uint8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_uint8
+  );
 }
 
 void
 corevm::runtime::instr_handler_2int16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_int16
+  );
 }
 
 void
 corevm::runtime::instr_handler_2uint16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_uint16
+  );
 }
 
 void
 corevm::runtime::instr_handler_2int32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_int32
+  );
 }
 
 void
 corevm::runtime::instr_handler_2uint32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_uint32
+  );
 }
 
 void
 corevm::runtime::instr_handler_2int64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_int64
+  );
 }
 
 void
 corevm::runtime::instr_handler_2uint64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_uint64
+  );
 }
 
 void
 corevm::runtime::instr_handler_2bool::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_bool
+  );
 }
 
 void
 corevm::runtime::instr_handler_2dec1::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_dec1
+  );
 }
 
 void
 corevm::runtime::instr_handler_2dec2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_dec2
+  );
 }
 
 void
 corevm::runtime::instr_handler_2str::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_str
+  );
 }
 
 void
 corevm::runtime::instr_handler_2ary::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_ary
+  );
 }
 
 void
 corevm::runtime::instr_handler_2map::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
+    instr,
+    process,
+    corevm::types::interface_to_map
+  );
 }
 
 void

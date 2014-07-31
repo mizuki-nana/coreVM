@@ -87,6 +87,49 @@ void interface_apply_lte_operator(
 void interface_apply_gte_operator(
   corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
 
+/**************************** CONVERSION OPERATIONS ***************************/
+
+void interface_to_int8(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_uint8(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_int16(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_uint16(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_int32(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_uint32(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_int64(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_uint64(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_bool(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_dec1(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_dec2(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_str(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_ary(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+
+void interface_to_map(
+  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
 
 /**************************** STRING OPERATIONS *******************************/
 
