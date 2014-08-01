@@ -405,3 +405,293 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
     corevm::types::corevm_native_type_conversion_error
   );
 }
+
+
+class process_native_type_complex_instrs_test : public process_native_type_instrs_test {
+public:
+  virtual void SetUp() {
+    // Do nothing here.
+  }
+
+  template<typename InstrHandlerCls, typename IntrinsicType>
+  void execute_instr_and_assert_result(IntrinsicType expected_result) {
+    InstrHandlerCls instr_handler;
+
+    corevm::runtime::instr instr;
+
+    instr_handler.execute(instr, _process);
+
+    corevm::runtime::frame& frame = _process.top_frame();
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
+      result_handle
+    );
+
+    ASSERT_EQ(expected_result, actual_result);
+  }
+};
+
+
+class process_native_type_complex_instrs_for_str_type_test : public process_native_type_complex_instrs_test {};
+
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRLEN)
+{
+  corevm::types::native_string hello_world = "Hello world!";
+  corevm::types::native_string::size_type expected_result = hello_world.size();
+  corevm::types::native_type_handle oprd = corevm::types::string(hello_world);
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strlen, corevm::types::native_string::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRCLR)
+{
+  corevm::types::native_string hello_world = "Hello world!";
+  corevm::types::native_string expected_result = "";
+  corevm::types::native_type_handle oprd = hello_world;
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strclr, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRAPD)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string exclamation = "!";
+  corevm::types::native_string expected_result = "Hello world!";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = exclamation;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strapd, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRPSH)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::int8 exclamation = static_cast<corevm::types::int8::value_type>('!');
+  corevm::types::native_string expected_result = "Hello world!";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = exclamation;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strpsh, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST)
+{
+  corevm::types::native_string hello_world = "Helloworld";
+  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::native_string space = " ";
+  corevm::types::native_string expected_result = "Hello world";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_type_handle oprd3 = space;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST2)
+{
+  corevm::types::native_string hello_world = "Helloworld";
+  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::int8 space = static_cast<corevm::types::int8::value_type>(' ');
+  corevm::types::native_string expected_result = "Hello world";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_type_handle oprd3 = space;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist2, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::native_string expected_result = "Hello";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS2)
+{
+  corevm::types::native_string hello_world = "Hello  world";
+  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::int8 len = static_cast<corevm::types::int8::value_type>(1);
+  corevm::types::native_string expected_result = "Hello world";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_type_handle oprd3 = len;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers2, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRRPLC)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::int8 len = static_cast<corevm::types::int8::value_type>(6);
+  corevm::types::native_string exclamation = "!!!!!!";
+  corevm::types::native_string expected_result = "Hello!!!!!!";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_type_handle oprd3 = len;
+  corevm::types::native_type_handle oprd4 = exclamation;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _frame.push_eval_stack(oprd4);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrplc, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSWP)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string okla = "OKLA!";
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = okla;
+  corevm::types::native_string expected_result = okla;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strswp, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::int8 pos = 6;
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_string expected_result = "world";
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB2)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::int8 pos = 6;
+  corevm::types::int8 len = 2;
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = pos;
+  corevm::types::native_type_handle oprd3 = len;
+  corevm::types::native_string expected_result = "wo";
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub2, corevm::types::native_string>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string word = "world";
+  corevm::types::native_string::size_type expected_result = 6;
+
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = word;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd, corevm::types::native_string::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND2)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string word = "world";
+  corevm::types::uint32 pos = 6;
+  corevm::types::native_string::size_type expected_result = 6;
+
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = word;
+  corevm::types::native_type_handle oprd3 = pos;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd2, corevm::types::native_string::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string word = "world";
+  corevm::types::native_string::size_type expected_result = 6;
+
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = word;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd, corevm::types::native_string::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND2)
+{
+  corevm::types::native_string hello_world = "Hello world";
+  corevm::types::native_string word = "world";
+  corevm::types::uint32 pos = 6;
+  corevm::types::native_string::size_type expected_result = 6;
+
+  corevm::types::native_type_handle oprd1 = hello_world;
+  corevm::types::native_type_handle oprd2 = word;
+  corevm::types::native_type_handle oprd3 = pos;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd2, corevm::types::native_string::size_type>(expected_result);
+}

@@ -92,6 +92,72 @@ corevm::runtime::instr_handler::_execute_native_type_conversion_instr(
   frame.push_eval_stack(result);
 }
 
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd = frame.pop_eval_stack();
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd, result);
+
+  frame.push_eval_stack(result);
+}
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd2, oprd1, result);
+
+  frame.push_eval_stack(result);
+}
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd3 = frame.pop_eval_stack();
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd3, oprd2, oprd1, result);
+
+  frame.push_eval_stack(result);
+}
+
+template<typename InterfaceFunc>
+void
+corevm::runtime::instr_handler::_execute_native_type_complex_instr_4(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd3 = frame.pop_eval_stack();
+  corevm::types::native_type_handle oprd4 = frame.pop_eval_stack();
+  corevm::types::native_type_handle result;
+
+  interface_func(oprd4, oprd3, oprd2, oprd1, result);
+
+  frame.push_eval_stack(result);
+}
+
 void
 corevm::runtime::instr_handler_new::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
@@ -857,112 +923,176 @@ void
 corevm::runtime::instr_handler_strlen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_string_get_size
+  );
 }
 
 void
 corevm::runtime::instr_handler_strclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_string_clear
+  );
 }
 
 void
 corevm::runtime::instr_handler_strapd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_append
+  );
 }
 
 void
 corevm::runtime::instr_handler_strpsh::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_pushback
+  );
 }
 
 void
 corevm::runtime::instr_handler_strist::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_insert_str
+  );
 }
 
 void
 corevm::runtime::instr_handler_strist2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_insert_char
+  );
 }
 
 void
 corevm::runtime::instr_handler_strers::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_erase
+  );
 }
 
 void
 corevm::runtime::instr_handler_strers2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_erase2
+  );
 }
 
 void
 corevm::runtime::instr_handler_strrplc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_4(
+    instr,
+    process,
+    corevm::types::interface_string_replace_str
+  );
 }
 
 void
 corevm::runtime::instr_handler_strswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_swap
+  );
 }
 
 void
 corevm::runtime::instr_handler_strsub::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_substr
+  );
 }
 
 void
 corevm::runtime::instr_handler_strsub2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_substr2
+  );
 }
 
 void
 corevm::runtime::instr_handler_strfnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_find
+  );
 }
 
 void
 corevm::runtime::instr_handler_strfnd2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_find2
+  );
 }
 
 void
 corevm::runtime::instr_handler_strrfnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_string_rfind
+  );
 }
 
 void
 corevm::runtime::instr_handler_strrfnd2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_string_rfind2
+  );
 }
 
 void
