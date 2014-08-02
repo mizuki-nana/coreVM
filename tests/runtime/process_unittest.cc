@@ -695,3 +695,128 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND2)
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd2, corevm::types::native_string::size_type>(expected_result);
 }
+
+
+class process_native_type_complex_instrs_for_array_type_test : public process_native_type_complex_instrs_test {};
+
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYLEN)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array::size_type expected_result = array.size();
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arylen, corevm::types::native_array::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYEMP)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  bool expected_result = false;
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryemp, bool>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAT)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::uint32 index = 1;
+  corevm::types::native_array::value_type expected_result = 2;
+
+  corevm::types::native_type_handle oprd1 = array;
+  corevm::types::native_type_handle oprd2 = index;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryat, corevm::types::native_array::value_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYFRT)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array::value_type expected_result = 1;
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryfrt, corevm::types::native_array::value_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYBAK)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array::value_type expected_result = 3;
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arybak, corevm::types::native_array::value_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAPND)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::uint64 data = 4;
+  corevm::types::native_array expected_result = {1, 2, 3, 4};
+
+  corevm::types::native_type_handle oprd1 = array;
+  corevm::types::native_type_handle oprd2 = data;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryapnd, corevm::types::native_array>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYPOP)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array expected_result = {1, 2};
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arypop, corevm::types::native_array>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYSWP)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array other = {4, 5, 6};
+  corevm::types::native_array expected_result = other;
+
+  corevm::types::native_type_handle oprd1 = array;
+  corevm::types::native_type_handle oprd2 = other;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryswp, corevm::types::native_array>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYCLR)
+{
+  corevm::types::native_array array = {1, 2, 3};
+  corevm::types::native_array expected_result;
+
+  corevm::types::native_type_handle oprd = array;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryclr, corevm::types::native_array>(expected_result);
+}

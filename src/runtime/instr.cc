@@ -1099,63 +1099,99 @@ void
 corevm::runtime::instr_handler_arylen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_size
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryemp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_empty
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryat::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_array_at
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryfrt::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_front
+  );
 }
 
 void
 corevm::runtime::instr_handler_arybak::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_back
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryapnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_array_append
+  );
 }
 
 void
 corevm::runtime::instr_handler_arypop::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_pop
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_array_swap
+  );
 }
 
 void
 corevm::runtime::instr_handler_aryclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_array_clear
+  );
 }
 
 void
