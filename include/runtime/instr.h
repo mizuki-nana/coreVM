@@ -317,13 +317,13 @@ class instr_handler_arypop : public instr_handler { public: virtual void execute
 class instr_handler_aryswp : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_aryclr : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
-class instr_handler_maplen : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapemp : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapat : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapput : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapers : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapclr : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_mapswp : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_maplen : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapemp : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapat : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapput : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapers : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapclr : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_mapswp : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 
 typedef struct instr_info {

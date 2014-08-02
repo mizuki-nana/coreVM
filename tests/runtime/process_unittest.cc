@@ -820,3 +820,131 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYCLR)
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryclr, corevm::types::native_array>(expected_result);
 }
+
+
+class process_native_type_complex_instrs_for_map_type_test : public process_native_type_complex_instrs_test {};
+
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPLEN)
+{
+  corevm::types::native_map map;
+  map[1] = 1;
+
+  corevm::types::native_map::size_type expected_result = 1;
+  corevm::types::native_type_handle oprd = map;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_maplen, corevm::types::native_map::size_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPEMP)
+{
+  corevm::types::native_map map;
+  map[1] = 1;
+
+  bool expected_result = false;
+  corevm::types::native_type_handle oprd = map;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapemp, bool>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPAT)
+{
+  corevm::types::native_map map;
+  map[1] = 100;
+
+  corevm::types::uint64 key = 1;
+  corevm::types::native_map::mapped_type expected_result = 100;
+  corevm::types::native_type_handle oprd1 = map;
+  corevm::types::native_type_handle oprd2 = key;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapat, corevm::types::native_map::mapped_type>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPPUT)
+{
+  corevm::types::native_map map;
+  corevm::types::uint64 key = 1;
+  corevm::types::uint64 value = 11;
+  corevm::types::native_map expected_result;
+  expected_result[1] = 11;
+
+  corevm::types::native_type_handle oprd1 = map;
+  corevm::types::native_type_handle oprd2 = key;
+  corevm::types::native_type_handle oprd3 = value;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _frame.push_eval_stack(oprd3);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapput, corevm::types::native_map>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPERS)
+{
+  corevm::types::native_map map;
+  map[1] = 11;
+  map[2] = 22;
+
+  corevm::types::uint64 key = 1;
+  corevm::types::native_map expected_result;
+  expected_result[2] = 22;
+
+  corevm::types::native_type_handle oprd1 = map;
+  corevm::types::native_type_handle oprd2 = key;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapers, corevm::types::native_map>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPCLR)
+{
+  corevm::types::native_map map;
+  map[1] = 11;
+  map[2] = 222;
+
+  corevm::types::native_map expected_result;
+  corevm::types::native_type_handle oprd = map;
+
+  _frame.push_eval_stack(oprd);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapclr, corevm::types::native_map>(expected_result);
+}
+
+TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPSWP)
+{
+  corevm::types::native_map map;
+  map[1] = 11;
+  map[2] = 22;
+
+  corevm::types::native_map other;
+  other[1] = 22;
+  other[2] = 11;
+
+  corevm::types::native_map expected_result;
+  expected_result[1] = 22;
+  expected_result[2] = 11;
+
+  corevm::types::native_type_handle oprd1 = map;
+  corevm::types::native_type_handle oprd2 = other;
+
+  _frame.push_eval_stack(oprd1);
+  _frame.push_eval_stack(oprd2);
+  _process.push_frame(_frame);
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapswp, corevm::types::native_map>(expected_result);
+}

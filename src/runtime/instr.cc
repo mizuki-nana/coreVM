@@ -1198,47 +1198,75 @@ void
 corevm::runtime::instr_handler_maplen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_map_size
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapemp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_map_empty
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapat::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_map_at
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapput::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_3(
+    instr,
+    process,
+    corevm::types::interface_map_put
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapers::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_map_erase
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_1(
+    instr,
+    process,
+    corevm::types::interface_map_clear
+  );
 }
 
 void
 corevm::runtime::instr_handler_mapswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::_execute_native_type_complex_instr_2(
+    instr,
+    process,
+    corevm::types::interface_map_swap
+  );
 }
