@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <list>
 #include <sneaker/testing/_unittest.h>
 #include "../test_helper.h"
 #include "../../include/runtime/process.h"
@@ -20,13 +22,34 @@ TEST_F(process_unittest, TestInitializationWithArgs)
 }
 
 
-class process_instr_integration_test : public process_test {
+class process_instrs_integration_test : public process_test {};
+
+
+/*
+ * For instructions that manipulate evaluation stacks.
+ * */
+class process_eval_stack_instrs_test : public process_instrs_integration_test {
 public:
   typedef uint32_t IntrinsicType;
+
   typedef corevm::types::uint32 NativeType;
 
+  typedef std::list<corevm::types::native_type_handle> eval_oprds_list;
+
 protected:
-  template<class InstrHandlerCls>
+  void push_eval_stack_and_frame(const eval_oprds_list& elements) {
+    std::for_each(
+      elements.begin(),
+      elements.end(),
+      [this](corevm::types::native_type_handle oprd) {
+        this->_frame.push_eval_stack(oprd);
+      }
+    );
+
+    _process.push_frame(_frame);
+  }
+
+  template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
   void execute_instr_and_assert_result(IntrinsicType expected_result) {
     InstrHandlerCls instr_handler;
 
@@ -35,6 +58,8 @@ protected:
     instr_handler.execute(instr, _process);
 
     corevm::runtime::frame& frame = _process.top_frame();
+    ASSERT_EQ(_expected_eval_stack_size, frame.eval_stack_size());
+
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
     IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
@@ -44,20 +69,20 @@ protected:
     ASSERT_EQ(expected_result, actual_result);
   }
 
+  uint32_t _expected_eval_stack_size = 1;
   corevm::runtime::frame _frame;
   corevm::runtime::process _process;
 };
 
 
-class process_arithmetic_instrs_test : public process_instr_integration_test {};
+class process_arithmetic_instrs_test : public process_eval_stack_instrs_test {};
 
 
 class process_unary_arithmetic_instrs_test : public process_arithmetic_instrs_test {
 public:
   virtual void SetUp () {
     corevm::types::native_type_handle hndl = NativeType(_oprd);
-    _frame.push_eval_stack(hndl);
-    _process.push_frame(_frame);
+    push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
 protected:
@@ -101,9 +126,7 @@ public:
   virtual void SetUp () {
     corevm::types::native_type_handle hndl1 = NativeType(_oprd1);
     corevm::types::native_type_handle hndl2 = NativeType(_oprd2);
-    _frame.push_eval_stack(hndl2);
-    _frame.push_eval_stack(hndl1);
-    _process.push_frame(_frame);
+    push_eval_stack_and_frame({hndl2, hndl1});
   }
 
 protected:
@@ -208,31 +231,13 @@ TEST_F(process_binary_arithmetic_instrs_test, TestInstrLOR)
 }
 
 
-class process_native_type_instrs_test : public process_instr_integration_test {};
+class process_native_type_instrs_test : public process_eval_stack_instrs_test {};
 
 
 class process_native_type_creation_instrs_test : public process_native_type_instrs_test {
 public:
   virtual void SetUp () {
-    _process.push_frame(_frame);
-  }
-
-  template<typename InstrHandlerCls, typename IntrinsicType>
-  void execute_instr_and_assert_result(IntrinsicType expected_result) {
-    InstrHandlerCls instr_handler;
-
-    corevm::runtime::instr instr;
-
-    instr_handler.execute(instr, _process);
-
-    corevm::runtime::frame& frame = _process.top_frame();
-    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
-
-    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
-      result_handle
-    );
-
-    ASSERT_EQ(expected_result, actual_result);
+    push_eval_stack_and_frame(eval_oprds_list{});
   }
 };
 
@@ -315,8 +320,7 @@ class process_native_type_conversion_instrs_test : public process_native_type_in
 public:
   virtual void SetUp () {
     corevm::types::native_type_handle hndl = corevm::types::uint8(_oprd);
-    _frame.push_eval_stack(hndl);
-    _process.push_frame(_frame);
+    push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
   template<typename InstrHandlerCls>
@@ -329,7 +333,7 @@ public:
     instr_handler.execute(instr, _process);
 
     corevm::runtime::frame& frame = _process.top_frame();
-    ASSERT_EQ(1, frame.eval_stack_size());
+    ASSERT_EQ(_expected_eval_stack_size, frame.eval_stack_size());
   }
 
 private:
@@ -410,25 +414,7 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 class process_native_type_complex_instrs_test : public process_native_type_instrs_test {
 public:
   virtual void SetUp() {
-    // Do nothing here.
-  }
-
-  template<typename InstrHandlerCls, typename IntrinsicType>
-  void execute_instr_and_assert_result(IntrinsicType expected_result) {
-    InstrHandlerCls instr_handler;
-
-    corevm::runtime::instr instr;
-
-    instr_handler.execute(instr, _process);
-
-    corevm::runtime::frame& frame = _process.top_frame();
-    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
-
-    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
-      result_handle
-    );
-
-    ASSERT_EQ(expected_result, actual_result);
+    // Override this method to do nothing here.
   }
 };
 
@@ -441,8 +427,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRLEN)
   corevm::types::native_string hello_world = "Hello world!";
   corevm::types::native_string::size_type expected_result = hello_world.size();
   corevm::types::native_type_handle oprd = corevm::types::string(hello_world);
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strlen, corevm::types::native_string::size_type>(expected_result);
 }
@@ -452,8 +438,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRCLR)
   corevm::types::native_string hello_world = "Hello world!";
   corevm::types::native_string expected_result = "";
   corevm::types::native_type_handle oprd = hello_world;
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strclr, corevm::types::native_string>(expected_result);
 }
@@ -466,9 +452,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRAPD)
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = exclamation;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strapd, corevm::types::native_string>(expected_result);
 }
@@ -481,9 +465,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRPSH)
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = exclamation;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strpsh, corevm::types::native_string>(expected_result);
 }
@@ -498,10 +480,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST)
   corevm::types::native_type_handle oprd2 = pos;
   corevm::types::native_type_handle oprd3 = space;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strist, corevm::types::native_string>(expected_result);
 }
@@ -516,10 +495,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST2)
   corevm::types::native_type_handle oprd2 = pos;
   corevm::types::native_type_handle oprd3 = space;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strist2, corevm::types::native_string>(expected_result);
 }
@@ -532,9 +508,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS)
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = pos;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strers, corevm::types::native_string>(expected_result);
 }
@@ -549,10 +523,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS2)
   corevm::types::native_type_handle oprd2 = pos;
   corevm::types::native_type_handle oprd3 = len;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strers2, corevm::types::native_string>(expected_result);
 }
@@ -569,11 +540,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRRPLC)
   corevm::types::native_type_handle oprd3 = len;
   corevm::types::native_type_handle oprd4 = exclamation;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _frame.push_eval_stack(oprd4);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3, oprd4});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strrplc, corevm::types::native_string>(expected_result);
 }
@@ -586,9 +553,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSWP)
   corevm::types::native_type_handle oprd2 = okla;
   corevm::types::native_string expected_result = okla;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strswp, corevm::types::native_string>(expected_result);
 }
@@ -601,9 +566,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB)
   corevm::types::native_type_handle oprd2 = pos;
   corevm::types::native_string expected_result = "world";
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub, corevm::types::native_string>(expected_result);
 }
@@ -618,10 +581,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB2)
   corevm::types::native_type_handle oprd3 = len;
   corevm::types::native_string expected_result = "wo";
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub2, corevm::types::native_string>(expected_result);
 }
@@ -635,9 +595,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND)
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = word;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd, corevm::types::native_string::size_type>(expected_result);
 }
@@ -653,10 +611,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND2)
   corevm::types::native_type_handle oprd2 = word;
   corevm::types::native_type_handle oprd3 = pos;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd2, corevm::types::native_string::size_type>(expected_result);
 }
@@ -670,9 +625,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND)
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = word;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd, corevm::types::native_string::size_type>(expected_result);
 }
@@ -688,10 +641,7 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND2)
   corevm::types::native_type_handle oprd2 = word;
   corevm::types::native_type_handle oprd3 = pos;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd2, corevm::types::native_string::size_type>(expected_result);
 }
@@ -706,8 +656,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYLEN)
   corevm::types::native_array::size_type expected_result = array.size();
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_arylen, corevm::types::native_array::size_type>(expected_result);
 }
@@ -718,8 +667,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYEMP)
   bool expected_result = false;
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryemp, bool>(expected_result);
 }
@@ -733,9 +681,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAT)
   corevm::types::native_type_handle oprd1 = array;
   corevm::types::native_type_handle oprd2 = index;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryat, corevm::types::native_array::value_type>(expected_result);
 }
@@ -746,8 +692,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYFRT)
   corevm::types::native_array::value_type expected_result = 1;
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryfrt, corevm::types::native_array::value_type>(expected_result);
 }
@@ -758,8 +703,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYBAK)
   corevm::types::native_array::value_type expected_result = 3;
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_arybak, corevm::types::native_array::value_type>(expected_result);
 }
@@ -773,9 +717,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAPND)
   corevm::types::native_type_handle oprd1 = array;
   corevm::types::native_type_handle oprd2 = data;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryapnd, corevm::types::native_array>(expected_result);
 }
@@ -786,8 +728,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYPOP)
   corevm::types::native_array expected_result = {1, 2};
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_arypop, corevm::types::native_array>(expected_result);
 }
@@ -801,9 +742,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYSWP)
   corevm::types::native_type_handle oprd1 = array;
   corevm::types::native_type_handle oprd2 = other;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryswp, corevm::types::native_array>(expected_result);
 }
@@ -815,8 +754,7 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYCLR)
 
   corevm::types::native_type_handle oprd = array;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_aryclr, corevm::types::native_array>(expected_result);
 }
@@ -833,8 +771,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPLEN)
   corevm::types::native_map::size_type expected_result = 1;
   corevm::types::native_type_handle oprd = map;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_maplen, corevm::types::native_map::size_type>(expected_result);
 }
@@ -847,8 +784,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPEMP)
   bool expected_result = false;
   corevm::types::native_type_handle oprd = map;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapemp, bool>(expected_result);
 }
@@ -863,9 +799,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPAT)
   corevm::types::native_type_handle oprd1 = map;
   corevm::types::native_type_handle oprd2 = key;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapat, corevm::types::native_map::mapped_type>(expected_result);
 }
@@ -882,10 +816,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPPUT)
   corevm::types::native_type_handle oprd2 = key;
   corevm::types::native_type_handle oprd3 = value;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _frame.push_eval_stack(oprd3);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapput, corevm::types::native_map>(expected_result);
 }
@@ -903,9 +834,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPERS)
   corevm::types::native_type_handle oprd1 = map;
   corevm::types::native_type_handle oprd2 = key;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapers, corevm::types::native_map>(expected_result);
 }
@@ -919,8 +848,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPCLR)
   corevm::types::native_map expected_result;
   corevm::types::native_type_handle oprd = map;
 
-  _frame.push_eval_stack(oprd);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapclr, corevm::types::native_map>(expected_result);
 }
@@ -942,9 +870,7 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPSWP)
   corevm::types::native_type_handle oprd1 = map;
   corevm::types::native_type_handle oprd2 = other;
 
-  _frame.push_eval_stack(oprd1);
-  _frame.push_eval_stack(oprd2);
-  _process.push_frame(_frame);
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapswp, corevm::types::native_map>(expected_result);
 }
