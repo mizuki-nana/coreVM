@@ -34,8 +34,7 @@ public:
       str(boost::format("Object %s not found") % corevm::dyobj::dyobj_id_helper::id_to_string(id))
     ),
     id(id)
-  {
-  }
+  {}
 
   corevm::dyobj::dyobj_id id;
 };
@@ -53,8 +52,7 @@ public:
     ),
     attr_key(attr_key),
     id(id)
-  {
-  }
+  {}
 
   corevm::dyobj::attr_key attr_key;
   corevm::dyobj::dyobj_id id;
@@ -73,8 +71,7 @@ public:
     ),
     attr_key(attr_key),
     id(id)
-  {
-  }
+  {}
 
   corevm::dyobj::attr_key attr_key;
   corevm::dyobj::dyobj_id id;
@@ -85,8 +82,15 @@ class dynamic_object_id_exceed_limit_error : public corevm::dyobj::dynamic_objec
 public:
   explicit dynamic_object_id_exceed_limit_error():
     corevm::dyobj::dynamic_object_runtime_error("The maximum limit of dynamic object ID has been exceeded")
-  {
-  }
+  {}
+};
+
+
+class dynamic_object_heap_insertion_failed_error : public corevm::dyobj::dynamic_object_runtime_error {
+public:
+  explicit dynamic_object_heap_insertion_failed_error():
+    corevm::dyobj::dynamic_object_runtime_error("Dynamic object has failed to be inserted into the heap")
+  {}
 };
 
 

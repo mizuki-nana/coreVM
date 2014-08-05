@@ -75,6 +75,9 @@ public:
   dynamic_object_type& at(const dynamic_object_id_type)
     throw(corevm::dyobj::dynamic_object_not_found_error);
 
+  dynamic_object_id_type create_dyobj()
+    throw(corevm::dyobj::dynamic_object_heap_insertion_failed_error);
+
 private:
   dyobj_heap_map_type _map;
 };
@@ -150,6 +153,23 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   }
 
   throw corevm::dyobj::dynamic_object_not_found_error(id);
+}
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
+  throw(corevm::dyobj::dynamic_object_heap_insertion_failed_error)
+{
+  dynamic_object_id_type id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+
+  dynamic_object_type dyobj(id);
+  auto res = _map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(id, dyobj));
+
+  if(res.second == false) {
+    throw corevm::dyobj::dynamic_object_heap_insertion_failed_error();
+  }
+
+  return id;
 }
 
 
