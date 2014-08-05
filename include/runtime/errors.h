@@ -59,6 +59,30 @@ public:
 };
 
 
+class object_stack_empty_error : public corevm::runtime::runtime_error {
+public:
+  explicit object_stack_empty_error():
+    corevm::runtime::runtime_error("Process's object stack is empty")
+  {}
+};
+
+
+class native_type_handle_not_found_error : public corevm::runtime::runtime_error {
+public:
+  explicit native_type_handle_not_found_error():
+    corevm::runtime::runtime_error("Native type handle not found")
+  {}
+};
+
+
+class native_type_handle_deletion_error : public corevm::runtime::runtime_error {
+public:
+  explicit native_type_handle_deletion_error():
+    corevm::runtime::runtime_error("Native type handle cannot be deleted")
+  {}
+};
+
+
 } /* end namespace runtime */
 
 

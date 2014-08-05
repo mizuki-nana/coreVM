@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
-#include "../types/native_type_handle.h"
 #include "common.h"
 #include "dyobj_id.h"
 #include "errors.h"
@@ -51,8 +50,9 @@ public:
 
   dynamic_object_manager& manager() noexcept;
 
-  corevm::types::native_type_handle* get_ntvhdle() noexcept;
-  void set_ntvhdle(corevm::types::native_type_handle*) noexcept;
+  corevm::dyobj::ntvhndl_key get_ntvhndl_key() noexcept;
+  void set_ntvhndl_key(corevm::dyobj::ntvhndl_key) noexcept;
+  void clear_ntvhndl_key() noexcept;
 
   bool get_flag(char) noexcept;
   void set_flag(char) noexcept;
@@ -76,7 +76,7 @@ private:
   corevm::dyobj::flag _flags;
   attr_map_type _attrs;
   dynamic_object_manager _manager;
-  corevm::types::native_type_handle* _ntvhdle = nullptr;
+  corevm::dyobj::ntvhndl_key _ntvhndl_key;
 };
 
 
@@ -85,7 +85,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dy
   _id(id),
   _flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   _attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),
-  _manager(dynamic_object_manager())
+  _manager(dynamic_object_manager()),
+  _ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY)
 {
 }
 
@@ -160,18 +161,25 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::manager() noexcept
 }
 
 template<class dynamic_object_manager>
-corevm::types::native_type_handle*
-corevm::dyobj::dynamic_object<dynamic_object_manager>::get_ntvhdle() noexcept
+corevm::dyobj::ntvhndl_key
+corevm::dyobj::dynamic_object<dynamic_object_manager>::get_ntvhndl_key() noexcept
 {
-  return this->_ntvhdle;
+  return this->_ntvhndl_key;
 }
 
 template<class dynamic_object_manager>
 void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::set_ntvhdle(
-  corevm::types::native_type_handle* ntvhdle) noexcept
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_ntvhndl_key(
+  corevm::dyobj::ntvhndl_key ntvhndl_key) noexcept
 {
-  this->_ntvhdle = ntvhdle;
+  this->_ntvhndl_key = ntvhndl_key;
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_ntvhndl_key() noexcept
+{
+  this->_ntvhndl_key = corevm::dyobj::NONESET_NTVHNDL_KEY;
 }
 
 template<class dynamic_object_manager>

@@ -162,7 +162,9 @@ void
 corevm::runtime::instr_handler_new::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::dyobj::dyobj_id id = process.__helper_create_dyobj();
+
+  process.push_stack(id);
 }
 
 void
@@ -176,28 +178,47 @@ void
 corevm::runtime::instr_handler_stobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+
+  frame.set_visible_var(key, id);
 }
 
 void
 corevm::runtime::instr_handler_getattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+  auto &obj = process.__helper_at(id);
+  corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
+
+  process.push_stack(attr_id);
 }
 
 void
 corevm::runtime::instr_handler_setattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+
+  corevm::dyobj::dyobj_id attr_id= process.pop_stack();
+  corevm::dyobj::dyobj_id target_id = process.pop_stack();
+
+  auto &obj = process.__helper_at(target_id);
+  obj.putattr(attr_key, attr_id);
+
+  process.push_stack(target_id);
 }
 
 void
 corevm::runtime::instr_handler_pop::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  process.pop_stack();
 }
 
 void
@@ -211,56 +232,110 @@ void
 corevm::runtime::instr_handler_stobj2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+
+  frame.set_invisible_var(key, id);
 }
 
 void
 corevm::runtime::instr_handler_delobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  corevm::runtime::frame& frame = process.top_frame();
+
+  frame.pop_visible_var(key);
 }
 
 void
 corevm::runtime::instr_handler_delobj2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  corevm::runtime::frame& frame = process.top_frame();
+
+  frame.pop_invisible_var(key);
 }
 
 void
 corevm::runtime::instr_handler_gethndl::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = process.__helper_at(id);
+
+  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
+
+  if(ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
+    throw corevm::runtime::native_type_handle_not_found_error();
+  }
+
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
+
+  frame.push_eval_stack(hndl);
 }
 
 void
 corevm::runtime::instr_handler_sethndl::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = process.__helper_at(id);
+
+  corevm::dyobj::ntvhndl_key ntvhndl_key = process.insert_ntvhndl(hndl);
+
+  obj.set_ntvhndl_key(ntvhndl_key);
 }
 
 void
 corevm::runtime::instr_handler_clrhndl::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = process.__helper_at(id);
+
+  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
+
+  if(ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
+    throw corevm::runtime::native_type_handle_deletion_error();
+  }
+
+  process.erase_ntvhndl(ntvhndl_key);
+  obj.clear_ntvhndl_key();
 }
 
 void
 corevm::runtime::instr_handler_objeq::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id1 = process.pop_stack();
+  corevm::dyobj::dyobj_id id2 = process.pop_stack();
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(id1 == id2);
+
+  frame.push_eval_stack(hndl);
 }
 
 void
 corevm::runtime::instr_handler_objneq::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id1 = process.pop_stack();
+  corevm::dyobj::dyobj_id id2 = process.pop_stack();
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(id1 != id2);
+
+  frame.push_eval_stack(hndl);
 }
 
 void

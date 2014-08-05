@@ -32,14 +32,101 @@ corevm::runtime::process::~process()
 {
 }
 
+uint64_t
+corevm::runtime::process::call_stack_size() const
+{
+  return _call_stack.size();
+}
+
 corevm::runtime::frame&
-corevm::runtime::process::top_frame()
+corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_error)
 {
   if(_call_stack.empty()) {
     throw corevm::runtime::frame_not_found_error();
   }
 
   return _call_stack.top();
+}
+
+void
+corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
+{
+  _call_stack.push(frame);
+}
+
+uint64_t
+corevm::runtime::process::stack_size() const
+{
+  return _dyobj_stack.size();
+}
+
+const corevm::dyobj::dyobj_id&
+corevm::runtime::process::top_stack() throw(corevm::runtime::object_stack_empty_error)
+{
+  if(_dyobj_stack.empty()) {
+    throw corevm::runtime::object_stack_empty_error();
+  }
+
+  return _dyobj_stack.top();
+}
+
+void
+corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
+{
+  _dyobj_stack.push(id);
+}
+
+const corevm::dyobj::dyobj_id
+corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_error)
+{
+  if(_dyobj_stack.empty()) {
+    throw corevm::runtime::object_stack_empty_error();
+  }
+
+  corevm::dyobj::dyobj_id id = _dyobj_stack.top();
+  _dyobj_stack.pop();
+  return id;
+}
+
+bool
+corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+{
+  return _ntv_handles_pool.find(key) != _ntv_handles_pool.end();
+}
+
+corevm::types::native_type_handle&
+corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+  throw(corevm::runtime::native_type_handle_not_found_error)
+{
+  try {
+    return _ntv_handles_pool.at(key);  
+  } catch (...)  {// TODO: should catch `std::out_of_range` here.
+    throw corevm::runtime::native_type_handle_not_found_error();
+  }
+}
+
+corevm::dyobj::ntvhndl_key
+corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
+{
+  corevm::dyobj::ntvhndl_key key = ++_ntv_handles_incrementor;
+
+  // TODO: not sure if we want to do .insert here or simply use the access operator...
+  _ntv_handles_pool.insert(
+    std::pair<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>(key, hndl)
+  );
+
+  return key;
+}
+
+void
+corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+  throw(corevm::runtime::native_type_handle_deletion_error)
+{
+  size_t res = _ntv_handles_pool.erase(key);
+
+  if(res == 0) {
+    throw corevm::runtime::native_type_handle_deletion_error();
+  }
 }
 
 void

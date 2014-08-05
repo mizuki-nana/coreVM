@@ -148,11 +148,11 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
 {
   typename dyobj_heap_map_type::iterator itr = this->_map.find(id);
 
-  if(itr != this->_map.end()) {
-    return static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&>(itr->second);
+  if(itr == this->_map.end()) {
+    throw corevm::dyobj::dynamic_object_not_found_error(id);
   }
 
-  throw corevm::dyobj::dynamic_object_not_found_error(id);
+  return static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&>(itr->second);
 }
 
 template<class dynamic_object_manager>

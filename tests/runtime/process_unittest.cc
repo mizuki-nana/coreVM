@@ -25,6 +25,305 @@ TEST_F(process_unittest, TestInitializationWithArgs)
 class process_instrs_integration_test : public process_test {};
 
 
+class process_obj_instrs_test : public process_instrs_integration_test {
+protected:
+  virtual void SetUp() {
+    _process.push_frame(_frame);
+  }
+
+  template<typename InstrHandlerCls>
+  void _execute_instr(corevm::runtime::instr instr, uint64_t expected_stack_size=1) {
+    InstrHandlerCls instr_handler;
+
+    instr_handler.execute(instr, _process);
+
+    uint64_t actual_stack_size = _process.stack_size();
+
+    ASSERT_EQ(expected_stack_size, actual_stack_size);
+  }
+
+  corevm::runtime::process _process;
+  corevm::runtime::frame _frame;
+};
+
+
+TEST_F(process_obj_instrs_test, TestInstrNEW)
+{
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_new>(instr); 
+}
+
+TEST_F(process_obj_instrs_test, TestInstrLDOBJ)
+{
+  // TODO: to be implemented...
+}
+
+TEST_F(process_obj_instrs_test, TestInstrSTOBJ)
+{
+  corevm::runtime::instr instr = {.code=0, .oprd1=1, .oprd2=0};
+
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::dyobj::dyobj_id id = 1;
+  _process.push_stack(id);
+
+  _execute_instr<corevm::runtime::instr_handler_stobj>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  ASSERT_TRUE(actual_frame.has_visible_var(1));
+
+  corevm::dyobj::dyobj_id actual_id = actual_frame.get_visible_var(1);
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_obj_instrs_test, TestInstrGETATTR)
+{
+  corevm::dyobj::attr_key attr_key = 333;
+  corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
+
+  corevm::dyobj::dyobj_id id1 = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = _process.__helper_create_dyobj();
+
+  auto &obj = _process.__helper_at(id1);
+  obj.putattr(attr_key, id2);
+  _process.push_stack(id1);
+
+  _execute_instr<corevm::runtime::instr_handler_getattr>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id2;
+  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+}
+
+TEST_F(process_obj_instrs_test, TestInstrSETATTR)
+{
+  corevm::dyobj::attr_key attr_key = 789;
+  corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
+
+  corevm::dyobj::dyobj_id id1 = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = _process.__helper_create_dyobj();
+
+  _process.push_stack(id1);
+  _process.push_stack(id2);
+
+  _execute_instr<corevm::runtime::instr_handler_setattr>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id1;
+  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+
+  auto &obj = _process.__helper_at(actual_id);
+
+  ASSERT_TRUE(obj.hasattr(attr_key));
+
+  ASSERT_EQ(id2, obj.getattr(attr_key));
+}
+
+TEST_F(process_obj_instrs_test, TestInstrPOP)
+{
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  _process.push_stack(id);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
+
+  _ASSERT_THROW(
+    { _process.top_stack(); },
+    corevm::runtime::stack_empty_error
+  );
+}
+
+TEST_F(process_obj_instrs_test, TestInstrLDOBJ2)
+{
+  // TODO: to be implemented...
+}
+
+TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
+{
+  corevm::runtime::instr instr = {.code=0, .oprd1=1, .oprd2=0};
+
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::dyobj::dyobj_id id = 1;
+  _process.push_stack(id);
+
+  _execute_instr<corevm::runtime::instr_handler_stobj2>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  ASSERT_TRUE(actual_frame.has_invisible_var(1));
+
+  corevm::dyobj::dyobj_id actual_id = actual_frame.get_invisible_var(1);
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
+{
+  corevm::runtime::variable_key key = 1;
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key), 
+    .oprd2=0
+  };
+
+  corevm::runtime::frame frame;
+  frame.set_visible_var(key, 2);
+  _process.push_frame(frame);
+
+  _execute_instr<corevm::runtime::instr_handler_delobj>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  ASSERT_FALSE(actual_frame.has_visible_var(key));
+}
+
+TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
+{
+  corevm::runtime::variable_key key = 1;
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=0
+  };
+
+  corevm::runtime::frame frame;
+  frame.set_invisible_var(key, 2);
+  _process.push_frame(frame);
+
+  _execute_instr<corevm::runtime::instr_handler_delobj2>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  ASSERT_FALSE(actual_frame.has_invisible_var(key));
+}
+
+TEST_F(process_obj_instrs_test, TestInstrGETHNDL)
+{
+  uint32_t expected_value = 123;
+
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  _process.push_stack(id);
+
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = _process.insert_ntvhndl(hndl);
+
+  auto &obj = _process.__helper_at(id);
+  obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::types::native_type_handle actual_handle = actual_frame.pop_eval_stack();
+
+  uint32_t actual_value = corevm::types::get_value_from_handle<uint32_t>(
+    actual_handle
+  );
+
+  ASSERT_EQ(expected_value, actual_value);
+}
+
+TEST_F(process_obj_instrs_test, TestInstrSETHNDL)
+{
+  uint32_t expected_value = 123;
+
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  _process.push_stack(id);
+
+  corevm::runtime::frame frame;
+  corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
+  frame.push_eval_stack(hndl);
+  _process.push_frame(frame);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
+
+  auto &obj = _process.__helper_at(id);
+
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
+}
+
+TEST_F(process_obj_instrs_test, TestInstrCLRHNDL)
+{
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  _process.push_stack(id);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(123);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = _process.insert_ntvhndl(hndl);
+
+  auto &obj = _process.__helper_at(id);
+  obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
+
+  obj = _process.__helper_at(id);
+  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
+
+  ASSERT_FALSE(_process.has_ntvhndl(ntvhndl_key));
+}
+
+TEST_F(process_obj_instrs_test, TestInstrOBJEQ)
+{
+  corevm::dyobj::dyobj_id id1 = 1;
+  corevm::dyobj::dyobj_id id2 = 1;
+
+  _process.push_stack(id1);
+  _process.push_stack(id2);
+
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_objeq>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::types::native_type_handle result_handle = actual_frame.pop_eval_stack();
+
+  bool expected_result = true;
+  bool actual_result = corevm::types::get_value_from_handle<bool>(
+    result_handle
+  );
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
+{
+  corevm::dyobj::dyobj_id id1 = 1;
+  corevm::dyobj::dyobj_id id2 = 2;
+
+  _process.push_stack(id1);
+  _process.push_stack(id2);
+
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::runtime::instr instr;
+  _execute_instr<corevm::runtime::instr_handler_objneq>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::types::native_type_handle result_handle = actual_frame.pop_eval_stack();
+
+  bool expected_result = true;
+  bool actual_result = corevm::types::get_value_from_handle<bool>(
+    result_handle
+  );
+
+  ASSERT_EQ(expected_result, actual_result);
+}
+
+
 /*
  * For instructions that manipulate evaluation stacks.
  * */
