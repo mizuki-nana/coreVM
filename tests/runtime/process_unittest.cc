@@ -3,6 +3,7 @@
 #include <sneaker/testing/_unittest.h>
 #include "../test_helper.h"
 #include "../../include/runtime/process.h"
+#include "../../include/types/interfaces.h"
 
 
 class process_test : public ::testing::Test {};
@@ -321,6 +322,216 @@ TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
   );
 
   ASSERT_EQ(expected_result, actual_result);
+}
+
+
+class process_functions_instrs_test : public process_instrs_integration_test {
+protected:
+  corevm::runtime::process _process;
+};
+
+
+TEST_F(process_functions_instrs_test, TestInstrFRM)
+{
+  _ASSERT_THROW(
+    { _process.top_frame(); },
+    corevm::runtime::frame_not_found_error
+  );
+
+  corevm::runtime::instr instr;
+  corevm::runtime::instr_handler_frm handler;
+  handler.execute(instr, _process);
+
+  ASSERT_NO_THROW(
+    { _process.top_frame(); }
+  );
+}
+
+TEST_F(process_functions_instrs_test, TestInstrPUTARG)
+{
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::dyobj::dyobj_id id = 1;
+  _process.push_stack(id);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  _ASSERT_THROW(
+    { actual_frame.pop_param(); },
+    corevm::runtime::missing_parameter_error
+  );
+
+  corevm::runtime::instr instr;
+  corevm::runtime::instr_handler_putarg handler;
+  handler.execute(instr, _process);
+
+  corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param();
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_functions_instrs_test, TestInstrPUTKWARG)
+{
+  corevm::runtime::frame frame;
+  _process.push_frame(frame);
+
+  corevm::runtime::variable_key key = 3;
+  corevm::dyobj::dyobj_id id = 2;
+  _process.push_stack(id);
+
+  corevm::runtime::frame& actual_frame = _process.top_frame();
+
+  _ASSERT_THROW(
+    { actual_frame.pop_param_value_pair(key); },
+    corevm::runtime::missing_parameter_error
+  );
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=2
+  };
+  corevm::runtime::instr_handler_putkwarg handler;
+  handler.execute(instr, _process);
+
+  corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param_value_pair(key);
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_functions_instrs_test, TestInstrGETARG)
+{
+  corevm::dyobj::dyobj_id id = 1;
+  corevm::runtime::frame frame;
+  frame.put_param(id);
+
+  _process.push_frame(frame);
+
+  corevm::runtime::instr instr;
+  corevm::runtime::instr_handler_getarg handler;
+  handler.execute(instr, _process);
+
+  corevm::dyobj::dyobj_id actual_id = _process.pop_stack();
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_functions_instrs_test, TestInstrGETKWARG)
+{
+  corevm::runtime::variable_key key = 22;
+  corevm::dyobj::dyobj_id id = 100;
+
+  corevm::runtime::frame frame;
+  frame.put_param_value_pair(key, id);
+  _process.push_frame(frame);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_getkwarg handler;
+  handler.execute(instr, _process);
+
+  corevm::dyobj::dyobj_id actual_id = _process.pop_stack();
+
+  ASSERT_EQ(id, actual_id);
+}
+
+TEST_F(process_functions_instrs_test, TestInstrGETARGS)
+{
+  corevm::dyobj::dyobj_id id1 = 100;
+  corevm::dyobj::dyobj_id id2 = 200;
+  corevm::dyobj::dyobj_id id3 = 300;
+
+  corevm::runtime::frame frame;
+  frame.put_param(id1);
+  frame.put_param(id2);
+  frame.put_param(id3);
+  _process.push_frame(frame);
+
+  ASSERT_EQ(true, frame.has_params());
+
+  corevm::runtime::instr instr;
+  corevm::runtime::instr_handler_getargs handler;
+  handler.execute(instr, _process);
+
+  corevm::runtime::frame actual_frame = _process.top_frame();
+
+  ASSERT_EQ(false, actual_frame.has_params());
+
+  corevm::types::native_type_handle hndl = actual_frame.pop_eval_stack();
+
+  corevm::types::native_type_handle result_handle1;
+  corevm::types::native_type_handle result_handle2;
+  corevm::types::native_type_handle result_handle3;
+
+  corevm::types::interface_array_back(hndl, result_handle1);
+  corevm::types::interface_array_pop(hndl, hndl);
+
+  corevm::types::interface_array_back(hndl, result_handle2);
+  corevm::types::interface_array_pop(hndl, hndl);
+
+  corevm::types::interface_array_back(hndl, result_handle3);
+  corevm::types::interface_array_pop(hndl, hndl);
+
+  corevm::dyobj::dyobj_id actual_id1 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle1);
+  corevm::dyobj::dyobj_id actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
+  corevm::dyobj::dyobj_id actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
+
+  ASSERT_EQ(id1, actual_id1);
+  ASSERT_EQ(id2, actual_id2);
+  ASSERT_EQ(id3, actual_id3);
+}
+
+TEST_F(process_functions_instrs_test, TestInstrGETKWARGS)
+{
+  corevm::runtime::variable_key key1 = 1;
+  corevm::runtime::variable_key key2 = 22;
+  corevm::runtime::variable_key key3 = 333;
+
+  corevm::dyobj::dyobj_id id1 = 100;
+  corevm::dyobj::dyobj_id id2 = 200;
+  corevm::dyobj::dyobj_id id3 = 300;
+
+  corevm::runtime::frame frame;
+  frame.put_param_value_pair(key1, id1);
+  frame.put_param_value_pair(key2, id2);
+  frame.put_param_value_pair(key3, id3);
+  _process.push_frame(frame);
+
+  ASSERT_EQ(true, frame.has_param_value_pairs());
+
+  corevm::runtime::instr instr;
+  corevm::runtime::instr_handler_getkwargs handler;
+  handler.execute(instr, _process);
+
+  corevm::runtime::frame actual_frame = _process.top_frame();
+
+  ASSERT_EQ(false, actual_frame.has_param_value_pairs());
+
+  corevm::types::native_type_handle hndl = actual_frame.pop_eval_stack();
+
+  corevm::types::native_type_handle key_handle1 = corevm::types::uint64(key1);
+  corevm::types::native_type_handle key_handle2 = corevm::types::uint64(key2);
+  corevm::types::native_type_handle key_handle3 = corevm::types::uint64(key3);
+  corevm::types::native_type_handle result_handle1;
+  corevm::types::native_type_handle result_handle2;
+  corevm::types::native_type_handle result_handle3;
+
+  corevm::types::interface_map_at(hndl, key_handle1, result_handle1);
+  corevm::types::interface_map_at(hndl, key_handle2, result_handle2);
+  corevm::types::interface_map_at(hndl, key_handle3, result_handle3);
+
+  corevm::dyobj::dyobj_id actual_id1 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle1);
+  corevm::dyobj::dyobj_id actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
+  corevm::dyobj::dyobj_id actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
+
+  ASSERT_EQ(id1, actual_id1);
+  ASSERT_EQ(id2, actual_id2);
+  ASSERT_EQ(id3, actual_id3);
 }
 
 

@@ -381,52 +381,89 @@ corevm::runtime::instr_handler_exit::execute(
 }
 
 void
-corevm::runtime::instr_handler_call::execute(
+corevm::runtime::instr_handler_frm::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame frame;
+  process.push_frame(frame);
 }
 
 void
 corevm::runtime::instr_handler_putarg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+
+  frame.put_param(id);
 }
 
 void
 corevm::runtime::instr_handler_putkwarg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+
+  frame.put_param_value_pair(key, id);
 }
 
 void
 corevm::runtime::instr_handler_getarg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = frame.pop_param();
+
+  process.push_stack(id);
 }
 
 void
 corevm::runtime::instr_handler_getkwarg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  corevm::dyobj::dyobj_id id = frame.pop_param_value_pair(key);
+
+  process.push_stack(id);
 }
 
 void
 corevm::runtime::instr_handler_getargs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::types::native_array array;
+
+  while(frame.has_params()) {
+    corevm::dyobj::dyobj_id id = frame.pop_param();
+    array.push_back(id);
+  }
+
+  corevm::types::native_type_handle hndl = array;
+  frame.push_eval_stack(hndl);
 }
 
 void
 corevm::runtime::instr_handler_getkwargs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::types::native_map map;
+
+  std::list<corevm::runtime::variable_key> params = frame.param_value_pair_keys();
+
+  for(auto itr = params.begin(); itr != params.end(); ++itr) {
+    corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(*itr);
+    corevm::dyobj::dyobj_id id = frame.pop_param_value_pair(key);
+
+    map[key] = id;
+  }
+
+  corevm::types::native_type_handle hndl = map;
+  frame.push_eval_stack(hndl);
 }
 
 void

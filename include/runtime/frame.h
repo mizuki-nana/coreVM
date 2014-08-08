@@ -1,6 +1,7 @@
 #ifndef COREVM_FRAME_H_
 #define COREVM_FRAME_H_
 
+#include <list>
 #include <stack>
 #include "common.h"
 #include "errors.h"
@@ -55,12 +56,21 @@ public:
   corevm::dyobj::dyobj_id pop_invisible_var(const corevm::runtime::variable_key) throw(corevm::runtime::local_variable_not_found_error);
   void set_invisible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
 
+  bool has_params() const;
+  void put_param(const corevm::dyobj::dyobj_id&);
+  const corevm::dyobj::dyobj_id pop_param() throw(corevm::runtime::missing_parameter_error);
+
+  bool has_param_value_pairs() const;
+  void put_param_value_pair(const corevm::runtime::variable_key, const corevm::dyobj::dyobj_id&);
+  const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key) throw(corevm::runtime::missing_parameter_error);
+  std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
+
 protected:
   corevm::runtime::instr_addr _return_addr = -1; 
   corevm::runtime::frame* _parent_scope_frame_ptr = nullptr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> _visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> _invisible_vars;
-  std::stack<corevm::dyobj::dyobj_id> _params_list;
+  std::list<corevm::dyobj::dyobj_id> _params_list;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> _param_value_map;
   std::stack<corevm::types::native_type_handle> _eval_stack;
 };

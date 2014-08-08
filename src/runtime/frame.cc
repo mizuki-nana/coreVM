@@ -6,7 +6,7 @@ corevm::runtime::frame::frame():
   _parent_scope_frame_ptr(nullptr),
   _visible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
   _invisible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
-  _params_list(std::stack<corevm::dyobj::dyobj_id>()),
+  _params_list(std::list<corevm::dyobj::dyobj_id>()),
   _param_value_map(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
   _eval_stack(std::stack<corevm::types::native_type_handle>())
 {
@@ -133,4 +133,71 @@ corevm::runtime::frame::set_invisible_var(
   corevm::runtime::variable_key var_key, corevm::dyobj::dyobj_id obj_id)
 {
   _invisible_vars[var_key] = obj_id;
+}
+
+bool
+corevm::runtime::frame::has_params() const
+{
+  return !_params_list.empty();
+}
+
+void
+corevm::runtime::frame::put_param(const corevm::dyobj::dyobj_id& id)
+{
+  _params_list.push_back(id); 
+}
+
+const corevm::dyobj::dyobj_id
+corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_error)
+{
+  if(_params_list.empty()) {
+    throw corevm::runtime::missing_parameter_error();
+  }
+
+  corevm::dyobj::dyobj_id id = _params_list.back();
+  _params_list.pop_back();
+  return id;
+}
+
+bool
+corevm::runtime::frame::has_param_value_pairs() const
+{
+  return !_param_value_map.empty();
+}
+
+void
+corevm::runtime::frame::put_param_value_pair(
+  const corevm::runtime::variable_key key, const corevm::dyobj::dyobj_id& id)
+{
+  _param_value_map[key] = id;
+}
+
+const corevm::dyobj::dyobj_id
+corevm::runtime::frame::pop_param_value_pair(const corevm::runtime::variable_key key) throw(
+  corevm::runtime::missing_parameter_error)
+{
+  auto itr = _param_value_map.find(key);
+
+  if(itr == _param_value_map.end()) {
+    throw corevm::runtime::missing_parameter_error();
+  }
+
+  corevm::dyobj::dyobj_id id = itr->second;
+
+  _param_value_map.erase(itr);
+
+  return id;
+}
+
+std::list<corevm::runtime::variable_key>
+corevm::runtime::frame::param_value_pair_keys() const
+{
+  std::list<corevm::runtime::variable_key> keys;
+
+  for(auto itr = _param_value_map.begin(); itr != _param_value_map.end(); ++itr) {
+    corevm::runtime::variable_key key = itr->first;
+    keys.push_back(key);
+  }
+
+  return keys;
 }

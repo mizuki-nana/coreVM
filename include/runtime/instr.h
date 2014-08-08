@@ -41,7 +41,7 @@ enum instr_enum {
   EXIT,           // <exit, code,> Halts the execution of instructions and exits the program (with an optional exit code).
 
   /* Function instructions */
-  CALL,           // <call, addr,> Calls the function with the instruction at the specified address (creates a new frame).
+  FRAME,          // <frm,,> Creates a new frame and place it on top of the current one.
   PUTARG,         // <putarg,,> Pops the top object off the stack and assign it as the next argument for the next call.
   PUTKWARG,       // <putkwarg, key,> Pops the top object off the stack and assign it as the next keyword-argument for the next call.
   GETARG,         // <getarg,,> Pops off the first argument for the current call and put it on top of the stack.
@@ -222,13 +222,13 @@ class instr_handler_exc2 : public instr_handler { virtual void execute(const cor
 class instr_handler_exit: public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Function instructions */
-class instr_handler_call : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_putarg : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_putkwarg : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_getarg : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_getkwarg : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_getargs : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_getkwargs : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_frm : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_putarg : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_putkwarg : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_getarg : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_getkwarg : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_getargs : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_getkwargs : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Arithmetic and logic instructions */
 class instr_handler_pos : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
@@ -366,7 +366,6 @@ private:
     {corevm::runtime::instr_enum::EXIT, {.num_oprd=1, .str="exit", .handler=new instr_handler_exit()}},
 
     /* Function instructions */
-    {corevm::runtime::instr_enum::CALL, {.num_oprd=1, .str="call", .handler=new instr_handler_call()}},
     {corevm::runtime::instr_enum::PUTARG, {.num_oprd=0, .str="putarg", .handler=new instr_handler_putarg()}},
     {corevm::runtime::instr_enum::PUTKWARG, {.num_oprd=1, .str="putkwarg", .handler=new instr_handler_putkwarg()}},
     {corevm::runtime::instr_enum::GETARG, {.num_oprd=0, .str="getarg", .handler=new instr_handler_getarg()}},

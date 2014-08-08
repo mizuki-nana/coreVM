@@ -83,6 +83,14 @@ public:
 };
 
 
+class missing_parameter_error : public corevm::runtime::runtime_error {
+public:
+  explicit missing_parameter_error():
+    corevm::runtime::runtime_error("Missing parameter")
+  {}
+};
+
+
 } /* end namespace runtime */
 
 
