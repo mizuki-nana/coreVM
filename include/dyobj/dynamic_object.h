@@ -54,6 +54,10 @@ public:
   void set_ntvhndl_key(corevm::dyobj::ntvhndl_key) noexcept;
   void clear_ntvhndl_key() noexcept;
 
+  corevm::dyobj::instr_block_key get_instr_block_key() const noexcept;
+  void set_instr_block_key(corevm::dyobj::instr_block_key) noexcept;
+  void clear_instr_block_key() noexcept;
+
   bool get_flag(char) noexcept;
   void set_flag(char) noexcept;
   void clear_flag(char) noexcept;
@@ -77,6 +81,7 @@ private:
   attr_map_type _attrs;
   dynamic_object_manager _manager;
   corevm::dyobj::ntvhndl_key _ntvhndl_key;
+  corevm::dyobj::instr_block_key _instr_block_key;
 };
 
 
@@ -86,7 +91,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dy
   _flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   _attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),
   _manager(dynamic_object_manager()),
-  _ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY)
+  _ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY),
+  _instr_block_key(corevm::dyobj::NONESET_INSTR_BLOCK_KEY)
 {
 }
 
@@ -180,6 +186,28 @@ void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_ntvhndl_key() noexcept
 {
   this->_ntvhndl_key = corevm::dyobj::NONESET_NTVHNDL_KEY;
+}
+
+template<class dynamic_object_manager>
+corevm::dyobj::instr_block_key
+corevm::dyobj::dynamic_object<dynamic_object_manager>::get_instr_block_key() const noexcept
+{
+  return this->_instr_block_key;
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_instr_block_key(
+  corevm::dyobj::instr_block_key key) noexcept
+{
+  this->_instr_block_key = key;
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_instr_block_key() noexcept
+{
+  this->_instr_block_key = corevm::dyobj::NONESET_INSTR_BLOCK_KEY;
 }
 
 template<class dynamic_object_manager>

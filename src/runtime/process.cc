@@ -200,6 +200,12 @@ corevm::runtime::process::append_instrs(const std::vector<corevm::runtime::instr
   _instrs.insert(_instrs.end(), instrs.begin(), instrs.end());
 }
 
+void
+corevm::runtime::process::append_instr_block(const corevm::runtime::instr_block& block)
+{
+  _instr_blocks.push_back(block);
+}
+
 bool
 corevm::runtime::process::_should_gc() const
 {

@@ -7,6 +7,7 @@
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 #include "frame.h"
 #include "instr.h"
+#include "instr_block.h"
 #include "../../include/dyobj/common.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
 #include "../../include/gc/garbage_collector.h"
@@ -80,6 +81,8 @@ public:
 
   void append_instrs(const std::vector<corevm::runtime::instr>&);
 
+  void append_instr_block(const corevm::runtime::instr_block&);
+
   void maybe_gc();
 
   static void tick_handler(void*);
@@ -98,6 +101,7 @@ private:
 
   uint8_t _gc_flag;
   std::vector<corevm::runtime::instr> _instrs;
+  std::vector<corevm::runtime::instr_block> _instr_blocks;
   corevm::runtime::instr_addr _pc = 0; // corevm::runtime::NONESET_INSTR_ADDR;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> _dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> _dyobj_stack;
