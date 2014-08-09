@@ -44,11 +44,19 @@ public:
   explicit process(const uint16_t); 
   ~process();
 
+  const corevm::runtime::instr_addr top_addr() const;
+
+  const corevm::runtime::instr_addr current_addr() const;
+
   uint64_t call_stack_size() const;
+
+  bool has_frame() const;
 
   corevm::runtime::frame& top_frame() throw(corevm::runtime::frame_not_found_error);
 
   void push_frame(corevm::runtime::frame&);
+
+  void pop_frame() throw(corevm::runtime::frame_not_found_error);
 
   uint64_t stack_size() const;
 
@@ -68,6 +76,10 @@ public:
   void erase_ntvhndl(corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_deletion_error);
 
+  void set_pc(const corevm::runtime::instr_addr) throw(corevm::runtime::invalid_instr_addr_error);
+
+  void append_instrs(const std::vector<corevm::runtime::instr>&);
+
   void maybe_gc();
 
   static void tick_handler(void*);
@@ -86,7 +98,7 @@ private:
 
   uint8_t _gc_flag;
   std::vector<corevm::runtime::instr> _instrs;
-  corevm::runtime::instr_addr _pc;
+  corevm::runtime::instr_addr _pc = 0; // corevm::runtime::NONESET_INSTR_ADDR;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> _dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> _dyobj_stack;
   std::stack<corevm::runtime::frame> _call_stack;

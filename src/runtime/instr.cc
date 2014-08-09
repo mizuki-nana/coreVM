@@ -1,3 +1,5 @@
+#include <csignal>
+#include <cstdlib>
 #include <stdexcept>
 #include <boost/format.hpp>
 #include "../../include/runtime/instr.h"
@@ -342,21 +344,64 @@ void
 corevm::runtime::instr_handler_rtrn::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::runtime::instr_addr return_addr = frame.get_return_addr();
+
+  if(return_addr == corevm::runtime::NONESET_INSTR_ADDR) {
+    throw corevm::runtime::invalid_instr_addr_error(); 
+  }
+
+  process.set_pc(return_addr);
 }
 
 void
 corevm::runtime::instr_handler_jmp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::runtime::instr_addr starting_addr = frame.get_start_addr();
+  corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
+
+  corevm::runtime::instr_addr addr = starting_addr + relative_addr;
+
+  if(addr == corevm::runtime::NONESET_INSTR_ADDR) {
+    throw corevm::runtime::invalid_instr_addr_error(); 
+  } else if(addr < starting_addr) {
+    throw corevm::runtime::invalid_instr_addr_error();
+  }
+
+  process.set_pc(addr);
 }
 
 void
 corevm::runtime::instr_handler_jmpif::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::runtime::instr_addr starting_addr = frame.get_start_addr();
+  corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
+
+  corevm::runtime::instr_addr addr = starting_addr + relative_addr;
+
+  if(addr == corevm::runtime::NONESET_INSTR_ADDR) {
+    throw corevm::runtime::invalid_instr_addr_error(); 
+  } else if(addr < starting_addr) {
+    throw corevm::runtime::invalid_instr_addr_error();
+  }
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle hndl2;
+
+  corevm::types::interface_to_bool(hndl, hndl2);
+
+  bool value = corevm::types::get_value_from_handle<bool>(hndl2);
+
+  if(value) {
+    process.set_pc(addr);
+  }
 }
 
 void
@@ -377,13 +422,20 @@ void
 corevm::runtime::instr_handler_exit::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  /*
+  // http://en.cppreference.com/w/cpp/utility/program/exit
+  int exit_code = static_cast<int>(instr.oprd1);
+  std::cout << "Exiting program with code " << exit_code << ". Bye." << std::endl;
+  std::exit(exit_code);
+  */
+  raise(SIGTERM);
 }
 
 void
 corevm::runtime::instr_handler_frm::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
+  // TODO: we need a way to set the starting instr addr for the frame.
   corevm::runtime::frame frame;
   process.push_frame(frame);
 }

@@ -37,6 +37,9 @@ public:
     return _eval_stack.size();
   }
 
+  corevm::runtime::instr_addr get_start_addr() const;
+  void set_start_addr(const corevm::runtime::instr_addr);
+
   corevm::runtime::instr_addr get_return_addr() const;
   void set_return_addr(const corevm::runtime::instr_addr);
 
@@ -66,7 +69,8 @@ public:
   std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
 
 protected:
-  corevm::runtime::instr_addr _return_addr = -1; 
+  corevm::runtime::instr_addr _start_addr = corevm::runtime::NONESET_INSTR_ADDR;
+  corevm::runtime::instr_addr _return_addr = corevm::runtime::NONESET_INSTR_ADDR;
   corevm::runtime::frame* _parent_scope_frame_ptr = nullptr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> _visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> _invisible_vars;

@@ -91,6 +91,14 @@ public:
 };
 
 
+class invalid_instr_addr_error : public corevm::runtime::runtime_error {
+public:
+  explicit invalid_instr_addr_error():
+    corevm::runtime::runtime_error("Invalid instruction address")
+  {}
+};
+
+
 } /* end namespace runtime */
 
 

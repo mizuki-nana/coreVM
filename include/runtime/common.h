@@ -22,6 +22,9 @@ typedef uint64_t instr_oprd;
 typedef int32_t variable_key;
 
 
+const instr_addr NONESET_INSTR_ADDR = -1;
+
+
 } /* end namespace runtime */
 
 

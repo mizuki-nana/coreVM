@@ -32,10 +32,28 @@ corevm::runtime::process::~process()
 {
 }
 
+const corevm::runtime::instr_addr
+corevm::runtime::process::top_addr() const
+{
+  return _instrs.size() - 1;
+}
+
+const corevm::runtime::instr_addr
+corevm::runtime::process::current_addr() const
+{
+  return _pc;
+}
+
 uint64_t
 corevm::runtime::process::call_stack_size() const
 {
   return _call_stack.size();
+}
+
+bool
+corevm::runtime::process::has_frame() const
+{
+  return !this->_call_stack.empty();
 }
 
 corevm::runtime::frame&
@@ -46,6 +64,16 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
   }
 
   return _call_stack.top();
+}
+
+void
+corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_error)
+{
+  if(_call_stack.empty()) {
+    throw corevm::runtime::frame_not_found_error();
+  }
+
+  _call_stack.pop();
 }
 
 void
@@ -143,6 +171,33 @@ corevm::runtime::process::maybe_gc()
   garbage_collector.gc();
 
   // TODO: resume execution...
+}
+
+void
+corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
+  throw(corevm::runtime::invalid_instr_addr_error)
+{
+  if(addr >= _instrs.size()) {
+    throw corevm::runtime::invalid_instr_addr_error();
+  }
+
+  _pc = addr;
+
+  while(this->has_frame()) {
+    corevm::runtime::frame& frame = this->top_frame();
+
+    if(! (frame.get_start_addr() > addr) ) {
+      break;
+    }
+
+    this->pop_frame();
+  }
+}
+
+void
+corevm::runtime::process::append_instrs(const std::vector<corevm::runtime::instr>& instrs)
+{
+  _instrs.insert(_instrs.end(), instrs.begin(), instrs.end());
 }
 
 bool

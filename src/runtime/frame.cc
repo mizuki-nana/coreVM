@@ -28,6 +28,18 @@ corevm::runtime::frame::check_state_before_destruction() throw(corevm::runtime::
 }
 
 corevm::runtime::instr_addr
+corevm::runtime::frame::get_start_addr() const
+{
+  return _start_addr;
+}
+
+void
+corevm::runtime::frame::set_start_addr(const corevm::runtime::instr_addr start_addr)
+{
+  _start_addr = start_addr;
+}
+
+corevm::runtime::instr_addr
 corevm::runtime::frame::get_return_addr() const
 {
   return _return_addr;

@@ -535,6 +535,144 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARGS)
 }
 
 
+class process_control_instrs_test : public process_instrs_integration_test {
+public:
+  static bool signal_fired;
+
+protected:
+  virtual void SetUp() {
+    std::vector<corevm::runtime::instr> instrs = {
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+      corevm::runtime::instr(),
+    };
+    _process.append_instrs(instrs);
+  }
+
+  corevm::runtime::process _process;
+};
+bool process_control_instrs_test::signal_fired = false;
+
+
+TEST_F(process_control_instrs_test, TestInstrRTRN)
+{
+  // TODO: to be implemented...
+}
+
+TEST_F(process_control_instrs_test, TestInstrJMP)
+{
+  corevm::runtime::frame frame;
+  frame.set_start_addr(0);
+  _process.push_frame(frame);
+
+  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  ASSERT_EQ(0, current_addr);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_jmp handler;
+  handler.execute(instr, _process);
+
+  current_addr = _process.current_addr();
+
+  ASSERT_EQ(8, current_addr);
+}
+
+TEST_F(process_control_instrs_test, TestInstrJMPIF)
+{
+  corevm::runtime::frame frame;
+  frame.set_start_addr(0);
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(true);
+  frame.push_eval_stack(hndl);
+  _process.push_frame(frame);
+
+  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  ASSERT_EQ(0, current_addr);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_jmpif handler;
+  handler.execute(instr, _process);
+
+  current_addr = _process.current_addr();
+
+  ASSERT_EQ(8, current_addr);
+}
+
+TEST_F(process_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
+{
+  corevm::runtime::frame frame;
+  frame.set_start_addr(0);
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(false);
+  frame.push_eval_stack(hndl);
+  _process.push_frame(frame);
+
+  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  ASSERT_EQ(0, current_addr);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_jmpif handler;
+  handler.execute(instr, _process);
+
+  current_addr = _process.current_addr();
+
+  ASSERT_EQ(0, current_addr);
+}
+
+TEST_F(process_control_instrs_test, TestInstrEXC)
+{
+  // TODO: to be implemented...
+}
+
+TEST_F(process_control_instrs_test, TestInstrEXC2)
+{
+  // TODO: to be implemented...
+}
+
+TEST_F(process_control_instrs_test, TestInstrEXIT)
+{
+  auto sig_handler = [](int signum) {
+    process_control_instrs_test::signal_fired = true;
+    signal(SIGTERM, SIG_IGN);
+  };
+ 
+  signal(SIGTERM, sig_handler);
+  ASSERT_EQ(false, process_control_instrs_test::signal_fired);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=EXIT_SUCCESS,
+    .oprd2=0
+  };
+  corevm::runtime::instr_handler_exit handler;
+  handler.execute(instr, _process);
+
+  ASSERT_EQ(true, process_control_instrs_test::signal_fired);
+}
+
+
 /*
  * For instructions that manipulate evaluation stacks.
  * */

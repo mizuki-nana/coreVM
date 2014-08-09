@@ -214,12 +214,12 @@ class instr_handler_objeq : public instr_handler { public: virtual void execute(
 class instr_handler_objneq : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Control instructions */
-class instr_handler_rtrn : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_jmp : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_jmpif : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_exc : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_exc2 : public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
-class instr_handler_exit: public instr_handler { virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_rtrn : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_jmp : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_jmpif : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_exc : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_exc2 : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_exit: public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 
 /* Function instructions */
 class instr_handler_frm : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
