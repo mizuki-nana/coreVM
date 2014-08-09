@@ -22,6 +22,9 @@ typedef uint64_t instr_oprd;
 typedef int32_t variable_key;
 
 
+typedef uint32_t gc_bitfield_t;
+
+
 const instr_addr NONESET_INSTR_ADDR = -1;
 
 

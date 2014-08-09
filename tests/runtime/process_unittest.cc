@@ -19,14 +19,49 @@ TEST_F(process_unittest, TestInitialization)
 
 TEST_F(process_unittest, TestInitializationWithArgs)
 {
-  corevm::runtime::process process(10);
+  corevm::runtime::process process(1);
+}
+
+TEST_F(process_unittest, TestStart)
+{
+  corevm::runtime::process process(1);
+  process.start();
+
+  // TODO: This has to be here for this test to work, let's figure out
+  // a way to make it work without this.
+  sleep(2);
 }
 
 
-class process_instrs_integration_test : public process_test {};
+class process_gc_rule_unittest : public process_test {
+protected:
+  corevm::runtime::process _process;
+};
 
 
-class process_obj_instrs_test : public process_instrs_integration_test {
+TEST_F(process_gc_rule_unittest, Test_gc_rule_always)
+{
+  corevm::runtime::gc_rule_always gc_rule;
+  ASSERT_EQ(true, gc_rule.should_gc(_process));
+}
+
+TEST_F(process_gc_rule_unittest, Test_gc_rule_by_heap_size)
+{
+  corevm::runtime::gc_rule_by_heap_size gc_rule;
+  ASSERT_EQ(false, gc_rule.should_gc(_process));
+}
+
+TEST_F(process_gc_rule_unittest, Test_gc_rule_by_ntvhndl_pool_size)
+{
+  corevm::runtime::gc_rule_by_ntvhndl_pool_size gc_rule;
+  ASSERT_EQ(false, gc_rule.should_gc(_process));
+}
+
+
+class process_instrs_unittest : public process_test {};
+
+
+class process_obj_instrs_test : public process_instrs_unittest {
 protected:
   virtual void SetUp() {
     _process.push_frame(_frame);
@@ -325,7 +360,7 @@ TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
 }
 
 
-class process_functions_instrs_test : public process_instrs_integration_test {
+class process_functions_instrs_test : public process_instrs_unittest {
 protected:
   corevm::runtime::process _process;
 };
@@ -535,7 +570,7 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARGS)
 }
 
 
-class process_control_instrs_test : public process_instrs_integration_test {
+class process_control_instrs_test : public process_instrs_unittest {
 public:
   static bool signal_fired;
 
@@ -676,7 +711,7 @@ TEST_F(process_control_instrs_test, TestInstrEXIT)
 /*
  * For instructions that manipulate evaluation stacks.
  * */
-class process_eval_stack_instrs_test : public process_instrs_integration_test {
+class process_eval_stack_instrs_test : public process_instrs_unittest {
 public:
   typedef uint32_t IntrinsicType;
 

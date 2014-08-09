@@ -1,5 +1,4 @@
 #include <cassert>
-#include <sneaker/libc/utils.h>
 #include "../../include/runtime/process.h"
 
 
@@ -7,25 +6,27 @@
   #define COREVM_DEFAULT_PROCESS_PAUSE_TIME 100
 #endif
 
-#ifndef COREVM_DEFAULT_GC_HEAP_SIZE_CUTOFF
-  #define COREVM_DEFAULT_GC_HEAP_SIZE_CUTOFF 0.75f
-#endif
-
-#ifndef COREVM_DEFAULT_GC_NTV_POOL_SIZE_CUTOFF
-  #define COREVM_DEFAULT_GC_NTV_POOL_SIZE_CUTOFF 0.75f
-#endif
-
 
 corevm::runtime::process::process():
   sneaker::threading::fixed_time_interval_daemon_service(
-    COREVM_DEFAULT_PROCESS_PAUSE_TIME, corevm::runtime::process::tick_handler, true, -1)
+    COREVM_DEFAULT_PROCESS_PAUSE_TIME,
+    corevm::runtime::process::tick_handler,
+    false,
+    -1
+  )
 {
+  // Do nothing here.
 }
 
 corevm::runtime::process::process(const uint16_t interval):
   sneaker::threading::fixed_time_interval_daemon_service(
-    interval, corevm::runtime::process::tick_handler, true, -1)
+    interval,
+    corevm::runtime::process::tick_handler,
+    false,
+    -1
+  )
 {
+  // Do nothing here.
 }
 
 corevm::runtime::process::~process()
@@ -157,6 +158,44 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   }
 }
 
+const corevm::runtime::instr_handler*
+corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
+{
+  corevm::runtime::instr_info instr_info = _instr_handler_meta.find(code);
+  return instr_info.handler;
+}
+
+void
+corevm::runtime::process::pause_exec()
+{
+  _pause_exec = true;
+}
+
+void
+corevm::runtime::process::resume_exec()
+{
+  _pause_exec = false;
+}
+
+bool
+corevm::runtime::process::start()
+{
+  bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
+
+  for(auto itr = _instrs.begin(); itr != _instrs.end(); ++itr) {
+    while(_pause_exec) {}
+
+    corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(*itr);
+
+    corevm::runtime::instr_handler* handler =
+      const_cast<corevm::runtime::instr_handler*>(this->get_instr_handler(instr.code));
+
+    handler->execute(instr, *this);
+  }
+
+  return res;
+}
+
 void
 corevm::runtime::process::maybe_gc()
 {
@@ -164,13 +203,13 @@ corevm::runtime::process::maybe_gc()
     return;
   }
 
-  // TODO: halt execution...
+  this->pause_exec();
 
   // GC...
   corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(_dynamic_object_heap);
   garbage_collector.gc();
 
-  // TODO: resume execution...
+  this->resume_exec();
 }
 
 void
@@ -207,14 +246,23 @@ corevm::runtime::process::append_instr_block(const corevm::runtime::instr_block&
 }
 
 bool
-corevm::runtime::process::_should_gc() const
+corevm::runtime::process::_should_gc()
 {
-  if(is_bit_set(_gc_flag, corevm::runtime::process_gc_bitfield::GC_ALWAYS)) {
-    return true;
-  } else if(is_bit_set(_gc_flag, corevm::runtime::process_gc_bitfield::GC_ON_HEAP_SIZE)) {
-    return _dynamic_object_heap.size() > _dynamic_object_heap.max_size() * COREVM_DEFAULT_GC_HEAP_SIZE_CUTOFF;
-  } else if(is_bit_set(_gc_flag, corevm::runtime::process_gc_bitfield::GC_ON_NTV_POOLSIZE)) {
-    return _ntv_handles_pool.size() > _ntv_handles_pool.max_size() * COREVM_DEFAULT_GC_NTV_POOL_SIZE_CUTOFF;
+  size_t flag_size = sizeof(_gc_flag) * 8;
+
+  for(int i = 0; i < flag_size; ++i) {
+    bool bit_set = is_bit_set(_gc_flag, i);
+
+    if(!bit_set) {
+      continue;
+    }
+
+    corevm::runtime::gc_rule_meta::gc_bitfields bit = static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
+    corevm::runtime::gc_rule* gc_rule = _gc_rule_meta.get_gc_rule(bit);
+
+    if(gc_rule && gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this))) {
+      return true;
+    }
   }
 
   return false;

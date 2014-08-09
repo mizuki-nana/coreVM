@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 #include "frame.h"
+#include "gc_rule.h"
 #include "instr.h"
 #include "instr_block.h"
 #include "../../include/dyobj/common.h"
@@ -20,26 +21,25 @@ namespace corevm {
 namespace runtime {
 
 
-enum process_gc_bitfield {
-  GC_ALWAYS = 1,
-  GC_ON_HEAP_SIZE = 2,
-  GC_ON_NTV_POOLSIZE = 3,
-};
-
-
 /* A process is a unit for executing a sequence of instructions.
  * It's supposed to have the following:
  *
+ * - A flag for pause/resume execution.
+ * - A flag for GC.
  * - A sequence of instructions.
- * - Program counter.
+ * - A sequence of instruction blocks.
+ * - A program counter.
  * - A heap for holding dynamic objects.
  * - A call stack for executing blocks of instructions.
  * - A pool of native type handles.
+ * - An incrementor for native handle IDs.
  * - An instance of instr handler meta class. */
 class process : public sneaker::threading::fixed_time_interval_daemon_service {
 public:
   using garbage_collection_scheme = typename corevm::gc::reference_count_garbage_collection_scheme;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
+  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
+  using native_handles_pool_type = typename std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>;
 
   explicit process();
   explicit process(const uint16_t); 
@@ -83,9 +83,31 @@ public:
 
   void append_instr_block(const corevm::runtime::instr_block&);
 
+  virtual bool start();
+
   void maybe_gc();
 
-  static void tick_handler(void*);
+  void pause_exec();
+  void resume_exec();
+
+  const corevm::runtime::instr_handler* get_instr_handler(corevm::runtime::instr_code);
+
+  /* Accessors */
+  dynamic_object_heap_type::size_type heap_size() const {
+    return _dynamic_object_heap.size();
+  }
+
+  dynamic_object_heap_type::size_type max_heap_size() const {
+    return _dynamic_object_heap.max_size();
+  }
+
+  native_handles_pool_type::size_type ntvhndl_pool_size() const {
+    return _ntv_handles_pool.size();
+  }
+
+  native_handles_pool_type::size_type max_ntvhndl_pool_size() const {
+    return _ntv_handles_pool.size();
+  }
 
   /* Helper functions */
   corevm::dyobj::dyobj_id __helper_create_dyobj() {
@@ -97,9 +119,13 @@ public:
   }
 
 private:
-  bool _should_gc() const;
+  static void tick_handler(void*);
 
-  uint8_t _gc_flag;
+  bool _should_gc();
+
+  bool _pause_exec = false;
+  uint8_t _gc_flag = 0;
+  corevm::runtime::gc_rule_meta _gc_rule_meta;
   std::vector<corevm::runtime::instr> _instrs;
   std::vector<corevm::runtime::instr_block> _instr_blocks;
   corevm::runtime::instr_addr _pc = 0; // corevm::runtime::NONESET_INSTR_ADDR;

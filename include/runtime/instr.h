@@ -335,11 +335,26 @@ typedef struct instr_info {
 
 class instr_handler_meta {
 public:
+  using map_type = typename std::unordered_map<corevm::runtime::instr_code, corevm::runtime::instr_info>;
+
   std::string instr_to_string(const corevm::runtime::instr&);
+
+  corevm::runtime::instr_info find(corevm::runtime::instr_code instr_code)
+    throw(corevm::runtime::invalid_instr_error)
+  {
+    auto itr = _instr_info_map.find(instr_code);
+
+    if(itr == _instr_info_map.end()) {
+      throw corevm::runtime::invalid_instr_error();
+    }
+
+    return _instr_info_map.at(instr_code); 
+  }
+
 private:
   corevm::runtime::instr_info _validate_instr(const corevm::runtime::instr&) throw(corevm::runtime::invalid_instr_error);
 
-  std::unordered_map<corevm::runtime::instr_code, corevm::runtime::instr_info> _instr_info_map {
+  map_type _instr_info_map {
     /* Object instructions */
     {corevm::runtime::instr_enum::NEW, {.num_oprd=0, .str="new", .handler=new instr_handler_new()}},
     {corevm::runtime::instr_enum::LDOBJ, {.num_oprd=1, .str="ldobj", .handler=new instr_handler_lbobj()}},

@@ -44,10 +44,10 @@ Sphinx:<br/>
 
 ## Dependencies
 boost:<br/>
-`Version 1.53`
+`Version 1.55`
 
 googletest:<br/>
 `Version 1.6.0`
 
 sneaker:<br/>
-`Version 0.2.1`
+`Version 0.2.2`
