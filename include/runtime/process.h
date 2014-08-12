@@ -118,6 +118,28 @@ public:
     return _dynamic_object_heap.at(id);
   }
 
+  /* signal handlers */
+  // Arithmetic and execution signals
+  void handle_SIGFPE();
+  void handle_SIGILL();
+  void handle_SIGSEGV();
+  // Termination signals
+  void handle_SIGABRT();
+  void handle_SIGINT();
+  void handle_SIGTERM();
+  void handle_SIGQUIT();
+  // Alarm signals
+  void handle_SIGALRM();
+  void handle_SIGVTALRM();
+  void handle_SIGPROF();
+  // Operation error signals
+  void handle_SIGPIPE();
+  void handle_SIGXCPU();
+  void handle_SIGXFSZ();
+  // Asynchronous I/O signals
+  void handle_SIGIO();
+  void handle_SIGURG();
+
 private:
   static void tick_handler(void*);
 

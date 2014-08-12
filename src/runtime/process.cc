@@ -275,3 +275,93 @@ corevm::runtime::process::tick_handler(void* arg)
   corevm::runtime::process* process = static_cast<corevm::runtime::process*>(arg);
   process->maybe_gc();
 }
+
+void
+corevm::runtime::process::handle_SIGFPE()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGILL()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGSEGV()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGABRT()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGINT()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGTERM()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGQUIT()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGALRM()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGVTALRM()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGPROF()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGPIPE()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGXCPU()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGXFSZ()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGIO()
+{
+  // TODO: to be implemented...
+}
+
+void
+corevm::runtime::process::handle_SIGURG()
+{
+  // TODO: to be implemented...
+}
