@@ -21,6 +21,7 @@ enum instr_enum {
   STOBJ,          // <stobj, key,> Pops the object on top of the stack and stores it with a key into the frame.
   GETATTR,        // <getattr, attr,> Pop the object at the top of the stack, get its attribute and push it onto the stack.
   SETATTR,        // <setattr, attr,> Pop the object at the top of the stack as the attribute, pop the next object as the target, and sets the attribute on the target.
+  DELATTR,        // <delattr, attr,> Pop the object at the top of the stack, and deletes its attribute and push it back onto the stack.
   POP,            // <pop,,> Pops the object on top of the stack.
   LDOBJ2,         // <ldobj2, key,> Load an invisible object by a key and push it onto the stack.
   STOBJ2,         // <stobj2, key,> Pops the object on top of the stack and stores it with a key into the frame as an invisible object.
@@ -202,6 +203,7 @@ class instr_handler_lbobj : public instr_handler { public: virtual void execute(
 class instr_handler_stobj : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_getattr : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_setattr : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
+class instr_handler_delattr : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_pop : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_ldobj2 : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };
 class instr_handler_stobj2 : public instr_handler { public: virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&); };

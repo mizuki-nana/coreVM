@@ -23,10 +23,22 @@ public:
       explicit dynamic_object_manager(): _count(0) {}
 
       virtual inline bool garbage_collectible() const noexcept {
-        return _count == 0;
+        return _count <= 1;
       }
 
-      virtual inline size_t ref_count() const noexcept {
+      virtual inline void on_create() noexcept {
+        this->inc_ref_count();
+      }
+
+      virtual inline void on_setattr() noexcept {
+        this->inc_ref_count();
+      }
+
+      virtual inline void on_delattr() noexcept {
+        this->dec_ref_count();
+      }
+
+      virtual inline uint64_t ref_count() const noexcept {
         return _count;
       }
 
@@ -39,7 +51,7 @@ public:
       }
 
     protected:
-      size_t _count;
+      uint64_t _count;
   } reference_count_dynamic_object_manager;
 
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<reference_count_dynamic_object_manager>;
@@ -60,6 +72,18 @@ public:
 
       virtual inline bool garbage_collectible() const noexcept {
         return marked();
+      }
+
+      virtual inline void on_create() noexcept {
+        // Do nothing here.
+      }
+
+      virtual inline void on_setattr() noexcept {
+        // Do nothing here.
+      }
+
+      virtual inline void on_delattr() noexcept {
+        // Do nothing here.
       }
 
       virtual inline bool marked() const noexcept {

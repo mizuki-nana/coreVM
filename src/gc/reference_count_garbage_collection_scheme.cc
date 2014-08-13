@@ -27,9 +27,7 @@ corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
   using _dynamic_object_type = typename
     corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type;
 
-  size_t ref_count = object.manager().ref_count();
-
-  if(ref_count > 0) {
+  if(!object.is_garbage_collectible()) {
     return;
   }
 

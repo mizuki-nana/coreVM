@@ -166,6 +166,9 @@ corevm::runtime::instr_handler_new::execute(
 {
   corevm::dyobj::dyobj_id id = process.__helper_create_dyobj();
 
+  auto &obj = process.__helper_at(id);
+  obj.manager().on_create();
+
   process.push_stack(id);
 }
 
@@ -211,9 +214,27 @@ corevm::runtime::instr_handler_setattr::execute(
   corevm::dyobj::dyobj_id target_id = process.pop_stack();
 
   auto &obj = process.__helper_at(target_id);
+  auto &attr_obj = process.__helper_at(attr_id);
   obj.putattr(attr_key, attr_id);
+  attr_obj.manager().on_setattr();
 
   process.push_stack(target_id);
+}
+
+void
+corevm::runtime::instr_handler_delattr::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+  auto &obj = process.__helper_at(id);
+  corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
+  auto &attr_obj = process.__helper_at(attr_id);
+  attr_obj.manager().on_delattr();
+  obj.delattr(attr_key);
+
+  process.push_stack(id);
 }
 
 void

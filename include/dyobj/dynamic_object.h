@@ -7,6 +7,7 @@
 #include <sneaker/libc/utils.h>
 #include "common.h"
 #include "dyobj_id.h"
+#include "flags.h"
 #include "errors.h"
 
 
@@ -61,6 +62,8 @@ public:
   bool get_flag(char);
   void set_flag(char);
   void clear_flag(char);
+
+  bool is_garbage_collectible();
 
   bool hasattr(attr_key_type) const noexcept;
 
@@ -244,6 +247,13 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit)
 {
   this->_check_flag_bit(bit);
   clear_nth_bit_uint32(&this->_flags, bit);
+}
+
+template<class dynamic_object_manager>
+bool
+corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible()
+{
+  return get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) && _manager.garbage_collectible();
 }
 
 template<class dynamic_object_manager>

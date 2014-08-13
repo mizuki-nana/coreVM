@@ -9,17 +9,19 @@ namespace dyobj {
 
 
 /* Dynamic object flags are represented by 32 bits unsigned integers. Please
- * refer to the definition of `corevm::dyobj::flag`.
+ * refer to the definition of `corevm::dyobj::flag`. These flag bits are
+ * defined so that the default value of a flag, 0, would be the appropriate
+ * value for most objects.
  */
 enum flags {
   // Bits that pertain to the lifespan of objects.
-  IS_GARBAGE_COLLECTIBLE = 1,
+  IS_NOT_GARBAGE_COLLECTIBLE = 1,
   IS_WEAK_REF = 2,
-  IS_DELETABLE = 3,
+  IS_INDELIBLE = 3,
   // Bits that pertain to the scope of objects.
   IS_GLOBAL_OBJ = 4,
   IS_SUPPLIED_OBJ = 5,
-  IS_VISIBLE_TO_USER = 6,
+  IS_INVISIBLE_TO_USER = 6,
   // Bits that pertain to the various attributes of objects.
   IS_CALLABLE = 7,
   IS_MUTABLE = 8,

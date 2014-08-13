@@ -37,9 +37,7 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
   using _dynamic_object_type = typename
     corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_type;
 
-  bool marked = object.manager().marked();
-
-  if(marked) {
+  if(!object.is_garbage_collectible()) {
     return;
   }
 

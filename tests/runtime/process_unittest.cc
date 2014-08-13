@@ -160,6 +160,33 @@ TEST_F(process_obj_instrs_test, TestInstrSETATTR)
   ASSERT_EQ(id2, obj.getattr(attr_key));
 }
 
+TEST_F(process_obj_instrs_test, TestInstrDELATTR)
+{
+  corevm::dyobj::attr_key attr_key = 777;
+  corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
+
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id attr_id = _process.__helper_create_dyobj();
+
+  auto& obj = _process.__helper_at(id);
+  obj.putattr(attr_key, attr_id);
+
+  ASSERT_TRUE(obj.hasattr(attr_key));
+
+  _process.push_stack(id);
+
+  _execute_instr<corevm::runtime::instr_handler_delattr>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id;
+  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+
+  auto &actual_obj = _process.__helper_at(actual_id);
+
+  ASSERT_FALSE(actual_obj.hasattr(attr_key));
+}
+
 TEST_F(process_obj_instrs_test, TestInstrPOP)
 {
   corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
