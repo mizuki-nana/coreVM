@@ -94,6 +94,14 @@ public:
 };
 
 
+class invalid_flag_bit_error : public corevm::dyobj::dynamic_object_runtime_error {
+public:
+  explicit invalid_flag_bit_error():
+    corevm::dyobj::dynamic_object_runtime_error("Invalid flag bit provided")
+  {}
+};
+
+
 } /* end namespace dyobj */
 
 

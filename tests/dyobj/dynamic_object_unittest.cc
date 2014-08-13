@@ -1,6 +1,8 @@
 #include <map>
 #include <sneaker/testing/_unittest.h>
+#include "../test_helper.h"
 #include "../../include/dyobj/dynamic_object.h"
+#include "../../include/dyobj/flags.h"
 
 
 class dummy_dynamic_object_manager {};
@@ -27,25 +29,37 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 
   ASSERT_EQ(0, obj.flags());
 
-  ASSERT_FALSE(obj.get_flag(1));
-  ASSERT_FALSE(obj.get_flag(16));
-  ASSERT_FALSE(obj.get_flag(32));
+  char flag1 = corevm::dyobj::flags::IS_GARBAGE_COLLECTIBLE;
+  char flag2 = corevm::dyobj::flags::IS_MUTABLE;
+  char flag3 = corevm::dyobj::flags::LAST_PLACEHOLDER;
 
-  obj.set_flag(1);
-  obj.set_flag(16);
-  obj.set_flag(32);
+  ASSERT_FALSE(obj.get_flag(flag1));
+  ASSERT_FALSE(obj.get_flag(flag2));
+  ASSERT_FALSE(obj.get_flag(flag3));
 
-  ASSERT_TRUE(obj.get_flag(1));
-  ASSERT_TRUE(obj.get_flag(16));
-  ASSERT_TRUE(obj.get_flag(32));
+  obj.set_flag(flag1);
+  obj.set_flag(flag2);
+  obj.set_flag(flag3);
 
-  obj.clear_flag(1);
-  obj.clear_flag(16);
-  obj.clear_flag(32);
+  ASSERT_TRUE(obj.get_flag(flag1));
+  ASSERT_TRUE(obj.get_flag(flag2));
+  ASSERT_TRUE(obj.get_flag(flag3));
 
-  ASSERT_FALSE(obj.get_flag(1));
-  ASSERT_FALSE(obj.get_flag(16));
-  ASSERT_FALSE(obj.get_flag(32));
+  obj.clear_flag(flag1);
+  obj.clear_flag(flag2);
+  obj.clear_flag(flag3);
+
+  ASSERT_FALSE(obj.get_flag(flag1));
+  ASSERT_FALSE(obj.get_flag(flag2));
+  ASSERT_FALSE(obj.get_flag(flag3));
+
+  // Tests that we cannot go over the flag bit limit...
+  char flag4 = corevm::dyobj::flags::LAST_PLACEHOLDER + 1;
+
+  _ASSERT_THROW(
+    { obj.set_flag(flag4); },
+    corevm::dyobj::invalid_flag_bit_error
+  );
 }
 
 TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)

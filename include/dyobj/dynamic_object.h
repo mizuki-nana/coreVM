@@ -58,9 +58,9 @@ public:
   void set_instr_block_key(corevm::dyobj::instr_block_key) noexcept;
   void clear_instr_block_key() noexcept;
 
-  bool get_flag(char) noexcept;
-  void set_flag(char) noexcept;
-  void clear_flag(char) noexcept;
+  bool get_flag(char);
+  void set_flag(char);
+  void clear_flag(char);
 
   bool hasattr(attr_key_type) const noexcept;
 
@@ -76,6 +76,8 @@ public:
   void iterate(Function) noexcept;
 
 private:
+  void _check_flag_bit(char) throw(corevm::dyobj::invalid_flag_bit_error);
+
   dyobj_id_type _id;
   corevm::dyobj::flag _flags;
   attr_map_type _attrs;
@@ -211,23 +213,36 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_instr_block_key() n
 }
 
 template<class dynamic_object_manager>
-bool
-corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit) noexcept
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::_check_flag_bit(char bit)
+  throw(corevm::dyobj::invalid_flag_bit_error)
 {
+  if(bit > sizeof(corevm::dyobj::flag) * 8) {
+    throw corevm::dyobj::invalid_flag_bit_error();
+  }
+}
+
+template<class dynamic_object_manager>
+bool
+corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit)
+{
+  this->_check_flag_bit(bit);
   return static_cast<bool>(is_bit_set_uint32(this->_flags, bit));
 }
 
 template<class dynamic_object_manager>
 void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::set_flag(char bit) noexcept
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_flag(char bit)
 {
+  this->_check_flag_bit(bit);
   set_nth_bit_uint32(&this->_flags, bit);
 }
 
 template<class dynamic_object_manager>
 void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit) noexcept
+corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit)
 {
+  this->_check_flag_bit(bit);
   clear_nth_bit_uint32(&this->_flags, bit);
 }
 
