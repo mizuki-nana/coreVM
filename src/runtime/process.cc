@@ -1,6 +1,7 @@
 #include <cassert>
+#include <setjmp.h>
 #include "../../include/runtime/process.h"
-
+#include "../../include/runtime/sighandler_registrar.h"
 
 #ifndef COREVM_DEFAULT_PROCESS_PAUSE_TIME
   #define COREVM_DEFAULT_PROCESS_PAUSE_TIME 100
@@ -178,19 +179,36 @@ corevm::runtime::process::resume_exec()
 }
 
 bool
+corevm::runtime::process::can_execute()
+{
+  return _pc < _instrs.size();
+}
+
+bool
 corevm::runtime::process::start()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
-  for(auto itr = _instrs.begin(); itr != _instrs.end(); ++itr) {
+  while(can_execute()) {
     while(_pause_exec) {}
 
-    corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(*itr);
+    corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(_instrs[_pc]);
 
     corevm::runtime::instr_handler* handler =
       const_cast<corevm::runtime::instr_handler*>(this->get_instr_handler(instr.code));
 
-    handler->execute(instr, *this);
+    sigsetjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
+
+    if(!corevm::runtime::sighandler_registrar::sig_raised) {
+      handler->execute(instr, *this);
+    } else {
+      if(!can_execute()) {
+        break;
+      }
+    }
+    corevm::runtime::sighandler_registrar::sig_raised = false;
+
+    ++_pc;
   }
 
   return res;
@@ -277,91 +295,32 @@ corevm::runtime::process::tick_handler(void* arg)
 }
 
 void
-corevm::runtime::process::handle_SIGFPE()
+corevm::runtime::process::set_sig_instr_block(
+  sig_atomic_t sig, corevm::runtime::instr_block& block)
 {
-  // TODO: to be implemented...
+  _sig_instr_map.insert({sig, block});
 }
 
 void
-corevm::runtime::process::handle_SIGILL()
+corevm::runtime::process::_insert_instr_block(corevm::runtime::instr_block& block)
 {
-  // TODO: to be implemented...
+  std::vector<corevm::runtime::instr>::iterator pos = _instrs.begin() + _pc + 1;
+  _instrs.insert(pos, block.begin(), block.end()); 
 }
 
 void
-corevm::runtime::process::handle_SIGSEGV()
+corevm::runtime::process::handle_signal(
+  sig_atomic_t sig, corevm::runtime::sighandler* handler)
 {
-  // TODO: to be implemented...
-}
+  auto itr = _sig_instr_map.find(sig);
 
-void
-corevm::runtime::process::handle_SIGABRT()
-{
-  // TODO: to be implemented...
-}
+  if(itr != _sig_instr_map.end()) {
+    corevm::runtime::instr_block block = itr->second;
+    this->pause_exec();
+    this->_insert_instr_block(block);
+    this->resume_exec();
 
-void
-corevm::runtime::process::handle_SIGINT()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGTERM()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGQUIT()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGALRM()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGVTALRM()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGPROF()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGPIPE()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGXCPU()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGXFSZ()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGIO()
-{
-  // TODO: to be implemented...
-}
-
-void
-corevm::runtime::process::handle_SIGURG()
-{
-  // TODO: to be implemented...
+  } else if(handler != nullptr) {
+    handler->handle_signal(sig, *this);
+  }
 }

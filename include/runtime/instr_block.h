@@ -13,7 +13,13 @@ namespace runtime {
 
 class instr_block {
 public:
-  explicit instr_block(std::vector<corevm::runtime::instr>& instrs):
+  using block_type = typename std::vector<corevm::runtime::instr>;
+
+  explicit instr_block(block_type& instrs):
+    _block(instrs)
+  {}
+
+  explicit instr_block(std::initializer_list<corevm::runtime::instr> instrs):
     _block(instrs)
   {}
 
@@ -22,12 +28,20 @@ public:
     return *this;
   }
 
-  std::vector<corevm::runtime::instr> block() const {
+  block_type block() const {
     return _block;
   }
 
+  block_type::iterator begin() {
+    return _block.begin();
+  }
+
+  block_type::iterator end() {
+    return _block.end();
+  }
+
 private:
-  std::vector<corevm::runtime::instr> _block;
+  block_type _block;
 };
 
 

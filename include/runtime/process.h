@@ -9,6 +9,7 @@
 #include "gc_rule.h"
 #include "instr.h"
 #include "instr_block.h"
+#include "sighandler.h"
 #include "../../include/dyobj/common.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
 #include "../../include/gc/garbage_collector.h"
@@ -87,6 +88,8 @@ public:
 
   void maybe_gc();
 
+  bool can_execute();
+
   void pause_exec();
   void resume_exec();
 
@@ -118,32 +121,16 @@ public:
     return _dynamic_object_heap.at(id);
   }
 
-  /* signal handlers */
-  // Arithmetic and execution signals
-  void handle_SIGFPE();
-  void handle_SIGILL();
-  void handle_SIGSEGV();
-  // Termination signals
-  void handle_SIGABRT();
-  void handle_SIGINT();
-  void handle_SIGTERM();
-  void handle_SIGQUIT();
-  // Alarm signals
-  void handle_SIGALRM();
-  void handle_SIGVTALRM();
-  void handle_SIGPROF();
-  // Operation error signals
-  void handle_SIGPIPE();
-  void handle_SIGXCPU();
-  void handle_SIGXFSZ();
-  // Asynchronous I/O signals
-  void handle_SIGIO();
-  void handle_SIGURG();
+  void set_sig_instr_block(sig_atomic_t, corevm::runtime::instr_block&);
+
+  void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);
 
 private:
   static void tick_handler(void*);
 
   bool _should_gc();
+
+  void _insert_instr_block(corevm::runtime::instr_block& block);
 
   bool _pause_exec = false;
   uint8_t _gc_flag = 0;
@@ -157,6 +144,7 @@ private:
   std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle> _ntv_handles_pool;
   corevm::runtime::instr_handler_meta _instr_handler_meta;
   sneaker::atomic::atomic_incrementor<corevm::dyobj::ntvhndl_key, INT_MAX> _ntv_handles_incrementor;
+  std::unordered_map<sig_atomic_t, corevm::runtime::instr_block> _sig_instr_map;
 };
 
 

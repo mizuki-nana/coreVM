@@ -1,29 +1,42 @@
 #include "../../include/runtime/sighandler_registrar.h"
+#include "../../include/runtime/sighandler.h"
 
 
 corevm::runtime::process* corevm::runtime::sighandler_registrar::process = nullptr;
 
-const std::unordered_map<sig_atomic_t, sighandler_t> corevm::runtime::sighandler_registrar::handler_map {
+bool corevm::runtime::sighandler_registrar::sig_raised = false;
+
+sigjmp_buf _env;
+
+
+sigjmp_buf&
+corevm::runtime::sighandler_registrar::get_sigjmp_env()
+{
+  return _env;
+}
+
+const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> corevm::runtime::sighandler_registrar::handler_map {
   // Arithmetic and execution signals
-  {SIGFPE, handle_SIGFPE},
-  {SIGKILL, handle_SIGILL},
-  {SIGSEGV, handle_SIGSEGV},
+  {SIGFPE, {.handler=new sighandler_SIGFPE()}},
+  {SIGKILL, {.handler=new sighandler_SIGILL()}},
+  {SIGSEGV, {.handler=new sighandler_SIGSEGV()}},
+  {SIGBUS, {.handler=new sighandler_SIGBUS()}},
   // Termination signals
-  {SIGABRT, handle_SIGABRT},
-  {SIGINT, handle_SIGINT},
-  {SIGTERM, handle_SIGTERM},
-  {SIGQUIT, handle_SIGQUIT},
+  {SIGABRT, {.handler=new sighandler_SIGABRT()}},
+  {SIGINT, {.handler=new sighandler_SIGINT()}},
+  {SIGTERM, {.handler=new sighandler_SIGTERM()}},
+  {SIGQUIT, {.handler=new sighandler_SIGQUIT()}},
   // Alarm signals
-  {SIGALRM, handle_SIGALRM},
-  {SIGVTALRM, handle_SIGVTALRM},
-  {SIGPROF, handle_SIGPROF},
+  {SIGALRM, {.handler=new sighandler_SIGALRM()}},
+  {SIGVTALRM, {.handler=new sighandler_SIGVTALRM()}},
+  {SIGPROF, {.handler=new sighandler_SIGPROF()}},
   // Operation error signals
-  {SIGPIPE, handle_SIGPIPE},
-  {SIGXCPU, handle_SIGXCPU},
-  {SIGXFSZ, handle_SIGXFSZ},
+  {SIGPIPE, {.handler=new sighandler_SIGPIPE()}},
+  {SIGXCPU, {.handler=new sighandler_SIGXCPU()}},
+  {SIGXFSZ, {.handler=new sighandler_SIGXFSZ()}},
   // Asynchronous I/O signals
-  {SIGIO, handle_SIGIO},
-  {SIGURG, handle_SIGURG},
+  {SIGIO, {.handler=new sighandler_SIGIO()}},
+  {SIGURG, {.handler=new sighandler_SIGURG()}},
 };
 
 
@@ -38,8 +51,7 @@ corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
     ++itr
   ) {
     sig_atomic_t sig = itr->first;
-    sighandler_t handler = itr->second;
-    signal(sig, handler);
+    signal(sig, corevm::runtime::sighandler_registrar::handle_signal);
   }
 }
 
@@ -50,91 +62,19 @@ corevm::runtime::sighandler_registrar::ignore(sig_atomic_t sig)
 }
 
 void
-corevm::runtime::sighandler_registrar::handle_SIGFPE(int signum)
+corevm::runtime::sighandler_registrar::handle_signal(int signum)
 {
-  corevm::runtime::sighandler_registrar::process->handle_SIGFPE();
-}
+  auto itr = corevm::runtime::sighandler_registrar::handler_map.find(signum);
 
-void
-corevm::runtime::sighandler_registrar::handle_SIGILL(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGILL();
-}
+  corevm::runtime::sighandler *handler =
+    itr != corevm::runtime::sighandler_registrar::handler_map.end() ?
+    itr->second.handler : nullptr;
 
-void
-corevm::runtime::sighandler_registrar::handle_SIGSEGV(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGSEGV();
-}
+  corevm::runtime::sighandler_registrar::process->handle_signal(
+    signum,
+    handler
+  );
 
-void
-corevm::runtime::sighandler_registrar::handle_SIGABRT(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGABRT();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGINT(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGINT();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGTERM(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGTERM();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGQUIT(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGQUIT();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGALRM(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGALRM();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGVTALRM(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGVTALRM();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGPROF(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGPROF();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGPIPE(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGPIPE();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGXCPU(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGXCPU();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGXFSZ(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGXFSZ();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGIO(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGIO();
-}
-
-void
-corevm::runtime::sighandler_registrar::handle_SIGURG(int signum)
-{
-  corevm::runtime::sighandler_registrar::process->handle_SIGURG();
+  corevm::runtime::sighandler_registrar::sig_raised = true;
+  siglongjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
 }
