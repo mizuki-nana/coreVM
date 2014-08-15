@@ -27,6 +27,12 @@ corevm::runtime::frame::check_state_before_destruction() throw(corevm::runtime::
   }
 }
 
+uint32_t
+corevm::runtime::frame::eval_stack_size() const
+{
+  return _eval_stack.size();
+}
+
 corevm::runtime::instr_addr
 corevm::runtime::frame::get_start_addr() const
 {

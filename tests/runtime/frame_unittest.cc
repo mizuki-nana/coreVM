@@ -110,3 +110,78 @@ TEST_F(frame_unittest, TestStateCheckOnInvalidState)
     corevm::runtime::evaluation_stack_not_empty_error
   );
 }
+
+TEST_F(frame_unittest, TestPutAndGetParams)
+{
+  corevm::runtime::frame frame;
+
+  ASSERT_EQ(false, frame.has_params());
+
+  corevm::dyobj::dyobj_id id2 = 200;
+  corevm::dyobj::dyobj_id id1 = 1000;
+
+  frame.put_param(id2);
+  frame.put_param(id1);
+
+  ASSERT_EQ(true, frame.has_params());
+
+  ASSERT_EQ(id1, frame.pop_param());
+  ASSERT_EQ(id2, frame.pop_param());
+
+  _ASSERT_THROW(
+    { frame.pop_param(); },
+    corevm::runtime::missing_parameter_error
+  );
+
+  ASSERT_EQ(false, frame.has_params());
+}
+
+TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
+{
+  corevm::runtime::frame frame;
+
+  ASSERT_EQ(false, frame.has_param_value_pairs());
+
+  corevm::runtime::variable_key key1 = 100;
+  corevm::runtime::variable_key key2 = 2000;
+  corevm::dyobj::dyobj_id id1 = 200;
+  corevm::dyobj::dyobj_id id2 = 1000;
+
+  frame.put_param_value_pair(key1, id1);
+  frame.put_param_value_pair(key2, id2);
+
+  ASSERT_EQ(true, frame.has_param_value_pairs());
+
+  ASSERT_EQ(id1, frame.pop_param_value_pair(key1));
+  ASSERT_EQ(id2, frame.pop_param_value_pair(key2));
+
+  _ASSERT_THROW(
+    { frame.pop_param_value_pair(key1); },
+    corevm::runtime::missing_parameter_error
+  );
+
+  ASSERT_EQ(false, frame.has_param_value_pairs());
+}
+
+TEST_F(frame_unittest, TestListParamValuePairKeys)
+{
+  corevm::runtime::frame frame;
+
+  std::list<corevm::runtime::variable_key> expected_keys = {};
+  std::list<corevm::runtime::variable_key> actual_keys = frame.param_value_pair_keys();
+
+  ASSERT_EQ(expected_keys, actual_keys);
+
+  corevm::runtime::variable_key key1 = 100;
+  corevm::runtime::variable_key key2 = 2000;
+  corevm::dyobj::dyobj_id id1 = 200;
+  corevm::dyobj::dyobj_id id2 = 1000;
+
+  frame.put_param_value_pair(key1, id1);
+  frame.put_param_value_pair(key2, id2);
+
+  expected_keys = {key1, key2};
+  actual_keys = frame.param_value_pair_keys();
+
+  ASSERT_EQ(expected_keys, actual_keys);
+}
