@@ -4,7 +4,7 @@
 #include "../../include/runtime/sighandler_registrar.h"
 
 #ifndef COREVM_DEFAULT_PROCESS_PAUSE_TIME
-  #define COREVM_DEFAULT_PROCESS_PAUSE_TIME 100
+  #define COREVM_DEFAULT_PROCESS_PAUSE_TIME 10
 #endif
 
 
@@ -32,6 +32,7 @@ corevm::runtime::process::process(const uint16_t interval):
 
 corevm::runtime::process::~process()
 {
+  // Do nothing here.
 }
 
 const corevm::runtime::instr_addr

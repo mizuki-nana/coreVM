@@ -24,10 +24,6 @@ TEST_F(process_unittest, TestStart)
 {
   corevm::runtime::process process(1);
   process.start();
-
-  // TODO: This has to be here for this test to work, let's figure out
-  // a way to make it work without this.
-  sleep(2);
 }
 
 
@@ -81,7 +77,6 @@ TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
 
   process.start();
   raise(sig);
-  sleep(1);
 
   ASSERT_EQ(1, process.stack_size());
 }
@@ -123,7 +118,6 @@ TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
   process.set_sig_instr_block(sig, block_on_signal);
 
   process.start();
-  sleep(1);
 
   ASSERT_EQ(2, process.stack_size());
 }
