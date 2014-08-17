@@ -59,11 +59,11 @@ public:
   void set_instr_block_key(corevm::dyobj::instr_block_key) noexcept;
   void clear_instr_block_key() noexcept;
 
-  bool get_flag(char);
+  bool get_flag(char) const;
   void set_flag(char);
   void clear_flag(char);
 
-  bool is_garbage_collectible();
+  bool is_garbage_collectible() const noexcept;
 
   bool hasattr(attr_key_type) const noexcept;
 
@@ -75,11 +75,13 @@ public:
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::dynamic_object_attribute_not_found_error);
 
+  bool has_ref(dyobj_id_type) const noexcept;
+
   template<typename Function>
   void iterate(Function) noexcept;
 
 private:
-  void _check_flag_bit(char) throw(corevm::dyobj::invalid_flag_bit_error);
+  void _check_flag_bit(char) const throw(corevm::dyobj::invalid_flag_bit_error);
 
   dyobj_id_type _id;
   corevm::dyobj::flag _flags;
@@ -217,7 +219,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_instr_block_key() n
 
 template<class dynamic_object_manager>
 void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::_check_flag_bit(char bit)
+corevm::dyobj::dynamic_object<dynamic_object_manager>::_check_flag_bit(char bit) const
   throw(corevm::dyobj::invalid_flag_bit_error)
 {
   if(bit > sizeof(corevm::dyobj::flag) * 8) {
@@ -227,7 +229,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::_check_flag_bit(char bit)
 
 template<class dynamic_object_manager>
 bool
-corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit)
+corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit) const
 {
   this->_check_flag_bit(bit);
   return static_cast<bool>(is_bit_set_uint32(this->_flags, bit));
@@ -251,9 +253,9 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit)
 
 template<class dynamic_object_manager>
 bool
-corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible()
+corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible() const noexcept
 {
-  return get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) && _manager.garbage_collectible();
+  return get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == false && _manager.garbage_collectible();
 }
 
 template<class dynamic_object_manager>
@@ -297,6 +299,19 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type obj_id) noexcept
 {
   this->_attrs.insert({attr_key, obj_id});
+}
+
+template<class dynamic_object_manager>
+bool
+corevm::dyobj::dynamic_object<dynamic_object_manager>::has_ref(dyobj_id_type id) const noexcept
+{
+  return std::find_if(
+    cbegin(),
+    cend(),
+    [&id](const corevm::dyobj::dynamic_object<dynamic_object_manager>::pair& pair) -> bool {
+      return id == static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type>(pair.second);
+    }
+  ) != cend();
 }
 
 template<class dynamic_object_manager>

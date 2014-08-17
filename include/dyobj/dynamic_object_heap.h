@@ -59,8 +59,18 @@ public:
     return _map.max_size();
   }
 
+  size_type active_size() const noexcept;
+
   iterator erase(const_iterator pos) {
     return _map.erase(pos);
+  }
+
+  void erase(dynamic_object_id_type id) {
+    auto itr = _map.find(id);
+
+    if(itr != _map.end()) {
+      erase(itr);
+    }
   }
 
   iterator begin() noexcept;
@@ -93,6 +103,20 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::~dynamic_object_heap()
 {
+}
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const noexcept
+{
+  return std::count_if(
+    cbegin(),
+    cend(),
+    [](const corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::pair& pair) -> bool {
+      const auto& obj = static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type>(pair.second);
+      return !obj.is_garbage_collectible();
+    }
+  );
 }
 
 template<class dynamic_object_manager>

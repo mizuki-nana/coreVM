@@ -23,7 +23,7 @@ public:
       explicit dynamic_object_manager(): _count(0) {}
 
       virtual inline bool garbage_collectible() const noexcept {
-        return _count <= 1;
+        return _count == 0;
       }
 
       virtual inline void on_create() noexcept {
@@ -38,16 +38,26 @@ public:
         this->dec_ref_count();
       }
 
+      virtual inline void on_delete() noexcept {
+        this->dec_ref_count();
+      }
+
+      virtual inline void on_exit() noexcept {
+        this->dec_ref_count();
+      }
+
       virtual inline uint64_t ref_count() const noexcept {
         return _count;
       }
 
       virtual inline void inc_ref_count() noexcept {
-        _count++;
+        ++_count;
       }
 
       virtual inline void dec_ref_count() noexcept {
-        _count--;
+        if(_count > 0) {
+          --_count;
+        }
       }
 
     protected:
@@ -61,6 +71,9 @@ public:
 
 protected:
   void check_and_dec_ref_count(dynamic_object_heap_type&, dynamic_object_type&) const;
+
+  void resolve_self_reference_cycles(dynamic_object_heap_type&, dynamic_object_type&) const;
+  void remove_cycles(dynamic_object_heap_type&) const;
 };
 
 
@@ -83,6 +96,14 @@ public:
       }
 
       virtual inline void on_delattr() noexcept {
+        // Do nothing here.
+      }
+
+      virtual inline void on_delete() noexcept {
+        // Do nothing here.
+      }
+
+      virtual inline void on_exit() noexcept {
         // Do nothing here.
       }
 

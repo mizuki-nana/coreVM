@@ -66,6 +66,9 @@ public:
   const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key) throw(corevm::runtime::missing_parameter_error);
   std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
 
+  std::list<corevm::dyobj::dyobj_id> get_visible_objs() const;
+  std::list<corevm::dyobj::dyobj_id> get_invisible_objs() const;
+
 protected:
   corevm::runtime::instr_addr _start_addr = corevm::runtime::NONESET_INSTR_ADDR;
   corevm::runtime::instr_addr _return_addr = corevm::runtime::NONESET_INSTR_ADDR;

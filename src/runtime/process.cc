@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cassert>
 #include <setjmp.h>
 #include "../../include/runtime/process.h"
@@ -72,9 +73,28 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
 void
 corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_error)
 {
-  if(_call_stack.empty()) {
-    throw corevm::runtime::frame_not_found_error();
-  }
+  corevm::runtime::frame& frame = this->top_frame();
+
+  std::list<corevm::dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
+  std::list<corevm::dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
+
+  std::for_each(
+    visible_objs.begin(),
+    visible_objs.end(),
+    [this](corevm::dyobj::dyobj_id id) {
+      auto &obj = this->__helper_at(id);
+      obj.manager().on_exit();
+    }
+  );
+
+  std::for_each(
+    invisible_objs.begin(),
+    invisible_objs.end(),
+    [this](corevm::dyobj::dyobj_id id) {
+      auto &obj = this->__helper_at(id);
+      obj.manager().on_exit();
+    }
+  );
 
   _call_stack.pop();
 }

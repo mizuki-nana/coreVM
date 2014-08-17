@@ -270,7 +270,9 @@ corevm::runtime::instr_handler_delobj::execute(
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   corevm::runtime::frame& frame = process.top_frame();
 
-  frame.pop_visible_var(key);
+  corevm::dyobj::dyobj_id id = frame.pop_visible_var(key);
+  auto &obj = process.__helper_at(id);
+  obj.manager().on_delete();
 }
 
 void
@@ -280,7 +282,9 @@ corevm::runtime::instr_handler_delobj2::execute(
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   corevm::runtime::frame& frame = process.top_frame();
 
-  frame.pop_invisible_var(key);
+  corevm::dyobj::dyobj_id id = frame.pop_invisible_var(key);
+  auto &obj = process.__helper_at(id);
+  obj.manager().on_delete();
 }
 
 void

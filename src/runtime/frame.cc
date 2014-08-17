@@ -219,3 +219,29 @@ corevm::runtime::frame::param_value_pair_keys() const
 
   return keys;
 }
+
+std::list<corevm::dyobj::dyobj_id>
+corevm::runtime::frame::get_visible_objs() const
+{
+  std::list<corevm::dyobj::dyobj_id> ids;
+
+  for(auto itr = _visible_vars.begin(); itr != _visible_vars.end(); ++itr) {
+    corevm::dyobj::dyobj_id id = itr->second;
+    ids.push_back(id);
+  }
+
+  return ids;
+}
+
+std::list<corevm::dyobj::dyobj_id>
+corevm::runtime::frame::get_invisible_objs() const
+{
+  std::list<corevm::dyobj::dyobj_id> ids;
+
+  for(auto itr = _invisible_vars.begin(); itr != _invisible_vars.end(); ++itr) {
+    corevm::dyobj::dyobj_id id = itr->second;
+    ids.push_back(id);
+  }
+
+  return ids;
+}
