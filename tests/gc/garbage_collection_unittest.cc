@@ -435,11 +435,6 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleInward
    *
    * will result in 4 objects left on the heap.
    */
-
-  /* TODO: This test current does not pass. This is because
-   * we do not have a way to determine if any object in a cycle
-   * is being pointed to by a non garbage-collectible object
-   * outside the cycle.
   corevm::dyobj::dyobj_id id1 = this->__create_obj();
   corevm::dyobj::dyobj_id id2 = this->__create_obj();
   corevm::dyobj::dyobj_id id3 = this->__create_obj();
@@ -453,7 +448,34 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleInward
   this->__set_not_garbage_collectible(id4);
 
   this->do_gc_and_check_results(4);
-  */
+}
+
+TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoInwardStubs)
+{
+  /*
+   * Tests gc on the following object graph
+   *
+   * obj5-> obj1 -> obj2 -> obj3 <- obj4*
+   *         ^                |
+   *         |________________|
+   *
+   * will result in 4 objects left on the heap.
+   */
+  corevm::dyobj::dyobj_id id1 = this->__create_obj();
+  corevm::dyobj::dyobj_id id2 = this->__create_obj();
+  corevm::dyobj::dyobj_id id3 = this->__create_obj();
+  corevm::dyobj::dyobj_id id4 = this->__create_obj();
+  corevm::dyobj::dyobj_id id5 = this->__create_obj();
+
+  this->__setattr(id1, id2);
+  this->__setattr(id2, id3);
+  this->__setattr(id3, id1);
+  this->__setattr(id4, id3);
+  this->__setattr(id5, id1);
+
+  this->__set_not_garbage_collectible(id4);
+
+  this->do_gc_and_check_results(4);
 }
 
 TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleOutwardStub)
@@ -476,6 +498,34 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleOutwar
   this->__setattr(id2, id3);
   this->__setattr(id3, id1);
   this->__setattr(id3, id4);
+
+  this->__set_not_garbage_collectible(id4);
+
+  this->do_gc_and_check_results(1);
+}
+
+TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoOutwardStubs)
+{
+  /*
+   * Tests gc on the following object graph
+   *
+   * obj5 <- obj1 -> obj2 -> obj3 -> obj4*
+   *          ^                |
+   *          |________________|
+   *
+   * will result in 1 objects left on the heap.
+   */
+  corevm::dyobj::dyobj_id id1 = this->__create_obj();
+  corevm::dyobj::dyobj_id id2 = this->__create_obj();
+  corevm::dyobj::dyobj_id id3 = this->__create_obj();
+  corevm::dyobj::dyobj_id id4 = this->__create_obj();
+  corevm::dyobj::dyobj_id id5 = this->__create_obj();
+
+  this->__setattr(id1, id2);
+  this->__setattr(id2, id3);
+  this->__setattr(id3, id1);
+  this->__setattr(id3, id4);
+  this->__setattr(id1, id5);
 
   this->__set_not_garbage_collectible(id4);
 

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <set>
 #include <unordered_map>
 #include <sneaker/algorithm/tarjan.h>
 #include "../../include/gc/garbage_collection_scheme.h"
@@ -108,12 +109,23 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
     return vertex;
   };
 
+  std::set<dyobj_id_type> non_garbage_collectible_neighbors;
+
   heap.iterate(
     [&](
       dynamic_object_heap_type::dynamic_object_id_type id,
       dynamic_object_heap_type::dynamic_object_type object
     ) {
       if(object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true) {
+        object.iterate(
+          [&](
+            dynamic_object_type::attr_key_type attr_key,
+            dynamic_object_type::dyobj_id_type neighbor_id
+          ) {
+            non_garbage_collectible_neighbors.insert(neighbor_id);
+          }
+        );
+
         return;
       }
 
@@ -146,6 +158,26 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
 
   for(auto itr = cycles.begin(); itr != cycles.end(); ++itr) {
     std::list<dyobj_id_type> cycle = *itr;
+
+    std::set<dyobj_id_type> cycle_set;
+
+    for(auto _itr = cycle.begin(); _itr != cycle.end(); ++_itr) {
+      dyobj_id_type id = *_itr;
+      cycle_set.insert(id);
+    }
+
+    std::set<dyobj_id_type> intersect;
+    std::set_intersection(
+      non_garbage_collectible_neighbors.begin(),
+      non_garbage_collectible_neighbors.end(),
+      cycle_set.begin(),
+      cycle_set.end(),
+      std::inserter(intersect, intersect.begin())
+    );
+
+    if(!intersect.empty()) {
+      continue;
+    }
 
     for(auto _itr = cycle.begin(); _itr != cycle.end(); ++_itr) {
       dyobj_id_type id = *_itr;
