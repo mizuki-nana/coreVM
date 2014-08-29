@@ -178,6 +178,8 @@ TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 {
   corevm::runtime::variable_key key = 1;
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+
   corevm::runtime::instr instr = {
     .code=0,
     .oprd1=static_cast<corevm::runtime::instr_oprd>(key), 
@@ -185,7 +187,7 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
   };
 
   corevm::runtime::frame frame;
-  frame.set_visible_var(key, 2);
+  frame.set_visible_var(key, id);
   _process.push_frame(frame);
 
   _execute_instr<corevm::runtime::instr_handler_delobj>(instr, 0);
@@ -198,6 +200,8 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
 {
   corevm::runtime::variable_key key = 1;
+  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+
   corevm::runtime::instr instr = {
     .code=0,
     .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
@@ -205,7 +209,7 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
   };
 
   corevm::runtime::frame frame;
-  frame.set_invisible_var(key, 2);
+  frame.set_invisible_var(key, id);
   _process.push_frame(frame);
 
   _execute_instr<corevm::runtime::instr_handler_delobj2>(instr, 0);
