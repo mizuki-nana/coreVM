@@ -54,11 +54,12 @@ TEST_F(native_type_unary_operator_interfaces_test, TestInvalidOperator)
 {
   corevm::types::native_type_handle operand = corevm::types::array();
 
-  _ASSERT_THROW(
+  // TODO|COREVM-52: should be `corevm::types::corevm_native_type_invalid_operator_error`
+  ASSERT_THROW(
     {
       this->apply_unary_operator_and_assert_result<int>(operand, corevm::types::interface_apply_decrement_operator, 0);
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::corevm_native_type_conversion_error
   );
 }
 
@@ -226,10 +227,11 @@ TEST_F(native_type_binary_operator_interfaces_test, TestInvalidOperator)
   corevm::types::native_type_handle lhs = corevm::types::array();
   corevm::types::native_type_handle rhs = corevm::types::map();
 
-  _ASSERT_THROW(
+  // TODO|COREVM-52: should be `corevm::types::corevm_native_type_invalid_operator_error`
+  ASSERT_THROW(
     {
       this->apply_binary_operator_and_assert_result<int>(lhs, rhs, corevm::types::interface_apply_addition_operator, 0);
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::corevm_native_type_conversion_error
   );
 }

@@ -5,8 +5,8 @@
 
 
 /* typedefs to make things easier to read. */
-using iterator_type = typename corevm::memory::sequential_allocation_scheme::iterator;
-using block_descriptor_type = typename corevm::memory::sequential_block_descriptor;
+typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
+typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
 
 corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(size_t total_size)
@@ -339,8 +339,8 @@ corevm::memory::buddy_allocation_scheme::_combine_free_blocks() noexcept
         if(current_block.free && next_block.free) {
 
           block_descriptor_type combined_block = {
-            .offset = current_block.offset,
             .size = current_block.size + next_block.size,
+            .offset = current_block.offset,
             .free = true
           };
 

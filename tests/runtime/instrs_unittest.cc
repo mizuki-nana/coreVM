@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <list>
 #include <sneaker/testing/_unittest.h>
-#include "../test_helper.h"
 #include "../../include/runtime/process.h"
 #include "../../include/types/interfaces.h"
 
@@ -143,9 +142,9 @@ TEST_F(process_obj_instrs_test, TestInstrPOP)
   corevm::runtime::instr instr;
   _execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
 
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { _process.top_stack(); },
-    corevm::runtime::stack_empty_error
+    corevm::runtime::object_stack_empty_error
   );
 }
 
@@ -347,7 +346,7 @@ protected:
 
 TEST_F(process_functions_instrs_test, TestInstrFRM)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { _process.top_frame(); },
     corevm::runtime::frame_not_found_error
   );
@@ -371,7 +370,7 @@ TEST_F(process_functions_instrs_test, TestInstrPUTARG)
 
   corevm::runtime::frame& actual_frame = _process.top_frame();
 
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { actual_frame.pop_param(); },
     corevm::runtime::missing_parameter_error
   );
@@ -396,7 +395,7 @@ TEST_F(process_functions_instrs_test, TestInstrPUTKWARG)
 
   corevm::runtime::frame& actual_frame = _process.top_frame();
 
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { actual_frame.pop_param_value_pair(key); },
     corevm::runtime::missing_parameter_error
   );
@@ -1050,7 +1049,7 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2DEC2)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { execute_instr_and_assert_result<corevm::runtime::instr_handler_2str>(); },
     corevm::types::corevm_native_type_conversion_error
   );
@@ -1058,7 +1057,7 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { execute_instr_and_assert_result<corevm::runtime::instr_handler_2ary>(); },
     corevm::types::corevm_native_type_conversion_error
   );
@@ -1066,7 +1065,7 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { execute_instr_and_assert_result<corevm::runtime::instr_handler_2map>(); },
     corevm::types::corevm_native_type_conversion_error
   );

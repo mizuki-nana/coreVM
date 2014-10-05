@@ -11,11 +11,11 @@ and versatility in mind.
 
 ### OS X
 Operating System:<br/>
-`OS X 10.9.2 (13C64)`
+`OS X 10.9.5 (13F34)`
 
 Compiler:<br/>
-`Apple LLVM version 5.1 (clang-503.0.38) (based on LLVM 3.4svn)
-Target: x86_64-apple-darwin13.1.0
+`Apple LLVM version 5.1 (clang-503.0.40) (based on LLVM 3.4svn)
+Target: x86_64-apple-darwin13.4.0
 Thread model: posix`
 
 Make:<br/>
@@ -27,10 +27,10 @@ Sphinx:<br/>
 
 ### Debian
 Operating System:<br/>
-`Linux 3.8.0-29-generic #42~precise1-Ubuntu x86_64 GNU/Linux (Ubuntu 12.04.4 LTS)`
+`Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.1 LTS)`
 
 Compiler:<br/>
-`Ubuntu clang version 3.2-1~exp9ubuntu1~precise1 (tags/RELEASE_32/final) (based on LLVM 3.2)
+`Ubuntu clang version 3.4-1ubuntu3 (tags/RELEASE_34/final) (based on LLVM 3.4)
 Target: x86_64-pc-linux-gnu
 Thread model: posix`
 

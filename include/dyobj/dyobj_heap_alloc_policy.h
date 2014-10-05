@@ -74,7 +74,7 @@ corevm::dyobj::dyobj_heap_alloc_policy<T, N>::allocate(
   typename std::allocator<void>::const_pointer
 )
 {
-  return reinterpret_cast<_MyType<T, N>::pointer>( _heap.malloc_mem(n * sizeof(T)) );
+  return reinterpret_cast<typename _MyType<T, N>::pointer>( _heap.malloc_mem(n * sizeof(T)) );
 }
 
 template<typename T, size_t N>

@@ -24,14 +24,14 @@ namespace dyobj {
 template<class dynamic_object_manager>
 class dynamic_object {
 public:
-  using attr_key_type = typename corevm::dyobj::attr_key;
-  using dyobj_id_type = typename corevm::dyobj::dyobj_id;
+  typedef corevm::dyobj::attr_key attr_key_type;
+  typedef corevm::dyobj::dyobj_id dyobj_id_type;
 
-  using attr_map_type = typename std::unordered_map<attr_key_type, dyobj_id_type>;
-  using pair = typename attr_map_type::value_type;
+  typedef std::unordered_map<attr_key_type, dyobj_id_type> attr_map_type;
+  typedef attr_map_type::value_type pair;
 
-  using iterator = typename attr_map_type::iterator;
-  using const_iterator = typename attr_map_type::const_iterator;
+  typedef attr_map_type::iterator iterator;
+  typedef attr_map_type::const_iterator const_iterator;
 
   explicit dynamic_object(dyobj_id_type&);
 

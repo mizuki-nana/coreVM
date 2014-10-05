@@ -1,6 +1,5 @@
 #include <stdexcept>
 #include <sneaker/testing/_unittest.h>
-#include "../test_helper.h"
 #include "../../include/types/errors.h"
 #include "../../include/types/native_map.h"
 
@@ -37,7 +36,7 @@ TEST_F(native_map_unittest, TestCopyConstructor)
 
 TEST_F(native_map_unittest, TestCopyConstructorOnIntegerType)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map = 123;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -45,7 +44,7 @@ TEST_F(native_map_unittest, TestCopyConstructorOnIntegerType)
 
 TEST_F(native_map_unittest, TestConvertingToIntegerType)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {int i = corevm::types::native_map(); i++;},
     corevm::types::corevm_native_type_conversion_error
   );
@@ -130,7 +129,7 @@ TEST_F(native_map_functionality_unittest, TestAtFailure)
 {
   corevm::types::native_map map;
 
-  _ASSERT_THROW(
+  ASSERT_THROW(
     { map.at(1); },
     corevm::types::corevm_native_type_out_of_range_error
   );
@@ -145,7 +144,7 @@ class native_map_unary_operator_unittest : public native_map_operator_unittest {
 
 TEST_F(native_map_unary_operator_unittest, TestPositiveOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; +map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -153,7 +152,7 @@ TEST_F(native_map_unary_operator_unittest, TestPositiveOperator)
 
 TEST_F(native_map_unary_operator_unittest, TestNegationOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; -map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -161,7 +160,7 @@ TEST_F(native_map_unary_operator_unittest, TestNegationOperator)
 
 TEST_F(native_map_unary_operator_unittest, TestIncrementOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; ++map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -169,7 +168,7 @@ TEST_F(native_map_unary_operator_unittest, TestIncrementOperator)
 
 TEST_F(native_map_unary_operator_unittest, TestDecrementOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; --map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -177,7 +176,7 @@ TEST_F(native_map_unary_operator_unittest, TestDecrementOperator)
 
 TEST_F(native_map_unary_operator_unittest, TestLogicalNOTOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; !map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -185,7 +184,7 @@ TEST_F(native_map_unary_operator_unittest, TestLogicalNOTOperator)
 
 TEST_F(native_map_unary_operator_unittest, TestBitwiseNOTOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {const corevm::types::native_map map; ~map;},
     corevm::types::corevm_native_type_invalid_operator_error
   );
@@ -197,7 +196,7 @@ class native_map_binary_operator_unittest : public native_map_operator_unittest 
 
 TEST_F(native_map_binary_operator_unittest, TestAdditionOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -209,7 +208,7 @@ TEST_F(native_map_binary_operator_unittest, TestAdditionOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestSubtractionOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -221,7 +220,7 @@ TEST_F(native_map_binary_operator_unittest, TestSubtractionOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestMultiplicationOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -233,7 +232,7 @@ TEST_F(native_map_binary_operator_unittest, TestMultiplicationOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestDivisionOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -245,7 +244,7 @@ TEST_F(native_map_binary_operator_unittest, TestDivisionOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestLogicalANDOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -257,7 +256,7 @@ TEST_F(native_map_binary_operator_unittest, TestLogicalANDOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestLogicalOROperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -269,7 +268,7 @@ TEST_F(native_map_binary_operator_unittest, TestLogicalOROperator)
 
 TEST_F(native_map_binary_operator_unittest, TestBitwiseANDOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -281,7 +280,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseANDOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestBitwiseOROperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -293,7 +292,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseOROperator)
 
 TEST_F(native_map_binary_operator_unittest, TestBitwiseXOROperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -305,7 +304,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseXOROperator)
 
 TEST_F(native_map_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -317,7 +316,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestBitwiseRightShiftOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -353,7 +352,7 @@ TEST_F(native_map_binary_operator_unittest, TestNEQOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestGTOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -365,7 +364,7 @@ TEST_F(native_map_binary_operator_unittest, TestGTOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestLTOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -377,7 +376,7 @@ TEST_F(native_map_binary_operator_unittest, TestLTOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestGTEOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
@@ -389,7 +388,7 @@ TEST_F(native_map_binary_operator_unittest, TestGTEOperator)
 
 TEST_F(native_map_binary_operator_unittest, TestLTEOperator)
 {
-  _ASSERT_THROW(
+  ASSERT_THROW(
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;

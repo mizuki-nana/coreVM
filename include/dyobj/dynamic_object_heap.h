@@ -21,7 +21,7 @@ template<class dynamic_object_manager>
 class dynamic_object_heap {
 public:
 
-  using dynamic_object_id_type = typename corevm::dyobj::dyobj_id;
+  typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
 
   using dyobj_heap_map_type = typename std::unordered_map<

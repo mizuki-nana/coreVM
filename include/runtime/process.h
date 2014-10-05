@@ -37,7 +37,7 @@ namespace runtime {
  * - An instance of instr handler meta class. */
 class process : public sneaker::threading::fixed_time_interval_daemon_service {
 public:
-  using garbage_collection_scheme = typename corevm::gc::reference_count_garbage_collection_scheme;
+  typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
   using native_handles_pool_type = typename std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>;

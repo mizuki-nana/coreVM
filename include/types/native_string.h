@@ -11,7 +11,7 @@ namespace corevm {
 namespace types {
 
 
-using native_string_base = typename std::string;
+typedef std::string native_string_base;
 
 
 class native_string : public native_string_base {

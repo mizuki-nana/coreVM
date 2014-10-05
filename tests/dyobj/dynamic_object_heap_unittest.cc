@@ -33,12 +33,11 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
   ASSERT_EQ(id2, obj2.id());
 }
 
-
 TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
 {
-  // corevm::dyobj::dyobj_id id1 = corevm::dyobj::generate_dyobj_id();
-  // corevm::dyobj::dyobj_id id2 = corevm::dyobj::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
-  // ASSERT_THROW(this->_heap.at(id1), std::runtime_error);
-  // ASSERT_THROW(this->_heap.at(id2), std::runtime_error);
+  ASSERT_THROW(this->_heap.at(id1), std::runtime_error);
+  ASSERT_THROW(this->_heap.at(id2), std::runtime_error);
 }

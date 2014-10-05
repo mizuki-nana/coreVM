@@ -108,6 +108,22 @@ public:
     throw corevm::types::corevm_native_type_invalid_operator_error(">>", "map");
   }
 
+  native_map& operator<(const native_map&) const {
+    throw corevm::types::corevm_native_type_invalid_operator_error("<", "map");
+  }
+
+  native_map& operator<=(const native_map&) const {
+    throw corevm::types::corevm_native_type_invalid_operator_error("<=", "map");
+  }
+
+  native_map& operator>(const native_map&) const {
+    throw corevm::types::corevm_native_type_invalid_operator_error(">", "map");
+  }
+
+  native_map& operator>=(const native_map&) const {
+    throw corevm::types::corevm_native_type_invalid_operator_error(">=", "map");
+  }
+
   mapped_type& at(const key_type& k) throw(corevm::types::corevm_native_type_out_of_range_error) {
     try {
       return native_map_base::at(k);
