@@ -9,8 +9,9 @@ DYOBJ=./dyobj/
 GC=./gc/
 TYPES=./types/
 RUNTIME=./runtime/
+FRONTEND=./frontend/
 
-SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME)
+SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME) $(FRONTEND)
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -40,8 +41,12 @@ types:
 runtime:
 	-cd $(RUNTIME) && for f in ./*.cc; do ($(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -c $$f); done
 
+.PHONY: frontend
+frontend:
+	-cd $(FRONTEND) && for f in ./*.cc; do ($(CXX) $(CXXFLAGS) -c $$f); done
+
 .PHONY: all
-all: memory dyobj gc types runtime
+all: memory dyobj gc types runtime frontend
 
 .PHONY: clean
 clean:

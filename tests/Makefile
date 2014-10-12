@@ -15,17 +15,18 @@ DYOBJ=./dyobj/
 GC=./gc/
 TYPES=./types/
 RUNTIME=./runtime/
+FRONTEND=./frontend/
 
-SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME)
+SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME) $(FRONTEND)
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	CFLAGS += -D LINUX
-	LFLAGS += -lboost_system
+	LFLAGS += -lboost_system -lboost_regex
 endif
 ifeq ($(UNAME_S), Darwin)
 	CFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
-	LFLAGS += -lboost_system-mt
+	LFLAGS += -lboost_system-mt -lboost_regex-mt
 endif
 
 
@@ -49,8 +50,12 @@ types:
 runtime:
 	-cd $(RUNTIME) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
+.PHONY: frontend
+frontend:
+	-cd $(FRONTEND) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+
 .PHONY: all
-all: memory dyobj gc types runtime
+all: memory dyobj gc types runtime frontend
 
 .PHONY: clean
 clean:

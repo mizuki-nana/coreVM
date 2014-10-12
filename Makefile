@@ -13,14 +13,14 @@ LIBCOREVM=libcorevm.a
 export GTEST_COLOR=true
 
 
-.PHONY: src
-src:
-	@$(MAKE) -C $(SRC) all
-
 .PHONY: all
 all: src
 	@find . -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)	
 	@echo "\033[35mGenerated $(LIBCOREVM)"
+
+.PHONY: src
+src:
+	@$(MAKE) -C $(SRC) all
 
 .PHONY: test
 test:
