@@ -26,7 +26,7 @@ coreVM's architecture can be generalized into 6 components:
   * [frontend](#frontend)
 
 Here's an illustration of the high level architecture:
-![architecture](https://raw.github.com/airbnb/chronos/master/docs/emr_use_case.png "architecture illustration")
+![architecture](/resources/corevm_architecture_overview.png "architecture overview")
 
 ### Memory Management
 The most bottom layer in coreVM is the memory management component, which is
@@ -39,8 +39,7 @@ uses the buddy-system scheme by default, while the native types pool uses the
 first-fit scheme.
 
 ### Native Types
-One component that interacts directly with the memory management layer is the
-native types system, which is an independent system that defines all the native
+The native types system is an independent system that defines all the native
 types in the VM and manages all the permitted operations on them. There are
 currently 14 native types defined:
 
@@ -52,9 +51,9 @@ currently 14 native types defined:
   * 32-bit unsigned integer
   * 64-bit signed integer
   * 64-bit unsigned integer
-  * boolean
   * single-precision floating point decimal
   * double-precision floating point decimal
+  * boolean
   * string
   * array
   * map
@@ -85,14 +84,14 @@ the object heap. The garbage collector is designed to be configured to use one
 of several types of garbage collection schemes. Currently only the
 "reference counting" scheme is supported.
 
-The garbage collector tightly couples with the object heap in terms of their
+The garbage collector is tightly coupled with the object heap in terms of their
 interactions, but not so much in the design. Each dynamic object is associated
 with an instance of "dynamic object manager" that manages the lifespan of its
 owner in regards to garbage collection, and it's agnostic of the particular
 implementation of the GC scheme used. For example, the object manager type for
-the mark-and-sweep GC scheme tracks the "marked" flag on the object, while the
-one for the reference-count GC scheme tracks the reference count of that
-particular object.
+the mark-and-sweep GC scheme tracks whether the object is being "marked", while
+the one for the reference-count GC scheme keeps tracks of a reference count for
+that object.
 
 The current version of the garbage collector has a non-copying, non-generational,
 and stop-the-world implementation. Future works are needed to improve the GC
@@ -127,8 +126,8 @@ validation (currently using JSON schema validation).
 Since the inception of this project, which is the beginning of March 2014, a lot
 of milestones have been achieved and many components are near completion at this
 point. However, there are still lots of work ahead to be done before the initial
-working build. In addition, many advanced features and optimizations are not to
-be implemented until a later time.
+working build is complete. In addition, many advanced features and optimizations
+are not to be implemented until a later time.
 
 Below is a table of all the past milestones and some of the goals defined in the
 roadmap in the near future, with their respective completion dates and ETAs:
@@ -147,12 +146,33 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Re-entrant execution                        |            Dec, 2014
   Mark-and-sweep garbage collection           |            Jan, 2015
   Generational and concurrent GC              |            Jan, 2015
-  JIT optimization                            |            Feb, 2015
+  JIT optimizations                           |            Feb, 2015
   Multi-threaded runtime                      |            Feb, 2015
-  Native sandbox                              |            Feb, 2015
-  Continuous Integration                      |            Mar, 2015
-  Benchmark Infrastructure                    |            Mar, 2015
-  Docker Integration                          |            Mar, 2015
+  Native extension and sandbox                |            Feb, 2015
+  Continuous integration                      |            Mar, 2015
+  Benchmark infrastructure                    |            Mar, 2015
+  Docker integration                          |            Mar, 2015
+  Initial beta release *                      |            Mar, 2015
+  coreVM client API                           |            Jun, 2015
+
+
+## Moonshots
+While the ultimate goal of this project is to faciliate the design and
+development of modern dynamic programming languages for language developers,
+I personally have two ideas for the use of this project that I have envisioned
+for the foreseeable future.
+
+One is to use coreVM as the underlying runtime for the
+[HEX programming language](http://www.github.com/yanzhengli/hex) that I
+worked on a while ago. This was actually the initial goal of the project
+before its inception.
+
+The second idea is to have a port of Python that runs on coreVM, as I've always
+wanted to join the Python family that's comprised of many flavors of the language.
+It will be interesting to see the differences in stability, performance, and
+many other aspects across the major flavors of the language, such as CPython,
+PyPy, Pyston, Jython, and IronPython. Hopefully I will come up with a good
+name of my variant by then.
 
 
 ## Compilation Environments
