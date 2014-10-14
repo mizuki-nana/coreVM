@@ -3,16 +3,28 @@ coreVM
 
 ![logo](/resources/corevm_logo_256x256.png)
 
-A modern virtual machine for dynamic programming languages built with efficiency
-and versatility in mind.
+A virtual machine designed to revolutionize the development of modern dynamic
+programming languages.
+
 
 ## Overview
+With the proliferation of dynamic programming languages being a dominating trend
+in the software industry, many developers have taken the endeavor to invent
+their own, in attempts to modernize the designs and implementations of many
+legacy systems, and how modern software systems can be built. However, such a
+task would usually become a massive undertaking as the process involved in
+developing a custom runtime for a dynamic programming language tends to be
+extremely complex, error prone and resource consuming, thus ending up being a
+very intimidating part in the process. Although there are candidates of generic
+dynamic language runtimes out there that are available, many of them lack the
+robustness, efficiency and versatility that can meet the language requirements.
+
 coreVM is a language-agnostic virtual machine designed to provide a runtime for
 dynamic programming languages of various kinds. The design strives to achieve
 extremely versatile interfaces and modern runtime functionalities, which
 unfetters language developers from the burden of developing custom runtimes and
-the tedious compiler integrations involved, therefore ultimately allow them to
-focus more on the design and developement of language features.
+the tedious compiler integrations involved. Instead of re-inventing the wheel,
+developers can focus more on the design and development of language features.
 
 
 ## Design Overview
@@ -58,17 +70,21 @@ currently 14 native types defined:
   * array
   * map
 
+The purpose of the native types system is to provide a set of interfaces for
+languages to deal with arithmetic, logical, bitwise, and complex operations
+on the most commonly used types without having to implement their own.
+
 All these types are abstractly defined as a "native type handle" internally,
 which is essentially a handle that points to an entity that is of one of these
-14 types. All the arithmetic, logical and bitwise operations that are found in
-other programming languages can be performed on native type handles, plus even
-complex operations on the string, array and map types.
+14 types. Types can be converted from one to another, where appropriate.
 
 ### Object Management
 Another component that directly relates to the memory management layer is the
 object heap, which allocates memory from it to store objects. Objects in coreVM
 are referred as "dynamic objects", which means that their properties can be
-dynamically changed during execution.
+dynamically changed during execution. This provides the flexibility for language
+developers to incorporate their custom object abstractions and meta-programming
+features.
 
 Each object has a unique identifier upon creation, and it's used by the object
 heap to manage all the objects, which is essentially a map of object IDs to
@@ -79,9 +95,9 @@ of custom integer type in a language may hold a native type handle of type
 32-bit signed integer, in order to perform any arithmetic operations on it.
 
 ### Garbage Collection
-The garbage collection layer is responsible for cleaning up dead objects from
-the object heap. The garbage collector is designed to be configured to use one
-of several types of garbage collection schemes. Currently only the
+The garbage collection layer is responsible for cleaning up unreachable objects
+on the heap. The garbage collector is designed to be configured to use one of
+several types of garbage collection schemes. Currently only the
 "reference counting" scheme is supported.
 
 The garbage collector is tightly coupled with the object heap in terms of their
@@ -105,7 +121,7 @@ The runtime is a stack-based machine that manages a call stack while executing
 instructions that are in coreVM's bytecode instruction set. The call stack is a
 stack of call frames, with each frame containing all the data associated with
 one function call. Each frame also contains an "execution stack" for native
-types operations. Finally, the runtime is responsible for managing threads,
+types operations. Finally, the runtime is responsible for thread management,
 singal handling, and garbage collection during execution.
 
 Currently, the runtime is a single-threaded stack-based machine, a
@@ -118,8 +134,9 @@ definitions into the runtime.
 
 In addition, coreVM defines a custom file format for storing bytecode
 instructions and object definitions. The actual data encapsulated in the format
-is in JSON, which is easy to interpret semantically and convenient for
-validation (currently using JSON schema validation).
+is in JSON, which is not only easy to interpret semantically and convenient for
+validation (currently using JSON schema validation), but also has very minimal
+learning curve for many developers.
 
 
 ## Current State & Roadmap
@@ -148,12 +165,16 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Generational and concurrent GC              |            Jan, 2015
   JIT optimizations                           |            Feb, 2015
   Multi-threaded runtime                      |            Feb, 2015
-  Native extension and sandbox                |            Feb, 2015
+  Native extension and sandboxing             |            Feb, 2015
   Continuous integration                      |            Mar, 2015
   Benchmark infrastructure                    |            Mar, 2015
   Docker integration                          |            Mar, 2015
   Initial beta release *                      |            Mar, 2015
-  coreVM client API                           |            Jun, 2015
+  Embedder client API                         |            Jun, 2015
+  Debugging facilities and APIs               |            Aug, 2015
+  Profiling API                               |            Aug, 2015
+  Address space layout randomization          |            Oct, 2015
+  Parallelism support                         |            Dec, 2015
 
 
 ## Moonshots
@@ -164,15 +185,15 @@ for the foreseeable future.
 
 One is to use coreVM as the underlying runtime for the
 [HEX programming language](http://www.github.com/yanzhengli/hex) that I
-worked on a while ago. This was actually the initial goal of the project
+worked on a while ago. This was actually one of the initial goals of the project
 before its inception.
 
 The second idea is to have a port of Python that runs on coreVM, as I've always
-wanted to join the Python family that's comprised of many flavors of the language.
-It will be interesting to see the differences in stability, performance, and
-many other aspects across the major flavors of the language, such as CPython,
-PyPy, Pyston, Jython, and IronPython. Hopefully I will come up with a good
-name of my variant by then.
+wanted to join the Python family that's comprised of many flavors of the
+language. It will be interesting to see the differences in stability,
+performance, and many other aspects across the major flavors of the language,
+such as CPython, PyPy, Pyston, Jython, and IronPython. Hopefully I will come up
+with a good name of my variant by then.
 
 
 ## Compilation Environments
@@ -220,3 +241,12 @@ The latest build of coreVM depends on the following libraries:
 
 ## License
 coreVM is licensed under The MIT License: http://opensource.org/licenses/MIT
+
+
+## Inquiries
+For technical issues and bugs, please file new issues on GitHub.
+For all other inquiries, please e-mail myself at
+<a href="mailto:yli@corevm.org">yli@corevm.org</a>.
+
+In addition, a mailing list from @corevm.org will be made available in the near
+future.
