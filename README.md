@@ -16,15 +16,15 @@ task would usually become a massive undertaking as the process involved in
 developing a custom runtime for a dynamic programming language tends to be
 extremely complex, error prone and resource consuming, thus ending up being a
 very intimidating part in the process. Although there are candidates of generic
-dynamic language runtimes out there that are available, many of them lack the
+dynamic language runtimes that are available, many of them lack the
 robustness, efficiency and versatility that can meet the language requirements.
 
 coreVM is a language-agnostic virtual machine designed to provide a runtime for
-dynamic programming languages of various kinds. The design strives to achieve
-extremely versatile interfaces and modern runtime functionalities, which
-unfetters language developers from the burden of developing custom runtimes and
-the tedious compiler integrations involved. Instead of re-inventing the wheel,
-developers can focus more on the design and development of language features.
+dynamic programming languages. The design strives to achieve extremely versatile
+interfaces and modern runtime functionalities, which unfetters language
+developers from the burden of developing custom runtimes and the tedious
+compiler integrations involved. Instead of re-inventing the wheel, developers
+can focus on the design and development of language features.
 
 
 ## Design Overview
@@ -52,7 +52,7 @@ first-fit scheme.
 
 ### Native Types
 The native types system is an independent system that defines all the native
-types in the VM and manages all the permitted operations on them. There are
+types in the VM and manages all permitted operations on them. There are
 currently 14 native types defined:
 
   * 8-bit signed integer
@@ -103,7 +103,7 @@ several types of garbage collection schemes. Currently only the
 The garbage collector is tightly coupled with the object heap in terms of their
 interactions, but not so much in the design. Each dynamic object is associated
 with an instance of "dynamic object manager" that manages the lifespan of its
-owner in regards to garbage collection, and it's agnostic of the particular
+owner in regards to garbage collection, and it is agnostic of the particular
 implementation of the GC scheme used. For example, the object manager type for
 the mark-and-sweep GC scheme tracks whether the object is being "marked", while
 the one for the reference-count GC scheme keeps tracks of a reference count for
