@@ -1,6 +1,7 @@
 #ifndef COREVM_OPERATORS_H_
 #define COREVM_OPERATORS_H_
 
+#include "errors.h"
 #include "types.h"
 
 
@@ -49,17 +50,17 @@ public:
   template<typename R, typename T>
   typename R::value_type operator()(const T& handle) {
     T& handle_ = const_cast<T&>(handle);
-    typename T::value_type value = handle.value;
-    typename corevm::types::int64::value_type value_ =
-      static_cast<typename corevm::types::int64::value_type>(value);
-
-    --value_;
-
-    handle_.value = value_;
-
+    --handle_.value;
     return handle.value;
   }
 };
+
+template<>
+inline
+typename corevm::types::boolean::value_type
+corevm::types::decrement::operator()<corevm::types::boolean>(const corevm::types::boolean& handle) {
+  throw corevm::types::corevm_native_type_invalid_operator_error("--", "boolean"); 
+}
 
 
 class logical_not : public unary_op {
@@ -82,6 +83,27 @@ public:
   }
 };
 
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_not::operator()<corevm::types::string>(const corevm::types::string& handle) {
+  return static_cast<typename corevm::types::string::value_type>(~handle.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle) {
+  return static_cast<typename corevm::types::array::value_type>(~handle.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::map& handle) {
+  return static_cast<typename corevm::types::map::value_type>(~handle.value);
+}
+
 
 class addition : public binary_op {
 public:
@@ -93,6 +115,15 @@ public:
     );
   }
 };
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::addition::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value + rhs.value);
+}
 
 
 class subtraction : public binary_op {
@@ -142,6 +173,33 @@ public:
   }
 };
 
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::modulus::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value % rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::modulus::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value % rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::modulus::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value % rhs.value);
+}
+
 
 class logical_and : public binary_op {
 public:
@@ -178,6 +236,33 @@ public:
   }
 };
 
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_and::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value & rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_and::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value & rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_and::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value & rhs.value);
+}
+
 
 class bitwise_or : public binary_op {
 public:
@@ -189,6 +274,33 @@ public:
     );
   }
 };
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_or::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value | rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_or::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value | rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_or::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value | rhs.value);
+}
 
 
 class bitwise_xor : public binary_op {
@@ -202,6 +314,33 @@ public:
   }
 };
 
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_xor::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value ^ rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_xor::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value ^ rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_xor::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value ^ rhs.value);
+}
+
 
 class bitwise_left_shift : public binary_op {
 public:
@@ -214,6 +353,33 @@ public:
   }
 };
 
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_left_shift::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value << rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_left_shift::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value << rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value << rhs.value);
+}
+
 
 class bitwise_right_shift : public binary_op {
 public:
@@ -225,6 +391,33 @@ public:
     );
   }
 };
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::bitwise_right_shift::operator()<corevm::types::string>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  return static_cast<typename corevm::types::string::value_type>(lhs.value >> rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::bitwise_right_shift::operator()<corevm::types::array>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  return static_cast<typename corevm::types::array::value_type>(lhs.value >> rhs.value);
+}
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  return static_cast<typename corevm::types::map::value_type>(lhs.value >> rhs.value);
+}
 
 
 class eq : public binary_op {
