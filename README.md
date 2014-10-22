@@ -192,8 +192,10 @@ The second idea is to have a port of Python that runs on coreVM, as I've always
 wanted to join the Python family that's comprised of many flavors of the
 language. It will be interesting to see the differences in stability,
 performance, and many other aspects across the major flavors of the language,
-such as CPython, PyPy, Pyston, Jython, and IronPython. Hopefully I will come up
-with a good name of my variant by then.
+such as [CPython](https://www.python.org/), [PyPy](http://pypy.org/),
+[Jython](http://www.jython.org/), [IronPython](http://ironpython.net/),
+and [Pyston](https://github.com/dropbox/pyston). Hopefully I will come up with
+a good name of my variant by then.
 
 
 ## Compilation Environments
