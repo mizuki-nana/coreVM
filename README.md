@@ -122,7 +122,7 @@ instructions that are in coreVM's bytecode instruction set. The call stack is a
 stack of call frames, with each frame containing all the data associated with
 one function call. Each frame also contains an "execution stack" for native
 types operations. Finally, the runtime is responsible for thread management,
-singal handling, and garbage collection during execution.
+signal handling, and garbage collection during execution.
 
 Currently, the runtime is a single-threaded stack-based machine, a
 registered-based version and multi-threading are in the future roadmap.
@@ -178,7 +178,7 @@ roadmap in the near future, with their respective completion dates and ETAs:
 
 
 ## Moonshots
-While the ultimate goal of this project is to faciliate the design and
+While the ultimate goal of this project is to facilitate the design and
 development of modern dynamic programming languages for language developers,
 I personally have two ideas for the use of this project that I have envisioned
 for the foreseeable future.
