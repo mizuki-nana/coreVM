@@ -11,34 +11,34 @@ class process_instrs_unittest : public ::testing::Test {};
 class process_obj_instrs_test : public process_instrs_unittest {
 protected:
   virtual void SetUp() {
-    _process.push_frame(_frame);
+    m_process.push_frame(m_frame);
   }
 
   template<typename InstrHandlerCls>
-  void _execute_instr(corevm::runtime::instr instr, uint64_t expected_stack_size=1) {
+  void execute_instr(corevm::runtime::instr instr, uint64_t expected_stack_size=1) {
     InstrHandlerCls instr_handler;
 
-    instr_handler.execute(instr, _process);
+    instr_handler.execute(instr, m_process);
 
-    uint64_t actual_stack_size = _process.stack_size();
+    uint64_t actual_stack_size = m_process.stack_size();
 
     ASSERT_EQ(expected_stack_size, actual_stack_size);
   }
 
-  corevm::runtime::process _process;
-  corevm::runtime::frame _frame;
+  corevm::runtime::process m_process;
+  corevm::runtime::frame m_frame;
 };
 
 
 TEST_F(process_obj_instrs_test, TestInstrNEW)
 {
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_new>(instr); 
+  this->execute_instr<corevm::runtime::instr_handler_new>(instr);
 }
 
 TEST_F(process_obj_instrs_test, TestInstrLDOBJ)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_obj_instrs_test, TestInstrSTOBJ)
@@ -46,14 +46,14 @@ TEST_F(process_obj_instrs_test, TestInstrSTOBJ)
   corevm::runtime::instr instr = {.code=0, .oprd1=1, .oprd2=0};
 
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::dyobj::dyobj_id id = 1;
-  _process.push_stack(id);
+  m_process.push_stack(id);
 
-  _execute_instr<corevm::runtime::instr_handler_stobj>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_stobj>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_TRUE(actual_frame.has_visible_var(1));
 
@@ -67,17 +67,17 @@ TEST_F(process_obj_instrs_test, TestInstrGETATTR)
   corevm::dyobj::attr_key attr_key = 333;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id1 = _process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id id2 = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id1 = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.__helper_create_dyobj();
 
-  auto &obj = _process.__helper_at(id1);
+  auto &obj = m_process.__helper_at(id1);
   obj.putattr(attr_key, id2);
-  _process.push_stack(id1);
+  m_process.push_stack(id1);
 
-  _execute_instr<corevm::runtime::instr_handler_getattr>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_getattr>(instr, 1);
 
   corevm::dyobj::dyobj_id expected_id = id2;
-  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
 
   ASSERT_EQ(expected_id, actual_id);
 }
@@ -87,20 +87,20 @@ TEST_F(process_obj_instrs_test, TestInstrSETATTR)
   corevm::dyobj::attr_key attr_key = 789;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id1 = _process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id id2 = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id1 = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.__helper_create_dyobj();
 
-  _process.push_stack(id1);
-  _process.push_stack(id2);
+  m_process.push_stack(id1);
+  m_process.push_stack(id2);
 
-  _execute_instr<corevm::runtime::instr_handler_setattr>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_setattr>(instr, 1);
 
   corevm::dyobj::dyobj_id expected_id = id1;
-  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
 
   ASSERT_EQ(expected_id, actual_id);
 
-  auto &obj = _process.__helper_at(actual_id);
+  auto &obj = m_process.__helper_at(actual_id);
 
   ASSERT_TRUE(obj.hasattr(attr_key));
 
@@ -112,45 +112,45 @@ TEST_F(process_obj_instrs_test, TestInstrDELATTR)
   corevm::dyobj::attr_key attr_key = 777;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id attr_id = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id attr_id = m_process.__helper_create_dyobj();
 
-  auto& obj = _process.__helper_at(id);
+  auto& obj = m_process.__helper_at(id);
   obj.putattr(attr_key, attr_id);
 
   ASSERT_TRUE(obj.hasattr(attr_key));
 
-  _process.push_stack(id);
+  m_process.push_stack(id);
 
-  _execute_instr<corevm::runtime::instr_handler_delattr>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_delattr>(instr, 1);
 
   corevm::dyobj::dyobj_id expected_id = id;
-  corevm::dyobj::dyobj_id actual_id = _process.top_stack();
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
 
   ASSERT_EQ(expected_id, actual_id);
 
-  auto &actual_obj = _process.__helper_at(actual_id);
+  auto &actual_obj = m_process.__helper_at(actual_id);
 
   ASSERT_FALSE(actual_obj.hasattr(attr_key));
 }
 
 TEST_F(process_obj_instrs_test, TestInstrPOP)
 {
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
-  _process.push_stack(id);
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  m_process.push_stack(id);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
 
   ASSERT_THROW(
-    { _process.top_stack(); },
+    { m_process.top_stack(); },
     corevm::runtime::object_stack_empty_error
   );
 }
 
 TEST_F(process_obj_instrs_test, TestInstrLDOBJ2)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
@@ -158,14 +158,14 @@ TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
   corevm::runtime::instr instr = {.code=0, .oprd1=1, .oprd2=0};
 
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::dyobj::dyobj_id id = 1;
-  _process.push_stack(id);
+  m_process.push_stack(id);
 
-  _execute_instr<corevm::runtime::instr_handler_stobj2>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_stobj2>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_TRUE(actual_frame.has_invisible_var(1));
 
@@ -177,7 +177,7 @@ TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
 
   corevm::runtime::instr instr = {
     .code=0,
@@ -187,11 +187,11 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 
   corevm::runtime::frame frame;
   frame.set_visible_var(key, id);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
-  _execute_instr<corevm::runtime::instr_handler_delobj>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_delobj>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_FALSE(actual_frame.has_visible_var(key));
 }
@@ -199,7 +199,7 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
 
   corevm::runtime::instr instr = {
     .code=0,
@@ -209,11 +209,11 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
 
   corevm::runtime::frame frame;
   frame.set_invisible_var(key, id);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
-  _execute_instr<corevm::runtime::instr_handler_delobj2>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_delobj2>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_FALSE(actual_frame.has_invisible_var(key));
 }
@@ -222,22 +222,22 @@ TEST_F(process_obj_instrs_test, TestInstrGETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
-  _process.push_stack(id);
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  m_process.push_stack(id);
 
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = _process.insert_ntvhndl(hndl);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = _process.__helper_at(id);
+  auto &obj = m_process.__helper_at(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle actual_handle = actual_frame.pop_eval_stack();
 
   uint32_t actual_value = corevm::types::get_value_from_handle<uint32_t>(
@@ -251,40 +251,40 @@ TEST_F(process_obj_instrs_test, TestInstrSETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
-  _process.push_stack(id);
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  m_process.push_stack(id);
 
   corevm::runtime::frame frame;
   corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
   frame.push_eval_stack(hndl);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
-  auto &obj = _process.__helper_at(id);
+  auto &obj = m_process.__helper_at(id);
 
   ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
 }
 
 TEST_F(process_obj_instrs_test, TestInstrCLRHNDL)
 {
-  corevm::dyobj::dyobj_id id = _process.__helper_create_dyobj();
-  _process.push_stack(id);
+  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  m_process.push_stack(id);
 
   corevm::types::native_type_handle hndl = corevm::types::uint32(123);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = _process.insert_ntvhndl(hndl);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = _process.__helper_at(id);
+  auto &obj = m_process.__helper_at(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
+  execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
-  obj = _process.__helper_at(id);
+  obj = m_process.__helper_at(id);
   ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
 
-  ASSERT_FALSE(_process.has_ntvhndl(ntvhndl_key));
+  ASSERT_FALSE(m_process.has_ntvhndl(ntvhndl_key));
 }
 
 TEST_F(process_obj_instrs_test, TestInstrOBJEQ)
@@ -292,16 +292,16 @@ TEST_F(process_obj_instrs_test, TestInstrOBJEQ)
   corevm::dyobj::dyobj_id id1 = 1;
   corevm::dyobj::dyobj_id id2 = 1;
 
-  _process.push_stack(id1);
-  _process.push_stack(id2);
+  m_process.push_stack(id1);
+  m_process.push_stack(id2);
 
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_objeq>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_objeq>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle result_handle = actual_frame.pop_eval_stack();
 
   bool expected_result = true;
@@ -317,16 +317,16 @@ TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
   corevm::dyobj::dyobj_id id1 = 1;
   corevm::dyobj::dyobj_id id2 = 2;
 
-  _process.push_stack(id1);
-  _process.push_stack(id2);
+  m_process.push_stack(id1);
+  m_process.push_stack(id2);
 
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::instr instr;
-  _execute_instr<corevm::runtime::instr_handler_objneq>(instr, 0);
+  execute_instr<corevm::runtime::instr_handler_objneq>(instr, 0);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle result_handle = actual_frame.pop_eval_stack();
 
   bool expected_result = true;
@@ -340,44 +340,50 @@ TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
 
 class process_functions_instrs_test : public process_instrs_unittest {
 protected:
-  corevm::runtime::process _process;
+  corevm::runtime::process m_process;
 };
 
 
 TEST_F(process_functions_instrs_test, TestInstrFRM)
 {
   ASSERT_THROW(
-    { _process.top_frame(); },
+    {
+      m_process.top_frame();
+    },
     corevm::runtime::frame_not_found_error
   );
 
   corevm::runtime::instr instr;
   corevm::runtime::instr_handler_frm handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
   ASSERT_NO_THROW(
-    { _process.top_frame(); }
+    {
+      m_process.top_frame();
+    }
   );
 }
 
 TEST_F(process_functions_instrs_test, TestInstrPUTARG)
 {
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::dyobj::dyobj_id id = 1;
-  _process.push_stack(id);
+  m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_THROW(
-    { actual_frame.pop_param(); },
+    {
+      actual_frame.pop_param();
+    },
     corevm::runtime::missing_parameter_error
   );
 
   corevm::runtime::instr instr;
   corevm::runtime::instr_handler_putarg handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
   corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param();
 
@@ -387,16 +393,18 @@ TEST_F(process_functions_instrs_test, TestInstrPUTARG)
 TEST_F(process_functions_instrs_test, TestInstrPUTKWARG)
 {
   corevm::runtime::frame frame;
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::variable_key key = 3;
   corevm::dyobj::dyobj_id id = 2;
-  _process.push_stack(id);
+  m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = _process.top_frame();
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
 
   ASSERT_THROW(
-    { actual_frame.pop_param_value_pair(key); },
+    {
+      actual_frame.pop_param_value_pair(key);
+    },
     corevm::runtime::missing_parameter_error
   );
 
@@ -405,8 +413,9 @@ TEST_F(process_functions_instrs_test, TestInstrPUTKWARG)
     .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
     .oprd2=2
   };
+
   corevm::runtime::instr_handler_putkwarg handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
   corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param_value_pair(key);
 
@@ -419,13 +428,13 @@ TEST_F(process_functions_instrs_test, TestInstrGETARG)
   corevm::runtime::frame frame;
   frame.put_param(id);
 
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::instr instr;
   corevm::runtime::instr_handler_getarg handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id actual_id = _process.pop_stack();
+  corevm::dyobj::dyobj_id actual_id = m_process.pop_stack();
 
   ASSERT_EQ(id, actual_id);
 }
@@ -437,7 +446,7 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARG)
 
   corevm::runtime::frame frame;
   frame.put_param_value_pair(key, id);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   corevm::runtime::instr instr = {
     .code=0,
@@ -446,9 +455,9 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARG)
   };
 
   corevm::runtime::instr_handler_getkwarg handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id actual_id = _process.pop_stack();
+  corevm::dyobj::dyobj_id actual_id = m_process.pop_stack();
 
   ASSERT_EQ(id, actual_id);
 }
@@ -463,15 +472,15 @@ TEST_F(process_functions_instrs_test, TestInstrGETARGS)
   frame.put_param(id1);
   frame.put_param(id2);
   frame.put_param(id3);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   ASSERT_EQ(true, frame.has_params());
 
   corevm::runtime::instr instr;
   corevm::runtime::instr_handler_getargs handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  corevm::runtime::frame actual_frame = _process.top_frame();
+  corevm::runtime::frame actual_frame = m_process.top_frame();
 
   ASSERT_EQ(false, actual_frame.has_params());
 
@@ -513,15 +522,15 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARGS)
   frame.put_param_value_pair(key1, id1);
   frame.put_param_value_pair(key2, id2);
   frame.put_param_value_pair(key3, id3);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
   ASSERT_EQ(true, frame.has_param_value_pairs());
 
   corevm::runtime::instr instr;
   corevm::runtime::instr_handler_getkwargs handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  corevm::runtime::frame actual_frame = _process.top_frame();
+  corevm::runtime::frame actual_frame = m_process.top_frame();
 
   ASSERT_EQ(false, actual_frame.has_param_value_pairs());
 
@@ -566,26 +575,26 @@ protected:
       corevm::runtime::instr(),
       corevm::runtime::instr(),
     };
-    _process.append_instrs(instrs);
+    m_process.append_instrs(instrs);
   }
 
-  corevm::runtime::process _process;
+  corevm::runtime::process m_process;
 };
 bool process_control_instrs_test::signal_fired = false;
 
 
 TEST_F(process_control_instrs_test, TestInstrRTRN)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_control_instrs_test, TestInstrJMP)
 {
   corevm::runtime::frame frame;
   frame.set_start_addr(0);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  corevm::runtime::instr_addr current_addr = m_process.current_addr();
   ASSERT_EQ(0, current_addr);
 
   corevm::runtime::instr instr = {
@@ -595,9 +604,9 @@ TEST_F(process_control_instrs_test, TestInstrJMP)
   };
 
   corevm::runtime::instr_handler_jmp handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  current_addr = _process.current_addr();
+  current_addr = m_process.current_addr();
 
   ASSERT_EQ(8, current_addr);
 }
@@ -609,9 +618,9 @@ TEST_F(process_control_instrs_test, TestInstrJMPIF)
 
   corevm::types::native_type_handle hndl = corevm::types::boolean(true);
   frame.push_eval_stack(hndl);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  corevm::runtime::instr_addr current_addr = m_process.current_addr();
   ASSERT_EQ(0, current_addr);
 
   corevm::runtime::instr instr = {
@@ -621,9 +630,9 @@ TEST_F(process_control_instrs_test, TestInstrJMPIF)
   };
 
   corevm::runtime::instr_handler_jmpif handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  current_addr = _process.current_addr();
+  current_addr = m_process.current_addr();
 
   ASSERT_EQ(8, current_addr);
 }
@@ -635,9 +644,9 @@ TEST_F(process_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
 
   corevm::types::native_type_handle hndl = corevm::types::boolean(false);
   frame.push_eval_stack(hndl);
-  _process.push_frame(frame);
+  m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = _process.current_addr();
+  corevm::runtime::instr_addr current_addr = m_process.current_addr();
   ASSERT_EQ(0, current_addr);
 
   corevm::runtime::instr instr = {
@@ -647,21 +656,21 @@ TEST_F(process_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
   };
 
   corevm::runtime::instr_handler_jmpif handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
-  current_addr = _process.current_addr();
+  current_addr = m_process.current_addr();
 
   ASSERT_EQ(0, current_addr);
 }
 
 TEST_F(process_control_instrs_test, TestInstrEXC)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_control_instrs_test, TestInstrEXC2)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_control_instrs_test, TestInstrEXIT)
@@ -670,8 +679,9 @@ TEST_F(process_control_instrs_test, TestInstrEXIT)
     process_control_instrs_test::signal_fired = true;
     signal(SIGTERM, SIG_IGN);
   };
- 
+
   signal(SIGTERM, sig_handler);
+
   ASSERT_EQ(false, process_control_instrs_test::signal_fired);
 
   corevm::runtime::instr instr = {
@@ -679,16 +689,14 @@ TEST_F(process_control_instrs_test, TestInstrEXIT)
     .oprd1=EXIT_SUCCESS,
     .oprd2=0
   };
+
   corevm::runtime::instr_handler_exit handler;
-  handler.execute(instr, _process);
+  handler.execute(instr, m_process);
 
   ASSERT_EQ(true, process_control_instrs_test::signal_fired);
 }
 
 
-/*
- * For instructions that manipulate evaluation stacks.
- * */
 class process_eval_stack_instrs_test : public process_instrs_unittest {
 public:
   typedef uint32_t IntrinsicType;
@@ -703,11 +711,11 @@ protected:
       elements.begin(),
       elements.end(),
       [this](corevm::types::native_type_handle oprd) {
-        this->_frame.push_eval_stack(oprd);
+        this->m_frame.push_eval_stack(oprd);
       }
     );
 
-    _process.push_frame(_frame);
+    m_process.push_frame(m_frame);
   }
 
   template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
@@ -716,10 +724,10 @@ protected:
 
     corevm::runtime::instr instr;
 
-    instr_handler.execute(instr, _process);
+    instr_handler.execute(instr, m_process);
 
-    corevm::runtime::frame& frame = _process.top_frame();
-    ASSERT_EQ(_expected_eval_stack_size, frame.eval_stack_size());
+    corevm::runtime::frame& frame = m_process.top_frame();
+    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
@@ -730,9 +738,9 @@ protected:
     ASSERT_EQ(expected_result, actual_result);
   }
 
-  uint32_t _expected_eval_stack_size = 1;
-  corevm::runtime::frame _frame;
-  corevm::runtime::process _process;
+  uint32_t m_expected_eval_stack_size = 1;
+  corevm::runtime::frame m_frame;
+  corevm::runtime::process m_process;
 };
 
 
@@ -742,153 +750,153 @@ class process_arithmetic_instrs_test : public process_eval_stack_instrs_test {};
 class process_unary_arithmetic_instrs_test : public process_arithmetic_instrs_test {
 public:
   virtual void SetUp () {
-    corevm::types::native_type_handle hndl = NativeType(_oprd);
+    corevm::types::native_type_handle hndl = NativeType(m_oprd);
     push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
 protected:
-  IntrinsicType _oprd = 5;
+  IntrinsicType m_oprd = 5;
 };
 
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrPOS)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_pos>(+_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_pos>(+m_oprd);
 }
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrNEG)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_neg>(-_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_neg>(-m_oprd);
 }
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrINC)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_inc>(++_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_inc>(++m_oprd);
 }
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrDEC)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_dec>(--_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_dec>(--m_oprd);
 }
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrBNOT)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_bnot>(~_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_bnot>(~m_oprd);
 }
 
 TEST_F(process_unary_arithmetic_instrs_test, TestInstrLNOT)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_lnot>(!_oprd);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_lnot>(!m_oprd);
 }
 
 
 class process_binary_arithmetic_instrs_test : public process_arithmetic_instrs_test {
 public:
   virtual void SetUp () {
-    corevm::types::native_type_handle hndl1 = NativeType(_oprd1);
-    corevm::types::native_type_handle hndl2 = NativeType(_oprd2);
+    corevm::types::native_type_handle hndl1 = NativeType(m_oprd1);
+    corevm::types::native_type_handle hndl2 = NativeType(m_oprd2);
     push_eval_stack_and_frame({hndl2, hndl1});
   }
 
 protected:
-  IntrinsicType _oprd1 = 10;
-  IntrinsicType _oprd2 = 5;
+  IntrinsicType m_oprd1 = 10;
+  IntrinsicType m_oprd2 = 5;
 };
 
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrADD)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_add>(_oprd1 + _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_add>(m_oprd1 + m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrSUB)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_sub>(_oprd1 - _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_sub>(m_oprd1 - m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrMUL)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mul>(_oprd1 * _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mul>(m_oprd1 * m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrDIV)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_div>(_oprd1 / _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_div>(m_oprd1 / m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrMOD)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mod>(_oprd1 % _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mod>(m_oprd1 % m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrPOW)
 {
-  // TODO: to be implemented...
+  // TODO: [COREVM-49] Complete instruction set and implementations
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBAND)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_band>(_oprd1 & _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_band>(m_oprd1 & m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBOR)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_bor>(_oprd1 | _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_bor>(m_oprd1 | m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBXOR)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_bxor>(_oprd1 ^ _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_bxor>(m_oprd1 ^ m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBLS)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_bls>(_oprd1 << _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_bls>(m_oprd1 << m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBRS)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_brs>(_oprd1 >> _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_brs>(m_oprd1 >> m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrEQ)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_eq>(_oprd1 == _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_eq>(m_oprd1 == m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrNEQ)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_neq>(_oprd1 != _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_neq>(m_oprd1 != m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrGT)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_gt>(_oprd1 > _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_gt>(m_oprd1 > m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrLT)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_lt>(_oprd1 < _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_lt>(m_oprd1 < m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrGTE)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_gte>(_oprd1 >= _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_gte>(m_oprd1 >= m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrLTE)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_lte>(_oprd1 <= _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_lte>(m_oprd1 <= m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrLAND)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_land>(_oprd1 && _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_land>(m_oprd1 && m_oprd2);
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrLOR)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_lor>(_oprd1 || _oprd2);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_lor>(m_oprd1 || m_oprd2);
 }
 
 
@@ -961,44 +969,48 @@ TEST_F(process_native_type_creation_instrs_test, TestInstrDEC2)
 TEST_F(process_native_type_creation_instrs_test, TestInstrSTR)
 {
   corevm::types::native_string expected_result;
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_str, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_str, corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_creation_instrs_test, TestInstrARY)
 {
   corevm::types::native_array expected_result;
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_ary, corevm::types::native_array>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_ary,
+    corevm::types::native_array>(expected_result);
 }
 
 TEST_F(process_native_type_creation_instrs_test, TestInstrMAP)
 {
   corevm::types::native_map expected_result;
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_map, corevm::types::native_map>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_map,
+    corevm::types::native_map>(expected_result);
 }
 
 
 class process_native_type_conversion_instrs_test : public process_native_type_instrs_test {
 public:
   virtual void SetUp () {
-    corevm::types::native_type_handle hndl = corevm::types::uint8(_oprd);
+    corevm::types::native_type_handle hndl = corevm::types::uint8(m_oprd);
     push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
   template<typename InstrHandlerCls>
   void execute_instr_and_assert_result() {
-    // TODO: should have more concrete testing on the conversion.
+    // TODO: [COREVM-63] Robustify test in native type conversion instruction test
     InstrHandlerCls instr_handler;
 
     corevm::runtime::instr instr;
 
-    instr_handler.execute(instr, _process);
+    instr_handler.execute(instr, m_process);
 
-    corevm::runtime::frame& frame = _process.top_frame();
-    ASSERT_EQ(_expected_eval_stack_size, frame.eval_stack_size());
+    corevm::runtime::frame& frame = m_process.top_frame();
+
+    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
   }
 
 private:
-  corevm::types::uint8 _oprd = 100;
+  corevm::types::uint8 m_oprd = 100;
 };
 
 
@@ -1050,24 +1062,30 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2DEC2)
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 {
   ASSERT_THROW(
-    { execute_instr_and_assert_result<corevm::runtime::instr_handler_2str>(); },
-    corevm::types::corevm_native_type_conversion_error
+    {
+      execute_instr_and_assert_result<corevm::runtime::instr_handler_2str>();
+    },
+    corevm::types::conversion_error
   );
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 {
   ASSERT_THROW(
-    { execute_instr_and_assert_result<corevm::runtime::instr_handler_2ary>(); },
-    corevm::types::corevm_native_type_conversion_error
+    {
+      execute_instr_and_assert_result<corevm::runtime::instr_handler_2ary>();
+    },
+    corevm::types::conversion_error
   );
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 {
   ASSERT_THROW(
-    { execute_instr_and_assert_result<corevm::runtime::instr_handler_2map>(); },
-    corevm::types::corevm_native_type_conversion_error
+    {
+      execute_instr_and_assert_result<corevm::runtime::instr_handler_2map>();
+    },
+    corevm::types::conversion_error
   );
 }
 
@@ -1091,7 +1109,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRLEN)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strlen, corevm::types::native_string::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strlen,
+    corevm::types::native_string::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRCLR)
@@ -1102,7 +1121,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRCLR)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strclr, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strclr,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRAPD)
@@ -1115,7 +1135,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRAPD)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strapd, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strapd,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRPSH)
@@ -1128,7 +1149,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRPSH)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strpsh, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strpsh,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST)
@@ -1143,7 +1165,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST2)
@@ -1158,7 +1181,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRIST2)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist2, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strist2,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS)
@@ -1171,7 +1195,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS2)
@@ -1186,7 +1211,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRERS2)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers2, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strers2,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRRPLC)
@@ -1203,7 +1229,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRRPLC)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3, oprd4});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrplc, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrplc,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSWP)
@@ -1216,7 +1243,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSWP)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strswp, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strswp,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB)
@@ -1229,7 +1257,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB2)
@@ -1244,7 +1273,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrSTRSUB2)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub2, corevm::types::native_string>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strsub2,
+    corevm::types::native_string>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND)
@@ -1258,7 +1288,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd, corevm::types::native_string::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd,
+    corevm::types::native_string::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND2)
@@ -1274,7 +1305,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrFND2)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd2, corevm::types::native_string::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strfnd2,
+    corevm::types::native_string::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND)
@@ -1288,7 +1320,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd, corevm::types::native_string::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd,
+    corevm::types::native_string::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND2)
@@ -1304,7 +1337,8 @@ TEST_F(process_native_type_complex_instrs_for_str_type_test, TestInstrRFND2)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd2, corevm::types::native_string::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strrfnd2,
+    corevm::types::native_string::size_type>(expected_result);
 }
 
 
@@ -1319,7 +1353,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYLEN)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_arylen, corevm::types::native_array::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arylen,
+    corevm::types::native_array::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYEMP)
@@ -1344,7 +1379,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAT)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryat, corevm::types::native_array::value_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryat,
+    corevm::types::native_array::value_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYFRT)
@@ -1355,7 +1391,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYFRT)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryfrt, corevm::types::native_array::value_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryfrt,
+    corevm::types::native_array::value_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYBAK)
@@ -1366,7 +1403,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYBAK)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_arybak, corevm::types::native_array::value_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arybak,
+    corevm::types::native_array::value_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAPND)
@@ -1380,7 +1418,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYAPND)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryapnd, corevm::types::native_array>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryapnd,
+    corevm::types::native_array>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYPOP)
@@ -1391,7 +1430,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYPOP)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_arypop, corevm::types::native_array>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arypop,
+    corevm::types::native_array>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYSWP)
@@ -1405,7 +1445,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYSWP)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryswp, corevm::types::native_array>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryswp,
+    corevm::types::native_array>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYCLR)
@@ -1417,7 +1458,8 @@ TEST_F(process_native_type_complex_instrs_for_array_type_test, TestInstrARYCLR)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryclr, corevm::types::native_array>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryclr,
+    corevm::types::native_array>(expected_result);
 }
 
 
@@ -1434,7 +1476,8 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPLEN)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_maplen, corevm::types::native_map::size_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_maplen,
+    corevm::types::native_map::size_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPEMP)
@@ -1447,7 +1490,9 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPEMP)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapemp, bool>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapemp, bool>(
+    expected_result
+  );
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPAT)
@@ -1462,7 +1507,8 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPAT)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapat, corevm::types::native_map::mapped_type>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapat,
+    corevm::types::native_map::mapped_type>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPPUT)
@@ -1479,7 +1525,8 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPPUT)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapput, corevm::types::native_map>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapput,
+    corevm::types::native_map>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPERS)
@@ -1497,7 +1544,8 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPERS)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapers, corevm::types::native_map>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapers,
+    corevm::types::native_map>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPCLR)
@@ -1511,7 +1559,8 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPCLR)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapclr, corevm::types::native_map>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapclr,
+    corevm::types::native_map>(expected_result);
 }
 
 TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPSWP)
@@ -1533,5 +1582,6 @@ TEST_F(process_native_type_complex_instrs_for_map_type_test, TestInstrMAPSWP)
 
   push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapswp, corevm::types::native_map>(expected_result);
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapswp,
+    corevm::types::native_map>(expected_result);
 }

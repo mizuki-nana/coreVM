@@ -16,8 +16,11 @@ public:
 
   template<typename T, typename F>
   void apply_interface_and_assert_result2(
-    corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, F func, T expected_result)
-  {
+    corevm::types::native_type_handle& operand,
+    corevm::types::native_type_handle& other_operand,
+    F func,
+    T expected_result
+  ) {
     corevm::types::native_type_handle result;
     func(operand, other_operand, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
@@ -26,8 +29,12 @@ public:
 
   template<typename T, typename F>
   void apply_interface_and_assert_result3(
-    corevm::types::native_type_handle& operand, corevm::types::native_type_handle& operand2, corevm::types::native_type_handle& operand3, F func, T expected_result)
-  {
+    corevm::types::native_type_handle& operand,
+    corevm::types::native_type_handle& operand2,
+    corevm::types::native_type_handle& operand3,
+    F func,
+    T expected_result
+  ) {
     corevm::types::native_type_handle result;
     func(operand, operand2, operand3, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
@@ -36,9 +43,13 @@ public:
 
   template<typename T, typename F>
   void apply_interface_and_assert_result4(
-    corevm::types::native_type_handle& operand, corevm::types::native_type_handle& operand2,
-    corevm::types::native_type_handle& operand3, corevm::types::native_type_handle& operand4, F func, T expected_result)
-  {
+    corevm::types::native_type_handle& operand,
+    corevm::types::native_type_handle& operand2,
+    corevm::types::native_type_handle& operand3,
+    corevm::types::native_type_handle& operand4,
+    F func,
+    T expected_result
+  ) {
     corevm::types::native_type_handle result;
     func(operand, operand2, operand3, operand4, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);

@@ -1,17 +1,15 @@
-#include <stdio.h>
 #include <algorithm>
 #include <sneaker/libc/math.h>
 #include "../../include/memory/sequential_allocation_scheme.h"
 
 
-/* typedefs to make things easier to read. */
 typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
 typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
 
 corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(size_t total_size)
 {
-  this->_blocks.push_back(
+  this->m_blocks.push_back(
     block_descriptor_type{
       .size = total_size,
       .offset = 0,
@@ -23,35 +21,17 @@ corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(size_
 iterator_type
 corevm::memory::sequential_allocation_scheme::begin() noexcept
 {
-  return _blocks.begin();
+  return m_blocks.begin();
 }
 
 iterator_type
 corevm::memory::sequential_allocation_scheme::end() noexcept
 {
-  return _blocks.end();
+  return m_blocks.end();
 }
 
-#ifdef __DEBUG__
 void
-corevm::memory::sequential_allocation_scheme::debug_print() noexcept
-{
-  printf("==============================\n");
-  iterator_type itr;
-  for(itr = begin(); itr != end(); itr++) {
-    block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
-    printf("Size [%lu] - Offset - [%d] - Free[ %d]\n",
-      descriptor.size,
-      descriptor.offset,
-      descriptor.free
-    );
-  }
-  printf("==============================\n");
-}
-#endif
-
-void
-corevm::memory::sequential_allocation_scheme::_split(
+corevm::memory::sequential_allocation_scheme::split(
   iterator_type itr, size_t size, uint64_t offset) noexcept
 {
   iterator_type itr_pos = itr;
@@ -61,11 +41,11 @@ corevm::memory::sequential_allocation_scheme::_split(
     .offset = offset,
     .free = true
   };
-  this->_blocks.insert(itr_pos, descriptor);
+  this->m_blocks.insert(itr_pos, descriptor);
 }
 
 void
-corevm::memory::sequential_allocation_scheme::_combine_free_blocks() noexcept
+corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
 {
   iterator_type itr = this->end();
 
@@ -102,7 +82,7 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
   ssize_t res = -1;
   iterator_type itr;
 
-  itr = this->_find_fit(size);
+  itr = this->find_fit(size);
 
   if(itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
@@ -110,7 +90,7 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
     *itr = block_found;
 
     if(block_found.size > size) {
-      this->_split(itr, block_found.size - size, static_cast<uint64_t>(block_found.offset + size));
+      this->split(itr, block_found.size - size, static_cast<uint64_t>(block_found.offset + size));
       block_found.size = size;
     }
 
@@ -143,16 +123,16 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     *itr = block_found;
 
     size_freed = static_cast<ssize_t>(block_found.size);
-    this->_combine_free_blocks();
+    this->combine_free_blocks();
   }
 
   return size_freed;
 }
 
-/*********** BEGIN OF corevm::memory::first_fit_allocation_scheme **************/
+/*********** BEGIN OF corevm::memory::first_fit_allocation_scheme *************/
 
 iterator_type
-corevm::memory::first_fit_allocation_scheme::_find_fit(size_t size) noexcept
+corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
 {
   return std::find_if(
     this->begin(),
@@ -169,7 +149,7 @@ corevm::memory::first_fit_allocation_scheme::_find_fit(size_t size) noexcept
 /*********** BEGIN OF corevm::memory::best_fit_allocation_scheme **************/
 
 iterator_type
-corevm::memory::best_fit_allocation_scheme::_find_fit(size_t size) noexcept
+corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::min_element(
     this->begin(),
@@ -206,7 +186,7 @@ corevm::memory::best_fit_allocation_scheme::_find_fit(size_t size) noexcept
 /*********** BEGIN OF corevm::memory::worst_fit_allocation_scheme *************/
 
 iterator_type
-corevm::memory::worst_fit_allocation_scheme::_find_fit(size_t size) noexcept
+corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::max_element(
     this->begin(),
@@ -243,9 +223,9 @@ corevm::memory::worst_fit_allocation_scheme::_find_fit(size_t size) noexcept
 /*********** BEGIN OF corevm::memory::next_fit_allocation_scheme **************/
 
 iterator_type
-corevm::memory::next_fit_allocation_scheme::_find_fit(size_t size) noexcept
+corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
 {
-  iterator_type last_itr = this->_last_itr;
+  iterator_type last_itr = this->m_last_itr;
   iterator_type itr = end();
 
   auto criterion = [this, size](block_descriptor_type block) -> bool {
@@ -255,14 +235,14 @@ corevm::memory::next_fit_allocation_scheme::_find_fit(size_t size) noexcept
   itr = std::find_if(last_itr, this->end(), criterion);
 
   if(itr != end()) {
-    this->_last_itr = itr;
+    this->m_last_itr = itr;
     return itr;
   }
 
   itr = std::find_if(this->begin(), itr, criterion);
 
   if(itr != end()) {
-    this->_last_itr = itr;
+    this->m_last_itr = itr;
   }
 
   return itr;
@@ -274,7 +254,7 @@ corevm::memory::next_fit_allocation_scheme::_find_fit(size_t size) noexcept
 /************* BEGIN OF corevm::memory::buddy_allocation_scheme ***************/
 
 iterator_type
-corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
+corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
 {
   size_t nearest_power_of_2 = static_cast<size_t>(nearest_exp2_ceil(size));
 
@@ -290,7 +270,7 @@ corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
     );
 
     if(itr == this->end()) {
-      break;  
+      break;
     }
 
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
@@ -299,7 +279,7 @@ corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
       // split
       block_found.size = block_found.size / 2;
       *itr = block_found;
-      this->_split(itr, block_found.size, static_cast<uint64_t>(block_found.offset + block_found.size));
+      this->split(itr, block_found.size, static_cast<uint64_t>(block_found.offset + block_found.size));
       *itr = block_found;
     } else {
       // bingo! use this block
@@ -314,10 +294,12 @@ corevm::memory::buddy_allocation_scheme::_find_fit(size_t size) noexcept
 }
 
 void
-corevm::memory::buddy_allocation_scheme::_combine_free_blocks() noexcept
+corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 {
-  /* We want to combine two free blocks only if they were originally splitted
-   * from a larger block. */
+  /*
+   * We want to combine two free blocks only if they were originally splitted
+   * from a larger block.
+   */
 
   bool has_freed_blocks = true;
 
@@ -346,7 +328,7 @@ corevm::memory::buddy_allocation_scheme::_combine_free_blocks() noexcept
 
           *itr = combined_block;
 
-          _blocks.erase(next_itr);
+          m_blocks.erase(next_itr);
 
           has_freed_blocks = true;
 

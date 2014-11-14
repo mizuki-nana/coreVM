@@ -24,12 +24,13 @@ public:
   static void init(corevm::runtime::process*);
 
   static sigjmp_buf& get_sigjmp_env();
-  static bool sig_raised;
 
   // Must be called after `init`.
   static void ignore(sig_atomic_t);
 
   static void handle_signal(int);
+
+  static bool sig_raised;
 
 protected:
   static corevm::runtime::process* process;

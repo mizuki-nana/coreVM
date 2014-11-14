@@ -24,6 +24,7 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
         this->resolve_self_reference_cycles(heap, object);
       }
     );
+
     this->remove_cycles(heap);
 
     if(heap.active_size() == prev_active_size) {
@@ -88,7 +89,7 @@ void
 corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
 {
-  using namespace sneaker::algorithm;
+  using sneaker::algorithm::tarjan;
 
   using dyobj_id_type = typename dynamic_object_type::dyobj_id_type;
   using vertex_type = typename tarjan<dyobj_id_type>::vertex;
@@ -151,18 +152,18 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
     vertices.push_back(vertex_ptr);
   }
 
-  tarjan<dyobj_id_type> algo; 
+  tarjan<dyobj_id_type> algo;
   auto components = algo.get_components(vertices);
 
   std::list<std::list<dyobj_id_type>> cycles = components.cycles();
 
   for(auto itr = cycles.begin(); itr != cycles.end(); ++itr) {
-    std::list<dyobj_id_type> cycle = *itr;
+    std::list<dyobj_id_type> cycle = static_cast<std::list<dyobj_id_type>>(*itr);
 
     std::set<dyobj_id_type> cycle_set;
 
-    for(auto _itr = cycle.begin(); _itr != cycle.end(); ++_itr) {
-      dyobj_id_type id = *_itr;
+    for(auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_) {
+      dyobj_id_type id = static_cast<dyobj_id_type>(*itr_);
       cycle_set.insert(id);
     }
 
@@ -179,8 +180,8 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
       continue;
     }
 
-    for(auto _itr = cycle.begin(); _itr != cycle.end(); ++_itr) {
-      dyobj_id_type id = *_itr;
+    for(auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_) {
+      dyobj_id_type id = static_cast<dyobj_id_type>(*itr_);
       auto& obj = heap.at(id);
       obj.manager().dec_ref_count();
     }

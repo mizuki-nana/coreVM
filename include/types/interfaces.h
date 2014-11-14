@@ -13,231 +13,231 @@ namespace types {
 /**************************** UNARY OPERATIONS ********************************/
 
 void interface_apply_positive_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_apply_negation_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_apply_increment_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_apply_decrement_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_apply_logical_not_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_apply_bitwise_not_operator(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 
 /**************************** BINARY OPERATIONS *******************************/
 
 void interface_apply_addition_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_subtraction_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_multiplication_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_division_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_modulus_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_logical_and_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_logical_or_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_bitwise_and_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_bitwise_or_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_bitwise_xor_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_bitwise_left_shift_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_bitwise_right_shift_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_eq_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_neq_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_lt_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_gt_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_lte_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 void interface_apply_gte_operator(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, corevm::types::native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
 
 /**************************** CONVERSION OPERATIONS ***************************/
 
 void interface_to_int8(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_uint8(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_int16(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_uint16(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_int32(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_uint32(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_int64(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_uint64(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_bool(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_dec1(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_dec2(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_str(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_ary(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_to_map(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 /**************************** STRING OPERATIONS *******************************/
 
 void interface_string_get_size(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_string_clear(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_string_at(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& index, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& index, native_type_handle& result);
 
 void interface_string_append(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
 
 void interface_string_pushback(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& c, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& c, native_type_handle& result);
 
 void interface_string_insert_str(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& str, native_type_handle& result);
 
 void interface_string_insert_char(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& c, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& c, native_type_handle& result);
 
 void interface_string_erase(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& result);
 
 void interface_string_erase2(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& len, native_type_handle& result);
 
 void interface_string_replace_str(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len,
-  corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& len,
+  native_type_handle& str, native_type_handle& result);
 
 void interface_string_swap(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
 
 void interface_string_substr(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& result);
 
 void interface_string_substr2(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& len, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& len, native_type_handle& result);
 
 void interface_string_find(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
 
 void interface_string_find2(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& pos, native_type_handle& result);
 
 void interface_string_rfind(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
 
 void interface_string_rfind2(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& str, corevm::types::native_type_handle& pos, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str, native_type_handle& pos, native_type_handle& result);
 
 
 /***************************** ARRAY OPERATIONS *******************************/
 
 void interface_array_size(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_array_empty(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_array_at(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& index, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& index, native_type_handle& result);
 
 void interface_array_front(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_array_back(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_array_append(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& data, native_type_handle& result);
 
 void interface_array_pop(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_array_swap(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result);
 
 void interface_array_clear(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 
 /****************************** MAP OPERATIONS ********************************/
 
 void interface_map_size(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_map_empty(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_map_at(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key, native_type_handle& result);
 
 void interface_map_put(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& data, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key, native_type_handle& data, native_type_handle& result);
 
 void interface_map_erase(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& key, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key, native_type_handle& result);
 
 void interface_map_clear(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& result);
 
 void interface_map_swap(
-  corevm::types::native_type_handle& operand, corevm::types::native_type_handle& other_operand, corevm::types::native_type_handle& result);
+  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result);
 
 
 } /* end namespace types */

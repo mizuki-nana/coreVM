@@ -13,33 +13,31 @@ public:
   using _ObjectType = typename corevm::dyobj::dynamic_object<typename GarbageCollectionScheme::dynamic_object_manager>;
 
   void do_gc_and_check_results(uint32_t expected_size) {
-    _GarbageCollectorType collector(_heap);
+    _GarbageCollectorType collector(m_heap);
     collector.gc();
 
-    ASSERT_EQ(expected_size, _heap.size());
+    ASSERT_EQ(expected_size, m_heap.size());
   }
 
 protected:
   corevm::dyobj::dyobj_id __create_obj() {
-    corevm::dyobj::dyobj_id id = _heap.create_dyobj();
-    //auto& obj = _heap.at(id);
-    //obj.manager().on_create();
+    corevm::dyobj::dyobj_id id = m_heap.create_dyobj();
     return id;
   }
 
   void __setattr(corevm::dyobj::dyobj_id src_id, corevm::dyobj::dyobj_id dst_id) {
-    auto& src_obj = _heap.at(src_id);
-    auto& dst_obj = _heap.at(dst_id);
+    auto& src_obj = m_heap.at(src_id);
+    auto& dst_obj = m_heap.at(dst_id);
     src_obj.putattr(dst_id, dst_id);
     dst_obj.manager().on_setattr();
   }
 
   void __set_not_garbage_collectible(corevm::dyobj::dyobj_id id) {
-    auto& obj = _heap.at(id);
+    auto& obj = m_heap.at(id);
     obj.set_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE);
   }
 
-  corevm::dyobj::dynamic_object_heap<typename GarbageCollectionScheme::dynamic_object_manager> _heap; 
+  corevm::dyobj::dynamic_object_heap<typename GarbageCollectionScheme::dynamic_object_manager> m_heap;
 };
 
 
@@ -54,7 +52,7 @@ TYPED_TEST_CASE(garbage_collection_unittest, GarbageCollectionSchemeTypes);
 TYPED_TEST(garbage_collection_unittest, TestOneObject)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    *  obj
    *
@@ -68,7 +66,7 @@ TYPED_TEST(garbage_collection_unittest, TestOneObject)
 TYPED_TEST(garbage_collection_unittest, TestSelfReferencedObject)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    * obj --->
    *  ^     |
@@ -77,6 +75,7 @@ TYPED_TEST(garbage_collection_unittest, TestSelfReferencedObject)
    * will result in 0 object left on the heap.
    */
   corevm::dyobj::dyobj_id id = this->__create_obj();
+
   this->__setattr(id, id);
 
   this->do_gc_and_check_results(0);
@@ -85,7 +84,7 @@ TYPED_TEST(garbage_collection_unittest, TestSelfReferencedObject)
 TYPED_TEST(garbage_collection_unittest, TestSelfReferenceOnNonGarbageCollectibleObject)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    * obj* -->
    *  ^     |
@@ -94,6 +93,7 @@ TYPED_TEST(garbage_collection_unittest, TestSelfReferenceOnNonGarbageCollectible
    * will result in 1 object left on the heap.
    */
   corevm::dyobj::dyobj_id id = this->__create_obj();
+
   this->__setattr(id, id);
   this->__set_not_garbage_collectible(id);
 
@@ -103,7 +103,7 @@ TYPED_TEST(garbage_collection_unittest, TestSelfReferenceOnNonGarbageCollectible
 TYPED_TEST(garbage_collection_unittest, TestLinearChain)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    *  obj1 -> obj2 -> obj3 -> obj4
    *
@@ -124,7 +124,7 @@ TYPED_TEST(garbage_collection_unittest, TestLinearChain)
 TYPED_TEST(garbage_collection_unittest, TestLinearChainWithNonGarbageCollectibleObject)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    *  obj1* -> obj2 -> obj3 -> obj4
    *
@@ -147,7 +147,7 @@ TYPED_TEST(garbage_collection_unittest, TestLinearChainWithNonGarbageCollectible
 TYPED_TEST(garbage_collection_unittest, TestLinearChainWithNonGarbageCollectibleObjects)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    *  obj1 -> obj2* -> obj3* -> obj4
    *
@@ -171,7 +171,7 @@ TYPED_TEST(garbage_collection_unittest, TestLinearChainWithNonGarbageCollectible
 TYPED_TEST(garbage_collection_unittest, TestSingleCycle)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    * obj1 -> obj2 -> obj3 ->
    *  ^                    |
@@ -193,11 +193,11 @@ TYPED_TEST(garbage_collection_unittest, TestSingleCycle)
 TYPED_TEST(garbage_collection_unittest, TestMultipleObjectsPointToOne)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 --->\
    *           \
-   * obj2 ------> obj4 
+   * obj2 ------> obj4
    *           /
    * obj3 --->/
    *
@@ -218,7 +218,7 @@ TYPED_TEST(garbage_collection_unittest, TestMultipleObjectsPointToOne)
 TYPED_TEST(garbage_collection_unittest, TestOnePointsToMultipleObjects)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    *        ----> obj2
    *       /
@@ -245,7 +245,7 @@ TYPED_TEST(garbage_collection_unittest, TestOnePointsToMultipleObjects)
 TYPED_TEST(garbage_collection_unittest, TestNonGarbageCollectibleObjectPointsToMultipleObjects)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    *         ----> obj2
    *        /
@@ -274,7 +274,7 @@ TYPED_TEST(garbage_collection_unittest, TestNonGarbageCollectibleObjectPointsToM
 TYPED_TEST(garbage_collection_unittest, TestAdjacentCycles)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    *        ----> obj2 --->
    *       /               \
@@ -305,7 +305,7 @@ TYPED_TEST(garbage_collection_unittest, TestAdjacentCycles)
 TYPED_TEST(garbage_collection_unittest, TestTwoIsolatedCycles)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 -> obj2 -> obj3  obj4 -> obj5 -> obj6
    *  ^               |     ^                |
@@ -334,7 +334,7 @@ TYPED_TEST(garbage_collection_unittest, TestTwoIsolatedCycles)
 TYPED_TEST(garbage_collection_unittest, TestNestedCycles)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    *          ------>------ obj2 ----->-----
    *         /                               \
@@ -379,7 +379,7 @@ TYPED_TEST(garbage_collection_unittest, TestNestedCycles)
 TYPED_TEST(garbage_collection_unittest, TestCycleWithInwardStub)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 -> obj2 -> obj3 <- obj4
    *  ^                |
@@ -403,7 +403,7 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithInwardStub)
 TYPED_TEST(garbage_collection_unittest, TestCycleWithOutwardStub)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 -> obj2 -> obj3 -> obj4
    *  ^                |
@@ -427,7 +427,7 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithOutwardStub)
 TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleInwardStub)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 -> obj2 -> obj3 <- obj4*
    *  ^                |
@@ -453,7 +453,7 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleInward
 TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoInwardStubs)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj5-> obj1 -> obj2 -> obj3 <- obj4*
    *         ^                |
@@ -481,13 +481,13 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoInwardStubs)
 TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleOutwardStub)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj1 -> obj2 -> obj3 -> obj4*
    *  ^                |
    *  |________________|
    *
-   * will result in 1 objects left on the heap.
+   * will result in 1 object left on the heap.
    */
   corevm::dyobj::dyobj_id id1 = this->__create_obj();
   corevm::dyobj::dyobj_id id2 = this->__create_obj();
@@ -507,13 +507,13 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithNonGarbageCollectibleOutwar
 TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoOutwardStubs)
 {
   /*
-   * Tests gc on the following object graph
+   * Tests GC on the following object graph
    *
    * obj5 <- obj1 -> obj2 -> obj3 -> obj4*
    *          ^                |
    *          |________________|
    *
-   * will result in 1 objects left on the heap.
+   * will result in 1 object left on the heap.
    */
   corevm::dyobj::dyobj_id id1 = this->__create_obj();
   corevm::dyobj::dyobj_id id2 = this->__create_obj();
@@ -535,7 +535,7 @@ TYPED_TEST(garbage_collection_unittest, TestCycleWithTwoOutwardStubs)
 TYPED_TEST(garbage_collection_unittest, TestSingleCycleWithNonGarbageCollectibleObject)
 {
   /*
-   * Tests gc on the following object graph:
+   * Tests GC on the following object graph:
    *
    * obj1 -> obj2* -> obj3 ->
    *  ^                     |

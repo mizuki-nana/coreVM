@@ -1,4 +1,5 @@
 #include <sneaker/testing/_unittest.h>
+#include "../../include/dyobj/dyobj_id_helper.h"
 #include "../../include/runtime/frame.h"
 #include "../../include/types/native_type_handle.h"
 
@@ -42,7 +43,9 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
   corevm::types::native_type_handle popped_handle = frame.pop_eval_stack();
 
   ASSERT_THROW(
-    { frame.pop_eval_stack(); },
+    {
+      frame.pop_eval_stack();
+    },
     corevm::runtime::evaluation_stack_empty_error
   );
 }
@@ -56,7 +59,9 @@ TEST_F(frame_unittest, TestVisibleVars)
   ASSERT_EQ(false, frame.has_visible_var(var_key));
 
   ASSERT_THROW(
-    { frame.get_visible_var(var_key); },
+    {
+      frame.get_visible_var(var_key);
+    },
     corevm::runtime::local_variable_not_found_error
   );
 
@@ -67,7 +72,9 @@ TEST_F(frame_unittest, TestVisibleVars)
   ASSERT_EQ(obj_id, frame.pop_visible_var(var_key));
 
   ASSERT_THROW(
-    { frame.get_visible_var(var_key); },
+    {
+      frame.get_visible_var(var_key);
+    },
     corevm::runtime::local_variable_not_found_error
   );
 }
@@ -81,7 +88,9 @@ TEST_F(frame_unittest, TestInvisibleVars)
   ASSERT_EQ(false, frame.has_invisible_var(var_key));
 
   ASSERT_THROW(
-    { frame.get_invisible_var(var_key); },
+    {
+      frame.get_invisible_var(var_key);
+    },
     corevm::runtime::local_variable_not_found_error
   );
 
@@ -92,7 +101,9 @@ TEST_F(frame_unittest, TestInvisibleVars)
   ASSERT_EQ(obj_id, frame.pop_invisible_var(var_key));
 
   ASSERT_THROW(
-    { frame.get_invisible_var(var_key); },
+    {
+      frame.get_invisible_var(var_key);
+    },
     corevm::runtime::local_variable_not_found_error
   );
 }
@@ -105,7 +116,9 @@ TEST_F(frame_unittest, TestStateCheckOnInvalidState)
   frame.push_eval_stack(handle);
 
   ASSERT_THROW(
-    { frame.check_state_before_destruction(); },
+    {
+      frame.check_state_before_destruction();
+    },
     corevm::runtime::evaluation_stack_not_empty_error
   );
 }
@@ -128,7 +141,9 @@ TEST_F(frame_unittest, TestPutAndGetParams)
   ASSERT_EQ(id2, frame.pop_param());
 
   ASSERT_THROW(
-    { frame.pop_param(); },
+    {
+      frame.pop_param();
+    },
     corevm::runtime::missing_parameter_error
   );
 
@@ -155,7 +170,9 @@ TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
   ASSERT_EQ(id2, frame.pop_param_value_pair(key2));
 
   ASSERT_THROW(
-    { frame.pop_param_value_pair(key1); },
+    {
+      frame.pop_param_value_pair(key1);
+    },
     corevm::runtime::missing_parameter_error
   );
 

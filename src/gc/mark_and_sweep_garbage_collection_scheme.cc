@@ -25,7 +25,7 @@ bool
 corevm::gc::mark_and_sweep_garbage_collection_scheme::is_root_object(
   const corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_type& object) const noexcept
 {
-  // TODO...
+  // TODO: [COREVM-62] Complete mark and sweep GC scheme implementation
   return true;
 }
 

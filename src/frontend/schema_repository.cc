@@ -4,10 +4,11 @@
 #include <unordered_map>
 #include "../../include/frontend/schema_repository.h"
 
+
 const std::unordered_map<std::string, std::string>
 corevm::frontend::schema_repository::format_version_to_schema_map {
   {
-    "0.1", 
+    "0.1",
     "{"
       "\"type\": \"object\","
       "\"properties\": {"

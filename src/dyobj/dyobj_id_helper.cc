@@ -1,5 +1,6 @@
+#include <stdexcept>
 #include <boost/lexical_cast.hpp>
-#include "../../include/dyobj/dyobj_id.h"
+#include "../../include/dyobj/dyobj_id_helper.h"
 #include "../../include/dyobj/errors.h"
 
 
@@ -14,8 +15,10 @@ corevm::dyobj::dyobj_id_helper::generate_dyobj_id()
 {
   try {
     return ++corevm::dyobj::dyobj_id_helper::atomic_value;
-  } catch (...) { // TODO: should catch std::overflow_error and std::underflow_error here.
-    throw corevm::dyobj::dynamic_object_id_exceed_limit_error();
+  } catch (const std::underflow_error&) {
+    throw corevm::dyobj::object_id_exceed_limit_error();
+  } catch (const std::overflow_error&) {
+    throw corevm::dyobj::object_id_exceed_limit_error();
   }
 }
 

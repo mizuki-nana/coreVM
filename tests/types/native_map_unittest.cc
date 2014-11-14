@@ -37,16 +37,20 @@ TEST_F(native_map_unittest, TestCopyConstructor)
 TEST_F(native_map_unittest, TestCopyConstructorOnIntegerType)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map = 123;},
-    corevm::types::corevm_native_type_conversion_error
+    {
+      const corevm::types::native_map map = 123;
+    },
+    corevm::types::conversion_error
   );
 }
 
 TEST_F(native_map_unittest, TestConvertingToIntegerType)
 {
   ASSERT_THROW(
-    {int i = corevm::types::native_map(); i++;},
-    corevm::types::corevm_native_type_conversion_error
+    {
+      int i = corevm::types::native_map(); i++;
+    },
+    corevm::types::conversion_error
   );
 }
 
@@ -130,10 +134,12 @@ TEST_F(native_map_functionality_unittest, TestAtFailure)
   corevm::types::native_map map;
 
   ASSERT_THROW(
-    { map.at(1); },
-    corevm::types::corevm_native_type_out_of_range_error
+    {
+      map.at(1);
+    },
+    corevm::types::out_of_range_error
   );
-} 
+}
 
 
 class native_map_operator_unittest : public native_map_unittest {};
@@ -145,53 +151,74 @@ class native_map_unary_operator_unittest : public native_map_operator_unittest {
 TEST_F(native_map_unary_operator_unittest, TestPositiveOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; +map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      const corevm::types::native_map map;
+      +map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 TEST_F(native_map_unary_operator_unittest, TestNegationOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; -map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      const corevm::types::native_map map;
+      -map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 TEST_F(native_map_unary_operator_unittest, TestIncrementOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; ++map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      corevm::types::native_map map;
+      ++map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 TEST_F(native_map_unary_operator_unittest, TestDecrementOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; --map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      corevm::types::native_map map;
+      --map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 TEST_F(native_map_unary_operator_unittest, TestLogicalNOTOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; !map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      const corevm::types::native_map map;
+      !map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 TEST_F(native_map_unary_operator_unittest, TestBitwiseNOTOperator)
 {
   ASSERT_THROW(
-    {const corevm::types::native_map map; ~map;},
-    corevm::types::corevm_native_type_invalid_operator_error
+    {
+      const corevm::types::native_map map;
+      ~map;
+    },
+    corevm::types::invalid_operator_error
   );
 }
 
 
-class native_map_binary_operator_unittest : public native_map_operator_unittest {};
+class native_map_binary_operator_unittest : public native_map_operator_unittest {
+public:
+  static void F(bool) {}
+};
 
 
 TEST_F(native_map_binary_operator_unittest, TestAdditionOperator)
@@ -202,7 +229,7 @@ TEST_F(native_map_binary_operator_unittest, TestAdditionOperator)
       const corevm::types::native_map map2;
       map1 + map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -214,7 +241,7 @@ TEST_F(native_map_binary_operator_unittest, TestSubtractionOperator)
       const corevm::types::native_map map2;
       map1 - map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -226,7 +253,7 @@ TEST_F(native_map_binary_operator_unittest, TestMultiplicationOperator)
       const corevm::types::native_map map2;
       map1 * map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -238,7 +265,7 @@ TEST_F(native_map_binary_operator_unittest, TestDivisionOperator)
       const corevm::types::native_map map2;
       map1 / map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -250,7 +277,7 @@ TEST_F(native_map_binary_operator_unittest, TestLogicalANDOperator)
       const corevm::types::native_map map2;
       map1 && map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -262,7 +289,7 @@ TEST_F(native_map_binary_operator_unittest, TestLogicalOROperator)
       const corevm::types::native_map map2;
       map1 || map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -274,7 +301,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseANDOperator)
       const corevm::types::native_map map2;
       map1 & map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -286,7 +313,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseOROperator)
       const corevm::types::native_map map2;
       map1 | map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -298,7 +325,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseXOROperator)
       const corevm::types::native_map map2;
       map1 ^ map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -310,7 +337,7 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseLeftShiftOperator)
       const corevm::types::native_map map2;
       map1 << map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -322,11 +349,9 @@ TEST_F(native_map_binary_operator_unittest, TestBitwiseRightShiftOperator)
       const corevm::types::native_map map2;
       map1 >> map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
-
-void f(bool) {}
 
 TEST_F(native_map_binary_operator_unittest, TestEQOperator)
 {
@@ -334,7 +359,7 @@ TEST_F(native_map_binary_operator_unittest, TestEQOperator)
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
-      f(map1 == map2);
+      F(map1 == map2);
     }
   );
 }
@@ -345,7 +370,7 @@ TEST_F(native_map_binary_operator_unittest, TestNEQOperator)
     {
       const corevm::types::native_map map1;
       const corevm::types::native_map map2;
-      f(map1 != map2);
+      F(map1 != map2);
     }
   );
 }
@@ -358,7 +383,7 @@ TEST_F(native_map_binary_operator_unittest, TestGTOperator)
       const corevm::types::native_map map2;
       map1 > map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -370,7 +395,7 @@ TEST_F(native_map_binary_operator_unittest, TestLTOperator)
       const corevm::types::native_map map2;
       map1 < map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -382,7 +407,7 @@ TEST_F(native_map_binary_operator_unittest, TestGTEOperator)
       const corevm::types::native_map map2;
       map1 >= map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
 
@@ -394,6 +419,6 @@ TEST_F(native_map_binary_operator_unittest, TestLTEOperator)
       const corevm::types::native_map map2;
       map1 <= map2;
     },
-    corevm::types::corevm_native_type_invalid_operator_error
+    corevm::types::invalid_operator_error
   );
 }
