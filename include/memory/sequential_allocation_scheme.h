@@ -30,15 +30,12 @@ public:
   virtual ssize_t malloc(size_t) noexcept;
   virtual ssize_t free(size_t) noexcept;
 
-#ifdef __DEBUG__
-  void debug_print() noexcept;
-#endif
 protected:
-  virtual iterator _find_fit(size_t) noexcept = 0;
-  virtual void _split(iterator, size_t, uint64_t) noexcept;
-  virtual void _combine_free_blocks() noexcept;
+  virtual iterator find_fit(size_t) noexcept = 0;
+  virtual void split(iterator, size_t, uint64_t) noexcept;
+  virtual void combine_free_blocks() noexcept;
 
-  std::list<sequential_block_descriptor> _blocks;
+  std::list<sequential_block_descriptor> m_blocks;
 };
 
 
@@ -46,7 +43,7 @@ class first_fit_allocation_scheme : public corevm::memory::sequential_allocation
 public:
   first_fit_allocation_scheme(size_t total_size) : corevm::memory::sequential_allocation_scheme(total_size) {}
 protected:
-  virtual iterator _find_fit(size_t) noexcept;
+  virtual iterator find_fit(size_t) noexcept;
 };
 
 
@@ -54,7 +51,7 @@ class best_fit_allocation_scheme : public corevm::memory::sequential_allocation_
 public:
   best_fit_allocation_scheme(size_t total_size) : corevm::memory::sequential_allocation_scheme(total_size) {}
 protected:
-  virtual iterator _find_fit(size_t) noexcept;
+  virtual iterator find_fit(size_t) noexcept;
 };
 
 
@@ -62,7 +59,7 @@ class worst_fit_allocation_scheme : public corevm::memory::sequential_allocation
 public:
   worst_fit_allocation_scheme(size_t total_size) : corevm::memory::sequential_allocation_scheme(total_size) {}
 protected:
-  virtual iterator _find_fit(size_t) noexcept;
+  virtual iterator find_fit(size_t) noexcept;
 };
 
 
@@ -71,11 +68,11 @@ public:
   next_fit_allocation_scheme(size_t total_size):
     corevm::memory::sequential_allocation_scheme(total_size)
   {
-    _last_itr = this->begin();
+    m_last_itr = this->begin();
   }
 protected:
-  virtual iterator _find_fit(size_t) noexcept;
-  iterator _last_itr;
+  virtual iterator find_fit(size_t) noexcept;
+  iterator m_last_itr;
 };
 
 
@@ -83,8 +80,8 @@ class buddy_allocation_scheme : public corevm::memory::sequential_allocation_sch
 public:
   buddy_allocation_scheme(size_t total_size) : corevm::memory::sequential_allocation_scheme(total_size) {}
 protected:
-  virtual iterator _find_fit(size_t) noexcept;
-  virtual void _combine_free_blocks() noexcept;
+  virtual iterator find_fit(size_t) noexcept;
+  virtual void combine_free_blocks() noexcept;
 };
 
 

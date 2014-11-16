@@ -16,32 +16,34 @@ public:
   using block_type = typename std::vector<corevm::runtime::instr>;
 
   explicit instr_block(block_type& instrs):
-    _block(instrs)
-  {}
+    m_block(instrs)
+  {
+  }
 
   explicit instr_block(std::initializer_list<corevm::runtime::instr> instrs):
-    _block(instrs)
-  {}
+    m_block(instrs)
+  {
+  }
 
   instr_block& operator=(const instr_block& other) {
-    _block = other._block;
+    m_block = other.block();
     return *this;
   }
 
   block_type block() const {
-    return _block;
+    return m_block;
   }
 
   block_type::iterator begin() {
-    return _block.begin();
+    return m_block.begin();
   }
 
   block_type::iterator end() {
-    return _block.end();
+    return m_block.end();
   }
 
 private:
-  block_type _block;
+  block_type m_block;
 };
 
 

@@ -84,9 +84,9 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
-  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
-  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
-  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
+  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::object_attribute_deletion_error);
 
   obj.putattr(key1, mock_attrs[key1]);
   obj.putattr(key2, mock_attrs[key2]);
@@ -108,13 +108,13 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
-  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
-  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
-  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::dynamic_object_attribute_cannot_be_deleted_error);
+  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::object_attribute_deletion_error);
 
-  ASSERT_THROW(obj.getattr(key1), corevm::dyobj::dynamic_object_attribute_not_found_error);
-  ASSERT_THROW(obj.getattr(key2), corevm::dyobj::dynamic_object_attribute_not_found_error);
-  ASSERT_THROW(obj.getattr(key3), corevm::dyobj::dynamic_object_attribute_not_found_error);
+  ASSERT_THROW(obj.getattr(key1), corevm::dyobj::object_attribute_not_found_error);
+  ASSERT_THROW(obj.getattr(key2), corevm::dyobj::object_attribute_not_found_error);
+  ASSERT_THROW(obj.getattr(key3), corevm::dyobj::object_attribute_not_found_error);
 }
 
 TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)

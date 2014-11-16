@@ -22,6 +22,7 @@ protected:
 };
 
 const char* loader_unittest::PATH = "./example.corevm";
+
 const std::string loader_unittest::BYTECODE = \
   "{"
     "\"format\": \"corevm\","

@@ -11,12 +11,12 @@
 #include "../../include/frontend/schema_repository.h"
 
 
-using boost::format; 
+using boost::format;
 using namespace sneaker::json;
 
 
 corevm::frontend::loader::loader(const std::string& path):
-  _path(path)
+  m_path(path)
 {
   // Do nothing here.
 }
@@ -24,7 +24,7 @@ corevm::frontend::loader::loader(const std::string& path):
 const std::string
 corevm::frontend::loader::path() const
 {
-  return _path;
+  return m_path;
 }
 
 corevm::frontend::bytecode_runner*
@@ -32,7 +32,7 @@ corevm::frontend::loader::load() throw(corevm::frontend::file_loading_error)
 {
   corevm::frontend::bytecode_runner* runner = nullptr;
 
-  std::ifstream f(_path, std::ios::binary);
+  std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
 
   try {
@@ -44,7 +44,7 @@ corevm::frontend::loader::load() throw(corevm::frontend::file_loading_error)
       str(
         format(
           "Error while loading file \"%s\": %s"
-        ) % _path % ex.what()
+        ) % m_path % ex.what()
       )
     );
   }
@@ -58,14 +58,14 @@ corevm::frontend::loader::load() throw(corevm::frontend::file_loading_error)
   } catch (const sneaker::json::invalid_json_error& ex) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Error while parsing file \"%s\": %s") % _path % ex.what()
+        format("Error while parsing file \"%s\": %s") % m_path % ex.what()
       )
     );
   }
 
   this->validate(content_json);
 
-  // TODO: associate `content_json` with runner.
+  // TODO: [COREVM-55] Design and implement bytecode loading mechanism
   runner = new bytecode_runner();
 
   return runner;
@@ -79,7 +79,7 @@ corevm::frontend::loader::validate(const JSON& content_json)
   if(json_object.find("format-version") == json_object.end()) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Missing \"format-version\" in file \"%s\"") % _path
+        format("Missing \"format-version\" in file \"%s\"") % m_path
       )
     );
   }
@@ -94,7 +94,7 @@ corevm::frontend::loader::validate(const JSON& content_json)
   if(raw_schema.empty()) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Invalid \"format-version\" in file \"%s\"") % _path
+        format("Invalid \"format-version\" in file \"%s\"") % m_path
       )
     );
   }
@@ -108,7 +108,7 @@ corevm::frontend::loader::validate(const JSON& content_json)
   } catch (const sneaker::json::json_validation_error& ex) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Invalid format in file \"%s\": %s") % _path % ex.what()
+        format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )
     );
   }

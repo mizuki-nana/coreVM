@@ -59,7 +59,7 @@ template<>
 inline
 typename corevm::types::boolean::value_type
 corevm::types::decrement::operator()<corevm::types::boolean>(const corevm::types::boolean& handle) {
-  throw corevm::types::corevm_native_type_invalid_operator_error("--", "boolean"); 
+  throw corevm::types::invalid_operator_error("--", "boolean"); 
 }
 
 

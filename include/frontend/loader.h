@@ -23,10 +23,11 @@ public:
   const std::string path() const;
 
   bytecode_runner* load() throw(corevm::frontend::file_loading_error);
+
 protected:
   void validate(const JSON&);
 
-  std::string _path;
+  std::string m_path;
 };
 
 

@@ -36,7 +36,7 @@ protected:
   corevm::memory::heap_mem_allocator<
     N,
     corevm::memory::buddy_allocation_scheme
-  > _heap;
+  > m_heap;
 };
 
 
@@ -47,7 +47,7 @@ using _MyType = typename corevm::dyobj::dyobj_heap_alloc_policy<T, N>;
 template<typename T, size_t N>
 corevm::dyobj::dyobj_heap_alloc_policy<T, N>::dyobj_heap_alloc_policy():
   sneaker::allocator::standard_alloc_policy<T>(),
-  _heap(
+  m_heap(
     corevm::memory::heap_mem_allocator<N, corevm::memory::buddy_allocation_scheme>()
   )
 {
@@ -74,7 +74,7 @@ corevm::dyobj::dyobj_heap_alloc_policy<T, N>::allocate(
   typename std::allocator<void>::const_pointer
 )
 {
-  return reinterpret_cast<typename _MyType<T, N>::pointer>( _heap.malloc_mem(n * sizeof(T)) );
+  return reinterpret_cast<typename _MyType<T, N>::pointer>( m_heap.allocate(n * sizeof(T)) );
 }
 
 template<typename T, size_t N>
@@ -84,7 +84,7 @@ corevm::dyobj::dyobj_heap_alloc_policy<T, N>::deallocate(
   typename dyobj_heap_alloc_policy<T, N>::size_type
 )
 {
-  _heap.free_mem(p);
+  m_heap.deallocate(p);
 }
 
 

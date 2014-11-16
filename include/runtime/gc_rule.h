@@ -17,53 +17,51 @@ class process;
 
 class gc_rule {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process) = 0;
+  virtual bool should_gc(const corevm::runtime::process& process) const = 0;
 };
 
 
 class gc_rule_always : public gc_rule {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process);
+  virtual bool should_gc(const corevm::runtime::process& process) const;
 };
 
 
 class gc_rule_by_heap_size : public gc_rule {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process);
+  virtual bool should_gc(const corevm::runtime::process& process) const;
+
+  static const double DEFAULT_CUTOFF;
 };
 
 
 class gc_rule_by_ntvhndl_pool_size : public gc_rule {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process);
+  virtual bool should_gc(const corevm::runtime::process& process) const;
+
+  static const double DEFAULT_CUTOFF;
 };
 
 
 typedef struct gc_rule_wrapper {
-  corevm::runtime::gc_rule* gc_rule;
+  const corevm::runtime::gc_rule* gc_rule;
 } gc_rule_wrapper;
 
 
 class gc_rule_meta {
 public:
-  enum gc_bitfields {
+  enum gc_bitfields : uint8_t {
     GC_ALWAYS = 1,
     GC_BY_HEAP_SIZE = 2,
     GC_BY_NTV_POOLSIZE = 3,
   };
 
-  corevm::runtime::gc_rule* get_gc_rule(gc_bitfields bit) {
-    auto itr = _gc_rule_map.find(bit);
-    return itr != _gc_rule_map.end() ? itr->second.gc_rule : nullptr;
-  }
+  static const corevm::runtime::gc_rule* get_gc_rule(gc_bitfields bit);
 
 private:
-  std::unordered_map<gc_bitfield_t, corevm::runtime::gc_rule_wrapper> _gc_rule_map {
-    {gc_bitfields::GC_ALWAYS, {.gc_rule=new corevm::runtime::gc_rule_always()}},
-    {gc_bitfields::GC_BY_HEAP_SIZE, {.gc_rule=new corevm::runtime::gc_rule_by_heap_size()}},
-    {gc_bitfields::GC_BY_NTV_POOLSIZE, {.gc_rule=new corevm::runtime::gc_rule_by_ntvhndl_pool_size()}}
-  };
+  static const std::unordered_map<corevm::runtime::gc_bitfield_t, corevm::runtime::gc_rule_wrapper> gc_rule_map;
 };
+
 
 
 } /* end namespace runtime */

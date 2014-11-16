@@ -1,4 +1,5 @@
 #include <sneaker/testing/_unittest.h>
+#include "../../include/runtime/gc_rule.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/sighandler_registrar.h"
 

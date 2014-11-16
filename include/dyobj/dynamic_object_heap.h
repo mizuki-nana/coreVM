@@ -52,23 +52,23 @@ public:
   ~dynamic_object_heap();
 
   size_type size() const noexcept {
-    return _map.size();
+    return m_map.size();
   }
 
   size_type max_size() const noexcept {
-    return _map.max_size();
+    return m_map.max_size();
   }
 
   size_type active_size() const noexcept;
 
   iterator erase(const_iterator pos) {
-    return _map.erase(pos);
+    return m_map.erase(pos);
   }
 
   void erase(dynamic_object_id_type id) {
-    auto itr = _map.find(id);
+    auto itr = m_map.find(id);
 
-    if(itr != _map.end()) {
+    if(itr != m_map.end()) {
       erase(itr);
     }
   }
@@ -83,19 +83,19 @@ public:
   void iterate(Function) noexcept;
 
   dynamic_object_type& at(const dynamic_object_id_type)
-    throw(corevm::dyobj::dynamic_object_not_found_error);
+    throw(corevm::dyobj::object_not_found_error);
 
   dynamic_object_id_type create_dyobj()
-    throw(corevm::dyobj::dynamic_object_heap_insertion_failed_error);
+    throw(corevm::dyobj::object_heap_insertion_failed_error);
 
 private:
-  dyobj_heap_map_type _map;
+  dyobj_heap_map_type m_map;
 };
 
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap():
-  _map()
+  m_map()
 {
   // Do nothing here.
 }
@@ -103,6 +103,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::~dynamic_object_heap()
 {
+  // Do nothing here.
 }
 
 template<class dynamic_object_manager>
@@ -123,28 +124,28 @@ template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::begin() noexcept
 {
-  return this->_map.begin();
+  return m_map.begin();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cbegin() const noexcept
 {
-  return this->_map.cbegin();
+  return m_map.cbegin();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::end() noexcept
 {
-  return this->_map.end();
+  return m_map.end();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cend() const noexcept
 {
-  return this->_map.cend();
+  return m_map.cend();
 }
 
 template<class dynamic_object_manager>
@@ -168,12 +169,12 @@ template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   const corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type id)
-  throw(corevm::dyobj::dynamic_object_not_found_error)
+  throw(corevm::dyobj::object_not_found_error)
 {
-  typename dyobj_heap_map_type::iterator itr = this->_map.find(id);
+  typename dyobj_heap_map_type::iterator itr = m_map.find(id);
 
-  if(itr == this->_map.end()) {
-    throw corevm::dyobj::dynamic_object_not_found_error(id);
+  if(itr == m_map.end()) {
+    throw corevm::dyobj::object_not_found_error(id);
   }
 
   return static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&>(itr->second);
@@ -182,15 +183,15 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
-  throw(corevm::dyobj::dynamic_object_heap_insertion_failed_error)
+  throw(corevm::dyobj::object_heap_insertion_failed_error)
 {
   dynamic_object_id_type id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
   dynamic_object_type dyobj(id);
-  auto res = _map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(id, dyobj));
+  auto res = m_map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(id, dyobj));
 
   if(res.second == false) {
-    throw corevm::dyobj::dynamic_object_heap_insertion_failed_error();
+    throw corevm::dyobj::object_heap_insertion_failed_error();
   }
 
   return id;

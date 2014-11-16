@@ -8,12 +8,13 @@ namespace corevm {
 namespace dyobj {
 
 
-/* Dynamic object flags are represented by 32 bits unsigned integers. Please
+/*
+ * Dynamic object flags are represented by 32 bits unsigned integers. Please
  * refer to the definition of `corevm::dyobj::flag`. These flag bits are
  * defined so that the default value of a flag, 0, would be the appropriate
  * value for most objects.
  */
-enum flags {
+enum flags : uint8_t {
   // Bits that pertain to the lifespan of objects.
   IS_NOT_GARBAGE_COLLECTIBLE = 1,
   IS_WEAK_REF = 2,
