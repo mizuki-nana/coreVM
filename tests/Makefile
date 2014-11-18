@@ -30,32 +30,32 @@ ifeq ($(UNAME_S), Darwin)
 endif
 
 
+.PHONY: all
+all: memory dyobj gc types runtime frontend
+
 .PHONY: memory
 memory:
-	-cd $(MEMORY) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	cd $(MEMORY) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: dyobj
 dyobj:
-	-cd $(DYOBJ) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	cd $(DYOBJ) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: gc
 gc:
-	-cd $(GC) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	cd $(GC) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: types
 types:
-	-cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	cd $(TYPES) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: runtime
 runtime:
-	-cd $(RUNTIME) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
+	cd $(RUNTIME) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: frontend
 frontend:
-	-cd $(FRONTEND) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
-
-.PHONY: all
-all: memory dyobj gc types runtime frontend
+	cd $(FRONTEND) && for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $$f.test); done
 
 .PHONY: clean
 clean:
