@@ -1,8 +1,11 @@
 #include <algorithm>
+#include <climits>
 #include <list>
 #include <sneaker/testing/_unittest.h>
 #include "../../include/runtime/process.h"
 #include "../../include/types/interfaces.h"
+#include "../../include/types/native_type_handle.h"
+#include "../../include/types/types.h"
 
 
 class process_instrs_unittest : public ::testing::Test {};
@@ -995,9 +998,8 @@ public:
     push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
-  template<typename InstrHandlerCls>
+  template<typename InstrHandlerCls, typename TargetNativeType>
   void execute_instr_and_assert_result() {
-    // TODO: [COREVM-63] Robustify test in native type conversion instruction test
     InstrHandlerCls instr_handler;
 
     corevm::runtime::instr instr;
@@ -1007,63 +1009,92 @@ public:
     corevm::runtime::frame& frame = m_process.top_frame();
 
     ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    corevm::types::native_type_handle hndl = m_oprd;
+
+    auto expected_value = corevm::types::get_value_from_handle<
+      typename TargetNativeType::value_type>(hndl);
+
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    auto actual_value = corevm::types::get_value_from_handle<
+      typename TargetNativeType::value_type>(result_handle);
+
+    ASSERT_EQ(expected_value, actual_value);
   }
 
 private:
-  corevm::types::uint8 m_oprd = 100;
+  corevm::types::uint8 m_oprd = std::numeric_limits<corevm::types::uint8::value_type>::max();
 };
 
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2INT8)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2int8>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2int8, corevm::types::int8>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2INT16)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2int16>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2int16, corevm::types::int16>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2UINT16)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2uint16>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2uint16, corevm::types::uint16>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2INT32)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2int32>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2int32, corevm::types::int32>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2UINT64)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2uint64>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2uint64, corevm::types::uint64>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2INT64)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2int64>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2int64, corevm::types::int64>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2BOOL)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2bool>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2bool, corevm::types::boolean>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2DEC1)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2dec1>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2dec1, corevm::types::decimal>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2DEC2)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_2dec2>();
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_2dec2, corevm::types::decimal2>();
 }
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 {
+  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+  // (Somehow calling a templated function wrapped in a code block makes
+  // `ASSERT_THROW` thinks it's getting an initializer list)
+  auto test = [&]() {
+    execute_instr_and_assert_result<
+      corevm::runtime::instr_handler_2str, corevm::types::string>();
+  };
+
   ASSERT_THROW(
     {
-      execute_instr_and_assert_result<corevm::runtime::instr_handler_2str>();
+      test();
     },
     corevm::types::conversion_error
   );
@@ -1071,9 +1102,17 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 {
+  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+  // (Somehow calling a templated function wrapped in a code block makes
+  // `ASSERT_THROW` thinks it's getting an initializer list)
+  auto test = [&]() {
+    execute_instr_and_assert_result<
+      corevm::runtime::instr_handler_2ary, corevm::types::array>();
+  };
+
   ASSERT_THROW(
     {
-      execute_instr_and_assert_result<corevm::runtime::instr_handler_2ary>();
+      test();
     },
     corevm::types::conversion_error
   );
@@ -1081,9 +1120,17 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 {
+  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+  // (Somehow calling a templated function wrapped in a code block makes
+  // `ASSERT_THROW` thinks it's getting an initializer list)
+  auto test = [&]() {
+    execute_instr_and_assert_result<
+      corevm::runtime::instr_handler_2map, corevm::types::map>();
+  };
+
   ASSERT_THROW(
     {
-      execute_instr_and_assert_result<corevm::runtime::instr_handler_2map>();
+      test();
     },
     corevm::types::conversion_error
   );
