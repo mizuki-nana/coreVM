@@ -7,6 +7,7 @@
 #include <sneaker/libc/utils.h>
 #include "common.h"
 #include "dyobj_id.h"
+#include "dyobj_id_helper.h"
 #include "flags.h"
 #include "errors.h"
 
@@ -33,7 +34,7 @@ public:
   typedef attr_map_type::iterator iterator;
   typedef attr_map_type::const_iterator const_iterator;
 
-  explicit dynamic_object(dyobj_id_type&);
+  static dynamic_object<dynamic_object_manager> create();
 
   ~dynamic_object();
 
@@ -81,6 +82,8 @@ public:
   void iterate(Function) noexcept;
 
 private:
+  explicit dynamic_object(dyobj_id_type);
+
   void check_flag_bit(char) const throw(corevm::dyobj::invalid_flag_bit_error);
 
   dyobj_id_type m_id;
@@ -93,7 +96,16 @@ private:
 
 
 template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dyobj::dyobj_id& id):
+corevm::dyobj::dynamic_object<dynamic_object_manager>
+corevm::dyobj::dynamic_object<dynamic_object_manager>::create()
+{
+  return corevm::dyobj::dynamic_object<dynamic_object_manager>(
+    corevm::dyobj::dyobj_id_helper::generate_dyobj_id()
+  );
+}
+
+template<class dynamic_object_manager>
+corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dyobj::dyobj_id id):
   m_id(id),
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),

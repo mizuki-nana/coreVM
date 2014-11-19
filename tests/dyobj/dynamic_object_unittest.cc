@@ -12,8 +12,7 @@ class dynamic_object_unittest : public ::testing::Test {};
 
 TEST_F(dynamic_object_unittest, TestInitialization)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
+  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   ASSERT_EQ(0, obj.flags());
   ASSERT_FALSE(obj.hasattr(0));
@@ -23,8 +22,7 @@ TEST_F(dynamic_object_unittest, TestInitialization)
 
 TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
+  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   ASSERT_EQ(0, obj.flags());
 
@@ -52,19 +50,20 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
   ASSERT_FALSE(obj.get_flag(flag2));
   ASSERT_FALSE(obj.get_flag(flag3));
 
-  // Tests that we cannot go over the flag bit limit...
+  // Tests that we cannot go over the flag bit limit.
   char flag4 = corevm::dyobj::flags::LAST_PLACEHOLDER + 1;
 
   ASSERT_THROW(
-    { obj.set_flag(flag4); },
+    {
+      obj.set_flag(flag4);
+    },
     corevm::dyobj::invalid_flag_bit_error
   );
 }
 
 TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
+  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   corevm::dyobj::attr_key key1 = 123;
   corevm::dyobj::attr_key key2 = 456;
@@ -75,9 +74,9 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   corevm::dyobj::dyobj_id obj_id3 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
   std::map<corevm::dyobj::attr_key, corevm::dyobj::dyobj_id> mock_attrs = {
-    {key1, obj_id1},
-    {key2, obj_id2},
-    {key3, obj_id3}
+    { key1, obj_id1 },
+    { key2, obj_id2 },
+    { key3, obj_id3 }
   };
 
   ASSERT_FALSE(obj.hasattr(key1));
@@ -119,8 +118,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 
 TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
+  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   ASSERT_EQ(corevm::dyobj::NONESET_INSTR_BLOCK_KEY, obj.get_instr_block_key());
 
@@ -136,8 +134,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
 
 TEST_F(dynamic_object_unittest, TestEquality)
 {
-  corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
+  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   // ASSERT_EQ(obj, obj);
   ASSERT_TRUE(obj == obj);
@@ -145,21 +142,10 @@ TEST_F(dynamic_object_unittest, TestEquality)
 
 TEST_F(dynamic_object_unittest, TestInequality)
 {
-  corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj1(id1);
-
-  corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj2(id2);
+  auto obj1 = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  auto obj2 = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
 
   // ASSERT_NE(obj1, obj2);
   ASSERT_TRUE(obj1 != obj2);
   ASSERT_FALSE(obj1 == obj2);
 }
-
-// TEST_F(dynamic_object_unittest, TestSize)
-// {
-//   corevm::dyobj::dyobj_id id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-//   corevm::dyobj::dynamic_object<dummy_dynamic_object_manager> obj(id);
-
-//   printf("Size of dyobj: %lu\n", sizeof(obj));
-// }
