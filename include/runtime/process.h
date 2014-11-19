@@ -21,6 +21,33 @@ namespace corevm {
 namespace runtime {
 
 
+typedef corevm::gc::reference_count_garbage_collection_scheme _garbage_collection_scheme;
+using _dynamic_object_type = typename corevm::dyobj::dynamic_object<_garbage_collection_scheme::dynamic_object_manager>;
+using _dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<_garbage_collection_scheme::dynamic_object_manager>;
+using _native_handles_pool_type = typename std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>;
+
+
+// Forward declaration of `corvm::runtime::process`.
+class process;
+
+
+class process_adapter {
+public:
+  explicit process_adapter(corevm::runtime::process& process):
+    m_process(process)
+  {
+    // Do nothing here.
+  }
+
+  corevm::dyobj::dyobj_id help_create_dyobj();
+
+  _dynamic_object_type& help_get_dyobj(corevm::dyobj::dyobj_id id);
+
+private:
+  corevm::runtime::process& m_process;
+};
+
+
 /*
  * A process is a unit for executing a sequence of instructions.
  * It's supposed to have the following:
@@ -36,11 +63,14 @@ namespace runtime {
  * - An incrementor for native handle IDs.
  */
 class process : public sneaker::threading::fixed_time_interval_daemon_service {
+
+  friend class corevm::runtime::process_adapter;
+
 public:
-  typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
-  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
-  using native_handles_pool_type = typename std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>;
+  typedef _garbage_collection_scheme garbage_collection_scheme;
+  typedef _dynamic_object_type dynamic_object_type;
+  typedef _dynamic_object_heap_type dynamic_object_heap_type;
+  typedef _native_handles_pool_type native_handles_pool_type;
 
   explicit process();
   explicit process(const uint16_t);
@@ -104,34 +134,13 @@ public:
 
   void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);
 
-  /* Accessors */
-  dynamic_object_heap_type::size_type heap_size() const {
-    return m_dynamic_object_heap.size();
-  }
+  dynamic_object_heap_type::size_type heap_size() const;
 
-  dynamic_object_heap_type::size_type max_heap_size() const {
-    return m_dynamic_object_heap.max_size();
-  }
+  dynamic_object_heap_type::size_type max_heap_size() const;
 
-  native_handles_pool_type::size_type ntvhndl_pool_size() const {
-    return m_ntv_handles_pool.size();
-  }
+  native_handles_pool_type::size_type ntvhndl_pool_size() const;
 
-  native_handles_pool_type::size_type max_ntvhndl_pool_size() const {
-    return m_ntv_handles_pool.size();
-  }
-
-  /*
-   * Helper functions
-   * TODO: [COREVM-65] Clean up helper methods in `corevm::runtime::process`
-   */
-  corevm::dyobj::dyobj_id __helper_create_dyobj() {
-    return m_dynamic_object_heap.create_dyobj();
-  }
-
-  dynamic_object_type& __helper_at(corevm::dyobj::dyobj_id id) {
-    return m_dynamic_object_heap.at(id);
-  }
+  native_handles_pool_type::size_type max_ntvhndl_pool_size() const;
 
 private:
   static void tick_handler(void*);

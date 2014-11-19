@@ -8,6 +8,9 @@
 #include "../../include/types/types.h"
 
 
+using corevm::runtime::process_adapter;
+
+
 class process_instrs_unittest : public ::testing::Test {};
 
 
@@ -70,10 +73,10 @@ TEST_F(process_obj_instrs_test, TestInstrGETATTR)
   corevm::dyobj::attr_key attr_key = 333;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id1 = m_process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id1 = process_adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = process_adapter(m_process).help_create_dyobj();
 
-  auto &obj = m_process.__helper_at(id1);
+  auto &obj = process_adapter(m_process).help_get_dyobj(id1);
   obj.putattr(attr_key, id2);
   m_process.push_stack(id1);
 
@@ -90,8 +93,8 @@ TEST_F(process_obj_instrs_test, TestInstrSETATTR)
   corevm::dyobj::attr_key attr_key = 789;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id1 = m_process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id1 = process_adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = process_adapter(m_process).help_create_dyobj();
 
   m_process.push_stack(id1);
   m_process.push_stack(id2);
@@ -103,7 +106,7 @@ TEST_F(process_obj_instrs_test, TestInstrSETATTR)
 
   ASSERT_EQ(expected_id, actual_id);
 
-  auto &obj = m_process.__helper_at(actual_id);
+  auto &obj = process_adapter(m_process).help_get_dyobj(actual_id);
 
   ASSERT_TRUE(obj.hasattr(attr_key));
 
@@ -115,10 +118,10 @@ TEST_F(process_obj_instrs_test, TestInstrDELATTR)
   corevm::dyobj::attr_key attr_key = 777;
   corevm::runtime::instr instr = {.code=0, .oprd1=attr_key, .oprd2=0};
 
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
-  corevm::dyobj::dyobj_id attr_id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id attr_id = process_adapter(m_process).help_create_dyobj();
 
-  auto& obj = m_process.__helper_at(id);
+  auto& obj = process_adapter(m_process).help_get_dyobj(id);
   obj.putattr(attr_key, attr_id);
 
   ASSERT_TRUE(obj.hasattr(attr_key));
@@ -132,14 +135,14 @@ TEST_F(process_obj_instrs_test, TestInstrDELATTR)
 
   ASSERT_EQ(expected_id, actual_id);
 
-  auto &actual_obj = m_process.__helper_at(actual_id);
+  auto &actual_obj = process_adapter(m_process).help_get_dyobj(actual_id);
 
   ASSERT_FALSE(actual_obj.hasattr(attr_key));
 }
 
 TEST_F(process_obj_instrs_test, TestInstrPOP)
 {
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
   m_process.push_stack(id);
 
   corevm::runtime::instr instr;
@@ -180,7 +183,7 @@ TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
 
   corevm::runtime::instr instr = {
     .code=0,
@@ -202,7 +205,7 @@ TEST_F(process_obj_instrs_test, TestInstrDELOBJ)
 TEST_F(process_obj_instrs_test, TestInstrDELOBJ2)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
 
   corevm::runtime::instr instr = {
     .code=0,
@@ -225,7 +228,7 @@ TEST_F(process_obj_instrs_test, TestInstrGETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
   m_process.push_stack(id);
 
   corevm::runtime::frame frame;
@@ -234,7 +237,7 @@ TEST_F(process_obj_instrs_test, TestInstrGETHNDL)
   corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = m_process.__helper_at(id);
+  auto &obj = process_adapter(m_process).help_get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr instr;
@@ -254,7 +257,7 @@ TEST_F(process_obj_instrs_test, TestInstrSETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
   m_process.push_stack(id);
 
   corevm::runtime::frame frame;
@@ -265,26 +268,26 @@ TEST_F(process_obj_instrs_test, TestInstrSETHNDL)
   corevm::runtime::instr instr;
   execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
-  auto &obj = m_process.__helper_at(id);
+  auto &obj = process_adapter(m_process).help_get_dyobj(id);
 
   ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
 }
 
 TEST_F(process_obj_instrs_test, TestInstrCLRHNDL)
 {
-  corevm::dyobj::dyobj_id id = m_process.__helper_create_dyobj();
+  corevm::dyobj::dyobj_id id = process_adapter(m_process).help_create_dyobj();
   m_process.push_stack(id);
 
   corevm::types::native_type_handle hndl = corevm::types::uint32(123);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = m_process.__helper_at(id);
+  auto &obj = process_adapter(m_process).help_get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr instr;
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
-  obj = m_process.__helper_at(id);
+  obj = process_adapter(m_process).help_get_dyobj(id);
   ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
 
   ASSERT_FALSE(m_process.has_ntvhndl(ntvhndl_key));

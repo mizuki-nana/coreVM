@@ -11,6 +11,19 @@
 #endif
 
 
+corevm::dyobj::dyobj_id
+corevm::runtime::process_adapter::help_create_dyobj()
+{
+  return m_process.m_dynamic_object_heap.create_dyobj();
+}
+
+corevm::runtime::process::dynamic_object_type&
+corevm::runtime::process_adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
+{
+  return m_process.m_dynamic_object_heap.at(id);
+}
+
+
 corevm::runtime::process::process():
   sneaker::threading::fixed_time_interval_daemon_service(
     COREVM_DEFAULT_PROCESS_PAUSE_TIME,
@@ -90,7 +103,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     visible_objs.begin(),
     visible_objs.end(),
     [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = this->__helper_at(id);
+      auto &obj = corevm::runtime::process_adapter(*this).help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -99,7 +112,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     invisible_objs.begin(),
     invisible_objs.end(),
     [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = this->__helper_at(id);
+      auto &obj = corevm::runtime::process_adapter(*this).help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -145,6 +158,30 @@ corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_
   corevm::dyobj::dyobj_id id = m_dyobj_stack.top();
   m_dyobj_stack.pop();
   return id;
+}
+
+corevm::runtime::process::dynamic_object_heap_type::size_type
+corevm::runtime::process::heap_size() const
+{
+  return m_dynamic_object_heap.size();
+}
+
+corevm::runtime::process::dynamic_object_heap_type::size_type
+corevm::runtime::process::max_heap_size() const
+{
+  return m_dynamic_object_heap.max_size();
+}
+
+corevm::runtime::process::native_handles_pool_type::size_type
+corevm::runtime::process::ntvhndl_pool_size() const
+{
+  return m_ntv_handles_pool.size();
+}
+
+corevm::runtime::process::native_handles_pool_type::size_type
+corevm::runtime::process::max_ntvhndl_pool_size() const
+{
+  return m_ntv_handles_pool.max_size();
 }
 
 bool
