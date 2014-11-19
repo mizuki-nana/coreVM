@@ -185,16 +185,14 @@ typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_obj
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
   throw(corevm::dyobj::object_heap_insertion_failed_error)
 {
-  dynamic_object_id_type id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-
-  dynamic_object_type dyobj(id);
-  auto res = m_map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(id, dyobj));
+  auto obj = corevm::dyobj::dynamic_object<dynamic_object_manager>::create();
+  auto res = m_map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(obj.id(), obj));
 
   if(res.second == false) {
     throw corevm::dyobj::object_heap_insertion_failed_error();
   }
 
-  return id;
+  return obj.id();
 }
 
 
