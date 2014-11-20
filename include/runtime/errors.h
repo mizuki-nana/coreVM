@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNTIME_ERRORS_H_
 #define COREVM_RUNTIME_ERRORS_H_
 
+#include <string>
+#include <boost/format.hpp>
 #include "../errors.h"
 
 
@@ -131,6 +133,25 @@ class invalid_instr_addr_error : public corevm::runtime::runtime_error {
 public:
   explicit invalid_instr_addr_error():
     corevm::runtime::runtime_error("Invalid instruction address")
+  {
+  }
+};
+
+
+class native_type_handle_insertion_error : public corevm::runtime::runtime_error
+{
+public:
+  explicit native_type_handle_insertion_error(const char* what_arg):
+    corevm::runtime::runtime_error(
+      str(boost::format("Cannot insert native type handle: %s") % what_arg)
+    )
+  {
+  }
+
+  explicit native_type_handle_insertion_error(const std::string& what_arg):
+    corevm::runtime::runtime_error(
+      str(boost::format("Cannot insert native type handle: %s") % what_arg)
+    )
   {
   }
 };
