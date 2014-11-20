@@ -33,6 +33,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 
+class garbage_collector_callback : \
+  public corevm::gc::garbage_collector<corevm::runtime::process::garbage_collection_scheme>::callback
+{
+private:
+  using dynamic_object_type = \
+    typename corevm::gc::garbage_collector<corevm::runtime::process::garbage_collection_scheme>::dynamic_object_type;
+public:
+  virtual void operator()(dynamic_object_type& obj)
+  {
+    this->list.push_back(obj.get_ntvhndl_key());
+  }
+
+  std::list<corevm::dyobj::ntvhndl_key> list;
+};
+
+
 corevm::dyobj::dyobj_id
 corevm::runtime::process_adapter::help_create_dyobj()
 {
@@ -338,7 +354,16 @@ corevm::runtime::process::maybe_gc()
   this->pause_exec();
 
   corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(m_dynamic_object_heap);
-  garbage_collector.gc();
+  garbage_collector_callback callback;
+  garbage_collector.gc(&callback);
+
+  std::for_each(
+    callback.list.begin(),
+    callback.list.end(),
+    [&](corevm::dyobj::ntvhndl_key& key) {
+      this->erase_ntvhndl(key);
+    }
+  );
 
   this->resume_exec();
 }
