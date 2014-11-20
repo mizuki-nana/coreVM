@@ -39,15 +39,24 @@ public:
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<
     typename garbage_collection_scheme::dynamic_object_manager>;
 
+  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+
+  class callback {
+    public:
+      virtual void operator()(dynamic_object_type& obj) = 0;
+  };
+
   explicit garbage_collector(dynamic_object_heap_type&);
 
   void gc() noexcept;
 
-protected:
-  void free() noexcept;
+  void gc(callback*) noexcept;
 
-  garbage_collection_scheme _gc_scheme;
-  dynamic_object_heap_type& _heap;
+protected:
+  void free(callback* f=nullptr) noexcept;
+
+  garbage_collection_scheme m_gc_scheme;
+  dynamic_object_heap_type& m_heap;
 };
 
 
@@ -55,8 +64,8 @@ template<class garbage_collection_scheme>
 corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
   corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap
 ):
-  _gc_scheme(garbage_collection_scheme()),
-  _heap(heap)
+  m_gc_scheme(garbage_collection_scheme()),
+  m_heap(heap)
 {
   // Do nothing here.
 }
@@ -65,27 +74,34 @@ template<class garbage_collection_scheme>
 void
 corevm::gc::garbage_collector<garbage_collection_scheme>::gc() noexcept
 {
-  _gc_scheme.gc(_heap);
+  m_gc_scheme.gc(m_heap);
   this->free();
 }
 
 template<class garbage_collection_scheme>
 void
-corevm::gc::garbage_collector<garbage_collection_scheme>::free() noexcept
+corevm::gc::garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
 {
-  using _dynamic_object_heap_type = typename
-    corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type;
+  m_gc_scheme.gc(m_heap);
+  this->free(f);
+}
 
-  using _dynamic_object_type = typename _dynamic_object_heap_type::dynamic_object_type;
-
-  auto remove_criterion = [](typename _dynamic_object_heap_type::iterator itr) -> bool {
-    _dynamic_object_type& object = static_cast<_dynamic_object_type&>(itr->second);
+template<class garbage_collection_scheme>
+void
+corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
+{
+  auto remove_criterion = [](typename dynamic_object_heap_type::iterator itr) -> bool {
+    dynamic_object_type& object = static_cast<dynamic_object_type&>(itr->second);
     return object.is_garbage_collectible();
   };
 
-  for(auto itr = _heap.begin(); itr != _heap.end();) {
+  for(auto itr = m_heap.begin(); itr != m_heap.end();) {
     if(remove_criterion(itr)) {
-      itr = _heap.erase(itr);
+      dynamic_object_type& obj = static_cast<dynamic_object_type&>(itr->second);
+      if(f) {
+        (*f)(obj);
+      }
+      itr = m_heap.erase(itr);
     } else {
       ++itr;
     }
