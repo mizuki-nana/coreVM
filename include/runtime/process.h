@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stack>
 #include <unordered_map>
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
+#include "errors.h"
 #include "frame.h"
 #include "instr.h"
 #include "instr_block.h"
@@ -128,7 +129,8 @@ public:
   corevm::types::native_type_handle& get_ntvhndl(corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_not_found_error);
 
-  corevm::dyobj::ntvhndl_key insert_ntvhndl(corevm::types::native_type_handle&);
+  corevm::dyobj::ntvhndl_key insert_ntvhndl(corevm::types::native_type_handle&)
+    throw(corevm::runtime::native_type_handle_insertion_error);
 
   void erase_ntvhndl(corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_deletion_error);

@@ -225,13 +225,39 @@ corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 
 corevm::dyobj::ntvhndl_key
 corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
+  throw(corevm::runtime::native_type_handle_insertion_error)
 {
-  corevm::dyobj::ntvhndl_key key = ++m_ntv_handles_incrementor;
+  try {
+    ++m_ntv_handles_incrementor;
+  } catch(const std::underflow_error&) {
+    throw corevm::runtime::native_type_handle_insertion_error(
+      "exceeded maximum number of native type handles allowed"
+    );
+  } catch(const std::overflow_error&) {
+    throw corevm::runtime::native_type_handle_insertion_error(
+      "exceeded maximum number of native type handles allowed"
+    );
+  }
 
-  // TODO: [COREVM-64] Consolidate on native type handles insertion mechanism
-  m_ntv_handles_pool.insert(
-    std::pair<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>(key, hndl)
-  );
+  corevm::dyobj::ntvhndl_key key = m_ntv_handles_incrementor;
+  bool inserted = false;
+
+  try {
+    auto res = m_ntv_handles_pool.insert(
+      std::pair<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>(key, hndl)
+    );
+    inserted = res.second;
+  } catch(const std::bad_alloc&) {
+    throw corevm::runtime::native_type_handle_insertion_error(
+      "insufficient memory to store native type handle"
+    );
+  }
+
+  if(!inserted) {
+    throw corevm::runtime::native_type_handle_insertion_error(
+      "native type handle with existing key already exist"
+    );
+  }
 
   return key;
 }
