@@ -142,9 +142,8 @@ learning curve for many developers.
 ## Current State & Roadmap
 Since the inception of this project, which is the beginning of March 2014, a lot
 of milestones have been achieved and many components are near completion at this
-point. However, there are still lots of work ahead to be done before the initial
-working build is complete. In addition, many advanced features and optimizations
-are not to be implemented until a later time.
+point. However, there are still many new and exciting features to be designed
+and implemented ahead to greatly enhance the prowess and versatility of coreVM.
 
 Below is a table of all the past milestones and some of the goals defined in the
 roadmap in the near future, with their respective completion dates and ETAs:
@@ -175,6 +174,10 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Profiling API                               |            Aug, 2015
   Address space layout randomization          |            Oct, 2015
   Parallelism support                         |            Dec, 2015
+
+<br />
+Here's an illustration of the envisioned future architecture of coreVM:
+![envisioned future architecture](/resources/corevm_envisioned_future_architecture_overview.png "envisioned future architecture overview")
 
 
 ## Moonshots
