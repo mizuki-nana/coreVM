@@ -130,21 +130,6 @@ TEST_F(frame_unittest, TestInvisibleVars)
   );
 }
 
-TEST_F(frame_unittest, TestStateCheckOnInvalidState)
-{
-  corevm::runtime::frame frame;
-
-  corevm::types::native_type_handle handle = corevm::types::string("Hello world!");
-  frame.push_eval_stack(handle);
-
-  ASSERT_THROW(
-    {
-      frame.check_state_before_destruction();
-    },
-    corevm::runtime::evaluation_stack_not_empty_error
-  );
-}
-
 TEST_F(frame_unittest, TestPutAndGetParams)
 {
   corevm::runtime::frame frame;

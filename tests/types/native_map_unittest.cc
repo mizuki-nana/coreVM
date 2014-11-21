@@ -39,11 +39,11 @@ TEST_F(native_map_unittest, TestEmptyInitialization)
 
 TEST_F(native_map_unittest, TestCopyConstructor)
 {
-  corevm::types::native_map map1;
-
-  map1[1] = 1;
-  map1[2] = 2;
-  map1[3] = 3;
+  corevm::types::native_map map1 = {
+    { 1, 1 },
+    { 2, 2 },
+    { 3, 3 },
+  };
 
   corevm::types::native_map map2 = map1;
 
@@ -78,12 +78,12 @@ TEST_F(native_map_unittest, TestConvertingToIntegerType)
 
 TEST_F(native_map_unittest, TestAssignmentOperator)
 {
-  corevm::types::native_map map1;
+  corevm::types::native_map map1 = {
+    { 1, 1 },
+    { 2, 2 },
+    { 3, 3 },
+  };
   corevm::types::native_map map2;
-
-  map1[1] = 1;
-  map1[2] = 2;
-  map1[3] = 3;
 
   map2 = map1;
 
@@ -109,12 +109,12 @@ TEST_F(native_map_unittest, TestEqualityBetweenEmptyInstances)
 
 TEST_F(native_map_unittest, TestEqualityBetweenNonEmptyInstances)
 {
-  corevm::types::native_map map1;
+  corevm::types::native_map map1 = {
+    { 1, 1 },
+    { 2, 2 },
+    { 3, 3 },
+  };
   const corevm::types::native_map map2;
-
-  map1[1] = 1;
-  map1[2] = 2;
-  map1[3] = 3;
 
   ASSERT_FALSE(map1 == map2);
   ASSERT_TRUE(map1 != map2);
@@ -122,16 +122,16 @@ TEST_F(native_map_unittest, TestEqualityBetweenNonEmptyInstances)
 
 TEST_F(native_map_unittest, TestEqualityBetweenIdenticalInstances)
 {
-  corevm::types::native_map map1;
-  corevm::types::native_map map2;
-
-  map1[1] = 1;
-  map1[2] = 2;
-  map1[3] = 3;
-
-  map2[1] = 1;
-  map2[2] = 2;
-  map2[3] = 3;
+  corevm::types::native_map map1 = {
+    { 1, 1 },
+    { 2, 2 },
+    { 3, 3 },
+  };
+  corevm::types::native_map map2 = {
+    { 1, 1 },
+    { 2, 2 },
+    { 3, 3 },
+  };
 
   ASSERT_TRUE(map1 == map2);
   ASSERT_TRUE(map2 == map1);
@@ -145,8 +145,9 @@ class native_map_functionality_unittest : public native_map_unittest {};
 
 TEST_F(native_map_functionality_unittest, TestAtSuccessful)
 {
-  corevm::types::native_map map;
-  map[1] = 1;
+  corevm::types::native_map map = {
+    { 1, 1 }
+  };
 
   ASSERT_EQ(1, map.at(1));
 }

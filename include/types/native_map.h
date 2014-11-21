@@ -51,6 +51,8 @@ public:
   native_map(const native_map_base& x) : native_map_base(x) {}
   native_map(native_map_base&& x) : native_map_base(x) {}
 
+  native_map(std::initializer_list<value_type> il) : native_map_base(il) {}
+
   native_map(int8_t) {
     throw corevm::types::conversion_error("int8", "map");
   }
