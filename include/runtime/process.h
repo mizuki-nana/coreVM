@@ -181,10 +181,11 @@ private:
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::stack<corevm::runtime::frame> m_call_stack;
-  std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle> m_ntv_handles_pool;
+  std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle> m_ntvhndl_pool;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
-  sneaker::atomic::atomic_incrementor<corevm::dyobj::ntvhndl_key, INT_MAX> m_ntv_handles_incrementor;
   std::unordered_map<sig_atomic_t, corevm::runtime::instr_block> m_sig_instr_map;
+  sneaker::atomic::atomic_incrementor<
+    corevm::dyobj::ntvhndl_key, corevm::dyobj::NTVHNDL_LIMIT> m_ntv_handles_incrementor;
 };
 
 

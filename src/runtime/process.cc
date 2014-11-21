@@ -28,25 +28,47 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/sighandler_registrar.h"
 
-#ifndef COREVM_DEFAULT_PROCESS_PAUSE_TIME
-  #define COREVM_DEFAULT_PROCESS_PAUSE_TIME 10
-#endif
+
+namespace corevm {
 
 
-class garbage_collector_callback : \
-  public corevm::gc::garbage_collector<corevm::runtime::process::garbage_collection_scheme>::callback
+namespace runtime {
+
+
+namespace internal {
+
+
+using _GarbageCollectorType = typename corevm::gc::garbage_collector<
+  corevm::runtime::process::garbage_collection_scheme>;
+
+
+class garbage_collector_callback : public _GarbageCollectorType::callback
 {
 private:
-  using dynamic_object_type = \
-    typename corevm::gc::garbage_collector<corevm::runtime::process::garbage_collection_scheme>::dynamic_object_type;
+  using dynamic_object_type = typename _GarbageCollectorType::dynamic_object_type;
+
 public:
-  virtual void operator()(dynamic_object_type& obj)
+  virtual void operator()(const dynamic_object_type& obj)
   {
-    this->list.push_back(obj.get_ntvhndl_key());
+    this->m_list.push_back(obj.get_ntvhndl_key());
   }
 
-  std::list<corevm::dyobj::ntvhndl_key> list;
+  const std::list<corevm::dyobj::ntvhndl_key>& list() const {
+    return m_list;
+  }
+
+private:
+  std::list<corevm::dyobj::ntvhndl_key> m_list;
 };
+
+
+} /* end namespace internal */
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
 
 
 corevm::dyobj::dyobj_id
@@ -62,12 +84,18 @@ corevm::runtime::process_adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
 }
 
 
+const int COREVM_PROCESS_DEFAULT_PAUSE_TIME = 10;
+
+
+const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
+
+
 corevm::runtime::process::process():
   sneaker::threading::fixed_time_interval_daemon_service(
-    COREVM_DEFAULT_PROCESS_PAUSE_TIME,
+    COREVM_PROCESS_DEFAULT_PAUSE_TIME,
     corevm::runtime::process::tick_handler,
     false,
-    -1
+    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
   m_pause_exec(false),
   m_gc_flag(0),
@@ -81,7 +109,7 @@ corevm::runtime::process::process(const uint16_t interval):
     interval,
     corevm::runtime::process::tick_handler,
     false,
-    -1
+    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
   m_pause_exec(false),
   m_gc_flag(0),
@@ -213,19 +241,19 @@ corevm::runtime::process::max_heap_size() const
 corevm::runtime::process::native_handles_pool_type::size_type
 corevm::runtime::process::ntvhndl_pool_size() const
 {
-  return m_ntv_handles_pool.size();
+  return m_ntvhndl_pool.size();
 }
 
 corevm::runtime::process::native_handles_pool_type::size_type
 corevm::runtime::process::max_ntvhndl_pool_size() const
 {
-  return m_ntv_handles_pool.max_size();
+  return m_ntvhndl_pool.max_size();
 }
 
 bool
 corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 {
-  return m_ntv_handles_pool.find(key) != m_ntv_handles_pool.end();
+  return m_ntvhndl_pool.find(key) != m_ntvhndl_pool.end();
 }
 
 corevm::types::native_type_handle&
@@ -233,7 +261,7 @@ corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_not_found_error)
 {
   try {
-    return m_ntv_handles_pool.at(key);
+    return m_ntvhndl_pool.at(key);
   } catch (const std::out_of_range&)  {
     throw corevm::runtime::native_type_handle_not_found_error();
   }
@@ -259,7 +287,7 @@ corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl
   bool inserted = false;
 
   try {
-    auto res = m_ntv_handles_pool.insert(
+    auto res = m_ntvhndl_pool.insert(
       std::pair<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>(key, hndl)
     );
     inserted = res.second;
@@ -282,7 +310,7 @@ void
 corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_deletion_error)
 {
-  size_t res = m_ntv_handles_pool.erase(key);
+  size_t res = m_ntvhndl_pool.erase(key);
 
   if(res == 0) {
     throw corevm::runtime::native_type_handle_deletion_error();
@@ -353,14 +381,16 @@ corevm::runtime::process::maybe_gc()
 
   this->pause_exec();
 
-  corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(m_dynamic_object_heap);
-  garbage_collector_callback callback;
+  corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(
+    m_dynamic_object_heap
+  );
+  corevm::runtime::internal::garbage_collector_callback callback;
   garbage_collector.gc(&callback);
 
   std::for_each(
-    callback.list.begin(),
-    callback.list.end(),
-    [&](corevm::dyobj::ntvhndl_key& key) {
+    callback.list().begin(),
+    callback.list().end(),
+    [&](corevm::dyobj::ntvhndl_key key) {
       this->erase_ntvhndl(key);
     }
   );
@@ -404,7 +434,7 @@ corevm::runtime::process::append_instr_block(const corevm::runtime::instr_block&
 bool
 corevm::runtime::process::should_gc()
 {
-  size_t flag_size = sizeof(m_gc_flag) * 8;
+  size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
   for(int i = 0; i < flag_size; ++i) {
     bool bit_set = is_bit_set(m_gc_flag, i);

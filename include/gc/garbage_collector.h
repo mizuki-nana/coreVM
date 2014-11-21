@@ -43,7 +43,7 @@ public:
 
   class callback {
     public:
-      virtual void operator()(dynamic_object_type& obj) = 0;
+      virtual void operator()(const dynamic_object_type& obj) = 0;
   };
 
   explicit garbage_collector(dynamic_object_heap_type&);

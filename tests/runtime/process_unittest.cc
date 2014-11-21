@@ -93,7 +93,7 @@ TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
   ASSERT_EQ(0, process.stack_size());
 
   corevm::runtime::instr_block block_on_signal {
-    {.code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0},
+    { .code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0 },
   };
   process.set_sig_instr_block(sig, block_on_signal);
 
@@ -128,14 +128,14 @@ TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
   ASSERT_EQ(0, process.stack_size());
 
   std::vector<corevm::runtime::instr> instrs = {
-    {.code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0},
-    {.code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0},
+    { .code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0 },
+    { .code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0 },
   };
 
   process.append_instrs(instrs);
 
   corevm::runtime::instr_block block_on_signal {
-    {.code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0},
+    { .code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0 },
   };
   process.set_sig_instr_block(sig, block_on_signal);
 

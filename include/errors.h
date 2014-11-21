@@ -34,17 +34,17 @@ namespace corevm {
 namespace errors {
 
 
-class corevm_runtime_error : public std::runtime_error {
+class runtime_error : public std::runtime_error {
 public:
-  explicit corevm_runtime_error(const std::string& what_arg): std::runtime_error(what_arg) {}
-  explicit corevm_runtime_error(const char* what_arg): std::runtime_error(what_arg) {}
-};
+  explicit runtime_error(const std::string& what_arg):
+    std::runtime_error(what_arg)
+  {
+  }
 
-
-class corevm_logic_error : public std::logic_error {
-public:
-  explicit corevm_logic_error(const std::string& what_arg): std::logic_error(what_arg) {}
-  explicit corevm_logic_error(const char* what_arg): std::logic_error(what_arg) {}
+  explicit runtime_error(const char* what_arg):
+    std::runtime_error(what_arg)
+  {
+  }
 };
 
 

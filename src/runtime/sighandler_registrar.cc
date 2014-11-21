@@ -39,8 +39,9 @@ corevm::runtime::sighandler_registrar::get_sigjmp_env()
   return _env;
 }
 
-const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> corevm::runtime::sighandler_registrar::handler_map {
-
+const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
+  corevm::runtime::sighandler_registrar::handler_map
+{
   /* Arithmetic and execution signals */
 
   { SIGFPE, { .handler=new sighandler_SIGFPE() } },

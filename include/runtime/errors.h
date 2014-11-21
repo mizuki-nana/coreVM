@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_ERRORS_H_
-#define COREVM_RUNTIME_ERRORS_H_
+#ifndef runtime_errorS_H_
+#define runtime_errorS_H_
 
 #include <string>
 #include <boost/format.hpp>
@@ -34,15 +34,15 @@ namespace corevm {
 namespace runtime {
 
 
-class runtime_error : public corevm::errors::corevm_runtime_error {
+class runtime_error : public corevm::errors::runtime_error {
 public:
   explicit runtime_error(const std::string& what_arg):
-    corevm::errors::corevm_runtime_error(what_arg)
+    corevm::errors::runtime_error(what_arg)
   {
   }
 
   explicit runtime_error(const char* what_arg):
-    corevm::errors::corevm_runtime_error(what_arg)
+    corevm::errors::runtime_error(what_arg)
   {
   }
 };
@@ -61,15 +61,6 @@ class evaluation_stack_empty_error : public corevm::runtime::runtime_error {
 public:
   explicit evaluation_stack_empty_error():
     corevm::runtime::runtime_error("Evaluation stack is empty")
-  {
-  }
-};
-
-
-class evaluation_stack_not_empty_error : public corevm::runtime::runtime_error {
-public:
-  explicit evaluation_stack_not_empty_error():
-    corevm::runtime::runtime_error("Evaluation stack is not empty")
   {
   }
 };
@@ -163,4 +154,4 @@ public:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_RUNTIME_ERRORS_H_ */
+#endif /* runtime_errorS_H_ */

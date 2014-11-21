@@ -55,9 +55,6 @@ public:
   explicit frame();
   ~frame();
 
-  void check_state_before_destruction()
-    throw(corevm::runtime::evaluation_stack_not_empty_error);
-
   uint32_t eval_stack_size() const;
 
   corevm::runtime::instr_addr get_start_addr() const;

@@ -379,7 +379,9 @@ public:
     corevm::types::native_type_handle result;
 
     ASSERT_THROW(
-      { func(lhs, rhs, result); },
+      {
+        func(lhs, rhs, result);
+      },
       ErrorType
     );
   }

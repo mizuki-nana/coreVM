@@ -41,16 +41,6 @@ corevm::runtime::frame::~frame()
   // Do nothing here.
 }
 
-void
-corevm::runtime::frame::check_state_before_destruction()
-  throw(corevm::runtime::evaluation_stack_not_empty_error)
-{
-  // Validation checks on the state of the frame before it gets destroyed.
-  if(!m_eval_stack.empty()) {
-    throw corevm::runtime::evaluation_stack_not_empty_error();
-  }
-}
-
 uint32_t
 corevm::runtime::frame::eval_stack_size() const
 {
@@ -94,13 +84,15 @@ corevm::runtime::frame::set_parent_scope_frame_ptr(corevm::runtime::frame* ptr)
 }
 
 void
-corevm::runtime::frame::push_eval_stack(corevm::types::native_type_handle& operand)
+corevm::runtime::frame::push_eval_stack(
+  corevm::types::native_type_handle& operand)
 {
   m_eval_stack.push(operand);
 }
 
 corevm::types::native_type_handle
-corevm::runtime::frame::pop_eval_stack() throw(corevm::runtime::evaluation_stack_empty_error)
+corevm::runtime::frame::pop_eval_stack()
+  throw(corevm::runtime::evaluation_stack_empty_error)
 {
   if(m_eval_stack.empty()) {
     throw corevm::runtime::evaluation_stack_empty_error();
@@ -112,13 +104,15 @@ corevm::runtime::frame::pop_eval_stack() throw(corevm::runtime::evaluation_stack
 }
 
 bool
-corevm::runtime::frame::has_visible_var(const corevm::runtime::variable_key var_key) const
+corevm::runtime::frame::has_visible_var(
+  const corevm::runtime::variable_key var_key) const
 {
   return m_visible_vars.find(var_key) != m_visible_vars.end();
 }
 
 corevm::dyobj::dyobj_id
-corevm::runtime::frame::get_visible_var(const corevm::runtime::variable_key var_key) const
+corevm::runtime::frame::get_visible_var(
+  const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::local_variable_not_found_error)
 {
   if(!has_visible_var(var_key)) {
@@ -129,8 +123,8 @@ corevm::runtime::frame::get_visible_var(const corevm::runtime::variable_key var_
 };
 
 corevm::dyobj::dyobj_id
-corevm::runtime::frame::pop_visible_var(
-  const corevm::runtime::variable_key var_key) throw(corevm::runtime::local_variable_not_found_error)
+corevm::runtime::frame::pop_visible_var(const corevm::runtime::variable_key var_key)
+  throw(corevm::runtime::local_variable_not_found_error)
 {
   corevm::dyobj::dyobj_id obj_id = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
@@ -145,13 +139,15 @@ corevm::runtime::frame::set_visible_var(
 }
 
 bool
-corevm::runtime::frame::has_invisible_var(const corevm::runtime::variable_key var_key) const
+corevm::runtime::frame::has_invisible_var(
+  const corevm::runtime::variable_key var_key) const
 {
   return m_invisible_vars.find(var_key) != m_visible_vars.end();
 }
 
 corevm::dyobj::dyobj_id
-corevm::runtime::frame::get_invisible_var(const corevm::runtime::variable_key var_key) const
+corevm::runtime::frame::get_invisible_var(
+  const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::local_variable_not_found_error)
 {
   if(!has_invisible_var(var_key)) {
@@ -163,7 +159,8 @@ corevm::runtime::frame::get_invisible_var(const corevm::runtime::variable_key va
 
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_invisible_var(
-  const corevm::runtime::variable_key var_key) throw(corevm::runtime::local_variable_not_found_error)
+  const corevm::runtime::variable_key var_key)
+  throw(corevm::runtime::local_variable_not_found_error)
 {
   corevm::dyobj::dyobj_id obj_id = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);
@@ -215,8 +212,8 @@ corevm::runtime::frame::put_param_value_pair(
 }
 
 const corevm::dyobj::dyobj_id
-corevm::runtime::frame::pop_param_value_pair(const corevm::runtime::variable_key key) throw(
-  corevm::runtime::missing_parameter_error)
+corevm::runtime::frame::pop_param_value_pair(
+  const corevm::runtime::variable_key key) throw(corevm::runtime::missing_parameter_error)
 {
   auto itr = m_param_value_map.find(key);
 
