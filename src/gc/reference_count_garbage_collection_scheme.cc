@@ -116,20 +116,16 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   using dyobj_id_type = typename dynamic_object_type::dyobj_id_type;
   using vertex_type = typename tarjan<dyobj_id_type>::vertex;
 
-  std::unordered_map<dyobj_id_type, vertex_type*> vertices_map;
+  std::unordered_map<dyobj_id_type, vertex_type> vertices_map;
 
-  auto get_vertex = [&](dyobj_id_type id) -> vertex_type* {
+  auto get_vertex = [&](dyobj_id_type id) -> vertex_type& {
     auto itr = vertices_map.find(id);
-    vertex_type* vertex = nullptr;
 
     if(itr == vertices_map.end()) {
-      vertex = new vertex_type(id);
-      vertices_map[id] = vertex;
-    } else {
-      vertex = vertices_map.at(id);
+      vertices_map[id] = vertex_type(id);
     }
 
-    return vertex;
+    return vertices_map.at(id);
   };
 
   std::set<dyobj_id_type> non_garbage_collectible_neighbors;
@@ -152,16 +148,16 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
         return;
       }
 
-      vertex_type* vertex = get_vertex(id);
+      vertex_type& vertex = get_vertex(id);
 
       object.iterate(
         [&](
           dynamic_object_type::attr_key_type attr_key,
           dynamic_object_type::dyobj_id_type neighbor_id
         ) {
-          vertex_type* neighbor_vertex = get_vertex(neighbor_id);
+          vertex_type& neighbor_vertex = get_vertex(neighbor_id);
 
-          vertex->dependencies().push_back(neighbor_vertex);
+          vertex.dependencies().push_back(&neighbor_vertex);
         }
       );
     }
@@ -170,7 +166,7 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   std::list<vertex_type*> vertices;
 
   for(auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr) {
-    vertex_type* vertex_ptr = static_cast<vertex_type*>(itr->second);
+    vertex_type* vertex_ptr = static_cast<vertex_type*>(&itr->second);
     vertices.push_back(vertex_ptr);
   }
 
@@ -207,10 +203,5 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
       auto& obj = heap.at(id);
       obj.manager().dec_ref_count();
     }
-  }
-
-  for(auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr) {
-    vertex_type* ptr = static_cast<vertex_type*>(itr->second);
-    delete ptr;
   }
 }
