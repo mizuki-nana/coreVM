@@ -29,15 +29,42 @@ typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
 typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
 
-corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(size_t total_size)
+#if __DEBUG__
+void
+corevm::memory::sequential_allocation_scheme::debug_print() noexcept
 {
-  this->m_blocks.push_back(
-    block_descriptor_type{
-      .size = total_size,
-      .offset = 0,
-      .free = true
-    }
-  );
+  // TODO: [COREVM-79] Improve sequential allocation scheme debug printing
+  printf("==============================\n");
+  iterator_type itr;
+  for(itr = begin(); itr != end(); itr++) {
+    block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
+    printf("Size [%lu] - Offset - [%d] - Free[ %d] - Flags[ %lu]\n",
+        descriptor.size,
+        descriptor.offset,
+        descriptor.free,
+        descriptor.flags
+    );
+  }
+  printf("==============================\n");
+}
+#endif /* __DEBUG__ */
+
+corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
+  size_t total_size
+):
+  m_total_size(total_size)
+{
+}
+
+block_descriptor_type
+corevm::memory::sequential_allocation_scheme::default_block() const noexcept
+{
+  return block_descriptor_type {
+    .size = m_total_size,
+    .offset = 0,
+    .free = true,
+    .flags = 0,
+  };
 }
 
 iterator_type
@@ -61,7 +88,8 @@ corevm::memory::sequential_allocation_scheme::split(
   block_descriptor_type descriptor = {
     .size = size,
     .offset = offset,
-    .free = true
+    .free = true,
+    .flags = 0
   };
   this->m_blocks.insert(itr_pos, descriptor);
 }
@@ -69,25 +97,24 @@ corevm::memory::sequential_allocation_scheme::split(
 void
 corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
 {
-  iterator_type itr = this->end();
+  iterator_type itr = this->begin();
 
-  while(itr != this->begin()) {
+  while(itr != this->end()) {
     iterator_type current = itr;
-    iterator_type prev = --itr;
+    iterator_type next = ++itr;
 
-    if(prev != this->end() && prev != this->begin()) {
+    if(next != this->end()) {
       block_descriptor_type current_block = static_cast<block_descriptor_type>(*current);
-      block_descriptor_type prev_block = static_cast<block_descriptor_type>(*prev);
+      block_descriptor_type next_block = static_cast<block_descriptor_type>(*next);
 
-      // merge
-      if(current_block.free && prev_block.free) {
-        prev_block.size += current_block.size;
-        current_block.size = 0;
+      if(current_block.free && next_block.free) {
+        current_block.size += next_block.size;
+        next_block.size = 0;
         *current = current_block;
-        *prev = prev_block;
+        *next = next_block;
       }
     }
-  } /* end of while loop */
+  }
 
   std::remove_if(
     this->begin(),
@@ -151,7 +178,15 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
   return size_freed;
 }
 
-/*********** BEGIN OF corevm::memory::first_fit_allocation_scheme *************/
+//---------- BEGIN OF corevm::memory::first_fit_allocation_scheme -------------/
+
+corevm::memory::first_fit_allocation_scheme::first_fit_allocation_scheme(
+  size_t total_size
+):
+  corevm::memory::sequential_allocation_scheme(total_size)
+{
+  this->m_blocks.push_back(this->default_block());
+}
 
 iterator_type
 corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -165,10 +200,18 @@ corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
   );
 }
 
-/************ END OF corevm::memory::first_fit_allocation_scheme **************/
+//----------- END OF corevm::memory::first_fit_allocation_scheme --------------/
 
 
-/*********** BEGIN OF corevm::memory::best_fit_allocation_scheme **************/
+//---------- BEGIN OF corevm::memory::best_fit_allocation_scheme --------------/
+
+corevm::memory::best_fit_allocation_scheme::best_fit_allocation_scheme(
+  size_t total_size
+):
+  corevm::memory::sequential_allocation_scheme(total_size)
+{
+  this->m_blocks.push_back(this->default_block());
+}
 
 iterator_type
 corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -202,10 +245,18 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-/************ END OF corevm::memory::best_fit_allocation_scheme ***************/
+//----------- END OF corevm::memory::best_fit_allocation_scheme ---------------/
 
 
-/*********** BEGIN OF corevm::memory::worst_fit_allocation_scheme *************/
+//---------- BEGIN OF corevm::memory::worst_fit_allocation_scheme -------------/
+
+corevm::memory::worst_fit_allocation_scheme::worst_fit_allocation_scheme(
+  size_t total_size
+):
+  corevm::memory::sequential_allocation_scheme(total_size)
+{
+  this->m_blocks.push_back(this->default_block());
+}
 
 iterator_type
 corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -239,10 +290,19 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-/************ END OF corevm::memory::worst_fit_allocation_scheme **************/
+//----------- END OF corevm::memory::worst_fit_allocation_scheme --------------/
 
 
-/*********** BEGIN OF corevm::memory::next_fit_allocation_scheme **************/
+//---------- BEGIN OF corevm::memory::next_fit_allocation_scheme --------------/
+
+corevm::memory::next_fit_allocation_scheme::next_fit_allocation_scheme(
+  size_t total_size
+):
+  corevm::memory::sequential_allocation_scheme(total_size)
+{
+  m_last_itr = this->begin();
+  this->m_blocks.push_back(this->default_block());
+}
 
 iterator_type
 corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -270,10 +330,73 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-/************ END OF corevm::memory::next_fit_allocation_scheme ***************/
+//----------- END OF corevm::memory::next_fit_allocation_scheme ---------------/
 
 
-/************* BEGIN OF corevm::memory::buddy_allocation_scheme ***************/
+//------------ BEGIN OF corevm::memory::buddy_allocation_scheme----------------/
+
+// Helper functions
+// TODO: [COREVM-77] Move helper functions away
+void
+set_nth_bit_uint8(uint8_t *val, char bit)
+{
+  uint8_t b = (1 << (bit - 1));
+  *val = *val | b;
+}
+
+int
+is_bit_set_uint8(uint32_t val, char bit)
+{
+  uint8_t v = val;
+  uint8_t b = (1 << (bit - 1));
+  v = v & b;
+  return (v >> (bit - 1)) == 1;
+}
+
+
+const uint8_t corevm::memory::buddy_allocation_scheme::FLAG_SPLIT = 1;
+const uint8_t corevm::memory::buddy_allocation_scheme::FLAG_PARENT_SPLIT = 2;
+
+
+corevm::memory::buddy_allocation_scheme::buddy_allocation_scheme(
+  size_t total_size
+):
+  corevm::memory::sequential_allocation_scheme(total_size)
+{
+  this->m_blocks.push_back(this->default_block());
+}
+
+block_descriptor_type
+corevm::memory::buddy_allocation_scheme::default_block() const noexcept
+{
+  return block_descriptor_type {
+    .size = m_total_size,
+    .offset = 0,
+    .free = true,
+    .flags = ( 0x01 << (FLAG_PARENT_SPLIT - 1) )
+  };
+}
+
+ssize_t
+corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
+{
+  ssize_t res = -1;
+  iterator_type itr;
+
+  itr = this->find_fit(size);
+
+  if(itr != this->end()) {
+    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+    block_found.free = false;
+    *itr = block_found;
+
+    res = static_cast<ssize_t>(block_found.offset);
+
+    *itr = block_found;
+  }
+
+  return res;
+}
 
 iterator_type
 corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
@@ -297,14 +420,16 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
 
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-    if(block_found.size / 2 > size) {
-      // split
+    if(block_found.size / 2 >= size) { // split
       block_found.size = block_found.size / 2;
+      set_nth_bit_uint8(&block_found.flags, FLAG_SPLIT);
       *itr = block_found;
-      this->split(itr, block_found.size, static_cast<uint64_t>(block_found.offset + block_found.size));
-      *itr = block_found;
-    } else {
-      // bingo! use this block
+      this->split(
+        itr,
+        block_found.size,
+        static_cast<uint64_t>(block_found.offset + block_found.size)
+      );
+    } else { // bingo! use this block
       block_found.free = false;
       block_found.size = block_found.size; // size stay the same
       *itr = block_found;
@@ -329,23 +454,35 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 
     has_freed_blocks = false;
 
-    size_t i = 1;
-    for(iterator_type itr = begin(); itr != end(); itr++, i++) {
+    for(iterator_type itr = begin(); itr != end(); itr++) {
       iterator_type current_itr = itr;
       iterator_type next_itr = current_itr;
       ++next_itr;
 
-      if(itr != end() && next_itr != end() && i % 2 == 1) {
+      block_descriptor_type current_block = static_cast<block_descriptor_type>(*itr);
 
-        block_descriptor_type current_block = static_cast<block_descriptor_type>(*itr);
+      if(itr != end() && next_itr != end()) {
+
         block_descriptor_type next_block = static_cast<block_descriptor_type>(*next_itr);
 
-        if(current_block.free && next_block.free) {
+        bool isSplit = is_bit_set_uint8(current_block.flags, FLAG_SPLIT) &&
+          !is_bit_set_uint8(next_block.flags, FLAG_SPLIT);
+
+        bool isParentSplit = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
+
+        if(isSplit && current_block.free && next_block.free) {
+
+          uint8_t flags = 0;
+          if(isParentSplit) {
+            set_nth_bit_uint8(&flags, FLAG_PARENT_SPLIT);
+            set_nth_bit_uint8(&flags, FLAG_SPLIT);
+          }
 
           block_descriptor_type combined_block = {
             .size = current_block.size + next_block.size,
             .offset = current_block.offset,
-            .free = true
+            .free = true,
+            .flags = flags
           };
 
           *itr = combined_block;
@@ -363,4 +500,4 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
   } /* end of while-loop */
 }
 
-/*************** END OF corevm::memory::buddy_allocation_scheme ***************/
+//-------------- END OF corevm::memory::buddy_allocation_scheme ---------------/
