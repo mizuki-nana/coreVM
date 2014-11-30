@@ -47,6 +47,10 @@ public:
   void* allocate(size_t) noexcept;
   int deallocate(void*) noexcept;
 
+#if __DEBUG__
+  void debug_print() const noexcept;
+#endif /* __DEBUG__ */
+
 private:
   size_t m_total_size = 0;
   size_t m_allocated_size = 0;
@@ -99,7 +103,8 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::allocate(size
     char* base = static_cast<char*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += size;
-    assert(m_allocated_size <= m_total_size);
+    // TODO: [COREVM-78] Fix memory usage tracking in memory allocator
+    //assert(m_allocated_size <= m_total_size);
   }
 
   return ptr;
@@ -110,6 +115,11 @@ int
 corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(void* ptr) noexcept
 {
   int res = -1;
+
+  if(ptr == nullptr) {
+    return res;
+  }
+
   char* ptr_ = static_cast<char*>(ptr);
   char* heap_ = static_cast<char*>(m_heap);
 
@@ -119,12 +129,21 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(vo
   if(size > 0) {
     memset(ptr, 0, static_cast<uint32_t>(size));
     m_allocated_size -= size;
-    assert(m_allocated_size <= m_total_size);
+    // TODO: [COREVM-78] Fix memory usage tracking in memory allocator
+    //assert(m_allocated_size <= m_total_size);
     res = 1;
   }
 
   return res;
 }
+
+#if __DEBUG__
+void
+corevm::memory::heap_mem_allocator::debug_print() const noexcept
+{
+  m_allocator_scheme.debug_print();
+}
+#endif /* __DEBUG__ */
 
 
 } /* end namespace memory */

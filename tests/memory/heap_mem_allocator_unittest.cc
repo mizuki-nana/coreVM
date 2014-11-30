@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/memory/sequential_allocation_scheme.h"
 
 
-const int HEAP_STORAGE_FOR_TEST = 1024 * 4;
+const int HEAP_STORAGE_FOR_TEST = 1024;
 
 
 template<typename AllocationSchemeType>
@@ -40,7 +40,8 @@ protected:
     return m_allocator.deallocate(ptr);
   }
 
-  corevm::memory::heap_mem_allocator<HEAP_STORAGE_FOR_TEST, AllocationSchemeType> m_allocator;
+  corevm::memory::heap_mem_allocator<
+    HEAP_STORAGE_FOR_TEST, AllocationSchemeType> m_allocator;
 };
 
 
@@ -84,7 +85,7 @@ TYPED_TEST(heap_mem_allocator_unittest, TestFreeFailsOnInvalidPtr)
 
 TYPED_TEST(heap_mem_allocator_unittest, TestSingleMallocAndFree)
 {
-  void* p = this->allocate(1024);
+  void* p = this->allocate(HEAP_STORAGE_FOR_TEST / 2);
   ASSERT_NE(nullptr, p);
 
   int res = 0;
@@ -94,25 +95,21 @@ TYPED_TEST(heap_mem_allocator_unittest, TestSingleMallocAndFree)
 
 TYPED_TEST(heap_mem_allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
-  void* p = nullptr;
-  int res = 0;
-  int i = 0;
   const int CYCLES = 3;
 
-  while(i < CYCLES) {
+  for(int i = 0; i < CYCLES; ++i) {
+    void* p = nullptr;
     p = this->allocate(HEAP_STORAGE_FOR_TEST);
     ASSERT_NE(nullptr, p);
 
-    res = this->deallocate(p);
+    int res = this->deallocate(p);
     ASSERT_EQ(1, res);
-
-    ++i;
   }
 }
 
 
 template<typename AllocationSchemeType>
-class heap_memm_allocator_true_sequential_unittest :
+class sequential_allocation_schemes_unittest :
   public heap_mem_allocator_unittest<AllocationSchemeType>
 {
 };
@@ -126,10 +123,10 @@ typedef ::testing::Types<
 > ExtraAllocationSchemeTypes;
 
 
-TYPED_TEST_CASE(heap_memm_allocator_true_sequential_unittest, ExtraAllocationSchemeTypes);
+TYPED_TEST_CASE(sequential_allocation_schemes_unittest, ExtraAllocationSchemeTypes);
 
 
-TYPED_TEST(heap_memm_allocator_true_sequential_unittest, TestDoubleMallocAndFree)
+TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
 {
   size_t size1 = HEAP_STORAGE_FOR_TEST / 2;
   size_t size2 = HEAP_STORAGE_FOR_TEST - size1;
@@ -159,7 +156,7 @@ TYPED_TEST(heap_memm_allocator_true_sequential_unittest, TestDoubleMallocAndFree
   ASSERT_EQ(1, res2);
 }
 
-TYPED_TEST(heap_memm_allocator_true_sequential_unittest, TestMallocAndFreeNTimes)
+TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
 {
   const size_t N = 8;
   size_t chunk_size = HEAP_STORAGE_FOR_TEST / N;
@@ -191,7 +188,7 @@ TYPED_TEST(heap_memm_allocator_true_sequential_unittest, TestMallocAndFreeNTimes
   }
 }
 
-TYPED_TEST(heap_memm_allocator_true_sequential_unittest, TestMallocAfterFree)
+TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 {
   size_t chunk_size_1 = HEAP_STORAGE_FOR_TEST / 3;
   size_t chunk_size_2 = chunk_size_1;
@@ -236,6 +233,13 @@ protected:
     corevm::memory::buddy_allocation_scheme
   > m_allocator;
 
+  template<typename F>
+  void run_twice(F func) {
+    for(int i = 0; i < 2; ++i) {
+      func();
+    }
+  }
+
   void validate() {
     void* ptr = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE);
     ASSERT_NE(nullptr, ptr);
@@ -248,22 +252,52 @@ protected:
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
 {
-  void* p1 = nullptr;
-  void* p2 = nullptr;
+  this->run_twice(
+    [this]() {
+      void* p1 = nullptr;
+      void* p2 = nullptr;
 
-  p1 = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
-  ASSERT_NE(nullptr, p1);
+      p1 = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
+      ASSERT_NE(nullptr, p1);
 
-  p2 = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
-  ASSERT_NE(nullptr, p2);
+      p2 = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / 2);
+      ASSERT_NE(nullptr, p2);
 
-  int res1 = m_allocator.deallocate(p1);
-  int res2 = m_allocator.deallocate(p2);
+      int res1 = m_allocator.deallocate(p1);
+      int res2 = m_allocator.deallocate(p2);
 
-  ASSERT_EQ(1, res1);
-  ASSERT_EQ(1, res2);
+      ASSERT_EQ(1, res1);
+      ASSERT_EQ(1, res2);
 
-  this->validate();
+      this->validate();
+    }
+  );
+}
+
+TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
+{
+  this->run_twice(
+    [this]() {
+      const int N = 8;
+      const size_t size = BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / N;
+
+      void* ptrs[N] = { nullptr };
+
+      for(int i = 0; i < N; ++i) {
+        ptrs[i] = m_allocator.allocate(size);
+        ASSERT_NE(nullptr, ptrs[i]);
+      }
+
+      int res;
+
+      for(int i = N - 1; i >= 0; --i) {
+        res = m_allocator.deallocate(ptrs[i]);
+        ASSERT_EQ(1, res);
+      }
+
+      this->validate();
+    }
+  );
 }
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
@@ -272,37 +306,45 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
    * This test is based on the example on page 1 in
    * http://www.cs.fsu.edu/~engelen/courses/COP402003/p827.pdf
    */
-  void* ptrA = nullptr;
-  void* ptrB = nullptr;
-  void* ptrC = nullptr;
-  void* ptrD = nullptr;
-  int res = 0;
+  this->run_twice(
+    [this]() {
+      const size_t sizeA = 70;
+      const size_t sizeB = 35;
+      const size_t sizeC = 80;
+      const size_t sizeD = 60;
+      void* ptrA = nullptr;
+      void* ptrB = nullptr;
+      void* ptrC = nullptr;
+      void* ptrD = nullptr;
+      int res = 0;
 
-  ptrA = m_allocator.allocate(70);
-  ASSERT_NE(nullptr, ptrA);
+      ptrA = m_allocator.allocate(sizeA);
+      ASSERT_NE(nullptr, ptrA);
 
-  ptrB = m_allocator.allocate(35);
-  ASSERT_NE(nullptr, ptrB);
+      ptrB = m_allocator.allocate(sizeB);
+      ASSERT_NE(nullptr, ptrB);
 
-  ptrC = m_allocator.allocate(80);
-  ASSERT_NE(nullptr, ptrC);
+      ptrC = m_allocator.allocate(sizeC);
+      ASSERT_NE(nullptr, ptrC);
 
-  res = m_allocator.deallocate(ptrA);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrA);
+      ASSERT_EQ(1, res);
 
-  ptrD = m_allocator.allocate(60);
-  ASSERT_NE(nullptr, ptrD);
+      ptrD = m_allocator.allocate(sizeD);
+      ASSERT_NE(nullptr, ptrD);
 
-  res = m_allocator.deallocate(ptrB);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrB);
+      ASSERT_EQ(1, res);
 
-  res = m_allocator.deallocate(ptrD);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrD);
+      ASSERT_EQ(1, res);
 
-  res = m_allocator.deallocate(ptrC);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrC);
+      ASSERT_EQ(1, res);
 
-  this->validate();
+      this->validate();
+    }
+  );
 }
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
@@ -311,35 +353,103 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
    * This test is based on the example given in
    * http://en.wikipedia.org/wiki/Buddy_memory_allocation#In_practice
    */
-  void* ptrA = nullptr;
-  void* ptrB = nullptr;
-  void* ptrC = nullptr;
-  void* ptrD = nullptr;
-  int res = 0;
+  this->run_twice(
+    [this]() {
+      const size_t sizeA = 34;
+      const size_t sizeB = 66;
+      const size_t sizeC = 35;
+      const size_t sizeD = 67;
+      void* ptrA = nullptr;
+      void* ptrB = nullptr;
+      void* ptrC = nullptr;
+      void* ptrD = nullptr;
+      int res = 0;
 
-  ptrA = m_allocator.allocate(34);
-  ASSERT_NE(nullptr, ptrA);
+      ptrA = m_allocator.allocate(sizeA);
+      ASSERT_NE(nullptr, ptrA);
 
-  ptrB = m_allocator.allocate(66);
-  ASSERT_NE(nullptr, ptrB);
+      ptrB = m_allocator.allocate(sizeB);
+      ASSERT_NE(nullptr, ptrB);
 
-  ptrC = m_allocator.allocate(35);
-  ASSERT_NE(nullptr, ptrC);
+      ptrC = m_allocator.allocate(sizeC);
+      ASSERT_NE(nullptr, ptrC);
 
-  ptrD = m_allocator.allocate(67);
-  ASSERT_NE(nullptr, ptrD);
+      ptrD = m_allocator.allocate(sizeD);
+      ASSERT_NE(nullptr, ptrD);
 
-  res = m_allocator.deallocate(ptrB);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrB);
+      ASSERT_EQ(1, res);
 
-  res = m_allocator.deallocate(ptrD);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrD);
+      ASSERT_EQ(1, res);
 
-  res = m_allocator.deallocate(ptrA);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrA);
+      ASSERT_EQ(1, res);
 
-  res = m_allocator.deallocate(ptrC);
-  ASSERT_EQ(1, res);
+      res = m_allocator.deallocate(ptrC);
+      ASSERT_EQ(1, res);
 
-  this->validate();
+      this->validate();
+    }
+  );
+}
+
+TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved3)
+{
+  this->run_twice(
+    [this]() {
+      const size_t N = 4;
+      const size_t size1 = BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / N;
+      const size_t size2 = BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE / N / 2 + 1;
+      void* ptrA = nullptr;
+      void* ptrB = nullptr;
+      void* ptrC = nullptr;
+      void* ptrD = nullptr;
+      void* ptrY = nullptr;
+      void* ptrZ = nullptr;
+
+      ptrA = m_allocator.allocate(size1);
+      ASSERT_NE(nullptr, ptrA);
+
+      ptrY = m_allocator.allocate(size2);
+      ASSERT_NE(nullptr, ptrY);
+
+      ptrB = m_allocator.allocate(size1);
+      ASSERT_NE(nullptr, ptrB);
+
+      ptrZ = m_allocator.allocate(size2);
+      ASSERT_NE(nullptr, ptrZ);
+
+      void* p = m_allocator.allocate(size1);
+      ASSERT_EQ(nullptr, p);
+
+      int res;
+
+      res = m_allocator.deallocate(ptrY);
+      ASSERT_EQ(1, res);
+
+      res = m_allocator.deallocate(ptrZ);
+      ASSERT_EQ(1, res);
+
+      ptrC = m_allocator.allocate(size1);
+      ASSERT_NE(nullptr, ptrC);
+
+      ptrD = m_allocator.allocate(size1);
+      ASSERT_NE(nullptr, ptrD);
+
+      res = m_allocator.deallocate(ptrA);
+      ASSERT_EQ(1, res);
+
+      res = m_allocator.deallocate(ptrB);
+      ASSERT_EQ(1, res);
+
+      res = m_allocator.deallocate(ptrC);
+      ASSERT_EQ(1, res);
+
+      res = m_allocator.deallocate(ptrD);
+      ASSERT_EQ(1, res);
+
+      this->validate();
+    }
+  );
 }
