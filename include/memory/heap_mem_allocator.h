@@ -138,10 +138,12 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(vo
 }
 
 #if __DEBUG__
+template<size_t N, class mem_allocation_scheme_type>
 void
-corevm::memory::heap_mem_allocator::debug_print() const noexcept
+corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::debug_print() const noexcept
 {
-  m_allocator_scheme.debug_print();
+  uint32_t base = static_cast<char*>(m_heap) - static_cast<char*>(NULL);
+  m_allocator_scheme.debug_print(base);
 }
 #endif /* __DEBUG__ */
 

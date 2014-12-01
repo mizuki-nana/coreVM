@@ -46,15 +46,19 @@ public:
   explicit sequential_allocation_scheme(size_t);
 
   using iterator = typename std::list<sequential_block_descriptor>::iterator;
+  using const_iterator = typename std::list<sequential_block_descriptor>::const_iterator;
 
   iterator begin() noexcept;
   iterator end() noexcept;
+
+  const_iterator cbegin() const noexcept;
+  const_iterator cend() const noexcept;
 
   virtual ssize_t malloc(size_t) noexcept;
   virtual ssize_t free(size_t) noexcept;
 
 #if __DEBUG__
-  void debug_print() noexcept;
+  void debug_print(uint32_t) const noexcept;
 #endif /* __DEBUG__ */
 
 protected:

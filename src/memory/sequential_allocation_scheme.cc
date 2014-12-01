@@ -21,31 +21,44 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <string>
 #include <sneaker/libc/math.h>
 #include "../../include/memory/sequential_allocation_scheme.h"
 
 
 typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
+typedef corevm::memory::sequential_allocation_scheme::const_iterator const_iterator_type;
 typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
 
 #if __DEBUG__
 void
-corevm::memory::sequential_allocation_scheme::debug_print() noexcept
+corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
 {
-  // TODO: [COREVM-79] Improve sequential allocation scheme debug printing
-  printf("==============================\n");
-  iterator_type itr;
-  for(itr = begin(); itr != end(); itr++) {
+  const std::string LINE = "----------------------------------------------------------------------";
+
+  std::cout << LINE << std::endl;
+  std::cout << "| Heap debug print (starting at " << std::setw(10) \
+    << std::hex << std::showbase << base << std::noshowbase << std::dec \
+    << ")                          |" << std::endl;
+  std::cout << "|                                                                    |" << std::endl;
+
+  for(auto itr = cbegin(); itr != cend(); itr++) {
     block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
-    printf("Size [%lu] - Offset - [%d] - Free[ %d] - Flags[ %lu]\n",
-        descriptor.size,
-        descriptor.offset,
-        descriptor.free,
-        descriptor.flags
-    );
+
+    std::cout << "| ";
+    std::cout << std::left << std::setw(10) << std::hex << std::showbase \
+      << base + descriptor.offset << std::noshowbase << std::dec << " " << std::right;
+    std::cout << "size[" << std::setw(10) << descriptor.size << "] ";
+    std::cout << "offset[" << std::setw(10) << descriptor.offset << "] ";
+    std::cout << "free[" << std::setw(1) << descriptor.free << "] ";
+    std::cout << "flags[" << std::setw(4) << std::hex << std::showbase \
+      << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
+    std::cout << " |" << std::endl;
   }
-  printf("==============================\n");
+  std::cout << LINE << std::endl;
 }
 #endif /* __DEBUG__ */
 
@@ -77,6 +90,18 @@ iterator_type
 corevm::memory::sequential_allocation_scheme::end() noexcept
 {
   return m_blocks.end();
+}
+
+const_iterator_type
+corevm::memory::sequential_allocation_scheme::cbegin() const noexcept
+{
+  return m_blocks.cbegin();
+}
+
+const_iterator_type
+corevm::memory::sequential_allocation_scheme::cend() const noexcept
+{
+  return m_blocks.cend();
 }
 
 void
