@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_DYOBJ_HEAP_ALLOC_POLICY_H_
 
 #include <sneaker/allocator/alloc_policy.h>
-#include "../memory/heap_mem_allocator.h"
+#include "../memory/allocator.h"
 #include "../memory/sequential_allocation_scheme.h"
 #include "common.h"
 
@@ -55,7 +55,7 @@ public:
   inline virtual void deallocate(pointer, size_type);
 
 protected:
-  corevm::memory::heap_mem_allocator<
+  corevm::memory::allocator<
     N,
     corevm::memory::buddy_allocation_scheme
   > m_heap;
@@ -70,7 +70,7 @@ template<typename T, size_t N>
 corevm::dyobj::dyobj_heap_alloc_policy<T, N>::dyobj_heap_alloc_policy():
   sneaker::allocator::standard_alloc_policy<T>(),
   m_heap(
-    corevm::memory::heap_mem_allocator<N, corevm::memory::buddy_allocation_scheme>()
+    corevm::memory::allocator<N, corevm::memory::buddy_allocation_scheme>()
   )
 {
   // Do nothing here.

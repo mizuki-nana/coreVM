@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_MEMORY_HEAP_MEM_ALLOCATOR_H_
-#define COREVM_MEMORY_HEAP_MEM_ALLOCATOR_H_
+#ifndef COREVM_MEMORY_ALLOCATOR_H_
+#define COREVM_MEMORY_ALLOCATOR_H_
 
 
 #include <cassert>
@@ -38,11 +38,11 @@ namespace corevm {
 namespace memory {
 
 
-template<size_t N, class mem_allocation_scheme_type>
-class heap_mem_allocator {
+template<size_t N, class allocation_scheme>
+class allocator {
 public:
-  heap_mem_allocator();
-  ~heap_mem_allocator();
+  allocator();
+  ~allocator();
 
   void* allocate(size_t) noexcept;
   int deallocate(void*) noexcept;
@@ -53,15 +53,15 @@ private:
   uint64_t m_total_size = 0;
   uint64_t m_allocated_size = 0;
   void* m_heap = nullptr;
-  mem_allocation_scheme_type m_allocator_scheme;
+  allocation_scheme m_allocation_scheme;
 };
 
 
-template<size_t N, class mem_allocation_scheme_type>
-corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::heap_mem_allocator():
+template<size_t N, class allocation_scheme>
+corevm::memory::allocator<N, allocation_scheme>::allocator():
   m_total_size(N),
   m_allocated_size(0),
-  m_allocator_scheme(mem_allocation_scheme_type(m_total_size))
+  m_allocation_scheme(allocation_scheme(m_total_size))
 {
   void* mem = malloc(m_total_size);
 
@@ -72,8 +72,8 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::heap_mem_allo
   m_heap = mem;
 }
 
-template<size_t N, class mem_allocation_scheme_type>
-corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::~heap_mem_allocator()
+template<size_t N, class allocation_scheme>
+corevm::memory::allocator<N, allocation_scheme>::~allocator()
 {
   if(m_heap) {
     free(m_heap);
@@ -81,9 +81,9 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::~heap_mem_all
   }
 }
 
-template<size_t N, class mem_allocation_scheme_type>
+template<size_t N, class allocation_scheme>
 void*
-corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::allocate(size_t size) noexcept
+corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
 {
   void* ptr = nullptr;
 
@@ -95,7 +95,7 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::allocate(size
     return ptr;
   }
 
-  ssize_t offset = m_allocator_scheme.malloc(size);
+  ssize_t offset = m_allocation_scheme.malloc(size);
 
   if(offset >= 0) {
     char* base = static_cast<char*>(m_heap);
@@ -107,9 +107,9 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::allocate(size
   return ptr;
 }
 
-template<size_t N, class mem_allocation_scheme_type>
+template<size_t N, class allocation_scheme>
 int
-corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(void* ptr) noexcept
+corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
 {
   int res = -1;
 
@@ -121,7 +121,7 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(vo
   char* heap_ = static_cast<char*>(m_heap);
 
   size_t offset = ptr_ - heap_;
-  ssize_t size = m_allocator_scheme.free(offset);
+  ssize_t size = m_allocation_scheme.free(offset);
 
   if(size > 0) {
     memset(ptr, 0, static_cast<uint32_t>(size));
@@ -133,12 +133,12 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::deallocate(vo
   return res;
 }
 
-template<size_t N, class mem_allocation_scheme_type>
+template<size_t N, class allocation_scheme>
 void
-corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::debug_print() const noexcept
+corevm::memory::allocator<N, allocation_scheme>::debug_print() const noexcept
 {
   uint32_t base = static_cast<char*>(m_heap) - static_cast<char*>(NULL);
-  m_allocator_scheme.debug_print(base);
+  m_allocation_scheme.debug_print(base);
 }
 
 
@@ -148,4 +148,4 @@ corevm::memory::heap_mem_allocator<N, mem_allocation_scheme_type>::debug_print()
 } /* end namespace corevm */
 
 
-#endif /* COREVM_MEMORY_HEAP_MEM_ALLOCATOR_H_ */
+#endif /* COREVM_MEMORY_ALLOCATOR_H_ */

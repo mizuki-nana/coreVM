@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <cassert>
 #include <sneaker/testing/_unittest.h>
-#include "../../include/memory/heap_mem_allocator.h"
+#include "../../include/memory/allocator.h"
 #include "../../include/memory/sequential_allocation_scheme.h"
 
 
@@ -30,7 +30,7 @@ const int HEAP_STORAGE_FOR_TEST = 1024;
 
 
 template<typename AllocationSchemeType>
-class heap_mem_allocator_unittest : public ::testing::Test {
+class allocator_unittest : public ::testing::Test {
 protected:
   void* allocate(size_t size) noexcept {
     return m_allocator.allocate(size);
@@ -40,7 +40,7 @@ protected:
     return m_allocator.deallocate(ptr);
   }
 
-  corevm::memory::heap_mem_allocator<
+  corevm::memory::allocator<
     HEAP_STORAGE_FOR_TEST, AllocationSchemeType> m_allocator;
 };
 
@@ -54,28 +54,28 @@ typedef ::testing::Types<
 > SequentialAllocationSchemeTypes;
 
 
-TYPED_TEST_CASE(heap_mem_allocator_unittest, SequentialAllocationSchemeTypes);
+TYPED_TEST_CASE(allocator_unittest, SequentialAllocationSchemeTypes);
 
 
-TYPED_TEST(heap_mem_allocator_unittest, TestFirstMallocSuccessful)
+TYPED_TEST(allocator_unittest, TestFirstMallocSuccessful)
 {
   void* p = this->allocate(10);
   ASSERT_NE(nullptr, p);
 }
 
-TYPED_TEST(heap_mem_allocator_unittest, TestMallocWithSizeZeroFails)
+TYPED_TEST(allocator_unittest, TestMallocWithSizeZeroFails)
 {
   void* p = this->allocate(0);
   ASSERT_EQ(nullptr, p);
 }
 
-TYPED_TEST(heap_mem_allocator_unittest, TestMallocWithExcessiveSizeFails)
+TYPED_TEST(allocator_unittest, TestMallocWithExcessiveSizeFails)
 {
   void* p = this->allocate(HEAP_STORAGE_FOR_TEST + 1);
   ASSERT_EQ(nullptr, p);
 }
 
-TYPED_TEST(heap_mem_allocator_unittest, TestFreeFailsOnInvalidPtr)
+TYPED_TEST(allocator_unittest, TestFreeFailsOnInvalidPtr)
 {
   int c = 5;
   void* ptr = &c;
@@ -83,7 +83,7 @@ TYPED_TEST(heap_mem_allocator_unittest, TestFreeFailsOnInvalidPtr)
   ASSERT_EQ(-1, res);
 }
 
-TYPED_TEST(heap_mem_allocator_unittest, TestSingleMallocAndFree)
+TYPED_TEST(allocator_unittest, TestSingleMallocAndFree)
 {
   void* p = this->allocate(HEAP_STORAGE_FOR_TEST / 2);
   ASSERT_NE(nullptr, p);
@@ -93,7 +93,7 @@ TYPED_TEST(heap_mem_allocator_unittest, TestSingleMallocAndFree)
   ASSERT_EQ(1, res);
 }
 
-TYPED_TEST(heap_mem_allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
+TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
   const int CYCLES = 3;
 
@@ -110,7 +110,7 @@ TYPED_TEST(heap_mem_allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful
 
 template<typename AllocationSchemeType>
 class sequential_allocation_schemes_unittest :
-  public heap_mem_allocator_unittest<AllocationSchemeType>
+  public allocator_unittest<AllocationSchemeType>
 {
 };
 
@@ -228,7 +228,7 @@ const int BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE = 1024;
 
 class buddy_allocation_scheme_unittest : public ::testing::Test {
 protected:
-  corevm::memory::heap_mem_allocator<
+  corevm::memory::allocator<
     BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE,
     corevm::memory::buddy_allocation_scheme
   > m_allocator;
