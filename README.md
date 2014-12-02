@@ -12,11 +12,11 @@ With the proliferation of dynamic programming languages being a dominating trend
 in the software industry, many developers have taken the endeavor to invent
 their own, in attempts to modernize the designs and implementations of many
 legacy systems, and how modern software systems can be built. However, such a
-task would usually become a massive undertaking as the process involved in
-developing a custom runtime for a dynamic programming language tends to be
+task would usually become a massive undertaking as the steps involved in
+developing a custom runtime for a dynamic programming language tend to be
 extremely complex, error prone and resource consuming, thus ending up being a
 very intimidating part in the process. Although there are candidates of generic
-dynamic language runtimes that are available, many of them lack the
+runtimes for dynamic languages that are available, many of them lack the
 robustness, efficiency and versatility that can meet the language requirements.
 
 coreVM is a language-agnostic virtual machine designed to provide a runtime for
@@ -42,13 +42,12 @@ Here's an illustration of the high level architecture:
 
 ### Memory Management
 The most bottom layer in coreVM is the memory management component, which is
-responsible for allocating and deallocating dynamic memories used by the
-native types pool and the object heap. The memory management component is
-equipped with several allocation schemes, such as first-fit, last-fit,
-buddy-system, etc, and can be configured to choose one over the others in
-different scenarios for the most efficient use. For example, the object heap
-uses the buddy-system scheme by default, while the native types pool uses the
-first-fit scheme.
+responsible for allocating and deallocating memories used by the object heap
+and the native types pool. The memory management component is equipped with
+several allocation schemes, such as first-fit, last-fit, buddy-system, etc,
+and can be configured to choose one over the others in different scenarios for
+the most efficient usages. For example, the object heap uses the buddy-system
+scheme by default, while the native types pool uses the first-fit scheme.
 
 ### Native Types
 The native types system is an independent system that defines all the native
@@ -81,14 +80,10 @@ which is essentially a handle that points to an entity that is of one of these
 ### Object Management
 Another component that directly relates to the memory management layer is the
 object heap, which allocates memory from it to store objects. Objects in coreVM
-are referred as "dynamic objects", which means that their properties can be
+are referred as "dynamic objects", meaning that their properties can be
 dynamically changed during execution. This provides the flexibility for language
 developers to incorporate their custom object abstractions and meta-programming
 features.
-
-Each object has a unique identifier upon creation, and it's used by the object
-heap to manage all the objects, which is essentially a map of object IDs to
-their corresponding instances.
 
 Each dynamic object can hold one native type handle. For example, an object
 of custom integer type in a language may hold a native type handle of type
@@ -109,15 +104,15 @@ the mark-and-sweep GC scheme tracks whether the object is being "marked", while
 the one for the reference-count GC scheme keeps tracks of a reference count for
 that object.
 
-The current version of the garbage collector has a non-copying, non-generational,
-and stop-the-world implementation. Future works are needed to improve the GC
-for more optimizations.
+The current version of the garbage collector has a non-copying,
+non-generational, and stop-the-world implementation. Future works are needed to
+improve the GC with more optimizations.
 
 ### Core Runtime
 The core runtime layer is the central component that interacts with the rest of
-the layers in order to perform bytecode executions.
+the components in order to perform bytecode executions.
 
-The runtime is a stack-based machine that manages a call stack while executing 
+The runtime is a stack-based machine that manages a call stack while executing
 instructions that are in coreVM's bytecode instruction set. The call stack is a
 stack of call frames, with each frame containing all the data associated with
 one function call. Each frame also contains an "execution stack" for native
@@ -151,8 +146,8 @@ Extension APIs.
 ### Debugging and Profiling APIs
 These are a set of APIs and facilities that provide developers powerful
 capabilities to debug executable code running on coreVM. This includes the
-typical debugging capabilities such as pause execution and examine variable
-states, unwind/rewind call stacks, etc. In addition, there will be a set of
+typical debugging capabilities such as execution pausing, variables examination,
+call stack unwinding and rewinding, etc. In addition, there will be a set of
 facilities for instrumenting a diversity of aspects regarding executions,
 such as process introspections, memory footprint statistics, heap allocation
 heat map, to name a few.
@@ -178,8 +173,8 @@ to program their desired functionalities for existing and new instructions.
 The next feature is called the *Reactive Event Model*, which is a model that
 provides the runtime the capability to react to a set of defined events that are
 occurring to the execution environment. For example, a developer may want to
-implement a language feature which reacts to certain events happening in the
-host operating system.
+implement a language feature which passively reacts to certain events happening
+in the host operating system.
 
 The last feature is to support native plugins, which allows developers to
 incorporate the execution of native code in conjunction with coreVM's execution,
