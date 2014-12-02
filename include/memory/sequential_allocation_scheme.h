@@ -34,9 +34,9 @@ namespace memory {
 
 
 typedef struct __sequential_block_descriptor {
-  size_t size;
+  uint64_t size;
+  uint64_t actual_size;
   uint64_t offset;
-  bool free;
   uint8_t flags;
 } sequential_block_descriptor;
 
@@ -57,9 +57,7 @@ public:
   virtual ssize_t malloc(size_t) noexcept;
   virtual ssize_t free(size_t) noexcept;
 
-#if __DEBUG__
   void debug_print(uint32_t) const noexcept;
-#endif /* __DEBUG__ */
 
 protected:
   virtual sequential_block_descriptor default_block() const noexcept;

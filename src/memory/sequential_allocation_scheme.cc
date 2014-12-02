@@ -33,35 +33,6 @@ typedef corevm::memory::sequential_allocation_scheme::const_iterator const_itera
 typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
 
-#if __DEBUG__
-void
-corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
-{
-  const std::string LINE = "----------------------------------------------------------------------";
-
-  std::cout << LINE << std::endl;
-  std::cout << "| Heap debug print (starting at " << std::setw(10) \
-    << std::hex << std::showbase << base << std::noshowbase << std::dec \
-    << ")                          |" << std::endl;
-  std::cout << "|                                                                    |" << std::endl;
-
-  for(auto itr = cbegin(); itr != cend(); itr++) {
-    block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
-
-    std::cout << "| ";
-    std::cout << std::left << std::setw(10) << std::hex << std::showbase \
-      << base + descriptor.offset << std::noshowbase << std::dec << " " << std::right;
-    std::cout << "size[" << std::setw(10) << descriptor.size << "] ";
-    std::cout << "offset[" << std::setw(10) << descriptor.offset << "] ";
-    std::cout << "free[" << std::setw(1) << descriptor.free << "] ";
-    std::cout << "flags[" << std::setw(4) << std::hex << std::showbase \
-      << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
-    std::cout << " |" << std::endl;
-  }
-  std::cout << LINE << std::endl;
-}
-#endif /* __DEBUG__ */
-
 corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
   size_t total_size
 ):
@@ -69,13 +40,41 @@ corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
 {
 }
 
+void
+corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
+{
+  const std::string LINE        = "------------------------------------------------------------------------------------------";
+  const std::string BLANK_SPACE = "|                                                                                        |";
+
+  std::cout << LINE << std::endl;
+  std::cout << "| Heap debug print (starting at " << std::setw(10) \
+    << std::hex << std::showbase << base << std::noshowbase << std::dec \
+    << ")                                              |" << std::endl;
+  std::cout << BLANK_SPACE << std::endl;
+
+  for(auto itr = cbegin(); itr != cend(); itr++) {
+    block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
+
+    std::cout << "| ";
+    std::cout << std::left << std::setw(10) << std::hex << std::showbase \
+      << base + descriptor.offset << std::noshowbase << std::dec << " " << std::right;
+    std::cout << "BlockSize[" << std::setw(10) << descriptor.size << "] ";
+    std::cout << "ActualSize[" << std::setw(10) << descriptor.actual_size << "] ";
+    std::cout << "Offset[" << std::setw(10) << descriptor.offset << "] ";
+    std::cout << "Flags[" << std::setw(4) << std::hex << std::showbase \
+      << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
+    std::cout << " |" << std::endl;
+  }
+  std::cout << LINE << std::endl;
+}
+
 block_descriptor_type
 corevm::memory::sequential_allocation_scheme::default_block() const noexcept
 {
   return block_descriptor_type {
     .size = m_total_size,
+    .actual_size = 0,
     .offset = 0,
-    .free = true,
     .flags = 0,
   };
 }
@@ -112,8 +111,8 @@ corevm::memory::sequential_allocation_scheme::split(
   ++itr_pos;
   block_descriptor_type descriptor = {
     .size = size,
+    .actual_size = 0,
     .offset = offset,
-    .free = true,
     .flags = 0
   };
   this->m_blocks.insert(itr_pos, descriptor);
@@ -132,7 +131,7 @@ corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
       block_descriptor_type current_block = static_cast<block_descriptor_type>(*current);
       block_descriptor_type next_block = static_cast<block_descriptor_type>(*next);
 
-      if(current_block.free && next_block.free) {
+      if(current_block.actual_size == 0 && next_block.actual_size == 0) {
         current_block.size += next_block.size;
         next_block.size = 0;
         *current = current_block;
@@ -145,7 +144,7 @@ corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
     this->begin(),
     this->end(),
     [](const block_descriptor_type& block) -> bool {
-      return block.free == true && block.size == 0;
+      return block.actual_size == 0 && block.size == 0;
     }
   );
 }
@@ -160,7 +159,7 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
 
   if(itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
-    block_found.free = false;
+    block_found.actual_size = size;
     *itr = block_found;
 
     if(block_found.size > size) {
@@ -186,17 +185,18 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     this->begin(),
     this->end(),
     [this, offset](block_descriptor_type block) -> bool {
-      return block.offset == offset && block.free == false;
+      return block.offset == offset && block.actual_size != 0;
     }
   );
 
   if(itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
-    block_found.free = true;
 
+    size_freed = static_cast<ssize_t>(block_found.actual_size);
+
+    block_found.actual_size = 0;
     *itr = block_found;
 
-    size_freed = static_cast<ssize_t>(block_found.size);
     this->combine_free_blocks();
   }
 
@@ -220,7 +220,7 @@ corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
     this->begin(),
     this->end(),
     [this, size](block_descriptor_type block) -> bool {
-      return block.size >= size && block.free == true;
+      return block.size >= size && block.actual_size == 0;
     }
   );
 }
@@ -245,11 +245,11 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
     this->begin(),
     this->end(),
     [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if(block_a.free == false) {
+      if(block_a.actual_size != 0) {
         return false;
       }
 
-      if(block_b.free == false) {
+      if(block_b.actual_size != 0) {
         return true;
       }
 
@@ -263,7 +263,7 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if(! (block_found.free == true && block_found.size >= size) ) {
+  if(! (block_found.actual_size == 0 && block_found.size >= size) ) {
     itr = this->end();
   }
 
@@ -290,11 +290,11 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
     this->begin(),
     this->end(),
     [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if(block_b.free == false) {
+      if(block_b.actual_size != 0) {
         return false;
       }
 
-      if(block_a.free == false) {
+      if(block_a.actual_size != 0) {
         return true;
       }
 
@@ -308,7 +308,7 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if(! (block_found.free == true && block_found.size >= size) ) {
+  if(! (block_found.actual_size == 0 && block_found.size >= size) ) {
     itr = this->end();
   }
 
@@ -336,7 +336,7 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
   iterator_type itr = end();
 
   auto criterion = [this, size](block_descriptor_type block) -> bool {
-    return block.size >= size && block.free == true;
+    return block.size >= size && block.actual_size == 0;
   };
 
   itr = std::find_if(last_itr, this->end(), criterion);
@@ -397,7 +397,6 @@ corevm::memory::buddy_allocation_scheme::default_block() const noexcept
   return block_descriptor_type {
     .size = m_total_size,
     .offset = 0,
-    .free = true,
     .flags = ( 0x01 << (FLAG_PARENT_SPLIT - 1) )
   };
 }
@@ -412,7 +411,7 @@ corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
 
   if(itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
-    block_found.free = false;
+    block_found.actual_size = size;
     *itr = block_found;
 
     res = static_cast<ssize_t>(block_found.offset);
@@ -435,7 +434,7 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
       this->begin(),
       this->end(),
       [this, nearest_power_of_2](block_descriptor_type block) -> bool {
-        return block.size >= nearest_power_of_2 && block.free == true;
+        return block.size >= nearest_power_of_2 && block.actual_size == 0;
       }
     );
 
@@ -455,8 +454,8 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
         static_cast<uint64_t>(block_found.offset + block_found.size)
       );
     } else { // bingo! use this block
-      block_found.free = false;
       block_found.size = block_found.size; // size stay the same
+      block_found.actual_size = size;
       *itr = block_found;
       break;
     }
@@ -495,7 +494,7 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 
         bool isParentSplit = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
 
-        if(isSplit && current_block.free && next_block.free) {
+        if(isSplit && current_block.actual_size == 0 && next_block.actual_size == 0) {
 
           uint8_t flags = 0;
           if(isParentSplit) {
@@ -505,8 +504,8 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 
           block_descriptor_type combined_block = {
             .size = current_block.size + next_block.size,
+            .actual_size = 0,
             .offset = current_block.offset,
-            .free = true,
             .flags = flags
           };
 
