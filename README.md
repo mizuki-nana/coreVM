@@ -3,6 +3,8 @@ coreVM
 
 ![logo](/resources/corevm_logo_256x256.png)
 
+*Turn On, Boot Up, Jack In...*
+
 A virtual machine designed to revolutionize the development of modern dynamic
 programming languages.
 
