@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/allocator/allocator.h>
 #include "common.h"
 #include "dynamic_object.h"
-#include "dyobj_heap_allocator.h"
+#include "heap_allocator.h"
 #include "errors.h"
 
 
@@ -51,7 +51,7 @@ public:
     dynamic_object_type,
     std::hash<dynamic_object_id_type>,
     std::equal_to<dynamic_object_id_type>,
-    corevm::dyobj::dyobj_heap_allocator<
+    corevm::dyobj::heap_allocator<
       std::pair<const dynamic_object_id_type, dynamic_object_type>,
       COREVM_DEFAULT_HEAP_SIZE
     >

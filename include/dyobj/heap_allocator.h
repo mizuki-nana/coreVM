@@ -20,12 +20,12 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_DYOBJ_HEAP_ALLOCATOR_H_
-#define COREVM_DYOBJ_HEAP_ALLOCATOR_H_
+#ifndef COREVM_HEAP_ALLOCATOR_H_
+#define COREVM_HEAP_ALLOCATOR_H_
 
 #include <sneaker/allocator/allocator.h>
 #include "common.h"
-#include "dyobj_heap_alloc_policy.h"
+#include "heap_alloc_policy.h"
 
 
 namespace corevm {
@@ -35,9 +35,9 @@ namespace dyobj {
 
 
 template<typename T, size_t N=COREVM_DEFAULT_HEAP_SIZE>
-class dyobj_heap_allocator : public sneaker::allocator::allocator<T, corevm::dyobj::dyobj_heap_alloc_policy<T, N>> {
+class heap_allocator : public sneaker::allocator::allocator<T, corevm::dyobj::heap_alloc_policy<T, N>> {
 public:
-  using _BaseType = typename sneaker::allocator::allocator<T, corevm::dyobj::dyobj_heap_alloc_policy<T, N> >;
+  using _BaseType = typename sneaker::allocator::allocator<T, corevm::dyobj::heap_alloc_policy<T, N> >;
 
   using value_type      = typename _BaseType::value_type;
   using pointer         = typename _BaseType::pointer;
@@ -47,40 +47,40 @@ public:
   using size_type       = typename _BaseType::size_type;
   using difference_type = typename _BaseType::difference_type;
 
-  inline explicit dyobj_heap_allocator();
-  inline ~dyobj_heap_allocator();
+  inline explicit heap_allocator();
+  inline ~heap_allocator();
 
-  inline dyobj_heap_allocator(dyobj_heap_allocator const&);
+  inline heap_allocator(heap_allocator const&);
 
   template<typename U>
-  inline dyobj_heap_allocator(dyobj_heap_allocator<U> const&);
+  inline heap_allocator(heap_allocator<U> const&);
 
   template<typename U, size_t M>
-  inline dyobj_heap_allocator(dyobj_heap_allocator<U, M> const&);
+  inline heap_allocator(heap_allocator<U, M> const&);
 };
 
 
 template<typename T, size_t N>
-corevm::dyobj::dyobj_heap_allocator<T, N>::dyobj_heap_allocator()
+corevm::dyobj::heap_allocator<T, N>::heap_allocator()
 {
   // Do nothing here.
 }
 
 template<typename T, size_t N>
-corevm::dyobj::dyobj_heap_allocator<T, N>::~dyobj_heap_allocator()
+corevm::dyobj::heap_allocator<T, N>::~heap_allocator()
 {
   // Do nothing here.
 }
 
 template<typename T, size_t N>
-corevm::dyobj::dyobj_heap_allocator<T, N>::dyobj_heap_allocator(dyobj_heap_allocator<T, N> const&)
+corevm::dyobj::heap_allocator<T, N>::heap_allocator(heap_allocator<T, N> const&)
 {
   // Do nothing here.
 }
 
 template<typename T, size_t N>
 template<typename U, size_t M>
-corevm::dyobj::dyobj_heap_allocator<T, N>::dyobj_heap_allocator(dyobj_heap_allocator<U, M> const&)
+corevm::dyobj::heap_allocator<T, N>::heap_allocator(heap_allocator<U, M> const&)
 {
   // Do nothing here.
 }
@@ -88,51 +88,51 @@ corevm::dyobj::dyobj_heap_allocator<T, N>::dyobj_heap_allocator(dyobj_heap_alloc
 
 template<typename T, size_t N>
 inline
-bool operator==(dyobj_heap_allocator<T, N> const& lhs, dyobj_heap_allocator<T, N> const& rhs)
+bool operator==(heap_allocator<T, N> const& lhs, heap_allocator<T, N> const& rhs)
 {
   return operator==(
-    static_cast<corevm::dyobj::dyobj_heap_alloc_policy<T, N>>(lhs),
-    static_cast<corevm::dyobj::dyobj_heap_alloc_policy<T, N>>(rhs)
+    static_cast<corevm::dyobj::heap_alloc_policy<T, N>>(lhs),
+    static_cast<corevm::dyobj::heap_alloc_policy<T, N>>(rhs)
   );
 }
 
 template<typename T, size_t N, typename U, size_t M>
 inline
-bool operator==(dyobj_heap_allocator<T, N> const& lhs, dyobj_heap_allocator<U, M> const& rhs)
+bool operator==(heap_allocator<T, N> const& lhs, heap_allocator<U, M> const& rhs)
 {
   return operator==(
-    static_cast<corevm::dyobj::dyobj_heap_alloc_policy<T, N>>(lhs),
-    static_cast<corevm::dyobj::dyobj_heap_alloc_policy<U, M>>(rhs)
+    static_cast<corevm::dyobj::heap_alloc_policy<T, N>>(lhs),
+    static_cast<corevm::dyobj::heap_alloc_policy<U, M>>(rhs)
   );
 }
 
 template<typename T, size_t N, typename other_allocator_type>
 inline
-bool operator==(dyobj_heap_allocator<T, N> const& lhs, other_allocator_type const& rhs)
+bool operator==(heap_allocator<T, N> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
-    static_cast<corevm::dyobj::dyobj_heap_alloc_policy<T, N>>(lhs),
+    static_cast<corevm::dyobj::heap_alloc_policy<T, N>>(lhs),
     rhs
   );
 }
 
 template<typename T, size_t N>
 inline
-bool operator!=(dyobj_heap_allocator<T, N> const& lhs, dyobj_heap_allocator<T, N> const& rhs)
+bool operator!=(heap_allocator<T, N> const& lhs, heap_allocator<T, N> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 template<typename T, size_t N, typename U, size_t M>
 inline
-bool operator!=(dyobj_heap_allocator<T, N> const& lhs, dyobj_heap_allocator<U, M> const& rhs)
+bool operator!=(heap_allocator<T, N> const& lhs, heap_allocator<U, M> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 template<typename T, size_t N, typename other_allocator_type>
 inline
-bool operator!=(dyobj_heap_allocator<T, N> const& lhs, other_allocator_type const& rhs)
+bool operator!=(heap_allocator<T, N> const& lhs, other_allocator_type const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -144,4 +144,4 @@ bool operator!=(dyobj_heap_allocator<T, N> const& lhs, other_allocator_type cons
 }; /* end namespace corevm */
 
 
-#endif /* COREVM_DYOBJ_HEAP_ALLOCATOR_H_ */
+#endif /* COREVM_HEAP_ALLOCATOR_H_ */

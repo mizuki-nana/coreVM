@@ -49,6 +49,10 @@ public:
 
   void debug_print() const noexcept;
 
+  uint64_t base_addr() const noexcept;
+
+  uint64_t total_size() const noexcept;
+
 private:
   uint64_t m_total_size = 0;
   uint64_t m_allocated_size = 0;
@@ -79,6 +83,20 @@ corevm::memory::allocator<N, allocation_scheme>::~allocator()
     free(m_heap);
     m_heap = nullptr;
   }
+}
+
+template<size_t N, class allocation_scheme>
+uint64_t
+corevm::memory::allocator<N, allocation_scheme>::base_addr() const noexcept
+{
+  return static_cast<uint64_t>((char*)m_heap - (char*)NULL);
+}
+
+template<size_t N, class allocation_scheme>
+uint64_t
+corevm::memory::allocator<N, allocation_scheme>::total_size() const noexcept
+{
+  return m_total_size;
 }
 
 template<size_t N, class allocation_scheme>
