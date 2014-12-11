@@ -29,12 +29,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class dummy_dynamic_object_manager {};
 
 
-class dynamic_object_unittest : public ::testing::Test {};
+class dynamic_object_unittest : public ::testing::Test {
+public:
+  using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+};
 
 
 TEST_F(dynamic_object_unittest, TestInitialization)
 {
-  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj;
 
   ASSERT_EQ(0, obj.flags());
   ASSERT_FALSE(obj.hasattr(0));
@@ -44,7 +47,7 @@ TEST_F(dynamic_object_unittest, TestInitialization)
 
 TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 {
-  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj;
 
   ASSERT_EQ(0, obj.flags());
 
@@ -85,7 +88,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 
 TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 {
-  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj;
 
   corevm::dyobj::attr_key key1 = 123;
   corevm::dyobj::attr_key key2 = 456;
@@ -140,7 +143,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 
 TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
 {
-  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj;
 
   ASSERT_EQ(corevm::dyobj::NONESET_INSTR_BLOCK_KEY, obj.get_instr_block_key());
 
@@ -156,7 +159,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
 
 TEST_F(dynamic_object_unittest, TestEquality)
 {
-  auto obj = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj;
 
   // ASSERT_EQ(obj, obj);
   ASSERT_TRUE(obj == obj);
@@ -164,8 +167,8 @@ TEST_F(dynamic_object_unittest, TestEquality)
 
 TEST_F(dynamic_object_unittest, TestInequality)
 {
-  auto obj1 = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
-  auto obj2 = corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>::create();
+  dynamic_object_type obj1;
+  dynamic_object_type obj2;
 
   // ASSERT_NE(obj1, obj2);
   ASSERT_TRUE(obj1 != obj2);

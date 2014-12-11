@@ -91,17 +91,20 @@ void
 corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
 {
   auto remove_criterion = [](typename dynamic_object_heap_type::iterator itr) -> bool {
-    dynamic_object_type& object = static_cast<dynamic_object_type&>(itr->second);
+    dynamic_object_type& object = static_cast<dynamic_object_type&>(*itr);
     return object.is_garbage_collectible();
   };
 
   for(auto itr = m_heap.begin(); itr != m_heap.end();) {
     if(remove_criterion(itr)) {
-      dynamic_object_type& obj = static_cast<dynamic_object_type&>(itr->second);
+      dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
       if(f) {
         (*f)(obj);
       }
-      itr = m_heap.erase(itr);
+      auto itr_next = itr;
+      ++itr_next;
+      m_heap.erase(itr);
+      itr = itr_next;
     } else {
       ++itr;
     }

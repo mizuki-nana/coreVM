@@ -56,12 +56,16 @@ public:
   typedef attr_map_type::iterator iterator;
   typedef attr_map_type::const_iterator const_iterator;
 
-  static dynamic_object<dynamic_object_manager> create();
+  explicit dynamic_object();
 
   ~dynamic_object();
 
   bool operator==(const corevm::dyobj::dynamic_object<dynamic_object_manager>&);
   bool operator!=(const corevm::dyobj::dynamic_object<dynamic_object_manager>&);
+
+  void set_id(corevm::dyobj::dyobj_id id) noexcept {
+    m_id = id;
+  }
 
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
@@ -70,6 +74,7 @@ public:
   const_iterator cend() const noexcept;
 
   corevm::dyobj::dyobj_id id() const noexcept;
+
   corevm::dyobj::flag flags() const noexcept;
 
   dynamic_object_manager& manager() noexcept;
@@ -104,8 +109,6 @@ public:
   void iterate(Function) noexcept;
 
 private:
-  explicit dynamic_object(dyobj_id_type);
-
   void check_flag_bit(char) const throw(corevm::dyobj::invalid_flag_bit_error);
 
   dyobj_id_type m_id;
@@ -118,17 +121,7 @@ private:
 
 
 template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>::create()
-{
-  return corevm::dyobj::dynamic_object<dynamic_object_manager>(
-    corevm::dyobj::dyobj_id_helper::generate_dyobj_id()
-  );
-}
-
-template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object(corevm::dyobj::dyobj_id id):
-  m_id(id),
+corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)),
   m_manager(dynamic_object_manager()),

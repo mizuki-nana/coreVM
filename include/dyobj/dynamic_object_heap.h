@@ -25,12 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <stdexcept>
-#include <unordered_map>
-#include <sneaker/allocator/allocator.h>
 #include "common.h"
+#include "dyobj_id.h"
 #include "dynamic_object.h"
-#include "heap_allocator.h"
+#include "dynamic_object_container.h"
 #include "errors.h"
+#include "heap_allocator.h"
 
 
 namespace corevm {
@@ -46,51 +46,39 @@ public:
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
 
-  using dyobj_heap_map_type = typename std::unordered_map<
-    dynamic_object_id_type,
-    dynamic_object_type,
-    std::hash<dynamic_object_id_type>,
-    std::equal_to<dynamic_object_id_type>,
-    corevm::dyobj::heap_allocator<
-      std::pair<const dynamic_object_id_type, dynamic_object_type>,
-      COREVM_DEFAULT_HEAP_SIZE
-    >
-  >;
+  using dynamic_object_container_type = typename corevm::dyobj::dynamic_object_container<dynamic_object_type>;
 
-  using pair                = typename dyobj_heap_map_type::value_type;
-  using hasher              = typename dyobj_heap_map_type::hasher;
-  using key_equal           = typename dyobj_heap_map_type::key_equal;
-  using allocator_type      = typename dyobj_heap_map_type::allocator_type;
-  using reference           = typename dyobj_heap_map_type::reference;
-  using const_reference     = typename dyobj_heap_map_type::const_reference;
-  using pointer             = typename dyobj_heap_map_type::pointer;
-  using const_pointer       = typename dyobj_heap_map_type::const_pointer;
-  using iterator            = typename dyobj_heap_map_type::iterator;
-  using const_iterator      = typename dyobj_heap_map_type::const_iterator;
-  using size_type           = typename dyobj_heap_map_type::size_type;
-  using difference_type     = typename dyobj_heap_map_type::difference_type;
+  using allocator_type      = typename dynamic_object_container_type::allocator_type;
+  using reference           = typename dynamic_object_container_type::reference;
+  using const_reference     = typename dynamic_object_container_type::const_reference;
+  using pointer             = typename dynamic_object_container_type::pointer;
+  using const_pointer       = typename dynamic_object_container_type::const_pointer;
+  using iterator            = typename dynamic_object_container_type::iterator;
+  using const_iterator      = typename dynamic_object_container_type::const_iterator;
+  using size_type           = typename dynamic_object_container_type::size_type;
+  using difference_type     = typename dynamic_object_container_type::difference_type;
 
   explicit dynamic_object_heap();
   ~dynamic_object_heap();
 
   size_type size() const noexcept {
-    return m_map.size();
+    return m_container.size();
   }
 
   size_type max_size() const noexcept {
-    return m_map.max_size();
+    return m_container.max_size();
   }
 
   size_type active_size() const noexcept;
 
-  iterator erase(const_iterator pos) {
-    return m_map.erase(pos);
+  void erase(iterator pos) {
+    m_container.erase(pos);
   }
 
   void erase(dynamic_object_id_type id) {
-    auto itr = m_map.find(id);
+    auto itr = m_container.find(id);
 
-    if(itr != m_map.end()) {
+    if(itr != m_container.end()) {
       erase(itr);
     }
   }
@@ -111,13 +99,12 @@ public:
     throw(corevm::dyobj::object_heap_insertion_failed_error);
 
 private:
-  dyobj_heap_map_type m_map;
+  dynamic_object_container_type m_container;
 };
 
 
 template<class dynamic_object_manager>
-corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap():
-  m_map()
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap()
 {
   // Do nothing here.
 }
@@ -135,8 +122,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const 
   return std::count_if(
     cbegin(),
     cend(),
-    [](const corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::pair& pair) -> bool {
-      const auto& obj = static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type>(pair.second);
+    [](const dynamic_object_type& obj) {
       return !obj.is_garbage_collectible();
     }
   );
@@ -146,28 +132,28 @@ template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::begin() noexcept
 {
-  return m_map.begin();
+  return m_container.begin();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cbegin() const noexcept
 {
-  return m_map.cbegin();
+  return m_container.cbegin();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::end() noexcept
 {
-  return m_map.end();
+  return m_container.end();
 }
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cend() const noexcept
 {
-  return m_map.cend();
+  return m_container.cend();
 }
 
 template<class dynamic_object_manager>
@@ -178,11 +164,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterate(Function fun
   std::for_each(
     begin(),
     end(),
-    [&func](corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::pair& pair) {
-      func(
-        static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type>(pair.first),
-        static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type>(pair.second)
-      );
+    [&func](dynamic_object_type& obj) {
+      func(obj.id(), obj);
     }
   );
 }
@@ -193,13 +176,16 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   const corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type id)
   throw(corevm::dyobj::object_not_found_error)
 {
-  typename dyobj_heap_map_type::iterator itr = m_map.find(id);
+  void* raw_ptr = corevm::dyobj::obj_id_to_ptr(id);
+  dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
 
-  if(itr == m_map.end()) {
+  ptr = m_container[ptr];
+
+  if(ptr == nullptr) {
     throw corevm::dyobj::object_not_found_error(id);
   }
 
-  return static_cast<corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&>(itr->second);
+  return *ptr;
 }
 
 template<class dynamic_object_manager>
@@ -207,14 +193,17 @@ typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_obj
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
   throw(corevm::dyobj::object_heap_insertion_failed_error)
 {
-  auto obj = corevm::dyobj::dynamic_object<dynamic_object_manager>::create();
-  auto res = m_map.insert(std::pair<dynamic_object_id_type, dynamic_object_type>(obj.id(), obj));
+  auto obj_ptr = m_container.create();
 
-  if(res.second == false) {
+  if (obj_ptr == nullptr) {
     throw corevm::dyobj::object_heap_insertion_failed_error();
   }
 
-  return obj.id();
+  auto id = corevm::dyobj::obj_ptr_to_id(obj_ptr);
+
+  obj_ptr->set_id(id);
+
+  return id;
 }
 
 

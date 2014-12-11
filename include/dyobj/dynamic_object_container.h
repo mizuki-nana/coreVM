@@ -203,6 +203,10 @@ public:
 
   size_type size() const;
 
+  size_type max_size() const {
+    return m_addrs.max_size();
+  }
+
   pointer create();
 
   pointer operator[](pointer);
@@ -269,6 +273,10 @@ corevm::dyobj::dynamic_object_container<T>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
+  if(!p) {
+    return nullptr;
+  }
+
   T t;
   m_allocator.construct(p, t);
 
@@ -321,7 +329,6 @@ corevm::dyobj::dynamic_object_container<T>::destroy(pointer p)
   check_ptr(p);
   m_allocator.destroy(p);
   m_allocator.deallocate(p, 1);
-
   m_addrs.erase(p);
 }
 

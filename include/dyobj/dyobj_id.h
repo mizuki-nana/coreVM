@@ -38,6 +38,18 @@ typedef uint64_t dyobj_id;
 const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
 
 
+inline dyobj_id obj_ptr_to_id(void* ptr)
+{
+  return static_cast<dyobj_id>( (char*)(ptr) - (char*)(NULL) );
+}
+
+
+inline void* obj_id_to_ptr(dyobj_id id)
+{
+  return reinterpret_cast<void*>(id);
+}
+
+
 } /* end namespace dyobj */
 
 
