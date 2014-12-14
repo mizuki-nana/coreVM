@@ -1129,9 +1129,10 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2DEC2)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 {
-  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
-  // (Somehow calling a templated function wrapped in a code block makes
-  // `ASSERT_THROW` thinks it's getting an initializer list)
+  /* Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+   * (Somehow calling a templated function wrapped in a code block makes
+   * `ASSERT_THROW` thinks it's getting an initializer list)
+   **/
   auto test = [&]() {
     execute_instr_and_assert_result<
       corevm::runtime::instr_handler_2str, corevm::types::string>();
@@ -1147,9 +1148,10 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2STR)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 {
-  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
-  // (Somehow calling a templated function wrapped in a code block makes
-  // `ASSERT_THROW` thinks it's getting an initializer list)
+  /* Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+   * (Somehow calling a templated function wrapped in a code block makes
+   * `ASSERT_THROW` thinks it's getting an initializer list)
+   **/
   auto test = [&]() {
     execute_instr_and_assert_result<
       corevm::runtime::instr_handler_2ary, corevm::types::array>();
@@ -1165,9 +1167,10 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2ARY)
 
 TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 {
-  // Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
-  // (Somehow calling a templated function wrapped in a code block makes
-  // `ASSERT_THROW` thinks it's getting an initializer list)
+  /* Lambda defined to avoid compilation error on the `ASSERT_THROW` macro.
+   * (Somehow calling a templated function wrapped in a code block makes
+   * `ASSERT_THROW` thinks it's getting an initializer list)
+   **/
   auto test = [&]() {
     execute_instr_and_assert_result<
       corevm::runtime::instr_handler_2map, corevm::types::map>();

@@ -302,10 +302,9 @@ TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
 {
-  /*
-   * This test is based on the example on page 1 in
+  /* This test is based on the example on page 1 in
    * http://www.cs.fsu.edu/~engelen/courses/COP402003/p827.pdf
-   */
+   **/
   this->run_twice(
     [this]() {
       const size_t sizeA = 70;
@@ -349,10 +348,9 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
 {
-  /*
-   * This test is based on the example given in
+  /* This test is based on the example given in
    * http://en.wikipedia.org/wiki/Buddy_memory_allocation#In_practice
-   */
+   **/
   this->run_twice(
     [this]() {
       const size_t sizeA = 34;

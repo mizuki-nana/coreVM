@@ -34,10 +34,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 
 
-#define COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE 0
-#define COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE 16
-
-
 namespace corevm {
 
 
@@ -63,9 +59,7 @@ public:
   bool operator==(const corevm::dyobj::dynamic_object<dynamic_object_manager>&);
   bool operator!=(const corevm::dyobj::dynamic_object<dynamic_object_manager>&);
 
-  void set_id(corevm::dyobj::dyobj_id id) noexcept {
-    m_id = id;
-  }
+  void set_id(corevm::dyobj::dyobj_id id) noexcept;
 
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
@@ -120,6 +114,11 @@ private:
 };
 
 
+const int COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE = 0;
+
+const int COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE = 16;
+
+
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
@@ -151,6 +150,14 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::operator!=(
   const corevm::dyobj::dynamic_object<dynamic_object_manager>& rhs)
 {
   return !(static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>>(*this) == rhs);
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_id(
+  corevm::dyobj::dyobj_id id) noexcept
+{
+  m_id = id;
 }
 
 template<class dynamic_object_manager>

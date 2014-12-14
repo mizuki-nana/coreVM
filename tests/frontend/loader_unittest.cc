@@ -87,7 +87,9 @@ TEST_F(loader_unittest, TestLoadSuccessful)
   corevm::frontend::loader loader(PATH);
 
   ASSERT_NO_THROW(
-    loader.load()
+    {
+      loader.load();
+    }
   );
 }
 
@@ -96,7 +98,9 @@ TEST_F(loader_unittest, TestLoadFailsWithInvalidPath)
   corevm::frontend::loader loader("some/random/path/example.core");
 
   ASSERT_THROW(
-    loader.load(),
+    {
+      loader.load();
+    },
     corevm::frontend::file_loading_error
   );
 }

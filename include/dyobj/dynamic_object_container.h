@@ -203,9 +203,7 @@ public:
 
   size_type size() const;
 
-  size_type max_size() const {
-    return m_addrs.max_size();
-  }
+  size_type max_size() const;
 
   pointer create();
 
@@ -265,6 +263,13 @@ typename corevm::dyobj::dynamic_object_container<T>::size_type
 corevm::dyobj::dynamic_object_container<T>::size() const
 {
   return m_addrs.size();
+}
+
+template<typename T>
+typename corevm::dyobj::dynamic_object_container<T>::size_type
+corevm::dyobj::dynamic_object_container<T>::max_size() const
+{
+  return m_addrs.max_size();
 }
 
 template<typename T>

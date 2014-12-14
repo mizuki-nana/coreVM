@@ -61,27 +61,15 @@ public:
   explicit dynamic_object_heap();
   ~dynamic_object_heap();
 
-  size_type size() const noexcept {
-    return m_container.size();
-  }
+  size_type size() const noexcept;
 
-  size_type max_size() const noexcept {
-    return m_container.max_size();
-  }
+  size_type max_size() const noexcept;
 
   size_type active_size() const noexcept;
 
-  void erase(iterator pos) {
-    m_container.erase(pos);
-  }
+  void erase(iterator);
 
-  void erase(dynamic_object_id_type id) {
-    auto itr = m_container.find(id);
-
-    if(itr != m_container.end()) {
-      erase(itr);
-    }
-  }
+  void erase(dynamic_object_id_type id);
 
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
@@ -117,6 +105,20 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::~dynamic_object_heap
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size() const noexcept
+{
+  return m_container.size();
+}
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::max_size() const noexcept
+{
+  return m_container.max_size();
+}
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const noexcept
 {
   return std::count_if(
@@ -126,6 +128,24 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const 
       return !obj.is_garbage_collectible();
     }
   );
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(iterator pos)
+{
+  m_container.erase(pos);
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object_id_type id)
+{
+  auto itr = m_container.find(id);
+
+  if(itr != m_container.end()) {
+    erase(itr);
+  }
 }
 
 template<class dynamic_object_manager>
