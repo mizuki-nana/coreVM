@@ -54,7 +54,7 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
     }
 
     prev_active_size = heap.active_size();
-  }
+  } /* end of `while(true)` */
 }
 
 void

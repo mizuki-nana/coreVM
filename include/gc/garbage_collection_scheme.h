@@ -42,10 +42,13 @@ class reference_count_garbage_collection_scheme : public garbage_collection_sche
 public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager {
     public:
-      explicit dynamic_object_manager(): _count(0) {}
+      dynamic_object_manager() :
+        m_count(0)
+      {
+      }
 
       virtual inline bool garbage_collectible() const noexcept {
-        return _count == 0;
+        return m_count == 0;
       }
 
       virtual inline void on_create() noexcept {
@@ -69,21 +72,21 @@ public:
       }
 
       virtual inline uint64_t ref_count() const noexcept {
-        return _count;
+        return m_count;
       }
 
       virtual inline void inc_ref_count() noexcept {
-        ++_count;
+        ++m_count;
       }
 
       virtual inline void dec_ref_count() noexcept {
-        if(_count > 0) {
-          --_count;
+        if(m_count > 0) {
+          --m_count;
         }
       }
 
     protected:
-      uint64_t _count;
+      uint64_t m_count;
   } reference_count_dynamic_object_manager;
 
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<reference_count_dynamic_object_manager>;
@@ -103,7 +106,10 @@ class mark_and_sweep_garbage_collection_scheme : public garbage_collection_schem
 public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager {
     public:
-      explicit dynamic_object_manager(): _marked(false) {}
+      dynamic_object_manager() :
+        m_marked(false)
+      {
+      }
 
       virtual inline bool garbage_collectible() const noexcept {
         return marked();
@@ -130,19 +136,19 @@ public:
       }
 
       virtual inline bool marked() const noexcept {
-        return _marked;
+        return m_marked;
       }
 
       virtual inline void mark() noexcept {
-        _marked = true;
+        m_marked = true;
       }
 
       virtual inline void unmark() noexcept {
-        _marked = false;
+        m_marked = false;
       }
 
     protected:
-      bool _marked;
+      bool m_marked;
   } mark_and_sweep_dynamic_object_manager;
 
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<mark_and_sweep_dynamic_object_manager>;

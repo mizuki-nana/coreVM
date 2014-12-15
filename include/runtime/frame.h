@@ -37,8 +37,7 @@ namespace corevm {
 namespace runtime {
 
 
-/*
- * Each frame is supposed to have:
+/* Each frame is supposed to have:
  *
  * - Return address.
  * - Pointer to the address caller frame.
@@ -48,8 +47,7 @@ namespace runtime {
  * - Parameter list (args).
  * - Optional parameter <-> default value mapping (kwargs).
  * - Evaluation stack.
- *
- */
+ * */
 class frame {
 public:
   explicit frame();

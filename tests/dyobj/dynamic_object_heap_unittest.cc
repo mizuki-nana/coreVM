@@ -60,6 +60,6 @@ TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
   corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
   corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
-  ASSERT_THROW(m_heap.at(id1), std::runtime_error);
-  ASSERT_THROW(m_heap.at(id2), std::runtime_error);
+  ASSERT_THROW(m_heap.at(id1), corevm::dyobj::object_not_found_error);
+  ASSERT_THROW(m_heap.at(id2), corevm::dyobj::object_not_found_error);
 }

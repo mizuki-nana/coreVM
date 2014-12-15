@@ -20,48 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_DYOBJ_COMMON_H_
-#define COREVM_DYOBJ_COMMON_H_
-
-#include <climits>
-#include <cstdint>
+#include "../../include/dyobj/flags.h"
 
 
-// Default size of heap: 256 MB.
-const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
-
-
-namespace corevm {
-
-
-namespace dyobj {
-
-
-typedef uint32_t attr_key;
-
-
-typedef int64_t ntvhndl_key;
-
-
-typedef uint32_t flag;
-
-
-typedef uint32_t instr_block_key;
-
-
-const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
-
-
-const int64_t NTVHNDL_LIMIT = LLONG_MAX;
-
-
-const instr_block_key NONESET_INSTR_BLOCK_KEY = -1;
-
-
-} /* end namespace dyobj */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_DYOBJ_COMMON_H_ */
+bool
+corevm::dyobj::is_valid_flag_bit(char bit)
+{
+  return (0 < bit) && (bit < corevm::dyobj::flags::MAX_VALUE);
+}

@@ -258,7 +258,7 @@ void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) const
   throw(corevm::dyobj::invalid_flag_bit_error)
 {
-  if(bit > sizeof(corevm::dyobj::flag) * 8) {
+  if(!corevm::dyobj::is_valid_flag_bit(bit)) {
     throw corevm::dyobj::invalid_flag_bit_error();
   }
 }

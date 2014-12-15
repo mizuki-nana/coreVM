@@ -53,34 +53,27 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 
   char flag1 = corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE;
   char flag2 = corevm::dyobj::flags::IS_MUTABLE;
-  char flag3 = corevm::dyobj::flags::LAST_PLACEHOLDER;
 
   ASSERT_FALSE(obj.get_flag(flag1));
   ASSERT_FALSE(obj.get_flag(flag2));
-  ASSERT_FALSE(obj.get_flag(flag3));
 
   obj.set_flag(flag1);
   obj.set_flag(flag2);
-  obj.set_flag(flag3);
 
   ASSERT_TRUE(obj.get_flag(flag1));
   ASSERT_TRUE(obj.get_flag(flag2));
-  ASSERT_TRUE(obj.get_flag(flag3));
 
   obj.clear_flag(flag1);
   obj.clear_flag(flag2);
-  obj.clear_flag(flag3);
 
   ASSERT_FALSE(obj.get_flag(flag1));
   ASSERT_FALSE(obj.get_flag(flag2));
-  ASSERT_FALSE(obj.get_flag(flag3));
 
-  // Tests that we cannot go over the flag bit limit.
-  char flag4 = corevm::dyobj::flags::LAST_PLACEHOLDER + 1;
+  char invalid_flag = corevm::dyobj::flags::MAX_VALUE;
 
   ASSERT_THROW(
     {
-      obj.set_flag(flag4);
+      obj.set_flag(invalid_flag);
     },
     corevm::dyobj::invalid_flag_bit_error
   );
@@ -108,9 +101,26 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
-  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::object_attribute_deletion_error);
-  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::object_attribute_deletion_error);
-  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(
+    {
+      obj.delattr(key1);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.delattr(key2);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.delattr(key3);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
 
   obj.putattr(key1, mock_attrs[key1]);
   obj.putattr(key2, mock_attrs[key2]);
@@ -124,21 +134,69 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   ASSERT_EQ(mock_attrs[key2], obj.getattr(key2));
   ASSERT_EQ(mock_attrs[key3], obj.getattr(key3));
 
-  ASSERT_NO_THROW(obj.delattr(key1));
-  ASSERT_NO_THROW(obj.delattr(key2));
-  ASSERT_NO_THROW(obj.delattr(key3));
+  ASSERT_NO_THROW(
+    {
+      obj.delattr(key1);
+    }
+  );
+
+  ASSERT_NO_THROW(
+    {
+      obj.delattr(key2);
+    }
+  );
+
+  ASSERT_NO_THROW(
+    {
+      obj.delattr(key3);
+    }
+  );
 
   ASSERT_FALSE(obj.hasattr(key1));
   ASSERT_FALSE(obj.hasattr(key2));
   ASSERT_FALSE(obj.hasattr(key3));
 
-  ASSERT_THROW(obj.delattr(key1), corevm::dyobj::object_attribute_deletion_error);
-  ASSERT_THROW(obj.delattr(key2), corevm::dyobj::object_attribute_deletion_error);
-  ASSERT_THROW(obj.delattr(key3), corevm::dyobj::object_attribute_deletion_error);
+  ASSERT_THROW(
+    {
+      obj.delattr(key1);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
 
-  ASSERT_THROW(obj.getattr(key1), corevm::dyobj::object_attribute_not_found_error);
-  ASSERT_THROW(obj.getattr(key2), corevm::dyobj::object_attribute_not_found_error);
-  ASSERT_THROW(obj.getattr(key3), corevm::dyobj::object_attribute_not_found_error);
+  ASSERT_THROW(
+    {
+      obj.delattr(key2);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.delattr(key3);
+    },
+    corevm::dyobj::object_attribute_deletion_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.getattr(key1);
+    },
+    corevm::dyobj::object_attribute_not_found_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.getattr(key2);
+    },
+    corevm::dyobj::object_attribute_not_found_error
+  );
+
+  ASSERT_THROW(
+    {
+      obj.getattr(key3);
+    },
+    corevm::dyobj::object_attribute_not_found_error
+  );
 }
 
 TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
@@ -161,7 +219,6 @@ TEST_F(dynamic_object_unittest, TestEquality)
 {
   dynamic_object_type obj;
 
-  // ASSERT_EQ(obj, obj);
   ASSERT_TRUE(obj == obj);
 }
 
@@ -170,7 +227,6 @@ TEST_F(dynamic_object_unittest, TestInequality)
   dynamic_object_type obj1;
   dynamic_object_type obj2;
 
-  // ASSERT_NE(obj1, obj2);
   ASSERT_TRUE(obj1 != obj2);
   ASSERT_FALSE(obj1 == obj2);
 }

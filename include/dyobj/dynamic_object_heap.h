@@ -199,9 +199,9 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   void* raw_ptr = corevm::dyobj::obj_id_to_ptr(id);
   dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
 
-  ptr = m_container[ptr];
-
-  if(ptr == nullptr) {
+  try {
+    ptr = m_container[ptr];
+  } catch(const corevm::dyobj::invalid_address_error&) {
     throw corevm::dyobj::object_not_found_error(id);
   }
 

@@ -72,13 +72,13 @@ private:
 
 
 corevm::dyobj::dyobj_id
-corevm::runtime::process_adapter::help_create_dyobj()
+corevm::runtime::process::adapter::help_create_dyobj()
 {
   return m_process.m_dynamic_object_heap.create_dyobj();
 }
 
 corevm::runtime::process::dynamic_object_type&
-corevm::runtime::process_adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
+corevm::runtime::process::adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
 {
   return m_process.m_dynamic_object_heap.at(id);
 }
@@ -169,7 +169,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     visible_objs.begin(),
     visible_objs.end(),
     [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = corevm::runtime::process_adapter(*this).help_get_dyobj(id);
+      auto &obj = corevm::runtime::process::adapter(*this).help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -178,7 +178,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     invisible_objs.begin(),
     invisible_objs.end(),
     [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = corevm::runtime::process_adapter(*this).help_get_dyobj(id);
+      auto &obj = corevm::runtime::process::adapter(*this).help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );

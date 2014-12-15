@@ -47,7 +47,9 @@ public:
 
   static sigjmp_buf& get_sigjmp_env();
 
-  // Must be called after `init`.
+  /* Initializes all signal handler registrations.
+   * Must be called after `init`.
+   * */
   static void ignore(sig_atomic_t);
 
   static void handle_signal(int);
