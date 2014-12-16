@@ -51,17 +51,6 @@ public:
 };
 
 
-class invalid_address_error : public corevm::dyobj::runtime_error {
-public:
-  explicit invalid_address_error(const uint64_t addr):
-    corevm::dyobj::runtime_error(
-      str(boost::format("Invalid object address %lu encountered") % addr)
-    )
-  {
-  }
-};
-
-
 class object_not_found_error : public corevm::dyobj::runtime_error {
 public:
   explicit object_not_found_error(const std::string& what_arg):

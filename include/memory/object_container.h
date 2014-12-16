@@ -20,26 +20,23 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_DYNAMIC_OBJECT_CONTAINER_H_
-#define COREVM_DYNAMIC_OBJECT_CONTAINER_H_
+#ifndef COREVM_OBJECT_CONTAINER_H_
+#define COREVM_OBJECT_CONTAINER_H_
 
-#include <cassert>
 #include <iterator>
 #include <set>
 #include "errors.h"
-#include "heap_allocator.h"
 
 
 namespace corevm {
 
 
-namespace dyobj {
+namespace memory {
 
 
-/*
- * This object is a container responsible for storing and managing dynamic
- * objects on the heap. It creates instances of dynamic objects directly from
- * memory allocated by the allocator, as well as destroying instances and
+/* This is a generic container class responsible for storing and managing
+ * objects allocated by an allocator. It creates instances of objects directly
+ * from memory allocated by the allocator, as well as destroying instances and
  * deallocates their memory.
  *
  * In addition, it provides a set of iterator interfaces for the outside world
@@ -48,20 +45,18 @@ namespace dyobj {
  * its iterator types are merely wrappers around the iterator types of the
  * address map, thus avoid the complexity associated with implementing custom
  * iterator types.
- */
-template<typename T>
-class dynamic_object_container {
+ * */
+template<typename T, typename AllocatorType=std::allocator<T>>
+class object_container {
 public:
 
-  using allocator_type = typename corevm::dyobj::heap_allocator<T>;
-
-  typedef typename allocator_type::value_type value_type;
-  typedef typename allocator_type::pointer pointer;
-  typedef typename allocator_type::const_pointer const_pointer;
-  typedef typename allocator_type::reference reference;
-  typedef typename allocator_type::const_reference const_reference;
-  typedef typename allocator_type::difference_type difference_type;
-  typedef typename allocator_type::size_type size_type;
+  typedef typename AllocatorType::value_type value_type;
+  typedef typename AllocatorType::pointer pointer;
+  typedef typename AllocatorType::const_pointer const_pointer;
+  typedef typename AllocatorType::reference reference;
+  typedef typename AllocatorType::const_reference const_reference;
+  typedef typename AllocatorType::difference_type difference_type;
+  typedef typename AllocatorType::size_type size_type;
 
 private:
   using _HashSet = typename std::set<pointer>;
@@ -69,15 +64,15 @@ private:
 public:
   class iterator : public std::iterator<std::forward_iterator_tag, T> {
     private:
-      using _ContainerType = dynamic_object_container<T>;
+      using _ContainerType = object_container<T, AllocatorType>;
       typedef typename _HashSet::iterator _Inner;
 
     public:
-      typedef typename allocator_type::value_type value_type;
-      typedef typename allocator_type::reference reference;
-      typedef typename allocator_type::const_reference const_reference;
-      typedef typename allocator_type::difference_type difference_type;
-      typedef typename allocator_type::size_type size_type;
+      typedef typename AllocatorType::value_type value_type;
+      typedef typename AllocatorType::reference reference;
+      typedef typename AllocatorType::const_reference const_reference;
+      typedef typename AllocatorType::difference_type difference_type;
+      typedef typename AllocatorType::size_type size_type;
 
       iterator(_ContainerType& container, _Inner inner):
         m_container(&container),
@@ -127,20 +122,20 @@ public:
       _ContainerType* m_container;
       _Inner m_inner;
 
-      friend class corevm::dyobj::dynamic_object_container<T>;
+      friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
   class const_iterator : public std::iterator<std::forward_iterator_tag, T> {
     private:
-      using _ContainerType = const dynamic_object_container<T>;
+      using _ContainerType = const object_container<T, AllocatorType>;
       typedef typename _HashSet::const_iterator _Inner;
 
     public:
-      typedef typename allocator_type::value_type value_type;
-      typedef typename allocator_type::reference reference;
-      typedef typename allocator_type::const_reference const_reference;
-      typedef typename allocator_type::difference_type difference_type;
-      typedef typename allocator_type::size_type size_type;
+      typedef typename AllocatorType::value_type value_type;
+      typedef typename AllocatorType::reference reference;
+      typedef typename AllocatorType::const_reference const_reference;
+      typedef typename AllocatorType::difference_type difference_type;
+      typedef typename AllocatorType::size_type size_type;
 
       const_iterator(_ContainerType& container, _Inner inner):
         m_container(&container),
@@ -190,10 +185,10 @@ public:
       const _ContainerType* m_container;
       _Inner m_inner;
 
-      friend class corevm::dyobj::dynamic_object_container<T>;
+      friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
-  explicit dynamic_object_container();
+  explicit object_container();
 
   iterator begin();
   iterator end();
@@ -217,64 +212,64 @@ public:
   void erase(const_iterator&);
 
 private:
-  void check_ptr(pointer) const throw(corevm::dyobj::invalid_address_error);
+  void check_ptr(pointer) const throw(corevm::memory::invalid_address_error);
 
-  allocator_type m_allocator;
+  AllocatorType m_allocator;
   _HashSet m_addrs;
 };
 
 
-template<typename T>
-corevm::dyobj::dynamic_object_container<T>::dynamic_object_container()
+template<typename T, typename AllocatorType>
+corevm::memory::object_container<T, AllocatorType>::object_container()
 {
   // Do nothing here.
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::iterator
-corevm::dyobj::dynamic_object_container<T>::begin()
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::iterator
+corevm::memory::object_container<T, AllocatorType>::begin()
 {
   return iterator(*this, m_addrs.begin());
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::iterator
-corevm::dyobj::dynamic_object_container<T>::end()
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::iterator
+corevm::memory::object_container<T, AllocatorType>::end()
 {
   return iterator(*this, m_addrs.end());
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::const_iterator
-corevm::dyobj::dynamic_object_container<T>::cbegin() const
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::const_iterator
+corevm::memory::object_container<T, AllocatorType>::cbegin() const
 {
   return const_iterator(*this, m_addrs.cbegin());
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::const_iterator
-corevm::dyobj::dynamic_object_container<T>::cend() const
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::const_iterator
+corevm::memory::object_container<T, AllocatorType>::cend() const
 {
   return const_iterator(*this, m_addrs.cend());
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::size_type
-corevm::dyobj::dynamic_object_container<T>::size() const
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::size_type
+corevm::memory::object_container<T, AllocatorType>::size() const
 {
   return m_addrs.size();
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::size_type
-corevm::dyobj::dynamic_object_container<T>::max_size() const
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::size_type
+corevm::memory::object_container<T, AllocatorType>::max_size() const
 {
   return m_addrs.max_size();
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::pointer
-corevm::dyobj::dynamic_object_container<T>::create()
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
@@ -290,46 +285,37 @@ corevm::dyobj::dynamic_object_container<T>::create()
   return p;
 }
 
-template<typename T>
+template<typename T, typename AllocatorType>
 void
-corevm::dyobj::dynamic_object_container<T>::check_ptr(pointer p) const
-  throw(corevm::dyobj::invalid_address_error)
+corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
+  throw(corevm::memory::invalid_address_error)
 {
-  assert(p);
-
-  uint64_t base_addr = m_allocator.base_addr();
-  uint64_t total_size = m_allocator.total_size();
-
   uint64_t addr = static_cast<uint64_t>( (char*)p - (char*)(0) );
 
-  if(
-    (addr < base_addr || addr >= base_addr + total_size) ||
-    (m_addrs.find(p) == m_addrs.end())
-  )
-  {
-    throw corevm::dyobj::invalid_address_error(addr);
+  if(m_addrs.find(p) == m_addrs.end()) {
+    throw corevm::memory::invalid_address_error(addr);
   }
 }
 
-template<typename T>
-typename corevm::dyobj::dynamic_object_container<T>::pointer
-corevm::dyobj::dynamic_object_container<T>::operator[](pointer p)
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
 {
   check_ptr(p);
   return static_cast<pointer>((void*)p);
 }
 
-template<typename T>
-const typename corevm::dyobj::dynamic_object_container<T>::pointer
-corevm::dyobj::dynamic_object_container<T>::operator[](pointer p) const
+template<typename T, typename AllocatorType>
+const typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::operator[](pointer p) const
 {
   check_ptr(p);
   return static_cast<const pointer>((void*)p);
 }
 
-template<typename T>
+template<typename T, typename AllocatorType>
 void
-corevm::dyobj::dynamic_object_container<T>::destroy(pointer p)
+corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
 {
   check_ptr(p);
   m_allocator.destroy(p);
@@ -337,9 +323,9 @@ corevm::dyobj::dynamic_object_container<T>::destroy(pointer p)
   m_addrs.erase(p);
 }
 
-template<typename T>
+template<typename T, typename AllocatorType>
 void
-corevm::dyobj::dynamic_object_container<T>::erase(iterator& itr)
+corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
 {
   if(itr == end()) {
     return;
@@ -349,9 +335,9 @@ corevm::dyobj::dynamic_object_container<T>::erase(iterator& itr)
   destroy(p);
 }
 
-template<typename T>
+template<typename T, typename AllocatorType>
 void
-corevm::dyobj::dynamic_object_container<T>::erase(const_iterator& itr)
+corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
 {
   if(itr == cend()) {
     return;
@@ -362,10 +348,10 @@ corevm::dyobj::dynamic_object_container<T>::erase(const_iterator& itr)
 }
 
 
-} /* end namespace dyobj */
+} /* end namespace memory */
 
 
 } /* end namespace corevm */
 
 
-#endif /* COREVM_DYNAMIC_OBJECT_CONTAINER */
+#endif /* COREVM_OBJECT_CONTAINER */

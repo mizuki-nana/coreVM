@@ -25,10 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <stdexcept>
+#include "../memory/errors.h"
+#include "../memory/object_container.h"
 #include "common.h"
 #include "dyobj_id.h"
 #include "dynamic_object.h"
-#include "dynamic_object_container.h"
 #include "errors.h"
 #include "heap_allocator.h"
 
@@ -45,10 +46,9 @@ public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
+  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type>;
+  using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
 
-  using dynamic_object_container_type = typename corevm::dyobj::dynamic_object_container<dynamic_object_type>;
-
-  using allocator_type      = typename dynamic_object_container_type::allocator_type;
   using reference           = typename dynamic_object_container_type::reference;
   using const_reference     = typename dynamic_object_container_type::const_reference;
   using pointer             = typename dynamic_object_container_type::pointer;
@@ -201,7 +201,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
 
   try {
     ptr = m_container[ptr];
-  } catch(const corevm::dyobj::invalid_address_error&) {
+  } catch(const corevm::memory::invalid_address_error&) {
     throw corevm::dyobj::object_not_found_error(id);
   }
 

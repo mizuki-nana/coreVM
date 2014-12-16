@@ -23,11 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <set>
 #include <sneaker/testing/_unittest.h>
-#include "../../include/dyobj/dynamic_object_container.h"
-#include "../../include/dyobj/errors.h"
+#include "../../include/memory/errors.h"
+#include "../../include/memory/object_container.h"
 
 
-class dynamic_object_container_unittest : public ::testing::Test {
+class object_container_unittest : public ::testing::Test {
 public:
   typedef struct dummy {
     int data;
@@ -39,11 +39,11 @@ protected:
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
 
-  corevm::dyobj::dynamic_object_container<dummy> m_container;
+  corevm::memory::object_container<dummy> m_container;
 };
 
 
-TEST_F(dynamic_object_container_unittest, TestCreateAndUpdate)
+TEST_F(object_container_unittest, TestCreateAndUpdate)
 {
   int data = 888;
 
@@ -62,11 +62,11 @@ TEST_F(dynamic_object_container_unittest, TestCreateAndUpdate)
     {
       m_container[p];
     },
-    corevm::dyobj::invalid_address_error
+    corevm::memory::invalid_address_error
   );
 }
 
-TEST_F(dynamic_object_container_unittest, TestIterator)
+TEST_F(object_container_unittest, TestIterator)
 {
   int data1 = 666;
   int data2 = 777;
@@ -103,7 +103,7 @@ TEST_F(dynamic_object_container_unittest, TestIterator)
   m_container.destroy(p3);
 }
 
-TEST_F(dynamic_object_container_unittest, TestConstIterator)
+TEST_F(object_container_unittest, TestConstIterator)
 {
   int data1 = 666;
   int data2 = 777;
@@ -140,7 +140,7 @@ TEST_F(dynamic_object_container_unittest, TestConstIterator)
   m_container.destroy(p3);
 }
 
-TEST_F(dynamic_object_container_unittest, TestIteratorWithStdForEach)
+TEST_F(object_container_unittest, TestIteratorWithStdForEach)
 {
   int data1 = 666;
   int data2 = 777;
@@ -180,7 +180,7 @@ TEST_F(dynamic_object_container_unittest, TestIteratorWithStdForEach)
   m_container.destroy(p3);
 }
 
-TEST_F(dynamic_object_container_unittest, TestConstIteratorWithStdForEach)
+TEST_F(object_container_unittest, TestConstIteratorWithStdForEach)
 {
   int data1 = 666;
   int data2 = 777;
@@ -220,7 +220,7 @@ TEST_F(dynamic_object_container_unittest, TestConstIteratorWithStdForEach)
   m_container.destroy(p3);
 }
 
-TEST_F(dynamic_object_container_unittest, TestIteratorReflectsChange)
+TEST_F(object_container_unittest, TestIteratorReflectsChange)
 {
   T* p = m_container.create();
   ASSERT_NE(nullptr, p);
@@ -246,7 +246,7 @@ TEST_F(dynamic_object_container_unittest, TestIteratorReflectsChange)
   m_container.destroy(p);
 }
 
-TEST_F(dynamic_object_container_unittest, TestPostIncrement)
+TEST_F(object_container_unittest, TestPostIncrement)
 {
   int data1 = 666;
   int data2 = 777;
@@ -269,18 +269,27 @@ TEST_F(dynamic_object_container_unittest, TestPostIncrement)
   auto itr2 = itr++;
   auto itr3 = itr++;
 
+  /* Cannot directly compare the value of the iterators here because
+   * the allocator might not be linear.
+   * */
+  std::set<int> data_set;
+
   ASSERT_NE(m_container.end(), itr3);
 
-  ASSERT_EQ(data1, itr1->data);
-  ASSERT_EQ(data2, itr2->data);
-  ASSERT_EQ(data3, itr3->data);
+  data_set.insert((*itr1).data);
+  data_set.insert((*itr2).data);
+  data_set.insert((*itr3).data);
+
+  ASSERT_NE(data_set.end(), data_set.find(data1));
+  ASSERT_NE(data_set.end(), data_set.find(data2));
+  ASSERT_NE(data_set.end(), data_set.find(data3));
 
   m_container.destroy(p1);
   m_container.destroy(p2);
   m_container.destroy(p3);
 }
 
-TEST_F(dynamic_object_container_unittest, TestIteratorReflectsChange2)
+TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 {
   T* p = m_container.create();
   ASSERT_NE(nullptr, p);
@@ -299,16 +308,22 @@ TEST_F(dynamic_object_container_unittest, TestIteratorReflectsChange2)
 
   m_container.destroy(p2);
 
-  ASSERT_EQ(m_container.end(), ++itr);
+  ASSERT_EQ(m_container.begin(), ++itr);
 
   m_container.destroy(p);
 }
 
-TEST_F(dynamic_object_container_unittest, TestErase)
+TEST_F(object_container_unittest, TestErase)
 {
   int data1 = 666;
   int data2 = 777;
   int data3 = 888;
+
+  std::set<int> data_set = {
+    data1,
+    data2,
+    data3,
+  };
 
   T* p1 = m_container.create();
   ASSERT_NE(nullptr, p1);
@@ -332,7 +347,10 @@ TEST_F(dynamic_object_container_unittest, TestErase)
 
   itr = m_container.begin();
 
-  ASSERT_EQ(data2, (*itr).data);
+  /* Cannot directly compare the value of the iterators here because
+   * the allocator might not be linear.
+   * */
+  ASSERT_NE(data_set.end(), data_set.find((*itr).data));
 
   m_container.erase(++itr);
 
@@ -340,7 +358,7 @@ TEST_F(dynamic_object_container_unittest, TestErase)
 
   itr = m_container.begin();
 
-  ASSERT_EQ(data2, (*itr).data);
+  ASSERT_NE(data_set.end(), data_set.find((*itr).data));
 
   m_container.erase(itr);
 
