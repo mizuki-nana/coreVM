@@ -23,15 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ERRORS_H_
 #define COREVM_ERRORS_H_
 
-
 #include <stdexcept>
 #include <string>
 
 
 namespace corevm {
-
-
-namespace errors {
 
 
 class runtime_error : public std::runtime_error {
@@ -46,9 +42,6 @@ public:
   {
   }
 };
-
-
-} /* end namespace errors */
 
 
 } /* end namespace corevm */

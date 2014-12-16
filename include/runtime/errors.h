@@ -34,15 +34,15 @@ namespace corevm {
 namespace runtime {
 
 
-class runtime_error : public corevm::errors::runtime_error {
+class runtime_error : public corevm::runtime_error {
 public:
   explicit runtime_error(const std::string& what_arg):
-    corevm::errors::runtime_error(what_arg)
+    corevm::runtime_error(what_arg)
   {
   }
 
   explicit runtime_error(const char* what_arg):
-    corevm::errors::runtime_error(what_arg)
+    corevm::runtime_error(what_arg)
   {
   }
 };

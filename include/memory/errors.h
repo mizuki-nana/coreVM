@@ -34,10 +34,10 @@ namespace corevm {
 namespace memory {
 
 
-class invalid_address_error : public corevm::errors::runtime_error {
+class invalid_address_error : public corevm::runtime_error {
 public:
   explicit invalid_address_error(const uint64_t addr):
-    corevm::errors::runtime_error(
+    corevm::runtime_error(
       str(boost::format("Invalid object address %lu encountered") % addr)
     )
   {
