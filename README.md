@@ -218,6 +218,37 @@ Here's an illustration of the envisioned future architecture of coreVM:
 ![envisioned future architecture](/resources/corevm_envisioned_future_architecture_overview.png "envisioned future architecture overview")
 
 
+## Focues Areas
+This project is consisted of three focus areas that are in-sync with its
+development:
+
+### Project Lithum-Ion
+Focuses on achieving the highest performance possible while striving to maintain
+great architecture designs. Performance and efficiency should be factors taken
+consideration at every stage of design and development. Some metrics for
+measuring performance and efficiency include execution time
+(both per instruction and overall), memory usage, byte-code loading time, etc.
+
+### Project Swiss Army Knife
+Focuses on achieving versatile capabilities and flexibilities to meet the needs
+of language developers, without compromising on performances. This initiative
+involves two parts. One is to deliver developers the capabilities through a set
+of APIs. The other one involves supporting the former, by striving for great
+architectures internally for components so that they are flexible and
+extensible.
+
+### Project Air Force One
+Focuses on improving the security and robustness of the system, without
+sacrificing the previous two points. The system should be designed and
+implemented to be able to handle a wide range of error conditions gracefully,
+and keeping the frequency of crashes to a minimal. In addition, the system
+needs to be able to protect and sandbox the runtime from external malicious
+exploits. Last, establish a robust infrastructure for users to report
+vulnerabilities, as well as being informed of these vulnerabilities and the
+corresponding remedies and patches. Finally, adjust the development cycle of the
+project to accomodate iterating on patching security vulnerabilities.
+
+
 ## Moonshots
 While the ultimate goal of this project is to facilitate the design and
 development of modern dynamic programming languages for language developers,
