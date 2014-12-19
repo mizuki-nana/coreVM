@@ -285,8 +285,11 @@ void
 corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_deletion_error)
 {
-  // Handle invalid keys.
-  m_ntvhndl_pool.erase(key);
+  try {
+    m_ntvhndl_pool.erase(key);
+  } catch(const corevm::runtime::native_type_handle_not_found_error) {
+    throw corevm::runtime::native_type_handle_deletion_error();
+  }
 }
 
 const corevm::runtime::instr_handler*

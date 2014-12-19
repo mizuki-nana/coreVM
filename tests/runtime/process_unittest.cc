@@ -21,15 +21,13 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <sneaker/testing/_unittest.h>
+#include "../../include/dyobj/dyobj_id_helper.h"
 #include "../../include/runtime/gc_rule.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/sighandler_registrar.h"
 
 
-class process_test : public ::testing::Test {};
-
-
-class process_unittest : public process_test {};
+class process_unittest : public ::testing::Test {};
 
 
 TEST_F(process_unittest, TestInitialization)
@@ -46,6 +44,122 @@ TEST_F(process_unittest, TestStart)
 {
   corevm::runtime::process process(1);
   process.start();
+}
+
+TEST_F(process_unittest, TestMaxSizes)
+{
+  corevm::runtime::process process;
+
+  ASSERT_LT(0, process.max_heap_size());
+  ASSERT_LT(0, process.max_ntvhndl_pool_size());
+}
+
+TEST_F(process_unittest, TestPushAndPopStack)
+{
+  corevm::runtime::process process;
+
+  corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+
+  ASSERT_THROW(
+    {
+      process.top_stack();
+    },
+    corevm::runtime::object_stack_empty_error
+  );
+
+  ASSERT_THROW(
+    {
+      process.pop_stack();
+    },
+    corevm::runtime::object_stack_empty_error
+  );
+
+  process.push_stack(id1);
+
+  auto actual_id1 = process.top_stack();
+
+  ASSERT_EQ(id1, actual_id1);
+
+  process.push_stack(id2);
+
+  auto actual_id2 = process.top_stack();
+
+  ASSERT_EQ(id2, actual_id2);
+
+  ASSERT_NO_THROW(
+    {
+      process.pop_stack();
+    }
+  );
+
+  ASSERT_EQ(id1, process.top_stack());
+
+  ASSERT_NO_THROW(
+    {
+      process.pop_stack();
+    }
+  );
+
+  // Stack is empty by this point.
+  ASSERT_THROW(
+    {
+      process.top_stack();
+    },
+    corevm::runtime::object_stack_empty_error
+  );
+
+  ASSERT_THROW(
+    {
+      process.pop_stack();
+    },
+    corevm::runtime::object_stack_empty_error
+  );
+}
+
+TEST_F(process_unittest, TestPushAndPopFrames)
+{
+  corevm::runtime::process process;
+
+  ASSERT_EQ(false, process.has_frame());
+  ASSERT_EQ(0, process.call_stack_size());
+
+  corevm::runtime::frame frame1;
+  process.push_frame(frame1);
+
+  ASSERT_EQ(true, process.has_frame());
+  ASSERT_EQ(1, process.call_stack_size());
+
+  corevm::runtime::frame frame2;
+  process.push_frame(frame2);
+
+  ASSERT_EQ(true, process.has_frame());
+  ASSERT_EQ(2, process.call_stack_size());
+
+  ASSERT_NO_THROW(
+    {
+      process.pop_frame();
+    }
+  );
+
+  ASSERT_EQ(true, process.has_frame());
+  ASSERT_EQ(1, process.call_stack_size());
+
+  ASSERT_NO_THROW(
+    {
+      process.pop_frame();
+    }
+  );
+
+  ASSERT_EQ(false, process.has_frame());
+  ASSERT_EQ(0, process.call_stack_size());
+
+  ASSERT_THROW(
+    {
+      process.pop_frame();
+    },
+    corevm::runtime::frame_not_found_error
+  );
 }
 
 TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
@@ -66,8 +180,44 @@ TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
   ASSERT_EQ(value, actual_value);
 }
 
+TEST_F(process_unittest, TestInsertAndEraseNativeTypeHandle)
+{
+  corevm::runtime::process process;
+  int value = 8;
 
-class process_gc_rule_unittest : public process_test {
+  corevm::types::native_type_handle hndl = corevm::types::int8(value);
+
+  auto key = process.insert_ntvhndl(hndl);
+
+  ASSERT_EQ(true, process.has_ntvhndl(key));
+
+  ASSERT_NO_THROW(
+    {
+      process.erase_ntvhndl(key);
+    }
+  );
+
+  ASSERT_EQ(false, process.has_ntvhndl(key));
+
+  // Try erase again
+  ASSERT_THROW(
+    {
+      process.erase_ntvhndl(key);
+    },
+    corevm::runtime::native_type_handle_deletion_error
+  );
+
+  // Try access it
+  ASSERT_THROW(
+    {
+      process.get_ntvhndl(key);
+    },
+    corevm::runtime::native_type_handle_not_found_error
+  );
+}
+
+
+class process_gc_rule_unittest : public process_unittest {
 protected:
   corevm::runtime::process _process;
 };
@@ -97,12 +247,14 @@ class process_signal_handling_unittest : public process_unittest {};
 
 TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
 {
-  // This test currently does not work because our signal handling is only
-  // for signals that gets generated from individual instructions.
-  // Signal handling on the entire VM is currently not supported yet.
-  // The signal explicitly raised in this test will cause a crash and a
-  // core dump.
-  return;
+  /* This test currently does not work because our signal handling is only
+   * for signals that gets generated from individual instructions.
+   * Signal handling on the entire VM is currently not supported yet.
+   * The signal explicitly raised in this test will cause a crash and a
+   * core dump.
+   **/
+
+  /*
   sig_atomic_t sig = SIGINT;
 
   corevm::runtime::process process;
@@ -119,14 +271,16 @@ TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
   raise(sig);
 
   ASSERT_EQ(1, process.stack_size());
+  */
 }
 
 TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
 {
-  // Tests that we are able to capture signals caused by individual
-  // instructions. In this case we are capturing the floating point error signal
-  // from the `div` instruction when the divisor is zero, and also
-  // we are able to catch it more than once.
+  /* Tests that we are able to capture signals caused by individual
+   * instructions. In this case we are capturing the floating point error signal
+   * from the `div` instruction when the divisor is zero, and also
+   * we are able to catch it more than once.
+   **/
   sig_atomic_t sig = SIGFPE;
 
   corevm::runtime::process process;
