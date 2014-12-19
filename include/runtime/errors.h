@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef runtime_errorS_H_
-#define runtime_errorS_H_
+#ifndef RUNTIME_ERRORS_H_
+#define RUNTIME_ERRORS_H_
 
 #include <string>
 #include <boost/format.hpp>
@@ -154,4 +154,4 @@ public:
 } /* end namespace corevm */
 
 
-#endif /* runtime_errorS_H_ */
+#endif /* RUNTIME_ERRORS_H_ */

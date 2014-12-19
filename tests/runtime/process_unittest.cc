@@ -48,6 +48,24 @@ TEST_F(process_unittest, TestStart)
   process.start();
 }
 
+TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
+{
+  corevm::runtime::process process;
+  int value = 8;
+
+  corevm::types::native_type_handle hndl = corevm::types::int8(value);
+
+  auto key = process.insert_ntvhndl(hndl);
+
+  ASSERT_EQ(true, process.has_ntvhndl(key));
+
+  auto actual_hndl = process.get_ntvhndl(key);
+
+  int8_t actual_value = corevm::types::get_value_from_handle<int8_t>(actual_hndl);
+
+  ASSERT_EQ(value, actual_value);
+}
+
 
 class process_gc_rule_unittest : public process_test {
 protected:

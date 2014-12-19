@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "frame.h"
 #include "instr.h"
 #include "instr_block.h"
+#include "native_types_pool.h"
 #include "sighandler.h"
 #include "../../include/dyobj/common.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
@@ -63,7 +64,7 @@ public:
   typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
-  using native_handles_pool_type = typename std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>;
+  typedef corevm::runtime::native_types_pool native_types_pool_type;
 
   class adapter {
   public:
@@ -150,9 +151,9 @@ public:
 
   dynamic_object_heap_type::size_type max_heap_size() const;
 
-  native_handles_pool_type::size_type ntvhndl_pool_size() const;
+  native_types_pool_type::size_type ntvhndl_pool_size() const;
 
-  native_handles_pool_type::size_type max_ntvhndl_pool_size() const;
+  native_types_pool_type::size_type max_ntvhndl_pool_size() const;
 
 private:
   static void tick_handler(void*);
@@ -169,11 +170,9 @@ private:
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::stack<corevm::runtime::frame> m_call_stack;
-  std::unordered_map<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle> m_ntvhndl_pool;
+  native_types_pool_type m_ntvhndl_pool;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
   std::unordered_map<sig_atomic_t, corevm::runtime::instr_block> m_sig_instr_map;
-  sneaker::atomic::atomic_incrementor<
-    corevm::dyobj::ntvhndl_key, corevm::dyobj::NTVHNDL_LIMIT> m_ntv_handles_incrementor;
 };
 
 

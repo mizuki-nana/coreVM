@@ -238,13 +238,13 @@ corevm::runtime::process::max_heap_size() const
   return m_dynamic_object_heap.max_size();
 }
 
-corevm::runtime::process::native_handles_pool_type::size_type
+corevm::runtime::process::native_types_pool_type::size_type
 corevm::runtime::process::ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.size();
 }
 
-corevm::runtime::process::native_handles_pool_type::size_type
+corevm::runtime::process::native_types_pool_type::size_type
 corevm::runtime::process::max_ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.max_size();
@@ -253,55 +253,30 @@ corevm::runtime::process::max_ntvhndl_pool_size() const
 bool
 corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 {
-  return m_ntvhndl_pool.find(key) != m_ntvhndl_pool.end();
+  try {
+    m_ntvhndl_pool.at(key);
+  } catch(const corevm::runtime::native_type_handle_not_found_error&) {
+    return false;
+  }
+
+  return true;
 }
 
 corevm::types::native_type_handle&
 corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_not_found_error)
 {
-  try {
-    return m_ntvhndl_pool.at(key);
-  } catch (const std::out_of_range&)  {
-    throw corevm::runtime::native_type_handle_not_found_error();
-  }
+  return m_ntvhndl_pool.at(key);
 }
 
 corevm::dyobj::ntvhndl_key
 corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
   throw(corevm::runtime::native_type_handle_insertion_error)
 {
-  try {
-    ++m_ntv_handles_incrementor;
-  } catch(const std::underflow_error&) {
-    throw corevm::runtime::native_type_handle_insertion_error(
-      "exceeded maximum number of native type handles allowed"
-    );
-  } catch(const std::overflow_error&) {
-    throw corevm::runtime::native_type_handle_insertion_error(
-      "exceeded maximum number of native type handles allowed"
-    );
-  }
+  auto key = m_ntvhndl_pool.create();
 
-  corevm::dyobj::ntvhndl_key key = m_ntv_handles_incrementor;
-  bool inserted = false;
-
-  try {
-    auto res = m_ntvhndl_pool.insert(
-      std::pair<corevm::dyobj::ntvhndl_key, corevm::types::native_type_handle>(key, hndl)
-    );
-    inserted = res.second;
-  } catch(const std::bad_alloc&) {
-    throw corevm::runtime::native_type_handle_insertion_error(
-      "insufficient memory to store native type handle"
-    );
-  }
-
-  if(!inserted) {
-    throw corevm::runtime::native_type_handle_insertion_error(
-      "native type handle with existing key already exist"
-    );
-  }
+  corevm::types::native_type_handle& hndl_ = m_ntvhndl_pool.at(key);
+  hndl_ = hndl;
 
   return key;
 }
@@ -310,11 +285,8 @@ void
 corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_deletion_error)
 {
-  size_t res = m_ntvhndl_pool.erase(key);
-
-  if(res == 0) {
-    throw corevm::runtime::native_type_handle_deletion_error();
-  }
+  // Handle invalid keys.
+  m_ntvhndl_pool.erase(key);
 }
 
 const corevm::runtime::instr_handler*

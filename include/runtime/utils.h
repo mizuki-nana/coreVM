@@ -20,10 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_COMMON_H_
-#define COREVM_RUNTIME_COMMON_H_
+#ifndef COREVM_RUNTIME_UTILS_H_
+#define COREVM_RUNTIME_UTILS_H_
 
-#include <stdint.h>
+#include "../dyobj/common.h"
 
 
 namespace corevm {
@@ -32,32 +32,24 @@ namespace corevm {
 namespace runtime {
 
 
-typedef int32_t instr_addr;
+using corevm::dyobj::ntvhndl_key;
 
 
-typedef uint16_t instr_code;
+inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
+{
+  return static_cast<ntvhndl_key>( (char*)(ptr) - (char*)(NULL) );
+}
+
+inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
+{
+  return reinterpret_cast<void*>(key);
+}
 
 
-typedef uint64_t instr_oprd;
+}; /* end namespace runtime */
 
 
-typedef int32_t variable_key;
+}; /* end namespace corevm */
 
 
-typedef uint8_t gc_bitfield_t;
-
-
-const instr_addr NONESET_INSTR_ADDR = -1;
-
-
-// Default size of native types pool: 128 MB.
-const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
-
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_RUNTIME_COMMON_H_ */
+#endif /* COREVM_RUNTIME_UTILS_H_ */
