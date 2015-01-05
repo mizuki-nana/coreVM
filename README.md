@@ -196,22 +196,21 @@ roadmap in the near future, with their respective completion dates and ETAs:
   GC implementation and integration (done)    |            Aug, 2014
   Bytecode loading and validation (done)      |            Oct, 2014
   Frontend and core runtime integration       |            Nov, 2014
-  Exception handling mechanism                |            Dec, 2014
-  Re-entrant execution                        |            Dec, 2014
-  Mark-and-sweep garbage collection           |            Jan, 2015
-  Generational and concurrent GC              |            Jan, 2015
-  JIT optimizations                           |            Feb, 2015
-  Multi-threaded runtime                      |            Feb, 2015
-  Native extension and sandboxing             |            Feb, 2015
-  Continuous integration                      |            Mar, 2015
-  Benchmark infrastructure                    |            Mar, 2015
-  Docker integration                          |            Mar, 2015
-  Initial beta release *                      |            Mar, 2015
-  Debugging and Profiling APIs                |            Jun, 2015
-  Embedder APIs                               |            Aug, 2015
-  Extension APIs                              |            Oct, 2015
-  Address space layout randomization          |            Nov, 2015
-  Parallelism support                         |            Dec, 2015
+  Exception handling mechanism                |            Feb, 2015
+  Re-entrant execution                        |            Feb, 2015
+  Mark-and-sweep garbage collection           |            Mar, 2015
+  Generational and concurrent GC              |            Mar, 2015
+  Benchmark infrastructure                    |            Apr, 2015
+  Docker integration                          |            Apr, 2015
+  Continuous integration                      |            Apr, 2015
+  Initial working build *                     |            Apr, 2015
+  Multi-threaded runtime                      |            May, 2015
+  JIT optimizations                           |            Jun, 2015
+  Debugging and Profiling APIs                |            Jul, 2015
+  Embedder APIs                               |            Sep, 2015
+  Extension APIs                              |            Nov, 2015
+  Parallelism support                         |            Jan, 2016
+  Address space layout randomization          |            Mar, 2016
 
 <br />
 Here's an illustration of the envisioned future architecture of coreVM:
