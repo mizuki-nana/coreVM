@@ -20,9 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <sneaker/testing/_unittest.h>
-#include "../../include/memory/sequential_allocation_scheme.h"
 #include "../../include/dyobj/heap_allocator.h"
+#include "../../include/memory/sequential_allocation_scheme.h"
+
+#include <sneaker/testing/_unittest.h>
 
 
 class heap_allocator_unit_test : public ::testing::Test {

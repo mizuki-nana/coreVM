@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -23,10 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
-#include <climits>
-#include <stack>
-#include <unordered_map>
-#include <sneaker/threading/fixed_time_interval_daemon_service.h>
 #include "errors.h"
 #include "frame.h"
 #include "instr.h"
@@ -37,6 +33,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/dyobj/dynamic_object_heap.h"
 #include "../../include/gc/garbage_collector.h"
 #include "../../include/gc/garbage_collection_scheme.h"
+
+#include <sneaker/threading/fixed_time_interval_daemon_service.h>
+
+#include <climits>
+#include <stack>
+#include <unordered_map>
 
 
 namespace corevm {

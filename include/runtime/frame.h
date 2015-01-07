@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -23,12 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRAME_H_
 #define COREVM_FRAME_H_
 
-#include <list>
-#include <stack>
 #include "common.h"
 #include "errors.h"
 #include "../../include/dyobj/dyobj_id.h"
 #include "../../include/types/native_type_handle.h"
+
+#include <list>
+#include <stack>
 
 
 namespace corevm {

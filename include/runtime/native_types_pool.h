@@ -23,17 +23,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_NATIVE_TYPES_POOL_H_
 #define COREVM_NATIVE_TYPES_POOL_H_
 
-#include <string> // TODO: [COREVM-90] Remove extraneous header in native_types_pool.h
-#include <limits> // TODO: [COREVM-90] Remove extraneous header in native_types_pool.h
-#include <sneaker/allocator/allocator.h>
+#include "common.h"
+#include "errors.h"
 #include "../dyobj/common.h"
 #include "../memory/allocator.h"
 #include "../memory/alloc_policy.h"
 #include "../memory/object_container.h"
 #include "../memory/sequential_allocation_scheme.h"
 #include "../types/native_type_handle.h"
-#include "common.h"
-#include "errors.h"
+
+#include <sneaker/allocator/allocator.h>
+
+#include <string>
+#include <limits>
 
 
 namespace corevm {
