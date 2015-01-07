@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 #include "../memory/errors.h"
 #include "../memory/object_container.h"
+#include "../memory/sequential_allocation_scheme.h"
 #include "common.h"
 #include "dyobj_id.h"
 #include "dynamic_object.h"
@@ -46,7 +47,7 @@ public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type>;
+  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::buddy_allocation_scheme>;
   using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
 
   using reference           = typename dynamic_object_container_type::reference;

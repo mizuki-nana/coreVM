@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -21,16 +21,23 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <sneaker/testing/_unittest.h>
+#include "../../include/memory/sequential_allocation_scheme.h"
 #include "../../include/dyobj/heap_allocator.h"
 
 
-class heap_allocator_unit_test : public ::testing::Test {};
+class heap_allocator_unit_test : public ::testing::Test {
+public:
+  typedef corevm::memory::first_fit_allocation_scheme AllocationScheme;
+  typedef corevm::memory::best_fit_allocation_scheme OtherAllocationScheme;
+};
+
+
 class heap_allocator_simple_test : public heap_allocator_unit_test {};
 
 
 TEST_F(heap_allocator_simple_test, TestAllocation)
 {
-  corevm::dyobj::heap_allocator<int> allocator;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator;
   int *a = allocator.allocate(10);
 
   assert(a);
@@ -43,7 +50,7 @@ TEST_F(heap_allocator_simple_test, TestAllocation)
 
 TEST_F(heap_allocator_simple_test, TestAllocationAndDestroy)
 {
-  corevm::dyobj::heap_allocator<std::string> allocator;
+  corevm::dyobj::heap_allocator<std::string, AllocationScheme> allocator;
   std::string* s = allocator.allocate(2);
 
   allocator.construct(s, "foo");
@@ -61,7 +68,7 @@ TEST_F(heap_allocator_simple_test, TestAllocationAndDestroy)
 class heap_allocator_container_test : public heap_allocator_unit_test {
 public:
   template<typename T>
-  using vector_type = typename std::vector<T, corevm::dyobj::heap_allocator<T>>;
+  using vector_type = typename std::vector<T, corevm::dyobj::heap_allocator<T, AllocationScheme>>;
 };
 
 
@@ -107,8 +114,8 @@ class heap_allocator_equality_test : public heap_allocator_unit_test {};
 
 TEST_F(heap_allocator_equality_test, TestEquality1)
 {
-  corevm::dyobj::heap_allocator<int> allocator1;
-  corevm::dyobj::heap_allocator<int> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator1;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator2;
 
   ASSERT_TRUE(allocator1 == allocator2);
   ASSERT_FALSE(allocator1 != allocator2);
@@ -116,8 +123,8 @@ TEST_F(heap_allocator_equality_test, TestEquality1)
 
 TEST_F(heap_allocator_equality_test, TestEquality2)
 {
-  corevm::dyobj::heap_allocator<int, 100> allocator1;
-  corevm::dyobj::heap_allocator<int, 200> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
+  corevm::dyobj::heap_allocator<int, AllocationScheme, 200> allocator2;
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -125,8 +132,8 @@ TEST_F(heap_allocator_equality_test, TestEquality2)
 
 TEST_F(heap_allocator_equality_test, TestEquality3)
 {
-  corevm::dyobj::heap_allocator<int, 100> allocator1;
-  corevm::dyobj::heap_allocator<float, 100> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
+  corevm::dyobj::heap_allocator<float, AllocationScheme, 100> allocator2;
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -134,8 +141,17 @@ TEST_F(heap_allocator_equality_test, TestEquality3)
 
 TEST_F(heap_allocator_equality_test, TestEquality4)
 {
-  corevm::dyobj::heap_allocator<int, 100> allocator1;
-  corevm::dyobj::heap_allocator<float, 200> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
+  corevm::dyobj::heap_allocator<int, OtherAllocationScheme, 100> allocator2;
+
+  ASSERT_TRUE(allocator1 != allocator2);
+  ASSERT_FALSE(allocator1 == allocator2);
+}
+
+TEST_F(heap_allocator_equality_test, TestEquality5)
+{
+  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
+  corevm::dyobj::heap_allocator<float, OtherAllocationScheme, 200> allocator2;
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
