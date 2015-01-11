@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "sighandler.h"
 
 #include <csignal>
+#include <string>
 #include <unordered_map>
 
 #include <setjmp.h>
@@ -58,9 +59,12 @@ public:
 
   static bool sig_raised;
 
+  static sig_atomic_t get_sig_value_from_string(const std::string&);
+
 protected:
   static corevm::runtime::process* process;
   static const std::unordered_map<sig_atomic_t, sighandler_wrapper> handler_map;
+  static const std::unordered_map<std::string, sig_atomic_t> sig_value_to_str_map;
 };
 
 

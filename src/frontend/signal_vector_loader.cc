@@ -22,13 +22,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/signal_vector_loader.h"
 
+#include "../../include/frontend/bytecode_runner.h"
 #include "../../include/frontend/errors.h"
 #include "../../include/runtime/process.h"
+#include "../../include/runtime/sighandler_registrar.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
+#include <csignal>
 #include <fstream>
 #include <ios>
 #include <sstream>
@@ -197,9 +200,12 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
-    const JSON::array& signal_vector_json = signal_json.array_items();
+    corevm::frontend::bytecode_runner runner;
+    corevm::runtime::instr_block vector = runner.get_vector_from_json(signal_json);
 
-    // TODO: [COREVM-101] Load instruction vectors into process in signal vector loader
+    sig_atomic_t sig = corevm::runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
+
+    process.set_sig_instr_block(sig, vector);
   }
 }
 
