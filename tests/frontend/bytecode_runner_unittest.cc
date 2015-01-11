@@ -20,33 +20,53 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_RUNNER_H_
-#define COREVM_BYTECODE_RUNNER_H_
+#include "../../include/frontend/bytecode_runner.h"
 
-#include "../runtime/instr_block.h"
+#include "../../include/runtime/instr_block.h"
+#include "../../include/runtime/instr.h"
 
+#include <sneaker/testing/_unittest.h>
+#include <sneaker/json/json_parser.h>
 #include <sneaker/json/json.h>
 
-
-namespace corevm {
-
-
-namespace frontend {
+#include <string>
 
 
 using sneaker::json::JSON;
 
 
-class bytecode_runner {
-public:
-  corevm::runtime::instr_block get_vector_from_json(const JSON&);
-};
+class bytecode_runner_unittest : public ::testing::Test {};
 
 
-} /* end namespace frontend */
 
+TEST_F(bytecode_runner_unittest, TestGetVectorFromJson)
+{
+    std::string vector_str = "["
+      "[10, 11, 12],"
+      "[1],"
+      "[22, 33]"
+    "]";
 
-} /* end namespace corevm */
+    const JSON vector_json = sneaker::json::parse(vector_str);
 
+    corevm::frontend::bytecode_runner runner;
+    corevm::runtime::instr_block vector = runner.get_vector_from_json(vector_json);
 
-#endif /* COREVM_BYTECODE_RUNNER_H_ */
+    corevm::runtime::instr_block::block_type block = vector.block();
+
+    corevm::runtime::instr instr1 = block[0];
+    corevm::runtime::instr instr2 = block[1];
+    corevm::runtime::instr instr3 = block[2];
+
+    ASSERT_EQ(10, instr1.code);
+    ASSERT_EQ(11, instr1.oprd1);
+    ASSERT_EQ(12, instr1.oprd2);
+
+    ASSERT_EQ(1, instr2.code);
+    ASSERT_EQ(0, instr2.oprd1);
+    ASSERT_EQ(0, instr2.oprd2);
+
+    ASSERT_EQ(22, instr3.code);
+    ASSERT_EQ(33, instr3.oprd1);
+    ASSERT_EQ(0, instr3.oprd2);
+}
