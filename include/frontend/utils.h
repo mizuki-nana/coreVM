@@ -20,9 +20,30 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/frontend/bytecode_runner.h"
+#ifndef COREVM_FRONTEND_UTILS_H_
+#define COREVM_FRONTEND_UTILS_H_
 
-#include "../../include/runtime/instr_block.h"
-#include "../../include/runtime/instr.h"
+#include "../runtime/instr_block.h"
 
 #include <sneaker/json/json.h>
+
+
+namespace corevm {
+
+
+namespace frontend {
+
+
+using sneaker::json::JSON;
+
+
+corevm::runtime::instr_block get_vector_from_json(const JSON&);
+
+
+}; /* end namespace frontend */
+
+
+}; /* end namespace corevm */
+
+
+#endif /* COREVM_FRONTEND_UTILS_H_ */

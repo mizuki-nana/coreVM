@@ -37,10 +37,7 @@ namespace frontend {
 using sneaker::json::JSON;
 
 
-class bytecode_runner {
-public:
-  corevm::runtime::instr_block get_vector_from_json(const JSON&);
-};
+class bytecode_runner {};
 
 
 } /* end namespace frontend */
