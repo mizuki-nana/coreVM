@@ -438,6 +438,12 @@ corevm::runtime::process::tick_handler(void* arg)
 }
 
 void
+corevm::runtime::process::set_encoding_key_value_pair(uint64_t key, const std::string& value)
+{
+  m_encoding_map.insert({key, value});
+}
+
+void
 corevm::runtime::process::set_sig_instr_block(
   sig_atomic_t sig, corevm::runtime::instr_block& block)
 {

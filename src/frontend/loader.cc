@@ -24,11 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../../include/frontend/errors.h"
 #include "../../include/frontend/schema_repository.h"
+#include "../../include/frontend/utils.h"
+#include "../../include/runtime/instr_block.h"
+#include "../../include/runtime/process.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
+#include <cstdint>
 #include <fstream>
 #include <ios>
 #include <sstream>
@@ -38,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using boost::format;
 using namespace sneaker::json;
+using sneaker::json::JSON;
 
 
 corevm::frontend::loader::loader(const std::string& path):
@@ -52,11 +57,9 @@ corevm::frontend::loader::path() const
   return m_path;
 }
 
-corevm::frontend::bytecode_runner*
-corevm::frontend::loader::load() throw(corevm::frontend::file_loading_error)
+void
+corevm::frontend::loader::load(corevm::runtime::process& process) throw(corevm::frontend::file_loading_error)
 {
-  corevm::frontend::bytecode_runner* runner = nullptr;
-
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
 
@@ -90,10 +93,7 @@ corevm::frontend::loader::load() throw(corevm::frontend::file_loading_error)
 
   this->validate(content_json);
 
-  // TODO: [COREVM-55] Design and implement bytecode loading mechanism
-  runner = new bytecode_runner();
-
-  return runner;
+  this->load_bytecode(content_json, process);
 }
 
 void
@@ -136,5 +136,50 @@ corevm::frontend::loader::validate(const JSON& content_json)
         format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )
     );
+  }
+}
+
+void
+corevm::frontend::loader::load_bytecode(const JSON& content_json, corevm::runtime::process& process)
+{
+  const JSON::object& json_object = content_json.object_items();
+
+  const JSON::string& format = json_object.at("format").string_value();
+  const JSON::string& format_version = json_object.at("format-version").string_value();
+  const JSON::string& target_version = json_object.at("target-version").string_value();
+  const JSON::string& encoding = json_object.at("encoding").string_value();
+  const JSON::object& encoding_map = json_object.at("encoding_map").object_items();
+  const JSON::object& __MAIN__ = json_object.at("__MAIN__").object_items();
+
+  const JSON::object& object_attributes = __MAIN__.at("attributes").object_items();
+  const JSON::array& object_vectors = __MAIN__.at("vector").array_items();
+
+  // Load encoding map
+  for (auto itr = encoding_map.begin(); itr != encoding_map.end(); ++itr) {
+    const JSON& raw_value = static_cast<JSON>(itr->first);
+    const JSON& raw_key = static_cast<JSON>(itr->second);
+
+    // TODO: [COREVM-107] Robust validation on schema encoding map
+    if (!raw_key.is_number() || !raw_value.is_string()) {
+      continue;
+    }
+
+    const uint64_t key = static_cast<uint64_t>(raw_key.int_value());
+    const std::string value = static_cast<std::string>(raw_value.string_value());
+
+    process.set_encoding_key_value_pair(key, value);
+  }
+
+  // Load vectors
+  for (auto itr = object_vectors.begin(); itr != object_vectors.end(); ++itr) {
+    const JSON& vector_json_raw = static_cast<JSON>(*itr);
+    const JSON::object& vector_object = vector_json_raw.object_items();
+
+    const JSON::string& __name__ = vector_object.at("__name__").string_value();
+    const JSON& __inner__ = vector_object.at("__inner__");
+
+    corevm::runtime::instr_block block = corevm::frontend::get_vector_from_json(__inner__);
+
+    process.append_instr_block(block);
   }
 }

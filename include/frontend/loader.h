@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRONTEND_LOADER_H_
 #define COREVM_FRONTEND_LOADER_H_
 
-#include "bytecode_runner.h"
 #include "errors.h"
+#include "../runtime/process.h"
 
 #include <sneaker/json/json.h>
 
@@ -46,10 +46,11 @@ public:
 
   const std::string path() const;
 
-  bytecode_runner* load() throw(corevm::frontend::file_loading_error);
+  void load(corevm::runtime::process&) throw(corevm::frontend::file_loading_error);
 
 protected:
   void validate(const JSON&);
+  void load_bytecode(const JSON&, corevm::runtime::process&);
 
   std::string m_path;
 };

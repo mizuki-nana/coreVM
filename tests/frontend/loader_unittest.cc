@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/loader.h"
 
+#include "../../include/runtime/process.h"
+
 #include <sneaker/testing/_unittest.h>
 
 #include <cassert>
@@ -56,7 +58,9 @@ const std::string loader_unittest::BYTECODE = \
     "\"timestamp\": \"2014-10-12T15:33:30\","
     "\"encoding\": \"utf8\","
     "\"author\": \"Yanzheng Li\","
-    "\"encoding_map\": \"{}\","
+    "\"encoding_map\": {"
+      "\"name\": 111"
+    "},"
     "\"__MAIN__\": {"
       "\"attributes\": {"
         "\"is_garbage_collectible\": false"
@@ -87,10 +91,11 @@ const std::string loader_unittest::BYTECODE = \
 TEST_F(loader_unittest, TestLoadSuccessful)
 {
   corevm::frontend::loader loader(PATH);
+  corevm::runtime::process process;
 
   ASSERT_NO_THROW(
     {
-      loader.load();
+      loader.load(process);
     }
   );
 }
@@ -98,10 +103,11 @@ TEST_F(loader_unittest, TestLoadSuccessful)
 TEST_F(loader_unittest, TestLoadFailsWithInvalidPath)
 {
   corevm::frontend::loader loader("some/random/path/example.core");
+  corevm::runtime::process process;
 
   ASSERT_THROW(
     {
-      loader.load();
+      loader.load(process);
     },
     corevm::frontend::file_loading_error
   );

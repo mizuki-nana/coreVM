@@ -145,6 +145,8 @@ public:
 
   const corevm::runtime::instr_handler* get_instr_handler(corevm::runtime::instr_code);
 
+  void set_encoding_key_value_pair(uint64_t, const std::string&);
+
   void set_sig_instr_block(sig_atomic_t, corevm::runtime::instr_block&);
 
   void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);
@@ -174,6 +176,7 @@ private:
   std::stack<corevm::runtime::frame> m_call_stack;
   native_types_pool_type m_ntvhndl_pool;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
+  std::unordered_map<uint64_t, std::string> m_encoding_map;
   std::unordered_map<sig_atomic_t, corevm::runtime::instr_block> m_sig_instr_map;
 };
 
