@@ -22,124 +22,135 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/sighandler.h"
 
+#include "../../include/runtime/errors.h"
 #include "../../include/runtime/process.h"
 
+
+//------------------- Arithmetic and execution signals ------------------------/
 
 void
 corevm::runtime::sighandler_SIGFPE::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::execution_signal_error("SIGFPE");
 }
 
 void
 corevm::runtime::sighandler_SIGILL::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::execution_signal_error("SIGILL");
 }
 
 void
 corevm::runtime::sighandler_SIGSEGV::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::execution_signal_error("SIGSEGV");
 }
 
 void
 corevm::runtime::sighandler_SIGBUS::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::execution_signal_error("SIGBUS");
 }
+
+//----------------------- Termination signals ---------------------------------/
 
 void
 corevm::runtime::sighandler_SIGABRT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::termination_signal_error("SIGABRT");
 }
 
 void
 corevm::runtime::sighandler_SIGINT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::termination_signal_error("SIGINT");
 }
 
 void
 corevm::runtime::sighandler_SIGTERM::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::termination_signal_error("SIGTERM");
 }
 
 void
 corevm::runtime::sighandler_SIGQUIT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::termination_signal_error("SIGQUIT");
 }
+
+//-------------------------- Alarm signals ------------------------------------/
 
 void
 corevm::runtime::sighandler_SIGALRM::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  // Do nothing.
 }
 
 void
 corevm::runtime::sighandler_SIGVTALRM::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  // Do nothing.
 }
 
 void
 corevm::runtime::sighandler_SIGPROF::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  // Do nothing.
 }
+
+//------------------------ Operation error signals ----------------------------/
 
 void
 corevm::runtime::sighandler_SIGPIPE::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::operation_signal_error("SIGPIPE");
 }
 
 void
 corevm::runtime::sighandler_SIGLOST::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::operation_signal_error("SIGLOST");
 }
 
 void
 corevm::runtime::sighandler_SIGXCPU::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::operation_signal_error("SIGXCPU");
 }
 
 void
 corevm::runtime::sighandler_SIGXFSZ::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::operation_signal_error("SIGXFSZ");
 }
+
+//---------------------- Asynchronous I/O signals -----------------------------/
 
 void
 corevm::runtime::sighandler_SIGIO::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::io_signal_error("SIGIO");
 }
 
 void
 corevm::runtime::sighandler_SIGURG::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  // TODO: [COREVM-61] Implement signal handlers functionalities
+  throw corevm::runtime::io_signal_error("SIGURG");
 }

@@ -30,6 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+using boost::format;
+
+
 namespace corevm {
 
 
@@ -144,6 +147,97 @@ public:
   explicit native_type_handle_insertion_error(const std::string& what_arg):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot insert native type handle: %s") % what_arg)
+    )
+  {
+  }
+};
+
+
+class signal_error : public corevm::runtime::runtime_error
+{
+public:
+  explicit signal_error(const char* what_arg):
+    corevm::runtime::runtime_error(what_arg)
+  {
+  }
+
+  explicit signal_error(const std::string& what_arg):
+    corevm::runtime::runtime_error(what_arg)
+  {
+  }
+};
+
+
+class execution_signal_error : public corevm::runtime::signal_error
+{
+public:
+  explicit execution_signal_error(const char* signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled arithmetic/execution signal %s") % signal)
+    )
+  {
+  }
+
+  explicit execution_signal_error(const std::string& signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled arithmetic/execution signal %s") % signal)
+    )
+  {
+  }
+};
+
+
+class termination_signal_error : public corevm::runtime::signal_error
+{
+public:
+  explicit termination_signal_error(const char* signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled termination signal %s") % signal)
+    )
+  {
+  }
+
+  explicit termination_signal_error(const  std::string& signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled termination signal %s") % signal)
+    )
+  {
+  }
+};
+
+
+class operation_signal_error : public corevm::runtime::signal_error
+{
+public:
+  explicit operation_signal_error(const char* signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled operation signal %s") % signal)
+    )
+  {
+  }
+
+  explicit operation_signal_error(const std::string& signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled operation signal %s") % signal)
+    )
+  {
+  }
+};
+
+
+class io_signal_error : public corevm::runtime::signal_error
+{
+public:
+  explicit io_signal_error(const char* signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled IO signal %s") % signal)
+    )
+  {
+  }
+
+  explicit io_signal_error(const std::string& signal):
+    corevm::runtime::signal_error(
+      str(format("Received unhandled IO signal %s") % signal)
     )
   {
   }
