@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_HEAP_ALLOCATOR_H_
 
 #include "common.h"
-#include "../memory/alloc_policy.h"
+#include "../memory/allocation_policy.h"
 
 #include <sneaker/allocator/allocator.h>
 
@@ -36,9 +36,9 @@ namespace dyobj {
 
 
 template<typename T, typename AllocationScheme, size_t N=COREVM_DEFAULT_HEAP_SIZE>
-class heap_allocator : public sneaker::allocator::allocator<T, corevm::memory::alloc_policy<T, AllocationScheme, N>> {
+class heap_allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N>> {
 public:
-  using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::alloc_policy<T, AllocationScheme, N> >;
+  using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N> >;
 
   using value_type      = typename _BaseType::value_type;
   using pointer         = typename _BaseType::pointer;
@@ -96,8 +96,8 @@ bool operator==(
   heap_allocator<T, AllocationScheme, N> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::alloc_policy<T, AllocationScheme, N>>(lhs),
-    static_cast<corevm::memory::alloc_policy<T, AllocationScheme, N>>(rhs)
+    static_cast<corevm::memory::allocation_policy<T, AllocationScheme, N>>(lhs),
+    static_cast<corevm::memory::allocation_policy<T, AllocationScheme, N>>(rhs)
   );
 }
 
@@ -108,8 +108,8 @@ bool operator==(
   heap_allocator<U, OtherAllocationScheme, M> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::alloc_policy<T, AllocationScheme, N>>(lhs),
-    static_cast<corevm::memory::alloc_policy<U, OtherAllocationScheme, M>>(rhs)
+    static_cast<corevm::memory::allocation_policy<T, AllocationScheme, N>>(lhs),
+    static_cast<corevm::memory::allocation_policy<U, OtherAllocationScheme, M>>(rhs)
   );
 }
 
@@ -119,7 +119,7 @@ bool operator==(
   heap_allocator<T, AllocationScheme, N> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::alloc_policy<T, AllocationScheme, N>>(lhs), rhs
+    static_cast<corevm::memory::allocation_policy<T, AllocationScheme, N>>(lhs), rhs
   );
 }
 

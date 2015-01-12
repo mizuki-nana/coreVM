@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 #include "../dyobj/common.h"
 #include "../memory/allocator.h"
-#include "../memory/alloc_policy.h"
+#include "../memory/allocation_policy.h"
 #include "../memory/object_container.h"
 #include "../memory/sequential_allocation_scheme.h"
 #include "../types/native_type_handle.h"
@@ -49,9 +49,9 @@ public:
   typedef corevm::types::native_type_handle value_type;
 
   template<typename T, size_t N>
-  class allocator : public sneaker::allocator::allocator<T, corevm::memory::alloc_policy<T, corevm::memory::first_fit_allocation_scheme, N>> {
+  class allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme, N>> {
     public:
-      using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::alloc_policy<T, corevm::memory::first_fit_allocation_scheme, N> >;
+      using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme, N> >;
 
       using value_type      = typename _BaseType::value_type;
       using pointer         = typename _BaseType::pointer;
