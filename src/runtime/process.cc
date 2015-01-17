@@ -401,9 +401,9 @@ corevm::runtime::process::append_instrs(const std::vector<corevm::runtime::instr
 }
 
 void
-corevm::runtime::process::append_instr_block(const corevm::runtime::instr_block& block)
+corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
-  m_instr_blocks.push_back(block);
+  m_vectors.push_back(vector);
 }
 
 bool
@@ -444,14 +444,14 @@ corevm::runtime::process::set_encoding_key_value_pair(uint64_t key, const std::s
 }
 
 void
-corevm::runtime::process::set_sig_instr_block(
-  sig_atomic_t sig, corevm::runtime::instr_block& block)
+corevm::runtime::process::set_sig_vector(
+  sig_atomic_t sig, corevm::runtime::vector& vector)
 {
-  m_sig_instr_map.insert({sig, block});
+  m_sig_instr_map.insert({sig, vector});
 }
 
 void
-corevm::runtime::process::insert_instr_block(corevm::runtime::instr_block& block)
+corevm::runtime::process::insert_vector(corevm::runtime::vector& block)
 {
   std::vector<corevm::runtime::instr>::iterator pos = m_instrs.begin() + m_pc + 1;
   m_instrs.insert(pos, block.begin(), block.end());
@@ -464,9 +464,9 @@ corevm::runtime::process::handle_signal(
   auto itr = m_sig_instr_map.find(sig);
 
   if(itr != m_sig_instr_map.end()) {
-    corevm::runtime::instr_block block = itr->second;
+    corevm::runtime::vector vector = itr->second;
     this->pause_exec();
-    this->insert_instr_block(block);
+    this->insert_vector(vector);
     this->resume_exec();
 
   } else if(handler != nullptr) {

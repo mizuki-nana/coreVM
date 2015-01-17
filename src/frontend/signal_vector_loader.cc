@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/frontend/utils.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/sighandler_registrar.h"
+#include "../../include/runtime/vector.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
@@ -200,11 +201,11 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
-    corevm::runtime::instr_block vector = corevm::frontend::get_vector_from_json(signal_json);
+    corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(signal_json);
 
     sig_atomic_t sig = corevm::runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
 
-    process.set_sig_instr_block(sig, vector);
+    process.set_sig_vector(sig, vector);
   }
 }
 

@@ -26,9 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 #include "frame.h"
 #include "instr.h"
-#include "instr_block.h"
 #include "native_types_pool.h"
 #include "sighandler.h"
+#include "vector.h"
 #include "../../include/dyobj/common.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
 #include "../../include/gc/garbage_collector.h"
@@ -131,7 +131,7 @@ public:
 
   void append_instrs(const std::vector<corevm::runtime::instr>&);
 
-  void append_instr_block(const corevm::runtime::instr_block&);
+  void append_vector(const corevm::runtime::vector&);
 
   virtual bool start();
 
@@ -147,7 +147,7 @@ public:
 
   void set_encoding_key_value_pair(uint64_t, const std::string&);
 
-  void set_sig_instr_block(sig_atomic_t, corevm::runtime::instr_block&);
+  void set_sig_vector(sig_atomic_t, corevm::runtime::vector&);
 
   void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);
 
@@ -164,20 +164,20 @@ private:
 
   bool should_gc();
 
-  void insert_instr_block(corevm::runtime::instr_block& block);
+  void insert_vector(corevm::runtime::vector& vector);
 
   bool m_pause_exec;
   uint8_t m_gc_flag;
   corevm::runtime::instr_addr m_pc;
   std::vector<corevm::runtime::instr> m_instrs;
-  std::vector<corevm::runtime::instr_block> m_instr_blocks;
+  std::vector<corevm::runtime::vector> m_vectors;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::stack<corevm::runtime::frame> m_call_stack;
   native_types_pool_type m_ntvhndl_pool;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
   std::unordered_map<uint64_t, std::string> m_encoding_map;
-  std::unordered_map<sig_atomic_t, corevm::runtime::instr_block> m_sig_instr_map;
+  std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
 };
 
 

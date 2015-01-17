@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/gc_rule.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/sighandler_registrar.h"
+#include "../../include/runtime/vector.h"
 
 #include <sneaker/testing/_unittest.h>
 
@@ -263,10 +264,10 @@ TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
 
   ASSERT_EQ(0, process.stack_size());
 
-  corevm::runtime::instr_block block_on_signal {
+  corevm::runtime::vector vector {
     { .code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0 },
   };
-  process.set_sig_instr_block(sig, block_on_signal);
+  process.set_sig_vector(sig, vector);
 
   process.start();
   raise(sig);
@@ -307,10 +308,10 @@ TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
 
   process.append_instrs(instrs);
 
-  corevm::runtime::instr_block block_on_signal {
+  corevm::runtime::vector vector {
     { .code=corevm::runtime::instr_enum::NEW, .oprd1=0, .oprd2=0 },
   };
-  process.set_sig_instr_block(sig, block_on_signal);
+  process.set_sig_vector(sig, vector);
 
   process.start();
 

@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../../include/frontend/errors.h"
 #include "../../include/frontend/utils.h"
-#include "../../include/runtime/instr_block.h"
 #include "../../include/runtime/process.h"
+#include "../../include/runtime/vector.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
@@ -220,9 +220,9 @@ public:
       const JSON::string& __name__ = vector_object.at("__name__").string_value();
       const JSON& __inner__ = vector_object.at("__inner__");
 
-      corevm::runtime::instr_block block = corevm::frontend::get_vector_from_json(__inner__);
+      corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__inner__);
 
-      process.append_instr_block(block);
+      process.append_vector(vector);
     }
   }
 };

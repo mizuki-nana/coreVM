@@ -22,23 +22,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/utils.h"
 
-#include "../../include/runtime/instr_block.h"
 #include "../../include/runtime/instr.h"
+#include "../../include/runtime/vector.h"
 
 #include <sneaker/json/json.h>
 
 #include <cassert>
+#include <utility>
 
 
-corevm::runtime::instr_block
+corevm::runtime::vector
 corevm::frontend::get_vector_from_json(const JSON& json)
 {
   assert(json.type() == JSON::ARRAY);
 
-  const JSON::array& vector = json.array_items();
-  corevm::runtime::instr_block::block_type block;
+  const JSON::array& vector_array = json.array_items();
+  corevm::runtime::vector vector;
 
-  for (auto itr = vector.begin(); itr != vector.end(); ++itr) {
+  for (auto itr = vector_array.begin(); itr != vector_array.end(); ++itr) {
     const JSON& instr_json = *itr;
     const JSON::array& instr_tuple = instr_json.array_items();
 
@@ -59,7 +60,7 @@ corevm::frontend::get_vector_from_json(const JSON& json)
       oprd2 = static_cast<corevm::runtime::instr_oprd>(oprd2_raw.int_value());
     }
 
-    block.push_back(corevm::runtime::instr
+    vector.push_back(corevm::runtime::instr
       {
         .code = code,
         .oprd1 = oprd1,
@@ -68,5 +69,5 @@ corevm::frontend::get_vector_from_json(const JSON& json)
     );
   }
 
-  return corevm::runtime::instr_block(block);
+  return std::move(vector);
 }

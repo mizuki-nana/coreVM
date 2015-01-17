@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRONTEND_UTILS_H_
 #define COREVM_FRONTEND_UTILS_H_
 
-#include "../runtime/instr_block.h"
+#include "../runtime/vector.h"
 
 #include <sneaker/json/json.h>
 
@@ -37,7 +37,7 @@ namespace frontend {
 using sneaker::json::JSON;
 
 
-corevm::runtime::instr_block get_vector_from_json(const JSON&);
+corevm::runtime::vector get_vector_from_json(const JSON&);
 
 
 }; /* end namespace frontend */

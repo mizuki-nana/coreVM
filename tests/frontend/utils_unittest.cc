@@ -21,8 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/utils.h"
-#include "../../include/runtime/instr_block.h"
 #include "../../include/runtime/instr.h"
+#include "../../include/runtime/vector.h"
 
 #include <sneaker/testing/_unittest.h>
 #include <sneaker/json/json_parser.h>
@@ -47,13 +47,11 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
 
   const JSON vector_json = sneaker::json::parse(vector_str);
 
-  corevm::runtime::instr_block vector = corevm::frontend::get_vector_from_json(vector_json);
+  corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(vector_json);
 
-  corevm::runtime::instr_block::block_type block = vector.block();
-
-  corevm::runtime::instr instr1 = block[0];
-  corevm::runtime::instr instr2 = block[1];
-  corevm::runtime::instr instr3 = block[2];
+  corevm::runtime::instr instr1 = vector[0];
+  corevm::runtime::instr instr2 = vector[1];
+  corevm::runtime::instr instr3 = vector[2];
 
   ASSERT_EQ(10, instr1.code);
   ASSERT_EQ(11, instr1.oprd1);
