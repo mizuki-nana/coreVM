@@ -72,18 +72,11 @@ TEST_F(signal_vector_loader_unittest, TestLoadSuccessful)
 {
   corevm::frontend::signal_vector_loader loader(PATH);
 
-  ASSERT_NO_THROW(
-    {
-      loader.load(m_process);
-    }
-  );
+  loader.load(m_process);
 }
 
 TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
 {
-  // TODO: [COREVM-102] Investigate signal_vector_loader_unittest::TestLoadFailsWithInvalidSignal failure
-
-  /**
   const std::string INVALID_SIGNAL_VECTOR = \
     "{"
       "\"signals\": {"
@@ -116,7 +109,6 @@ TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
   );
 
   remove(path);
-  **/
 }
 
 TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidPath)
