@@ -23,10 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_GARBAGE_COLLECTION_SCHEME_H_
 #define COREVM_GARBAGE_COLLECTION_SCHEME_H_
 
-
 #include "../dyobj/dynamic_object.h"
 #include "../dyobj/dynamic_object_heap.h"
 #include "../dyobj/dynamic_object_manager.h"
+
+#include <cstdint>
 
 
 namespace corevm {

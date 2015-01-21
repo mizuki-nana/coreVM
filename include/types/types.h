@@ -23,10 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TYPES_H_
 #define COREVM_TYPES_H_
 
-
 #include "native_array.h"
 #include "native_map.h"
 #include "native_string.h"
+
+#include <cstdint>
 
 
 namespace corevm {

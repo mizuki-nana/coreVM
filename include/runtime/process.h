@@ -37,6 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <climits>
+#include <cstdint>
 #include <stack>
 #include <unordered_map>
 

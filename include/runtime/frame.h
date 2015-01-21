@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/dyobj/dyobj_id.h"
 #include "../../include/types/native_type_handle.h"
 
+#include <cstdint>
 #include <list>
 #include <stack>
 

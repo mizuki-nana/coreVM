@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/allocator/alloc_policy.h>
 
+#include <cstdint>
+
 
 namespace corevm {
 

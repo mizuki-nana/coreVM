@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNTIME_COMMON_H_
 #define COREVM_RUNTIME_COMMON_H_
 
-#include <stdint.h>
+#include <cstdint>
 
 
 namespace corevm {

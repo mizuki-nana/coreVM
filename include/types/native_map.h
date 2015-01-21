@@ -23,9 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_NATIVE_MAP_H_
 #define COREVM_NATIVE_MAP_H_
 
+#include "errors.h"
+
+#include <cstdint>
 #include <stdexcept>
 #include <unordered_map>
-#include "errors.h"
 
 
 namespace corevm {

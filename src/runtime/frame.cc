@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/frame.h"
 
+#include <cstdint>
+
 
 corevm::runtime::frame::frame():
   m_start_addr(corevm::runtime::NONESET_INSTR_ADDR),
