@@ -279,7 +279,7 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
 {
   const JSON::object& json_object = content_json.object_items();
 
-  if(json_object.find("format-version") == json_object.end()) {
+  if (json_object.find("format-version") == json_object.end()) {
     throw corevm::frontend::file_loading_error("Missing \"format-version\" in file");
   }
 

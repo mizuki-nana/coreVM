@@ -260,7 +260,7 @@ void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) const
   throw(corevm::dyobj::invalid_flag_bit_error)
 {
-  if(!corevm::dyobj::is_valid_flag_bit(bit)) {
+  if (!corevm::dyobj::is_valid_flag_bit(bit)) {
     throw corevm::dyobj::invalid_flag_bit_error();
   }
 }
@@ -310,7 +310,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::delattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key)
   throw(corevm::dyobj::object_attribute_deletion_error)
 {
-  if(m_attrs.erase(attr_key) != 1) {
+  if (m_attrs.erase(attr_key) != 1) {
     throw corevm::dyobj::object_attribute_deletion_error(attr_key, id());
   }
 }
@@ -323,7 +323,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
 {
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type::const_iterator itr = m_attrs.find(attr_key);
 
-  if(itr == m_attrs.cend()) {
+  if (itr == m_attrs.cend()) {
     throw corevm::dyobj::object_attribute_not_found_error(attr_key, id());
   }
 

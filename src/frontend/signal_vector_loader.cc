@@ -197,7 +197,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
   const JSON::object json_object = content_json.object_items();
   const JSON::object& signals_object = json_object.at("signals").object_items();
 
-  for(auto itr = signals_object.begin(); itr != signals_object.end(); ++itr) {
+  for (auto itr = signals_object.begin(); itr != signals_object.end(); ++itr) {
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 

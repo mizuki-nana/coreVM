@@ -70,7 +70,7 @@ corevm::memory::allocator<N, allocation_scheme>::allocator():
 {
   void* mem = malloc(m_total_size);
 
-  if(!mem) {
+  if (!mem) {
     throw std::bad_alloc();
   }
 
@@ -80,7 +80,7 @@ corevm::memory::allocator<N, allocation_scheme>::allocator():
 template<size_t N, class allocation_scheme>
 corevm::memory::allocator<N, allocation_scheme>::~allocator()
 {
-  if(m_heap) {
+  if (m_heap) {
     free(m_heap);
     m_heap = nullptr;
   }
@@ -106,17 +106,17 @@ corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
 {
   void* ptr = nullptr;
 
-  if(size > m_total_size) {
+  if (size > m_total_size) {
     return ptr;
   }
 
-  if(!(size > 0)) {
+  if (!(size > 0)) {
     return ptr;
   }
 
   ssize_t offset = m_allocation_scheme.malloc(size);
 
-  if(offset >= 0) {
+  if (offset >= 0) {
     char* base = static_cast<char*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += static_cast<uint64_t>(size);
@@ -132,7 +132,7 @@ corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
 {
   int res = -1;
 
-  if(ptr == nullptr) {
+  if (ptr == nullptr) {
     return res;
   }
 
@@ -142,7 +142,7 @@ corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
   size_t offset = ptr_ - heap_;
   ssize_t size = m_allocation_scheme.free(offset);
 
-  if(size > 0) {
+  if (size > 0) {
     memset(ptr, 0, static_cast<uint32_t>(size));
     m_allocated_size -= static_cast<uint64_t>(size);
     assert(m_allocated_size <= m_total_size);

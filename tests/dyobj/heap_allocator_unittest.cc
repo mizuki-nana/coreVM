@@ -43,8 +43,8 @@ TEST_F(heap_allocator_simple_test, TestAllocation)
 
   assert(a);
 
-  for(int i = 0; i < 10; ++i) a[i] = i;
-  for(int i = 0; i < 10; ++i) ASSERT_EQ(i, a[i]);
+  for (int i = 0; i < 10; ++i) a[i] = i;
+  for (int i = 0; i < 10; ++i) ASSERT_EQ(i, a[i]);
 
   allocator.deallocate(a, 10);
 }

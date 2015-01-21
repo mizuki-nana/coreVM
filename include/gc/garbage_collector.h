@@ -96,10 +96,10 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noex
     return object.is_garbage_collectible();
   };
 
-  for(auto itr = m_heap.begin(); itr != m_heap.end();) {
-    if(remove_criterion(itr)) {
+  for (auto itr = m_heap.begin(); itr != m_heap.end();) {
+    if (remove_criterion(itr)) {
       dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
-      if(f) {
+      if (f) {
         (*f)(obj);
       }
       auto itr_next = itr;

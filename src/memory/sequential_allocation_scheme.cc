@@ -54,7 +54,7 @@ corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const n
     << ")                                              |" << std::endl;
   std::cout << BLANK_SPACE << std::endl;
 
-  for(auto itr = cbegin(); itr != cend(); itr++) {
+  for (auto itr = cbegin(); itr != cend(); itr++) {
     block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
 
     std::cout << "| ";
@@ -125,15 +125,15 @@ corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
 {
   iterator_type itr = this->begin();
 
-  while(itr != this->end()) {
+  while (itr != this->end()) {
     iterator_type current = itr;
     iterator_type next = ++itr;
 
-    if(next != this->end()) {
+    if (next != this->end()) {
       block_descriptor_type current_block = static_cast<block_descriptor_type>(*current);
       block_descriptor_type next_block = static_cast<block_descriptor_type>(*next);
 
-      if(current_block.actual_size == 0 && next_block.actual_size == 0) {
+      if (current_block.actual_size == 0 && next_block.actual_size == 0) {
         current_block.size += next_block.size;
         next_block.size = 0;
         *current = current_block;
@@ -159,12 +159,12 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
 
   itr = this->find_fit(size);
 
-  if(itr != this->end()) {
+  if (itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
     block_found.actual_size = size;
     *itr = block_found;
 
-    if(block_found.size > size) {
+    if (block_found.size > size) {
       this->split(itr, block_found.size - size, static_cast<uint64_t>(block_found.offset + size));
       block_found.size = size;
     }
@@ -191,7 +191,7 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     }
   );
 
-  if(itr != this->end()) {
+  if (itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
     size_freed = static_cast<ssize_t>(block_found.actual_size);
@@ -247,11 +247,11 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
     this->begin(),
     this->end(),
     [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if(block_a.actual_size != 0) {
+      if (block_a.actual_size != 0) {
         return false;
       }
 
-      if(block_b.actual_size != 0) {
+      if (block_b.actual_size != 0) {
         return true;
       }
 
@@ -259,13 +259,13 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
     }
   );
 
-  if(itr == this->end()) {
+  if (itr == this->end()) {
     return itr;
   }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if(! (block_found.actual_size == 0 && block_found.size >= size) ) {
+  if (! (block_found.actual_size == 0 && block_found.size >= size) ) {
     itr = this->end();
   }
 
@@ -292,11 +292,11 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
     this->begin(),
     this->end(),
     [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
-      if(block_b.actual_size != 0) {
+      if (block_b.actual_size != 0) {
         return false;
       }
 
-      if(block_a.actual_size != 0) {
+      if (block_a.actual_size != 0) {
         return true;
       }
 
@@ -304,13 +304,13 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
     }
   );
 
-  if(itr == this->end()) {
+  if (itr == this->end()) {
     return itr;
   }
 
   block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-  if(! (block_found.actual_size == 0 && block_found.size >= size) ) {
+  if (! (block_found.actual_size == 0 && block_found.size >= size) ) {
     itr = this->end();
   }
 
@@ -343,14 +343,14 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
 
   itr = std::find_if(last_itr, this->end(), criterion);
 
-  if(itr != end()) {
+  if (itr != end()) {
     this->m_last_itr = itr;
     return itr;
   }
 
   itr = std::find_if(this->begin(), itr, criterion);
 
-  if(itr != end()) {
+  if (itr != end()) {
     this->m_last_itr = itr;
   }
 
@@ -411,7 +411,7 @@ corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
 
   itr = this->find_fit(size);
 
-  if(itr != this->end()) {
+  if (itr != this->end()) {
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
     block_found.actual_size = size;
     *itr = block_found;
@@ -431,7 +431,7 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
 
   iterator_type itr = this->end();
 
-  while(1) {
+  while (1) {
     itr = std::find_if(
       this->begin(),
       this->end(),
@@ -440,13 +440,13 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
       }
     );
 
-    if(itr == this->end()) {
+    if (itr == this->end()) {
       break;
     }
 
     block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
 
-    if(block_found.size / 2 >= size) { // split
+    if (block_found.size / 2 >= size) { // split
       block_found.size = block_found.size / 2;
       set_nth_bit_uint8(&block_found.flags, FLAG_SPLIT);
       *itr = block_found;
@@ -476,18 +476,18 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 
   bool has_freed_blocks = true;
 
-  while(has_freed_blocks) {
+  while (has_freed_blocks) {
 
     has_freed_blocks = false;
 
-    for(iterator_type itr = begin(); itr != end(); itr++) {
+    for (iterator_type itr = begin(); itr != end(); itr++) {
       iterator_type current_itr = itr;
       iterator_type next_itr = current_itr;
       ++next_itr;
 
       block_descriptor_type current_block = static_cast<block_descriptor_type>(*itr);
 
-      if(itr != end() && next_itr != end()) {
+      if (itr != end() && next_itr != end()) {
 
         block_descriptor_type next_block = static_cast<block_descriptor_type>(*next_itr);
 
@@ -496,10 +496,10 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 
         bool isParentSplit = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
 
-        if(isSplit && current_block.actual_size == 0 && next_block.actual_size == 0) {
+        if (isSplit && current_block.actual_size == 0 && next_block.actual_size == 0) {
 
           uint8_t flags = 0;
-          if(isParentSplit) {
+          if (isParentSplit) {
             set_nth_bit_uint8(&flags, FLAG_PARENT_SPLIT);
             set_nth_bit_uint8(&flags, FLAG_SPLIT);
           }

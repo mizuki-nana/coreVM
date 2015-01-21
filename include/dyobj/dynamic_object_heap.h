@@ -144,7 +144,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object
 {
   auto itr = m_container.find(id);
 
-  if(itr != m_container.end()) {
+  if (itr != m_container.end()) {
     erase(itr);
   }
 }

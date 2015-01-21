@@ -89,7 +89,7 @@ TEST_F(object_container_unittest, TestIterator)
 
   std::set<int> set;
 
-  for(auto itr = m_container.begin(); itr != m_container.end(); ++itr) {
+  for (auto itr = m_container.begin(); itr != m_container.end(); ++itr) {
     T t = *itr;
     set.insert(t.data);
   }
@@ -126,7 +126,7 @@ TEST_F(object_container_unittest, TestConstIterator)
 
   std::set<int> set;
 
-  for(auto itr = m_container.cbegin(); itr != m_container.cend(); ++itr) {
+  for (auto itr = m_container.cbegin(); itr != m_container.cend(); ++itr) {
     T t = *itr;
     set.insert(t.data);
   }

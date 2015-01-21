@@ -80,7 +80,7 @@ public:
       }
 
       virtual inline void dec_ref_count() noexcept {
-        if(m_count > 0) {
+        if (m_count > 0) {
           --m_count;
         }
       }

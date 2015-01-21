@@ -274,7 +274,7 @@ corevm::memory::object_container<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
-  if(!p) {
+  if (!p) {
     return nullptr;
   }
 
@@ -293,7 +293,7 @@ corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
 {
   uint64_t addr = static_cast<uint64_t>( (char*)p - (char*)(0) );
 
-  if(m_addrs.find(p) == m_addrs.end()) {
+  if (m_addrs.find(p) == m_addrs.end()) {
     throw corevm::memory::invalid_address_error(addr);
   }
 }
@@ -328,7 +328,7 @@ template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
 {
-  if(itr == end()) {
+  if (itr == end()) {
     return;
   }
 
@@ -340,7 +340,7 @@ template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
 {
-  if(itr == cend()) {
+  if (itr == cend()) {
     return;
   }
 

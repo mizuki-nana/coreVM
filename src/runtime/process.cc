@@ -152,7 +152,7 @@ corevm::runtime::process::has_frame() const
 corevm::runtime::frame&
 corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_error)
 {
-  if(m_call_stack.empty()) {
+  if (m_call_stack.empty()) {
     throw corevm::runtime::frame_not_found_error();
   }
 
@@ -203,7 +203,7 @@ corevm::runtime::process::stack_size() const
 const corevm::dyobj::dyobj_id&
 corevm::runtime::process::top_stack() throw(corevm::runtime::object_stack_empty_error)
 {
-  if(m_dyobj_stack.empty()) {
+  if (m_dyobj_stack.empty()) {
     throw corevm::runtime::object_stack_empty_error();
   }
 
@@ -219,7 +219,7 @@ corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 const corevm::dyobj::dyobj_id
 corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_error)
 {
-  if(m_dyobj_stack.empty()) {
+  if (m_dyobj_stack.empty()) {
     throw corevm::runtime::object_stack_empty_error();
   }
 
@@ -324,8 +324,8 @@ corevm::runtime::process::start()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
-  while(can_execute()) {
-    while(m_pause_exec) {}
+  while (can_execute()) {
+    while (m_pause_exec) {}
 
     corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(m_instrs[m_pc]);
 
@@ -334,10 +334,10 @@ corevm::runtime::process::start()
 
     sigsetjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
 
-    if(!corevm::runtime::sighandler_registrar::sig_raised) {
+    if (!corevm::runtime::sighandler_registrar::sig_raised) {
       handler->execute(instr, *this);
     } else {
-      if(!this->can_execute()) {
+      if (!this->can_execute()) {
         break;
       }
     }
@@ -352,7 +352,7 @@ corevm::runtime::process::start()
 void
 corevm::runtime::process::maybe_gc()
 {
-  if(!(this->should_gc())) {
+  if (!(this->should_gc())) {
     return;
   }
 
@@ -379,16 +379,16 @@ void
 corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   throw(corevm::runtime::invalid_instr_addr_error)
 {
-  if(addr >= m_instrs.size()) {
+  if (addr >= m_instrs.size()) {
     throw corevm::runtime::invalid_instr_addr_error();
   }
 
   m_pc = addr;
 
-  while(this->has_frame()) {
+  while (this->has_frame()) {
     corevm::runtime::frame& frame = this->top_frame();
 
-    if(! (frame.get_start_addr() > addr) ) {
+    if (! (frame.get_start_addr() > addr) ) {
       break;
     }
 
@@ -413,17 +413,17 @@ corevm::runtime::process::should_gc()
 {
   size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
-  for(int i = 0; i < flag_size; ++i) {
+  for (int i = 0; i < flag_size; ++i) {
     bool bit_set = is_bit_set(m_gc_flag, i);
 
-    if(!bit_set) {
+    if (!bit_set) {
       continue;
     }
 
     corevm::runtime::gc_rule_meta::gc_bitfields bit = static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
     const corevm::runtime::gc_rule* gc_rule = corevm::runtime::gc_rule_meta::get_gc_rule(bit);
 
-    if(gc_rule && gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this))) {
+    if (gc_rule && gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this))) {
       return true;
     }
   }
@@ -465,13 +465,13 @@ corevm::runtime::process::handle_signal(
 {
   auto itr = m_sig_instr_map.find(sig);
 
-  if(itr != m_sig_instr_map.end()) {
+  if (itr != m_sig_instr_map.end()) {
     corevm::runtime::vector vector = itr->second;
     this->pause_exec();
     this->insert_vector(vector);
     this->resume_exec();
 
-  } else if(handler != nullptr) {
+  } else if (handler != nullptr) {
     handler->handle_signal(sig, *this);
   }
 }

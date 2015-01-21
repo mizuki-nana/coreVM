@@ -120,7 +120,7 @@ corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
 {
   corevm::runtime::sighandler_registrar::process = process;
 
-  for(
+  for (
     auto itr = corevm::runtime::sighandler_registrar::handler_map.begin();
     itr != corevm::runtime::sighandler_registrar::handler_map.end();
     ++itr

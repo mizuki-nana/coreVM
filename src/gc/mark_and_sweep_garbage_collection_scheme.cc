@@ -37,7 +37,7 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::gc(
       _dynamic_object_heap_type::dynamic_object_id_type id,
       _dynamic_object_heap_type::dynamic_object_type object
     ) {
-      if(this->is_root_object(object)) {
+      if (this->is_root_object(object)) {
         this->mark(heap, object);
       }
     }
@@ -60,7 +60,7 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
   using _dynamic_object_type = typename
     corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_type;
 
-  if(!object.is_garbage_collectible()) {
+  if (!object.is_garbage_collectible()) {
     return;
   }
 

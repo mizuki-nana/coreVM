@@ -43,7 +43,7 @@ public:
 
     ASSERT_EQ(m_heap.size(), ids.size());
 
-    for(auto itr = ids.begin(); itr != ids.end(); ++itr) {
+    for (auto itr = ids.begin(); itr != ids.end(); ++itr) {
       corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(*itr);
 
       ASSERT_NO_THROW(

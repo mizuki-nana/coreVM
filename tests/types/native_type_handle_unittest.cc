@@ -35,7 +35,7 @@ public:
   ) {
     T actual_value = corevm::types::get_value_from_handle<T>(handle);
 
-    if(!decimal_value) {
+    if (!decimal_value) {
       ASSERT_EQ(expected_value, actual_value);
     } else {
       ASSERT_FLOAT_EQ(expected_value, actual_value);
@@ -52,7 +52,7 @@ public:
     typename corevm::types::native_type_handle result =
       corevm::types::apply_unary_visitor<visitor_type>(handle);
 
-    if(on_self) {
+    if (on_self) {
       assert_handle_value(handle, expected_value, decimal_value);
     } else {
       assert_handle_value(result, expected_value, decimal_value);

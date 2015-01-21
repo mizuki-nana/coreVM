@@ -182,7 +182,7 @@ corevm::runtime::instr_handler_meta::find(corevm::runtime::instr_code instr_code
 {
   auto itr = corevm::runtime::instr_handler_meta::instr_info_map.find(instr_code);
 
-  if(itr == corevm::runtime::instr_handler_meta::instr_info_map.end()) {
+  if (itr == corevm::runtime::instr_handler_meta::instr_info_map.end()) {
     throw corevm::runtime::invalid_instr_error();
   }
 
@@ -207,7 +207,7 @@ corevm::runtime::instr_handler_meta::instr_to_string(const corevm::runtime::inst
 {
   corevm::runtime::instr_info instr_info = corevm::runtime::instr_handler_meta::validate_instr(instr);
 
-  if(instr_info.num_oprd == 1) {
+  if (instr_info.num_oprd == 1) {
     return str(boost::format("<%d %d __>") % instr.code % instr.oprd1);
   } else {
     return str(boost::format("<%d %d %d>") % instr.code % instr.oprd1 % instr.oprd2);
@@ -479,7 +479,7 @@ corevm::runtime::instr_handler_gethndl::execute(
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
 
-  if(ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
+  if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
     throw corevm::runtime::native_type_handle_not_found_error();
   }
 
@@ -513,7 +513,7 @@ corevm::runtime::instr_handler_clrhndl::execute(
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
 
-  if(ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
+  if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY) {
     throw corevm::runtime::native_type_handle_deletion_error();
   }
 
@@ -555,7 +555,7 @@ corevm::runtime::instr_handler_rtrn::execute(
 
   corevm::runtime::instr_addr return_addr = frame.get_return_addr();
 
-  if(return_addr == corevm::runtime::NONESET_INSTR_ADDR) {
+  if (return_addr == corevm::runtime::NONESET_INSTR_ADDR) {
     throw corevm::runtime::invalid_instr_addr_error(); 
   }
 
@@ -573,9 +573,9 @@ corevm::runtime::instr_handler_jmp::execute(
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
 
-  if(addr == corevm::runtime::NONESET_INSTR_ADDR) {
+  if (addr == corevm::runtime::NONESET_INSTR_ADDR) {
     throw corevm::runtime::invalid_instr_addr_error(); 
-  } else if(addr < starting_addr) {
+  } else if (addr < starting_addr) {
     throw corevm::runtime::invalid_instr_addr_error();
   }
 
@@ -593,9 +593,9 @@ corevm::runtime::instr_handler_jmpif::execute(
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
 
-  if(addr == corevm::runtime::NONESET_INSTR_ADDR) {
+  if (addr == corevm::runtime::NONESET_INSTR_ADDR) {
     throw corevm::runtime::invalid_instr_addr_error(); 
-  } else if(addr < starting_addr) {
+  } else if (addr < starting_addr) {
     throw corevm::runtime::invalid_instr_addr_error();
   }
 
@@ -606,7 +606,7 @@ corevm::runtime::instr_handler_jmpif::execute(
 
   bool value = corevm::types::get_value_from_handle<bool>(hndl2);
 
-  if(value) {
+  if (value) {
     process.set_pc(addr);
   }
 }
@@ -696,7 +696,7 @@ corevm::runtime::instr_handler_getargs::execute(
   corevm::runtime::frame& frame = process.top_frame();
   corevm::types::native_array array;
 
-  while(frame.has_params()) {
+  while (frame.has_params()) {
     corevm::dyobj::dyobj_id id = frame.pop_param();
     array.push_back(id);
   }
@@ -714,7 +714,7 @@ corevm::runtime::instr_handler_getkwargs::execute(
 
   std::list<corevm::runtime::variable_key> params = frame.param_value_pair_keys();
 
-  for(auto itr = params.begin(); itr != params.end(); ++itr) {
+  for (auto itr = params.begin(); itr != params.end(); ++itr) {
     corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(*itr);
     corevm::dyobj::dyobj_id id = frame.pop_param_value_pair(key);
 

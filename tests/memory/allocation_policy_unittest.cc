@@ -53,8 +53,8 @@ TEST_F(allocation_policy_unit_test, TestAllocateAndDeallocate)
   int *nums = allocation_policy.allocate(N);
   assert(nums);
 
-  for(int i = 0; i < N; ++i) nums[i] = i;
-  for(int i = 0; i < N; ++i) ASSERT_EQ(i, nums[i]);
+  for (int i = 0; i < N; ++i) nums[i] = i;
+  for (int i = 0; i < N; ++i) ASSERT_EQ(i, nums[i]);
 
   allocation_policy.deallocate(nums, N);
 }
