@@ -77,6 +77,15 @@ protected:
             "[801, 802, 803],"
             "[901, 902, 903]"
           "],"
+          "\"__parent__\": \"hello_world_decorator\""
+        "},"
+        "{"
+          "\"__name__\": \"hello_world_decorator\","
+          "\"__vector__\": ["
+            "[701, 702, 703],"
+            "[801, 802, 803],"
+            "[901, 902, 903]"
+          "],"
           "\"__parent__\": \"__main__\""
         "},"
         "{"
@@ -93,6 +102,19 @@ protected:
 };
 
 
+TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
+{
+  corevm::runtime::process process;
+
+  ASSERT_NO_THROW(
+    {
+      corevm::frontend::load(PATH, process);
+    }
+  );
+
+  ASSERT_EQ(2, process.closure_count());
+}
+
 TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)
 {
   std::string invalid_path("some/random/path/example.core");
@@ -103,17 +125,5 @@ TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)
       corevm::frontend::load(invalid_path, process);
     },
     corevm::frontend::file_loading_error
-  );
-}
-
-
-TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
-{
-  corevm::runtime::process process;
-
-  ASSERT_NO_THROW(
-    {
-      corevm::frontend::load(PATH, process);
-    }
   );
 }

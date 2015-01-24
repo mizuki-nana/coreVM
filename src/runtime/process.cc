@@ -22,14 +22,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/process.h"
 
+#include "../../include/dyobj/common.h"
+#include "../../include/dyobj/dynamic_object_heap.h"
+#include "../../include/gc/garbage_collector.h"
+#include "../../include/gc/garbage_collection_scheme.h"
+#include "../../include/runtime/closure.h"
+#include "../../include/runtime/common.h"
+#include "../../include/runtime/errors.h"
+#include "../../include/runtime/frame.h"
 #include "../../include/runtime/gc_rule.h"
+#include "../../include/runtime/instr.h"
+#include "../../include/runtime/native_types_pool.h"
 #include "../../include/runtime/sighandler_registrar.h"
+#include "../../include/runtime/vector.h"
+
+#include <sneaker/atomic/atomic_incrementor.h>
+#include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
-#include <setjmp.h>
 #include <stdexcept>
+
+#include <setjmp.h>
 
 
 namespace corevm {
@@ -407,6 +422,26 @@ void
 corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
   m_vectors.push_back(vector);
+}
+
+corevm::runtime::closure_id
+corevm::runtime::process::get_new_closure_id()
+{
+  corevm::runtime::closure_id id = m_closure_id_incrementor;
+  ++m_closure_id_incrementor;
+  return id;
+}
+
+void
+corevm::runtime::process::insert_closure(const corevm::runtime::closure closure)
+{
+  m_closure_table[closure.id] = closure;
+}
+
+size_t
+corevm::runtime::process::closure_count() const
+{
+  return m_closure_table.size();
 }
 
 bool

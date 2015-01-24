@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
+#include "closure.h"
+#include "common.h"
 #include "errors.h"
 #include "frame.h"
 #include "instr.h"
@@ -34,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/gc/garbage_collector.h"
 #include "../../include/gc/garbage_collection_scheme.h"
 
+#include <sneaker/atomic/atomic_incrementor.h>
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <climits>
@@ -48,7 +51,8 @@ namespace corevm {
 namespace runtime {
 
 
-/* A process is a unit for executing a sequence of instructions.
+/**
+ * A process is a unit for executing a sequence of instructions.
  * It's supposed to have the following:
  *
  * - A flag for pause/resume execution.
@@ -59,8 +63,9 @@ namespace runtime {
  * - A heap for holding dynamic objects.
  * - A call stack for executing blocks of instructions.
  * - A pool of native type handles.
- * - An incrementor for native handle IDs.
- * */
+ * - A table for storing closures.
+ * - An incrementor for closure IDs.
+ */
 class process : public sneaker::threading::fixed_time_interval_daemon_service {
 
 public:
@@ -134,6 +139,12 @@ public:
 
   void append_vector(const corevm::runtime::vector&);
 
+  corevm::runtime::closure_id get_new_closure_id();
+
+  void insert_closure(const corevm::runtime::closure);
+
+  size_t closure_count() const;
+
   virtual bool start();
 
   void maybe_gc();
@@ -176,9 +187,11 @@ private:
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::stack<corevm::runtime::frame> m_call_stack;
   native_types_pool_type m_ntvhndl_pool;
+  std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> m_closure_table;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
   std::unordered_map<uint64_t, std::string> m_encoding_map;
   std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
+  sneaker::atomic::atomic_incrementor<corevm::runtime::closure_id, MAX_CLOSURE_ID> m_closure_id_incrementor;
 };
 
 

@@ -20,11 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_COMMON_H_
-#define COREVM_RUNTIME_COMMON_H_
+#ifndef COREVM_CLOSURE_H_
+#define COREVM_CLOSURE_H_
 
-#include <cstdint>
-#include <limits>
+#include "common.h"
+#include "vector.h"
 
 
 namespace corevm {
@@ -33,35 +33,12 @@ namespace corevm {
 namespace runtime {
 
 
-typedef int32_t instr_addr;
-
-
-typedef uint16_t instr_code;
-
-
-typedef uint64_t instr_oprd;
-
-
-typedef int32_t variable_key;
-
-
-typedef uint8_t gc_bitfield_t;
-
-
-typedef int64_t closure_id;
-
-
-const closure_id MAX_CLOSURE_ID = std::numeric_limits<closure_id>::max();
-
-
-const closure_id NONESET_CLOSURE_ID = -1;
-
-
-const instr_addr NONESET_INSTR_ADDR = -1;
-
-
-// Default size of native types pool: 128 MB.
-const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
+typedef struct closure {
+public:
+  corevm::runtime::closure_id id;
+  corevm::runtime::closure_id parent_id;
+  corevm::runtime::vector vector;
+} closure;
 
 
 } /* end namespace runtime */
@@ -70,4 +47,4 @@ const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
 } /* end namespace corevm */
 
 
-#endif /* COREVM_RUNTIME_COMMON_H_ */
+#endif /* COREVM_CLOSURE_H_ */

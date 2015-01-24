@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../../include/frontend/errors.h"
 #include "../../include/frontend/utils.h"
+#include "../../include/runtime/common.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/vector.h"
 
@@ -37,10 +38,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 
-using boost::format;
 using sneaker::json::JSON;
 
 
@@ -55,7 +56,7 @@ namespace internal {
 
 class bytecode_loader {
 public:
-  virtual void load_bytecode(const JSON&, corevm::runtime::process&) = 0;
+  virtual void load(const JSON&, corevm::runtime::process&) = 0;
   virtual std::string schema() const = 0;
 };
 
@@ -161,54 +162,86 @@ public:
       "}";
   }
 
-  virtual void load_bytecode(const JSON& content_json, corevm::runtime::process& process)
+  virtual void load(const JSON& content_json, corevm::runtime::process& process)
   {
-    // TODO: [COREVM-115] Implement v0.1 bytecode loader functionality
-
-    /*
     const JSON::object& json_object = content_json.object_items();
 
+    // [COREVM-116] Implement mechanism to check bytecode format and target verisons
     const JSON::string& format = json_object.at("format").string_value();
     const JSON::string& format_version = json_object.at("format-version").string_value();
     const JSON::string& target_version = json_object.at("target-version").string_value();
     const JSON::string& encoding = json_object.at("encoding").string_value();
+
+    // Load encoding map (keys and values are flipped)
     const JSON::object& encoding_map = json_object.at("encoding_map").object_items();
-    const JSON::object& __MAIN__ = json_object.at("__MAIN__").object_items();
 
-    const JSON::object& object_attributes = __MAIN__.at("attributes").object_items();
-    const JSON::array& object_vectors = __MAIN__.at("vector").array_items();
-
-    // Load encoding map
     for (auto itr = encoding_map.begin(); itr != encoding_map.end(); ++itr) {
       const JSON& raw_value = static_cast<JSON>(itr->first);
       const JSON& raw_key = static_cast<JSON>(itr->second);
 
-      // TODO: [COREVM-107] Robust validation on schema encoding map
-      if (!raw_key.is_number() || !raw_value.is_string()) {
-        continue;
+      const std::string value = static_cast<std::string>(raw_value.string_value());
+
+      if (!raw_key.is_number()) {
+        throw file_loading_error(
+          str(
+            boost::format("Invalid encoding value for key: \"%s\"") % value
+          )
+        );
       }
 
       const uint64_t key = static_cast<uint64_t>(raw_key.int_value());
-      const std::string value = static_cast<std::string>(raw_value.string_value());
 
       process.set_encoding_key_value_pair(key, value);
     }
 
-    // Load vectors
-    for (auto itr = object_vectors.begin(); itr != object_vectors.end(); ++itr) {
-      const JSON& vector_json_raw = static_cast<JSON>(*itr);
-      const JSON::object& vector_object = vector_json_raw.object_items();
+    const JSON::array& closures = json_object.at("__MAIN__").array_items();
 
-      const JSON::string& __name__ = vector_object.at("__name__").string_value();
-      const JSON& __inner__ = vector_object.at("__inner__");
+    // Load closures
 
-      corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__inner__);
+    // Translate local closure identifiers to global IDs.
+    std::unordered_map<std::string, corevm::runtime::closure_id> str_to_closure_id_map;
 
-      process.append_vector(vector);
+    for (auto itr = closures.begin(); itr != closures.end(); ++itr) {
+      const JSON& closure_raw = static_cast<JSON>(*itr);
+      const JSON::object& closure = closure_raw.object_items();
+
+      const JSON::string& __name__ = closure.at("__name__").string_value();
+      const JSON& __vector__ = closure.at("__vector__");
+
+      const std::string name = static_cast<std::string>(__name__);
+      corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__vector__);
+
+      if (closure.find("__parent__") == closure.end()) {
+        process.append_vector(vector);
+        continue;
+      }
+
+      const JSON::string& __parent__ = closure.at("__parent__").string_value();
+      const std::string parent = static_cast<std::string>(__parent__);
+
+      if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end()) {
+        str_to_closure_id_map[name] = process.get_new_closure_id();
+      }
+
+      if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end()) {
+        str_to_closure_id_map[parent] = \
+          parent.empty() ? corevm::runtime::NONESET_CLOSURE_ID : process.get_new_closure_id();
+      }
+
+      corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
+      corevm::runtime::closure_id parent_id = str_to_closure_id_map.at(parent);
+
+      process.insert_closure(
+        corevm::runtime::closure {
+          .id = id,
+          .parent_id = parent_id,
+          .vector = vector
+        }
+      );
     }
-    */
   }
-};
+
+}; /* end class bytecode_loader_v0_1 */
 
 
 typedef struct bytecode_loader_wrapper {
@@ -249,7 +282,7 @@ corevm::frontend::internal::schema_repository::load_by_format_version(
   if (itr == bytecode_loader_definitions.end()) {
     throw file_loading_error(
       str(
-        format("Unrecognized format-version: \"%s\"") % format_version
+        boost::format("Unrecognized format-version: \"%s\"") % format_version
       )
     );
   }
@@ -285,13 +318,13 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
   } catch (const sneaker::json::json_validation_error& ex) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Invalid format in file: %s") % ex.what()
+        boost::format("Invalid format in file: %s") % ex.what()
       )
     );
   }
 
   // Load
-  loader->load_bytecode(content_json, process);
+  loader->load(content_json, process);
 }
 
 
@@ -319,7 +352,7 @@ corevm::frontend::load(const std::string& path, corevm::runtime::process& proces
   } catch (const std::ios_base::failure& ex) {
     throw corevm::frontend::file_loading_error(
       str(
-        format(
+        boost::format(
           "Error while loading file \"%s\": %s"
         ) % path % ex.what()
       )
@@ -335,7 +368,7 @@ corevm::frontend::load(const std::string& path, corevm::runtime::process& proces
   } catch (const sneaker::json::invalid_json_error& ex) {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Error while parsing file \"%s\": %s") % path % ex.what()
+        boost::format("Error while parsing file \"%s\": %s") % path % ex.what()
       )
     );
   }
