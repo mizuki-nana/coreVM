@@ -95,8 +95,10 @@ public:
             "\"type\": \"string\""
           "},"
           "\"encoding_map\": {"
-            "\"type\": \"object\","
-            "\"additionalProperties\": true"
+            "\"type\": \"array\","
+            "\"items\": {"
+              "\"$ref\": \"#/definitions/encoding_pair\""
+            "}"
           "},"
           "\"__MAIN__\": {"
             "\"type\": \"array\","
@@ -115,6 +117,17 @@ public:
           "\"__MAIN__\""
         "],"
         "\"definitions\": {"
+          "\"encoding_pair\": {"
+            "\"type\": \"object\","
+            "\"properties\": {"
+              "\"key\": {"
+                "\"type\": \"string\""
+              "},"
+              "\"value\": {"
+                "\"type\": \"integer\""
+              "}"
+            "}"
+          "},"
           "\"instr\": {"
             "\"type\": \"integer\","
             "\"minimum\": 0,"
@@ -172,23 +185,18 @@ public:
     const JSON::string& target_version = json_object.at("target-version").string_value();
     const JSON::string& encoding = json_object.at("encoding").string_value();
 
-    // Load encoding map (keys and values are flipped)
-    const JSON::object& encoding_map = json_object.at("encoding_map").object_items();
+    // Load encoding map.
+    const JSON::array& encoding_map = json_object.at("encoding_map").array_items();
 
     for (auto itr = encoding_map.begin(); itr != encoding_map.end(); ++itr) {
-      const JSON& raw_value = static_cast<JSON>(itr->first);
-      const JSON& raw_key = static_cast<JSON>(itr->second);
+      const JSON& raw_encoding_pair = static_cast<JSON>(*itr);
+      const JSON::object& encoding_pair = raw_encoding_pair.object_items();
+
+      // Keys and values are flipped.
+      const JSON& raw_value = encoding_pair.at("key");
+      const JSON& raw_key = encoding_pair.at("value");
 
       const std::string value = static_cast<std::string>(raw_value.string_value());
-
-      if (!raw_key.is_number()) {
-        throw file_loading_error(
-          str(
-            boost::format("Invalid encoding value for key: \"%s\"") % value
-          )
-        );
-      }
-
       const uint64_t key = static_cast<uint64_t>(raw_key.int_value());
 
       process.set_encoding_key_value_pair(key, value);
@@ -196,7 +204,7 @@ public:
 
     const JSON::array& closures = json_object.at("__MAIN__").array_items();
 
-    // Load closures
+    /* --------------------------- Load closures. --------------------------- */
 
     // Translate local closure identifiers to global IDs.
     std::unordered_map<std::string, corevm::runtime::closure_id> str_to_closure_id_map;
