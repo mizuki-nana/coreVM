@@ -20,10 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_LOADER_H_
-#define COREVM_BYTECODE_LOADER_H_
+#ifndef COREVM_BYTECODE_LOADER_V0_1_H_
+#define COREVM_BYTECODE_LOADER_V0_1_H_
 
-#include "errors.h"
+#include "bytecode_loader.h"
+
 #include "../runtime/process.h"
 
 #include <sneaker/json/json.h>
@@ -40,13 +41,10 @@ namespace frontend {
 using sneaker::json::JSON;
 
 
-class bytecode_loader {
+class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader {
 public:
-  virtual void load(const JSON&, corevm::runtime::process&) = 0;
-  virtual std::string schema() const = 0;
-
-  static void load(const std::string&, corevm::runtime::process&)
-    throw(corevm::frontend::file_loading_error);
+  virtual void load(const JSON&, corevm::runtime::process&);
+  virtual std::string schema() const;
 };
 
 
@@ -56,4 +54,4 @@ public:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_BYTECODE_LOADER_H_ */
+#endif /* COREVM_BYTECODE_LOADER_V0_1_H_ */

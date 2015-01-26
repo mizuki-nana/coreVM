@@ -20,40 +20,34 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_LOADER_H_
-#define COREVM_BYTECODE_LOADER_H_
+#ifndef COREVM_BYTECODE_LOADER_UNITTEST_H_
+#define COREVM_BYTECODE_LOADER_UNITTEST_H_
 
-#include "errors.h"
-#include "../runtime/process.h"
+#include <sneaker/testing/_unittest.h>
 
-#include <sneaker/json/json.h>
-
-#include <string>
+#include <fstream>
 
 
-namespace corevm {
+class bytecode_loader_unittest : public ::testing::Test {
+protected:
+  static const char* PATH;
 
+  virtual void SetUp() {
+    std::ofstream f(PATH, std::ios::binary);
+    f << this->bytecode();
+    f.close();
+  }
 
-namespace frontend {
+  virtual void TearDown() {
+    remove(PATH);
+  }
 
-
-using sneaker::json::JSON;
-
-
-class bytecode_loader {
-public:
-  virtual void load(const JSON&, corevm::runtime::process&) = 0;
-  virtual std::string schema() const = 0;
-
-  static void load(const std::string&, corevm::runtime::process&)
-    throw(corevm::frontend::file_loading_error);
+  virtual const char* bytecode() {
+    return "";
+  }
 };
 
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
+const char* bytecode_loader_unittest::PATH = "./example.corevm";
 
 
-#endif /* COREVM_BYTECODE_LOADER_H_ */
+#endif /* COREVM_BYTECODE_LOADER_UNITTEST_H_ */

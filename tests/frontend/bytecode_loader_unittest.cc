@@ -20,103 +20,15 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/frontend/bytecode_loader.h"
+#include "bytecode_loader_unittest.h"
 
+#include "../../include/frontend/bytecode_loader.h"
 #include "../../include/runtime/process.h"
 
 #include <sneaker/testing/_unittest.h>
 
-#include <cassert>
-#include <fstream>
 #include <string>
 
-
-class bytecode_loader_unittest : public ::testing::Test {
-protected:
-  static const char* PATH;
-
-  virtual void SetUp() {
-    std::ofstream f(PATH, std::ios::binary);
-    f << this->bytecode();
-    f.close();
-  }
-
-  virtual void TearDown() {
-    remove(PATH);
-  }
-
-  virtual const char* bytecode() {
-    return "";
-  }
-};
-
-
-const char* bytecode_loader_unittest::PATH = "./example.corevm";
-
-
-class bytecode_loader_v0_1_unittest : public bytecode_loader_unittest {
-protected:
-  virtual const char* bytecode() {
-    return \
-    "{"
-      "\"format\": \"corevm\","
-      "\"format-version\": \"0.1\","
-      "\"target-version\": \"0.1\","
-      "\"path\": \"./example.corevm\","
-      "\"timestamp\": \"2014-10-12T15:33:30\","
-      "\"encoding\": \"utf8\","
-      "\"author\": \"Yanzheng Li\","
-      "\"encoding_map\": ["
-        "{"
-          "\"key\": \"name\","
-          "\"value\": 111"
-        "}"
-      "],"
-      "\"__MAIN__\": ["
-        "{"
-          "\"__name__\": \"hello_world\","
-          "\"__vector__\": ["
-            "[701, 702, 703],"
-            "[801, 802, 803],"
-            "[901, 902, 903]"
-          "],"
-          "\"__parent__\": \"hello_world_decorator\""
-        "},"
-        "{"
-          "\"__name__\": \"hello_world_decorator\","
-          "\"__vector__\": ["
-            "[701, 702, 703],"
-            "[801, 802, 803],"
-            "[901, 902, 903]"
-          "],"
-          "\"__parent__\": \"__main__\""
-        "},"
-        "{"
-          "\"__name__\": \"__main__\","
-          "\"__vector__\": ["
-            "[701, 702, 703],"
-            "[801, 802, 803],"
-            "[901, 902, 903]"
-          "]"
-        "}"
-      "]"
-    "}";
-  }
-};
-
-
-TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
-{
-  corevm::runtime::process process;
-
-  ASSERT_NO_THROW(
-    {
-      corevm::frontend::load(PATH, process);
-    }
-  );
-
-  ASSERT_EQ(2, process.closure_count());
-}
 
 TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)
 {
@@ -125,7 +37,7 @@ TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)
 
   ASSERT_THROW(
     {
-      corevm::frontend::load(invalid_path, process);
+      corevm::frontend::bytecode_loader::load(invalid_path, process);
     },
     corevm::frontend::file_loading_error
   );
