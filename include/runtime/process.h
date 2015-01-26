@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <climits>
 #include <cstdint>
+#include <list>
 #include <stack>
 #include <unordered_map>
 
@@ -145,6 +146,12 @@ public:
 
   size_t closure_count() const;
 
+  bool has_closure(corevm::runtime::closure_id) const;
+
+  const corevm::runtime::closure& get_closure_by_id(corevm::runtime::closure_id) const;
+
+  void get_frame_by_closure_id(corevm::runtime::closure_id, corevm::runtime::frame**);
+
   virtual bool start();
 
   void maybe_gc();
@@ -185,7 +192,7 @@ private:
   std::vector<corevm::runtime::vector> m_vectors;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
-  std::stack<corevm::runtime::frame> m_call_stack;
+  std::list<corevm::runtime::frame> m_call_stack;
   native_types_pool_type m_ntvhndl_pool;
   std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> m_closure_table;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;

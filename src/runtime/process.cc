@@ -42,7 +42,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <list>
+#include <stack>
 #include <stdexcept>
+#include <unordered_map>
 
 #include <setjmp.h>
 
@@ -172,7 +175,7 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
     throw corevm::runtime::frame_not_found_error();
   }
 
-  return m_call_stack.top();
+  return m_call_stack.back();
 }
 
 void
@@ -201,13 +204,13 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     }
   );
 
-  m_call_stack.pop();
+  m_call_stack.pop_back();
 }
 
 void
 corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 {
-  m_call_stack.push(frame);
+  m_call_stack.push_back(frame);
 }
 
 uint64_t
@@ -442,6 +445,35 @@ size_t
 corevm::runtime::process::closure_count() const
 {
   return m_closure_table.size();
+}
+
+bool
+corevm::runtime::process::has_closure(corevm::runtime::closure_id closure_id) const
+{
+  return m_closure_table.find(closure_id) != m_closure_table.end();
+}
+
+const corevm::runtime::closure&
+corevm::runtime::process::get_closure_by_id(corevm::runtime::closure_id closure_id) const
+{
+  return m_closure_table.at(closure_id);
+}
+
+void
+corevm::runtime::process::get_frame_by_closure_id(
+  corevm::runtime::closure_id closure_id, corevm::runtime::frame** frame_ptr)
+{
+  auto itr = std::find_if(
+    m_call_stack.begin(),
+    m_call_stack.end(),
+    [&](const corevm::runtime::frame& frame) {
+      return frame.closure_id() == closure_id;
+    }
+  );
+
+  if (itr != m_call_stack.end()) {
+    *frame_ptr = &(*itr);
+  }
 }
 
 bool

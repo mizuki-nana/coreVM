@@ -22,10 +22,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/frame.h"
 
+#include "../../include/runtime/common.h"
+#include "../../include/runtime/errors.h"
+
 #include <cstdint>
 
 
 corevm::runtime::frame::frame():
+  m_closure_id(corevm::runtime::NONESET_CLOSURE_ID),
   m_start_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_parent_scope_frame_ptr(nullptr),
@@ -267,4 +271,16 @@ corevm::runtime::frame::get_invisible_objs() const
   }
 
   return ids;
+}
+
+const corevm::runtime::closure_id
+corevm::runtime::frame::closure_id() const
+{
+  return m_closure_id;
+}
+
+void
+corevm::runtime::frame::set_closure_id(corevm::runtime::closure_id closure_id)
+{
+  m_closure_id = closure_id;
 }

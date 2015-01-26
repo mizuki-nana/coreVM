@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/dyobj/dyobj_id_helper.h"
+#include "../../include/runtime/common.h"
 #include "../../include/runtime/frame.h"
 #include "../../include/types/native_type_handle.h"
 
@@ -211,4 +212,17 @@ TEST_F(frame_unittest, TestListParamValuePairKeys)
   actual_keys.sort();
 
   ASSERT_EQ(expected_keys, actual_keys);
+}
+
+TEST_F(frame_unittest, TestGetAndSetClosureID)
+{
+  corevm::runtime::frame frame;
+
+  ASSERT_EQ(corevm::runtime::NONESET_CLOSURE_ID, frame.closure_id());
+
+  corevm::runtime::closure_id closure_id = 100;
+
+  frame.set_closure_id(closure_id);
+
+  ASSERT_EQ(closure_id, frame.closure_id());
 }

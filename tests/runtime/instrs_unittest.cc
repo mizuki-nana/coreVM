@@ -20,6 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "../../include/runtime/closure.h"
+#include "../../include/runtime/common.h"
 #include "../../include/runtime/process.h"
 #include "../../include/types/interfaces.h"
 #include "../../include/types/native_type_handle.h"
@@ -69,7 +71,49 @@ TEST_F(process_obj_instrs_test, TestInstrNEW)
 
 TEST_F(process_obj_instrs_test, TestInstrLDOBJ)
 {
-  // TODO: [COREVM-49] Complete instruction set and implementations
+  corevm::runtime::frame frame;
+  corevm::runtime::frame parent_frame;
+
+  corevm::runtime::closure_id closure_id = 10;
+  corevm::runtime::closure_id parent_closure_id = 100;
+
+  corevm::runtime::vector vector;
+
+  corevm::runtime::closure closure {
+    .id = closure_id,
+    .parent_id = parent_closure_id,
+    .vector = vector
+  };
+
+  corevm::runtime::closure parent_closure {
+    .id = parent_closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
+    .vector = vector
+  };
+
+  frame.set_closure_id(closure_id);
+  parent_frame.set_closure_id(parent_closure_id);
+
+  m_process.insert_closure(closure);
+  m_process.insert_closure(parent_closure);
+
+  corevm::runtime::variable_key key = 123;
+  corevm::dyobj::dyobj_id id = 456;
+
+  parent_frame.set_visible_var(key, id);
+
+  m_process.push_frame(parent_frame);
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_ldobj>(instr, 1);
+
+  ASSERT_EQ(id, m_process.top_stack());
 }
 
 TEST_F(process_obj_instrs_test, TestInstrSTOBJ)
@@ -183,7 +227,49 @@ TEST_F(process_obj_instrs_test, TestInstrPOP)
 
 TEST_F(process_obj_instrs_test, TestInstrLDOBJ2)
 {
-  // TODO: [COREVM-49] Complete instruction set and implementations
+  corevm::runtime::frame frame;
+  corevm::runtime::frame parent_frame;
+
+  corevm::runtime::closure_id closure_id = 10;
+  corevm::runtime::closure_id parent_closure_id = 100;
+
+  corevm::runtime::vector vector;
+
+  corevm::runtime::closure closure {
+    .id = closure_id,
+    .parent_id = parent_closure_id,
+    .vector = vector
+  };
+
+  corevm::runtime::closure parent_closure {
+    .id = parent_closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
+    .vector = vector
+  };
+
+  frame.set_closure_id(closure_id);
+  parent_frame.set_closure_id(parent_closure_id);
+
+  m_process.insert_closure(closure);
+  m_process.insert_closure(parent_closure);
+
+  corevm::runtime::variable_key key = 123;
+  corevm::dyobj::dyobj_id id = 456;
+
+  parent_frame.set_invisible_var(key, id);
+
+  m_process.push_frame(parent_frame);
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr = {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_ldobj2>(instr, 1);
+
+  ASSERT_EQ(id, m_process.top_stack());
 }
 
 TEST_F(process_obj_instrs_test, TestInstrSTOBJ2)
@@ -376,26 +462,6 @@ protected:
   corevm::runtime::process m_process;
 };
 
-
-TEST_F(process_functions_instrs_test, TestInstrFRM)
-{
-  ASSERT_THROW(
-    {
-      m_process.top_frame();
-    },
-    corevm::runtime::frame_not_found_error
-  );
-
-  corevm::runtime::instr instr;
-  corevm::runtime::instr_handler_frm handler;
-  handler.execute(instr, m_process);
-
-  ASSERT_NO_THROW(
-    {
-      m_process.top_frame();
-    }
-  );
-}
 
 TEST_F(process_functions_instrs_test, TestInstrPUTARG)
 {

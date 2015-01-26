@@ -39,7 +39,8 @@ namespace corevm {
 namespace runtime {
 
 
-/* Each frame is supposed to have:
+/**
+ * Each frame is supposed to have:
  *
  * - Return address.
  * - Pointer to the address caller frame.
@@ -49,7 +50,7 @@ namespace runtime {
  * - Parameter list (args).
  * - Optional parameter <-> default value mapping (kwargs).
  * - Evaluation stack.
- * */
+ */
 class frame {
 public:
   explicit frame();
@@ -113,7 +114,12 @@ public:
 
   std::list<corevm::dyobj::dyobj_id> get_invisible_objs() const;
 
+  const corevm::runtime::closure_id closure_id() const;
+
+  void set_closure_id(corevm::runtime::closure_id);
+
 protected:
+  corevm::runtime::closure_id m_closure_id;
   corevm::runtime::instr_addr m_start_addr;
   corevm::runtime::instr_addr m_return_addr;
   corevm::runtime::frame* m_parent_scope_frame_ptr;
