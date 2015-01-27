@@ -37,7 +37,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/vector.h"
 
 #include <sneaker/atomic/atomic_incrementor.h>
-#include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <algorithm>
 #include <cassert>
@@ -105,33 +104,7 @@ corevm::runtime::process::adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
 }
 
 
-const int COREVM_PROCESS_DEFAULT_PAUSE_TIME = 10;
-
-
-const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
-
-
 corevm::runtime::process::process():
-  sneaker::threading::fixed_time_interval_daemon_service(
-    COREVM_PROCESS_DEFAULT_PAUSE_TIME,
-    corevm::runtime::process::tick_handler,
-    false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
-  ),
-  m_pause_exec(false),
-  m_gc_flag(0),
-  m_pc(0)
-{
-  // Do nothing here.
-}
-
-corevm::runtime::process::process(const uint16_t interval):
-  sneaker::threading::fixed_time_interval_daemon_service(
-    interval,
-    corevm::runtime::process::tick_handler,
-    false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
-  ),
   m_pause_exec(false),
   m_gc_flag(0),
   m_pc(0)
@@ -338,12 +311,11 @@ corevm::runtime::process::can_execute()
   return m_pc < m_instrs.size();
 }
 
-bool
+void
 corevm::runtime::process::start()
 {
-  bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
-
   while (can_execute()) {
+
     while (m_pause_exec) {}
 
     corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(m_instrs[m_pc]);
@@ -363,9 +335,8 @@ corevm::runtime::process::start()
     corevm::runtime::sighandler_registrar::sig_raised = false;
 
     ++m_pc;
-  }
 
-  return res;
+  } /* end `while (can_execute())` */
 }
 
 void
@@ -497,14 +468,6 @@ corevm::runtime::process::should_gc()
   }
 
   return false;
-}
-
-void
-corevm::runtime::process::tick_handler(void* arg)
-{
-  assert(arg);
-  corevm::runtime::process* process = static_cast<corevm::runtime::process*>(arg);
-  process->maybe_gc();
 }
 
 void

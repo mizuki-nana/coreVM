@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/common.h"
 #include "../../include/runtime/gc_rule.h"
 #include "../../include/runtime/process.h"
+#include "../../include/runtime/process_runner.h"
 #include "../../include/runtime/sighandler_registrar.h"
 #include "../../include/runtime/vector.h"
 
@@ -41,19 +42,16 @@ TEST_F(process_unittest, TestInitialization)
   corevm::runtime::process process;
 }
 
-TEST_F(process_unittest, TestInitializationWithArgs)
-{
-  corevm::runtime::process process(1);
-}
-
 TEST_F(process_unittest, TestStart)
 {
   // TODO: [COREVM-117] Process start causes seg fault
 
+
   /******************************** DISABLED ***********************************
 
-  corevm::runtime::process process(1);
-  process.start();
+  corevm::runtime::process process;
+  corevm::runtime::process_runner runner(process);
+  runner.start();
 
   ******************************** DISABLED ***********************************/
 }

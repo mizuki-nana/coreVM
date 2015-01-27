@@ -37,7 +37,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/gc/garbage_collection_scheme.h"
 
 #include <sneaker/atomic/atomic_incrementor.h>
-#include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <climits>
 #include <cstdint>
@@ -67,7 +66,7 @@ namespace runtime {
  * - A table for storing closures.
  * - An incrementor for closure IDs.
  */
-class process : public sneaker::threading::fixed_time_interval_daemon_service {
+class process {
 
 public:
   typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
@@ -94,7 +93,6 @@ public:
 
 public:
   explicit process();
-  explicit process(const uint16_t);
   ~process();
 
   const corevm::runtime::instr_addr top_addr() const;
@@ -152,7 +150,7 @@ public:
 
   void get_frame_by_closure_id(corevm::runtime::closure_id, corevm::runtime::frame**);
 
-  virtual bool start();
+  void start();
 
   void maybe_gc();
 
@@ -179,8 +177,6 @@ public:
   native_types_pool_type::size_type max_ntvhndl_pool_size() const;
 
 private:
-  static void tick_handler(void*);
-
   bool should_gc();
 
   void insert_vector(corevm::runtime::vector& vector);
