@@ -20,40 +20,25 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_LOADER_V0_1_H_
-#define COREVM_BYTECODE_LOADER_V0_1_H_
 
-#include "bytecode_loader.h"
+/* Defines build version number */
 
-#include "../runtime/process.h"
-
-#include <sneaker/json/json.h>
-
-#include <string>
+#ifndef _COREVM_VERSION_H_
+#define _COREVM_VERSION_H_
 
 
-namespace corevm {
+// COREVM_VERSION % 100 is the patch level.
+// COREVM_VERSION / 100 % 1000 is the minor version.
+// COREVM_VERSION / 100000 is the major version.
+#define COREVM_VERSION 001000
 
 
-namespace frontend {
+// Canonical version.
+#define COREVM_CANONICAL_VERSION "0.1.0"
 
 
-using sneaker::json::JSON;
+// Short canonical version.
+#define COREVM_SHORT_CANONICAL_VERSION "0.1"
 
 
-class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader {
-public:
-  virtual void load(const JSON&, corevm::runtime::process&);
-  virtual std::string format() const;
-  virtual std::string version() const;
-  virtual std::string schema() const;
-};
-
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_BYTECODE_LOADER_V0_1_H_ */
+#endif /* _COREVM_VERSION_H_ */

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/bytecode_loader.h"
 
+#include "../../include/version.h"
 #include "../../include/frontend/bytecode_loader_v0_1.h"
 #include "../../include/frontend/errors.h"
 #include "../../include/frontend/utils.h"
@@ -55,14 +56,15 @@ namespace internal {
 
 
 typedef struct bytecode_loader_wrapper {
-  const std::string version;
   bytecode_loader* loader;
 } bytecode_loader_wrapper;
 
 
 class schema_repository {
 public:
-  static const bytecode_loader_wrapper load_by_format_version(const std::string&);
+  static bytecode_loader* load_by_format_and_version(
+    const std::string&, const std::string&);
+
 private:
   static const std::vector<bytecode_loader_wrapper> bytecode_loader_definitions;
 };
@@ -71,25 +73,44 @@ private:
 const std::vector<bytecode_loader_wrapper>
 corevm::frontend::internal::schema_repository::bytecode_loader_definitions {
   {
-    .version = "0.1",
     .loader = new bytecode_loader_v0_1(),
-  }, /* end 0.1 */
+  },
 };
 
 
-const bytecode_loader_wrapper
-corevm::frontend::internal::schema_repository::load_by_format_version(
-  const std::string& format_version)
+bytecode_loader*
+corevm::frontend::internal::schema_repository::load_by_format_and_version(
+  const std::string& format, const std::string& format_version)
 {
-  auto itr = std::find_if(
+  std::list<bytecode_loader*> loaders;
+
+  std::for_each(
     bytecode_loader_definitions.begin(),
     bytecode_loader_definitions.end(),
-    [&format_version](const bytecode_loader_wrapper& wrapper) -> bool {
-      return wrapper.version == format_version;
+    [&format, &loaders](const bytecode_loader_wrapper& wrapper) {
+      if (wrapper.loader->format() == format) {
+        loaders.push_back(wrapper.loader);
+      }
     }
   );
 
-  if (itr == bytecode_loader_definitions.end()) {
+  if (loaders.empty()) {
+    throw file_loading_error(
+      str(
+        boost::format("Unrecognized format: \"%s\"") % format
+      )
+    );
+  }
+
+  auto itr = std::find_if(
+    loaders.begin(),
+    loaders.end(),
+    [&format_version](const bytecode_loader* loader) -> bool {
+      return loader->version() == format_version;
+    }
+  );
+
+  if (itr == loaders.end()) {
     throw file_loading_error(
       str(
         boost::format("Unrecognized format-version: \"%s\"") % format_version
@@ -97,7 +118,7 @@ corevm::frontend::internal::schema_repository::load_by_format_version(
     );
   }
 
-  return static_cast<bytecode_loader_wrapper>(*itr);
+  return static_cast<bytecode_loader*>(*itr);
 }
 
 void
@@ -105,21 +126,28 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
 {
   const JSON::object& json_object = content_json.object_items();
 
-  if (json_object.find("format-version") == json_object.end()) {
-    throw corevm::frontend::file_loading_error("Missing \"format-version\" in file");
+  const JSON::string& target_version = json_object.at("target-version").string_value();
+  const std::string target_version_str = static_cast<std::string>(target_version);
+
+  if (target_version_str != COREVM_SHORT_CANONICAL_VERSION) {
+    throw corevm::frontend::file_loading_error(
+      str(
+        boost::format("Invalid target-version: %s") % target_version_str
+      )
+    );
   }
 
+  const JSON::string& format = json_object.at("format").string_value();
   const JSON::string& format_version = json_object.at("format-version").string_value();
+
+  const std::string format_str = static_cast<std::string>(format);
   const std::string format_version_str = static_cast<std::string>(format_version);
 
-  const auto wrapper = corevm::frontend::internal::schema_repository::load_by_format_version(
-    format_version_str
+  bytecode_loader* loader = corevm::frontend::internal::schema_repository::load_by_format_and_version(
+    format_str, format_version_str
   );
 
-  bytecode_loader* loader = wrapper.loader;
   const std::string& schema = loader->schema();
-
-  // TODO: validate `target-version` field.
 
   const JSON schema_json = sneaker::json::parse(schema);
 

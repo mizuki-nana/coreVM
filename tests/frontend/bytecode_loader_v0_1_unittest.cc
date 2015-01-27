@@ -35,7 +35,7 @@ protected:
   virtual const char* bytecode() {
     return \
     "{"
-      "\"format\": \"corevm\","
+      "\"format\": \"application/json\","
       "\"format-version\": \"0.1\","
       "\"target-version\": \"0.1\","
       "\"path\": \"./example.corevm\","
@@ -85,11 +85,7 @@ TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
 {
   corevm::runtime::process process;
 
-  ASSERT_NO_THROW(
-    {
-      corevm::frontend::bytecode_loader::load(PATH, process);
-    }
-  );
+  corevm::frontend::bytecode_loader::load(PATH, process);
 
   ASSERT_EQ(2, process.closure_count());
 }
