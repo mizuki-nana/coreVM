@@ -117,6 +117,7 @@ class native_type_subtraction_visitor : public native_type_binary_visitor<subtra
 class native_type_multiplication_visitor : public native_type_binary_visitor<multiplication> {};
 class native_type_division_visitor : public native_type_binary_visitor<division> {};
 class native_type_modulus_visitor : public native_type_binary_visitor<modulus> {};
+class native_type_pow_visitor : public native_type_binary_visitor<pow_op> {};
 class native_type_logical_and_visitor : public native_type_binary_visitor<logical_and> {};
 class native_type_logical_or_visitor : public native_type_binary_visitor<logical_or> {};
 class native_type_bitwise_and_visitor : public native_type_binary_visitor<bitwise_and> {};

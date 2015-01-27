@@ -868,7 +868,11 @@ void
 corevm::runtime::instr_handler_pow::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  corevm::runtime::instr_handler::execute_binary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_apply_pow_operator
+  );
 }
 
 void

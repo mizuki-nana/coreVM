@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "native_type_interfaces_test_base.h"
 
+#include <cmath>
+
 
 class native_type_unary_operator_interfaces_test : public native_type_interfaces_test_base {
 public:
@@ -126,12 +128,18 @@ public:
     corevm::types::native_type_handle& lhs,
     corevm::types::native_type_handle& rhs,
     F func,
-    T expected_value
+    T expected_value,
+    bool is_decimal=false
   ) {
     corevm::types::native_type_handle result;
     func(lhs, rhs, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
-    ASSERT_EQ(expected_value, actual_result);
+
+    if (!is_decimal) {
+      ASSERT_EQ(expected_value, actual_result);
+    } else {
+      ASSERT_FLOAT_EQ(expected_value, actual_result);
+    }
   }
 };
 
@@ -198,6 +206,20 @@ TEST_F(native_type_binary_operator_interfaces_test, TestModulusOperator)
     rhs,
     corevm::types::interface_apply_modulus_operator,
     10 % 5
+  );
+}
+
+TEST_F(native_type_binary_operator_interfaces_test, TestPowOperator)
+{
+  corevm::types::native_type_handle lhs = corevm::types::decimal(2.3);
+  corevm::types::native_type_handle rhs = corevm::types::decimal2(1.4);
+
+  this->apply_binary_operator_and_assert_result<double>(
+    lhs,
+    rhs,
+    corevm::types::interface_apply_pow_operator,
+    pow(2.3, 1.4),
+    true
   );
 }
 

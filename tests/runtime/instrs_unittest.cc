@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <climits>
+#include <cmath>
 #include <cstdint>
 #include <list>
 
@@ -935,7 +936,8 @@ TEST_F(process_binary_arithmetic_instrs_test, TestInstrMOD)
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrPOW)
 {
-  // TODO: [COREVM-49] Complete instruction set and implementations
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_pow>(pow(m_oprd1, m_oprd2));
 }
 
 TEST_F(process_binary_arithmetic_instrs_test, TestInstrBAND)

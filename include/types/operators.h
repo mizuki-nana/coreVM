@@ -26,6 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 #include "types.h"
 
+#include <cmath>
+
 
 namespace corevm {
 
@@ -221,6 +223,34 @@ corevm::types::modulus::operator()<corevm::types::map>(
 {
   return static_cast<typename corevm::types::map::value_type>(lhs.value % rhs.value);
 }
+
+
+class pow_op : public binary_op {
+public:
+  typename corevm::types::decimal::value_type operator()(
+    const corevm::types::decimal& lhs, const corevm::types::decimal& rhs) {
+    return pow(
+      static_cast<typename corevm::types::decimal::value_type>(lhs.value),
+      static_cast<typename corevm::types::decimal::value_type>(rhs.value)
+    );
+  }
+
+  typename corevm::types::decimal2::value_type operator()(
+    const corevm::types::decimal2& lhs, const corevm::types::decimal2& rhs) {
+    return pow(
+      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
+      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
+    );
+  }
+
+  template<typename R, typename T, typename U>
+  typename R::value_type operator()(const T& lhs, const U& rhs) {
+    return pow(
+      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
+      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
+    );
+  }
+};
 
 
 class logical_and : public binary_op {

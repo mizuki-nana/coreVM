@@ -127,6 +127,13 @@ void corevm::types::interface_apply_modulus_operator(
     corevm::types::native_type_modulus_visitor>(lhs, rhs, result);
 }
 
+void corevm::types::interface_apply_pow_operator(
+  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
+{
+  __interface_apply_binary_operator<
+    corevm::types::native_type_pow_visitor>(lhs, rhs, result);
+}
+
 void corevm::types::interface_apply_logical_and_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
