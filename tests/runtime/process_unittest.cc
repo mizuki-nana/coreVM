@@ -134,13 +134,18 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   ASSERT_EQ(false, process.has_frame());
   ASSERT_EQ(0, process.call_stack_size());
 
-  corevm::runtime::frame frame1;
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
+    .closure_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::frame frame1(ctx);
   process.push_frame(frame1);
 
   ASSERT_EQ(true, process.has_frame());
   ASSERT_EQ(1, process.call_stack_size());
 
-  corevm::runtime::frame frame2;
+  corevm::runtime::frame frame2(ctx);
   process.push_frame(frame2);
 
   ASSERT_EQ(true, process.has_frame());
@@ -226,79 +231,44 @@ TEST_F(process_unittest, TestInsertAndEraseNativeTypeHandle)
   );
 }
 
-TEST_F(process_unittest, TestPutAndGetClosures)
+TEST_F(process_unittest, TestGetFrameByClosureCtx)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure_id id1 = 100;
-  corevm::runtime::closure_id id2 = 200;
-  corevm::runtime::closure_id id3 = 300;
+  corevm::runtime::compartment_id compartment_id = 0;
 
-  ASSERT_EQ(0, process.closure_count());
-  ASSERT_EQ(false, process.has_closure(id1));
+  corevm::runtime::closure_id closure_id1 = 100;
+  corevm::runtime::closure_id closure_id2 = 200;
+  corevm::runtime::closure_id closure_id3 = 300;
 
-  corevm::runtime::vector vector;
-
-  auto closure1 = corevm::runtime::closure {
-    .id = id1,
-    .parent_id = id2,
-    .vector = vector
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id1
   };
 
-  auto closure2 = corevm::runtime::closure {
-    .id = id2,
-    .parent_id = id3,
-    .vector = vector
+  corevm::runtime::closure_ctx ctx2 {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id2
   };
 
-  auto closure3 = corevm::runtime::closure {
-    .id = id3,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id3
   };
 
-  process.insert_closure(closure1);
-  process.insert_closure(closure2);
-  process.insert_closure(closure3);
-
-  ASSERT_EQ(3, process.closure_count());
-  ASSERT_EQ(true, process.has_closure(closure1.id));
-  ASSERT_EQ(true, process.has_closure(closure2.id));
-  ASSERT_EQ(true, process.has_closure(closure3.id));
-
-  auto actual_closure1 = process.get_closure_by_id(closure1.id);
-  auto actual_closure2 = process.get_closure_by_id(closure2.id);
-  auto actual_closure3 = process.get_closure_by_id(closure3.id);
-
-  ASSERT_EQ(closure1.id, actual_closure1.id);
-  ASSERT_EQ(closure2.id, actual_closure2.id);
-  ASSERT_EQ(closure3.id, actual_closure3.id);
-}
-
-TEST_F(process_unittest, TestGetFrameByClosureID)
-{
-  corevm::runtime::process process;
-
-  corevm::runtime::frame frame1;
-  corevm::runtime::frame frame2;
-  corevm::runtime::frame frame3;
-
-  corevm::runtime::closure_id closure_id = 100;
-  corevm::runtime::closure_id invalid_closure_id = 1;
-
-  frame2.set_closure_id(closure_id);
+  corevm::runtime::frame frame1(ctx3);
+  corevm::runtime::frame frame2(ctx2);
 
   corevm::runtime::frame* ptr = nullptr;
 
   process.push_frame(frame1);
   process.push_frame(frame2);
-  process.push_frame(frame3);
 
-  process.get_frame_by_closure_id(invalid_closure_id, &ptr);
+  process.get_frame_by_closure_ctx(ctx1, &ptr);
 
   ASSERT_EQ(nullptr, ptr);
 
-  process.get_frame_by_closure_id(closure_id, &ptr);
+  process.get_frame_by_closure_ctx(ctx2, &ptr);
 
   ASSERT_NE(nullptr, ptr);
 }

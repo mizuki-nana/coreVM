@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef RUNTIME_ERRORS_H_
 #define RUNTIME_ERRORS_H_
 
+#include "common.h"
 #include "../errors.h"
 
 #include <boost/format.hpp>
@@ -147,6 +148,39 @@ public:
   explicit native_type_handle_insertion_error(const std::string& what_arg):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot insert native type handle: %s") % what_arg)
+    )
+  {
+  }
+};
+
+
+class encoding_string_not_found_error : public corevm::runtime::runtime_error {
+public:
+  explicit encoding_string_not_found_error(uint64_t key):
+    corevm::runtime::runtime_error(
+      str(boost::format("Cannot find encoding string for key: %llu") % key)
+    )
+  {
+  }
+};
+
+
+class compartment_not_found_error : public corevm::runtime::runtime_error {
+public:
+  explicit compartment_not_found_error(corevm::runtime::compartment_id id):
+    corevm::runtime::runtime_error(
+      str(boost::format("Cannot find compartment %llu") % id)
+    )
+  {
+  }
+};
+
+
+class closure_not_found_error : public corevm::runtime::runtime_error {
+public:
+  explicit closure_not_found_error(corevm::runtime::closure_id id):
+    corevm::runtime::runtime_error(
+      str(boost::format("Cannot find closure %lld") % id)
     )
   {
   }

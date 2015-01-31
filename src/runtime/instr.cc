@@ -365,8 +365,17 @@ corevm::runtime::instr_handler_ldobj::execute(
   corevm::runtime::frame* frame_ptr = &frame;
 
   while (!frame_ptr->has_visible_var(key)) {
-    corevm::runtime::closure_id closure_id = frame_ptr->closure_id();
-    corevm::runtime::closure closure = process.get_closure_by_id(closure_id);
+    corevm::runtime::compartment_id compartment_id = frame_ptr->closure_ctx().compartment_id;
+    corevm::runtime::compartment* compartment = nullptr;
+
+    process.get_compartment(compartment_id, &compartment);
+
+    if (!compartment) {
+      throw corevm::runtime::compartment_not_found_error(compartment_id);
+    }
+
+    corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
+    corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
 
     corevm::runtime::closure_id parent_closure_id = closure.parent_id;
 
@@ -374,7 +383,12 @@ corevm::runtime::instr_handler_ldobj::execute(
       throw corevm::runtime::local_variable_not_found_error();
     }
 
-    process.get_frame_by_closure_id(parent_closure_id, &frame_ptr);
+    closure_ctx ctx {
+      .compartment_id = compartment_id,
+      .closure_id = parent_closure_id
+    };
+
+    process.get_frame_by_closure_ctx(ctx, &frame_ptr);
 
     // Theoretically, the pointer that points to the frame that's
     // associated with the parent closure should exist.
@@ -461,8 +475,17 @@ corevm::runtime::instr_handler_ldobj2::execute(
   corevm::runtime::frame* frame_ptr = &frame;
 
   while (!frame_ptr->has_invisible_var(key)) {
-    corevm::runtime::closure_id closure_id = frame_ptr->closure_id();
-    corevm::runtime::closure closure = process.get_closure_by_id(closure_id);
+    corevm::runtime::compartment_id compartment_id = frame_ptr->closure_ctx().compartment_id;
+    corevm::runtime::compartment* compartment = nullptr;
+
+    process.get_compartment(compartment_id, &compartment);
+
+    if (!compartment) {
+      throw corevm::runtime::compartment_not_found_error(compartment_id);
+    }
+
+    corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
+    corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
 
     corevm::runtime::closure_id parent_closure_id = closure.parent_id;
 
@@ -470,7 +493,12 @@ corevm::runtime::instr_handler_ldobj2::execute(
       throw corevm::runtime::local_variable_not_found_error();
     }
 
-    process.get_frame_by_closure_id(parent_closure_id, &frame_ptr);
+    closure_ctx ctx {
+      .compartment_id = compartment_id,
+      .closure_id = parent_closure_id
+    };
+
+    process.get_frame_by_closure_ctx(ctx, &frame_ptr);
 
     // Theoretically, the pointer that points to the frame that's
     // associated with the parent closure should exist.

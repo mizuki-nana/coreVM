@@ -86,6 +86,4 @@ TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
   corevm::runtime::process process;
 
   corevm::frontend::bytecode_loader::load(PATH, process);
-
-  ASSERT_EQ(2, process.closure_count());
 }

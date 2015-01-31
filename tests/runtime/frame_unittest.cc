@@ -28,19 +28,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 
-class frame_unittest : public ::testing::Test {};
+class frame_unittest : public ::testing::Test {
+protected:
+  corevm::runtime::closure_ctx m_closure_ctx {
+    .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
+    .closure_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+};
 
 
 TEST_F(frame_unittest, TestInitialization)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
   ASSERT_EQ(-1, frame.get_return_addr());
-  ASSERT_EQ(nullptr, frame.get_parent_scope_frame_ptr());
 }
 
 TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
   ASSERT_EQ(-1, frame.get_return_addr());
 
   corevm::runtime::instr_addr expected_return_addr = 555;
@@ -48,19 +53,9 @@ TEST_F(frame_unittest, TestGetAndSetReturnAddr)
   ASSERT_EQ(expected_return_addr, frame.get_return_addr());
 }
 
-TEST_F(frame_unittest, TestGetAndSetParentScopeFramePtr)
-{
-  corevm::runtime::frame parent_frame;
-  corevm::runtime::frame frame;
-
-  ASSERT_EQ(nullptr, frame.get_parent_scope_frame_ptr());
-  frame.set_parent_scope_frame_ptr(&parent_frame);
-  ASSERT_EQ(&parent_frame, frame.get_parent_scope_frame_ptr());
-}
-
 TEST_F(frame_unittest, TestPushAndPopEvalStack)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
   corevm::types::native_type_handle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(handle);
@@ -76,7 +71,7 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
 
 TEST_F(frame_unittest, TestVisibleVars)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
@@ -105,7 +100,7 @@ TEST_F(frame_unittest, TestVisibleVars)
 
 TEST_F(frame_unittest, TestInvisibleVars)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
 
@@ -134,7 +129,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
 
 TEST_F(frame_unittest, TestPutAndGetParams)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
 
   ASSERT_EQ(false, frame.has_params());
 
@@ -161,7 +156,7 @@ TEST_F(frame_unittest, TestPutAndGetParams)
 
 TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
 
   ASSERT_EQ(false, frame.has_param_value_pairs());
 
@@ -190,7 +185,7 @@ TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
 
 TEST_F(frame_unittest, TestListParamValuePairKeys)
 {
-  corevm::runtime::frame frame;
+  corevm::runtime::frame frame(m_closure_ctx);
 
   std::list<corevm::runtime::variable_key> expected_keys = {};
   std::list<corevm::runtime::variable_key> actual_keys = frame.param_value_pair_keys();
@@ -212,17 +207,4 @@ TEST_F(frame_unittest, TestListParamValuePairKeys)
   actual_keys.sort();
 
   ASSERT_EQ(expected_keys, actual_keys);
-}
-
-TEST_F(frame_unittest, TestGetAndSetClosureID)
-{
-  corevm::runtime::frame frame;
-
-  ASSERT_EQ(corevm::runtime::NONESET_CLOSURE_ID, frame.closure_id());
-
-  corevm::runtime::closure_id closure_id = 100;
-
-  frame.set_closure_id(closure_id);
-
-  ASSERT_EQ(closure_id, frame.closure_id());
 }

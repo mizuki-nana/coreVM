@@ -28,11 +28,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-corevm::runtime::frame::frame():
-  m_closure_id(corevm::runtime::NONESET_CLOSURE_ID),
+corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx):
+  m_closure_ctx(closure_ctx),
   m_start_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
-  m_parent_scope_frame_ptr(nullptr),
   m_visible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
   m_invisible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
   m_params_list(std::list<corevm::dyobj::dyobj_id>()),
@@ -75,18 +74,6 @@ void
 corevm::runtime::frame::set_return_addr(const corevm::runtime::instr_addr return_addr)
 {
   m_return_addr = return_addr;
-}
-
-const corevm::runtime::frame*
-corevm::runtime::frame::get_parent_scope_frame_ptr() const
-{
-  return m_parent_scope_frame_ptr;
-}
-
-void
-corevm::runtime::frame::set_parent_scope_frame_ptr(corevm::runtime::frame* ptr)
-{
-  m_parent_scope_frame_ptr = ptr;
 }
 
 void
@@ -273,14 +260,8 @@ corevm::runtime::frame::get_invisible_objs() const
   return ids;
 }
 
-const corevm::runtime::closure_id
-corevm::runtime::frame::closure_id() const
+corevm::runtime::closure_ctx
+corevm::runtime::frame::closure_ctx() const
 {
-  return m_closure_id;
-}
-
-void
-corevm::runtime::frame::set_closure_id(corevm::runtime::closure_id closure_id)
-{
-  m_closure_id = closure_id;
+  return m_closure_ctx;
 }

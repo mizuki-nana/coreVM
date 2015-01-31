@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/frontend/utils.h"
 #include "../../include/runtime/closure.h"
 #include "../../include/runtime/common.h"
+#include "../../include/runtime/compartment.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/vector.h"
 
@@ -33,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/json/json_schema.h>
 
 #include <string>
+#include <utility>
 
 
 const std::string BYTECODE_LOADER_V0_1_FORMAT = "application/json";
@@ -170,14 +172,17 @@ void
 corevm::frontend::bytecode_loader_v0_1::load(
   const JSON& content_json, corevm::runtime::process& process)
 {
+  corevm::runtime::compartment compartment;
+
   const JSON::object& json_object = content_json.object_items();
 
   const JSON::string& encoding = json_object.at("encoding").string_value();
 
   // Load encoding map.
-  const JSON::array& encoding_map = json_object.at("encoding_map").array_items();
+  corevm::runtime::encoding_map encoding_map;
+  const JSON::array& encoding_map_json = json_object.at("encoding_map").array_items();
 
-  for (auto itr = encoding_map.begin(); itr != encoding_map.end(); ++itr) {
+  for (auto itr = encoding_map_json.begin(); itr != encoding_map_json.end(); ++itr) {
     const JSON& raw_encoding_pair = static_cast<JSON>(*itr);
     const JSON::object& encoding_pair = raw_encoding_pair.object_items();
 
@@ -188,15 +193,19 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const std::string value = static_cast<std::string>(raw_value.string_value());
     const uint64_t key = static_cast<uint64_t>(raw_key.int_value());
 
-    process.set_encoding_key_value_pair(key, value);
+    encoding_map[key] = value;
   }
 
-  const JSON::array& closures = json_object.at("__MAIN__").array_items();
+  compartment.set_encoding_map(encoding_map);
 
   /* --------------------------- Load closures. --------------------------- */
 
-  // Translate local closure identifiers to global IDs.
+  // Translate closure names to IDs.
   std::unordered_map<std::string, corevm::runtime::closure_id> str_to_closure_id_map;
+  corevm::runtime::closure_table closure_table;
+  corevm::runtime::closure_id closure_id;
+
+  const JSON::array& closures = json_object.at("__MAIN__").array_items();
 
   for (auto itr = closures.begin(); itr != closures.end(); ++itr) {
     const JSON& closure_raw = static_cast<JSON>(*itr);
@@ -217,23 +226,30 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const std::string parent = static_cast<std::string>(__parent__);
 
     if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end()) {
-      str_to_closure_id_map[name] = process.get_new_closure_id();
+      str_to_closure_id_map[name] = closure_id++;
     }
 
     if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end()) {
       str_to_closure_id_map[parent] = \
-        parent.empty() ? corevm::runtime::NONESET_CLOSURE_ID : process.get_new_closure_id();
+        parent.empty() ? corevm::runtime::NONESET_CLOSURE_ID : closure_id++;
     }
 
     corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
     corevm::runtime::closure_id parent_id = str_to_closure_id_map.at(parent);
 
-    process.insert_closure(
-      corevm::runtime::closure {
-        .id = id,
-        .parent_id = parent_id,
-        .vector = vector
-      }
+    closure_table.emplace(
+      std::make_pair(
+        id,
+        corevm::runtime::closure {
+          .id = id,
+          .parent_id = parent_id,
+          .vector = vector
+        }
+      )
     );
   }
+
+  compartment.set_closure_table(closure_table);
+
+  process.insert_compartment(compartment);
 }

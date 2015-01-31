@@ -20,12 +20,12 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_H_
-#define COREVM_CLOSURE_H_
+#ifndef COREVM_COMPARTMENT_H_
+#define COREVM_COMPARTMENT_H_
 
+#include "closure.h"
 #include "common.h"
-#include "vector.h"
-#include <unordered_map>
+#include "errors.h"
 
 
 namespace corevm {
@@ -34,21 +34,35 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct closure {
+class compartment {
 public:
-  const corevm::runtime::closure_id id;
-  const corevm::runtime::closure_id parent_id;
-  const corevm::runtime::vector vector;
-} closure;
+  explicit compartment();
+
+  const corevm::runtime::compartment_id id() const;
+
+  void set_encoding_map(const corevm::runtime::encoding_map&);
+
+  std::string get_encoding_string(uint64_t) const
+    throw(corevm::runtime::encoding_string_not_found_error);
+
+  size_t closure_count() const;
+
+  const corevm::runtime::closure& get_closure_by_id(
+    corevm::runtime::closure_id) const throw(corevm::runtime::closure_not_found_error);
+
+  void set_closure_table(const corevm::runtime::closure_table&);
+
+private:
+  corevm::runtime::compartment_id m_id;
+  corevm::runtime::encoding_map m_encoding_map;
+  corevm::runtime::closure_table m_closure_table;
+};
 
 
-typedef std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> closure_table;
+}; /* end namespace runtime */
 
 
-} /* end namespace runtime */
+}; /* end namespace corevm */
 
 
-} /* end namespace corevm */
-
-
-#endif /* COREVM_CLOSURE_H_ */
+#endif /* COREVM_COMPARTMENT_H_ */

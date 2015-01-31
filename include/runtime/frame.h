@@ -44,16 +44,16 @@ namespace runtime {
  *
  * - Return address.
  * - Pointer to the address caller frame.
- * - Pointer to frame with parent scope (if has one).
  * - Visible local variables.
  * - Invisible local variables.
  * - Parameter list (args).
  * - Optional parameter <-> default value mapping (kwargs).
  * - Evaluation stack.
+ * - Closure context.
  */
 class frame {
 public:
-  explicit frame();
+  explicit frame(corevm::runtime::closure_ctx);
   ~frame();
 
   uint32_t eval_stack_size() const;
@@ -65,10 +65,6 @@ public:
   corevm::runtime::instr_addr get_return_addr() const;
 
   void set_return_addr(const corevm::runtime::instr_addr);
-
-  const corevm::runtime::frame* get_parent_scope_frame_ptr() const;
-
-  void set_parent_scope_frame_ptr(corevm::runtime::frame*);
 
   void push_eval_stack(corevm::types::native_type_handle&);
 
@@ -114,15 +110,12 @@ public:
 
   std::list<corevm::dyobj::dyobj_id> get_invisible_objs() const;
 
-  const corevm::runtime::closure_id closure_id() const;
-
-  void set_closure_id(corevm::runtime::closure_id);
+  corevm::runtime::closure_ctx closure_ctx() const;
 
 protected:
-  corevm::runtime::closure_id m_closure_id;
+  const corevm::runtime::closure_ctx m_closure_ctx;
   corevm::runtime::instr_addr m_start_addr;
   corevm::runtime::instr_addr m_return_addr;
-  corevm::runtime::frame* m_parent_scope_frame_ptr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;
   std::list<corevm::dyobj::dyobj_id> m_params_list;

@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
+#include "compartment.h"
 #include "closure.h"
 #include "common.h"
 #include "errors.h"
@@ -36,13 +37,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/gc/garbage_collector.h"
 #include "../../include/gc/garbage_collection_scheme.h"
 
-#include <sneaker/atomic/atomic_incrementor.h>
-
 #include <climits>
 #include <cstdint>
 #include <list>
 #include <stack>
 #include <unordered_map>
+#include <vector>
 
 
 namespace corevm {
@@ -63,8 +63,7 @@ namespace runtime {
  * - A heap for holding dynamic objects.
  * - A call stack for executing blocks of instructions.
  * - A pool of native type handles.
- * - A table for storing closures.
- * - An incrementor for closure IDs.
+ * - A set of compartments.
  */
 class process {
 
@@ -138,17 +137,8 @@ public:
 
   void append_vector(const corevm::runtime::vector&);
 
-  corevm::runtime::closure_id get_new_closure_id();
-
-  void insert_closure(const corevm::runtime::closure);
-
-  size_t closure_count() const;
-
-  bool has_closure(corevm::runtime::closure_id) const;
-
-  const corevm::runtime::closure& get_closure_by_id(corevm::runtime::closure_id) const;
-
-  void get_frame_by_closure_id(corevm::runtime::closure_id, corevm::runtime::frame**);
+  void get_frame_by_closure_ctx(
+    corevm::runtime::closure_ctx&, corevm::runtime::frame**);
 
   void start();
 
@@ -176,6 +166,10 @@ public:
 
   native_types_pool_type::size_type max_ntvhndl_pool_size() const;
 
+  size_t insert_compartment(const corevm::runtime::compartment&);
+
+  void get_compartment(corevm::runtime::compartment_id, corevm::runtime::compartment**);
+
 private:
   bool should_gc();
 
@@ -190,11 +184,9 @@ private:
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::list<corevm::runtime::frame> m_call_stack;
   native_types_pool_type m_ntvhndl_pool;
-  std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> m_closure_table;
   corevm::runtime::instr_handler_meta m_instr_handler_meta;
-  std::unordered_map<uint64_t, std::string> m_encoding_map;
   std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
-  sneaker::atomic::atomic_incrementor<corevm::runtime::closure_id, MAX_CLOSURE_ID> m_closure_id_incrementor;
+  std::vector<corevm::runtime::compartment> m_compartments;
 };
 
 

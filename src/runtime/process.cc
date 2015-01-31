@@ -398,47 +398,15 @@ corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
   m_vectors.push_back(vector);
 }
 
-corevm::runtime::closure_id
-corevm::runtime::process::get_new_closure_id()
-{
-  corevm::runtime::closure_id id = m_closure_id_incrementor;
-  ++m_closure_id_incrementor;
-  return id;
-}
-
 void
-corevm::runtime::process::insert_closure(const corevm::runtime::closure closure)
-{
-  m_closure_table[closure.id] = closure;
-}
-
-size_t
-corevm::runtime::process::closure_count() const
-{
-  return m_closure_table.size();
-}
-
-bool
-corevm::runtime::process::has_closure(corevm::runtime::closure_id closure_id) const
-{
-  return m_closure_table.find(closure_id) != m_closure_table.end();
-}
-
-const corevm::runtime::closure&
-corevm::runtime::process::get_closure_by_id(corevm::runtime::closure_id closure_id) const
-{
-  return m_closure_table.at(closure_id);
-}
-
-void
-corevm::runtime::process::get_frame_by_closure_id(
-  corevm::runtime::closure_id closure_id, corevm::runtime::frame** frame_ptr)
+corevm::runtime::process::get_frame_by_closure_ctx(
+  corevm::runtime::closure_ctx& closure_ctx, corevm::runtime::frame** frame_ptr)
 {
   auto itr = std::find_if(
     m_call_stack.begin(),
     m_call_stack.end(),
-    [&](const corevm::runtime::frame& frame) {
-      return frame.closure_id() == closure_id;
+    [&closure_ctx](const corevm::runtime::frame& frame) -> bool {
+      return frame.closure_ctx() == closure_ctx;
     }
   );
 
@@ -471,12 +439,6 @@ corevm::runtime::process::should_gc()
 }
 
 void
-corevm::runtime::process::set_encoding_key_value_pair(uint64_t key, const std::string& value)
-{
-  m_encoding_map.insert({key, value});
-}
-
-void
 corevm::runtime::process::set_sig_vector(
   sig_atomic_t sig, corevm::runtime::vector& vector)
 {
@@ -504,5 +466,22 @@ corevm::runtime::process::handle_signal(
 
   } else if (handler != nullptr) {
     handler->handle_signal(sig, *this);
+  }
+}
+
+size_t
+corevm::runtime::process::insert_compartment(
+  const corevm::runtime::compartment& compartment)
+{
+  m_compartments.push_back(compartment);
+  return m_compartments.size();
+}
+
+void
+corevm::runtime::process::get_compartment(
+  corevm::runtime::compartment_id id, corevm::runtime::compartment** ptr)
+{
+  if (id < m_compartments.size()) {
+    *ptr = &m_compartments[id];
   }
 }

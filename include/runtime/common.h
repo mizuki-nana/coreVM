@@ -24,7 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_RUNTIME_COMMON_H_
 
 #include <cstdint>
-#include <limits>
+#include <string>
+#include <unordered_map>
 
 
 namespace corevm {
@@ -51,13 +52,35 @@ typedef uint8_t gc_bitfield_t;
 typedef int64_t closure_id;
 
 
-const closure_id MAX_CLOSURE_ID = std::numeric_limits<closure_id>::max();
+typedef int32_t compartment_id;
+
+
+const compartment_id NONESET_COMPARTMENT_ID = -1;
 
 
 const closure_id NONESET_CLOSURE_ID = -1;
 
 
+typedef struct closure_ctx
+{
+  const compartment_id compartment_id;
+  const closure_id closure_id;
+
+  bool operator==(const closure_ctx& rhs)
+  {
+    return (
+      compartment_id == rhs.compartment_id &&
+      closure_id == rhs.closure_id
+    );
+  }
+
+} closure_ctx;
+
+
 const instr_addr NONESET_INSTR_ADDR = -1;
+
+
+typedef std::unordered_map<uint64_t, std::string> encoding_map;
 
 
 // Default size of native types pool: 128 MB.
