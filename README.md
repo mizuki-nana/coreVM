@@ -13,8 +13,8 @@ programming languages.
 With the proliferation of dynamic programming languages being a dominating trend
 in the software industry, many developers have taken the endeavor to invent
 their own, in attempts to modernize the designs and implementations of many
-legacy systems, and how modern software systems can be built. However, such a
-task would usually become a massive undertaking as the steps involved in
+legacy systems, and how modern software systems can be developed. However, such
+a task would usually become a massive undertaking as the steps involved in
 developing a custom runtime for a dynamic programming language tend to be
 extremely complex, error prone and resource consuming, thus ending up being a
 very intimidating part in the process. Although there are candidates of generic
@@ -82,14 +82,14 @@ which is essentially a handle that points to an entity that is of one of these
 ### Object Management
 Another component that directly relates to the memory management layer is the
 object heap, which allocates memory from it to store objects. Objects in coreVM
-are referred as "dynamic objects", meaning that their properties can be
-dynamically changed during execution. This provides the flexibility for language
+are referred as "dynamic objects", meaning their properties can be dynamically
+changed during execution. This provides the flexibility for language
 developers to incorporate their custom object abstractions and meta-programming
 features.
 
 Each dynamic object can hold one native type handle. For example, an object
 of custom integer type in a language may hold a native type handle of type
-32-bit signed integer, in order to perform any arithmetic operations on it.
+32-bit signed integer, in order to perform integer arithmetic operations.
 
 ### Garbage Collection
 The garbage collection layer is responsible for cleaning up unreachable objects
@@ -107,8 +107,8 @@ the one for the reference-count GC scheme keeps tracks of a reference count for
 that object.
 
 The current version of the garbage collector has a non-copying,
-non-generational, and stop-the-world implementation. Future works are needed to
-improve the GC with more optimizations.
+non-generational, and stop-the-world implementation. Future works to improve and
+optimize GC performance are in the roadmap.
 
 ### Core Runtime
 The core runtime layer is the central component that interacts with the rest of
@@ -137,27 +137,27 @@ learning curve for many developers.
 
 
 ## Current State & Roadmap
-Since the inception of this project, which is the beginning of March 2014, a lot
-of milestones have been achieved and many components are near completion at this
-point. However, there are still many new and exciting features to be designed
-and implemented ahead to greatly enhance the prowess and versatility of coreVM.
-There are three major features that are envisioned after the initial release,
-and they are the Debugging and Profiling APIs, Embedder APIs, and the
-Extension APIs.
+Since the inception of this project, which is the beginning of March 2014, a
+great number of milestones have been achieved and many components are near
+completion at this point. However, there are still many new and exciting
+features to be designed and implemented ahead to greatly enhance the prowess and
+versatility of coreVM. There are three major features that are envisioned after
+the initial release, and they are the *Debugging and Profiling APIs*,
+*Embedder APIs*, and the *Extension APIs*.
 
 ### Debugging and Profiling APIs
 These are a set of APIs and facilities that provide developers powerful
 capabilities to debug executable code running on coreVM. This includes the
-typical debugging capabilities such as execution pausing, variables examination,
-call stack unwinding and rewinding, etc. In addition, there will be a set of
-facilities for instrumenting a diversity of aspects regarding executions,
-such as process introspections, memory footprint statistics, heap allocation
-heat map, to name a few.
+typical debugging capabilities such as pause/resume executions, variables
+examination, call stack unwinding and rewinding, etc. In addition, there will
+be a set of facilities for instrumenting a diversity of aspects regarding
+executions, such as process introspections, memory footprint statistics, heap
+allocation heat map, to name a few.
 
 ### Embedder APIs
-The Embedder APIs provide developers the capability to create virtual execution
-runtimes in their native applications by interacting with a set of APIs and
-abstracted models that define the entities and behaviors of executions of
+The Embedder APIs provide developers the capabilities to create virtual
+execution runtimes in their applications by interacting with a set of APIs and
+abstract models that define the entities and behaviors of executions of
 coreVM's internal runtime. For example, a developer who wants to build a little
 scripting engine in his or her application can employ the Embedder APIs to
 accomplish the heavy liftings of executing user provided scripts. All the work
@@ -168,7 +168,7 @@ left for coreVM to handle.
 The Extension APIs are at the frontier of the next wave of heavy development
 with the goal of greatly enhance the capability and versatility of coreVM.
 The foundation of this is a scripting engine that allows developers to modify
-the functionalities of existing instructions or to create their own ones to
+the functionalities of existing instructions and to create their own ones to
 performs custom functions. Developers can use a set of micro-instructions
 to program their desired functionalities for existing and new instructions.
 
@@ -182,6 +182,7 @@ The last feature is to support native plugins, which allows developers to
 incorporate the execution of native code in conjunction with coreVM's execution,
 in order to allow more interactions with the operating system.
 
+<br/>
 
 Below is a table of all the past milestones and some of the goals defined in the
 roadmap in the near future, with their respective completion dates and ETAs:
@@ -194,8 +195,8 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Instruction execution (done)                |            Aug, 2014
   Signal handling (done)                      |            Aug, 2014
   GC implementation and integration (done)    |            Aug, 2014
-  Bytecode loading and validation (done)      |            Oct, 2014
-  Frontend and core runtime integration       |            Nov, 2014
+  Bytecode loading and validation (done)      |            Feb, 2015
+  Frontend and runtime integration (done)     |            Feb, 2015
   Exception handling mechanism                |            Feb, 2015
   Re-entrant execution                        |            Feb, 2015
   Mark-and-sweep garbage collection           |            Mar, 2015
@@ -224,7 +225,7 @@ development:
 ### Project "Lithum-Ion"
 Focuses on achieving the highest performance possible while striving to maintain
 great architecture designs. Performance and efficiency should be factors taken
-consideration at every stage of design and development. Some metrics for
+into consideration at every stage of design and development. Some metrics for
 measuring performance and efficiency include per-instruction and overall
 execution time, memory usage, byte-code loading time, etc.
 
@@ -307,11 +308,11 @@ The latest build of coreVM depends on the following libraries:
 
   * [Boost] (http://www.boost.org/) `version 1.55`
   * [Google Test] (https://code.google.com/p/googletest/) `version 1.6.0`
-  * [Sneaker] (http://www.libsneaker.org/) `version 0.2.7`
+  * [Sneaker] (http://www.libsneaker.org/) `version 0.2.8`
 
 
 ## License
-coreVM is licensed under The MIT License: http://opensource.org/licenses/MIT
+coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 
 ## Inquiries
