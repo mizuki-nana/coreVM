@@ -28,21 +28,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fstream>
 
 
-class bytecode_loader_unittest : public ::testing::Test {
+class bytecode_loader_unittest : public ::testing::Test
+{
 protected:
   static const char* PATH;
 
-  virtual void SetUp() {
+  virtual void SetUp()
+  {
     std::ofstream f(PATH, std::ios::binary);
     f << this->bytecode();
     f.close();
   }
 
-  virtual void TearDown() {
+  virtual void TearDown()
+  {
     remove(PATH);
   }
 
-  virtual const char* bytecode() {
+  virtual const char* bytecode()
+  {
     return "";
   }
 };

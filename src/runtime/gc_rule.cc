@@ -49,7 +49,8 @@ corevm::runtime::gc_rule_meta::gc_rule_map = {
 
 
 const corevm::runtime::gc_rule*
-corevm::runtime::gc_rule_meta::get_gc_rule(gc_bitfields bit) {
+corevm::runtime::gc_rule_meta::get_gc_rule(gc_bitfields bit)
+{
   auto itr = corevm::runtime::gc_rule_meta::gc_rule_map.find(bit);
   return itr != corevm::runtime::gc_rule_meta::gc_rule_map.end() ? itr->second.gc_rule : nullptr;
 }

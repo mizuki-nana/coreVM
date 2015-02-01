@@ -32,13 +32,16 @@ const int HEAP_STORAGE_FOR_TEST = 1024;
 
 
 template<typename AllocationSchemeType>
-class allocator_unittest : public ::testing::Test {
+class allocator_unittest : public ::testing::Test
+{
 protected:
-  void* allocate(size_t size) noexcept {
+  void* allocate(size_t size) noexcept
+  {
     return m_allocator.allocate(size);
   }
 
-  int deallocate(void* ptr) noexcept {
+  int deallocate(void* ptr) noexcept
+  {
     return m_allocator.deallocate(ptr);
   }
 
@@ -99,7 +102,8 @@ TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
   const int CYCLES = 3;
 
-  for (int i = 0; i < CYCLES; ++i) {
+  for (int i = 0; i < CYCLES; ++i)
+  {
     void* p = nullptr;
     p = this->allocate(HEAP_STORAGE_FOR_TEST);
     ASSERT_NE(nullptr, p);
@@ -169,7 +173,8 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
     "a", "b", "c", "d", "e", "f", "g", "h"
   };
 
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i < N; ++i)
+  {
     void* p = this->allocate(chunk_size);
     assert(p);
     p = static_cast<void*>(strcpy(static_cast<char*>(p), letters[i]));
@@ -180,11 +185,13 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
   void* failed_ptr = this->allocate(1);
   ASSERT_EQ(nullptr, failed_ptr);
 
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i < N; ++i)
+  {
     ASSERT_STREQ(letters[i], static_cast<char*>(ptrs[i]));
   }
 
-  for (int i = 0; i < N; ++i) {
+  for (int i = 0; i < N; ++i)
+  {
     int res = this->deallocate(ptrs[i]);
     ASSERT_EQ(1, res);
   }
@@ -228,7 +235,8 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 const int BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE = 1024;
 
 
-class buddy_allocation_scheme_unittest : public ::testing::Test {
+class buddy_allocation_scheme_unittest : public ::testing::Test
+{
 protected:
   corevm::memory::allocator<
     BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE,
@@ -236,13 +244,16 @@ protected:
   > m_allocator;
 
   template<typename F>
-  void run_twice(F func) {
-    for (int i = 0; i < 2; ++i) {
+  void run_twice(F func)
+  {
+    for (int i = 0; i < 2; ++i)
+    {
       func();
     }
   }
 
-  void validate() {
+  void validate()
+  {
     void* ptr = m_allocator.allocate(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE);
     ASSERT_NE(nullptr, ptr);
 
@@ -285,14 +296,16 @@ TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
 
       void* ptrs[N] = { nullptr };
 
-      for (int i = 0; i < N; ++i) {
+      for (int i = 0; i < N; ++i)
+      {
         ptrs[i] = m_allocator.allocate(size);
         ASSERT_NE(nullptr, ptrs[i]);
       }
 
       int res;
 
-      for (int i = N - 1; i >= 0; --i) {
+      for (int i = N - 1; i >= 0; --i)
+      {
         res = m_allocator.deallocate(ptrs[i]);
         ASSERT_EQ(1, res);
       }

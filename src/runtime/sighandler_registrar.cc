@@ -123,8 +123,8 @@ corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
   for (
     auto itr = corevm::runtime::sighandler_registrar::handler_map.begin();
     itr != corevm::runtime::sighandler_registrar::handler_map.end();
-    ++itr
-  ) {
+    ++itr)
+  {
     sig_atomic_t sig = itr->first;
     signal(sig, corevm::runtime::sighandler_registrar::handle_signal);
   }

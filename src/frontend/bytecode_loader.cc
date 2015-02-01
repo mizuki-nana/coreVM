@@ -55,12 +55,14 @@ namespace frontend {
 namespace internal {
 
 
-typedef struct bytecode_loader_wrapper {
+typedef struct bytecode_loader_wrapper
+{
   bytecode_loader* loader;
 } bytecode_loader_wrapper;
 
 
-class schema_repository {
+class schema_repository
+{
 public:
   static bytecode_loader* load_by_format_and_version(
     const std::string&, const std::string&);
@@ -71,7 +73,8 @@ private:
 
 
 const std::vector<bytecode_loader_wrapper>
-corevm::frontend::internal::schema_repository::bytecode_loader_definitions {
+corevm::frontend::internal::schema_repository::bytecode_loader_definitions
+{
   {
     .loader = new bytecode_loader_v0_1(),
   },
@@ -94,7 +97,8 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
     }
   );
 
-  if (loaders.empty()) {
+  if (loaders.empty())
+  {
     throw file_loading_error(
       str(
         boost::format("Unrecognized format: \"%s\"") % format
@@ -110,7 +114,8 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
     }
   );
 
-  if (itr == loaders.end()) {
+  if (itr == loaders.end())
+  {
     throw file_loading_error(
       str(
         boost::format("Unrecognized format-version: \"%s\"") % format_version
@@ -129,7 +134,8 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
   const JSON::string& target_version = json_object.at("target-version").string_value();
   const std::string target_version_str = static_cast<std::string>(target_version);
 
-  if (target_version_str != COREVM_SHORT_CANONICAL_VERSION) {
+  if (target_version_str != COREVM_SHORT_CANONICAL_VERSION)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         boost::format("Invalid target-version: %s") % target_version_str
@@ -151,9 +157,12 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
 
   const JSON schema_json = sneaker::json::parse(schema);
 
-  try {
+  try
+  {
     sneaker::json::json_schema::validate(content_json, schema_json);
-  } catch (const sneaker::json::json_validation_error& ex) {
+  }
+  catch (const sneaker::json::json_validation_error& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         boost::format("Invalid format in file: %s") % ex.what()
@@ -184,11 +193,14 @@ corevm::frontend::bytecode_loader::load(
   std::ifstream f(path, std::ios::binary);
   std::stringstream buffer;
 
-  try {
+  try
+  {
     f.exceptions(std::ios::failbit | std::ios::badbit);
     buffer << f.rdbuf();
     f.close();
-  } catch (const std::ios_base::failure& ex) {
+  }
+  catch (const std::ios_base::failure& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         boost::format(
@@ -202,9 +214,12 @@ corevm::frontend::bytecode_loader::load(
 
   JSON content_json;
 
-  try {
+  try
+  {
     content_json = sneaker::json::parse(content);
-  } catch (const sneaker::json::invalid_json_error& ex) {
+  }
+  catch (const sneaker::json::invalid_json_error& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         boost::format("Error while parsing file \"%s\": %s") % path % ex.what()

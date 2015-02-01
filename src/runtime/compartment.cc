@@ -48,7 +48,8 @@ corevm::runtime::compartment::get_encoding_string(uint64_t key) const
 {
   auto itr = m_encoding_map.find(key);
 
-  if (itr == m_encoding_map.end()) {
+  if (itr == m_encoding_map.end())
+  {
     throw corevm::runtime::encoding_string_not_found_error(key);
   }
 
@@ -75,7 +76,8 @@ corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
 {
   auto itr = m_closure_table.find(id);
 
-  if (itr == m_closure_table.end()) {
+  if (itr == m_closure_table.end())
+  {
     throw corevm::runtime::closure_not_found_error(id);
   }
 

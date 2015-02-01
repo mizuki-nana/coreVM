@@ -34,8 +34,8 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct closure {
-public:
+typedef struct closure
+{
   const corevm::runtime::closure_id id;
   const corevm::runtime::closure_id parent_id;
   const corevm::runtime::vector vector;

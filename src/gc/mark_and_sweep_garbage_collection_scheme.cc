@@ -35,9 +35,10 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::gc(
   heap.iterate(
     [this, &heap](
       _dynamic_object_heap_type::dynamic_object_id_type id,
-      _dynamic_object_heap_type::dynamic_object_type& object
-    ) {
-      if (this->is_root_object(object)) {
+      _dynamic_object_heap_type::dynamic_object_type& object)
+    {
+      if (this->is_root_object(object))
+      {
         this->mark(heap, object);
       }
     }
@@ -60,7 +61,8 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
   using _dynamic_object_type = typename
     corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_type;
 
-  if (!object.is_garbage_collectible()) {
+  if (!object.is_garbage_collectible())
+  {
     return;
   }
 
@@ -69,8 +71,8 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
   object.iterate(
     [this, &heap](
       _dynamic_object_type::attr_key_type attr_key,
-      _dynamic_object_type::dyobj_id_type dyobj_id
-    ) {
+      _dynamic_object_type::dyobj_id_type dyobj_id)
+    {
       _dynamic_object_type& referenced_object = heap.at(dyobj_id);
       this->mark(heap, referenced_object);
     }

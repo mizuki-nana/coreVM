@@ -41,7 +41,8 @@ namespace frontend {
 using sneaker::json::JSON;
 
 
-class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader {
+class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader
+{
 public:
   virtual void load(const JSON&, corevm::runtime::process&);
   virtual std::string format() const;

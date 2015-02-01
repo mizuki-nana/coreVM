@@ -40,7 +40,8 @@ namespace frontend {
 using sneaker::json::JSON;
 
 
-class signal_vector_loader {
+class signal_vector_loader
+{
 public:
   explicit signal_vector_loader(const std::string&);
 

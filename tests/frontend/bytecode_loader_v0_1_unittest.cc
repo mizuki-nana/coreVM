@@ -30,9 +30,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class bytecode_loader_v0_1_unittest : public bytecode_loader_unittest {
+class bytecode_loader_v0_1_unittest : public bytecode_loader_unittest
+{
 protected:
-  virtual const char* bytecode() {
+  virtual const char* bytecode()
+  {
     return \
     "{"
       "\"format\": \"application/json\","

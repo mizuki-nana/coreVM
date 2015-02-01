@@ -43,7 +43,8 @@ namespace dyobj {
 
 
 template<class dynamic_object_manager>
-class dynamic_object_heap {
+class dynamic_object_heap
+{
 public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
@@ -145,7 +146,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object
 {
   auto itr = m_container.find(id);
 
-  if (itr != m_container.end()) {
+  if (itr != m_container.end())
+  {
     erase(itr);
   }
 }
@@ -201,9 +203,12 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   void* raw_ptr = corevm::dyobj::obj_id_to_ptr(id);
   dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
 
-  try {
+  try
+  {
     ptr = m_container[ptr];
-  } catch(const corevm::memory::invalid_address_error&) {
+  }
+  catch(const corevm::memory::invalid_address_error&)
+  {
     throw corevm::dyobj::object_not_found_error(id);
   }
 
@@ -217,7 +222,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
 {
   auto obj_ptr = m_container.create();
 
-  if (obj_ptr == nullptr) {
+  if (obj_ptr == nullptr)
+  {
     throw corevm::dyobj::object_heap_insertion_failed_error();
   }
 

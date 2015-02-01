@@ -36,7 +36,8 @@ namespace dyobj {
 
 
 template<typename T, typename AllocationScheme, size_t N=COREVM_DEFAULT_HEAP_SIZE>
-class heap_allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N>> {
+class heap_allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N>>
+{
 public:
   using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N> >;
 

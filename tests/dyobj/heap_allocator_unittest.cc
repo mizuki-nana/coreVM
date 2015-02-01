@@ -26,7 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 
-class heap_allocator_unit_test : public ::testing::Test {
+class heap_allocator_unit_test : public ::testing::Test
+{
 public:
   typedef corevm::memory::first_fit_allocation_scheme AllocationScheme;
   typedef corevm::memory::best_fit_allocation_scheme OtherAllocationScheme;
@@ -43,8 +44,15 @@ TEST_F(heap_allocator_simple_test, TestAllocation)
 
   assert(a);
 
-  for (int i = 0; i < 10; ++i) a[i] = i;
-  for (int i = 0; i < 10; ++i) ASSERT_EQ(i, a[i]);
+  for (int i = 0; i < 10; ++i)
+  {
+    a[i] = i;
+  }
+
+  for (int i = 0; i < 10; ++i)
+  {
+    ASSERT_EQ(i, a[i]);
+  }
 
   allocator.deallocate(a, 10);
 }
@@ -66,7 +74,8 @@ TEST_F(heap_allocator_simple_test, TestAllocationAndDestroy)
 }
 
 
-class heap_allocator_container_test : public heap_allocator_unit_test {
+class heap_allocator_container_test : public heap_allocator_unit_test
+{
 public:
   template<typename T>
   using vector_type = typename std::vector<T, corevm::dyobj::heap_allocator<T, AllocationScheme>>;

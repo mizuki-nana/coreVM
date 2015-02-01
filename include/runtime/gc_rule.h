@@ -39,27 +39,22 @@ namespace runtime {
 class process;
 
 
-class gc_rule {
+class gc_rule
+{
 public:
   virtual bool should_gc(const corevm::runtime::process& process) const = 0;
 };
 
 
-class gc_rule_always : public gc_rule {
+class gc_rule_always : public gc_rule
+{
 public:
   virtual bool should_gc(const corevm::runtime::process& process) const;
 };
 
 
-class gc_rule_by_heap_size : public gc_rule {
-public:
-  virtual bool should_gc(const corevm::runtime::process& process) const;
-
-  static const double DEFAULT_CUTOFF;
-};
-
-
-class gc_rule_by_ntvhndl_pool_size : public gc_rule {
+class gc_rule_by_heap_size : public gc_rule
+{
 public:
   virtual bool should_gc(const corevm::runtime::process& process) const;
 
@@ -67,12 +62,23 @@ public:
 };
 
 
-typedef struct gc_rule_wrapper {
+class gc_rule_by_ntvhndl_pool_size : public gc_rule
+{
+public:
+  virtual bool should_gc(const corevm::runtime::process& process) const;
+
+  static const double DEFAULT_CUTOFF;
+};
+
+
+typedef struct gc_rule_wrapper
+{
   const corevm::runtime::gc_rule* gc_rule;
 } gc_rule_wrapper;
 
 
-class gc_rule_meta {
+class gc_rule_meta
+{
 public:
   enum gc_bitfields : uint8_t {
     GC_ALWAYS = 1,

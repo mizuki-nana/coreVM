@@ -37,7 +37,8 @@ namespace memory {
 
 
 template<typename T, typename AllocationScheme, size_t N>
-class allocation_policy : public sneaker::allocator::standard_alloc_policy<T> {
+class allocation_policy : public sneaker::allocator::standard_alloc_policy<T>
+{
 public:
   using value_type                             = typename sneaker::allocator::standard_alloc_policy<T>::value_type;
   using pointer                                = typename sneaker::allocator::standard_alloc_policy<T>::pointer;

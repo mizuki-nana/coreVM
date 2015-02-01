@@ -34,7 +34,8 @@ namespace corevm {
 namespace runtime {
 
 
-class process_runner : public sneaker::threading::fixed_time_interval_daemon_service {
+class process_runner : public sneaker::threading::fixed_time_interval_daemon_service
+{
 public:
   explicit process_runner(corevm::runtime::process&);
 

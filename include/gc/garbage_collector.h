@@ -35,14 +35,16 @@ namespace gc {
 
 
 template<class garbage_collection_scheme>
-class garbage_collector {
+class garbage_collector
+{
 public:
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<
     typename garbage_collection_scheme::dynamic_object_manager>;
 
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
 
-  class callback {
+  class callback
+  {
     public:
       virtual void operator()(const dynamic_object_type& obj) = 0;
   };
@@ -96,17 +98,24 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noex
     return object.is_garbage_collectible();
   };
 
-  for (auto itr = m_heap.begin(); itr != m_heap.end();) {
-    if (remove_criterion(itr)) {
+  for (auto itr = m_heap.begin(); itr != m_heap.end();)
+  {
+    if (remove_criterion(itr))
+    {
       dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
-      if (f) {
+
+      if (f)
+      {
         (*f)(obj);
       }
+
       auto itr_next = itr;
       ++itr_next;
       m_heap.erase(itr);
       itr = itr_next;
-    } else {
+    }
+    else
+    {
       ++itr;
     }
   }

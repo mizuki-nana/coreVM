@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -25,7 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cmath>
 
 
-class native_type_unary_operator_interfaces_test : public native_type_interfaces_test_base {
+class native_type_unary_operator_interfaces_test : public native_type_interfaces_test_base
+{
 public:
   template<typename T, typename F>
   void apply_unary_operator_and_assert_result(
@@ -121,7 +122,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestInvalidOperator)
 }
 
 
-class native_type_binary_operator_interfaces_test : public native_type_interfaces_test_base {
+class native_type_binary_operator_interfaces_test : public native_type_interfaces_test_base
+{
 public:
   template<typename T, typename F>
   void apply_binary_operator_and_assert_result(
@@ -135,9 +137,12 @@ public:
     func(lhs, rhs, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
 
-    if (!is_decimal) {
+    if (!is_decimal)
+    {
       ASSERT_EQ(expected_value, actual_result);
-    } else {
+    }
+    else
+    {
       ASSERT_FLOAT_EQ(expected_value, actual_result);
     }
   }
@@ -392,7 +397,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestGteOperator)
 }
 
 
-class native_type_invalid_binary_operator_interfaces_test : public native_type_binary_operator_interfaces_test {
+class native_type_invalid_binary_operator_interfaces_test : public native_type_binary_operator_interfaces_test
+{
 public:
   template<typename ErrorType, typename F>
   void apply_binary_operator_and_assert_result(

@@ -25,7 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 
-class native_type_interfaces_test_base : public ::testing::Test {
+class native_type_interfaces_test_base : public ::testing::Test
+{
 public:
   template<typename T, typename F>
   void apply_interface_and_assert_result(
@@ -42,8 +43,8 @@ public:
     corevm::types::native_type_handle& operand,
     corevm::types::native_type_handle& other_operand,
     F func,
-    T expected_result
-  ) {
+    T expected_result)
+  {
     corevm::types::native_type_handle result;
     func(operand, other_operand, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
@@ -56,8 +57,8 @@ public:
     corevm::types::native_type_handle& operand2,
     corevm::types::native_type_handle& operand3,
     F func,
-    T expected_result
-  ) {
+    T expected_result)
+  {
     corevm::types::native_type_handle result;
     func(operand, operand2, operand3, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
@@ -71,8 +72,8 @@ public:
     corevm::types::native_type_handle& operand3,
     corevm::types::native_type_handle& operand4,
     F func,
-    T expected_result
-  ) {
+    T expected_result)
+  {
     corevm::types::native_type_handle result;
     func(operand, operand2, operand3, operand4, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);

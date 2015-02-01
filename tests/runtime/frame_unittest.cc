@@ -28,7 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 
-class frame_unittest : public ::testing::Test {
+class frame_unittest : public ::testing::Test
+{
 protected:
   corevm::runtime::closure_ctx m_closure_ctx {
     .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,

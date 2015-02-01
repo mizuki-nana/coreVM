@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -36,7 +36,8 @@ namespace corevm {
 namespace types {
 
 
-enum native_types_enum {
+enum native_types_enum
+{
   INT8      = 0x01,
   UINT8     = 0x02,
   INT16     = 0x03,
@@ -57,7 +58,8 @@ enum native_types_enum {
 class native_type_wrapper {};
 
 
-class int8 : public native_type_wrapper {
+class int8 : public native_type_wrapper
+{
 public:
   typedef int8_t value_type;
 
@@ -68,7 +70,8 @@ public:
 };
 
 
-class uint8 : public native_type_wrapper {
+class uint8 : public native_type_wrapper
+{
 public:
   typedef uint8_t value_type;
 
@@ -79,7 +82,8 @@ public:
 };
 
 
-class int16 : public native_type_wrapper {
+class int16 : public native_type_wrapper
+{
 public:
   typedef int16_t value_type;
 
@@ -90,7 +94,8 @@ public:
 };
 
 
-class uint16 : public native_type_wrapper {
+class uint16 : public native_type_wrapper
+{
 public:
   typedef uint16_t value_type;
 
@@ -101,7 +106,8 @@ public:
 };
 
 
-class int32 : public native_type_wrapper {
+class int32 : public native_type_wrapper
+{
 public:
   typedef int32_t value_type;
 
@@ -112,7 +118,8 @@ public:
 };
 
 
-class uint32 : public native_type_wrapper {
+class uint32 : public native_type_wrapper
+{
 public:
   typedef uint32_t value_type;
 
@@ -123,7 +130,8 @@ public:
 };
 
 
-class int64 : public native_type_wrapper {
+class int64 : public native_type_wrapper
+{
 public:
   typedef int64_t value_type;
 
@@ -134,7 +142,8 @@ public:
 };
 
 
-class uint64 : public native_type_wrapper {
+class uint64 : public native_type_wrapper
+{
 public:
   typedef uint64_t value_type;
 
@@ -145,7 +154,8 @@ public:
 };
 
 
-class boolean : public native_type_wrapper {
+class boolean : public native_type_wrapper
+{
 public:
   typedef bool value_type;
 
@@ -156,7 +166,8 @@ public:
 };
 
 
-class decimal : public native_type_wrapper {
+class decimal : public native_type_wrapper
+{
 public:
   typedef float value_type;
 
@@ -167,7 +178,8 @@ public:
 };
 
 
-class decimal2 : public native_type_wrapper {
+class decimal2 : public native_type_wrapper
+{
 public:
   typedef double value_type;
 
@@ -178,7 +190,8 @@ public:
 };
 
 
-class string : public native_type_wrapper {
+class string : public native_type_wrapper
+{
 public:
   typedef corevm::types::native_string value_type;
 
@@ -189,7 +202,8 @@ public:
 };
 
 
-class array : public native_type_wrapper {
+class array : public native_type_wrapper
+{
 public:
   typedef corevm::types::native_array value_type;
 
@@ -200,7 +214,8 @@ public:
 };
 
 
-class map : public native_type_wrapper {
+class map : public native_type_wrapper
+{
 public:
   typedef corevm::types::native_map value_type;
 

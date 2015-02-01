@@ -30,7 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 
 
-class runtime_error : public std::runtime_error {
+class runtime_error : public std::runtime_error
+{
 public:
   explicit runtime_error(const std::string& what_arg):
     std::runtime_error(what_arg)

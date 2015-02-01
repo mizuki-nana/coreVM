@@ -36,7 +36,8 @@ namespace corevm {
 namespace frontend {
 
 
-class runtime_error : public corevm::runtime_error {
+class runtime_error : public corevm::runtime_error
+{
 public:
   explicit runtime_error(const std::string& what_arg):
     corevm::runtime_error(what_arg)
@@ -50,7 +51,8 @@ public:
 };
 
 
-class file_loading_error : public corevm::frontend::runtime_error {
+class file_loading_error : public corevm::frontend::runtime_error
+{
 public:
   explicit file_loading_error(const std::string& what_arg):
     corevm::frontend::runtime_error(what_arg)

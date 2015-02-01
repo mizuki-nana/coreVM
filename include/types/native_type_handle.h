@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -54,49 +54,61 @@ using native_type_handle = typename boost::variant<
 
 
 template<class op>
-class native_type_unary_visitor : public boost::static_visitor<native_type_handle> {
+class native_type_unary_visitor : public boost::static_visitor<native_type_handle>
+{
 public:
   template<typename T>
-  native_type_handle operator()(const T& operand) const {
+  native_type_handle operator()(const T& operand) const
+  {
     return T(op().template operator()<T>(operand));
   }
 };
 
 
 template<class op>
-class native_type_binary_visitor : public boost::static_visitor<native_type_handle> {
+class native_type_binary_visitor : public boost::static_visitor<native_type_handle>
+{
 public:
   template<typename T, typename U>
-  native_type_handle operator()(const T& lhs, const U& rhs) const {
-    if (sizeof(lhs) >= sizeof(rhs)) {
+  native_type_handle operator()(const T& lhs, const U& rhs) const
+  {
+    if (sizeof(lhs) >= sizeof(rhs))
+    {
       return T(op().template operator()<T>(lhs, rhs));
-    } else {
+    }
+    else
+    {
       return U(op().template operator()<U>(lhs, rhs));
     }
   }
 
   native_type_handle operator()(
-    const corevm::types::string& lhs, const corevm::types::string& rhs) const {
+    const corevm::types::string& lhs, const corevm::types::string& rhs) const
+  {
     return corevm::types::boolean(op().template operator()<corevm::types::string>(lhs, rhs));
   }
 
   native_type_handle operator()(
-    const corevm::types::array& lhs, const corevm::types::array& rhs) const {
+    const corevm::types::array& lhs, const corevm::types::array& rhs) const
+  {
     return corevm::types::boolean(op().template operator()<corevm::types::array>(lhs, rhs));
   }
 
   native_type_handle operator()(
-    const corevm::types::map& lhs, const corevm::types::map& rhs) const {
+    const corevm::types::map& lhs, const corevm::types::map& rhs) const
+  {
     return corevm::types::boolean(op().template operator()<corevm::types::map>(lhs, rhs));
   }
 };
 
 
 template<typename T>
-class native_type_value_visitor : public boost::static_visitor<T> {
+class native_type_value_visitor : public boost::static_visitor<T>
+{
 public:
   template<typename H>
-  T operator()(const H& handle) const {
+  T operator()(const H& handle) const
+  {
     return static_cast<T>(handle.value);
   }
 };

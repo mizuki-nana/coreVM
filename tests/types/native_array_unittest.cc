@@ -29,7 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 
 
-class native_array_unittest : public ::testing::Test {
+class native_array_unittest : public ::testing::Test
+{
 protected:
   const corevm::types::uint64::value_type fixture_element1 = static_cast<corevm::types::uint64::value_type>(1);
   const corevm::types::uint64::value_type fixture_element2 = static_cast<corevm::types::uint64::value_type>(2);
@@ -273,9 +274,12 @@ TEST_F(native_array_unary_operator_unittest, TestBitwiseNotOperator)
 }
 
 
-class native_array_binary_operator_unittest : public native_array_operator_unittest {
+class native_array_binary_operator_unittest : public native_array_operator_unittest
+{
 public:
-  static void F(bool) {}
+  static void F(bool)
+  {
+  }
 };
 
 

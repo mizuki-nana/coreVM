@@ -65,27 +65,28 @@ namespace runtime {
  * - A pool of native type handles.
  * - A set of compartments.
  */
-class process {
-
+class process
+{
 public:
   typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
   typedef corevm::runtime::native_types_pool native_types_pool_type;
 
-  class adapter {
-  public:
-    explicit adapter(corevm::runtime::process& process):
-      m_process(process)
-    {
-    }
+  class adapter
+  {
+    public:
+      explicit adapter(corevm::runtime::process& process):
+        m_process(process)
+      {
+      }
 
-    corevm::dyobj::dyobj_id help_create_dyobj();
+      corevm::dyobj::dyobj_id help_create_dyobj();
 
-    dynamic_object_type& help_get_dyobj(corevm::dyobj::dyobj_id id);
+      dynamic_object_type& help_get_dyobj(corevm::dyobj::dyobj_id id);
 
-  private:
-    corevm::runtime::process& m_process;
+    private:
+      corevm::runtime::process& m_process;
   };
 
   friend class adapter;

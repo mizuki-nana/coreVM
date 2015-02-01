@@ -28,9 +28,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <climits>
 
 
-class allocation_policy_unit_test : public ::testing::Test {
+class allocation_policy_unit_test : public ::testing::Test
+{
 public:
   class DummyPolicy {};
+
   typedef corevm::memory::first_fit_allocation_scheme AllocationScheme;
   typedef corevm::memory::best_fit_allocation_scheme OtherAllocationScheme;
   typedef corevm::memory::allocation_policy<int, AllocationScheme, 1024> _AllocPolicyType;

@@ -164,11 +164,14 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
 
-  try {
+  try
+  {
     f.exceptions(std::ios::failbit | std::ios::badbit);
     buffer << f.rdbuf();
     f.close();
-  } catch (const std::ios_base::failure& ex) {
+  }
+  catch (const std::ios_base::failure& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         format(
@@ -182,9 +185,12 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
 
   JSON content_json;
 
-  try {
+  try
+  {
     content_json = sneaker::json::parse(content);
-  } catch (const sneaker::json::invalid_json_error& ex) {
+  }
+  catch (const sneaker::json::invalid_json_error& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         format("Error while parsing file \"%s\": %s") % m_path % ex.what()
@@ -197,7 +203,8 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
   const JSON::object json_object = content_json.object_items();
   const JSON::object& signals_object = json_object.at("signals").object_items();
 
-  for (auto itr = signals_object.begin(); itr != signals_object.end(); ++itr) {
+  for (auto itr = signals_object.begin(); itr != signals_object.end(); ++itr)
+  {
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
@@ -214,9 +221,12 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
 {
   const JSON schema = sneaker::json::parse(corevm::frontend::signal_vector_loader::raw_schema);
 
-  try {
+  try
+  {
     sneaker::json::json_schema::validate(content_json, schema);
-  } catch (const sneaker::json::json_validation_error& ex) {
+  }
+  catch (const sneaker::json::json_validation_error& ex)
+  {
     throw corevm::frontend::file_loading_error(
       str(
         format("Invalid format in file \"%s\": %s") % m_path % ex.what()

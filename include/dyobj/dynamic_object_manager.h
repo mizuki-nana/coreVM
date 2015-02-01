@@ -30,7 +30,8 @@ namespace corevm {
 namespace dyobj {
 
 
-class dynamic_object_manager {
+class dynamic_object_manager
+{
 public:
   virtual bool garbage_collectible() const noexcept = 0;
 

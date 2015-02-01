@@ -38,7 +38,8 @@ namespace dyobj {
  * defined so that the default value of a flag, 0, would be the appropriate
  * value for most objects.
  */
-enum flags : uint8_t {
+enum flags : uint8_t
+{
 
   //------------- Bits that pertain to the lifespan of objects. ---------------/
   IS_NOT_GARBAGE_COLLECTIBLE = 1,

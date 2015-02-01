@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -87,7 +87,8 @@ corevm::types::native_type_handle
 corevm::runtime::frame::pop_eval_stack()
   throw(corevm::runtime::evaluation_stack_empty_error)
 {
-  if (m_eval_stack.empty()) {
+  if (m_eval_stack.empty())
+  {
     throw corevm::runtime::evaluation_stack_empty_error();
   }
 
@@ -108,7 +109,8 @@ corevm::runtime::frame::get_visible_var(
   const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::local_variable_not_found_error)
 {
-  if (!has_visible_var(var_key)) {
+  if (!has_visible_var(var_key))
+  {
     throw corevm::runtime::local_variable_not_found_error();
   }
 
@@ -143,7 +145,8 @@ corevm::runtime::frame::get_invisible_var(
   const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::local_variable_not_found_error)
 {
-  if (!has_invisible_var(var_key)) {
+  if (!has_invisible_var(var_key))
+  {
     throw corevm::runtime::local_variable_not_found_error();
   }
 
@@ -182,7 +185,8 @@ corevm::runtime::frame::put_param(const corevm::dyobj::dyobj_id& id)
 const corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_error)
 {
-  if (m_params_list.empty()) {
+  if (m_params_list.empty())
+  {
     throw corevm::runtime::missing_parameter_error();
   }
 
@@ -210,7 +214,8 @@ corevm::runtime::frame::pop_param_value_pair(
 {
   auto itr = m_param_value_map.find(key);
 
-  if (itr == m_param_value_map.end()) {
+  if (itr == m_param_value_map.end())
+  {
     throw corevm::runtime::missing_parameter_error();
   }
 
@@ -226,7 +231,8 @@ corevm::runtime::frame::param_value_pair_keys() const
 {
   std::list<corevm::runtime::variable_key> keys;
 
-  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr) {
+  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
+  {
     corevm::runtime::variable_key key = itr->first;
     keys.push_back(key);
   }
@@ -239,7 +245,8 @@ corevm::runtime::frame::get_visible_objs() const
 {
   std::list<corevm::dyobj::dyobj_id> ids;
 
-  for (auto itr = m_visible_vars.begin(); itr != m_visible_vars.end(); ++itr) {
+  for (auto itr = m_visible_vars.begin(); itr != m_visible_vars.end(); ++itr)
+  {
     corevm::dyobj::dyobj_id id = itr->second;
     ids.push_back(id);
   }
@@ -252,7 +259,8 @@ corevm::runtime::frame::get_invisible_objs() const
 {
   std::list<corevm::dyobj::dyobj_id> ids;
 
-  for (auto itr = m_invisible_vars.begin(); itr != m_invisible_vars.end(); ++itr) {
+  for (auto itr = m_invisible_vars.begin(); itr != m_invisible_vars.end(); ++itr)
+  {
     corevm::dyobj::dyobj_id id = itr->second;
     ids.push_back(id);
   }

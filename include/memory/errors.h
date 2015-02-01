@@ -37,7 +37,8 @@ namespace corevm {
 namespace memory {
 
 
-class invalid_address_error : public corevm::runtime_error {
+class invalid_address_error : public corevm::runtime_error
+{
 public:
   explicit invalid_address_error(const uint64_t addr):
     corevm::runtime_error(

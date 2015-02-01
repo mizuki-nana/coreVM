@@ -39,12 +39,14 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct sighandler_wrapper {
+typedef struct sighandler_wrapper
+{
   corevm::runtime::sighandler* handler;
 } sighandler_wrapper;
 
 
-class sighandler_registrar {
+class sighandler_registrar
+{
 public:
   static void init(corevm::runtime::process*);
 

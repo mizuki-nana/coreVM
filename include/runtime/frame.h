@@ -51,7 +51,8 @@ namespace runtime {
  * - Evaluation stack.
  * - Closure context.
  */
-class frame {
+class frame
+{
 public:
   explicit frame(corevm::runtime::closure_ctx);
   ~frame();

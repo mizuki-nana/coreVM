@@ -28,19 +28,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-class native_type_handle_unittest : public ::testing::Test {
+class native_type_handle_unittest : public ::testing::Test
+{
 public:
   template<typename T>
   void assert_handle_value(
     corevm::types::native_type_handle& handle,
     T expected_value,
-    bool decimal_value=false
-  ) {
+    bool decimal_value=false)
+  {
     T actual_value = corevm::types::get_value_from_handle<T>(handle);
 
-    if (!decimal_value) {
+    if (!decimal_value)
+    {
       ASSERT_EQ(expected_value, actual_value);
-    } else {
+    }
+    else
+    {
       ASSERT_FLOAT_EQ(expected_value, actual_value);
     }
   }
@@ -50,14 +54,17 @@ public:
     corevm::types::native_type_handle& handle,
     T expected_value,
     bool decimal_value=false,
-    bool on_self=false
-  ) {
+    bool on_self=false)
+  {
     typename corevm::types::native_type_handle result =
       corevm::types::apply_unary_visitor<visitor_type>(handle);
 
-    if (on_self) {
+    if (on_self)
+    {
       assert_handle_value(handle, expected_value, decimal_value);
-    } else {
+    }
+    else
+    {
       assert_handle_value(result, expected_value, decimal_value);
     }
   }
@@ -67,8 +74,8 @@ public:
     corevm::types::native_type_handle& h1,
     corevm::types::native_type_handle& h2,
     T expected_value,
-    bool decimal_value=false
-  ) {
+    bool decimal_value=false)
+  {
     typename corevm::types::native_type_handle result =
       corevm::types::apply_binary_visitor<visitor_type>(h1, h2);
 
@@ -77,8 +84,8 @@ public:
 
   template<class visitor_type, class exception_type>
   void apply_unary_visitor_and_check_exception(
-    corevm::types::native_type_handle& handle
-  ) {
+    corevm::types::native_type_handle& handle)
+  {
     ASSERT_THROW(
       {
         corevm::types::apply_unary_visitor<visitor_type>(handle);

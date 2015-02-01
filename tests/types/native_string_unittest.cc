@@ -262,9 +262,12 @@ TEST_F(native_string_unary_operator_unittest, TestBitwiseNotOperator)
 }
 
 
-class native_string_binary_operator_unittest : public native_string_operator_unittest {
+class native_string_binary_operator_unittest : public native_string_operator_unittest
+{
 public:
-  static void F(bool) {}
+  static void F(bool)
+  {
+  }
 };
 
 

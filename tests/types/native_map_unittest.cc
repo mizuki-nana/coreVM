@@ -240,9 +240,12 @@ TEST_F(native_map_unary_operator_unittest, TestBitwiseNOTOperator)
 }
 
 
-class native_map_binary_operator_unittest : public native_map_operator_unittest {
+class native_map_binary_operator_unittest : public native_map_operator_unittest
+{
 public:
-  static void F(bool) {}
+  static void F(bool)
+  {
+  }
 };
 
 

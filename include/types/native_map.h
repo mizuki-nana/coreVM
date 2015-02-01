@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -46,7 +46,8 @@ using native_map_base = typename std::unordered_map<native_map_key_type, native_
   #define DEFAULT_NATIVE_MAP_INITIAL_CAPACITY 10
 #endif
 
-class native_map : public native_map_base {
+class native_map : public native_map_base
+{
 public:
   explicit native_map() : native_map_base(DEFAULT_NATIVE_MAP_INITIAL_CAPACITY) {}
 
@@ -55,106 +56,134 @@ public:
 
   native_map(std::initializer_list<value_type> il) : native_map_base(il) {}
 
-  native_map(int8_t) {
+  native_map(int8_t)
+  {
     throw corevm::types::conversion_error("int8", "map");
   }
 
-  operator int8_t() const {
+  operator int8_t() const
+  {
     throw corevm::types::conversion_error("map", "int8");
   }
 
-  native_map& operator+() const {
+  native_map& operator+() const
+  {
     throw corevm::types::invalid_operator_error("+", "map");
   }
 
-  native_map& operator-() const {
+  native_map& operator-() const
+  {
     throw corevm::types::invalid_operator_error("-", "map");
   }
 
-  native_map& operator++() const {
+  native_map& operator++() const
+  {
     throw corevm::types::invalid_operator_error("++", "map");
   }
 
-  native_map& operator--() const {
+  native_map& operator--() const
+  {
     throw corevm::types::invalid_operator_error("--", "map");
   }
 
-  native_map& operator!() const {
+  native_map& operator!() const
+  {
     throw corevm::types::invalid_operator_error("!", "map");
   }
 
-  native_map& operator~() const {
+  native_map& operator~() const
+  {
     throw corevm::types::invalid_operator_error("~", "map");
   }
 
-  native_map& operator+(const native_map&) const {
+  native_map& operator+(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("+", "map");
   }
 
-  native_map& operator-(const native_map&) const {
+  native_map& operator-(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("-", "map");
   }
 
-  native_map& operator*(const native_map&) const {
+  native_map& operator*(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("*", "map");
   }
 
-  native_map& operator/(const native_map&) const {
+  native_map& operator/(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("/", "map");
   }
 
-  native_map& operator%(const native_map&) const {
+  native_map& operator%(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("%", "map");
   }
 
-  native_map& operator&&(const native_map&) const {
+  native_map& operator&&(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("&&", "map");
   }
 
-  native_map& operator||(const native_map&) const {
+  native_map& operator||(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("||", "map");
   }
 
-  native_map& operator&(const native_map&) const {
+  native_map& operator&(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("&", "map");
   }
 
-  native_map& operator|(const native_map&) const {
+  native_map& operator|(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("|", "map");
   }
 
-  native_map& operator^(const native_map&) const {
+  native_map& operator^(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("^", "map");
   }
 
-  native_map& operator<<(const native_map&) const {
+  native_map& operator<<(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("<<", "map");
   }
 
-  native_map& operator>>(const native_map&) const {
+  native_map& operator>>(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error(">>", "map");
   }
 
-  native_map& operator<(const native_map&) const {
+  native_map& operator<(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("<", "map");
   }
 
-  native_map& operator<=(const native_map&) const {
+  native_map& operator<=(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error("<=", "map");
   }
 
-  native_map& operator>(const native_map&) const {
+  native_map& operator>(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error(">", "map");
   }
 
-  native_map& operator>=(const native_map&) const {
+  native_map& operator>=(const native_map&) const
+  {
     throw corevm::types::invalid_operator_error(">=", "map");
   }
 
-  mapped_type& at(const key_type& k) throw(corevm::types::out_of_range_error) {
-    try {
+  mapped_type& at(const key_type& k) throw(corevm::types::out_of_range_error)
+  {
+    try
+    {
       return native_map_base::at(k);
-    } catch (const std::out_of_range&) {
+    }
+    catch (const std::out_of_range&)
+    {
       throw corevm::types::out_of_range_error("Map key out of range");
     }
   }

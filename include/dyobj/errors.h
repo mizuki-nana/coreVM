@@ -39,7 +39,8 @@ namespace corevm {
 namespace dyobj {
 
 
-class runtime_error : public corevm::runtime_error {
+class runtime_error : public corevm::runtime_error
+{
 public:
   explicit runtime_error(const std::string& what_arg):
     corevm::runtime_error(what_arg)
@@ -53,7 +54,8 @@ public:
 };
 
 
-class object_not_found_error : public corevm::dyobj::runtime_error {
+class object_not_found_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit object_not_found_error(const std::string& what_arg):
     corevm::dyobj::runtime_error(what_arg)
@@ -67,7 +69,8 @@ public:
 
   explicit object_not_found_error(corevm::dyobj::dyobj_id id):
     corevm::dyobj::runtime_error(
-      str(boost::format("Object %s not found") % corevm::dyobj::dyobj_id_helper::id_to_string(id))
+      str(boost::format("Object %s not found") % \
+        corevm::dyobj::dyobj_id_helper::id_to_string(id))
     ),
     id(id)
   {
@@ -77,7 +80,8 @@ public:
 };
 
 
-class object_attribute_not_found_error : public corevm::dyobj::runtime_error {
+class object_attribute_not_found_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit object_attribute_not_found_error(const std::string& what_arg):
     corevm::dyobj::runtime_error(what_arg)
@@ -106,7 +110,8 @@ public:
 };
 
 
-class object_attribute_deletion_error : public corevm::dyobj::runtime_error {
+class object_attribute_deletion_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit object_attribute_deletion_error(const std::string& what_arg):
     corevm::dyobj::runtime_error(what_arg)
@@ -137,7 +142,8 @@ public:
 };
 
 
-class object_id_exceed_limit_error : public corevm::dyobj::runtime_error {
+class object_id_exceed_limit_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit object_id_exceed_limit_error():
     corevm::dyobj::runtime_error("The maximum limit of dynamic object ID has been exceeded")
@@ -146,7 +152,8 @@ public:
 };
 
 
-class object_heap_insertion_failed_error : public corevm::dyobj::runtime_error {
+class object_heap_insertion_failed_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit object_heap_insertion_failed_error():
     corevm::dyobj::runtime_error("Dynamic object has failed to be inserted into the heap")
@@ -155,7 +162,8 @@ public:
 };
 
 
-class invalid_flag_bit_error : public corevm::dyobj::runtime_error {
+class invalid_flag_bit_error : public corevm::dyobj::runtime_error
+{
 public:
   explicit invalid_flag_bit_error():
     corevm::dyobj::runtime_error("Invalid flag bit provided")

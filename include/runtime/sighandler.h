@@ -35,7 +35,8 @@ namespace runtime {
 class process;
 
 
-class sighandler {
+class sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&) = 0;
 };
@@ -44,25 +45,29 @@ public:
 // ------------------- Arithmetic and execution signals -----------------------/
 
 
-class sighandler_SIGFPE : public sighandler {
+class sighandler_SIGFPE : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGILL : public sighandler {
+class sighandler_SIGILL : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGSEGV : public sighandler {
+class sighandler_SIGSEGV : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGBUS : public sighandler {
+class sighandler_SIGBUS : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
@@ -71,25 +76,29 @@ public:
 // ------------------------ Termination signals -------------------------------/
 
 
-class sighandler_SIGABRT : public sighandler {
+class sighandler_SIGABRT : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGINT : public sighandler {
+class sighandler_SIGINT : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGTERM : public sighandler {
+class sighandler_SIGTERM : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGQUIT : public sighandler {
+class sighandler_SIGQUIT : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
@@ -98,19 +107,22 @@ public:
 // ---------------------------- Alarm signals ---------------------------------/
 
 
-class sighandler_SIGALRM : public sighandler {
+class sighandler_SIGALRM : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGVTALRM : public sighandler {
+class sighandler_SIGVTALRM : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGPROF : public sighandler {
+class sighandler_SIGPROF : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
@@ -119,25 +131,29 @@ public:
 // ---------------------- Operation error signals -----------------------------/
 
 
-class sighandler_SIGPIPE : public sighandler {
+class sighandler_SIGPIPE : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGLOST : public sighandler {
+class sighandler_SIGLOST : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGXCPU : public sighandler {
+class sighandler_SIGXCPU : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGXFSZ : public sighandler {
+class sighandler_SIGXFSZ : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
@@ -146,13 +162,15 @@ public:
 // ----------------------- Asynchronous I/O signals ---------------------------/
 
 
-class sighandler_SIGIO : public sighandler {
+class sighandler_SIGIO : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };
 
 
-class sighandler_SIGURG : public sighandler {
+class sighandler_SIGURG : public sighandler
+{
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
 };

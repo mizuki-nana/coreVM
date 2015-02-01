@@ -39,11 +39,16 @@ sneaker::atomic::atomic_incrementor<
 corevm::dyobj::dyobj_id
 corevm::dyobj::dyobj_id_helper::generate_dyobj_id()
 {
-  try {
+  try
+  {
     return ++corevm::dyobj::dyobj_id_helper::atomic_value;
-  } catch (const std::underflow_error&) {
+  }
+  catch (const std::underflow_error&)
+  {
     throw corevm::dyobj::object_id_exceed_limit_error();
-  } catch (const std::overflow_error&) {
+  }
+  catch (const std::overflow_error&)
+  {
     throw corevm::dyobj::object_id_exceed_limit_error();
   }
 }

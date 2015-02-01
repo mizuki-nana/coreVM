@@ -34,7 +34,8 @@ namespace corevm {
 namespace runtime {
 
 
-class compartment {
+class compartment
+{
 public:
   explicit compartment();
 

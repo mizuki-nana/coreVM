@@ -29,7 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 template<class GarbageCollectionScheme>
-class garbage_collection_unittest : public ::testing::Test {
+class garbage_collection_unittest : public ::testing::Test
+{
 public:
   using _GarbageCollectorType = typename corevm::gc::garbage_collector<GarbageCollectionScheme>;
 
@@ -43,7 +44,8 @@ public:
 
     ASSERT_EQ(m_heap.size(), ids.size());
 
-    for (auto itr = ids.begin(); itr != ids.end(); ++itr) {
+    for (auto itr = ids.begin(); itr != ids.end(); ++itr)
+    {
       corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(*itr);
 
       ASSERT_NO_THROW(
@@ -55,7 +57,8 @@ public:
   }
 
 protected:
-  corevm::dyobj::dyobj_id help_create_obj() {
+  corevm::dyobj::dyobj_id help_create_obj()
+  {
     corevm::dyobj::dyobj_id id = m_heap.create_dyobj();
     return id;
   }
@@ -69,7 +72,8 @@ protected:
     dst_obj.manager().on_setattr();
   }
 
-  void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id id) {
+  void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id id)
+  {
     auto& obj = m_heap.at(id);
     obj.set_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE);
   }

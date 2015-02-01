@@ -52,7 +52,8 @@ corevm::runtime::process_runner::start()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
-  if (res) {
+  if (res)
+  {
     m_process.start();
   }
 

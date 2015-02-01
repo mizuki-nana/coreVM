@@ -38,12 +38,13 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
 
   _dynamic_object_heap_type::size_type prev_active_size = heap.active_size();
 
-  while (true) {
+  while (true)
+  {
     heap.iterate(
       [this, &heap](
         _dynamic_object_heap_type::dynamic_object_id_type id,
-        _dynamic_object_heap_type::dynamic_object_type& object
-      ) {
+        _dynamic_object_heap_type::dynamic_object_type& object)
+      {
         this->check_and_dec_ref_count(heap, object);
         this->resolve_self_reference_cycles(heap, object);
       }
@@ -51,7 +52,8 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
 
     this->remove_cycles(heap);
 
-    if (heap.active_size() == prev_active_size) {
+    if (heap.active_size() == prev_active_size)
+    {
       break;
     }
 
@@ -67,15 +69,16 @@ corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
   using _dynamic_object_type = typename
     corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type;
 
-  if (!object.is_garbage_collectible()) {
+  if (!object.is_garbage_collectible())
+  {
     return;
   }
 
   object.iterate(
     [this, &heap](
       _dynamic_object_type::attr_key_type attr_key,
-      _dynamic_object_type::dyobj_id_type dyobj_id
-    ) {
+      _dynamic_object_type::dyobj_id_type dyobj_id)
+    {
       _dynamic_object_type& referenced_object = heap.at(dyobj_id);
 
       referenced_object.manager().dec_ref_count();
@@ -94,14 +97,15 @@ corevm::gc::reference_count_garbage_collection_scheme::resolve_self_reference_cy
   object.iterate(
     [this, &heap, &object](
       _dynamic_object_type::attr_key_type attr_key,
-      _dynamic_object_type::dyobj_id_type dyobj_id
-    ) {
+      _dynamic_object_type::dyobj_id_type dyobj_id)
+    {
       _dynamic_object_type& referenced_object = heap.at(dyobj_id);
 
       auto ref_count1 = object.manager().ref_count();
       auto ref_count2 = referenced_object.manager().ref_count();
 
-      if (referenced_object.has_ref(object.id()) && ref_count1 == 1 && ref_count2 == 1) {
+      if (referenced_object.has_ref(object.id()) && ref_count1 == 1 && ref_count2 == 1)
+      {
         object.manager().dec_ref_count();
         referenced_object.manager().dec_ref_count();
       }
@@ -120,10 +124,12 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
 
   std::unordered_map<dyobj_id_type, vertex_type> vertices_map;
 
-  auto get_vertex = [&](dyobj_id_type id) -> vertex_type& {
+  auto get_vertex = [&](dyobj_id_type id) -> vertex_type&
+  {
     auto itr = vertices_map.find(id);
 
-    if (itr == vertices_map.end()) {
+    if (itr == vertices_map.end())
+    {
       vertices_map[id] = vertex_type(id);
     }
 
@@ -135,14 +141,15 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   heap.iterate(
     [&](
       dynamic_object_heap_type::dynamic_object_id_type id,
-      dynamic_object_heap_type::dynamic_object_type& object
-    ) {
-      if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true) {
+      dynamic_object_heap_type::dynamic_object_type& object)
+    {
+      if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true)
+      {
         object.iterate(
           [&](
             dynamic_object_type::attr_key_type attr_key,
-            dynamic_object_type::dyobj_id_type neighbor_id
-          ) {
+            dynamic_object_type::dyobj_id_type neighbor_id)
+          {
             non_garbage_collectible_neighbors.insert(neighbor_id);
           }
         );
@@ -155,8 +162,8 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
       object.iterate(
         [&](
           dynamic_object_type::attr_key_type attr_key,
-          dynamic_object_type::dyobj_id_type neighbor_id
-        ) {
+          dynamic_object_type::dyobj_id_type neighbor_id)
+        {
           vertex_type& neighbor_vertex = get_vertex(neighbor_id);
 
           vertex.dependencies().push_back(&neighbor_vertex);
@@ -167,7 +174,8 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
 
   std::list<vertex_type*> vertices;
 
-  for (auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr) {
+  for (auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr)
+  {
     vertex_type* vertex_ptr = static_cast<vertex_type*>(&itr->second);
     vertices.push_back(vertex_ptr);
   }
@@ -177,12 +185,14 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
 
   std::list<std::list<dyobj_id_type>> cycles = components.cycles();
 
-  for (auto itr = cycles.begin(); itr != cycles.end(); ++itr) {
+  for (auto itr = cycles.begin(); itr != cycles.end(); ++itr)
+  {
     std::list<dyobj_id_type> cycle = static_cast<std::list<dyobj_id_type>>(*itr);
 
     std::set<dyobj_id_type> cycle_set;
 
-    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_) {
+    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_)
+    {
       dyobj_id_type id = static_cast<dyobj_id_type>(*itr_);
       cycle_set.insert(id);
     }
@@ -196,11 +206,13 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
       std::inserter(intersect, intersect.begin())
     );
 
-    if (!intersect.empty()) {
+    if (!intersect.empty())
+    {
       continue;
     }
 
-    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_) {
+    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_)
+    {
       dyobj_id_type id = static_cast<dyobj_id_type>(*itr_);
       auto& obj = heap.at(id);
       obj.manager().dec_ref_count();

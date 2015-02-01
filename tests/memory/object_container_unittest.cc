@@ -29,14 +29,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <set>
 
 
-class object_container_unittest : public ::testing::Test {
+class object_container_unittest : public ::testing::Test
+{
 public:
-  typedef struct dummy {
+  typedef struct dummy
+  {
     int data;
   } T;
 
 protected:
-  virtual void TearDown() {
+  virtual void TearDown()
+  {
     // Make sure test cases clean up the container properly.
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
@@ -89,7 +92,8 @@ TEST_F(object_container_unittest, TestIterator)
 
   std::set<int> set;
 
-  for (auto itr = m_container.begin(); itr != m_container.end(); ++itr) {
+  for (auto itr = m_container.begin(); itr != m_container.end(); ++itr)
+  {
     T t = *itr;
     set.insert(t.data);
   }
@@ -126,7 +130,8 @@ TEST_F(object_container_unittest, TestConstIterator)
 
   std::set<int> set;
 
-  for (auto itr = m_container.cbegin(); itr != m_container.cend(); ++itr) {
+  for (auto itr = m_container.cbegin(); itr != m_container.cend(); ++itr)
+  {
     T t = *itr;
     set.insert(t.data);
   }

@@ -49,7 +49,8 @@ namespace memory {
  * iterator types.
  * */
 template<typename T, typename AllocatorType=std::allocator<T>>
-class object_container {
+class object_container
+{
 public:
 
   typedef typename AllocatorType::value_type value_type;
@@ -64,7 +65,8 @@ private:
   using _HashSet = typename std::set<pointer>;
 
 public:
-  class iterator : public std::iterator<std::forward_iterator_tag, T> {
+  class iterator : public std::iterator<std::forward_iterator_tag, T>
+  {
     private:
       using _ContainerType = object_container<T, AllocatorType>;
       typedef typename _HashSet::iterator _Inner;
@@ -82,41 +84,49 @@ public:
       {
       }
 
-      iterator(const iterator& rhs) {
+      iterator(const iterator& rhs)
+      {
         m_container = rhs.m_container;
         m_inner = rhs.m_inner;
       }
 
-      iterator& operator=(const iterator& rhs) {
+      iterator& operator=(const iterator& rhs)
+      {
         m_container = rhs.m_container;
         m_inner = rhs.m_inner;
         return *this;
       }
 
-      bool operator==(const iterator& rhs) const {
+      bool operator==(const iterator& rhs) const
+      {
         return m_inner == rhs.m_inner;
       }
 
-      bool operator!=(const iterator& rhs) const {
+      bool operator!=(const iterator& rhs) const
+      {
         return m_inner != rhs.m_inner;
       }
 
-      iterator& operator++() {
+      iterator& operator++()
+      {
         m_inner++;
         return *this;
       }
 
-      iterator operator++(int) {
+      iterator operator++(int)
+      {
         iterator tmp(*this);
         operator++();
         return tmp;
       }
 
-      reference operator*() const {
+      reference operator*() const
+      {
         return *( (*m_container)[*m_inner] );
       }
 
-      pointer operator->() const {
+      pointer operator->() const
+      {
         return ( (*m_container)[*m_inner] );
       }
 
@@ -127,7 +137,8 @@ public:
       friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
-  class const_iterator : public std::iterator<std::forward_iterator_tag, T> {
+  class const_iterator : public std::iterator<std::forward_iterator_tag, T>
+  {
     private:
       using _ContainerType = const object_container<T, AllocatorType>;
       typedef typename _HashSet::const_iterator _Inner;
@@ -145,41 +156,49 @@ public:
       {
       }
 
-      const_iterator(const const_iterator& rhs) {
+      const_iterator(const const_iterator& rhs)
+      {
         m_container = rhs.m_container;
         m_inner = rhs.m_inner;
       }
 
-      const_iterator& operator=(const const_iterator& rhs) {
+      const_iterator& operator=(const const_iterator& rhs)
+      {
         m_container = rhs.m_container;
         m_inner = rhs.m_inner;
         return *this;
       }
 
-      bool operator==(const const_iterator& rhs) {
+      bool operator==(const const_iterator& rhs)
+      {
         return m_inner == rhs.m_inner;
       }
 
-      bool operator!=(const const_iterator& rhs) {
+      bool operator!=(const const_iterator& rhs)
+      {
         return m_inner != rhs.m_inner;
       }
 
-      const_iterator& operator++() {
+      const_iterator& operator++()
+      {
         m_inner++;
         return *this;
       }
 
-      const_iterator operator++(int) {
+      const_iterator operator++(int)
+      {
         const_iterator tmp(*this);
         operator++();
         return tmp;
       }
 
-      const_reference operator*() const {
+      const_reference operator*() const
+      {
         return *( (*m_container)[*m_inner] );
       }
 
-      const_pointer operator->() const {
+      const_pointer operator->() const
+      {
         return ( (*m_container)[*m_inner] );
       }
 
@@ -275,7 +294,8 @@ corevm::memory::object_container<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
-  if (!p) {
+  if (!p)
+  {
     return nullptr;
   }
 
@@ -293,7 +313,8 @@ corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
 {
   uint64_t addr = static_cast<uint64_t>( (char*)p - (char*)(0) );
 
-  if (m_addrs.find(p) == m_addrs.end()) {
+  if (m_addrs.find(p) == m_addrs.end())
+  {
     throw corevm::memory::invalid_address_error(addr);
   }
 }
@@ -328,7 +349,8 @@ template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
 {
-  if (itr == end()) {
+  if (itr == end())
+  {
     return;
   }
 
@@ -340,7 +362,8 @@ template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
 {
-  if (itr == cend()) {
+  if (itr == cend())
+  {
     return;
   }
 

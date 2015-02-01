@@ -25,7 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class native_string_type_interfaces_test : public native_type_interfaces_test_base {
+class native_string_type_interfaces_test : public native_type_interfaces_test_base
+{
 public:
   template<typename F>
   void apply_interface_and_assert_string_result(

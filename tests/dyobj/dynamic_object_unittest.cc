@@ -31,7 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class dummy_dynamic_object_manager {};
 
 
-class dynamic_object_unittest : public ::testing::Test {
+class dynamic_object_unittest : public ::testing::Test
+{
 public:
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
 };

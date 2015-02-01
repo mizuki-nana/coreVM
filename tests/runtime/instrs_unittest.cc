@@ -39,7 +39,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using corevm::runtime::process;
 
 
-class process_instrs_unittest : public ::testing::Test {
+class process_instrs_unittest : public ::testing::Test
+{
 protected:
   corevm::runtime::closure_ctx m_ctx {
     .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
@@ -48,14 +49,17 @@ protected:
 };
 
 
-class process_obj_instrs_test : public process_instrs_unittest {
+class process_obj_instrs_test : public process_instrs_unittest
+{
 protected:
-  virtual void SetUp() {
+  virtual void SetUp()
+  {
     m_process.push_frame(*m_frame);
   }
 
   template<typename InstrHandlerCls>
-  void execute_instr(corevm::runtime::instr instr, uint64_t expected_stack_size=1) {
+  void execute_instr(corevm::runtime::instr instr, uint64_t expected_stack_size=1)
+  {
     InstrHandlerCls instr_handler;
 
     instr_handler.execute(instr, m_process);
@@ -691,12 +695,14 @@ TEST_F(process_functions_instrs_test, TestInstrGETKWARGS)
 }
 
 
-class process_control_instrs_test : public process_instrs_unittest {
+class process_control_instrs_test : public process_instrs_unittest
+{
 public:
   static bool signal_fired;
 
 protected:
-  virtual void SetUp() {
+  virtual void SetUp()
+  {
     std::vector<corevm::runtime::instr> instrs = {
       corevm::runtime::instr(),
       corevm::runtime::instr(),
@@ -831,7 +837,8 @@ TEST_F(process_control_instrs_test, TestInstrEXIT)
 }
 
 
-class process_eval_stack_instrs_test : public process_instrs_unittest {
+class process_eval_stack_instrs_test : public process_instrs_unittest
+{
 public:
   typedef uint32_t IntrinsicType;
 
@@ -840,7 +847,8 @@ public:
   typedef std::list<corevm::types::native_type_handle> eval_oprds_list;
 
 protected:
-  void push_eval_stack_and_frame(const eval_oprds_list& elements) {
+  void push_eval_stack_and_frame(const eval_oprds_list& elements)
+  {
     std::for_each(
       elements.begin(),
       elements.end(),
@@ -853,7 +861,8 @@ protected:
   }
 
   template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
-  void execute_instr_and_assert_result(IntrinsicType expected_result) {
+  void execute_instr_and_assert_result(IntrinsicType expected_result)
+  {
     InstrHandlerCls instr_handler;
 
     corevm::runtime::instr instr;
@@ -881,9 +890,11 @@ protected:
 class process_arithmetic_instrs_test : public process_eval_stack_instrs_test {};
 
 
-class process_unary_arithmetic_instrs_test : public process_arithmetic_instrs_test {
+class process_unary_arithmetic_instrs_test : public process_arithmetic_instrs_test
+{
 public:
-  virtual void SetUp () {
+  virtual void SetUp()
+  {
     corevm::types::native_type_handle hndl = NativeType(m_oprd);
     push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
@@ -924,9 +935,11 @@ TEST_F(process_unary_arithmetic_instrs_test, TestInstrLNOT)
 }
 
 
-class process_binary_arithmetic_instrs_test : public process_arithmetic_instrs_test {
+class process_binary_arithmetic_instrs_test : public process_arithmetic_instrs_test
+{
 public:
-  virtual void SetUp () {
+  virtual void SetUp()
+  {
     corevm::types::native_type_handle hndl1 = NativeType(m_oprd1);
     corevm::types::native_type_handle hndl2 = NativeType(m_oprd2);
     push_eval_stack_and_frame({hndl2, hndl1});
@@ -1056,9 +1069,11 @@ TEST_F(process_binary_arithmetic_instrs_test, TestInstrLOR)
 class process_native_type_instrs_test : public process_eval_stack_instrs_test {};
 
 
-class process_native_type_creation_instrs_test : public process_native_type_instrs_test {
+class process_native_type_creation_instrs_test : public process_native_type_instrs_test
+{
 public:
-  virtual void SetUp () {
+  virtual void SetUp()
+  {
     push_eval_stack_and_frame(eval_oprds_list{});
   }
 };
@@ -1141,15 +1156,18 @@ TEST_F(process_native_type_creation_instrs_test, TestInstrMAP)
 }
 
 
-class process_native_type_conversion_instrs_test : public process_native_type_instrs_test {
+class process_native_type_conversion_instrs_test : public process_native_type_instrs_test
+{
 public:
-  virtual void SetUp () {
+  virtual void SetUp()
+  {
     corevm::types::native_type_handle hndl = corevm::types::uint8(m_oprd);
     push_eval_stack_and_frame(eval_oprds_list{hndl});
   }
 
   template<typename InstrHandlerCls, typename TargetNativeType>
-  void execute_instr_and_assert_result() {
+  void execute_instr_and_assert_result()
+  {
     InstrHandlerCls instr_handler;
 
     corevm::runtime::instr instr;
@@ -1290,9 +1308,11 @@ TEST_F(process_native_type_conversion_instrs_test, TestInstr2MAP)
 }
 
 
-class process_native_type_complex_instrs_test : public process_native_type_instrs_test {
+class process_native_type_complex_instrs_test : public process_native_type_instrs_test
+{
 public:
-  virtual void SetUp() {
+  virtual void SetUp()
+  {
     // Override this method to do nothing here.
   }
 };

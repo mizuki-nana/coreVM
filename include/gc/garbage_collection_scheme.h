@@ -39,49 +39,61 @@ namespace gc {
 class garbage_collection_scheme {};
 
 
-class reference_count_garbage_collection_scheme : public garbage_collection_scheme {
+class reference_count_garbage_collection_scheme : public garbage_collection_scheme
+{
 public:
-  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager {
+  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+  {
     public:
       dynamic_object_manager() :
         m_count(0)
       {
       }
 
-      virtual inline bool garbage_collectible() const noexcept {
+      virtual inline bool garbage_collectible() const noexcept
+      {
         return m_count == 0;
       }
 
-      virtual inline void on_create() noexcept {
+      virtual inline void on_create() noexcept
+      {
         this->inc_ref_count();
       }
 
-      virtual inline void on_setattr() noexcept {
+      virtual inline void on_setattr() noexcept
+      {
         this->inc_ref_count();
       }
 
-      virtual inline void on_delattr() noexcept {
+      virtual inline void on_delattr() noexcept
+      {
         this->dec_ref_count();
       }
 
-      virtual inline void on_delete() noexcept {
+      virtual inline void on_delete() noexcept
+      {
         this->dec_ref_count();
       }
 
-      virtual inline void on_exit() noexcept {
+      virtual inline void on_exit() noexcept
+      {
         this->dec_ref_count();
       }
 
-      virtual inline uint64_t ref_count() const noexcept {
+      virtual inline uint64_t ref_count() const noexcept
+      {
         return m_count;
       }
 
-      virtual inline void inc_ref_count() noexcept {
+      virtual inline void inc_ref_count() noexcept
+      {
         ++m_count;
       }
 
-      virtual inline void dec_ref_count() noexcept {
-        if (m_count > 0) {
+      virtual inline void dec_ref_count() noexcept
+      {
+        if (m_count > 0)
+        {
           --m_count;
         }
       }
@@ -103,48 +115,59 @@ protected:
 };
 
 
-class mark_and_sweep_garbage_collection_scheme : public garbage_collection_scheme {
+class mark_and_sweep_garbage_collection_scheme : public garbage_collection_scheme
+{
 public:
-  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager {
+  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+  {
     public:
       dynamic_object_manager() :
         m_marked(false)
       {
       }
 
-      virtual inline bool garbage_collectible() const noexcept {
+      virtual inline bool garbage_collectible() const noexcept
+      {
         return marked();
       }
 
-      virtual inline void on_create() noexcept {
+      virtual inline void on_create() noexcept
+      {
         // Do nothing here.
       }
 
-      virtual inline void on_setattr() noexcept {
+      virtual inline void on_setattr() noexcept
+      {
         // Do nothing here.
       }
 
-      virtual inline void on_delattr() noexcept {
+      virtual inline void on_delattr() noexcept
+      {
         // Do nothing here.
       }
 
-      virtual inline void on_delete() noexcept {
+      virtual inline void on_delete() noexcept
+      {
         // Do nothing here.
       }
 
-      virtual inline void on_exit() noexcept {
+      virtual inline void on_exit() noexcept
+      {
         // Do nothing here.
       }
 
-      virtual inline bool marked() const noexcept {
+      virtual inline bool marked() const noexcept
+      {
         return m_marked;
       }
 
-      virtual inline void mark() noexcept {
+      virtual inline void mark() noexcept
+      {
         m_marked = true;
       }
 
-      virtual inline void unmark() noexcept {
+      virtual inline void unmark() noexcept
+      {
         m_marked = false;
       }
 

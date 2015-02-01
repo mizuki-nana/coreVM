@@ -36,7 +36,8 @@ namespace corevm {
 namespace dyobj {
 
 
-class dyobj_id_helper {
+class dyobj_id_helper
+{
 public:
   static dyobj_id generate_dyobj_id();
   static std::string id_to_string(corevm::dyobj::dyobj_id);

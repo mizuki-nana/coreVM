@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -41,38 +41,46 @@ class unary_op : public op {};
 class binary_op : public op {};
 
 
-class positive : public unary_op {
+class positive : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     return static_cast<typename R::value_type>(+handle.value);
   }
 };
 
 
-class negation : public unary_op {
+class negation : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     return static_cast<typename R::value_type>(-handle.value);
   }
 };
 
 
-class increment : public unary_op {
+class increment : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     T& handle_ = const_cast<T&>(handle);
     return static_cast<typename R::value_type>(++handle_.value);
   }
 };
 
 
-class decrement : public unary_op {
+class decrement : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     T& handle_ = const_cast<T&>(handle);
     --handle_.value;
     return handle.value;
@@ -82,24 +90,29 @@ public:
 template<>
 inline
 typename corevm::types::boolean::value_type
-corevm::types::decrement::operator()<corevm::types::boolean>(const corevm::types::boolean& handle) {
-  throw corevm::types::invalid_operator_error("--", "boolean"); 
+corevm::types::decrement::operator()<corevm::types::boolean>(const corevm::types::boolean& handle)
+{
+  throw corevm::types::invalid_operator_error("--", "boolean");
 }
 
 
-class logical_not : public unary_op {
+class logical_not : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     return static_cast<typename R::value_type>(!handle.value);
   }
 };
 
 
-class bitwise_not : public unary_op {
+class bitwise_not : public unary_op
+{
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) {
+  typename R::value_type operator()(const T& handle)
+  {
     typename corevm::types::int64::value_type value =
       static_cast<typename corevm::types::int64::value_type>(handle.value);
 
@@ -110,29 +123,34 @@ public:
 template<>
 inline
 typename corevm::types::string::value_type
-corevm::types::bitwise_not::operator()<corevm::types::string>(const corevm::types::string& handle) {
+corevm::types::bitwise_not::operator()<corevm::types::string>(const corevm::types::string& handle)
+{
   return static_cast<typename corevm::types::string::value_type>(~handle.value);
 }
 
 template<>
 inline
 typename corevm::types::array::value_type
-corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle) {
+corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types::array& handle)
+{
   return static_cast<typename corevm::types::array::value_type>(~handle.value);
 }
 
 template<>
 inline
 typename corevm::types::map::value_type
-corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::map& handle) {
+corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::map& handle)
+{
   return static_cast<typename corevm::types::map::value_type>(~handle.value);
 }
 
 
-class addition : public binary_op {
+class addition : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) +
       static_cast<typename R::value_type>(rhs.value)
@@ -150,10 +168,12 @@ corevm::types::addition::operator()<corevm::types::string>(
 }
 
 
-class subtraction : public binary_op {
+class subtraction : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) -
       static_cast<typename R::value_type>(rhs.value)
@@ -162,10 +182,12 @@ public:
 };
 
 
-class multiplication : public binary_op {
+class multiplication : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) *
       static_cast<typename R::value_type>(rhs.value)
@@ -174,10 +196,12 @@ public:
 };
 
 
-class division : public binary_op {
+class division : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) /
       static_cast<typename R::value_type>(rhs.value)
@@ -186,10 +210,12 @@ public:
 };
 
 
-class modulus : public binary_op {
+class modulus : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) %
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -225,10 +251,12 @@ corevm::types::modulus::operator()<corevm::types::map>(
 }
 
 
-class pow_op : public binary_op {
+class pow_op : public binary_op
+{
 public:
   typename corevm::types::decimal::value_type operator()(
-    const corevm::types::decimal& lhs, const corevm::types::decimal& rhs) {
+    const corevm::types::decimal& lhs, const corevm::types::decimal& rhs)
+  {
     return pow(
       static_cast<typename corevm::types::decimal::value_type>(lhs.value),
       static_cast<typename corevm::types::decimal::value_type>(rhs.value)
@@ -236,7 +264,8 @@ public:
   }
 
   typename corevm::types::decimal2::value_type operator()(
-    const corevm::types::decimal2& lhs, const corevm::types::decimal2& rhs) {
+    const corevm::types::decimal2& lhs, const corevm::types::decimal2& rhs)
+  {
     return pow(
       static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
       static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
@@ -244,7 +273,8 @@ public:
   }
 
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return pow(
       static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
       static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
@@ -253,10 +283,12 @@ public:
 };
 
 
-class logical_and : public binary_op {
+class logical_and : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) &&
       static_cast<typename R::value_type>(rhs.value)
@@ -265,10 +297,12 @@ public:
 };
 
 
-class logical_or : public binary_op {
+class logical_or : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) ||
       static_cast<typename R::value_type>(rhs.value)
@@ -277,10 +311,12 @@ public:
 };
 
 
-class bitwise_and : public binary_op {
+class bitwise_and : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) &
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -316,10 +352,12 @@ corevm::types::bitwise_and::operator()<corevm::types::map>(
 }
 
 
-class bitwise_or : public binary_op {
+class bitwise_or : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) |
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -355,10 +393,12 @@ corevm::types::bitwise_or::operator()<corevm::types::map>(
 }
 
 
-class bitwise_xor : public binary_op {
+class bitwise_xor : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) ^
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -394,10 +434,12 @@ corevm::types::bitwise_xor::operator()<corevm::types::map>(
 }
 
 
-class bitwise_left_shift : public binary_op {
+class bitwise_left_shift : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) <<
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -433,10 +475,12 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
 }
 
 
-class bitwise_right_shift : public binary_op {
+class bitwise_right_shift : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs) {
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename corevm::types::int64::value_type>(lhs.value) >>
       static_cast<typename corevm::types::int64::value_type>(rhs.value)
@@ -472,10 +516,12 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
 }
 
 
-class eq : public binary_op {
+class eq : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) ==
       static_cast<typename R::value_type>(rhs.value)
@@ -484,10 +530,12 @@ public:
 };
 
 
-class neq : public binary_op {
+class neq : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) !=
       static_cast<typename R::value_type>(rhs.value)
@@ -496,10 +544,12 @@ public:
 };
 
 
-class gt : public binary_op {
+class gt : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) >
       static_cast<typename R::value_type>(rhs.value)
@@ -508,10 +558,12 @@ public:
 };
 
 
-class lt : public binary_op {
+class lt : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) <
       static_cast<typename R::value_type>(rhs.value)
@@ -520,10 +572,12 @@ public:
 };
 
 
-class gte : public binary_op {
+class gte : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) >=
       static_cast<typename R::value_type>(rhs.value)
@@ -532,10 +586,12 @@ public:
 };
 
 
-class lte : public binary_op {
+class lte : public binary_op
+{
 public:
   template<typename R, typename T, typename U>
-  bool operator()(const T& lhs, const U& rhs) {
+  bool operator()(const T& lhs, const U& rhs)
+  {
     return (
       static_cast<typename R::value_type>(lhs.value) <=
       static_cast<typename R::value_type>(rhs.value)

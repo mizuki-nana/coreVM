@@ -31,18 +31,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class signal_vector_loader_unittest : public ::testing::Test {
+class signal_vector_loader_unittest : public ::testing::Test
+{
 protected:
   static const char* PATH;
   static const std::string SIGNAL_VECTOR;
 
-  virtual void SetUp() {
+  virtual void SetUp()
+  {
     std::ofstream f(PATH, std::ios::binary);
     f << signal_vector_loader_unittest::SIGNAL_VECTOR;
     f.close();
   }
 
-  virtual void TearDown() {
+  virtual void TearDown()
+  {
     remove(PATH);
   }
 

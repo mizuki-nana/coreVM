@@ -274,7 +274,8 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
 }
 
 
-class process_gc_rule_unittest : public process_unittest {
+class process_gc_rule_unittest : public process_unittest
+{
 protected:
   corevm::runtime::process _process;
 };

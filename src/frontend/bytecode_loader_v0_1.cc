@@ -182,7 +182,8 @@ corevm::frontend::bytecode_loader_v0_1::load(
   corevm::runtime::encoding_map encoding_map;
   const JSON::array& encoding_map_json = json_object.at("encoding_map").array_items();
 
-  for (auto itr = encoding_map_json.begin(); itr != encoding_map_json.end(); ++itr) {
+  for (auto itr = encoding_map_json.begin(); itr != encoding_map_json.end(); ++itr)
+  {
     const JSON& raw_encoding_pair = static_cast<JSON>(*itr);
     const JSON::object& encoding_pair = raw_encoding_pair.object_items();
 
@@ -207,7 +208,8 @@ corevm::frontend::bytecode_loader_v0_1::load(
 
   const JSON::array& closures = json_object.at("__MAIN__").array_items();
 
-  for (auto itr = closures.begin(); itr != closures.end(); ++itr) {
+  for (auto itr = closures.begin(); itr != closures.end(); ++itr)
+  {
     const JSON& closure_raw = static_cast<JSON>(*itr);
     const JSON::object& closure = closure_raw.object_items();
 
@@ -217,7 +219,8 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const std::string name = static_cast<std::string>(__name__);
     corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__vector__);
 
-    if (closure.find("__parent__") == closure.end()) {
+    if (closure.find("__parent__") == closure.end())
+    {
       process.append_vector(vector);
       continue;
     }
@@ -225,11 +228,13 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const JSON::string& __parent__ = closure.at("__parent__").string_value();
     const std::string parent = static_cast<std::string>(__parent__);
 
-    if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end()) {
+    if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end())
+    {
       str_to_closure_id_map[name] = closure_id++;
     }
 
-    if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end()) {
+    if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end())
+    {
       str_to_closure_id_map[parent] = \
         parent.empty() ? corevm::runtime::NONESET_CLOSURE_ID : closure_id++;
     }

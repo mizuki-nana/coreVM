@@ -40,7 +40,8 @@ namespace corevm {
 namespace runtime {
 
 
-class runtime_error : public corevm::runtime_error {
+class runtime_error : public corevm::runtime_error
+{
 public:
   explicit runtime_error(const std::string& what_arg):
     corevm::runtime_error(what_arg)
@@ -54,7 +55,8 @@ public:
 };
 
 
-class frame_not_found_error : public corevm::runtime::runtime_error {
+class frame_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit frame_not_found_error():
     corevm::runtime::runtime_error("Expected frame not found")
@@ -63,7 +65,8 @@ public:
 };
 
 
-class evaluation_stack_empty_error : public corevm::runtime::runtime_error {
+class evaluation_stack_empty_error : public corevm::runtime::runtime_error
+{
 public:
   explicit evaluation_stack_empty_error():
     corevm::runtime::runtime_error("Evaluation stack is empty")
@@ -72,7 +75,8 @@ public:
 };
 
 
-class local_variable_not_found_error : public corevm::runtime::runtime_error {
+class local_variable_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit local_variable_not_found_error():
     corevm::runtime::runtime_error("Local variable not found")
@@ -81,7 +85,8 @@ public:
 };
 
 
-class invalid_instr_error : public corevm::runtime::runtime_error {
+class invalid_instr_error : public corevm::runtime::runtime_error
+{
 public:
   explicit invalid_instr_error():
     corevm::runtime::runtime_error("Invalid instruction code encountered")
@@ -90,7 +95,8 @@ public:
 };
 
 
-class object_stack_empty_error : public corevm::runtime::runtime_error {
+class object_stack_empty_error : public corevm::runtime::runtime_error
+{
 public:
   explicit object_stack_empty_error():
     corevm::runtime::runtime_error("Process's object stack is empty")
@@ -99,7 +105,8 @@ public:
 };
 
 
-class native_type_handle_not_found_error : public corevm::runtime::runtime_error {
+class native_type_handle_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit native_type_handle_not_found_error():
     corevm::runtime::runtime_error("Native type handle not found")
@@ -108,7 +115,8 @@ public:
 };
 
 
-class native_type_handle_deletion_error : public corevm::runtime::runtime_error {
+class native_type_handle_deletion_error : public corevm::runtime::runtime_error
+{
 public:
   explicit native_type_handle_deletion_error():
     corevm::runtime::runtime_error("Native type handle cannot be deleted")
@@ -117,7 +125,8 @@ public:
 };
 
 
-class missing_parameter_error : public corevm::runtime::runtime_error {
+class missing_parameter_error : public corevm::runtime::runtime_error
+{
 public:
   explicit missing_parameter_error():
     corevm::runtime::runtime_error("Missing parameter")
@@ -126,7 +135,8 @@ public:
 };
 
 
-class invalid_instr_addr_error : public corevm::runtime::runtime_error {
+class invalid_instr_addr_error : public corevm::runtime::runtime_error
+{
 public:
   explicit invalid_instr_addr_error():
     corevm::runtime::runtime_error("Invalid instruction address")
@@ -154,7 +164,8 @@ public:
 };
 
 
-class encoding_string_not_found_error : public corevm::runtime::runtime_error {
+class encoding_string_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit encoding_string_not_found_error(uint64_t key):
     corevm::runtime::runtime_error(
@@ -165,7 +176,8 @@ public:
 };
 
 
-class compartment_not_found_error : public corevm::runtime::runtime_error {
+class compartment_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit compartment_not_found_error(corevm::runtime::compartment_id id):
     corevm::runtime::runtime_error(
@@ -176,7 +188,8 @@ public:
 };
 
 
-class closure_not_found_error : public corevm::runtime::runtime_error {
+class closure_not_found_error : public corevm::runtime::runtime_error
+{
 public:
   explicit closure_not_found_error(corevm::runtime::closure_id id):
     corevm::runtime::runtime_error(

@@ -44,12 +44,14 @@ namespace corevm {
 namespace runtime {
 
 
-class native_types_pool {
+class native_types_pool
+{
 public:
   typedef corevm::types::native_type_handle value_type;
 
   template<typename T, size_t N>
-  class allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme, N>> {
+  class allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme, N>>
+  {
     public:
       using _BaseType = typename sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme, N> >;
 
