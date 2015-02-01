@@ -279,8 +279,7 @@ corevm::memory::object_container<T, AllocatorType>::create()
     return nullptr;
   }
 
-  T t;
-  m_allocator.construct(p, t);
+  m_allocator.construct(p);
 
   m_addrs.insert(p);
 

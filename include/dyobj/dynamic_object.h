@@ -56,6 +56,10 @@ public:
 
   explicit dynamic_object();
 
+  /* Dynamic objects should not be copyable. */
+  dynamic_object(const dynamic_object&) = delete;
+  dynamic_object& operator=(const dynamic_object&) = delete;
+
   ~dynamic_object();
 
   bool operator==(const corevm::dyobj::dynamic_object<dynamic_object_manager>&);
@@ -151,7 +155,7 @@ bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::operator!=(
   const corevm::dyobj::dynamic_object<dynamic_object_manager>& rhs)
 {
-  return !(static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>>(*this) == rhs);
+  return !((*this) == rhs);
 }
 
 template<class dynamic_object_manager>

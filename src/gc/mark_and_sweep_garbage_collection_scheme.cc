@@ -35,7 +35,7 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::gc(
   heap.iterate(
     [this, &heap](
       _dynamic_object_heap_type::dynamic_object_id_type id,
-      _dynamic_object_heap_type::dynamic_object_type object
+      _dynamic_object_heap_type::dynamic_object_type& object
     ) {
       if (this->is_root_object(object)) {
         this->mark(heap, object);

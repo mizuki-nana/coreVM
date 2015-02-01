@@ -42,7 +42,7 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
     heap.iterate(
       [this, &heap](
         _dynamic_object_heap_type::dynamic_object_id_type id,
-        _dynamic_object_heap_type::dynamic_object_type object
+        _dynamic_object_heap_type::dynamic_object_type& object
       ) {
         this->check_and_dec_ref_count(heap, object);
         this->resolve_self_reference_cycles(heap, object);
@@ -135,7 +135,7 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   heap.iterate(
     [&](
       dynamic_object_heap_type::dynamic_object_id_type id,
-      dynamic_object_heap_type::dynamic_object_type object
+      dynamic_object_heap_type::dynamic_object_type& object
     ) {
       if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true) {
         object.iterate(
