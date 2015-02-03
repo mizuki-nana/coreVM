@@ -53,6 +53,7 @@ corevm::runtime::instr_handler_meta::instr_info_map = {
   { corevm::runtime::instr_enum::CLRHNDL,   { .num_oprd=0, .str="clrhndl",   .handler=new corevm::runtime::instr_handler_clrhndl()   } },
   { corevm::runtime::instr_enum::OBJEQ,     { .num_oprd=0, .str="objeq",     .handler=new corevm::runtime::instr_handler_objeq()     } },
   { corevm::runtime::instr_enum::OBJNEQ,    { .num_oprd=0, .str="objneq",    .handler=new corevm::runtime::instr_handler_objneq()    } },
+  { corevm::runtime::instr_enum::SETCTX,    { .num_oprd=1, .str="setctx",    .handler=new corevm::runtime::instr_handler_setctx()    } },
 
   //--------------------------- Control instructions --------------------------/
 
@@ -636,6 +637,25 @@ corevm::runtime::instr_handler_objneq::execute(
   corevm::types::native_type_handle hndl = corevm::types::boolean(id1 != id2);
 
   frame.push_eval_stack(hndl);
+}
+
+void
+corevm::runtime::instr_handler_setctx::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::runtime::closure_ctx frame_cls = frame.closure_ctx();
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = frame_cls.compartment_id,
+    .closure_id = static_cast<corevm::runtime::closure_id>(instr.oprd1)
+  };
+
+  obj.set_closure_ctx(ctx);
 }
 
 void

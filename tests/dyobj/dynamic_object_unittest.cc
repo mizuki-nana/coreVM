@@ -202,20 +202,28 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   );
 }
 
-TEST_F(dynamic_object_unittest, TestGetAndSetInstrBlockKey)
+TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
 {
   dynamic_object_type obj;
 
-  ASSERT_EQ(corevm::dyobj::NONESET_INSTR_BLOCK_KEY, obj.get_instr_block_key());
+  corevm::runtime::closure_ctx ctx;
 
-  corevm::dyobj::instr_block_key key = 100;
-  obj.set_instr_block_key(key);
+  obj.closure_ctx(&ctx);
 
-  ASSERT_EQ(key, obj.get_instr_block_key());
+  ASSERT_EQ(corevm::runtime::NONESET_COMPARTMENT_ID, ctx.compartment_id);
+  ASSERT_EQ(corevm::runtime::NONESET_CLOSURE_ID, ctx.closure_id);
 
-  obj.clear_instr_block_key();
+  corevm::runtime::closure_ctx expected_ctx {
+    .compartment_id = 123,
+    .closure_id = 456
+  };
 
-  ASSERT_EQ(corevm::dyobj::NONESET_INSTR_BLOCK_KEY, obj.get_instr_block_key());
+  obj.set_closure_ctx(expected_ctx);
+
+  obj.closure_ctx(&ctx);
+
+  ASSERT_EQ(expected_ctx.compartment_id, ctx.compartment_id);
+  ASSERT_EQ(expected_ctx.closure_id, ctx.closure_id);
 }
 
 TEST_F(dynamic_object_unittest, TestEquality)

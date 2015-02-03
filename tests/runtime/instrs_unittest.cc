@@ -495,6 +495,36 @@ TEST_F(process_obj_instrs_test, TestInstrOBJNEQ)
   ASSERT_EQ(expected_result, actual_result);
 }
 
+TEST_F(process_obj_instrs_test, TestInstrSETCXT)
+{
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+
+  m_process.push_stack(id);
+
+  corevm::runtime::frame frame(m_ctx);
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::SETCTX,
+    .oprd1 = static_cast<corevm::runtime::instr_oprd>(m_ctx.closure_id),
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_setctx>(instr);
+
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(id, actual_id);
+
+  auto &obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+  corevm::runtime::closure_ctx ctx;
+  obj.closure_ctx(&ctx);
+
+  ASSERT_EQ(m_ctx.compartment_id, ctx.compartment_id);
+  ASSERT_EQ(m_ctx.closure_id, ctx.closure_id);
+}
+
 
 class process_functions_instrs_test : public process_instrs_unittest {
 protected:

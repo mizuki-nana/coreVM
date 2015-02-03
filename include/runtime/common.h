@@ -63,8 +63,8 @@ const closure_id NONESET_CLOSURE_ID = -1;
 
 typedef struct closure_ctx
 {
-  const compartment_id compartment_id;
-  const closure_id closure_id;
+  compartment_id compartment_id;
+  closure_id closure_id;
 
   bool operator==(const closure_ctx& rhs)
   {

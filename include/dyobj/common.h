@@ -46,16 +46,10 @@ typedef int64_t ntvhndl_key;
 typedef uint32_t flag;
 
 
-typedef uint32_t instr_block_key;
-
-
 const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
 
 
 const int64_t NTVHNDL_LIMIT = LLONG_MAX;
-
-
-const instr_block_key NONESET_INSTR_BLOCK_KEY = -1;
 
 
 } /* end namespace dyobj */

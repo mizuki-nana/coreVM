@@ -118,6 +118,11 @@ enum instr_enum : uint32_t
   // different objects.
   OBJNEQ,
 
+  // <setctx, oprd1, _>
+  // Sets the closure context of the object.
+  // The first operand is the closure ID.
+  SETCTX,
+
   //------------------------- Control instructions ----------------------------/
 
   // <rtrn, _, _>
@@ -744,6 +749,13 @@ public:
 
 
 class instr_handler_objneq : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+
+class instr_handler_setctx : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

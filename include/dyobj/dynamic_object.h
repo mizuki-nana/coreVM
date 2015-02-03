@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj_id.h"
 #include "flags.h"
 #include "errors.h"
+#include "../runtime/common.h"
 
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
@@ -83,10 +84,6 @@ public:
   void set_ntvhndl_key(corevm::dyobj::ntvhndl_key) noexcept;
   void clear_ntvhndl_key() noexcept;
 
-  corevm::dyobj::instr_block_key get_instr_block_key() const noexcept;
-  void set_instr_block_key(corevm::dyobj::instr_block_key) noexcept;
-  void clear_instr_block_key() noexcept;
-
   bool get_flag(char) const;
   void set_flag(char);
   void clear_flag(char);
@@ -103,6 +100,10 @@ public:
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::object_attribute_not_found_error);
 
+  void closure_ctx(runtime::closure_ctx*) const;
+
+  void set_closure_ctx(const runtime::closure_ctx&);
+
   bool has_ref(dyobj_id_type) const noexcept;
 
   template<typename Function>
@@ -116,7 +117,7 @@ private:
   attr_map_type m_attrs;
   dynamic_object_manager m_manager;
   corevm::dyobj::ntvhndl_key m_ntvhndl_key;
-  corevm::dyobj::instr_block_key m_instr_block_key;
+  corevm::runtime::closure_ctx m_closure_ctx;
 };
 
 
@@ -133,7 +134,10 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   ),
   m_manager(dynamic_object_manager()),
   m_ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY),
-  m_instr_block_key(corevm::dyobj::NONESET_INSTR_BLOCK_KEY)
+  m_closure_ctx(runtime::closure_ctx {
+    .compartment_id = runtime::NONESET_COMPARTMENT_ID,
+    .closure_id = runtime::NONESET_CLOSURE_ID
+  })
 {
   // Do nothing here.
 }
@@ -240,28 +244,6 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_ntvhndl_key() noexc
 }
 
 template<class dynamic_object_manager>
-corevm::dyobj::instr_block_key
-corevm::dyobj::dynamic_object<dynamic_object_manager>::get_instr_block_key() const noexcept
-{
-  return m_instr_block_key;
-}
-
-template<class dynamic_object_manager>
-void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::set_instr_block_key(
-  corevm::dyobj::instr_block_key key) noexcept
-{
-  m_instr_block_key = key;
-}
-
-template<class dynamic_object_manager>
-void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_instr_block_key() noexcept
-{
-  m_instr_block_key = corevm::dyobj::NONESET_INSTR_BLOCK_KEY;
-}
-
-template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) const
   throw(corevm::dyobj::invalid_flag_bit_error)
@@ -349,6 +331,22 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type obj_id) noexcept
 {
   m_attrs.insert({attr_key, obj_id});
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::closure_ctx(
+  runtime::closure_ctx* ctx) const
+{
+  *ctx = m_closure_ctx;
+}
+
+template<class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::set_closure_ctx(
+  const runtime::closure_ctx& ctx)
+{
+  m_closure_ctx = ctx;
 }
 
 template<class dynamic_object_manager>
