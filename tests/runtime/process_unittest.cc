@@ -20,7 +20,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/dyobj/dyobj_id_helper.h"
 #include "../../include/runtime/closure.h"
 #include "../../include/runtime/common.h"
 #include "../../include/runtime/gc_rule.h"
@@ -68,8 +67,8 @@ TEST_F(process_unittest, TestPushAndPopStack)
 {
   corevm::runtime::process process;
 
-  corevm::dyobj::dyobj_id id1 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
-  corevm::dyobj::dyobj_id id2 = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id id1 = 1;
+  corevm::dyobj::dyobj_id id2 = 2;
 
   ASSERT_THROW(
     {

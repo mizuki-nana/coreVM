@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "dyobj_id.h"
-#include "dyobj_id_helper.h"
 #include "../errors.h"
 
 #include <boost/format.hpp>
@@ -69,8 +68,7 @@ public:
 
   explicit object_not_found_error(corevm::dyobj::dyobj_id id):
     corevm::dyobj::runtime_error(
-      str(boost::format("Object %s not found") % \
-        corevm::dyobj::dyobj_id_helper::id_to_string(id))
+      str(boost::format("Object %s not found") % corevm::dyobj::id_to_string(id))
     ),
     id(id)
   {
@@ -98,7 +96,7 @@ public:
   ):
     corevm::dyobj::runtime_error(
       str(boost::format("Attribute %u in object %s not found") % \
-        attr_key % corevm::dyobj::dyobj_id_helper::id_to_string(id))
+        attr_key % corevm::dyobj::id_to_string(id))
     ),
     attr_key(attr_key),
     id(id)
@@ -129,7 +127,7 @@ public:
     corevm::dyobj::runtime_error(
       str(
         boost::format("Attribute %u cannot be deleted from object %s") % \
-          attr_key % corevm::dyobj::dyobj_id_helper::id_to_string(id)
+          attr_key % corevm::dyobj::id_to_string(id)
       )
     ),
     attr_key(attr_key),

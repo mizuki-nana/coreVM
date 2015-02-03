@@ -20,36 +20,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_DYOBJ_ID_HELPER_H_
-#define COREVM_DYOBJ_ID_HELPER_H_
+#include "../../include/dyobj/dyobj_id.h"
 
-#include "dyobj_id.h"
-
-#include <sneaker/atomic/atomic_incrementor.h>
-
-#include <string>
+#include <boost/lexical_cast.hpp>
 
 
-namespace corevm {
-
-
-namespace dyobj {
-
-
-class dyobj_id_helper
+std::string
+corevm::dyobj::id_to_string(corevm::dyobj::dyobj_id id)
 {
-public:
-  static dyobj_id generate_dyobj_id();
-  static std::string id_to_string(corevm::dyobj::dyobj_id);
-private:
-  static sneaker::atomic::atomic_incrementor<dyobj_id, DYOBJ_LIMIT> atomic_value;
-};
-
-
-} /* end namespace dyobj */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_DYOBJ_ID_HELPER_H_ */
+  return boost::lexical_cast<std::string>(id);
+}

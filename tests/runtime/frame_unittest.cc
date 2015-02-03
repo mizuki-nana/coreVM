@@ -20,7 +20,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/dyobj/dyobj_id_helper.h"
 #include "../../include/runtime/common.h"
 #include "../../include/runtime/frame.h"
 #include "../../include/types/native_type_handle.h"
@@ -74,7 +73,7 @@ TEST_F(frame_unittest, TestVisibleVars)
 {
   corevm::runtime::frame frame(m_closure_ctx);
   corevm::runtime::variable_key var_key = 1111;
-  corevm::dyobj::dyobj_id obj_id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id obj_id = 1;
 
   ASSERT_EQ(false, frame.has_visible_var(var_key));
 
@@ -103,7 +102,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
 {
   corevm::runtime::frame frame(m_closure_ctx);
   corevm::runtime::variable_key var_key = 1111;
-  corevm::dyobj::dyobj_id obj_id = corevm::dyobj::dyobj_id_helper::generate_dyobj_id();
+  corevm::dyobj::dyobj_id obj_id = 812;
 
   ASSERT_EQ(false, frame.has_invisible_var(var_key));
 

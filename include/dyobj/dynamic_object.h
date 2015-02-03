@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "dyobj_id.h"
-#include "dyobj_id_helper.h"
 #include "flags.h"
 #include "errors.h"
 
