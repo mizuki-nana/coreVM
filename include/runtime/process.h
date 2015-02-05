@@ -131,10 +131,10 @@ public:
   void erase_ntvhndl(corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_deletion_error);
 
+  const corevm::runtime::instr_addr pc() const;
+
   void set_pc(const corevm::runtime::instr_addr)
     throw(corevm::runtime::invalid_instr_addr_error);
-
-  void append_instrs(const std::vector<corevm::runtime::instr>&);
 
   void append_vector(const corevm::runtime::vector&);
 
@@ -179,8 +179,7 @@ private:
   bool m_pause_exec;
   uint8_t m_gc_flag;
   corevm::runtime::instr_addr m_pc;
-  std::vector<corevm::runtime::instr> m_instrs;
-  std::vector<corevm::runtime::vector> m_vectors;
+  corevm::runtime::vector m_instrs;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
   std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::list<corevm::runtime::frame> m_call_stack;

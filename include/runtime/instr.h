@@ -125,6 +125,16 @@ enum instr_enum : uint32_t
 
   //------------------------- Control instructions ----------------------------/
 
+  // <pinvk, _, _>
+  // Prepares the invocation of a function.
+  // Creates a new frame on top of the call stack, and sets its closure context
+  // using the context of the object on top of the stack.
+  PINVK,
+
+  // <invk, _, _>
+  // Invokes the vector of the object on top of the stack.
+  INVK,
+
   // <rtrn, _, _>
   // Unwinds from the current call frame and jumps to the previous one.
   RTRN,
@@ -763,6 +773,20 @@ public:
 
 
 //----------------------- Control instructions --------------------------------/
+
+
+class instr_handler_pinvk : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+
+class instr_handler_invk : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
 
 
 class instr_handler_rtrn : public instr_handler

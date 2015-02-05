@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx):
   m_closure_ctx(closure_ctx),
-  m_start_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_visible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
   m_invisible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
@@ -55,13 +54,7 @@ corevm::runtime::frame::eval_stack_size() const
 corevm::runtime::instr_addr
 corevm::runtime::frame::get_start_addr() const
 {
-  return m_start_addr;
-}
-
-void
-corevm::runtime::frame::set_start_addr(const corevm::runtime::instr_addr start_addr)
-{
-  m_start_addr = start_addr;
+  return m_return_addr + 1;
 }
 
 corevm::runtime::instr_addr

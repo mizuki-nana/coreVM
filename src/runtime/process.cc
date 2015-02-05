@@ -378,6 +378,12 @@ corevm::runtime::process::maybe_gc()
   );
 
   this->resume_exec();
+};
+
+const corevm::runtime::instr_addr
+corevm::runtime::process::pc() const
+{
+  return m_pc;
 }
 
 void
@@ -391,29 +397,13 @@ corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
 
   m_pc = addr;
 
-  while (this->has_frame())
-  {
-    corevm::runtime::frame& frame = this->top_frame();
-
-    if (! (frame.get_start_addr() > addr) )
-    {
-      break;
-    }
-
-    this->pop_frame();
-  }
-}
-
-void
-corevm::runtime::process::append_instrs(const std::vector<corevm::runtime::instr>& instrs)
-{
-  m_instrs.insert(m_instrs.end(), instrs.begin(), instrs.end());
+  m_instrs.erase(m_instrs.begin() + pc(), m_instrs.end());
 }
 
 void
 corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
-  m_vectors.push_back(vector);
+  m_instrs.insert(m_instrs.end(), vector.begin(), vector.end());
 }
 
 void

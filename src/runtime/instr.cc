@@ -57,6 +57,8 @@ corevm::runtime::instr_handler_meta::instr_info_map = {
 
   //--------------------------- Control instructions --------------------------/
 
+  { corevm::runtime::instr_enum::PINVK,     { .num_oprd=0, .str="pinvk",     .handler=new corevm::runtime::instr_handler_pinvk()     } },
+  { corevm::runtime::instr_enum::INVK,      { .num_oprd=0, .str="invk",      .handler=new corevm::runtime::instr_handler_invk()      } },
   { corevm::runtime::instr_enum::RTRN,      { .num_oprd=0, .str="rtrn",      .handler=new corevm::runtime::instr_handler_rtrn()      } },
   { corevm::runtime::instr_enum::JMP,       { .num_oprd=1, .str="jmp",       .handler=new corevm::runtime::instr_handler_jmp()       } },
   { corevm::runtime::instr_enum::JMPIF,     { .num_oprd=1, .str="jmpif",     .handler=new corevm::runtime::instr_handler_jmpif()     } },
@@ -659,6 +661,48 @@ corevm::runtime::instr_handler_setctx::execute(
 }
 
 void
+corevm::runtime::instr_handler_pinvk::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::runtime::closure_ctx ctx;
+  obj.closure_ctx(&ctx);
+
+  if (ctx.compartment_id == corevm::runtime::NONESET_COMPARTMENT_ID)
+  {
+    throw corevm::runtime::compartment_not_found_error(ctx.compartment_id);
+  }
+
+  if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+  {
+    throw corevm::runtime::closure_not_found_error(ctx.closure_id);
+  }
+
+  corevm::runtime::frame frame(ctx);
+  process.push_frame(frame);
+}
+
+void
+corevm::runtime::instr_handler_invk::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  frame.set_return_addr(process.pc());
+
+  corevm::runtime::closure_ctx ctx = frame.closure_ctx();
+
+  corevm::runtime::compartment* compartment = nullptr;
+  process.get_compartment(ctx.compartment_id, &compartment);
+
+  corevm::runtime::closure closure = compartment->get_closure_by_id(ctx.closure_id);
+
+  process.append_vector(closure.vector);
+}
+
+void
 corevm::runtime::instr_handler_rtrn::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
@@ -672,6 +716,7 @@ corevm::runtime::instr_handler_rtrn::execute(
   }
 
   process.set_pc(return_addr);
+  process.pop_frame();
 }
 
 void

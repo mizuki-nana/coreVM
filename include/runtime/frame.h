@@ -61,8 +61,6 @@ public:
 
   corevm::runtime::instr_addr get_start_addr() const;
 
-  void set_start_addr(const corevm::runtime::instr_addr);
-
   corevm::runtime::instr_addr get_return_addr() const;
 
   void set_return_addr(const corevm::runtime::instr_addr);
@@ -115,7 +113,6 @@ public:
 
 protected:
   const corevm::runtime::closure_ctx m_closure_ctx;
-  corevm::runtime::instr_addr m_start_addr;
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;

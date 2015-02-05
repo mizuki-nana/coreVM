@@ -733,7 +733,7 @@ public:
 protected:
   virtual void SetUp()
   {
-    std::vector<corevm::runtime::instr> instrs = {
+    corevm::runtime::vector vector {
       corevm::runtime::instr(),
       corevm::runtime::instr(),
       corevm::runtime::instr(),
@@ -745,13 +745,81 @@ protected:
       corevm::runtime::instr(),
       corevm::runtime::instr(),
     };
-    m_process.append_instrs(instrs);
+    m_process.append_vector(vector);
   }
 
   corevm::runtime::process m_process;
 };
 bool process_control_instrs_test::signal_fired = false;
 
+
+TEST_F(process_control_instrs_test, TestInstrPINVK)
+{
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  auto& obj = process::adapter(m_process).help_get_dyobj(id);
+
+  m_ctx.compartment_id = 1;
+  m_ctx.closure_id = 2;
+  obj.set_closure_ctx(m_ctx);
+
+  m_process.push_stack(id);
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=0,
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_pinvk handler;
+  handler.execute(instr, m_process);
+
+  corevm::runtime::frame& frame = m_process.top_frame();
+
+  corevm::runtime::closure_ctx ctx = frame.closure_ctx();
+
+  ASSERT_TRUE(m_ctx == ctx);
+}
+
+TEST_F(process_control_instrs_test, TestInstrINVK)
+{
+  corevm::runtime::closure_id closure_id = 1;
+  corevm::runtime::compartment_id compartment_id = 0;
+
+  m_ctx.compartment_id = compartment_id;
+  m_ctx.closure_id = closure_id;
+
+  corevm::runtime::frame frame(m_ctx);
+  m_process.push_frame(frame);
+
+  corevm::runtime::vector vector;
+  corevm::runtime::closure closure {
+    .id = closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
+    .vector = vector
+  };
+  corevm::runtime::compartment compartment;
+  corevm::runtime::closure_table closure_table {
+    { closure_id, closure }
+  };
+
+  compartment.set_closure_table(closure_table);
+  m_process.insert_compartment(compartment);
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=0,
+    .oprd2=0
+  };
+
+  m_process.set_pc(8);
+
+  corevm::runtime::instr_handler_invk handler;
+  handler.execute(instr, m_process);
+
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
+
+  ASSERT_EQ(m_process.pc(), actual_frame.get_return_addr());
+}
 
 TEST_F(process_control_instrs_test, TestInstrRTRN)
 {
@@ -761,7 +829,6 @@ TEST_F(process_control_instrs_test, TestInstrRTRN)
 TEST_F(process_control_instrs_test, TestInstrJMP)
 {
   corevm::runtime::frame frame(m_ctx);
-  frame.set_start_addr(0);
   m_process.push_frame(frame);
 
   corevm::runtime::instr_addr current_addr = m_process.current_addr();
@@ -784,7 +851,6 @@ TEST_F(process_control_instrs_test, TestInstrJMP)
 TEST_F(process_control_instrs_test, TestInstrJMPIF)
 {
   corevm::runtime::frame frame(m_ctx);
-  frame.set_start_addr(0);
 
   corevm::types::native_type_handle hndl = corevm::types::boolean(true);
   frame.push_eval_stack(hndl);
@@ -810,7 +876,6 @@ TEST_F(process_control_instrs_test, TestInstrJMPIF)
 TEST_F(process_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
 {
   corevm::runtime::frame frame(m_ctx);
-  frame.set_start_addr(0);
 
   corevm::types::native_type_handle hndl = corevm::types::boolean(false);
   frame.push_eval_stack(hndl);
