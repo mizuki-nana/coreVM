@@ -65,9 +65,18 @@ protected:
 };
 
 
+// -----------------------------------------------------------------------------
+
+namespace {
+
+
 template<typename T, typename AllocationScheme, size_t N>
 using _MyType = typename corevm::memory::allocation_policy<T, AllocationScheme, N>;
 
+
+} /* end namespace */
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy():
@@ -77,6 +86,8 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy():
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy(
   allocation_policy const&)
@@ -84,11 +95,15 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 corevm::memory::allocation_policy<T, AllocationScheme, N>::~allocation_policy()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 typename _MyType<T, AllocationScheme, N>::pointer
@@ -100,6 +115,8 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::allocate(
   return reinterpret_cast<typename _MyType<T, AllocationScheme, N>::pointer>( m_allocator.allocate(n * sizeof(T)) );
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 void
 corevm::memory::allocation_policy<T, AllocationScheme, N>::deallocate(
@@ -110,6 +127,8 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::deallocate(
   m_allocator.deallocate(p);
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 uint64_t
 corevm::memory::allocation_policy<T, AllocationScheme, N>::base_addr() const
@@ -117,12 +136,16 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::base_addr() const
   return m_allocator.base_addr();
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 uint64_t
 corevm::memory::allocation_policy<T, AllocationScheme, N>::total_size() const
 {
   return m_allocator.total_size();
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 inline
@@ -133,6 +156,8 @@ bool operator==(
   return true;
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
 inline
 bool operator==(
@@ -141,6 +166,8 @@ bool operator==(
 {
   return false;
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N, typename other_allocation_policy_type>
 inline
@@ -151,6 +178,8 @@ bool operator==(
   return false;
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 inline
 bool operator!=(
@@ -159,6 +188,8 @@ bool operator!=(
 {
   return !operator==(lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
 inline
@@ -169,6 +200,8 @@ bool operator!=(
   return !operator==(lhs, rhs);
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N, typename other_allocation_policy_type>
 inline
 bool operator!=(
@@ -176,6 +209,8 @@ bool operator!=(
 {
   return !operator==(lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace memory */

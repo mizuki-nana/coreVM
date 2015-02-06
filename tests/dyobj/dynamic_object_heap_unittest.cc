@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class dummy_dynamic_object_manager {};
 
+// -----------------------------------------------------------------------------
 
 class dynamic_object_heap_unittest : public ::testing::Test
 {
@@ -37,6 +38,7 @@ protected:
   corevm::dyobj::dynamic_object_heap<dummy_dynamic_object_manager> m_heap;
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
 {
@@ -57,6 +59,8 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
   ASSERT_EQ(id2, obj2.id());
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
 {
   corevm::dyobj::dyobj_id id1 = 0;
@@ -65,3 +69,5 @@ TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
   ASSERT_THROW(m_heap.at(id1), corevm::dyobj::object_not_found_error);
   ASSERT_THROW(m_heap.at(id2), corevm::dyobj::object_not_found_error);
 }
+
+// -----------------------------------------------------------------------------

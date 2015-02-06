@@ -29,12 +29,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 corevm::runtime::process* corevm::runtime::sighandler_registrar::process = nullptr;
 
+// -----------------------------------------------------------------------------
 
 bool corevm::runtime::sighandler_registrar::sig_raised = false;
 
+// -----------------------------------------------------------------------------
 
 sigjmp_buf _env;
 
+// -----------------------------------------------------------------------------
 
 sigjmp_buf&
 corevm::runtime::sighandler_registrar::get_sigjmp_env()
@@ -42,78 +45,85 @@ corevm::runtime::sighandler_registrar::get_sigjmp_env()
   return _env;
 }
 
+// -----------------------------------------------------------------------------
+
 const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
   corevm::runtime::sighandler_registrar::handler_map
 {
-  //-----------------  Arithmetic and execution signals -----------------------/
+
+  /* --------------- Arithmetic and execution signals ---------------------- */
 
   { SIGFPE,     { .handler=new sighandler_SIGFPE()    } },
   { SIGKILL,    { .handler=new sighandler_SIGILL()    } },
   { SIGSEGV,    { .handler=new sighandler_SIGSEGV()   } },
   { SIGBUS,     { .handler=new sighandler_SIGBUS()    } },
 
-  //---------------------- Termination signals --------------------------------/
+  /* ----------------------- Termination signals ---------------------------- */
 
   { SIGABRT,    { .handler=new sighandler_SIGABRT()   } },
   { SIGINT,     { .handler=new sighandler_SIGINT()    } },
   { SIGTERM,    { .handler=new sighandler_SIGTERM()   } },
   { SIGQUIT,    { .handler=new sighandler_SIGQUIT()   } },
 
-  //------------------------ Alarm signals ------------------------------------/
+  /* ------------------------ Alarm signals --------------------------------- */
 
   { SIGALRM,    { .handler=new sighandler_SIGALRM()   } },
   { SIGVTALRM,  { .handler=new sighandler_SIGVTALRM() } },
   { SIGPROF,    { .handler=new sighandler_SIGPROF()   } },
 
-  //---------------------- Operation error signals ----------------------------/
+  /* --------------------- Operation error signals -------------------------- */
 
   { SIGPIPE,    { .handler=new sighandler_SIGPIPE()   } },
   { SIGXCPU,    { .handler=new sighandler_SIGXCPU()   } },
   { SIGXFSZ,    { .handler=new sighandler_SIGXFSZ()   } },
 
-  //-------------------- Asynchronous I/O signals -----------------------------/
+  /* -------------------- Asynchronous I/O signals -------------------------- */
 
   { SIGIO,      { .handler=new sighandler_SIGIO()     } },
   { SIGURG,     { .handler=new sighandler_SIGURG()    } },
+
 };
 
+// -----------------------------------------------------------------------------
 
 const std::unordered_map<std::string, sig_atomic_t> \
   corevm::runtime::sighandler_registrar::sig_value_to_str_map
 {
 
-  //-----------------  Arithmetic and execution signals -----------------------/
+  /* ---------------- Arithmetic and execution signals ---------------------- */
 
   { "SIGFPE",     SIGFPE    },
   { "SIGKILL",    SIGKILL   },
   { "SIGSEGV",    SIGSEGV   },
   { "SIGBUS",     SIGBUS    },
 
-  //---------------------- Termination signals --------------------------------/
+  /* ----------------------- Termination signals ---------------------------- */
 
   { "SIGABRT",    SIGABRT   },
   { "SIGINT",     SIGINT    },
   { "SIGTERM",    SIGTERM   },
   { "SIGQUIT",    SIGQUIT   },
 
-  //------------------------ Alarm signals ------------------------------------/
+  /* ------------------------- Alarm signals -------------------------------- */
 
   { "SIGALRM",    SIGALRM   },
   { "SIGVTALRM",  SIGVTALRM },
   { "SIGPROF",    SIGPROF   },
 
-  //---------------------- Operation error signals ----------------------------/
+  /* --------------------- Operation error signals -------------------------- */
 
   { "SIGPIPE",    SIGPIPE   },
   { "SIGXCPU",    SIGXCPU   },
   { "SIGXFSZ",    SIGXFSZ   },
 
-  //-------------------- Asynchronous I/O signals -----------------------------/
+  /* -------------------- Asynchronous I/O signals -------------------------- */
 
   { "SIGIO",      SIGIO     },
   { "SIGURG",     SIGURG    },
+
 };
 
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
@@ -130,11 +140,15 @@ corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
   }
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::sighandler_registrar::ignore(sig_atomic_t sig)
 {
   signal(sig, SIG_IGN);
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::sighandler_registrar::handle_signal(int signum)
@@ -155,8 +169,12 @@ corevm::runtime::sighandler_registrar::handle_signal(int signum)
   siglongjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
 }
 
+// -----------------------------------------------------------------------------
+
 sig_atomic_t
 corevm::runtime::sighandler_registrar::get_sig_value_from_string(const std::string& str)
 {
   return sig_value_to_str_map.at(str);
 }
+
+// -----------------------------------------------------------------------------

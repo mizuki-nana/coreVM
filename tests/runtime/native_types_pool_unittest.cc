@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class native_types_pool_unittest : public ::testing::Test {};
 
+// -----------------------------------------------------------------------------
 
 TEST_F(native_types_pool_unittest, TestInitialization)
 {
@@ -37,6 +38,8 @@ TEST_F(native_types_pool_unittest, TestInitialization)
 
   ASSERT_EQ(0, pool.size());
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_types_pool_unittest, TestCreateAndAccess)
 {
@@ -60,6 +63,8 @@ TEST_F(native_types_pool_unittest, TestCreateAndAccess)
   ASSERT_EQ(value, actual_value);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_types_pool_unittest, TestInvalidAccess)
 {
   corevm::runtime::native_types_pool pool;
@@ -73,6 +78,8 @@ TEST_F(native_types_pool_unittest, TestInvalidAccess)
     corevm::runtime::native_type_handle_not_found_error
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_types_pool_unittest, TestCreateAndErase)
 {
@@ -103,3 +110,5 @@ TEST_F(native_types_pool_unittest, TestCreateAndErase)
     corevm::runtime::native_type_handle_not_found_error
   );
 }
+
+// -----------------------------------------------------------------------------

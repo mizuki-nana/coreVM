@@ -29,9 +29,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const int COREVM_PROCESS_DEFAULT_PAUSE_TIME = 10;
 
+// -----------------------------------------------------------------------------
 
 const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
 
+// -----------------------------------------------------------------------------
 
 corevm::runtime::process_runner::process_runner(
   corevm::runtime::process& process
@@ -47,6 +49,8 @@ corevm::runtime::process_runner::process_runner(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::process_runner::start()
 {
@@ -60,6 +64,8 @@ corevm::runtime::process_runner::start()
   return res;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process_runner::tick_handler(void* arg)
 {
@@ -68,8 +74,12 @@ corevm::runtime::process_runner::tick_handler(void* arg)
   runner->gc();
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process_runner::gc()
 {
   m_process.maybe_gc();
 }
+
+// -----------------------------------------------------------------------------

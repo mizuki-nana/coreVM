@@ -39,8 +39,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const std::string BYTECODE_LOADER_V0_1_FORMAT = "application/json";
 
+// -----------------------------------------------------------------------------
+
 const std::string BYTECODE_LOADER_V0_1_VERSION = "0.1";
 
+// -----------------------------------------------------------------------------
 
 std::string
 corevm::frontend::bytecode_loader_v0_1::format() const
@@ -48,11 +51,15 @@ corevm::frontend::bytecode_loader_v0_1::format() const
   return BYTECODE_LOADER_V0_1_FORMAT;
 }
 
+// -----------------------------------------------------------------------------
+
 std::string
 corevm::frontend::bytecode_loader_v0_1::version() const
 {
   return BYTECODE_LOADER_V0_1_VERSION;
 }
+
+// -----------------------------------------------------------------------------
 
 std::string
 corevm::frontend::bytecode_loader_v0_1::schema() const
@@ -168,6 +175,8 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
     "}";
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::frontend::bytecode_loader_v0_1::load(
   const JSON& content_json, corevm::runtime::process& process)
@@ -258,3 +267,5 @@ corevm::frontend::bytecode_loader_v0_1::load(
 
   process.insert_compartment(compartment);
 }
+
+// -----------------------------------------------------------------------------

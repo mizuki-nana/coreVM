@@ -35,6 +35,8 @@ namespace corevm {
 namespace types {
 
 
+// -----------------------------------------------------------------------------
+
 using native_type_handle = typename boost::variant<
   corevm::types::int8,
   corevm::types::uint8,
@@ -52,6 +54,7 @@ using native_type_handle = typename boost::variant<
   corevm::types::map
 >;
 
+// -----------------------------------------------------------------------------
 
 template<class op>
 class native_type_unary_visitor : public boost::static_visitor<native_type_handle>
@@ -64,6 +67,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 template<class op>
 class native_type_binary_visitor : public boost::static_visitor<native_type_handle>
@@ -101,6 +105,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 template<typename T>
 class native_type_value_visitor : public boost::static_visitor<T>
@@ -113,6 +118,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 /* Unary operator visitors */
 class native_type_positive_visitor : public native_type_unary_visitor<positive> {};
@@ -122,6 +128,7 @@ class native_type_decrement_visitor : public native_type_unary_visitor<decrement
 class native_type_logical_not_visitor : public native_type_unary_visitor<logical_not> {};
 class native_type_bitwise_not_visitor : public native_type_unary_visitor<bitwise_not> {};
 
+// -----------------------------------------------------------------------------
 
 /* Binary operator visitors */
 class native_type_addition_visitor : public native_type_binary_visitor<addition> {};
@@ -144,6 +151,7 @@ class native_type_lt_visitor : public native_type_binary_visitor<lt> {};
 class native_type_gte_visitor : public native_type_binary_visitor<gte> {};
 class native_type_lte_visitor : public native_type_binary_visitor<lte> {};
 
+// -----------------------------------------------------------------------------
 
 template<typename T>
 T
@@ -154,6 +162,7 @@ get_value_from_handle(corevm::types::native_type_handle& handle)
   );
 }
 
+// -----------------------------------------------------------------------------
 
 template<class operator_visitor>
 corevm::types::native_type_handle
@@ -162,6 +171,7 @@ apply_unary_visitor(corevm::types::native_type_handle& handle)
   return boost::apply_visitor(operator_visitor(), handle);
 }
 
+// -----------------------------------------------------------------------------
 
 template<class operator_visitor>
 corevm::types::native_type_handle
@@ -170,6 +180,8 @@ apply_binary_visitor(
 {
   return boost::apply_visitor(operator_visitor(), lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace types */

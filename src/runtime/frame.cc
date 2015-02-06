@@ -40,10 +40,14 @@ corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx):
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::frame::~frame()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 uint32_t
 corevm::runtime::frame::eval_stack_size() const
@@ -51,11 +55,15 @@ corevm::runtime::frame::eval_stack_size() const
   return m_eval_stack.size();
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::instr_addr
 corevm::runtime::frame::get_start_addr() const
 {
   return m_return_addr + 1;
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::runtime::instr_addr
 corevm::runtime::frame::get_return_addr() const
@@ -63,11 +71,15 @@ corevm::runtime::frame::get_return_addr() const
   return m_return_addr;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::set_return_addr(const corevm::runtime::instr_addr return_addr)
 {
   m_return_addr = return_addr;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::frame::push_eval_stack(
@@ -75,6 +87,8 @@ corevm::runtime::frame::push_eval_stack(
 {
   m_eval_stack.push(operand);
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::types::native_type_handle
 corevm::runtime::frame::pop_eval_stack()
@@ -90,12 +104,16 @@ corevm::runtime::frame::pop_eval_stack()
   return operand;
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_visible_var(
   const corevm::runtime::variable_key var_key) const
 {
   return m_visible_vars.find(var_key) != m_visible_vars.end();
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::get_visible_var(
@@ -110,6 +128,8 @@ corevm::runtime::frame::get_visible_var(
   return m_visible_vars.at(var_key);
 };
 
+// -----------------------------------------------------------------------------
+
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_visible_var(const corevm::runtime::variable_key var_key)
   throw(corevm::runtime::local_variable_not_found_error)
@@ -119,6 +139,8 @@ corevm::runtime::frame::pop_visible_var(const corevm::runtime::variable_key var_
   return obj_id;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::set_visible_var(
   corevm::runtime::variable_key var_key, corevm::dyobj::dyobj_id obj_id)
@@ -126,12 +148,16 @@ corevm::runtime::frame::set_visible_var(
   m_visible_vars[var_key] = obj_id;
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_invisible_var(
   const corevm::runtime::variable_key var_key) const
 {
   return m_invisible_vars.find(var_key) != m_visible_vars.end();
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::get_invisible_var(
@@ -146,6 +172,8 @@ corevm::runtime::frame::get_invisible_var(
   return m_invisible_vars.at(var_key);
 };
 
+// -----------------------------------------------------------------------------
+
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_invisible_var(
   const corevm::runtime::variable_key var_key)
@@ -156,6 +184,8 @@ corevm::runtime::frame::pop_invisible_var(
   return obj_id;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::set_invisible_var(
   corevm::runtime::variable_key var_key, corevm::dyobj::dyobj_id obj_id)
@@ -163,17 +193,23 @@ corevm::runtime::frame::set_invisible_var(
   m_invisible_vars[var_key] = obj_id;
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_params() const
 {
   return !m_params_list.empty();
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::put_param(const corevm::dyobj::dyobj_id& id)
 {
   m_params_list.push_back(id);
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_error)
@@ -188,11 +224,15 @@ corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_err
   return id;
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_param_value_pairs() const
 {
   return !m_param_value_map.empty();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::frame::put_param_value_pair(
@@ -200,6 +240,8 @@ corevm::runtime::frame::put_param_value_pair(
 {
   m_param_value_map[key] = id;
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_param_value_pair(
@@ -219,6 +261,8 @@ corevm::runtime::frame::pop_param_value_pair(
   return id;
 }
 
+// -----------------------------------------------------------------------------
+
 std::list<corevm::runtime::variable_key>
 corevm::runtime::frame::param_value_pair_keys() const
 {
@@ -232,6 +276,8 @@ corevm::runtime::frame::param_value_pair_keys() const
 
   return keys;
 }
+
+// -----------------------------------------------------------------------------
 
 std::list<corevm::dyobj::dyobj_id>
 corevm::runtime::frame::get_visible_objs() const
@@ -247,6 +293,8 @@ corevm::runtime::frame::get_visible_objs() const
   return ids;
 }
 
+// -----------------------------------------------------------------------------
+
 std::list<corevm::dyobj::dyobj_id>
 corevm::runtime::frame::get_invisible_objs() const
 {
@@ -261,8 +309,12 @@ corevm::runtime::frame::get_invisible_objs() const
   return ids;
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::closure_ctx
 corevm::runtime::frame::closure_ctx() const
 {
   return m_closure_ctx;
 }
+
+// -----------------------------------------------------------------------------

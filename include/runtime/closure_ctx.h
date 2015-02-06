@@ -20,49 +20,38 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_SIGNAL_VECTOR_LOADER_H_
-#define COREVM_SIGNAL_VECTOR_LOADER_H_
+#ifndef COREVM_CLOSURE_CTX_H_
+#define COREVM_CLOSURE_CTX_H_
 
-#include "errors.h"
-#include "../runtime/process.h"
-
-#include <sneaker/json/json.h>
-
-#include <string>
+#include "common.h"
 
 
 namespace corevm {
 
 
-namespace frontend {
+namespace runtime {
 
 
-using sneaker::json::JSON;
-
-// -----------------------------------------------------------------------------
-
-class signal_vector_loader
+typedef struct closure_ctx
 {
-public:
-  explicit signal_vector_loader(const std::string&);
+  bool operator==(const closure_ctx& rhs)
+  {
+    return (
+      compartment_id == rhs.compartment_id &&
+      closure_id == rhs.closure_id
+    );
+  }
 
-  void load(corevm::runtime::process&) throw(corevm::frontend::file_loading_error);
+  compartment_id compartment_id;
+  closure_id closure_id;
 
-private:
-  static const std::string raw_schema;
-
-  void validate(const JSON&);
-
-  std::string m_path;
-};
-
-// -----------------------------------------------------------------------------
+} closure_ctx;
 
 
-}; /* end namespace frontend */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
-#endif /* COREVM_SIGNAL_VECTOR_LOADER_H_ */
+#endif /* COREVM_CLOSURE_CTX_H_ */

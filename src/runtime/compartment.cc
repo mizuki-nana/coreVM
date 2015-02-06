@@ -28,11 +28,15 @@ corevm::runtime::compartment::compartment()
 }
 
 
+// -----------------------------------------------------------------------------
+
 const corevm::runtime::compartment_id
 corevm::runtime::compartment::id() const
 {
   return m_id;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::compartment::set_encoding_map(
@@ -41,6 +45,8 @@ corevm::runtime::compartment::set_encoding_map(
   m_encoding_map.clear();
   m_encoding_map.insert(encoding_map.begin(), encoding_map.end());
 }
+
+// -----------------------------------------------------------------------------
 
 std::string
 corevm::runtime::compartment::get_encoding_string(uint64_t key) const
@@ -56,11 +62,15 @@ corevm::runtime::compartment::get_encoding_string(uint64_t key) const
   return static_cast<std::string>(itr->second);
 }
 
+// -----------------------------------------------------------------------------
+
 size_t
 corevm::runtime::compartment::closure_count() const
 {
   return m_closure_table.size();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::compartment::set_closure_table(
@@ -69,6 +79,8 @@ corevm::runtime::compartment::set_closure_table(
   m_closure_table.clear();
   m_closure_table.insert(closure_table.begin(), closure_table.end());
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::runtime::closure&
 corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
@@ -83,3 +95,5 @@ corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
 
   return static_cast<corevm::runtime::closure>(itr->second);
 }
+
+// -----------------------------------------------------------------------------

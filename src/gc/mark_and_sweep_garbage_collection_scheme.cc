@@ -45,6 +45,8 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::gc(
   );
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::gc::mark_and_sweep_garbage_collection_scheme::is_root_object(
   const corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_type& object) const noexcept
@@ -52,6 +54,8 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::is_root_object(
   // TODO: [COREVM-62] Complete mark and sweep GC scheme implementation
   return true;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
@@ -78,3 +82,5 @@ corevm::gc::mark_and_sweep_garbage_collection_scheme::mark(
     }
   );
 }
+
+// -----------------------------------------------------------------------------

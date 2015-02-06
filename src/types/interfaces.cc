@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using corevm::types::native_type_handle;
 
 
-//------------------------- UNARY OPERATIONS ----------------------------------/
+/* ------------------------ UNARY OPERATIONS -------------------------------- */
 
 
 template<typename native_type_visitor_type>
@@ -37,12 +37,16 @@ inline void __interface_apply_unary_operator(
   result = _result;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_positive_operator(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_unary_operator<
     corevm::types::native_type_positive_visitor>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_negation_operator(
   native_type_handle& operand, native_type_handle& result)
@@ -51,12 +55,16 @@ void corevm::types::interface_apply_negation_operator(
     corevm::types::native_type_negation_visitor>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_increment_operator(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_unary_operator<
     corevm::types::native_type_increment_visitor>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_decrement_operator(
   native_type_handle& operand, native_type_handle& result)
@@ -65,12 +73,16 @@ void corevm::types::interface_apply_decrement_operator(
     corevm::types::native_type_decrement_visitor>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_logical_not_operator(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_unary_operator<
     corevm::types::native_type_logical_not_visitor>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_bitwise_not_operator(
   native_type_handle& operand, native_type_handle& result)
@@ -79,9 +91,13 @@ void corevm::types::interface_apply_bitwise_not_operator(
     corevm::types::native_type_bitwise_not_visitor>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
 
-//------------------------ BINARY OPERATIONS ----------------------------------/
 
+/* ------------------------- BINARY OPERATIONS ------------------------------ */
+
+
+// -----------------------------------------------------------------------------
 
 template<typename native_type_visitor_type>
 inline void __interface_apply_binary_operator(
@@ -92,12 +108,16 @@ inline void __interface_apply_binary_operator(
   result = _result;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_addition_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_addition_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_subtraction_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -106,12 +126,16 @@ void corevm::types::interface_apply_subtraction_operator(
     corevm::types::native_type_subtraction_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_multiplication_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_multiplication_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_division_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -120,12 +144,16 @@ void corevm::types::interface_apply_division_operator(
     corevm::types::native_type_division_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_modulus_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_modulus_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_pow_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -134,12 +162,16 @@ void corevm::types::interface_apply_pow_operator(
     corevm::types::native_type_pow_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_logical_and_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_logical_and_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_logical_or_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -148,12 +180,16 @@ void corevm::types::interface_apply_logical_or_operator(
     corevm::types::native_type_logical_or_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_bitwise_and_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_bitwise_and_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_bitwise_or_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -162,12 +198,16 @@ void corevm::types::interface_apply_bitwise_or_operator(
     corevm::types::native_type_bitwise_or_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_bitwise_xor_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_bitwise_xor_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_bitwise_left_shift_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -176,12 +216,16 @@ void corevm::types::interface_apply_bitwise_left_shift_operator(
     corevm::types::native_type_bitwise_left_shift_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_bitwise_right_shift_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_bitwise_right_shift_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_eq_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -190,12 +234,16 @@ void corevm::types::interface_apply_eq_operator(
     corevm::types::native_type_eq_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_neq_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_neq_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_lt_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -204,12 +252,16 @@ void corevm::types::interface_apply_lt_operator(
     corevm::types::native_type_lt_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_gt_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_gt_visitor>(lhs, rhs, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_apply_lte_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
@@ -225,9 +277,13 @@ void corevm::types::interface_apply_gte_operator(
     corevm::types::native_type_gte_visitor>(lhs, rhs, result);
 }
 
+// -----------------------------------------------------------------------------
 
-//--------------------------- CONVERSION OPERATIONS ---------------------------/
 
+/* -------------------------- CONVERSION OPERATIONS ------------------------- */
+
+
+// -----------------------------------------------------------------------------
 
 template<typename DstType>
 void __interface_apply_conversion(
@@ -240,11 +296,15 @@ void __interface_apply_conversion(
   result = operand;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_int8(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::int8>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_uint8(
   native_type_handle& operand, native_type_handle& result)
@@ -252,11 +312,15 @@ void corevm::types::interface_to_uint8(
   __interface_apply_conversion<corevm::types::uint8>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_int16(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::int16>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_uint16(
   native_type_handle& operand, native_type_handle& result)
@@ -264,11 +328,15 @@ void corevm::types::interface_to_uint16(
   __interface_apply_conversion<corevm::types::uint16>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_int32(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::int32>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_uint32(
   native_type_handle& operand, native_type_handle& result)
@@ -276,11 +344,15 @@ void corevm::types::interface_to_uint32(
   __interface_apply_conversion<corevm::types::uint32>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_int64(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::int64>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_uint64(
   native_type_handle& operand, native_type_handle& result)
@@ -288,11 +360,15 @@ void corevm::types::interface_to_uint64(
   __interface_apply_conversion<corevm::types::uint64>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_bool(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::boolean>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_dec1(
   native_type_handle& operand, native_type_handle& result)
@@ -300,11 +376,15 @@ void corevm::types::interface_to_dec1(
   __interface_apply_conversion<corevm::types::decimal>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_dec2(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::decimal2>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_str(
   native_type_handle& operand, native_type_handle& result)
@@ -312,11 +392,15 @@ void corevm::types::interface_to_str(
   __interface_apply_conversion<corevm::types::string>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_to_ary(
   native_type_handle& operand, native_type_handle& result)
 {
   __interface_apply_conversion<corevm::types::array>(operand, result);
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_to_map(
   native_type_handle& operand, native_type_handle& result)
@@ -324,9 +408,13 @@ void corevm::types::interface_to_map(
   __interface_apply_conversion<corevm::types::map>(operand, result);
 }
 
+// -----------------------------------------------------------------------------
 
-//--------------------------- STRING OPERATIONS -------------------------------/
 
+/* -------------------------- STRING OPERATIONS ----------------------------- */
+
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_get_size(
   native_type_handle& operand, native_type_handle& result)
@@ -337,6 +425,8 @@ void corevm::types::interface_string_get_size(
   corevm::types::int32 size = string_value.size();
   result = size;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_clear(
   native_type_handle& operand, native_type_handle& result)
@@ -349,6 +439,8 @@ void corevm::types::interface_string_clear(
   result = string_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_at(
   native_type_handle& operand, native_type_handle& index, native_type_handle& result)
 {
@@ -360,6 +452,8 @@ void corevm::types::interface_string_at(
   corevm::types::uint32 result_value = char_value;
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_append(
   native_type_handle& operand, native_type_handle& str, native_type_handle& result)
@@ -374,6 +468,8 @@ void corevm::types::interface_string_append(
   result = string_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_pushback(
   native_type_handle& operand, native_type_handle& c, native_type_handle& result)
 {
@@ -385,6 +481,8 @@ void corevm::types::interface_string_pushback(
   string_value.push_back(char_value);
   result = string_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_insert_str(
   native_type_handle& operand,
@@ -406,6 +504,8 @@ void corevm::types::interface_string_insert_str(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_insert_char(
   native_type_handle& operand,
   native_type_handle& pos,
@@ -424,6 +524,8 @@ void corevm::types::interface_string_insert_char(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_erase(
   native_type_handle& operand, native_type_handle& pos, native_type_handle& result)
 {
@@ -436,6 +538,8 @@ void corevm::types::interface_string_erase(
 
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_erase2(
   native_type_handle& operand,
@@ -452,6 +556,8 @@ void corevm::types::interface_string_erase2(
   corevm::types::native_string result_value = string_value.erase(pos_value, len_value);
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_replace_str(
   native_type_handle& operand,
@@ -475,6 +581,8 @@ void corevm::types::interface_string_replace_str(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_swap(
   native_type_handle& operand, native_type_handle& str, native_type_handle& result)
 {
@@ -488,6 +596,8 @@ void corevm::types::interface_string_swap(
   result = string_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_substr(
   native_type_handle& operand, native_type_handle& pos, native_type_handle& result)
 {
@@ -499,6 +609,8 @@ void corevm::types::interface_string_substr(
   corevm::types::native_string result_value = string_value.substr(pos_value);
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_substr2(
   native_type_handle& operand,
@@ -516,6 +628,8 @@ void corevm::types::interface_string_substr2(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_find(
   native_type_handle& operand, native_type_handle& str, native_type_handle& result)
 {
@@ -528,6 +642,8 @@ void corevm::types::interface_string_find(
   corevm::types::uint32 result_value = string_value.find(other_string_value);
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_find2(
   native_type_handle& operand,
@@ -547,6 +663,8 @@ void corevm::types::interface_string_find2(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_string_rfind(
   native_type_handle& operand, native_type_handle& str, native_type_handle& result)
 {
@@ -559,6 +677,8 @@ void corevm::types::interface_string_rfind(
   corevm::types::uint32 result_value = string_value.rfind(other_string_value);
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_rfind2(
   native_type_handle& operand,
@@ -578,9 +698,13 @@ void corevm::types::interface_string_rfind2(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
 
-//---------------------------- ARRAY OPERATIONS -------------------------------/
 
+/* --------------------------- ARRAY OPERATIONS ----------------------------- */
+
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_size(
   native_type_handle& operand, native_type_handle& result)
@@ -592,6 +716,8 @@ void corevm::types::interface_array_size(
   result = size;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_empty(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -601,6 +727,8 @@ void corevm::types::interface_array_empty(
   corevm::types::boolean empty = array_value.empty();
   result = empty;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_at(
   native_type_handle& operand, native_type_handle& index, native_type_handle& result)
@@ -614,6 +742,8 @@ void corevm::types::interface_array_at(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_front(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -624,6 +754,8 @@ void corevm::types::interface_array_front(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_back(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -633,6 +765,8 @@ void corevm::types::interface_array_back(
   corevm::types::uint64 result_value = array_value.back();
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_append(
   native_type_handle& operand, native_type_handle& data, native_type_handle& result)
@@ -647,6 +781,8 @@ void corevm::types::interface_array_append(
   result = array_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_pop(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -656,6 +792,8 @@ void corevm::types::interface_array_pop(
   array_value.pop_back();
   result = array_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_swap(
   native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result)
@@ -670,6 +808,8 @@ void corevm::types::interface_array_swap(
   result = array_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_clear(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -680,9 +820,13 @@ void corevm::types::interface_array_clear(
   result = array_value;
 }
 
+// -----------------------------------------------------------------------------
 
-//----------------------------- MAP OPERATIONS --------------------------------/
 
+/* --------------------------- MAP OPERATIONS ------------------------------- */
+
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_size(
   native_type_handle& operand, native_type_handle& result)
@@ -694,6 +838,8 @@ void corevm::types::interface_map_size(
   result = result_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_map_empty(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -703,6 +849,8 @@ void corevm::types::interface_map_empty(
   corevm::types::boolean result_value = map_value.empty();
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_at(
   native_type_handle& operand, native_type_handle& key, native_type_handle& result)
@@ -716,6 +864,8 @@ void corevm::types::interface_map_at(
   corevm::types::uint64 result_value = map_value.at(key_value);
   result = result_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_put(
   native_type_handle& operand,
@@ -736,6 +886,8 @@ void corevm::types::interface_map_put(
   result = map_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_map_erase(
   native_type_handle& operand, native_type_handle& key, native_type_handle& result)
 {
@@ -749,6 +901,8 @@ void corevm::types::interface_map_erase(
   result = map_value;
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_map_clear(
   native_type_handle& operand, native_type_handle& result)
 {
@@ -758,6 +912,8 @@ void corevm::types::interface_map_clear(
   map_value.clear();
   result = map_value;
 }
+
+// -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_swap(
   native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result)
@@ -771,3 +927,5 @@ void corevm::types::interface_map_swap(
   map_value.swap(other_map_value);
   result = map_value;
 }
+
+// -----------------------------------------------------------------------------

@@ -51,7 +51,11 @@ protected:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 const char* bytecode_loader_unittest::PATH = "./example.corevm";
+
+// -----------------------------------------------------------------------------
 
 
 #endif /* COREVM_BYTECODE_LOADER_UNITTEST_H_ */

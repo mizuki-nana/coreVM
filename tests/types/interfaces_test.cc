@@ -39,6 +39,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_unary_operator_interfaces_test, TestPositiveOperator)
 {
@@ -51,6 +52,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestPositiveOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_unary_operator_interfaces_test, TestNegationOperator)
 {
   corevm::types::native_type_handle operand = corevm::types::int32(5);
@@ -62,6 +65,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestNegationOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_unary_operator_interfaces_test, TestIncrementOperator)
 {
   corevm::types::native_type_handle operand = corevm::types::int32(5);
@@ -71,6 +76,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestIncrementOperator)
     6
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_unary_operator_interfaces_test, TestDecrementOperator)
 {
@@ -83,6 +90,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestDecrementOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_unary_operator_interfaces_test, TestLogicalNotOperator)
 {
   corevm::types::native_type_handle operand = corevm::types::int32(5);
@@ -94,6 +103,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestLogicalNotOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_unary_operator_interfaces_test, TestBitwiseNotOperator)
 {
   corevm::types::native_type_handle operand = corevm::types::int32(5);
@@ -104,6 +115,8 @@ TEST_F(native_type_unary_operator_interfaces_test, TestBitwiseNotOperator)
     ~5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_unary_operator_interfaces_test, TestInvalidOperator)
 {
@@ -121,6 +134,7 @@ TEST_F(native_type_unary_operator_interfaces_test, TestInvalidOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
 
 class native_type_binary_operator_interfaces_test : public native_type_interfaces_test_base
 {
@@ -131,8 +145,8 @@ public:
     corevm::types::native_type_handle& rhs,
     F func,
     T expected_value,
-    bool is_decimal=false
-  ) {
+    bool is_decimal=false)
+  {
     corevm::types::native_type_handle result;
     func(lhs, rhs, result);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
@@ -148,6 +162,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestAdditionOperator)
 {
@@ -162,6 +177,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestAdditionOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestSubtractionOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -174,6 +191,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestSubtractionOperator)
     10 - 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestMultiplicationOperator)
 {
@@ -188,6 +207,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestMultiplicationOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestDivisionOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -201,6 +222,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestDivisionOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestModulusOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -213,6 +236,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestModulusOperator)
     10 % 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestPowOperator)
 {
@@ -228,6 +253,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestPowOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestLogicalANDOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -240,6 +267,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestLogicalANDOperator)
     true
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestLogicalOROperator)
 {
@@ -254,6 +283,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestLogicalOROperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseANDOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -266,6 +297,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseANDOperator)
     10 & 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseOROperator)
 {
@@ -280,6 +313,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseOROperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseXOROperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -292,6 +327,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseXOROperator)
     10 ^ 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseLeftShiftOperator)
 {
@@ -306,6 +343,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseLeftShiftOperator
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseRightShiftOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -318,6 +357,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestBitwiseRightShiftOperato
     10 >> 1
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestEqOperator)
 {
@@ -332,6 +373,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestEqOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestNeqOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -345,6 +388,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestNeqOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestLtOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -356,6 +401,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestLtOperator)
     corevm::types::interface_apply_lt_operator, 10 < 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestGtOperator)
 {
@@ -370,6 +417,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestGtOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestLteOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::int32(10);
@@ -382,6 +431,8 @@ TEST_F(native_type_binary_operator_interfaces_test, TestLteOperator)
     10 <= 5
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_binary_operator_interfaces_test, TestGteOperator)
 {
@@ -396,6 +447,7 @@ TEST_F(native_type_binary_operator_interfaces_test, TestGteOperator)
   );
 }
 
+// -----------------------------------------------------------------------------
 
 class native_type_invalid_binary_operator_interfaces_test : public native_type_binary_operator_interfaces_test
 {
@@ -415,6 +467,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(native_type_invalid_binary_operator_interfaces_test, TestInvalidOperator)
 {
@@ -427,3 +480,5 @@ TEST_F(native_type_invalid_binary_operator_interfaces_test, TestInvalidOperator)
     corevm::types::interface_apply_addition_operator
   );
 }
+
+// -----------------------------------------------------------------------------

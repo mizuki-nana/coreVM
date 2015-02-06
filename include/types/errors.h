@@ -48,6 +48,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class conversion_error : public corevm::types::runtime_error
 {
@@ -74,6 +75,7 @@ public:
   const std::string dst_type;
 };
 
+// -----------------------------------------------------------------------------
 
 class invalid_operator_error : public corevm::types::runtime_error
 {
@@ -100,6 +102,7 @@ public:
   const std::string type;
 };
 
+// -----------------------------------------------------------------------------
 
 class out_of_range_error : public corevm::types::runtime_error
 {
@@ -112,6 +115,8 @@ public:
   {
   }
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace types */

@@ -44,6 +44,7 @@ typedef struct sighandler_wrapper
   corevm::runtime::sighandler* handler;
 } sighandler_wrapper;
 
+// -----------------------------------------------------------------------------
 
 class sighandler_registrar
 {

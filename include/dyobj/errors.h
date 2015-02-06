@@ -52,6 +52,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class object_not_found_error : public corevm::dyobj::runtime_error
 {
@@ -77,6 +78,7 @@ public:
   corevm::dyobj::dyobj_id id;
 };
 
+// -----------------------------------------------------------------------------
 
 class object_attribute_not_found_error : public corevm::dyobj::runtime_error
 {
@@ -107,6 +109,7 @@ public:
   corevm::dyobj::dyobj_id id;
 };
 
+// -----------------------------------------------------------------------------
 
 class object_attribute_deletion_error : public corevm::dyobj::runtime_error
 {
@@ -139,6 +142,7 @@ public:
   corevm::dyobj::dyobj_id id;
 };
 
+// -----------------------------------------------------------------------------
 
 class object_id_exceed_limit_error : public corevm::dyobj::runtime_error
 {
@@ -149,6 +153,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class object_heap_insertion_failed_error : public corevm::dyobj::runtime_error
 {
@@ -159,6 +164,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class invalid_flag_bit_error : public corevm::dyobj::runtime_error
 {
@@ -168,6 +174,8 @@ public:
   {
   }
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace dyobj */

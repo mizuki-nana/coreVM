@@ -36,7 +36,8 @@ namespace corevm {
 namespace memory {
 
 
-/* This is a generic container class responsible for storing and managing
+/**
+ * This is a generic container class responsible for storing and managing
  * objects allocated by an allocator. It creates instances of objects directly
  * from memory allocated by the allocator, as well as destroying instances and
  * deallocates their memory.
@@ -47,7 +48,7 @@ namespace memory {
  * its iterator types are merely wrappers around the iterator types of the
  * address map, thus avoid the complexity associated with implementing custom
  * iterator types.
- * */
+ */
 template<typename T, typename AllocatorType=std::allocator<T>>
 class object_container
 {
@@ -240,11 +241,15 @@ private:
 };
 
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 corevm::memory::object_container<T, AllocatorType>::object_container()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::iterator
@@ -253,12 +258,16 @@ corevm::memory::object_container<T, AllocatorType>::begin()
   return iterator(*this, m_addrs.begin());
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::iterator
 corevm::memory::object_container<T, AllocatorType>::end()
 {
   return iterator(*this, m_addrs.end());
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::const_iterator
@@ -267,12 +276,16 @@ corevm::memory::object_container<T, AllocatorType>::cbegin() const
   return const_iterator(*this, m_addrs.cbegin());
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::const_iterator
 corevm::memory::object_container<T, AllocatorType>::cend() const
 {
   return const_iterator(*this, m_addrs.cend());
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::size_type
@@ -281,12 +294,16 @@ corevm::memory::object_container<T, AllocatorType>::size() const
   return m_addrs.size();
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::size_type
 corevm::memory::object_container<T, AllocatorType>::max_size() const
 {
   return m_addrs.max_size();
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::pointer
@@ -306,6 +323,8 @@ corevm::memory::object_container<T, AllocatorType>::create()
   return p;
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
@@ -319,6 +338,8 @@ corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
   }
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::pointer
 corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
@@ -327,6 +348,8 @@ corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
   return static_cast<pointer>((void*)p);
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 const typename corevm::memory::object_container<T, AllocatorType>::pointer
 corevm::memory::object_container<T, AllocatorType>::operator[](pointer p) const
@@ -334,6 +357,8 @@ corevm::memory::object_container<T, AllocatorType>::operator[](pointer p) const
   check_ptr(p);
   return static_cast<const pointer>((void*)p);
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 void
@@ -344,6 +369,8 @@ corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
   m_allocator.deallocate(p, 1);
   m_addrs.erase(p);
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
 void
@@ -358,6 +385,8 @@ corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
   destroy(p);
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
@@ -370,6 +399,8 @@ corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
   pointer p = static_cast<pointer>(*itr.m_inner);
   destroy(p);
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace memory */

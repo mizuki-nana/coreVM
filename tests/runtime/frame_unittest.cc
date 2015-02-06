@@ -36,12 +36,15 @@ protected:
   };
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestInitialization)
 {
   corevm::runtime::frame frame(m_closure_ctx);
   ASSERT_EQ(-1, frame.get_return_addr());
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 {
@@ -52,6 +55,8 @@ TEST_F(frame_unittest, TestGetAndSetReturnAddr)
   frame.set_return_addr(expected_return_addr);
   ASSERT_EQ(expected_return_addr, frame.get_return_addr());
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestPushAndPopEvalStack)
 {
@@ -68,6 +73,8 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
     corevm::runtime::evaluation_stack_empty_error
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestVisibleVars)
 {
@@ -98,6 +105,8 @@ TEST_F(frame_unittest, TestVisibleVars)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(frame_unittest, TestInvisibleVars)
 {
   corevm::runtime::frame frame(m_closure_ctx);
@@ -127,6 +136,8 @@ TEST_F(frame_unittest, TestInvisibleVars)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(frame_unittest, TestPutAndGetParams)
 {
   corevm::runtime::frame frame(m_closure_ctx);
@@ -153,6 +164,8 @@ TEST_F(frame_unittest, TestPutAndGetParams)
 
   ASSERT_EQ(false, frame.has_params());
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
 {
@@ -183,11 +196,13 @@ TEST_F(frame_unittest, TestPutAndGetParamValuePairs)
   ASSERT_EQ(false, frame.has_param_value_pairs());
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(frame_unittest, TestListParamValuePairKeys)
 {
   corevm::runtime::frame frame(m_closure_ctx);
 
-  std::list<corevm::runtime::variable_key> expected_keys = {};
+  std::list<corevm::runtime::variable_key> expected_keys {};
   std::list<corevm::runtime::variable_key> actual_keys = frame.param_value_pair_keys();
 
   ASSERT_EQ(expected_keys, actual_keys);
@@ -200,7 +215,7 @@ TEST_F(frame_unittest, TestListParamValuePairKeys)
   frame.put_param_value_pair(key1, id1);
   frame.put_param_value_pair(key2, id2);
 
-  expected_keys = {key1, key2};
+  expected_keys = { key1, key2 };
   actual_keys = frame.param_value_pair_keys();
 
   expected_keys.sort();
@@ -208,3 +223,5 @@ TEST_F(frame_unittest, TestListParamValuePairKeys)
 
   ASSERT_EQ(expected_keys, actual_keys);
 }
+
+// -----------------------------------------------------------------------------

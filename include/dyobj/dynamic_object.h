@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj_id.h"
 #include "flags.h"
 #include "errors.h"
-#include "../runtime/common.h"
+#include "../runtime/closure_ctx.h"
 
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
@@ -120,11 +120,15 @@ private:
   corevm::runtime::closure_ctx m_closure_ctx;
 };
 
+// -----------------------------------------------------------------------------
 
 const int COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE = 0;
 
+// -----------------------------------------------------------------------------
+
 const int COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE = 16;
 
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
@@ -142,11 +146,15 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::~dynamic_object()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 bool
@@ -156,6 +164,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::operator==(
   return this->id() == rhs.id();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::operator!=(
@@ -163,6 +173,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::operator!=(
 {
   return !((*this) == rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -172,12 +184,16 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::set_id(
   m_id = id;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object<dynamic_object_manager>::begin() noexcept
 {
   return m_attrs.begin();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object<dynamic_object_manager>::iterator
@@ -186,12 +202,16 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::end() noexcept
   return m_attrs.end();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object<dynamic_object_manager>::cbegin() const noexcept
 {
   return m_attrs.cbegin();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object<dynamic_object_manager>::const_iterator
@@ -200,12 +220,16 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::cend() const noexcept
   return m_attrs.cend();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 corevm::dyobj::dyobj_id
 corevm::dyobj::dynamic_object<dynamic_object_manager>::id() const noexcept
 {
   return m_id;
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 corevm::dyobj::flag
@@ -214,6 +238,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::flags() const noexcept
   return m_flags;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 dynamic_object_manager&
 corevm::dyobj::dynamic_object<dynamic_object_manager>::manager() noexcept
@@ -221,12 +247,16 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::manager() noexcept
   return m_manager;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 corevm::dyobj::ntvhndl_key
 corevm::dyobj::dynamic_object<dynamic_object_manager>::get_ntvhndl_key() const noexcept
 {
   return m_ntvhndl_key;
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -236,12 +266,16 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::set_ntvhndl_key(
   m_ntvhndl_key = ntvhndl_key;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_ntvhndl_key() noexcept
 {
   m_ntvhndl_key = corevm::dyobj::NONESET_NTVHNDL_KEY;
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -254,6 +288,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) 
   }
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit) const
@@ -261,6 +297,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::get_flag(char bit) const
   this->check_flag_bit(bit);
   return static_cast<bool>(is_bit_set_uint32(m_flags, bit));
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -270,6 +308,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::set_flag(char bit)
   set_nth_bit_uint32(&m_flags, bit);
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit)
@@ -277,6 +317,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::clear_flag(char bit)
   this->check_flag_bit(bit);
   clear_nth_bit_uint32(&m_flags, bit);
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 bool
@@ -288,6 +330,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible() 
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::hasattr(
@@ -295,6 +339,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::hasattr(
 {
   return m_attrs.find(attr_key) != m_attrs.end();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -307,6 +353,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::delattr(
     throw corevm::dyobj::object_attribute_deletion_error(attr_key, id());
   }
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 corevm::dyobj::dyobj_id
@@ -324,6 +372,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
   return static_cast<corevm::dyobj::dyobj_id>(itr->second);
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
@@ -333,6 +383,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
   m_attrs.insert({attr_key, obj_id});
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::closure_ctx(
@@ -341,6 +393,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::closure_ctx(
   *ctx = m_closure_ctx;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::set_closure_ctx(
@@ -348,6 +402,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::set_closure_ctx(
 {
   m_closure_ctx = ctx;
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 bool
@@ -361,6 +417,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::has_ref(dyobj_id_type id)
     }
   ) != cend();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 template<typename Function>
@@ -379,6 +437,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::iterate(Function func) no
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 inline
 bool operator==(
@@ -388,6 +448,8 @@ bool operator==(
   return lhs.id() == rhs.id();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 inline
 bool operator!=(
@@ -396,6 +458,8 @@ bool operator!=(
 {
   return !operator==(lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace dyobj */

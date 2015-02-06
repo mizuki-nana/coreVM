@@ -35,6 +35,7 @@ typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
 typedef corevm::memory::sequential_allocation_scheme::const_iterator const_iterator_type;
 typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 
+// -----------------------------------------------------------------------------
 
 corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
   size_t total_size
@@ -42,6 +43,8 @@ corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
   m_total_size(total_size)
 {
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
@@ -72,6 +75,8 @@ corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const n
   std::cout << LINE << std::endl;
 }
 
+// -----------------------------------------------------------------------------
+
 block_descriptor_type
 corevm::memory::sequential_allocation_scheme::default_block() const noexcept
 {
@@ -83,11 +88,15 @@ corevm::memory::sequential_allocation_scheme::default_block() const noexcept
   };
 }
 
+// -----------------------------------------------------------------------------
+
 iterator_type
 corevm::memory::sequential_allocation_scheme::begin() noexcept
 {
   return m_blocks.begin();
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::sequential_allocation_scheme::end() noexcept
@@ -95,17 +104,23 @@ corevm::memory::sequential_allocation_scheme::end() noexcept
   return m_blocks.end();
 }
 
+// -----------------------------------------------------------------------------
+
 const_iterator_type
 corevm::memory::sequential_allocation_scheme::cbegin() const noexcept
 {
   return m_blocks.cbegin();
 }
 
+// -----------------------------------------------------------------------------
+
 const_iterator_type
 corevm::memory::sequential_allocation_scheme::cend() const noexcept
 {
   return m_blocks.cend();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::memory::sequential_allocation_scheme::split(
@@ -121,6 +136,8 @@ corevm::memory::sequential_allocation_scheme::split(
   };
   this->m_blocks.insert(itr_pos, descriptor);
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
@@ -156,6 +173,8 @@ corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
   );
 }
 
+// -----------------------------------------------------------------------------
+
 ssize_t
 corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
 {
@@ -183,6 +202,8 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
 
   return res;
 }
+
+// -----------------------------------------------------------------------------
 
 ssize_t
 corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
@@ -213,7 +234,13 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
   return size_freed;
 }
 
-//---------- BEGIN OF corevm::memory::first_fit_allocation_scheme -------------/
+// -----------------------------------------------------------------------------
+
+
+/* -------------- corevm::memory::first_fit_allocation_scheme --------------- */
+
+
+// -----------------------------------------------------------------------------
 
 corevm::memory::first_fit_allocation_scheme::first_fit_allocation_scheme(
   size_t total_size
@@ -235,10 +262,13 @@ corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
   );
 }
 
-//----------- END OF corevm::memory::first_fit_allocation_scheme --------------/
+// -----------------------------------------------------------------------------
 
 
-//---------- BEGIN OF corevm::memory::best_fit_allocation_scheme --------------/
+/* -------------- corevm::memory::best_fit_allocation_scheme ---------------- */
+
+
+// -----------------------------------------------------------------------------
 
 corevm::memory::best_fit_allocation_scheme::best_fit_allocation_scheme(
   size_t total_size
@@ -247,6 +277,8 @@ corevm::memory::best_fit_allocation_scheme::best_fit_allocation_scheme(
 {
   this->m_blocks.push_back(this->default_block());
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -284,10 +316,13 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-//----------- END OF corevm::memory::best_fit_allocation_scheme ---------------/
+// -----------------------------------------------------------------------------
 
 
-//---------- BEGIN OF corevm::memory::worst_fit_allocation_scheme -------------/
+/* ------------- corevm::memory::worst_fit_allocation_scheme ---------------- */
+
+
+// -----------------------------------------------------------------------------
 
 corevm::memory::worst_fit_allocation_scheme::worst_fit_allocation_scheme(
   size_t total_size
@@ -296,6 +331,8 @@ corevm::memory::worst_fit_allocation_scheme::worst_fit_allocation_scheme(
 {
   this->m_blocks.push_back(this->default_block());
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -333,10 +370,13 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-//----------- END OF corevm::memory::worst_fit_allocation_scheme --------------/
+// -----------------------------------------------------------------------------
 
 
-//---------- BEGIN OF corevm::memory::next_fit_allocation_scheme --------------/
+/* -------------- corevm::memory::next_fit_allocation_scheme ---------------- */
+
+
+// -----------------------------------------------------------------------------
 
 corevm::memory::next_fit_allocation_scheme::next_fit_allocation_scheme(
   size_t total_size
@@ -346,6 +386,8 @@ corevm::memory::next_fit_allocation_scheme::next_fit_allocation_scheme(
   m_last_itr = this->begin();
   this->m_blocks.push_back(this->default_block());
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -375,10 +417,13 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
-//----------- END OF corevm::memory::next_fit_allocation_scheme ---------------/
+// -----------------------------------------------------------------------------
 
 
-//------------ BEGIN OF corevm::memory::buddy_allocation_scheme----------------/
+/* ---------------- corevm::memory::buddy_allocation_scheme ----------------- */
+
+
+// -----------------------------------------------------------------------------
 
 // Helper functions
 // TODO: [COREVM-77] Move helper functions away
@@ -389,6 +434,8 @@ set_nth_bit_uint8(uint8_t *val, char bit)
   *val = *val | b;
 }
 
+// -----------------------------------------------------------------------------
+
 int
 is_bit_set_uint8(uint32_t val, char bit)
 {
@@ -398,10 +445,15 @@ is_bit_set_uint8(uint32_t val, char bit)
   return (v >> (bit - 1)) == 1;
 }
 
+// -----------------------------------------------------------------------------
 
 const uint8_t corevm::memory::buddy_allocation_scheme::FLAG_SPLIT = 1;
+
+// -----------------------------------------------------------------------------
+
 const uint8_t corevm::memory::buddy_allocation_scheme::FLAG_PARENT_SPLIT = 2;
 
+// -----------------------------------------------------------------------------
 
 corevm::memory::buddy_allocation_scheme::buddy_allocation_scheme(
   size_t total_size
@@ -410,6 +462,8 @@ corevm::memory::buddy_allocation_scheme::buddy_allocation_scheme(
 {
   this->m_blocks.push_back(this->default_block());
 }
+
+// -----------------------------------------------------------------------------
 
 block_descriptor_type
 corevm::memory::buddy_allocation_scheme::default_block() const noexcept
@@ -420,6 +474,8 @@ corevm::memory::buddy_allocation_scheme::default_block() const noexcept
     .flags = ( 0x01 << (FLAG_PARENT_SPLIT - 1) )
   };
 }
+
+// -----------------------------------------------------------------------------
 
 ssize_t
 corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
@@ -442,6 +498,8 @@ corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
 
   return res;
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
@@ -490,6 +548,8 @@ corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
   return itr;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
 {
@@ -531,7 +591,7 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
             set_nth_bit_uint8(&flags, FLAG_SPLIT);
           }
 
-          block_descriptor_type combined_block = {
+          block_descriptor_type combined_block {
             .size = current_block.size + next_block.size,
             .actual_size = 0,
             .offset = current_block.offset,
@@ -553,4 +613,4 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
   } /* end of while-loop */
 }
 
-//-------------- END OF corevm::memory::buddy_allocation_scheme ---------------/
+// -----------------------------------------------------------------------------

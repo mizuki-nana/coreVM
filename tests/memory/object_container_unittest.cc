@@ -47,6 +47,7 @@ protected:
   corevm::memory::object_container<dummy> m_container;
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(object_container_unittest, TestCreateAndUpdate)
 {
@@ -70,6 +71,8 @@ TEST_F(object_container_unittest, TestCreateAndUpdate)
     corevm::memory::invalid_address_error
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(object_container_unittest, TestIterator)
 {
@@ -109,6 +112,8 @@ TEST_F(object_container_unittest, TestIterator)
   m_container.destroy(p3);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(object_container_unittest, TestConstIterator)
 {
   int data1 = 666;
@@ -146,6 +151,8 @@ TEST_F(object_container_unittest, TestConstIterator)
   m_container.destroy(p2);
   m_container.destroy(p3);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(object_container_unittest, TestIteratorWithStdForEach)
 {
@@ -187,6 +194,8 @@ TEST_F(object_container_unittest, TestIteratorWithStdForEach)
   m_container.destroy(p3);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(object_container_unittest, TestConstIteratorWithStdForEach)
 {
   int data1 = 666;
@@ -227,6 +236,8 @@ TEST_F(object_container_unittest, TestConstIteratorWithStdForEach)
   m_container.destroy(p3);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(object_container_unittest, TestIteratorReflectsChange)
 {
   T* p = m_container.create();
@@ -252,6 +263,8 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange)
 
   m_container.destroy(p);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(object_container_unittest, TestPostIncrement)
 {
@@ -296,6 +309,8 @@ TEST_F(object_container_unittest, TestPostIncrement)
   m_container.destroy(p3);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 {
   T* p = m_container.create();
@@ -319,6 +334,8 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 
   m_container.destroy(p);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(object_container_unittest, TestErase)
 {
@@ -371,3 +388,5 @@ TEST_F(object_container_unittest, TestErase)
 
   ASSERT_EQ(0, m_container.size());
 }
+
+// -----------------------------------------------------------------------------

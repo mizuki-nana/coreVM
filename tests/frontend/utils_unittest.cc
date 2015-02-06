@@ -33,9 +33,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using sneaker::json::JSON;
 
+// -----------------------------------------------------------------------------
 
 class utils_unittest : public ::testing::Test {};
 
+// -----------------------------------------------------------------------------
 
 TEST_F(utils_unittest, TestGetVectorFromJson)
 {
@@ -65,3 +67,5 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
   ASSERT_EQ(33, instr3.oprd1);
   ASSERT_EQ(0, instr3.oprd2);
 }
+
+// -----------------------------------------------------------------------------

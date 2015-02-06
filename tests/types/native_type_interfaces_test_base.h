@@ -29,7 +29,7 @@ class native_type_interfaces_test_base : public ::testing::Test
 {
 public:
   template<typename T, typename F>
-  void apply_interface_and_assert_result(
+  void apply_interface_on_single_operand_and_assert_result(
     corevm::types::native_type_handle& operand, F func, T expected_value)
   {
     corevm::types::native_type_handle result;
@@ -39,7 +39,7 @@ public:
   }
 
   template<typename T, typename F>
-  void apply_interface_and_assert_result2(
+  void apply_interface_on_two_operands_and_assert_result(
     corevm::types::native_type_handle& operand,
     corevm::types::native_type_handle& other_operand,
     F func,
@@ -52,7 +52,7 @@ public:
   }
 
   template<typename T, typename F>
-  void apply_interface_and_assert_result3(
+  void apply_interface_on_three_operands_and_assert_result(
     corevm::types::native_type_handle& operand,
     corevm::types::native_type_handle& operand2,
     corevm::types::native_type_handle& operand3,
@@ -66,7 +66,7 @@ public:
   }
 
   template<typename T, typename F>
-  void apply_interface_and_assert_result4(
+  void apply_interface_on_four_operands_and_assert_result(
     corevm::types::native_type_handle& operand,
     corevm::types::native_type_handle& operand2,
     corevm::types::native_type_handle& operand3,

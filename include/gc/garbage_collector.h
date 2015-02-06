@@ -62,6 +62,7 @@ protected:
   dynamic_object_heap_type& m_heap;
 };
 
+// -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
 corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
@@ -73,6 +74,8 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<class garbage_collection_scheme>
 void
 corevm::gc::garbage_collector<garbage_collection_scheme>::gc() noexcept
@@ -81,6 +84,8 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::gc() noexcept
   this->free();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class garbage_collection_scheme>
 void
 corevm::gc::garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
@@ -88,6 +93,8 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::gc(callback* f) noexce
   m_gc_scheme.gc(m_heap);
   this->free(f);
 }
+
+// -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
 void
@@ -120,6 +127,8 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noex
     }
   }
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace gc */

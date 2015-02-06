@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class dummy_dynamic_object_manager {};
 
+// -----------------------------------------------------------------------------
 
 class dynamic_object_unittest : public ::testing::Test
 {
@@ -37,6 +38,7 @@ public:
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(dynamic_object_unittest, TestInitialization)
 {
@@ -47,6 +49,8 @@ TEST_F(dynamic_object_unittest, TestInitialization)
   ASSERT_FALSE(obj.hasattr(1));
   ASSERT_FALSE(obj.hasattr(123));
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 {
@@ -82,6 +86,8 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 {
   dynamic_object_type obj;
@@ -94,7 +100,7 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   corevm::dyobj::dyobj_id obj_id2 = 2;
   corevm::dyobj::dyobj_id obj_id3 = 3;
 
-  std::map<corevm::dyobj::attr_key, corevm::dyobj::dyobj_id> mock_attrs = {
+  std::map<corevm::dyobj::attr_key, corevm::dyobj::dyobj_id> mock_attrs {
     { key1, obj_id1 },
     { key2, obj_id2 },
     { key3, obj_id3 }
@@ -202,6 +208,8 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
 {
   dynamic_object_type obj;
@@ -226,12 +234,16 @@ TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
   ASSERT_EQ(expected_ctx.closure_id, ctx.closure_id);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_unittest, TestEquality)
 {
   dynamic_object_type obj;
 
   ASSERT_TRUE(obj == obj);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(dynamic_object_unittest, TestInequality)
 {
@@ -241,3 +253,5 @@ TEST_F(dynamic_object_unittest, TestInequality)
   ASSERT_TRUE(obj1 != obj2);
   ASSERT_FALSE(obj1 == obj2);
 }
+
+// -----------------------------------------------------------------------------

@@ -41,8 +41,11 @@ typedef struct closure
   const corevm::runtime::vector vector;
 } closure;
 
+// -----------------------------------------------------------------------------
 
 typedef std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> closure_table;
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */

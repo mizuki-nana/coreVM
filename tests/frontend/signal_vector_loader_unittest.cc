@@ -52,7 +52,11 @@ protected:
   corevm::runtime::process m_process;
 };
 
+// -----------------------------------------------------------------------------
+
 const char* signal_vector_loader_unittest::PATH = "./example.sigvec";
+
+// -----------------------------------------------------------------------------
 
 const std::string signal_vector_loader_unittest::SIGNAL_VECTOR = \
   "{"
@@ -70,6 +74,7 @@ const std::string signal_vector_loader_unittest::SIGNAL_VECTOR = \
     "}"
   "}";
 
+// -----------------------------------------------------------------------------
 
 TEST_F(signal_vector_loader_unittest, TestLoadSuccessful)
 {
@@ -77,6 +82,8 @@ TEST_F(signal_vector_loader_unittest, TestLoadSuccessful)
 
   loader.load(m_process);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
 {
@@ -114,6 +121,8 @@ TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
   remove(path);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidPath)
 {
   corevm::frontend::signal_vector_loader loader("some/random/path/example.sigvec");
@@ -125,3 +134,5 @@ TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidPath)
     corevm::frontend::file_loading_error
   );
 }
+
+// -----------------------------------------------------------------------------

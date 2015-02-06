@@ -36,6 +36,8 @@ namespace corevm {
 namespace types {
 
 
+// -----------------------------------------------------------------------------
+
 enum native_types_enum
 {
   INT8      = 0x01,
@@ -54,9 +56,11 @@ enum native_types_enum
   MAP       = 0x14
 };
 
+// -----------------------------------------------------------------------------
 
 class native_type_wrapper {};
 
+// -----------------------------------------------------------------------------
 
 class int8 : public native_type_wrapper
 {
@@ -69,6 +73,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class uint8 : public native_type_wrapper
 {
@@ -81,6 +86,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class int16 : public native_type_wrapper
 {
@@ -93,6 +99,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class uint16 : public native_type_wrapper
 {
@@ -105,6 +112,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class int32 : public native_type_wrapper
 {
@@ -117,6 +125,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class uint32 : public native_type_wrapper
 {
@@ -129,6 +138,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class int64 : public native_type_wrapper
 {
@@ -141,6 +151,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class uint64 : public native_type_wrapper
 {
@@ -153,6 +164,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class boolean : public native_type_wrapper
 {
@@ -165,6 +177,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class decimal : public native_type_wrapper
 {
@@ -177,6 +190,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class decimal2 : public native_type_wrapper
 {
@@ -189,6 +203,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class string : public native_type_wrapper
 {
@@ -201,6 +216,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class array : public native_type_wrapper
 {
@@ -213,6 +229,7 @@ public:
   value_type value;
 };
 
+// -----------------------------------------------------------------------------
 
 class map : public native_type_wrapper
 {
@@ -224,6 +241,8 @@ public:
 
   value_type value;
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace types */

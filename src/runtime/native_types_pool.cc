@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef corevm::runtime::native_types_pool _MyType;
 
+// -----------------------------------------------------------------------------
 
 _MyType::size_type
 corevm::runtime::native_types_pool::size() const
@@ -35,11 +36,15 @@ corevm::runtime::native_types_pool::size() const
   return m_container.size();
 }
 
+// -----------------------------------------------------------------------------
+
 _MyType::size_type
 corevm::runtime::native_types_pool::max_size() const
 {
   return m_container.max_size();
 }
+
+// -----------------------------------------------------------------------------
 
 _MyType::reference
 corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
@@ -60,6 +65,8 @@ corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
   return *ptr;
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::dyobj::ntvhndl_key
 corevm::runtime::native_types_pool::create()
 {
@@ -74,6 +81,8 @@ corevm::runtime::native_types_pool::create()
 
   return corevm::runtime::ptr_to_ntvhndl_key(ptr);
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
@@ -91,3 +100,5 @@ corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
     throw corevm::runtime::native_type_handle_not_found_error();
   }
 }
+
+// -----------------------------------------------------------------------------

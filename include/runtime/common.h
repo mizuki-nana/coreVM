@@ -61,22 +61,6 @@ const compartment_id NONESET_COMPARTMENT_ID = -1;
 const closure_id NONESET_CLOSURE_ID = -1;
 
 
-typedef struct closure_ctx
-{
-  compartment_id compartment_id;
-  closure_id closure_id;
-
-  bool operator==(const closure_ctx& rhs)
-  {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
-  }
-
-} closure_ctx;
-
-
 const instr_addr NONESET_INSTR_ADDR = -1;
 
 

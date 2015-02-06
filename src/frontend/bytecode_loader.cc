@@ -61,6 +61,8 @@ typedef struct bytecode_loader_wrapper
 } bytecode_loader_wrapper;
 
 
+// -----------------------------------------------------------------------------
+
 class schema_repository
 {
 public:
@@ -71,6 +73,7 @@ private:
   static const std::vector<bytecode_loader_wrapper> bytecode_loader_definitions;
 };
 
+// -----------------------------------------------------------------------------
 
 const std::vector<bytecode_loader_wrapper>
 corevm::frontend::internal::schema_repository::bytecode_loader_definitions
@@ -80,6 +83,7 @@ corevm::frontend::internal::schema_repository::bytecode_loader_definitions
   },
 };
 
+// -----------------------------------------------------------------------------
 
 bytecode_loader*
 corevm::frontend::internal::schema_repository::load_by_format_and_version(
@@ -126,8 +130,23 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
   return static_cast<bytecode_loader*>(*itr);
 }
 
+// -----------------------------------------------------------------------------
+
+
+} /* end namespace internal */
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */
+
+
+// -----------------------------------------------------------------------------
+
 void
-validate_and_load(const JSON& content_json, corevm::runtime::process& process)
+corevm::frontend::bytecode_loader::validate_and_load(
+  const JSON& content_json, corevm::runtime::process& process)
 {
   const JSON::object& json_object = content_json.object_items();
 
@@ -174,16 +193,7 @@ validate_and_load(const JSON& content_json, corevm::runtime::process& process)
   loader->load(content_json, process);
 }
 
-
-
-} /* end namespace internal */
-
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
-
+// -----------------------------------------------------------------------------
 
 void
 corevm::frontend::bytecode_loader::load(
@@ -227,5 +237,7 @@ corevm::frontend::bytecode_loader::load(
     );
   }
 
-  corevm::frontend::internal::validate_and_load(content_json, process);
+  bytecode_loader::validate_and_load(content_json, process);
 }
+
+// -----------------------------------------------------------------------------

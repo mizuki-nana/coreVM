@@ -61,6 +61,7 @@ public:
   inline heap_allocator(heap_allocator<U, OtherAllocationScheme, M> const&);
 };
 
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 corevm::dyobj::heap_allocator<T, AllocationScheme, N>::heap_allocator()
@@ -68,11 +69,15 @@ corevm::dyobj::heap_allocator<T, AllocationScheme, N>::heap_allocator()
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 corevm::dyobj::heap_allocator<T, AllocationScheme, N>::~heap_allocator()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 corevm::dyobj::heap_allocator<T, AllocationScheme, N>::heap_allocator(
@@ -80,6 +85,8 @@ corevm::dyobj::heap_allocator<T, AllocationScheme, N>::heap_allocator(
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 template<typename U, typename OtherAllocationScheme, size_t M>
@@ -89,6 +96,7 @@ corevm::dyobj::heap_allocator<T, AllocationScheme, N>::heap_allocator(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
 inline
@@ -102,6 +110,8 @@ bool operator==(
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
 inline
 bool operator==(
@@ -114,6 +124,8 @@ bool operator==(
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N, typename other_allocator_type>
 inline
 bool operator==(
@@ -124,6 +136,8 @@ bool operator==(
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N>
 inline
 bool operator!=(
@@ -132,6 +146,8 @@ bool operator!=(
 {
   return !operator==(lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
 inline
@@ -142,12 +158,16 @@ bool operator!=(
   return !operator==(lhs, rhs);
 }
 
+// -----------------------------------------------------------------------------
+
 template<typename T, typename AllocationScheme, size_t N, typename other_allocator_type>
 inline
 bool operator!=(heap_allocator<T, AllocationScheme, N> const& lhs, other_allocator_type const& rhs)
 {
   return !operator==(lhs, rhs);
 }
+
+// -----------------------------------------------------------------------------
 
 
 }; /* end namespace dyobj */

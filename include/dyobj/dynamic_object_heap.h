@@ -93,6 +93,7 @@ private:
   dynamic_object_container_type m_container;
 };
 
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap()
@@ -100,11 +101,15 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::~dynamic_object_heap()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
@@ -113,12 +118,16 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size() const noexcep
   return m_container.size();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::max_size() const noexcept
 {
   return m_container.max_size();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
@@ -133,12 +142,16 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const 
   );
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(iterator pos)
 {
   m_container.erase(pos);
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 void
@@ -152,12 +165,16 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object
   }
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::begin() noexcept
 {
   return m_container.begin();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
@@ -166,6 +183,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cbegin() const noexc
   return m_container.cbegin();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::end() noexcept
@@ -173,12 +192,16 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::end() noexcept
   return m_container.end();
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::const_iterator
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::cend() const noexcept
 {
   return m_container.cend();
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 template<typename Function>
@@ -193,6 +216,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::iterate(Function fun
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&
@@ -215,6 +240,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
   return *ptr;
 }
 
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
@@ -233,6 +260,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
 
   return id;
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace dyobj */

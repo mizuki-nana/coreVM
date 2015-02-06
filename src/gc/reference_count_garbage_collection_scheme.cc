@@ -61,6 +61,8 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
   } /* end of `while (true)` */
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
@@ -85,6 +87,8 @@ corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::gc::reference_count_garbage_collection_scheme::resolve_self_reference_cycles(
@@ -112,6 +116,8 @@ corevm::gc::reference_count_garbage_collection_scheme::resolve_self_reference_cy
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
@@ -219,3 +225,5 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
     }
   }
 }
+
+// -----------------------------------------------------------------------------

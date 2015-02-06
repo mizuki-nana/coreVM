@@ -37,9 +37,15 @@ namespace types {
 
 class op {};
 
+// -----------------------------------------------------------------------------
+
 class unary_op : public op {};
+
+// -----------------------------------------------------------------------------
+
 class binary_op : public op {};
 
+// -----------------------------------------------------------------------------
 
 class positive : public unary_op
 {
@@ -51,6 +57,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class negation : public unary_op
 {
@@ -62,6 +69,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class increment : public unary_op
 {
@@ -74,6 +82,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class decrement : public unary_op
 {
@@ -87,6 +96,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::boolean::value_type
@@ -95,6 +106,7 @@ corevm::types::decrement::operator()<corevm::types::boolean>(const corevm::types
   throw corevm::types::invalid_operator_error("--", "boolean");
 }
 
+// -----------------------------------------------------------------------------
 
 class logical_not : public unary_op
 {
@@ -106,6 +118,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class bitwise_not : public unary_op
 {
@@ -120,6 +133,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -127,6 +142,8 @@ corevm::types::bitwise_not::operator()<corevm::types::string>(const corevm::type
 {
   return static_cast<typename corevm::types::string::value_type>(~handle.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -136,6 +153,8 @@ corevm::types::bitwise_not::operator()<corevm::types::array>(const corevm::types
   return static_cast<typename corevm::types::array::value_type>(~handle.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -144,6 +163,7 @@ corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::
   return static_cast<typename corevm::types::map::value_type>(~handle.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class addition : public binary_op
 {
@@ -158,6 +178,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -167,6 +189,7 @@ corevm::types::addition::operator()<corevm::types::string>(
   return static_cast<typename corevm::types::string::value_type>(lhs.value + rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class subtraction : public binary_op
 {
@@ -181,6 +204,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class multiplication : public binary_op
 {
@@ -195,6 +219,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class division : public binary_op
 {
@@ -209,6 +234,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class modulus : public binary_op
 {
@@ -223,6 +249,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -231,6 +259,8 @@ corevm::types::modulus::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value % rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -241,6 +271,8 @@ corevm::types::modulus::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value % rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -250,6 +282,7 @@ corevm::types::modulus::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value % rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class pow_op : public binary_op
 {
@@ -282,6 +315,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class logical_and : public binary_op
 {
@@ -296,6 +330,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class logical_or : public binary_op
 {
@@ -310,6 +345,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class bitwise_and : public binary_op
 {
@@ -324,6 +360,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -332,6 +370,8 @@ corevm::types::bitwise_and::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value & rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -342,6 +382,8 @@ corevm::types::bitwise_and::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value & rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -351,6 +393,7 @@ corevm::types::bitwise_and::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value & rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class bitwise_or : public binary_op
 {
@@ -365,6 +408,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -373,6 +418,8 @@ corevm::types::bitwise_or::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value | rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -383,6 +430,8 @@ corevm::types::bitwise_or::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value | rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -392,6 +441,7 @@ corevm::types::bitwise_or::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value | rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class bitwise_xor : public binary_op
 {
@@ -406,6 +456,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -414,6 +466,8 @@ corevm::types::bitwise_xor::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value ^ rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -424,6 +478,8 @@ corevm::types::bitwise_xor::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value ^ rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -433,6 +489,7 @@ corevm::types::bitwise_xor::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value ^ rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class bitwise_left_shift : public binary_op
 {
@@ -447,6 +504,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -455,6 +514,8 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value << rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -465,6 +526,8 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value << rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -474,6 +537,7 @@ corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value << rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class bitwise_right_shift : public binary_op
 {
@@ -488,6 +552,8 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::string::value_type
@@ -496,6 +562,8 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::string>(
 {
   return static_cast<typename corevm::types::string::value_type>(lhs.value >> rhs.value);
 }
+
+// -----------------------------------------------------------------------------
 
 template<>
 inline
@@ -506,6 +574,8 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::array>(
   return static_cast<typename corevm::types::array::value_type>(lhs.value >> rhs.value);
 }
 
+// -----------------------------------------------------------------------------
+
 template<>
 inline
 typename corevm::types::map::value_type
@@ -515,6 +585,7 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
   return static_cast<typename corevm::types::map::value_type>(lhs.value >> rhs.value);
 }
 
+// -----------------------------------------------------------------------------
 
 class eq : public binary_op
 {
@@ -529,6 +600,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class neq : public binary_op
 {
@@ -543,6 +615,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class gt : public binary_op
 {
@@ -557,6 +630,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class lt : public binary_op
 {
@@ -571,6 +645,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class gte : public binary_op
 {
@@ -585,6 +660,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class lte : public binary_op
 {
@@ -598,6 +674,8 @@ public:
     );
   }
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace types */

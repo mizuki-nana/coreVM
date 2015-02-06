@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const int HEAP_STORAGE_FOR_TEST = 1024;
 
+// -----------------------------------------------------------------------------
 
 template<typename AllocationSchemeType>
 class allocator_unittest : public ::testing::Test
@@ -49,6 +50,7 @@ protected:
     HEAP_STORAGE_FOR_TEST, AllocationSchemeType> m_allocator;
 };
 
+// -----------------------------------------------------------------------------
 
 typedef ::testing::Types<
   corevm::memory::first_fit_allocation_scheme,
@@ -58,9 +60,11 @@ typedef ::testing::Types<
   corevm::memory::buddy_allocation_scheme
 > SequentialAllocationSchemeTypes;
 
+// -----------------------------------------------------------------------------
 
 TYPED_TEST_CASE(allocator_unittest, SequentialAllocationSchemeTypes);
 
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(allocator_unittest, TestFirstMallocSuccessful)
 {
@@ -68,17 +72,23 @@ TYPED_TEST(allocator_unittest, TestFirstMallocSuccessful)
   ASSERT_NE(nullptr, p);
 }
 
+// -----------------------------------------------------------------------------
+
 TYPED_TEST(allocator_unittest, TestMallocWithSizeZeroFails)
 {
   void* p = this->allocate(0);
   ASSERT_EQ(nullptr, p);
 }
 
+// -----------------------------------------------------------------------------
+
 TYPED_TEST(allocator_unittest, TestMallocWithExcessiveSizeFails)
 {
   void* p = this->allocate(HEAP_STORAGE_FOR_TEST + 1);
   ASSERT_EQ(nullptr, p);
 }
+
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(allocator_unittest, TestFreeFailsOnInvalidPtr)
 {
@@ -87,6 +97,8 @@ TYPED_TEST(allocator_unittest, TestFreeFailsOnInvalidPtr)
   int res = this->deallocate(ptr);
   ASSERT_EQ(-1, res);
 }
+
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(allocator_unittest, TestSingleMallocAndFree)
 {
@@ -97,6 +109,8 @@ TYPED_TEST(allocator_unittest, TestSingleMallocAndFree)
   res = this->deallocate(p);
   ASSERT_EQ(1, res);
 }
+
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
@@ -113,6 +127,7 @@ TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
   }
 }
 
+// -----------------------------------------------------------------------------
 
 template<typename AllocationSchemeType>
 class sequential_allocation_schemes_unittest :
@@ -120,6 +135,7 @@ class sequential_allocation_schemes_unittest :
 {
 };
 
+// -----------------------------------------------------------------------------
 
 typedef ::testing::Types<
   corevm::memory::first_fit_allocation_scheme,
@@ -128,9 +144,11 @@ typedef ::testing::Types<
   corevm::memory::next_fit_allocation_scheme
 > ExtraAllocationSchemeTypes;
 
+// -----------------------------------------------------------------------------
 
 TYPED_TEST_CASE(sequential_allocation_schemes_unittest, ExtraAllocationSchemeTypes);
 
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
 {
@@ -161,6 +179,8 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
   int res2 = this->deallocate(p2);
   ASSERT_EQ(1, res2);
 }
+
+// -----------------------------------------------------------------------------
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
 {
@@ -197,6 +217,8 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
   }
 }
 
+// -----------------------------------------------------------------------------
+
 TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 {
   size_t chunk_size_1 = HEAP_STORAGE_FOR_TEST / 3;
@@ -231,9 +253,11 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
   ASSERT_NE(nullptr, p);
 }
 
+// -----------------------------------------------------------------------------
 
 const int BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE = 1024;
 
+// -----------------------------------------------------------------------------
 
 class buddy_allocation_scheme_unittest : public ::testing::Test
 {
@@ -262,6 +286,7 @@ protected:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
 {
@@ -286,6 +311,8 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
 {
@@ -314,6 +341,8 @@ TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
 {
@@ -361,6 +390,8 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
 {
   /* This test is based on the example given in
@@ -406,6 +437,8 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
     }
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved3)
 {
@@ -466,3 +499,5 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved3)
     }
   );
 }
+
+// -----------------------------------------------------------------------------

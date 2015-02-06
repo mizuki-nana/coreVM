@@ -39,6 +39,7 @@ namespace frontend {
 
 using sneaker::json::JSON;
 
+// -----------------------------------------------------------------------------
 
 class bytecode_loader
 {
@@ -50,7 +51,12 @@ public:
 
   static void load(const std::string&, corevm::runtime::process&)
     throw(corevm::frontend::file_loading_error);
+
+private:
+  static void validate_and_load(const JSON&, corevm::runtime::process&);
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace frontend */

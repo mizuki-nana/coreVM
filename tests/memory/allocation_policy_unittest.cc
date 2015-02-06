@@ -38,6 +38,7 @@ public:
   typedef corevm::memory::allocation_policy<int, AllocationScheme, 1024> _AllocPolicyType;
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(allocation_policy_unit_test, TestMaxSize)
 {
@@ -46,6 +47,8 @@ TEST_F(allocation_policy_unit_test, TestMaxSize)
   ASSERT_GT(allocation_policy.max_size(), 0);
   ASSERT_LE(allocation_policy.max_size(), ULONG_MAX);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(allocation_policy_unit_test, TestAllocateAndDeallocate)
 {
@@ -61,6 +64,8 @@ TEST_F(allocation_policy_unit_test, TestAllocateAndDeallocate)
   allocation_policy.deallocate(nums, N);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(allocation_policy_unit_test, TestEquality)
 {
   corevm::memory::allocation_policy<int, AllocationScheme, 20> allocation_policy_1;
@@ -69,6 +74,8 @@ TEST_F(allocation_policy_unit_test, TestEquality)
   ASSERT_TRUE(allocation_policy_1 == allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 != allocation_policy_2);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(allocation_policy_unit_test, TestEquality2)
 {
@@ -79,6 +86,8 @@ TEST_F(allocation_policy_unit_test, TestEquality2)
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(allocation_policy_unit_test, TestEquality3)
 {
   corevm::memory::allocation_policy<int, AllocationScheme, 20> allocation_policy_1;
@@ -87,6 +96,8 @@ TEST_F(allocation_policy_unit_test, TestEquality3)
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(allocation_policy_unit_test, TestEquality4)
 {
@@ -97,6 +108,8 @@ TEST_F(allocation_policy_unit_test, TestEquality4)
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(allocation_policy_unit_test, TestEquality5)
 {
   corevm::memory::allocation_policy<int, AllocationScheme, 20> allocation_policy_1;
@@ -105,3 +118,5 @@ TEST_F(allocation_policy_unit_test, TestEquality5)
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
 }
+
+// -----------------------------------------------------------------------------

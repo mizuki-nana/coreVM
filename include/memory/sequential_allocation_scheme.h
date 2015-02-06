@@ -43,6 +43,7 @@ typedef struct __sequential_block_descriptor
   uint8_t flags;
 } sequential_block_descriptor;
 
+// -----------------------------------------------------------------------------
 
 class sequential_allocation_scheme : public corevm::memory::allocation_scheme
 {
@@ -73,6 +74,7 @@ protected:
   std::list<sequential_block_descriptor> m_blocks;
 };
 
+// -----------------------------------------------------------------------------
 
 class first_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
 {
@@ -83,6 +85,7 @@ protected:
   virtual iterator find_fit(size_t) noexcept;
 };
 
+// -----------------------------------------------------------------------------
 
 class best_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
 {
@@ -93,6 +96,7 @@ protected:
   virtual iterator find_fit(size_t) noexcept;
 };
 
+// -----------------------------------------------------------------------------
 
 class worst_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
 {
@@ -103,6 +107,7 @@ protected:
   virtual iterator find_fit(size_t) noexcept;
 };
 
+// -----------------------------------------------------------------------------
 
 class next_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
 {
@@ -115,6 +120,7 @@ protected:
   iterator m_last_itr;
 };
 
+// -----------------------------------------------------------------------------
 
 class buddy_allocation_scheme : public corevm::memory::sequential_allocation_scheme
 {
@@ -130,6 +136,8 @@ protected:
   static const uint8_t FLAG_SPLIT;
   static const uint8_t FLAG_PARENT_SPLIT;
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace memory */

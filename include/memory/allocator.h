@@ -63,6 +63,8 @@ private:
 };
 
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 corevm::memory::allocator<N, allocation_scheme>::allocator():
   m_total_size(N),
@@ -79,6 +81,8 @@ corevm::memory::allocator<N, allocation_scheme>::allocator():
   m_heap = mem;
 }
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 corevm::memory::allocator<N, allocation_scheme>::~allocator()
 {
@@ -89,6 +93,8 @@ corevm::memory::allocator<N, allocation_scheme>::~allocator()
   }
 }
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 uint64_t
 corevm::memory::allocator<N, allocation_scheme>::base_addr() const noexcept
@@ -96,12 +102,16 @@ corevm::memory::allocator<N, allocation_scheme>::base_addr() const noexcept
   return static_cast<uint64_t>((char*)m_heap - (char*)NULL);
 }
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 uint64_t
 corevm::memory::allocator<N, allocation_scheme>::total_size() const noexcept
 {
   return m_total_size;
 }
+
+// -----------------------------------------------------------------------------
 
 template<size_t N, class allocation_scheme>
 void*
@@ -132,6 +142,8 @@ corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
   return ptr;
 }
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 int
 corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
@@ -160,6 +172,8 @@ corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
   return res;
 }
 
+// -----------------------------------------------------------------------------
+
 template<size_t N, class allocation_scheme>
 void
 corevm::memory::allocator<N, allocation_scheme>::debug_print() const noexcept
@@ -167,6 +181,8 @@ corevm::memory::allocator<N, allocation_scheme>::debug_print() const noexcept
   uint32_t base = static_cast<char*>(m_heap) - static_cast<char*>(NULL);
   m_allocation_scheme.debug_print(base);
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace memory */

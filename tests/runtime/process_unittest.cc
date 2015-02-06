@@ -35,11 +35,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class process_unittest : public ::testing::Test {};
 
+// -----------------------------------------------------------------------------
 
 TEST_F(process_unittest, TestInitialization)
 {
   corevm::runtime::process process;
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_unittest, TestStart)
 {
@@ -55,6 +58,8 @@ TEST_F(process_unittest, TestStart)
   ******************************** DISABLED ***********************************/
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestMaxSizes)
 {
   corevm::runtime::process process;
@@ -62,6 +67,8 @@ TEST_F(process_unittest, TestMaxSizes)
   ASSERT_LT(0, process.max_heap_size());
   ASSERT_LT(0, process.max_ntvhndl_pool_size());
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_unittest, TestPushAndPopStack)
 {
@@ -126,6 +133,8 @@ TEST_F(process_unittest, TestPushAndPopStack)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestPushAndPopFrames)
 {
   corevm::runtime::process process;
@@ -176,6 +185,8 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   );
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
 {
   corevm::runtime::process process;
@@ -193,6 +204,8 @@ TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
 
   ASSERT_EQ(value, actual_value);
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_unittest, TestInsertAndEraseNativeTypeHandle)
 {
@@ -229,6 +242,8 @@ TEST_F(process_unittest, TestInsertAndEraseNativeTypeHandle)
     corevm::runtime::native_type_handle_not_found_error
   );
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_unittest, TestGetFrameByClosureCtx)
 {
@@ -272,6 +287,7 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
   ASSERT_NE(nullptr, ptr);
 }
 
+// -----------------------------------------------------------------------------
 
 class process_gc_rule_unittest : public process_unittest
 {
@@ -279,6 +295,7 @@ protected:
   corevm::runtime::process _process;
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(process_gc_rule_unittest, Test_gc_rule_always)
 {
@@ -286,11 +303,15 @@ TEST_F(process_gc_rule_unittest, Test_gc_rule_always)
   ASSERT_EQ(true, gc_rule.should_gc(_process));
 }
 
+// -----------------------------------------------------------------------------
+
 TEST_F(process_gc_rule_unittest, Test_gc_rule_by_heap_size)
 {
   corevm::runtime::gc_rule_by_heap_size gc_rule;
   ASSERT_EQ(false, gc_rule.should_gc(_process));
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_gc_rule_unittest, Test_gc_rule_by_ntvhndl_pool_size)
 {
@@ -298,9 +319,11 @@ TEST_F(process_gc_rule_unittest, Test_gc_rule_by_ntvhndl_pool_size)
   ASSERT_EQ(false, gc_rule.should_gc(_process));
 }
 
+// -----------------------------------------------------------------------------
 
 class process_signal_handling_unittest : public process_unittest {};
 
+// -----------------------------------------------------------------------------
 
 TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
 {
@@ -330,6 +353,8 @@ TEST_F(process_signal_handling_unittest, TestHandleSignalWithUserAction)
   ASSERT_EQ(1, process.stack_size());
   */
 }
+
+// -----------------------------------------------------------------------------
 
 TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
 {
@@ -361,7 +386,7 @@ TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
 
   ASSERT_EQ(0, process.stack_size());
 
-  std::vector<corevm::runtime::instr> instrs = {
+  std::vector<corevm::runtime::instr> instrs {
     { .code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0 },
     { .code=corevm::runtime::instr_enum::DIV, .oprd1=0, .oprd2=0 },
   };
@@ -379,3 +404,5 @@ TEST_F(process_signal_handling_unittest, TestHandleSIGFPE)
 
   ******************************** DISABLED ***********************************/
 }
+
+// -----------------------------------------------------------------------------

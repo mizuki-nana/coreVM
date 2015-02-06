@@ -61,6 +61,7 @@ namespace internal {
 using _GarbageCollectorType = typename corevm::gc::garbage_collector<
   corevm::runtime::process::garbage_collection_scheme>;
 
+// -----------------------------------------------------------------------------
 
 class garbage_collector_callback : public _GarbageCollectorType::callback
 {
@@ -82,6 +83,8 @@ private:
   std::list<corevm::dyobj::ntvhndl_key> m_list;
 };
 
+// -----------------------------------------------------------------------------
+
 
 } /* end namespace internal */
 
@@ -98,11 +101,15 @@ corevm::runtime::process::adapter::help_create_dyobj()
   return m_process.m_dynamic_object_heap.create_dyobj();
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::dynamic_object_type&
 corevm::runtime::process::adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
 {
   return m_process.m_dynamic_object_heap.at(id);
 }
+
+// -----------------------------------------------------------------------------
 
 
 corevm::runtime::process::process():
@@ -113,10 +120,14 @@ corevm::runtime::process::process():
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::~process()
 {
   // Do nothing here.
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::runtime::instr_addr
 corevm::runtime::process::top_addr() const
@@ -124,11 +135,15 @@ corevm::runtime::process::top_addr() const
   return m_instrs.size() - 1;
 }
 
+// -----------------------------------------------------------------------------
+
 const corevm::runtime::instr_addr
 corevm::runtime::process::current_addr() const
 {
   return m_pc;
 }
+
+// -----------------------------------------------------------------------------
 
 uint64_t
 corevm::runtime::process::call_stack_size() const
@@ -136,11 +151,15 @@ corevm::runtime::process::call_stack_size() const
   return m_call_stack.size();
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::process::has_frame() const
 {
   return !(this->m_call_stack.empty());
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::runtime::frame&
 corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_error)
@@ -152,6 +171,8 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
 
   return m_call_stack.back();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_error)
@@ -182,17 +203,23 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   m_call_stack.pop_back();
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 {
   m_call_stack.push_back(frame);
 }
 
+// -----------------------------------------------------------------------------
+
 uint64_t
 corevm::runtime::process::stack_size() const
 {
   return m_dyobj_stack.size();
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id&
 corevm::runtime::process::top_stack() throw(corevm::runtime::object_stack_empty_error)
@@ -205,11 +232,15 @@ corevm::runtime::process::top_stack() throw(corevm::runtime::object_stack_empty_
   return m_dyobj_stack.top();
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 {
   m_dyobj_stack.push(id);
 }
+
+// -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id
 corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_error)
@@ -224,11 +255,15 @@ corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_
   return id;
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::dynamic_object_heap_type::size_type
 corevm::runtime::process::heap_size() const
 {
   return m_dynamic_object_heap.size();
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::runtime::process::dynamic_object_heap_type::size_type
 corevm::runtime::process::max_heap_size() const
@@ -236,17 +271,23 @@ corevm::runtime::process::max_heap_size() const
   return m_dynamic_object_heap.max_size();
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::native_types_pool_type::size_type
 corevm::runtime::process::ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.size();
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::native_types_pool_type::size_type
 corevm::runtime::process::max_ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.max_size();
 }
+
+// -----------------------------------------------------------------------------
 
 bool
 corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
@@ -263,12 +304,16 @@ corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   return true;
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::types::native_type_handle&
 corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_not_found_error)
 {
   return m_ntvhndl_pool.at(key);
 }
+
+// -----------------------------------------------------------------------------
 
 corevm::dyobj::ntvhndl_key
 corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
@@ -281,6 +326,8 @@ corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl
 
   return key;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
@@ -296,12 +343,16 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   }
 }
 
+// -----------------------------------------------------------------------------
+
 const corevm::runtime::instr_handler*
 corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
 {
-  corevm::runtime::instr_info instr_info = m_instr_handler_meta.find(code);
+  corevm::runtime::instr_info instr_info = corevm::runtime::instr_handler_meta::find(code);
   return instr_info.handler;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::pause_exec()
@@ -309,17 +360,23 @@ corevm::runtime::process::pause_exec()
   m_pause_exec = true;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::resume_exec()
 {
   m_pause_exec = false;
 }
 
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::process::can_execute()
 {
   return m_pc < m_instrs.size();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::start()
@@ -353,6 +410,8 @@ corevm::runtime::process::start()
   } /* end `while (can_execute())` */
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::maybe_gc()
 {
@@ -380,11 +439,15 @@ corevm::runtime::process::maybe_gc()
   this->resume_exec();
 };
 
+// -----------------------------------------------------------------------------
+
 const corevm::runtime::instr_addr
 corevm::runtime::process::pc() const
 {
   return m_pc;
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
@@ -400,11 +463,15 @@ corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   m_instrs.erase(m_instrs.begin() + pc(), m_instrs.end());
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
   m_instrs.insert(m_instrs.end(), vector.begin(), vector.end());
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::get_frame_by_closure_ctx(
@@ -423,6 +490,8 @@ corevm::runtime::process::get_frame_by_closure_ctx(
     *frame_ptr = &(*itr);
   }
 }
+
+// -----------------------------------------------------------------------------
 
 bool
 corevm::runtime::process::should_gc()
@@ -450,6 +519,8 @@ corevm::runtime::process::should_gc()
   return false;
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::set_sig_vector(
   sig_atomic_t sig, corevm::runtime::vector& vector)
@@ -457,12 +528,16 @@ corevm::runtime::process::set_sig_vector(
   m_sig_instr_map.insert({sig, vector});
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::insert_vector(corevm::runtime::vector& block)
 {
   std::vector<corevm::runtime::instr>::iterator pos = m_instrs.begin() + m_pc + 1;
   m_instrs.insert(pos, block.begin(), block.end());
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::handle_signal(
@@ -483,6 +558,8 @@ corevm::runtime::process::handle_signal(
   }
 }
 
+// -----------------------------------------------------------------------------
+
 size_t
 corevm::runtime::process::insert_compartment(
   const corevm::runtime::compartment& compartment)
@@ -490,6 +567,8 @@ corevm::runtime::process::insert_compartment(
   m_compartments.push_back(compartment);
   return m_compartments.size();
 }
+
+// -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::get_compartment(
@@ -500,3 +579,5 @@ corevm::runtime::process::get_compartment(
     *ptr = &m_compartments[id];
   }
 }
+
+// -----------------------------------------------------------------------------

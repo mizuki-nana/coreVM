@@ -34,16 +34,21 @@ namespace runtime {
 
 using corevm::dyobj::ntvhndl_key;
 
+// -----------------------------------------------------------------------------
 
 inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
 {
   return static_cast<ntvhndl_key>( (char*)(ptr) - (char*)(NULL) );
 }
 
+// -----------------------------------------------------------------------------
+
 inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
 {
   return reinterpret_cast<void*>(key);
 }
+
+// -----------------------------------------------------------------------------
 
 
 }; /* end namespace runtime */

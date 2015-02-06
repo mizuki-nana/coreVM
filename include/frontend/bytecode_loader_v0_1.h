@@ -40,6 +40,7 @@ namespace frontend {
 
 using sneaker::json::JSON;
 
+// -----------------------------------------------------------------------------
 
 class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader
 {
@@ -49,6 +50,8 @@ public:
   virtual std::string version() const;
   virtual std::string schema() const;
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace frontend */

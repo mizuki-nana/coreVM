@@ -38,6 +38,7 @@ namespace gc {
 
 class garbage_collection_scheme {};
 
+// -----------------------------------------------------------------------------
 
 class reference_count_garbage_collection_scheme : public garbage_collection_scheme
 {
@@ -114,6 +115,7 @@ protected:
   void remove_cycles(dynamic_object_heap_type&) const;
 };
 
+// -----------------------------------------------------------------------------
 
 class mark_and_sweep_garbage_collection_scheme : public garbage_collection_scheme
 {
@@ -184,6 +186,8 @@ protected:
   virtual bool is_root_object(const dynamic_object_type&) const noexcept;
   virtual void mark(dynamic_object_heap_type&, dynamic_object_type&) const;
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace gc */

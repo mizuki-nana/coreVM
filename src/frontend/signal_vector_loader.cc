@@ -52,7 +52,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
         "\"type\": \"object\","
         "\"properties\": {"
 
-//--------------------  Arithmetic and execution signals ----------------------/
+            /* Arithmetic and execution signals */
 
             "\"SIGFPE\": {"
               "\"$ref\": \"#/definitions/vector\""
@@ -67,7 +67,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
               "\"$ref\": \"#/definitions/vector\""
             "},"
 
-//------------------------- Termination signals -------------------------------/
+            /* Termination signals */
 
             "\"SIGABRT\": {"
               "\"$ref\": \"#/definitions/vector\""
@@ -82,7 +82,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
               "\"$ref\": \"#/definitions/vector\""
             "},"
 
-//---------------------------- Alarm signals ----------------------------------/
+            /* Alarm signals */
 
             "\"SIGALRM\": {"
               "\"$ref\": \"#/definitions/vector\""
@@ -94,7 +94,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
               "\"$ref\": \"#/definitions/vector\""
             "},"
 
-//------------------------ Operation error signals ----------------------------/
+            /* Operation error signals */
 
             "\"SIGPIPE\": {"
               "\"$ref\": \"#/definitions/vector\""
@@ -106,7 +106,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
               "\"$ref\": \"#/definitions/vector\""
             "},"
 
-//---------------------- Asynchronous I/O signals -----------------------------/
+            /* Asynchronous I/O signals */
 
             "\"SIGIO\": {"
               "\"$ref\": \"#/definitions/vector\""
@@ -148,6 +148,7 @@ const std::string corevm::frontend::signal_vector_loader::raw_schema = \
     "}"
   "}";
 
+// -----------------------------------------------------------------------------
 
 corevm::frontend::signal_vector_loader::signal_vector_loader(
   const std::string& path
@@ -157,9 +158,11 @@ corevm::frontend::signal_vector_loader::signal_vector_loader(
   // Do nothing here.
 }
 
+// -----------------------------------------------------------------------------
 
 void
-corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) throw(corevm::frontend::file_loading_error)
+corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
+  throw(corevm::frontend::file_loading_error)
 {
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
@@ -216,6 +219,8 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process) 
   }
 }
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
 {
@@ -234,3 +239,5 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
     );
   }
 }
+
+// -----------------------------------------------------------------------------

@@ -82,6 +82,7 @@ protected:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
 {
@@ -89,3 +90,5 @@ TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
 
   corevm::frontend::bytecode_loader::load(PATH, process);
 }
+
+// -----------------------------------------------------------------------------
