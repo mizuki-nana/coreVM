@@ -27,7 +27,6 @@ corevm::runtime::compartment::compartment()
 {
 }
 
-
 // -----------------------------------------------------------------------------
 
 const corevm::runtime::compartment_id

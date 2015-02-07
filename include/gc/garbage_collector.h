@@ -66,9 +66,9 @@ protected:
 
 template<class garbage_collection_scheme>
 corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
-  corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap
-):
-  m_gc_scheme(garbage_collection_scheme()),
+  corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
+  :
+  m_gc_scheme(),
   m_heap(heap)
 {
   // Do nothing here.

@@ -46,7 +46,8 @@ public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
   {
     public:
-      dynamic_object_manager() :
+      dynamic_object_manager()
+        :
         m_count(0)
       {
       }
@@ -123,7 +124,8 @@ public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
   {
     public:
-      dynamic_object_manager() :
+      dynamic_object_manager()
+        :
         m_marked(false)
       {
       }

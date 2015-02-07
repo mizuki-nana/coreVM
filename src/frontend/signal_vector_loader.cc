@@ -40,119 +40,111 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-using boost::format;
 using namespace sneaker::json;
 
+// -----------------------------------------------------------------------------
 
-const std::string corevm::frontend::signal_vector_loader::raw_schema = \
-  "{"
-    "\"type\": \"object\","
-    "\"properties\": {"
-      "\"signals\": {"
-        "\"type\": \"object\","
-        "\"properties\": {"
+const std::string
+corevm::frontend::signal_vector_loader::schema() const
+{
+  static const std::string unformatted_def(
+    "{"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"signals\": {"
+          "\"type\": \"object\","
+          "\"properties\": {"
 
-            /* Arithmetic and execution signals */
+              /* Arithmetic and execution signals */
 
-            "\"SIGFPE\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGKILL\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGSEGV\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGBUS\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
+              "\"SIGFPE\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGKILL\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGSEGV\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGBUS\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
 
-            /* Termination signals */
+              /* Termination signals */
 
-            "\"SIGABRT\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGINT\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGTERM\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGQUIT\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
+              "\"SIGABRT\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGINT\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGTERM\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGQUIT\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
 
-            /* Alarm signals */
+              /* Alarm signals */
 
-            "\"SIGALRM\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGVTALRM\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGPROF\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
+              "\"SIGALRM\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGVTALRM\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGPROF\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
 
-            /* Operation error signals */
+              /* Operation error signals */
 
-            "\"SIGPIPE\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGXCPU\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGXFSZ\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
+              "\"SIGPIPE\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGXCPU\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGXFSZ\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
 
-            /* Asynchronous I/O signals */
+              /* Asynchronous I/O signals */
 
-            "\"SIGIO\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "},"
-            "\"SIGURG\": {"
-              "\"$ref\": \"#/definitions/vector\""
-            "}"
+              "\"SIGIO\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "},"
+              "\"SIGURG\": {"
+                "\"$ref\": \"#/definitions/vector\""
+              "}"
 
-        "},"
-        "\"additionalProperties\": false"
-      "}"
-    "},"
-    "\"definitions\": {"
-      "\"instr\": {"
-        "\"type\": \"integer\","
-        "\"minimum\": 0,"
-        "\"maximum\": 4294967295"
-      "},"
-      "\"vector\": {"
-        "\"type:\": \"array\","
-        "\"items\": {"
-          "\"type:\": \"array\","
-          "\"items\": ["
-            "{"
-              "\"$ref\": \"#/definitions/instr\""
-            "},"
-            "{"
-              "\"$ref\": \"#/definitions/instr\""
-            "},"
-            "{"
-              "\"$ref\": \"#/definitions/instr\""
-            "}"
-          "],"
-          "\"minItems\": 1,"
-          "\"maxItems\": 3,"
-          "\"additionalItems\": false"
+          "},"
+          "\"additionalProperties\": false"
         "}"
+      "},"
+      "\"definitions\": {"
+        "\"instr\": %1%,"
+        "\"vector\": %2%"
       "}"
     "}"
-  "}";
+  );
+
+  const std::string def(
+    str(
+      boost::format(unformatted_def)
+        % get_v0_1_instr_schema_definition()
+        % get_v0_1_vector_schema_definition()
+    )
+  );
+
+  return def;
+}
 
 // -----------------------------------------------------------------------------
 
 corevm::frontend::signal_vector_loader::signal_vector_loader(
-  const std::string& path
-) :
+  const std::string& path)
+  :
   m_path(path)
 {
   // Do nothing here.
@@ -177,7 +169,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   {
     throw corevm::frontend::file_loading_error(
       str(
-        format(
+        boost::format(
           "Error while loading file \"%s\": %s"
         ) % m_path % ex.what()
       )
@@ -196,7 +188,9 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Error while parsing file \"%s\": %s") % m_path % ex.what()
+        boost::format(
+          "Error while parsing file \"%s\": %s"
+        ) % m_path % ex.what()
       )
     );
   }
@@ -224,7 +218,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
 void
 corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
 {
-  const JSON schema = sneaker::json::parse(corevm::frontend::signal_vector_loader::raw_schema);
+  const JSON schema = sneaker::json::parse(this->schema());
 
   try
   {
@@ -234,7 +228,7 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
   {
     throw corevm::frontend::file_loading_error(
       str(
-        format("Invalid format in file \"%s\": %s") % m_path % ex.what()
+        boost::format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )
     );
   }

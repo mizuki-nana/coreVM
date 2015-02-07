@@ -44,7 +44,12 @@ class allocator
 {
 public:
   allocator();
+
   ~allocator();
+
+  /* Allocators should not be copyable. */
+  allocator(const allocator&) = delete;
+  allocator& operator=(const allocator&) = delete;
 
   void* allocate(size_t) noexcept;
   int deallocate(void*) noexcept;
@@ -56,9 +61,9 @@ public:
   uint64_t total_size() const noexcept;
 
 private:
-  uint64_t m_total_size = 0;
-  uint64_t m_allocated_size = 0;
-  void* m_heap = nullptr;
+  uint64_t m_total_size;
+  uint64_t m_allocated_size;
+  void* m_heap;
   allocation_scheme m_allocation_scheme;
 };
 
@@ -69,6 +74,7 @@ template<size_t N, class allocation_scheme>
 corevm::memory::allocator<N, allocation_scheme>::allocator():
   m_total_size(N),
   m_allocated_size(0),
+  m_heap(nullptr),
   m_allocation_scheme(allocation_scheme(m_total_size))
 {
   void* mem = malloc(m_total_size);
@@ -99,7 +105,7 @@ template<size_t N, class allocation_scheme>
 uint64_t
 corevm::memory::allocator<N, allocation_scheme>::base_addr() const noexcept
 {
-  return static_cast<uint64_t>((char*)m_heap - (char*)NULL);
+  return static_cast<uint64_t>((uint8_t*)m_heap - (uint8_t*)NULL);
 }
 
 // -----------------------------------------------------------------------------
@@ -133,7 +139,7 @@ corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
 
   if (offset >= 0)
   {
-    char* base = static_cast<char*>(m_heap);
+    uint8_t* base = static_cast<uint8_t*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += static_cast<uint64_t>(size);
     assert(m_allocated_size <= m_total_size);
@@ -155,8 +161,8 @@ corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
     return res;
   }
 
-  char* ptr_ = static_cast<char*>(ptr);
-  char* heap_ = static_cast<char*>(m_heap);
+  uint8_t* ptr_ = static_cast<uint8_t*>(ptr);
+  uint8_t* heap_ = static_cast<uint8_t*>(m_heap);
 
   size_t offset = ptr_ - heap_;
   ssize_t size = m_allocation_scheme.free(offset);
@@ -178,7 +184,7 @@ template<size_t N, class allocation_scheme>
 void
 corevm::memory::allocator<N, allocation_scheme>::debug_print() const noexcept
 {
-  uint32_t base = static_cast<char*>(m_heap) - static_cast<char*>(NULL);
+  uint32_t base = static_cast<uint8_t*>(m_heap) - static_cast<uint8_t*>(NULL);
   m_allocation_scheme.debug_print(base);
 }
 

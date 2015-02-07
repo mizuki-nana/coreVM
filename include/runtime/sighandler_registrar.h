@@ -53,18 +53,23 @@ public:
 
   static sigjmp_buf& get_sigjmp_env();
 
-  /* Initializes all signal handler registrations.
+  /**
+   * Initializes all signal handler registrations.
    * Must be called after `init`.
-   * */
+   */
   static void ignore(sig_atomic_t);
 
   static void handle_signal(int);
 
-  static bool sig_raised;
+  static bool is_sig_raised();
+
+  static void clear_sig_raised();
 
   static sig_atomic_t get_sig_value_from_string(const std::string&);
 
 protected:
+  static bool sig_raised;
+
   static corevm::runtime::process* process;
   static const std::unordered_map<sig_atomic_t, sighandler_wrapper> handler_map;
   static const std::unordered_map<std::string, sig_atomic_t> sig_value_to_str_map;

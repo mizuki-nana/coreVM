@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../runtime/vector.h"
 
+#include <string>
+
 #include <sneaker/json/json.h>
 
 
@@ -38,6 +40,12 @@ using sneaker::json::JSON;
 
 
 corevm::runtime::vector get_vector_from_json(const JSON&);
+
+
+const std::string get_v0_1_instr_schema_definition();
+
+
+const std::string get_v0_1_vector_schema_definition();
 
 
 }; /* end namespace frontend */

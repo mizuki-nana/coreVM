@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../dyobj/common.h"
 
+#include <cstdint>
+
 
 namespace corevm {
 
@@ -38,7 +40,7 @@ using corevm::dyobj::ntvhndl_key;
 
 inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
 {
-  return static_cast<ntvhndl_key>( (char*)(ptr) - (char*)(NULL) );
+  return static_cast<ntvhndl_key>( (uint8_t*)(ptr) - (uint8_t*)(NULL) );
 }
 
 // -----------------------------------------------------------------------------

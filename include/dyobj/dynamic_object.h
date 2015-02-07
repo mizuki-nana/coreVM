@@ -136,7 +136,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(
     COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)
   ),
-  m_manager(dynamic_object_manager()),
+  m_manager(),
   m_ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY),
   m_closure_ctx(runtime::closure_ctx {
     .compartment_id = runtime::NONESET_COMPARTMENT_ID,

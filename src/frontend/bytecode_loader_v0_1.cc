@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/vector.h"
 
+#include <boost/format.hpp>
 #include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
@@ -45,7 +46,7 @@ const std::string BYTECODE_LOADER_V0_1_VERSION = "0.1";
 
 // -----------------------------------------------------------------------------
 
-std::string
+const std::string
 corevm::frontend::bytecode_loader_v0_1::format() const
 {
   return BYTECODE_LOADER_V0_1_FORMAT;
@@ -53,7 +54,7 @@ corevm::frontend::bytecode_loader_v0_1::format() const
 
 // -----------------------------------------------------------------------------
 
-std::string
+const std::string
 corevm::frontend::bytecode_loader_v0_1::version() const
 {
   return BYTECODE_LOADER_V0_1_VERSION;
@@ -61,10 +62,10 @@ corevm::frontend::bytecode_loader_v0_1::version() const
 
 // -----------------------------------------------------------------------------
 
-std::string
+const std::string
 corevm::frontend::bytecode_loader_v0_1::schema() const
 {
-  return \
+  static const std::string unformatted_def(
     "{"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -128,31 +129,8 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
             "}"
           "}"
         "},"
-        "\"instr\": {"
-          "\"type\": \"integer\","
-          "\"minimum\": 0,"
-          "\"maximum\": 4294967295"
-        "},"
-        "\"vector\": {"
-          "\"type:\": \"array\","
-          "\"items\": {"
-            "\"type:\": \"array\","
-            "\"items\": ["
-              "{"
-                "\"$ref\": \"#/definitions/instr\""
-              "},"
-              "{"
-                "\"$ref\": \"#/definitions/instr\""
-              "},"
-              "{"
-                "\"$ref\": \"#/definitions/instr\""
-              "}"
-            "],"
-            "\"minItems\": 1,"
-            "\"maxItems\": 3,"
-            "\"additionalItems\": false"
-          "}"
-        "},"
+        "\"instr\": %1%,"
+        "\"vector\": %2%,"
         "\"closure\": {"
           "\"type\": \"object\","
           "\"properties\": {"
@@ -172,7 +150,18 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
           "]"
         "}"
       "}"
-    "}";
+    "}"
+  );
+
+  const std::string def(
+    str(
+      boost::format(unformatted_def)
+        % get_v0_1_instr_schema_definition()
+        % get_v0_1_vector_schema_definition()
+    )
+  );
+
+  return def;
 }
 
 // -----------------------------------------------------------------------------

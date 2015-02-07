@@ -79,7 +79,8 @@ public:
       typedef typename AllocatorType::difference_type difference_type;
       typedef typename AllocatorType::size_type size_type;
 
-      iterator(_ContainerType& container, _Inner inner):
+      iterator(_ContainerType& container, _Inner inner)
+        :
         m_container(&container),
         m_inner(inner)
       {
@@ -151,7 +152,8 @@ public:
       typedef typename AllocatorType::difference_type difference_type;
       typedef typename AllocatorType::size_type size_type;
 
-      const_iterator(_ContainerType& container, _Inner inner):
+      const_iterator(_ContainerType& container, _Inner inner)
+        :
         m_container(&container),
         m_inner(inner)
       {
@@ -330,7 +332,7 @@ void
 corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
   throw(corevm::memory::invalid_address_error)
 {
-  uint64_t addr = static_cast<uint64_t>( (char*)p - (char*)(0) );
+  uint64_t addr = static_cast<uint64_t>( (uint8_t*)p - (uint8_t*)(0) );
 
   if (m_addrs.find(p) == m_addrs.end())
   {

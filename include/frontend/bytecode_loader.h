@@ -45,9 +45,9 @@ class bytecode_loader
 {
 public:
   virtual void load(const JSON&, corevm::runtime::process&) = 0;
-  virtual std::string format() const = 0;
-  virtual std::string version() const = 0;
-  virtual std::string schema() const = 0;
+  virtual const std::string format() const = 0;
+  virtual const std::string version() const = 0;
+  virtual const std::string schema() const = 0;
 
   static void load(const std::string&, corevm::runtime::process&)
     throw(corevm::frontend::file_loading_error);

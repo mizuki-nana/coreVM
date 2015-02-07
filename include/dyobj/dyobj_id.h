@@ -45,7 +45,7 @@ std::string id_to_string(corevm::dyobj::dyobj_id);
 
 inline dyobj_id obj_ptr_to_id(void* ptr)
 {
-  return static_cast<dyobj_id>( (char*)(ptr) - (char*)(0) );
+  return static_cast<dyobj_id>( (uint8_t*)(ptr) - (uint8_t*)(0) );
 }
 
 

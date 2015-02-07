@@ -43,8 +43,8 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
 {
   std::string vector_str = "["
     "[10, 11, 12],"
-    "[1],"
-    "[22, 33]"
+    "[1,  10,  0],"
+    "[22, 33,  0]"
   "]";
 
   const JSON vector_json = sneaker::json::parse(vector_str);
@@ -60,7 +60,7 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
   ASSERT_EQ(12, instr1.oprd2);
 
   ASSERT_EQ(1, instr2.code);
-  ASSERT_EQ(0, instr2.oprd1);
+  ASSERT_EQ(10, instr2.oprd1);
   ASSERT_EQ(0, instr2.oprd2);
 
   ASSERT_EQ(22, instr3.code);

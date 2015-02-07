@@ -48,9 +48,9 @@ public:
 
   void load(corevm::runtime::process&) throw(corevm::frontend::file_loading_error);
 
-private:
-  static const std::string raw_schema;
+  const std::string schema() const;
 
+private:
   void validate(const JSON&);
 
   std::string m_path;

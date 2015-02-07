@@ -125,6 +125,22 @@ const std::unordered_map<std::string, sig_atomic_t> \
 
 // -----------------------------------------------------------------------------
 
+bool
+corevm::runtime::sighandler_registrar::is_sig_raised()
+{
+  return corevm::runtime::sighandler_registrar::sig_raised;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::sighandler_registrar::clear_sig_raised()
+{
+  corevm::runtime::sighandler_registrar::sig_raised = false;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
 {

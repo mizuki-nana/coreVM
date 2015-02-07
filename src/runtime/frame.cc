@@ -28,14 +28,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx):
+corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx)
+  :
   m_closure_ctx(closure_ctx),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
-  m_visible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
-  m_invisible_vars(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
-  m_params_list(std::list<corevm::dyobj::dyobj_id>()),
-  m_param_value_map(std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id>()),
-  m_eval_stack(std::stack<corevm::types::native_type_handle>())
+  m_visible_vars(),
+  m_invisible_vars(),
+  m_params_list(),
+  m_param_value_map(),
+  m_eval_stack()
 {
   // Do nothing here.
 }

@@ -111,11 +111,17 @@ corevm::runtime::process::adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
 
 // -----------------------------------------------------------------------------
 
-
-corevm::runtime::process::process():
+corevm::runtime::process::process()
+  :
   m_pause_exec(false),
   m_gc_flag(0),
-  m_pc(0)
+  m_pc(0),
+  m_dynamic_object_heap(),
+  m_dyobj_stack(),
+  m_call_stack(),
+  m_ntvhndl_pool(),
+  m_sig_instr_map(),
+  m_compartments()
 {
   // Do nothing here.
 }
@@ -392,7 +398,7 @@ corevm::runtime::process::start()
 
     sigsetjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
 
-    if (!corevm::runtime::sighandler_registrar::sig_raised)
+    if (!corevm::runtime::sighandler_registrar::is_sig_raised())
     {
       handler->execute(instr, *this);
     }
@@ -403,7 +409,8 @@ corevm::runtime::process::start()
         break;
       }
     }
-    corevm::runtime::sighandler_registrar::sig_raised = false;
+
+    corevm::runtime::sighandler_registrar::clear_sig_raised();
 
     ++m_pc;
 

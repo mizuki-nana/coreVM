@@ -79,9 +79,9 @@ using _MyType = typename corevm::memory::allocation_policy<T, AllocationScheme, 
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocationScheme, size_t N>
-corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy():
-  sneaker::allocator::standard_alloc_policy<T>(),
-  m_allocator(corevm::memory::allocator<N, AllocationScheme>())
+corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy()
+  :
+  m_allocator()
 {
   // Do nothing here.
 }
