@@ -177,6 +177,8 @@ public:
   void get_compartment(corevm::runtime::compartment_id, corevm::runtime::compartment**);
 
 private:
+  bool pre_start();
+
   bool should_gc();
 
   void insert_vector(corevm::runtime::vector& vector);

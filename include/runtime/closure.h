@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "vector.h"
-#include <unordered_map>
+#include <vector>
 
 
 namespace corevm {
@@ -36,14 +36,14 @@ namespace runtime {
 
 typedef struct closure
 {
-  const corevm::runtime::closure_id id;
-  const corevm::runtime::closure_id parent_id;
-  const corevm::runtime::vector vector;
+  corevm::runtime::closure_id id;
+  corevm::runtime::closure_id parent_id;
+  corevm::runtime::vector vector;
 } closure;
 
 // -----------------------------------------------------------------------------
 
-typedef std::unordered_map<corevm::runtime::closure_id, corevm::runtime::closure> closure_table;
+typedef std::vector<corevm::runtime::closure> closure_table;
 
 // -----------------------------------------------------------------------------
 

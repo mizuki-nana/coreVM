@@ -384,9 +384,36 @@ corevm::runtime::process::can_execute()
 
 // -----------------------------------------------------------------------------
 
+bool
+corevm::runtime::process::pre_start()
+{
+  corevm::runtime::closure closure;
+
+  if (m_compartments.empty())
+  {
+    return false;
+  }
+
+  bool res = m_compartments.front().get_starting_closure(&closure);
+
+  if (res)
+  {
+    insert_vector(closure.vector);
+  }
+
+  return res;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::start()
 {
+  if (!pre_start())
+  {
+    return;
+  }
+
   while (can_execute())
   {
     while (m_pause_exec) {}

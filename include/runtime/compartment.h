@@ -50,10 +50,12 @@ public:
 
   size_t closure_count() const;
 
-  const corevm::runtime::closure& get_closure_by_id(
+  const corevm::runtime::closure get_closure_by_id(
     corevm::runtime::closure_id) const throw(corevm::runtime::closure_not_found_error);
 
   void set_closure_table(const corevm::runtime::closure_table&);
+
+  bool get_starting_closure(corevm::runtime::closure*);
 
 private:
   const std::string m_path;

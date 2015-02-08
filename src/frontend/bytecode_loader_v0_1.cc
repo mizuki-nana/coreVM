@@ -240,17 +240,15 @@ corevm::frontend::bytecode_loader_v0_1::load(
     corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
     corevm::runtime::closure_id parent_id = str_to_closure_id_map.at(parent);
 
-    closure_table.emplace(
-      std::make_pair(
-        id,
-        corevm::runtime::closure {
-          .id = id,
-          .parent_id = parent_id,
-          .vector = vector
-        }
-      )
+    closure_table.push_back(
+      corevm::runtime::closure {
+        .id = id,
+        .parent_id = parent_id,
+        .vector = vector
+      }
     );
-  }
+
+  } /* end for-loop */
 
   compartment.set_closure_table(closure_table);
 

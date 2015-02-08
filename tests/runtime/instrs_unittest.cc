@@ -124,13 +124,12 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
   };
 
   corevm::runtime::closure_table closure_table {
-    { closure_id, closure },
-    { parent_closure_id, parent_closure }
+    closure,
+    parent_closure
   };
 
   corevm::runtime::frame frame(ctx1);
   corevm::runtime::frame parent_frame(ctx2);
-
   compartment.set_closure_table(closure_table);
 
   m_process.insert_compartment(compartment);
@@ -306,8 +305,8 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
   };
 
   corevm::runtime::closure_table closure_table {
-    { closure_id, closure },
-    { parent_closure_id, parent_closure }
+    closure,
+    parent_closure
   };
 
   corevm::runtime::frame frame(ctx1);
@@ -861,7 +860,7 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
   };
   corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::closure_table closure_table {
-    { closure_id, closure }
+    closure
   };
 
   compartment.set_closure_table(closure_table);

@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/compartment.h"
 
+#include <algorithm>
+
 
 // -----------------------------------------------------------------------------
 
@@ -79,24 +81,55 @@ void
 corevm::runtime::compartment::set_closure_table(
   const corevm::runtime::closure_table& closure_table)
 {
-  m_closure_table.clear();
-  m_closure_table.insert(closure_table.begin(), closure_table.end());
+  m_closure_table = closure_table;
 }
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::closure&
+const corevm::runtime::closure
 corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
   const throw(corevm::runtime::closure_not_found_error)
 {
-  auto itr = m_closure_table.find(id);
+  auto itr = std::find_if(
+    m_closure_table.begin(),
+    m_closure_table.end(),
+    [&id](const closure& closure) -> bool {
+      return closure.id == id;
+    }
+  );
 
   if (itr == m_closure_table.end())
   {
     throw corevm::runtime::closure_not_found_error(id);
   }
 
-  return static_cast<corevm::runtime::closure>(itr->second);
+  return static_cast<corevm::runtime::closure>(*itr);
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+corevm::runtime::compartment::get_starting_closure(
+  corevm::runtime::closure* closure)
+{
+  auto itr = std::find_if(
+    m_closure_table.begin(),
+    m_closure_table.end(),
+    [](const corevm::runtime::closure& closure_) -> bool {
+      return (
+        closure_.id != corevm::runtime::NONESET_CLOSURE_ID &&
+        closure_.parent_id == corevm::runtime::NONESET_CLOSURE_ID
+      );
+    }
+  );
+
+  if (itr != m_closure_table.end())
+  {
+    *closure = static_cast<corevm::runtime::closure>(*itr);
+    return true;
+  }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------------
