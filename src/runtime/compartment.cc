@@ -23,16 +23,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/compartment.h"
 
 
-corevm::runtime::compartment::compartment()
+// -----------------------------------------------------------------------------
+
+corevm::runtime::compartment::compartment(const std::string& path)
+  :
+  m_path(path)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::compartment_id
-corevm::runtime::compartment::id() const
+const std::string&
+corevm::runtime::compartment::path() const
 {
-  return m_id;
+  return m_path;
 }
 
 // -----------------------------------------------------------------------------

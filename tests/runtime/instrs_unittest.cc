@@ -42,6 +42,9 @@ using corevm::runtime::process;
 
 class instrs_unittest : public ::testing::Test
 {
+public:
+  static const std::string DUMMY_PATH;
+
 protected:
   corevm::runtime::closure_ctx m_ctx {
     .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
@@ -51,9 +54,14 @@ protected:
 
 // -----------------------------------------------------------------------------
 
+const std::string instrs_unittest::DUMMY_PATH = "./my/path/file";
+
+// -----------------------------------------------------------------------------
+
 class instrs_obj_unittest : public instrs_unittest
 {
 protected:
+
   virtual void SetUp()
   {
     m_process.push_frame(*m_frame);
@@ -90,7 +98,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 10;
   corevm::runtime::closure_id parent_closure_id = 100;
-  corevm::runtime::compartment compartment;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::vector vector;
 
   corevm::runtime::closure_ctx ctx1 {
@@ -272,7 +280,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 10;
   corevm::runtime::closure_id parent_closure_id = 100;
-  corevm::runtime::compartment compartment;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::vector vector;
 
   corevm::runtime::closure_ctx ctx1 {
@@ -851,7 +859,7 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
     .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
     .vector = vector
   };
-  corevm::runtime::compartment compartment;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::closure_table closure_table {
     { closure_id, closure }
   };

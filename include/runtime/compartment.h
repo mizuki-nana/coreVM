@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 
+#include <string>
+
 
 namespace corevm {
 
@@ -37,9 +39,9 @@ namespace runtime {
 class compartment
 {
 public:
-  explicit compartment();
+  explicit compartment(const std::string&);
 
-  const corevm::runtime::compartment_id id() const;
+  const std::string& path() const;
 
   void set_encoding_map(const corevm::runtime::encoding_map&);
 
@@ -54,7 +56,7 @@ public:
   void set_closure_table(const corevm::runtime::closure_table&);
 
 private:
-  corevm::runtime::compartment_id m_id;
+  const std::string m_path;
   corevm::runtime::encoding_map m_encoding_map;
   corevm::runtime::closure_table m_closure_table;
 };

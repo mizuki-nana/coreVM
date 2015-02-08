@@ -168,9 +168,9 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
 
 void
 corevm::frontend::bytecode_loader_v0_1::load(
-  const JSON& content_json, corevm::runtime::process& process)
+  const std::string& path, const JSON& content_json, corevm::runtime::process& process)
 {
-  corevm::runtime::compartment compartment;
+  corevm::runtime::compartment compartment(path);
 
   const JSON::object& json_object = content_json.object_items();
 

@@ -146,7 +146,7 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
 
 void
 corevm::frontend::bytecode_loader::validate_and_load(
-  const JSON& content_json, corevm::runtime::process& process)
+  const std::string& path, const JSON& content_json, corevm::runtime::process& process)
 {
   const JSON::object& json_object = content_json.object_items();
 
@@ -190,7 +190,7 @@ corevm::frontend::bytecode_loader::validate_and_load(
   }
 
   // Load
-  loader->load(content_json, process);
+  loader->load(path, content_json, process);
 }
 
 // -----------------------------------------------------------------------------
@@ -237,7 +237,7 @@ corevm::frontend::bytecode_loader::load(
     );
   }
 
-  bytecode_loader::validate_and_load(content_json, process);
+  bytecode_loader::validate_and_load(path, content_json, process);
 }
 
 // -----------------------------------------------------------------------------

@@ -45,7 +45,7 @@ using sneaker::json::JSON;
 class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader
 {
 public:
-  virtual void load(const JSON&, corevm::runtime::process&);
+  virtual void load(const std::string&, const JSON&, corevm::runtime::process&);
   virtual const std::string format() const;
   virtual const std::string version() const;
   virtual const std::string schema() const;
