@@ -62,11 +62,17 @@ TEST_F(object_container_unittest, TestCreateAndUpdate)
 
   ASSERT_EQ(data, t->data);
 
+  t = m_container.at(p);
+
+  ASSERT_EQ(data, t->data);
+
   m_container.destroy(p);
+
+  ASSERT_EQ(nullptr, m_container[p]);
 
   ASSERT_THROW(
     {
-      m_container[p];
+      m_container.at(p);
     },
     corevm::memory::invalid_address_error
   );

@@ -53,11 +53,9 @@ corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
   void* raw_ptr = corevm::runtime::ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
 
-  try
-  {
-    ptr = m_container[ptr];
-  }
-  catch(const corevm::memory::invalid_address_error&)
+  ptr = m_container[ptr];
+
+  if (ptr == nullptr)
   {
     throw corevm::runtime::native_type_handle_not_found_error();
   }
@@ -91,14 +89,14 @@ corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
   void* raw_ptr = corevm::runtime::ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
 
-  try
-  {
-    m_container.destroy(ptr);
-  }
-  catch(const corevm::memory::invalid_address_error&)
+  ptr = m_container[ptr];
+
+  if (ptr == nullptr)
   {
     throw corevm::runtime::native_type_handle_not_found_error();
   }
+
+  m_container.destroy(ptr);
 }
 
 // -----------------------------------------------------------------------------

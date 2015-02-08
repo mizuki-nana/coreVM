@@ -30,6 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <set>
 
 
+#define PTR_TO_INT(p) (uint8_t*)( (p) ) - (uint8_t*)(NULL)
+
+
 namespace corevm {
 
 
@@ -227,7 +230,10 @@ public:
   pointer create();
 
   pointer operator[](pointer);
-  const pointer operator[](pointer) const;
+  const_pointer operator[](const_pointer) const;
+
+  pointer at(pointer) throw(corevm::memory::invalid_address_error);
+  const_pointer at(const_pointer) const throw(corevm::memory::invalid_address_error);
 
   void destroy(pointer);
 
@@ -236,7 +242,7 @@ public:
   void erase(const_iterator&);
 
 private:
-  void check_ptr(pointer) const throw(corevm::memory::invalid_address_error);
+  bool check_ptr(pointer) const;
 
   AllocatorType m_allocator;
   _HashSet m_addrs;
@@ -328,16 +334,10 @@ corevm::memory::object_container<T, AllocatorType>::create()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-void
+bool
 corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
-  throw(corevm::memory::invalid_address_error)
 {
-  uint64_t addr = static_cast<uint64_t>( (uint8_t*)p - (uint8_t*)(0) );
-
-  if (m_addrs.find(p) == m_addrs.end())
-  {
-    throw corevm::memory::invalid_address_error(addr);
-  }
+  return m_addrs.find(p) != m_addrs.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -346,18 +346,56 @@ template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::pointer
 corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
 {
-  check_ptr(p);
+  if (!check_ptr(p))
+  {
+    return nullptr;
+  }
+
   return static_cast<pointer>((void*)p);
 }
 
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-const typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::operator[](pointer p) const
+typename corevm::memory::object_container<T, AllocatorType>::const_pointer
+corevm::memory::object_container<T, AllocatorType>::operator[](const_pointer p) const
 {
-  check_ptr(p);
-  return static_cast<const pointer>((void*)p);
+  if (!check_ptr(const_cast<pointer>(p)))
+  {
+    return nullptr;
+  }
+
+  return static_cast<const_pointer>((void*)p);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::at(pointer p)
+  throw(corevm::memory::invalid_address_error)
+{
+  if (!check_ptr(p))
+  {
+    throw invalid_address_error(PTR_TO_INT(p));
+  }
+
+  return static_cast<pointer>((void*)p);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::const_pointer
+corevm::memory::object_container<T, AllocatorType>::at(const_pointer p) const
+  throw(corevm::memory::invalid_address_error)
+{
+  if (!check_ptr(const_cast<pointer>(p)))
+  {
+    throw invalid_address_error(PTR_TO_INT(p));
+  }
+
+  return static_cast<const_pointer>((void*)p);
 }
 
 // -----------------------------------------------------------------------------
@@ -366,7 +404,11 @@ template<typename T, typename AllocatorType>
 void
 corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
 {
-  check_ptr(p);
+  if (!check_ptr(p))
+  {
+    throw invalid_address_error(PTR_TO_INT(p));
+  }
+
   m_allocator.destroy(p);
   m_allocator.deallocate(p, 1);
   m_addrs.erase(p);
