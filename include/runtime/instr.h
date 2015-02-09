@@ -86,6 +86,18 @@ enum instr_enum : uint32_t
   DELATTR,
 
   /**
+   * <mute, _, _>
+   * Clears the `IS_IMMUTABLE` flag on the object on top of the stack.
+   */
+  MUTE,
+
+  /**
+   * <unmute, _, _>
+   * Sets the `IS_IMMUTABLE` flag on the object on top of the stack.
+   */
+  UNMUTE,
+
+  /**
    * <pop, _, _>
    * Pops the object on top of the stack.
    */
@@ -934,6 +946,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_delattr : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mute : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_unmute : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

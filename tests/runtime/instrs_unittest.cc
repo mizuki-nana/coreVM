@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "../../include/dyobj/flags.h"
 #include "../../include/runtime/closure.h"
 #include "../../include/runtime/common.h"
 #include "../../include/runtime/process.h"
@@ -252,6 +253,46 @@ TEST_F(instrs_obj_unittest, TestInstrDELATTR)
   auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
 
   ASSERT_FALSE(actual_obj.hasattr(attr_key));
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrMUTE)
+{
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(id);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_mute>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id;
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+
+  auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+  ASSERT_EQ(false, actual_obj.get_flag(corevm::dyobj::IS_IMMUTABLE));
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrUNMUTE)
+{
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(id);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_unmute>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id;
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+
+  auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+  ASSERT_EQ(true, actual_obj.get_flag(corevm::dyobj::IS_IMMUTABLE));
 }
 
 // -----------------------------------------------------------------------------

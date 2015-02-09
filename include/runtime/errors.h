@@ -54,6 +54,27 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
+
+class invalid_operation_error : public corevm::runtime::runtime_error
+{
+public:
+  explicit invalid_operation_error(const std::string& what_arg):
+    corevm::runtime::runtime_error(
+      str(format("Invalid operation: %s") % what_arg)
+    )
+  {
+  }
+
+  explicit invalid_operation_error(const char* what_arg):
+    corevm::runtime::runtime_error(
+      str(format("Invalid operation: %s") % what_arg)
+    )
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
 
 class frame_not_found_error : public corevm::runtime::runtime_error
 {
@@ -64,6 +85,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class evaluation_stack_empty_error : public corevm::runtime::runtime_error
 {
@@ -74,6 +96,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class local_variable_not_found_error : public corevm::runtime::runtime_error
 {
@@ -84,6 +107,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class invalid_instr_error : public corevm::runtime::runtime_error
 {
@@ -94,6 +118,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class object_stack_empty_error : public corevm::runtime::runtime_error
 {
@@ -104,6 +129,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class native_type_handle_not_found_error : public corevm::runtime::runtime_error
 {
@@ -114,6 +140,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class native_type_handle_deletion_error : public corevm::runtime::runtime_error
 {
@@ -124,6 +151,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class missing_parameter_error : public corevm::runtime::runtime_error
 {
@@ -134,6 +162,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class invalid_instr_addr_error : public corevm::runtime::runtime_error
 {
@@ -144,6 +173,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class native_type_handle_insertion_error : public corevm::runtime::runtime_error
 {
@@ -163,6 +193,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class encoding_string_not_found_error : public corevm::runtime::runtime_error
 {
@@ -175,6 +206,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class compartment_not_found_error : public corevm::runtime::runtime_error
 {
@@ -187,6 +219,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class closure_not_found_error : public corevm::runtime::runtime_error
 {
@@ -199,6 +232,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class signal_error : public corevm::runtime::runtime_error
 {
@@ -214,6 +248,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class execution_signal_error : public corevm::runtime::signal_error
 {
@@ -233,6 +268,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class termination_signal_error : public corevm::runtime::signal_error
 {
@@ -252,6 +288,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class operation_signal_error : public corevm::runtime::signal_error
 {
@@ -271,6 +308,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 class io_signal_error : public corevm::runtime::signal_error
 {
@@ -290,6 +328,7 @@ public:
   }
 };
 
+// -----------------------------------------------------------------------------
 
 } /* end namespace runtime */
 

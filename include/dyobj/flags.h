@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2014 Yanzheng Li
+Copyright (c) 2015 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -33,10 +33,9 @@ namespace dyobj {
 
 
 /**
- * Dynamic object flags are represented by 32 bits unsigned integers. Please
- * refer to the definition of `corevm::dyobj::flag`. These flag bits are
- * defined so that the default value of a flag, 0, would be the appropriate
- * value for most objects.
+ * Dynamic object flags are represented by 8 bits unsigned integers.
+ * These flag bits are defined so that the default value of 0 would be the
+ * appropriate value for most objects.
  */
 enum flags : uint8_t
 {
@@ -61,7 +60,7 @@ enum flags : uint8_t
 
   IS_CALLABLE = 7,
 
-  IS_MUTABLE = 8,
+  IS_IMMUTABLE = 8,
 
   /* ------------------------ Max value allowed ----------------------------- */
 

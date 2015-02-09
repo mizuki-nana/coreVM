@@ -43,6 +43,9 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::STOBJ,     { .num_oprd=1, .str="stobj",     .handler=new corevm::runtime::instr_handler_stobj()     } },
   { corevm::runtime::instr_enum::GETATTR,   { .num_oprd=1, .str="getattr",   .handler=new corevm::runtime::instr_handler_getattr()   } },
   { corevm::runtime::instr_enum::SETATTR,   { .num_oprd=1, .str="setattr",   .handler=new corevm::runtime::instr_handler_setattr()   } },
+  { corevm::runtime::instr_enum::DELATTR,   { .num_oprd=1, .str="delattr",   .handler=new corevm::runtime::instr_handler_delattr()   } },
+  { corevm::runtime::instr_enum::MUTE,      { .num_oprd=1, .str="mute",      .handler=new corevm::runtime::instr_handler_mute()      } },
+  { corevm::runtime::instr_enum::UNMUTE,    { .num_oprd=1, .str="unmute",    .handler=new corevm::runtime::instr_handler_unmute()    } },
   { corevm::runtime::instr_enum::POP,       { .num_oprd=0, .str="pop",       .handler=new corevm::runtime::instr_handler_pop()       } },
   { corevm::runtime::instr_enum::LDOBJ2,    { .num_oprd=1, .str="ldobj2",    .handler=new corevm::runtime::instr_handler_ldobj2()    } },
   { corevm::runtime::instr_enum::STOBJ2,    { .num_oprd=1, .str="stobj2",    .handler=new corevm::runtime::instr_handler_stobj2()    } },
@@ -482,6 +485,14 @@ corevm::runtime::instr_handler_setattr::execute(
   corevm::dyobj::dyobj_id target_id = process.pop_stack();
 
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_id);
+
+  if (obj.get_flag(corevm::dyobj::flags::IS_IMMUTABLE))
+  {
+    throw corevm::runtime::invalid_operation_error(
+      str(format("cannot mutate immutable object 0x%08x") % target_id)
+    );
+  }
+
   auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
   obj.putattr(attr_key, attr_id);
   attr_obj.manager().on_setattr();
@@ -499,12 +510,44 @@ corevm::runtime::instr_handler_delattr::execute(
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  if (obj.get_flag(corevm::dyobj::flags::IS_IMMUTABLE))
+  {
+    throw corevm::runtime::invalid_operation_error(
+      str(format("cannot mutate immutable object 0x%08x") % id)
+    );
+  }
+
   corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
   auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
   attr_obj.manager().on_delattr();
   obj.delattr(attr_key);
 
   process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mute::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  obj.clear_flag(corevm::dyobj::flags::IS_IMMUTABLE);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_unmute::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  obj.set_flag(corevm::dyobj::flags::IS_IMMUTABLE);
 }
 
 // -----------------------------------------------------------------------------
