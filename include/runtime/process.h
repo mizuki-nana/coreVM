@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <list>
 #include <stack>
+#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -193,6 +194,18 @@ private:
   native_types_pool_type m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
   std::vector<corevm::runtime::compartment> m_compartments;
+
+  static_assert(
+    std::numeric_limits<corevm::runtime::vector::size_type>::max() >=
+    std::numeric_limits<corevm::runtime::instr_addr>::max(),
+    "Vector size incompatibility"
+  );
+
+  static_assert(
+    std::numeric_limits<std::vector<corevm::runtime::compartment>::size_type>::max() >=
+    std::numeric_limits<corevm::runtime::compartment_id>::max(),
+    "Compartment ID incompatibility"
+  );
 };
 
 

@@ -36,6 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string>
 #include <limits>
+#include <type_traits>
 
 
 namespace corevm {
@@ -67,6 +68,12 @@ public:
   typedef allocator<value_type, COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE> allocator_type;
 
   using container_type = typename corevm::memory::object_container<corevm::types::native_type_handle, allocator_type>;
+
+  static_assert(
+    std::numeric_limits<container_type::size_type>::max() >=
+    std::numeric_limits<corevm::dyobj::ntvhndl_key>::max(),
+    "Native tyeps pool incompatibility"
+  );
 
   typedef value_type& reference;
   typedef value_type* pointer;

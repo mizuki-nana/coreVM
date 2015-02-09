@@ -33,7 +33,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../memory/sequential_allocation_scheme.h"
 
 #include <algorithm>
+#include <limits>
 #include <stdexcept>
+#include <type_traits>
 
 
 namespace corevm {
@@ -51,6 +53,12 @@ public:
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
   using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::buddy_allocation_scheme>;
   using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
+
+  static_assert(
+    std::numeric_limits<typename dynamic_object_container_type::size_type>::max() >=
+    std::numeric_limits<corevm::dyobj::dyobj_id>::max(),
+    "Dynamic object heap incompatibility"
+  );
 
   using reference           = typename dynamic_object_container_type::reference;
   using const_reference     = typename dynamic_object_container_type::const_reference;
