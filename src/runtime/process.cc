@@ -355,7 +355,7 @@ const corevm::runtime::instr_handler*
 corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
 {
   corevm::runtime::instr_info instr_info = corevm::runtime::instr_handler_meta::find(code);
-  return instr_info.handler;
+  return instr_info.handler.get();
 }
 
 // -----------------------------------------------------------------------------

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../../include/runtime/sighandler.h"
 
+#include <memory>
 #include <string>
 
 
@@ -53,34 +54,34 @@ const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
 
   /* --------------- Arithmetic and execution signals ---------------------- */
 
-  { SIGFPE,     { .handler=new sighandler_SIGFPE()    } },
-  { SIGKILL,    { .handler=new sighandler_SIGILL()    } },
-  { SIGSEGV,    { .handler=new sighandler_SIGSEGV()   } },
-  { SIGBUS,     { .handler=new sighandler_SIGBUS()    } },
+  { SIGFPE,     { .handler=std::make_shared<sighandler_SIGFPE>()    } },
+  { SIGKILL,    { .handler=std::make_shared<sighandler_SIGILL>()    } },
+  { SIGSEGV,    { .handler=std::make_shared<sighandler_SIGSEGV>()   } },
+  { SIGBUS,     { .handler=std::make_shared<sighandler_SIGBUS>()    } },
 
   /* ----------------------- Termination signals ---------------------------- */
 
-  { SIGABRT,    { .handler=new sighandler_SIGABRT()   } },
-  { SIGINT,     { .handler=new sighandler_SIGINT()    } },
-  { SIGTERM,    { .handler=new sighandler_SIGTERM()   } },
-  { SIGQUIT,    { .handler=new sighandler_SIGQUIT()   } },
+  { SIGABRT,    { .handler=std::make_shared<sighandler_SIGABRT>()   } },
+  { SIGINT,     { .handler=std::make_shared<sighandler_SIGINT>()    } },
+  { SIGTERM,    { .handler=std::make_shared<sighandler_SIGTERM>()   } },
+  { SIGQUIT,    { .handler=std::make_shared<sighandler_SIGQUIT>()   } },
 
   /* ------------------------ Alarm signals --------------------------------- */
 
-  { SIGALRM,    { .handler=new sighandler_SIGALRM()   } },
-  { SIGVTALRM,  { .handler=new sighandler_SIGVTALRM() } },
-  { SIGPROF,    { .handler=new sighandler_SIGPROF()   } },
+  { SIGALRM,    { .handler=std::make_shared<sighandler_SIGALRM>()   } },
+  { SIGVTALRM,  { .handler=std::make_shared<sighandler_SIGVTALRM>() } },
+  { SIGPROF,    { .handler=std::make_shared<sighandler_SIGPROF>()   } },
 
   /* --------------------- Operation error signals -------------------------- */
 
-  { SIGPIPE,    { .handler=new sighandler_SIGPIPE()   } },
-  { SIGXCPU,    { .handler=new sighandler_SIGXCPU()   } },
-  { SIGXFSZ,    { .handler=new sighandler_SIGXFSZ()   } },
+  { SIGPIPE,    { .handler=std::make_shared<sighandler_SIGPIPE>()   } },
+  { SIGXCPU,    { .handler=std::make_shared<sighandler_SIGXCPU>()   } },
+  { SIGXFSZ,    { .handler=std::make_shared<sighandler_SIGXFSZ>()   } },
 
   /* -------------------- Asynchronous I/O signals -------------------------- */
 
-  { SIGIO,      { .handler=new sighandler_SIGIO()     } },
-  { SIGURG,     { .handler=new sighandler_SIGURG()    } },
+  { SIGIO,      { .handler=std::make_shared<sighandler_SIGIO>()     } },
+  { SIGURG,     { .handler=std::make_shared<sighandler_SIGURG>()    } },
 
 };
 
@@ -173,7 +174,7 @@ corevm::runtime::sighandler_registrar::handle_signal(int signum)
 
   corevm::runtime::sighandler *handler =
     itr != corevm::runtime::sighandler_registrar::handler_map.end() ?
-    itr->second.handler : nullptr;
+    itr->second.handler.get() : nullptr;
 
   corevm::runtime::sighandler_registrar::process->handle_signal(
     signum,

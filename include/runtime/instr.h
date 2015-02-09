@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -1898,9 +1899,9 @@ public:
 
 typedef struct instr_info
 {
-  uint8_t num_oprd;
-  const char* str;
-  const instr_handler* handler;
+  const uint8_t num_oprd;
+  const std::string str;
+  const std::shared_ptr<instr_handler> handler;
 } instr_info;
 
 // -----------------------------------------------------------------------------

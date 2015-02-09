@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../../include/runtime/process.h"
 
+#include <memory>
+
 
 const double corevm::runtime::gc_rule_by_heap_size::DEFAULT_CUTOFF = 0.75f;
 
@@ -38,15 +40,21 @@ const std::unordered_map<corevm::runtime::gc_bitfield_t, corevm::runtime::gc_rul
 corevm::runtime::gc_rule_meta::gc_rule_map {
   {
     corevm::runtime::gc_rule_meta::gc_bitfields::GC_ALWAYS,
-    { .gc_rule=new corevm::runtime::gc_rule_always() }
+    {
+      .gc_rule=std::make_shared<corevm::runtime::gc_rule_always>()
+    }
   },
   {
     corevm::runtime::gc_rule_meta::gc_bitfields::GC_BY_HEAP_SIZE,
-    { .gc_rule=new corevm::runtime::gc_rule_by_heap_size() }
+    {
+      .gc_rule=std::make_shared<corevm::runtime::gc_rule_by_heap_size>()
+    }
   },
   {
     corevm::runtime::gc_rule_meta::gc_bitfields::GC_BY_NTV_POOLSIZE,
-    { .gc_rule=new corevm::runtime::gc_rule_by_ntvhndl_pool_size() }
+    {
+      .gc_rule=std::make_shared<corevm::runtime::gc_rule_by_ntvhndl_pool_size>()
+    }
   }
 };
 
@@ -56,7 +64,7 @@ const corevm::runtime::gc_rule*
 corevm::runtime::gc_rule_meta::get_gc_rule(gc_bitfields bit)
 {
   auto itr = corevm::runtime::gc_rule_meta::gc_rule_map.find(bit);
-  return itr != corevm::runtime::gc_rule_meta::gc_rule_map.end() ? itr->second.gc_rule : nullptr;
+  return itr != corevm::runtime::gc_rule_meta::gc_rule_map.end() ? itr->second.gc_rule.get() : nullptr;
 }
 
 // -----------------------------------------------------------------------------

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 
 #include <cstdint>
+#include <memory>
 #include <unordered_map>
 
 
@@ -78,7 +79,7 @@ public:
 
 typedef struct gc_rule_wrapper
 {
-  const corevm::runtime::gc_rule* gc_rule;
+  const std::shared_ptr<corevm::runtime::gc_rule> gc_rule;
 } gc_rule_wrapper;
 
 // -----------------------------------------------------------------------------

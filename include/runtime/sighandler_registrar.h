@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "sighandler.h"
 
 #include <csignal>
+#include <memory>
 #include <string>
 #include <unordered_map>
 
@@ -41,7 +42,7 @@ namespace runtime {
 
 typedef struct sighandler_wrapper
 {
-  corevm::runtime::sighandler* handler;
+  const std::shared_ptr<corevm::runtime::sighandler> handler;
 } sighandler_wrapper;
 
 // -----------------------------------------------------------------------------
