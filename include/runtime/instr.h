@@ -848,9 +848,9 @@ enum instr_enum : uint32_t
 
 typedef struct instr
 {
-  corevm::runtime::instr_code code;
-  corevm::runtime::instr_oprd oprd1;
-  corevm::runtime::instr_oprd oprd2;
+  const corevm::runtime::instr_code code;
+  const corevm::runtime::instr_oprd oprd1;
+  const corevm::runtime::instr_oprd oprd2;
 } instr;
 
 // -----------------------------------------------------------------------------

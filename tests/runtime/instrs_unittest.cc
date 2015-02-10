@@ -88,7 +88,7 @@ protected:
 
 TEST_F(instrs_obj_unittest, TestInstrNEW)
 {
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   this->execute_instr<corevm::runtime::instr_handler_new>(instr);
 }
 
@@ -302,7 +302,7 @@ TEST_F(instrs_obj_unittest, TestInstrPOP)
   corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
   m_process.push_stack(id);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
 
   ASSERT_THROW(
@@ -465,7 +465,7 @@ TEST_F(instrs_obj_unittest, TestInstrGETHNDL)
   auto &obj = process::adapter(m_process).help_get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -492,7 +492,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETHNDL)
   frame.push_eval_stack(hndl);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
   auto &obj = process::adapter(m_process).help_get_dyobj(id);
@@ -513,7 +513,7 @@ TEST_F(instrs_obj_unittest, TestInstrCLRHNDL)
   auto &obj = process::adapter(m_process).help_get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
   auto &obj2 = process::adapter(m_process).help_get_dyobj(id);
@@ -535,7 +535,7 @@ TEST_F(instrs_obj_unittest, TestInstrOBJEQ)
   corevm::runtime::frame frame(m_ctx);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_objeq>(instr, 0);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -562,7 +562,7 @@ TEST_F(instrs_obj_unittest, TestInstrOBJNEQ)
   corevm::runtime::frame frame(m_ctx);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   execute_instr<corevm::runtime::instr_handler_objneq>(instr, 0);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -634,7 +634,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
     corevm::runtime::missing_parameter_error
   );
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_putarg handler;
   handler.execute(instr, m_process);
 
@@ -687,7 +687,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARG)
 
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getarg handler;
   handler.execute(instr, m_process);
 
@@ -737,7 +737,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARGS)
 
   ASSERT_EQ(true, frame.has_params());
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getargs handler;
   handler.execute(instr, m_process);
 
@@ -789,7 +789,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
 
   ASSERT_EQ(true, frame.has_param_value_pairs());
 
-  corevm::runtime::instr instr;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getkwargs handler;
   handler.execute(instr, m_process);
 
@@ -830,16 +830,16 @@ protected:
   virtual void SetUp()
   {
     corevm::runtime::vector vector {
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
-      corevm::runtime::instr(),
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
+      { .code=0, .oprd1=0, .oprd2=0 },
     };
     m_process.append_vector(vector);
   }
@@ -1077,7 +1077,7 @@ protected:
   {
     InstrHandlerCls instr_handler;
 
-    corevm::runtime::instr instr;
+    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
     instr_handler.execute(instr, m_process);
 
@@ -1463,7 +1463,7 @@ public:
   {
     InstrHandlerCls instr_handler;
 
-    corevm::runtime::instr instr;
+    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
     instr_handler.execute(instr, m_process);
 
