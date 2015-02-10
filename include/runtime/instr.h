@@ -1912,7 +1912,7 @@ public:
   using map_type = typename std::unordered_map<
     corevm::runtime::instr_code, corevm::runtime::instr_info>;
 
-  static std::string instr_to_string(const corevm::runtime::instr&);
+  static const std::string instr_to_string(const corevm::runtime::instr&);
 
   static corevm::runtime::instr_info find(corevm::runtime::instr_code instr_code)
     throw(corevm::runtime::invalid_instr_error);

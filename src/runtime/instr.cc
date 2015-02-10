@@ -219,19 +219,10 @@ corevm::runtime::instr_handler_meta::validate_instr(
 
 // -----------------------------------------------------------------------------
 
-std::string
+const std::string
 corevm::runtime::instr_handler_meta::instr_to_string(const corevm::runtime::instr& instr)
 {
-  corevm::runtime::instr_info instr_info = corevm::runtime::instr_handler_meta::validate_instr(instr);
-
-  if (instr_info.num_oprd == 1)
-  {
-    return str(boost::format("<%d %d __>") % instr.code % instr.oprd1);
-  }
-  else
-  {
-    return str(boost::format("<%d %d %d>") % instr.code % instr.oprd1 % instr.oprd2);
-  }
+  return str(boost::format("<%lu %llu %llu>") % instr.code % instr.oprd1 % instr.oprd2);
 }
 
 // -----------------------------------------------------------------------------
