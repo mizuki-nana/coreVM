@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/allocator/alloc_policy.h>
 
+#include <cassert>
 #include <cstdint>
 
 
@@ -124,7 +125,8 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::deallocate(
   typename allocation_policy<T, AllocationScheme, N>::size_type
 )
 {
-  m_allocator.deallocate(p);
+  int res = m_allocator.deallocate(p);
+  assert(res == 1);
 }
 
 // -----------------------------------------------------------------------------
