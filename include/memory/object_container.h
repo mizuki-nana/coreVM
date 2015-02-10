@@ -215,7 +215,11 @@ public:
       friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
-  explicit object_container();
+  object_container();
+
+  /* Object containers should not be copyable. */
+  object_container(const object_container&) = delete;
+  object_container& operator=(const object_container&) = delete;
 
   iterator begin();
   iterator end();

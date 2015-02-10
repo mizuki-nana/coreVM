@@ -882,19 +882,19 @@ protected:
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_1(
+  void execute_native_type_complex_instr_with_single_operand(
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_2(
+  void execute_native_type_complex_instr_with_two_operands(
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_3(
+  void execute_native_type_complex_instr_with_three_operands(
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_4(
+  void execute_native_type_complex_instr_with_four_operands(
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 };
 

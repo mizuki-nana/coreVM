@@ -28,6 +28,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef corevm::runtime::native_types_pool _MyType;
 
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::native_types_pool::native_types_pool()
+{
+  // Do nothing here.
+}
+
 // -----------------------------------------------------------------------------
 
 _MyType::size_type

@@ -101,8 +101,6 @@ public:
   process(const process&) = delete;
   process& operator=(const process&) = delete;
 
-  const corevm::runtime::instr_addr top_addr() const;
-
   const corevm::runtime::instr_addr current_addr() const;
 
   uint64_t call_stack_size() const;

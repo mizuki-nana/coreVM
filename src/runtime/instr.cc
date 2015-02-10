@@ -303,7 +303,7 @@ corevm::runtime::instr_handler::execute_native_type_conversion_instr(
 
 template<typename InterfaceFunc>
 void
-corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
   const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
 {
   corevm::runtime::frame& frame = process.top_frame();
@@ -320,7 +320,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
 
 template<typename InterfaceFunc>
 void
-corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
   const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
 {
   corevm::runtime::frame& frame = process.top_frame();
@@ -338,7 +338,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
 
 template<typename InterfaceFunc>
 void
-corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
   const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
 {
   corevm::runtime::frame& frame = process.top_frame();
@@ -357,7 +357,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
 
 template<typename InterfaceFunc>
 void
-corevm::runtime::instr_handler::execute_native_type_complex_instr_4(
+corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_operands(
   const corevm::runtime::instr& instr, corevm::runtime::process& process, InterfaceFunc interface_func)
 {
   corevm::runtime::frame& frame = process.top_frame();
@@ -1685,7 +1685,7 @@ void
 corevm::runtime::instr_handler_strlen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_string_get_size
@@ -1698,7 +1698,7 @@ void
 corevm::runtime::instr_handler_strclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_string_clear
@@ -1711,7 +1711,7 @@ void
 corevm::runtime::instr_handler_strapd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_append
@@ -1724,7 +1724,7 @@ void
 corevm::runtime::instr_handler_strpsh::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_pushback
@@ -1737,7 +1737,7 @@ void
 corevm::runtime::instr_handler_strist::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_insert_str
@@ -1750,7 +1750,7 @@ void
 corevm::runtime::instr_handler_strist2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_insert_char
@@ -1763,7 +1763,7 @@ void
 corevm::runtime::instr_handler_strers::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_erase
@@ -1776,7 +1776,7 @@ void
 corevm::runtime::instr_handler_strers2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_erase2
@@ -1789,7 +1789,7 @@ void
 corevm::runtime::instr_handler_strrplc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_4(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_operands(
     instr,
     process,
     corevm::types::interface_string_replace_str
@@ -1802,7 +1802,7 @@ void
 corevm::runtime::instr_handler_strswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_swap
@@ -1815,7 +1815,7 @@ void
 corevm::runtime::instr_handler_strsub::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_substr
@@ -1828,7 +1828,7 @@ void
 corevm::runtime::instr_handler_strsub2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_substr2
@@ -1841,7 +1841,7 @@ void
 corevm::runtime::instr_handler_strfnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_find
@@ -1854,7 +1854,7 @@ void
 corevm::runtime::instr_handler_strfnd2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_find2
@@ -1867,7 +1867,7 @@ void
 corevm::runtime::instr_handler_strrfnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_string_rfind
@@ -1880,7 +1880,7 @@ void
 corevm::runtime::instr_handler_strrfnd2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_string_rfind2
@@ -1893,7 +1893,7 @@ void
 corevm::runtime::instr_handler_arylen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_size
@@ -1906,7 +1906,7 @@ void
 corevm::runtime::instr_handler_aryemp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_empty
@@ -1919,7 +1919,7 @@ void
 corevm::runtime::instr_handler_aryat::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_array_at
@@ -1932,7 +1932,7 @@ void
 corevm::runtime::instr_handler_aryfrt::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_front
@@ -1945,7 +1945,7 @@ void
 corevm::runtime::instr_handler_arybak::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_back
@@ -1958,7 +1958,7 @@ void
 corevm::runtime::instr_handler_aryapnd::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_array_append
@@ -1971,7 +1971,7 @@ void
 corevm::runtime::instr_handler_arypop::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_pop
@@ -1984,7 +1984,7 @@ void
 corevm::runtime::instr_handler_aryswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_array_swap
@@ -1997,7 +1997,7 @@ void
 corevm::runtime::instr_handler_aryclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_array_clear
@@ -2010,7 +2010,7 @@ void
 corevm::runtime::instr_handler_maplen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_map_size
@@ -2023,7 +2023,7 @@ void
 corevm::runtime::instr_handler_mapemp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_map_empty
@@ -2036,7 +2036,7 @@ void
 corevm::runtime::instr_handler_mapat::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_map_at
@@ -2049,7 +2049,7 @@ void
 corevm::runtime::instr_handler_mapput::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_3(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     instr,
     process,
     corevm::types::interface_map_put
@@ -2062,7 +2062,7 @@ void
 corevm::runtime::instr_handler_mapers::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_map_erase
@@ -2075,7 +2075,7 @@ void
 corevm::runtime::instr_handler_mapclr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_1(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     instr,
     process,
     corevm::types::interface_map_clear
@@ -2088,7 +2088,7 @@ void
 corevm::runtime::instr_handler_mapswp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_complex_instr_2(
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     instr,
     process,
     corevm::types::interface_map_swap

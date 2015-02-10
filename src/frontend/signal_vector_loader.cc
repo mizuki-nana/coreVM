@@ -123,8 +123,11 @@ corevm::frontend::signal_vector_loader::schema() const
         "}"
       "},"
       "\"definitions\": {"
-        "\"instr\": %1%,"
-        "\"vector\": %2%"
+        "\"instr\": {"
+          "\"code\": %1%,"
+          "\"oprd\": %2%"
+        "},"
+        "\"vector\": %3%"
       "}"
     "}"
   );
@@ -132,7 +135,8 @@ corevm::frontend::signal_vector_loader::schema() const
   const std::string def(
     str(
       boost::format(unformatted_def)
-        % get_v0_1_instr_schema_definition()
+        % get_v0_1_instr_code_schema_definition()
+        % get_v0_1_instr_oprd_schema_definition()
         % get_v0_1_vector_schema_definition()
     )
   );

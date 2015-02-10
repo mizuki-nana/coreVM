@@ -80,6 +80,12 @@ public:
 
   using size_type = typename container_type::size_type;
 
+  native_types_pool();
+
+  /* Native type pools should not be copyable. */
+  native_types_pool(const native_types_pool&) = delete;
+  native_types_pool& operator=(const native_types_pool&) = delete;
+
   size_type size() const;
 
   size_type max_size() const;

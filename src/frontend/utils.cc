@@ -25,9 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/instr.h"
 #include "../../include/runtime/vector.h"
 
+#include <boost/format.hpp>
 #include <sneaker/json/json.h>
 
 #include <cassert>
+#include <limits>
 #include <string>
 #include <utility>
 
@@ -73,14 +75,46 @@ corevm::frontend::get_vector_from_json(const JSON& json)
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::get_v0_1_instr_schema_definition()
+corevm::frontend::get_v0_1_instr_code_schema_definition()
 {
-  static const std::string def(
+  static const std::string unformatted_def(
     "{"
       "\"type\": \"integer\","
-      "\"minimum\": 0,"
-      "\"maximum\": 4294967295"
+      "\"minimum\": %lu,"
+      "\"maximum\": %lu"
     "}"
+  );
+
+  const std::string def(
+    str(
+      boost::format(unformatted_def)
+        % std::numeric_limits<corevm::runtime::instr_code>::min()
+        % std::numeric_limits<corevm::runtime::instr_code>::max()
+    )
+  );
+
+  return def;
+}
+
+// -----------------------------------------------------------------------------
+
+const std::string
+corevm::frontend::get_v0_1_instr_oprd_schema_definition()
+{
+  static const std::string unformatted_def(
+    "{"
+      "\"type\": \"integer\","
+      "\"minimum\": %llu,"
+      "\"maximum\": %llu"
+    "}"
+  );
+
+  const std::string def(
+    str(
+      boost::format(unformatted_def)
+        % std::numeric_limits<corevm::runtime::instr_oprd>::min()
+        % std::numeric_limits<corevm::runtime::instr_oprd>::max()
+    )
   );
 
   return def;
@@ -98,13 +132,13 @@ corevm::frontend::get_v0_1_vector_schema_definition()
         "\"type:\": \"array\","
         "\"items\": ["
           "{"
-            "\"$ref\": \"#/definitions/instr\""
+            "\"$ref\": \"#/definitions/instr/code\""
           "},"
           "{"
-            "\"$ref\": \"#/definitions/instr\""
+            "\"$ref\": \"#/definitions/instr/oprd\""
           "},"
           "{"
-            "\"$ref\": \"#/definitions/instr\""
+            "\"$ref\": \"#/definitions/instr/oprd\""
           "}"
         "],"
         "\"minItems\": 3,"

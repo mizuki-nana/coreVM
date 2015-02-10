@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 
 
@@ -52,27 +53,31 @@ corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const n
   const std::string LINE        = "------------------------------------------------------------------------------------------";
   const std::string BLANK_SPACE = "|                                                                                        |";
 
-  std::cout << LINE << std::endl;
-  std::cout << "| Heap debug print (starting at " << std::setw(10) \
+  std::stringstream ss;
+
+  ss << LINE << std::endl;
+  ss << "| Heap debug print (starting at " << std::setw(10) \
     << std::hex << std::showbase << base << std::noshowbase << std::dec \
     << ")                                              |" << std::endl;
-  std::cout << BLANK_SPACE << std::endl;
+  ss << BLANK_SPACE << std::endl;
 
   for (auto itr = cbegin(); itr != cend(); itr++)
   {
     block_descriptor_type descriptor = static_cast<block_descriptor_type>(*itr);
 
-    std::cout << "| ";
-    std::cout << std::left << std::setw(10) << std::hex << std::showbase \
+    ss << "| ";
+    ss << std::left << std::setw(10) << std::hex << std::showbase \
       << base + descriptor.offset << std::noshowbase << std::dec << " " << std::right;
-    std::cout << "BlockSize[" << std::setw(10) << descriptor.size << "] ";
-    std::cout << "ActualSize[" << std::setw(10) << descriptor.actual_size << "] ";
-    std::cout << "Offset[" << std::setw(10) << descriptor.offset << "] ";
-    std::cout << "Flags[" << std::setw(4) << std::hex << std::showbase \
+    ss << "BlockSize[" << std::setw(10) << descriptor.size << "] ";
+    ss << "ActualSize[" << std::setw(10) << descriptor.actual_size << "] ";
+    ss << "Offset[" << std::setw(10) << descriptor.offset << "] ";
+    ss << "Flags[" << std::setw(4) << std::hex << std::showbase \
       << (uint64_t)descriptor.flags << "]" << std::noshowbase << std::dec;
-    std::cout << " |" << std::endl;
+    ss << " |" << std::endl;
   }
-  std::cout << LINE << std::endl;
+  ss << LINE << std::endl;
+
+  std::cout << ss;
 }
 
 // -----------------------------------------------------------------------------

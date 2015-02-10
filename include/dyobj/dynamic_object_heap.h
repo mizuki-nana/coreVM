@@ -69,8 +69,12 @@ public:
   using size_type           = typename dynamic_object_container_type::size_type;
   using difference_type     = typename dynamic_object_container_type::difference_type;
 
-  explicit dynamic_object_heap();
+  dynamic_object_heap();
   ~dynamic_object_heap();
+
+  /* Dynamic object heap should not be copyable. */
+  dynamic_object_heap(const dynamic_object_heap&) = delete;
+  dynamic_object_heap& operator=(const dynamic_object_heap&) = delete;
 
   size_type size() const noexcept;
 

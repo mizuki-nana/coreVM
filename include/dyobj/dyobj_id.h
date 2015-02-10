@@ -42,18 +42,21 @@ const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
 
 std::string id_to_string(corevm::dyobj::dyobj_id);
 
+// -----------------------------------------------------------------------------
 
 inline dyobj_id obj_ptr_to_id(void* ptr)
 {
   return static_cast<dyobj_id>( (uint8_t*)(ptr) - (uint8_t*)(0) );
 }
 
+// -----------------------------------------------------------------------------
 
 inline void* obj_id_to_ptr(dyobj_id id)
 {
   return reinterpret_cast<void*>(id);
 }
 
+// -----------------------------------------------------------------------------
 
 } /* end namespace dyobj */
 

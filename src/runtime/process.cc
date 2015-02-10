@@ -63,7 +63,7 @@ using _GarbageCollectorType = typename corevm::gc::garbage_collector<
 
 // -----------------------------------------------------------------------------
 
-class garbage_collector_callback : public _GarbageCollectorType::callback
+class ntvhndl_collector_gc_callback : public _GarbageCollectorType::callback
 {
 private:
   using dynamic_object_type = typename _GarbageCollectorType::dynamic_object_type;
@@ -131,14 +131,6 @@ corevm::runtime::process::process()
 corevm::runtime::process::~process()
 {
   // Do nothing here.
-}
-
-// -----------------------------------------------------------------------------
-
-const corevm::runtime::instr_addr
-corevm::runtime::process::top_addr() const
-{
-  return m_instrs.size() - 1;
 }
 
 // -----------------------------------------------------------------------------
@@ -459,7 +451,7 @@ corevm::runtime::process::maybe_gc()
   corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
 
-  corevm::runtime::internal::garbage_collector_callback callback;
+  corevm::runtime::internal::ntvhndl_collector_gc_callback callback;
   garbage_collector.gc(&callback);
 
   std::for_each(
@@ -565,10 +557,10 @@ corevm::runtime::process::set_sig_vector(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::insert_vector(corevm::runtime::vector& block)
+corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
 {
   std::vector<corevm::runtime::instr>::iterator pos = m_instrs.begin() + m_pc + 1;
-  m_instrs.insert(pos, block.begin(), block.end());
+  m_instrs.insert(pos, vector.begin(), vector.end());
 }
 
 // -----------------------------------------------------------------------------
