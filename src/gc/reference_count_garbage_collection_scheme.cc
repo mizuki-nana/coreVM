@@ -29,6 +29,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unordered_map>
 
 
+using sneaker::algorithm::tarjan;
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::gc::reference_count_garbage_collection_scheme::gc(
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
@@ -63,30 +67,89 @@ corevm::gc::reference_count_garbage_collection_scheme::gc(
 
 // -----------------------------------------------------------------------------
 
+template<typename dynamic_object_heap_type>
+struct object_ref_count_decrementor
+{
+private:
+  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+
+public:
+  object_ref_count_decrementor(dynamic_object_heap_type& heap)
+    :
+    m_heap(heap)
+  {
+  }
+
+  void operator()(
+    const typename dynamic_object_type::attr_key_type& attr_key,
+    const typename dynamic_object_type::dyobj_id_type& dyobj_id)
+  {
+    dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
+    referenced_object.manager().dec_ref_count();
+  }
+
+private:
+  dynamic_object_heap_type& m_heap;
+};
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type& object) const
 {
-  using _dynamic_object_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type;
+  using _dynamic_object_heap_type = typename
+    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
   if (!object.is_garbage_collectible())
   {
     return;
   }
 
-  object.iterate(
-    [this, &heap](
-      _dynamic_object_type::attr_key_type attr_key,
-      _dynamic_object_type::dyobj_id_type dyobj_id)
-    {
-      _dynamic_object_type& referenced_object = heap.at(dyobj_id);
+  object_ref_count_decrementor<_dynamic_object_heap_type> decrementor(heap);
+  object.iterate(decrementor);
+}
 
+// -----------------------------------------------------------------------------
+
+template<typename dynamic_object_heap_type>
+struct cycled_object_reference_decrementor
+{
+private:
+  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+
+public:
+  cycled_object_reference_decrementor(
+    dynamic_object_heap_type& heap,
+    dynamic_object_type& object)
+    :
+    m_heap(heap),
+    m_object(object)
+  {
+  }
+
+  void operator()(
+    const typename dynamic_object_type::attr_key_type& attr_key,
+    const typename dynamic_object_type::dyobj_id_type& dyobj_id)
+  {
+    dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
+
+    auto ref_count1 = m_object.manager().ref_count();
+    auto ref_count2 = referenced_object.manager().ref_count();
+
+    if (referenced_object.has_ref(m_object.id()) && ref_count1 == 1 && ref_count2 == 1)
+    {
+      m_object.manager().dec_ref_count();
       referenced_object.manager().dec_ref_count();
     }
-  );
-}
+  }
+
+private:
+  dynamic_object_heap_type& m_heap;
+  dynamic_object_type& m_object;
+
+}; /* end of `cycled_object_reference_decrementor` */
 
 // -----------------------------------------------------------------------------
 
@@ -95,27 +158,82 @@ corevm::gc::reference_count_garbage_collection_scheme::resolve_self_reference_cy
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type& object) const
 {
-  using _dynamic_object_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type;
+  using _dynamic_object_heap_type = typename
+    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
-  object.iterate(
-    [this, &heap, &object](
-      _dynamic_object_type::attr_key_type attr_key,
-      _dynamic_object_type::dyobj_id_type dyobj_id)
-    {
-      _dynamic_object_type& referenced_object = heap.at(dyobj_id);
-
-      auto ref_count1 = object.manager().ref_count();
-      auto ref_count2 = referenced_object.manager().ref_count();
-
-      if (referenced_object.has_ref(object.id()) && ref_count1 == 1 && ref_count2 == 1)
-      {
-        object.manager().dec_ref_count();
-        referenced_object.manager().dec_ref_count();
-      }
-    }
-  );
+  cycled_object_reference_decrementor<_dynamic_object_heap_type> decrementor(heap, object);
+  object.iterate(decrementor);
 }
+
+// -----------------------------------------------------------------------------
+
+template<typename dynamic_object_heap_type>
+struct object_graph_builder
+{
+public:
+  using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
+  using dyobj_id_type = typename dynamic_object_type::dyobj_id_type;
+  using vertex_type = typename tarjan<dyobj_id_type>::vertex;
+  using vertices_map_type = typename std::unordered_map<dyobj_id_type, vertex_type>;
+  using neighbor_set_type = typename std::set<dyobj_id_type>;
+
+public:
+  object_graph_builder(
+    vertices_map_type& vertices_map,
+    neighbor_set_type& non_garbage_collectible_neighbors)
+    :
+    m_vertices_map(vertices_map),
+    m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors)
+  {
+  }
+
+  void operator()(dyobj_id_type id, dynamic_object_type& object)
+  {
+    if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true)
+    {
+      object.iterate(
+        [&](
+          const typename dynamic_object_type::attr_key_type& attr_key,
+          const typename dynamic_object_type::dyobj_id_type& neighbor_id)
+        {
+          m_non_garbage_collectible_neighbors.insert(neighbor_id);
+        }
+      );
+
+      return;
+    }
+
+    vertex_type& vertex = get_vertex(id);
+
+    object.iterate(
+      [&](
+        const typename dynamic_object_type::attr_key_type& attr_key,
+        const typename dynamic_object_type::dyobj_id_type& neighbor_id)
+      {
+        vertex_type& neighbor_vertex = get_vertex(neighbor_id);
+
+        vertex.dependencies().push_back(&neighbor_vertex);
+      }
+    );
+  }
+
+private:
+  vertex_type& get_vertex(const dyobj_id_type& id)
+  {
+    auto itr = m_vertices_map.find(id);
+
+    if (itr == m_vertices_map.end())
+    {
+      m_vertices_map[id] = vertex_type(id);
+    }
+
+    return m_vertices_map.at(id);
+  };
+
+  neighbor_set_type& m_non_garbage_collectible_neighbors;
+  vertices_map_type& m_vertices_map;
+
+}; /* end of `object_graph_builder` */
 
 // -----------------------------------------------------------------------------
 
@@ -123,60 +241,23 @@ void
 corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
   corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
 {
-  using sneaker::algorithm::tarjan;
+  using _dynamic_object_heap_type = typename
+    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
-  using dyobj_id_type = typename dynamic_object_type::dyobj_id_type;
-  using vertex_type = typename tarjan<dyobj_id_type>::vertex;
+  typedef object_graph_builder<_dynamic_object_heap_type> object_graph_builder_type;
 
-  std::unordered_map<dyobj_id_type, vertex_type> vertices_map;
+  using vertex_type = typename object_graph_builder_type::vertex_type;
+  using dyobj_id_type = typename object_graph_builder_type::dyobj_id_type;
+  using vertices_map_type = typename object_graph_builder_type::vertices_map_type;
+  using neighbor_set_type = typename object_graph_builder_type::neighbor_set_type;
 
-  auto get_vertex = [&](dyobj_id_type id) -> vertex_type&
-  {
-    auto itr = vertices_map.find(id);
+  vertices_map_type vertices_map;
+  neighbor_set_type non_garbage_collectible_neighbors;
 
-    if (itr == vertices_map.end())
-    {
-      vertices_map[id] = vertex_type(id);
-    }
+  object_graph_builder_type builder(
+    vertices_map, non_garbage_collectible_neighbors);
 
-    return vertices_map.at(id);
-  };
-
-  std::set<dyobj_id_type> non_garbage_collectible_neighbors;
-
-  heap.iterate(
-    [&](
-      dynamic_object_heap_type::dynamic_object_id_type id,
-      dynamic_object_heap_type::dynamic_object_type& object)
-    {
-      if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true)
-      {
-        object.iterate(
-          [&](
-            dynamic_object_type::attr_key_type attr_key,
-            dynamic_object_type::dyobj_id_type neighbor_id)
-          {
-            non_garbage_collectible_neighbors.insert(neighbor_id);
-          }
-        );
-
-        return;
-      }
-
-      vertex_type& vertex = get_vertex(id);
-
-      object.iterate(
-        [&](
-          dynamic_object_type::attr_key_type attr_key,
-          dynamic_object_type::dyobj_id_type neighbor_id)
-        {
-          vertex_type& neighbor_vertex = get_vertex(neighbor_id);
-
-          vertex.dependencies().push_back(&neighbor_vertex);
-        }
-      );
-    }
-  );
+  heap.iterate(builder);
 
   std::list<vertex_type*> vertices;
 
