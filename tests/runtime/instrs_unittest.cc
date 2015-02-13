@@ -272,7 +272,7 @@ TEST_F(instrs_obj_unittest, TestInstrMUTE)
 
   auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
 
-  ASSERT_EQ(false, actual_obj.get_flag(corevm::dyobj::IS_IMMUTABLE));
+  ASSERT_EQ(false, actual_obj.get_flag(corevm::dyobj::DYOBJ_IS_IMMUTABLE));
 }
 
 // -----------------------------------------------------------------------------
@@ -292,7 +292,7 @@ TEST_F(instrs_obj_unittest, TestInstrUNMUTE)
 
   auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
 
-  ASSERT_EQ(true, actual_obj.get_flag(corevm::dyobj::IS_IMMUTABLE));
+  ASSERT_EQ(true, actual_obj.get_flag(corevm::dyobj::DYOBJ_IS_IMMUTABLE));
 }
 
 // -----------------------------------------------------------------------------

@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "../errors.h"
+#include "../dyobj/dyobj_id.h"
 
 #include <boost/format.hpp>
 
@@ -147,6 +148,36 @@ class native_type_handle_deletion_error : public corevm::runtime::runtime_error
 public:
   explicit native_type_handle_deletion_error():
     corevm::runtime::runtime_error("Native type handle cannot be deleted")
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class object_deletion_error : public corevm::runtime::runtime_error
+{
+public:
+  explicit object_deletion_error(const corevm::dyobj::dyobj_id id):
+    corevm::runtime::runtime_error(
+      str(
+        format("Cannot delete object %s") % corevm::dyobj::id_to_string(id)
+      )
+    )
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class invocation_error : public corevm::runtime::runtime_error
+{
+public:
+  explicit invocation_error(const corevm::dyobj::dyobj_id id):
+    corevm::runtime::runtime_error(
+      str(
+        format("Cannot invoke call on object %s") % corevm::dyobj::id_to_string(id)
+      )
+    )
   {
   }
 };

@@ -74,7 +74,7 @@ protected:
   void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id id)
   {
     auto& obj = m_heap.at(id);
-    obj.set_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE);
+    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
   }
 
   corevm::dyobj::dynamic_object_heap<

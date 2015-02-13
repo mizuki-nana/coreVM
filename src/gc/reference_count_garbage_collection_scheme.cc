@@ -189,7 +189,7 @@ public:
 
   void operator()(dyobj_id_type id, dynamic_object_type& object)
   {
-    if (object.get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == true)
+    if (object.get_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE))
     {
       object.iterate(
         [&](

@@ -33,42 +33,32 @@ namespace dyobj {
 
 
 /**
- * Dynamic object flags are represented by 8 bits unsigned integers.
+ * Dynamic object flags are represented by 32-bit unsigned integers.
  * These flag bits are defined so that the default value of 0 would be the
  * appropriate value for most objects.
  */
-enum flags : uint8_t
+enum flags : uint32_t
 {
 
   /* ------------ Bits that pertain to the lifespan of objects -------------- */
 
-  IS_NOT_GARBAGE_COLLECTIBLE = 1,
+  DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE = 1,
 
-  IS_WEAK_REF = 2,
-
-  IS_INDELIBLE = 3,
+  DYOBJ_IS_INDELIBLE,
 
   /* ------------- Bits that pertain to the scope of objects ---------------- */
 
-  IS_GLOBAL_OBJ = 4,
-
-  IS_SUPPLIED_OBJ = 5,
-
-  IS_INVISIBLE_TO_USER = 6,
+  DYOBJ_IS_INVISIBLE_TO_USER,
 
   /* ------- Bits that pertain to the various attributes of objects --------- */
 
-  IS_CALLABLE = 7,
+  DYOBJ_IS_NON_CALLABLE,
 
-  IS_IMMUTABLE = 8,
+  DYOBJ_IS_IMMUTABLE,
 
   /* ------------------------ Max value allowed ----------------------------- */
 
-  MAX_VALUE = 9,
-
-  /* ---------- THE REMAINING BITS ARE RESERVED FOR FURTHER USE ------------- */
-
-  LAST_PLACEHOLDER = 32,
+  DYOBJ_MAX_VALUE = 32,
 
 };
 

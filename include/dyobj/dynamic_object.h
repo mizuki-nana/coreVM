@@ -325,7 +325,7 @@ bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible() const noexcept
 {
   return (
-    get_flag(corevm::dyobj::flags::IS_NOT_GARBAGE_COLLECTIBLE) == false &&
+    get_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) == false &&
     m_manager.garbage_collectible()
   );
 }

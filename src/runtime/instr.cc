@@ -478,7 +478,7 @@ corevm::runtime::instr_handler_setattr::execute(
 
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_id);
 
-  if (obj.get_flag(corevm::dyobj::flags::IS_IMMUTABLE))
+  if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
     throw corevm::runtime::invalid_operation_error(
       str(format("cannot mutate immutable object 0x%08x") % target_id)
@@ -503,7 +503,7 @@ corevm::runtime::instr_handler_delattr::execute(
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  if (obj.get_flag(corevm::dyobj::flags::IS_IMMUTABLE))
+  if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
     throw corevm::runtime::invalid_operation_error(
       str(format("cannot mutate immutable object 0x%08x") % id)
@@ -527,7 +527,7 @@ corevm::runtime::instr_handler_mute::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  obj.clear_flag(corevm::dyobj::flags::IS_IMMUTABLE);
+  obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -539,7 +539,7 @@ corevm::runtime::instr_handler_unmute::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  obj.set_flag(corevm::dyobj::flags::IS_IMMUTABLE);
+  obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -626,6 +626,12 @@ corevm::runtime::instr_handler_delobj::execute(
 
   corevm::dyobj::dyobj_id id = frame.pop_visible_var(key);
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
+  {
+    throw corevm::runtime::object_deletion_error(id);
+  }
+
   obj.manager().on_delete();
 }
 
@@ -640,6 +646,12 @@ corevm::runtime::instr_handler_delobj2::execute(
 
   corevm::dyobj::dyobj_id id = frame.pop_invisible_var(key);
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
+  {
+    throw corevm::runtime::object_deletion_error(id);
+  }
+
   obj.manager().on_delete();
 }
 
@@ -762,6 +774,11 @@ corevm::runtime::instr_handler_pinvk::execute(
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE))
+  {
+    throw corevm::runtime::invocation_error(id);
+  }
 
   corevm::runtime::closure_ctx ctx;
   obj.closure_ctx(&ctx);
