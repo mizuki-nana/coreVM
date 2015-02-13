@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <vector>
+
 
 class dummy_dynamic_object_manager {};
 
@@ -57,6 +59,10 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
 
   ASSERT_EQ(id1, obj1.id());
   ASSERT_EQ(id2, obj2.id());
+
+  // Clean up.
+  m_heap.erase(id1);
+  m_heap.erase(id2);
 }
 
 // -----------------------------------------------------------------------------
@@ -68,6 +74,39 @@ TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
 
   ASSERT_THROW(m_heap.at(id1), corevm::dyobj::object_not_found_error);
   ASSERT_THROW(m_heap.at(id2), corevm::dyobj::object_not_found_error);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
+{
+  auto max_size = 1024;
+
+  // TODO: [COREVM-146] Make dynamic object heap take max size as parameter
+  // auto max_size = m_heap.max_size();
+
+  std::vector<corevm::dyobj::dyobj_id> ids(max_size);
+
+  for (auto i = 0; i < max_size; ++i)
+  {
+    ids[i] = m_heap.create_dyobj();
+  }
+
+  // TODO: [COREVM-146] Make dynamic object heap take max size as parameter
+  /*
+  ASSERT_THROW(
+    {
+      m_heap.create_dyobj();
+    },
+    corevm::dyobj::object_heap_insertion_failed_error
+  );
+  */
+
+  // Clean up.
+  for (auto i = 0; i < ids.size(); ++i)
+  {
+    m_heap.erase(ids[i]);
+  }
 }
 
 // -----------------------------------------------------------------------------

@@ -58,10 +58,42 @@ TEST_F(allocation_policy_unit_test, TestAllocateAndDeallocate)
   int *nums = allocation_policy.allocate(N);
   assert(nums);
 
-  for (int i = 0; i < N; ++i) nums[i] = i;
-  for (int i = 0; i < N; ++i) ASSERT_EQ(i, nums[i]);
+  for (int i = 0; i < N; ++i)
+  {
+    nums[i] = i;
+  }
+
+  for (int i = 0; i < N; ++i)
+  {
+    ASSERT_EQ(i, nums[i]);
+  }
 
   allocation_policy.deallocate(nums, N);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(allocation_policy_unit_test, TestAllocationOverMaxSize)
+{
+  _AllocPolicyType allocation_policy;
+  uint64_t max_size = allocation_policy.max_size();
+
+  std::vector<int*> ptrs(max_size);
+
+  for (auto i = 0; i < max_size; ++i)
+  {
+    int* ptr = allocation_policy.allocate(1);
+    ASSERT_NE(nullptr, ptr);
+    ptrs[i] = ptr;
+  }
+
+  ASSERT_EQ(nullptr, allocation_policy.allocate(1));
+
+  // Clean up.
+  for (auto i = 0; i < max_size; ++i)
+  {
+    allocation_policy.deallocate(ptrs[i], sizeof(int));
+  }
 }
 
 // -----------------------------------------------------------------------------

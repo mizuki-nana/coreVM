@@ -169,12 +169,12 @@ template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object_id_type id)
 {
-  auto itr = m_container.find(id);
+  void* raw_ptr = corevm::dyobj::obj_id_to_ptr(id);
+  dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
 
-  if (itr != m_container.end())
-  {
-    erase(itr);
-  }
+  ptr = m_container.at(ptr);
+
+  m_container.destroy(ptr);
 }
 
 // -----------------------------------------------------------------------------

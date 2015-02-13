@@ -59,7 +59,15 @@ public:
 
   inline uint64_t base_addr() const;
 
+  /**
+   * The maximum number of bytes can be used.
+   */
   inline uint64_t total_size() const;
+
+  /**
+   * The maximum number of elements can be allocated.
+   */
+  inline uint64_t max_size() const;
 
 protected:
   corevm::memory::allocator<N, AllocationScheme> m_allocator;
@@ -145,6 +153,15 @@ uint64_t
 corevm::memory::allocation_policy<T, AllocationScheme, N>::total_size() const
 {
   return m_allocator.total_size();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocationScheme, size_t N>
+uint64_t
+corevm::memory::allocation_policy<T, AllocationScheme, N>::max_size() const
+{
+  return total_size() / sizeof(T);
 }
 
 // -----------------------------------------------------------------------------

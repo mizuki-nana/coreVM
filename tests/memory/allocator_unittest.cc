@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 #include <cassert>
+#include <vector>
 
 
 const int HEAP_STORAGE_FOR_TEST = 1024;
@@ -44,6 +45,11 @@ protected:
   int deallocate(void* ptr) noexcept
   {
     return m_allocator.deallocate(ptr);
+  }
+
+  uint64_t total_size() const
+  {
+    return m_allocator.total_size();
   }
 
   corevm::memory::allocator<
@@ -251,6 +257,33 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 
   p = this->allocate(new_chunk_size);
   ASSERT_NE(nullptr, p);
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
+{
+  typedef int T;
+  uint64_t total_size = this->total_size();
+  uint64_t max_size = total_size / sizeof(T);
+
+  std::vector<T*> ptrs(max_size);
+
+  for (auto i = 0; i < max_size; ++i)
+  {
+    void* ptr = this->allocate(sizeof(T));
+    ASSERT_NE(nullptr, ptr);
+    ptrs[i] = static_cast<T*>(ptr);
+  }
+
+  void* ptr = this->allocate(sizeof(T));
+  ASSERT_EQ(nullptr, ptr);
+
+  for (auto i = 0; i < ptrs.size(); ++i)
+  {
+    int res = this->deallocate(static_cast<void*>(ptrs[i]));
+    ASSERT_EQ(1, res);
+  }
 }
 
 // -----------------------------------------------------------------------------

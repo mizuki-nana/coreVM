@@ -20,9 +20,12 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "../../include/memory/allocation_policy.h"
+#include "../../include/memory/sequential_allocation_scheme.h"
 #include "../../include/memory/errors.h"
 #include "../../include/memory/object_container.h"
 
+#include <sneaker/allocator/allocator.h>
 #include <sneaker/testing/_unittest.h>
 
 #include <algorithm>
@@ -31,20 +34,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class object_container_unittest : public ::testing::Test
 {
-public:
-  typedef struct dummy
+protected:
+  typedef struct Dummy
   {
     int data;
   } T;
 
-protected:
+  /**
+   * `std::allocator` cannot be used here for this unit test, as much as it is
+   * desired for the sake of unit testing. The reason is that
+   * `std::allocator::max_size()` returns the max size of an individual element,
+   * where as the meaning of `max_size()` in coreVM is defined as returning the
+   * maximum number of elements can be allocated by an allocator.
+   */
+  template<typename T, typename AllocationScheme, size_t N>
+  class Allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N>>
+  {
+  };
+
   virtual void TearDown()
   {
     // Make sure test cases clean up the container properly.
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
 
-  corevm::memory::object_container<dummy> m_container;
+  typedef Allocator<Dummy, corevm::memory::first_fit_allocation_scheme, 1024> MyAllocator;
+  corevm::memory::object_container<Dummy, MyAllocator> m_container;
 };
 
 // -----------------------------------------------------------------------------
@@ -336,7 +351,7 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 
   m_container.destroy(p2);
 
-  ASSERT_EQ(m_container.begin(), ++itr);
+  ASSERT_EQ(m_container.begin(), itr);
 
   m_container.destroy(p);
 }
@@ -393,6 +408,32 @@ TEST_F(object_container_unittest, TestErase)
   m_container.erase(itr);
 
   ASSERT_EQ(0, m_container.size());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(object_container_unittest, TestAllocationOverMaxSize)
+{
+  uint64_t max_size = m_container.max_size();
+
+  std::vector<T*> ptrs(max_size);
+
+  for (auto i = 0; i < max_size; ++i)
+  {
+    T* ptr = m_container.create();
+    ASSERT_NE(nullptr, ptr);
+    ptrs[i] = ptr;
+  }
+
+  T* ptr = m_container.create();
+  ASSERT_EQ(nullptr, ptr);
+
+  // Clean up.
+  for (auto i = 0; i < ptrs.size(); ++i)
+  {
+    T* ptr = ptrs[i];
+    m_container.destroy(ptr);
+  }
 }
 
 // -----------------------------------------------------------------------------

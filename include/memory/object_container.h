@@ -312,7 +312,7 @@ template<typename T, typename AllocatorType>
 typename corevm::memory::object_container<T, AllocatorType>::size_type
 corevm::memory::object_container<T, AllocatorType>::max_size() const
 {
-  return m_addrs.max_size();
+  return m_allocator.max_size();
 }
 
 // -----------------------------------------------------------------------------
