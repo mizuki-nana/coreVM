@@ -215,7 +215,7 @@ public:
       friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
-  object_container();
+  explicit object_container(uint64_t);
 
   /* Object containers should not be copyable. */
   object_container(const object_container&) = delete;
@@ -252,11 +252,13 @@ private:
   _HashSet m_addrs;
 };
 
-
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-corevm::memory::object_container<T, AllocatorType>::object_container()
+corevm::memory::object_container<T, AllocatorType>::object_container(
+  uint64_t total_size)
+  :
+  m_allocator(total_size)
 {
   // Do nothing here.
 }

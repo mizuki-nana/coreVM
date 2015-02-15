@@ -25,11 +25,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/memory/errors.h"
 #include "../../include/memory/object_container.h"
 
-#include <sneaker/allocator/allocator.h>
+#include <sneaker/allocator/object_traits.h>
 #include <sneaker/testing/_unittest.h>
 
 #include <algorithm>
 #include <set>
+
+
+using sneaker::allocator::object_traits;
 
 
 class object_container_unittest : public ::testing::Test
@@ -47,10 +50,26 @@ protected:
    * where as the meaning of `max_size()` in coreVM is defined as returning the
    * maximum number of elements can be allocated by an allocator.
    */
-  template<typename T, typename AllocationScheme, size_t N>
-  class Allocator : public sneaker::allocator::allocator<T, corevm::memory::allocation_policy<T, AllocationScheme, N>>
+  template<typename T, typename AllocationScheme>
+  class Allocator : public corevm::memory::allocation_policy<T, AllocationScheme>, public object_traits<T>
   {
+    public:
+      using AllocationPolicyType = corevm::memory::allocation_policy<T, AllocationScheme>;
+
+      explicit Allocator(uint64_t total_size)
+        :
+        AllocationPolicyType(total_size)
+      {
+      }
   };
+
+  typedef Allocator<Dummy, corevm::memory::first_fit_allocation_scheme> MyAllocator;
+
+  object_container_unittest()
+    :
+    m_container(1024)
+  {
+  }
 
   virtual void TearDown()
   {
@@ -58,7 +77,6 @@ protected:
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
 
-  typedef Allocator<Dummy, corevm::memory::first_fit_allocation_scheme, 1024> MyAllocator;
   corevm::memory::object_container<Dummy, MyAllocator> m_container;
 };
 

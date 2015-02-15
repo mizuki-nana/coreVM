@@ -33,6 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../memory/sequential_allocation_scheme.h"
 
 #include <algorithm>
+#include <cstdint>
 #include <limits>
 #include <stdexcept>
 #include <type_traits>
@@ -70,6 +71,7 @@ public:
   using difference_type     = typename dynamic_object_container_type::difference_type;
 
   dynamic_object_heap();
+  explicit dynamic_object_heap(uint64_t);
   ~dynamic_object_heap();
 
   /* Dynamic object heap should not be copyable. */
@@ -109,6 +111,19 @@ private:
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap()
+  :
+  m_container(COREVM_DEFAULT_HEAP_SIZE)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+template<class dynamic_object_manager>
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
+  uint64_t total_size)
+  :
+  m_container(total_size)
 {
   // Do nothing here.
 }

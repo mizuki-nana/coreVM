@@ -147,8 +147,8 @@ TEST_F(heap_allocator_equality_test, TestEquality1)
 
 TEST_F(heap_allocator_equality_test, TestEquality2)
 {
-  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
-  corevm::dyobj::heap_allocator<int, AllocationScheme, 200> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator1(100);
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator2(200);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -158,8 +158,8 @@ TEST_F(heap_allocator_equality_test, TestEquality2)
 
 TEST_F(heap_allocator_equality_test, TestEquality3)
 {
-  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
-  corevm::dyobj::heap_allocator<float, AllocationScheme, 100> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator1(100);
+  corevm::dyobj::heap_allocator<float, AllocationScheme> allocator2(100);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -169,8 +169,8 @@ TEST_F(heap_allocator_equality_test, TestEquality3)
 
 TEST_F(heap_allocator_equality_test, TestEquality4)
 {
-  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
-  corevm::dyobj::heap_allocator<int, OtherAllocationScheme, 100> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator1(100);
+  corevm::dyobj::heap_allocator<int, OtherAllocationScheme> allocator2(100);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -180,8 +180,8 @@ TEST_F(heap_allocator_equality_test, TestEquality4)
 
 TEST_F(heap_allocator_equality_test, TestEquality5)
 {
-  corevm::dyobj::heap_allocator<int, AllocationScheme, 100> allocator1;
-  corevm::dyobj::heap_allocator<float, OtherAllocationScheme, 200> allocator2;
+  corevm::dyobj::heap_allocator<int, AllocationScheme> allocator1(100);
+  corevm::dyobj::heap_allocator<float, OtherAllocationScheme> allocator2(200);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);

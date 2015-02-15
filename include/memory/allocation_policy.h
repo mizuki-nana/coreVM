@@ -37,7 +37,7 @@ namespace corevm {
 namespace memory {
 
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 class allocation_policy : public sneaker::allocator::standard_alloc_policy<T>
 {
 public:
@@ -50,7 +50,7 @@ public:
   using difference_type                        = typename sneaker::allocator::standard_alloc_policy<T>::difference_type;
   using propagate_on_container_move_assignment = typename sneaker::allocator::standard_alloc_policy<T>::propagate_on_container_move_assignment;
 
-  inline explicit allocation_policy();
+  inline explicit allocation_policy(uint64_t);
   inline explicit allocation_policy(allocation_policy const&);
   inline ~allocation_policy();
 
@@ -70,7 +70,7 @@ public:
   inline uint64_t max_size() const;
 
 protected:
-  corevm::memory::allocator<N, AllocationScheme> m_allocator;
+  corevm::memory::allocator<AllocationScheme> m_allocator;
 };
 
 
@@ -79,58 +79,61 @@ protected:
 namespace {
 
 
-template<typename T, typename AllocationScheme, size_t N>
-using _MyType = typename corevm::memory::allocation_policy<T, AllocationScheme, N>;
+template<typename T, typename AllocationScheme>
+using _MyType = typename corevm::memory::allocation_policy<T, AllocationScheme>;
 
 
 } /* end namespace */
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
-corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy()
+template<typename T, typename AllocationScheme>
+corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
+  uint64_t total_size)
   :
-  m_allocator()
+  m_allocator(total_size)
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
-corevm::memory::allocation_policy<T, AllocationScheme, N>::allocation_policy(
-  allocation_policy const&)
+template<typename T, typename AllocationScheme>
+corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
+  allocation_policy const& other)
+  :
+  m_allocator(other.total_size())
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
-corevm::memory::allocation_policy<T, AllocationScheme, N>::~allocation_policy()
+template<typename T, typename AllocationScheme>
+corevm::memory::allocation_policy<T, AllocationScheme>::~allocation_policy()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
-typename _MyType<T, AllocationScheme, N>::pointer
-corevm::memory::allocation_policy<T, AllocationScheme, N>::allocate(
-  typename allocation_policy<T, AllocationScheme, N>::size_type n,
+template<typename T, typename AllocationScheme>
+typename _MyType<T, AllocationScheme>::pointer
+corevm::memory::allocation_policy<T, AllocationScheme>::allocate(
+  typename allocation_policy<T, AllocationScheme>::size_type n,
   typename std::allocator<void>::const_pointer
 )
 {
-  return reinterpret_cast<typename _MyType<T, AllocationScheme, N>::pointer>( m_allocator.allocate(n * sizeof(T)) );
+  return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>( m_allocator.allocate(n * sizeof(T)) );
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 void
-corevm::memory::allocation_policy<T, AllocationScheme, N>::deallocate(
-  typename allocation_policy<T, AllocationScheme, N>::pointer p,
-  typename allocation_policy<T, AllocationScheme, N>::size_type
+corevm::memory::allocation_policy<T, AllocationScheme>::deallocate(
+  typename allocation_policy<T, AllocationScheme>::pointer p,
+  typename allocation_policy<T, AllocationScheme>::size_type
 )
 {
   int res = m_allocator.deallocate(p);
@@ -139,59 +142,59 @@ corevm::memory::allocation_policy<T, AllocationScheme, N>::deallocate(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme, N>::base_addr() const
+corevm::memory::allocation_policy<T, AllocationScheme>::base_addr() const
 {
   return m_allocator.base_addr();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme, N>::total_size() const
+corevm::memory::allocation_policy<T, AllocationScheme>::total_size() const
 {
   return m_allocator.total_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme, N>::max_size() const
+corevm::memory::allocation_policy<T, AllocationScheme>::max_size() const
 {
   return total_size() / sizeof(T);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme, N> const& lhs,
-  allocation_policy<T, AllocationScheme, N> const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs,
+  allocation_policy<T, AllocationScheme> const& rhs)
 {
-  return true;
+  return lhs.total_size() == rhs.total_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
+template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme, N> const& lhs,
-  allocation_policy<U, OtherAllocationScheme, M> const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs,
+  allocation_policy<U, OtherAllocationScheme> const& rhs)
 {
   return false;
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N, typename other_allocation_policy_type>
+template<typename T, typename AllocationScheme, typename other_allocation_policy_type>
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme, N> const& lhs,
+  allocation_policy<T, AllocationScheme> const& lhs,
   other_allocation_policy_type const& rhs)
 {
   return false;
@@ -199,32 +202,32 @@ bool operator==(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N>
+template<typename T, typename AllocationScheme>
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme, N> const& lhs,
-  allocation_policy<T, AllocationScheme, N> const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs,
+  allocation_policy<T, AllocationScheme> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N, typename U, typename OtherAllocationScheme, size_t M>
+template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme, N> const& lhs,
-  allocation_policy<U, OtherAllocationScheme, M> const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs,
+  allocation_policy<U, OtherAllocationScheme> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, size_t N, typename other_allocation_policy_type>
+template<typename T, typename AllocationScheme, typename other_allocation_policy_type>
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme, N> const& lhs, other_allocation_policy_type const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs, other_allocation_policy_type const& rhs)
 {
   return !operator==(lhs, rhs);
 }

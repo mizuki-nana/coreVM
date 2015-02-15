@@ -39,11 +39,11 @@ namespace corevm {
 namespace memory {
 
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 class allocator
 {
 public:
-  allocator();
+  explicit allocator(uint64_t);
 
   ~allocator();
 
@@ -70,9 +70,9 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
-corevm::memory::allocator<N, allocation_scheme>::allocator():
-  m_total_size(N),
+template<class allocation_scheme>
+corevm::memory::allocator<allocation_scheme>::allocator(uint64_t total_size):
+  m_total_size(total_size),
   m_allocated_size(0),
   m_heap(nullptr),
   m_allocation_scheme(allocation_scheme(m_total_size))
@@ -89,8 +89,8 @@ corevm::memory::allocator<N, allocation_scheme>::allocator():
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
-corevm::memory::allocator<N, allocation_scheme>::~allocator()
+template<class allocation_scheme>
+corevm::memory::allocator<allocation_scheme>::~allocator()
 {
   if (m_heap)
   {
@@ -101,27 +101,27 @@ corevm::memory::allocator<N, allocation_scheme>::~allocator()
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 uint64_t
-corevm::memory::allocator<N, allocation_scheme>::base_addr() const noexcept
+corevm::memory::allocator<allocation_scheme>::base_addr() const noexcept
 {
   return static_cast<uint64_t>((uint8_t*)m_heap - (uint8_t*)NULL);
 }
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 uint64_t
-corevm::memory::allocator<N, allocation_scheme>::total_size() const noexcept
+corevm::memory::allocator<allocation_scheme>::total_size() const noexcept
 {
   return m_total_size;
 }
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 void*
-corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
+corevm::memory::allocator<allocation_scheme>::allocate(size_t size) noexcept
 {
   void* ptr = nullptr;
 
@@ -150,9 +150,9 @@ corevm::memory::allocator<N, allocation_scheme>::allocate(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 int
-corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
+corevm::memory::allocator<allocation_scheme>::deallocate(void* ptr) noexcept
 {
   int res = -1;
 
@@ -180,9 +180,9 @@ corevm::memory::allocator<N, allocation_scheme>::deallocate(void* ptr) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<size_t N, class allocation_scheme>
+template<class allocation_scheme>
 void
-corevm::memory::allocator<N, allocation_scheme>::debug_print() const noexcept
+corevm::memory::allocator<allocation_scheme>::debug_print() const noexcept
 {
   uint32_t base = static_cast<uint8_t*>(m_heap) - static_cast<uint8_t*>(NULL);
   m_allocation_scheme.debug_print(base);

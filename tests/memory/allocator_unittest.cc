@@ -52,8 +52,13 @@ protected:
     return m_allocator.total_size();
   }
 
-  corevm::memory::allocator<
-    HEAP_STORAGE_FOR_TEST, AllocationSchemeType> m_allocator;
+  allocator_unittest()
+    :
+    m_allocator(HEAP_STORAGE_FOR_TEST)
+  {
+  }
+
+  corevm::memory::allocator<AllocationSchemeType> m_allocator;
 };
 
 // -----------------------------------------------------------------------------
@@ -295,10 +300,13 @@ const int BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE = 1024;
 class buddy_allocation_scheme_unittest : public ::testing::Test
 {
 protected:
-  corevm::memory::allocator<
-    BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE,
-    corevm::memory::buddy_allocation_scheme
-  > m_allocator;
+  corevm::memory::allocator<corevm::memory::buddy_allocation_scheme> m_allocator;
+
+  buddy_allocation_scheme_unittest()
+    :
+    m_allocator(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE)
+  {
+  }
 
   template<typename F>
   void run_twice(F func)

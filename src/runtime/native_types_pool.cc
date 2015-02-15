@@ -20,18 +20,33 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-
 #include "../../include/runtime/native_types_pool.h"
+#include "../../include/runtime/common.h"
 
 #include "../../include/runtime/utils.h"
 
 
+namespace {
+
 typedef corevm::runtime::native_types_pool _MyType;
+
+} /* anonymous namespace */
 
 
 // -----------------------------------------------------------------------------
 
 corevm::runtime::native_types_pool::native_types_pool()
+  :
+  m_container(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::native_types_pool::native_types_pool(uint64_t total_size)
+  :
+  m_container(total_size)
 {
   // Do nothing here.
 }
