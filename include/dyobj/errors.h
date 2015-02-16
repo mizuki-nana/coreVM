@@ -144,22 +144,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class object_id_exceed_limit_error : public corevm::dyobj::runtime_error
+class object_creation_error : public corevm::dyobj::runtime_error
 {
 public:
-  explicit object_id_exceed_limit_error():
-    corevm::dyobj::runtime_error("The maximum limit of dynamic object ID has been exceeded")
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
-class object_heap_insertion_failed_error : public corevm::dyobj::runtime_error
-{
-public:
-  explicit object_heap_insertion_failed_error():
-    corevm::dyobj::runtime_error("Dynamic object has failed to be inserted into the heap")
+  explicit object_creation_error():
+    corevm::dyobj::runtime_error("Failed to create dynamic object")
   {
   }
 };

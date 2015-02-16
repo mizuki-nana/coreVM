@@ -101,7 +101,7 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
     {
       m_heap.create_dyobj();
     },
-    corevm::dyobj::object_heap_insertion_failed_error
+    corevm::dyobj::object_creation_error
   );
 
   // Clean up.

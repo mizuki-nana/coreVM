@@ -101,7 +101,7 @@ public:
     throw(corevm::dyobj::object_not_found_error);
 
   dynamic_object_id_type create_dyobj()
-    throw(corevm::dyobj::object_heap_insertion_failed_error);
+    throw(corevm::dyobj::object_creation_error);
 
 private:
   dynamic_object_container_type m_container;
@@ -270,13 +270,13 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
 template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
-  throw(corevm::dyobj::object_heap_insertion_failed_error)
+  throw(corevm::dyobj::object_creation_error)
 {
   auto obj_ptr = m_container.create();
 
   if (obj_ptr == nullptr)
   {
-    throw corevm::dyobj::object_heap_insertion_failed_error();
+    throw corevm::dyobj::object_creation_error();
   }
 
   auto id = corevm::dyobj::obj_ptr_to_id(obj_ptr);
