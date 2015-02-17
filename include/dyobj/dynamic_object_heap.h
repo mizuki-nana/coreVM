@@ -52,7 +52,7 @@ public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::buddy_allocation_scheme>;
+  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::first_fit_allocation_scheme>;
   using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
 
   static_assert(
@@ -81,6 +81,8 @@ public:
   size_type size() const noexcept;
 
   size_type max_size() const noexcept;
+
+  size_type total_size() const noexcept;
 
   size_type active_size() const noexcept;
 
@@ -152,6 +154,15 @@ typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::max_size() const noexcept
 {
   return m_container.max_size();
+}
+
+// -----------------------------------------------------------------------------
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::total_size() const noexcept
+{
+  return m_container.total_size();
 }
 
 // -----------------------------------------------------------------------------

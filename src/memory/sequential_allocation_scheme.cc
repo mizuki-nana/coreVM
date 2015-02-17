@@ -77,7 +77,7 @@ corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const n
   }
   ss << LINE << std::endl;
 
-  std::cout << ss;
+  std::cout << ss.str();
 }
 
 // -----------------------------------------------------------------------------

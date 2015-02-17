@@ -231,6 +231,8 @@ public:
 
   size_type max_size() const;
 
+  size_type total_size() const;
+
   pointer create();
 
   pointer operator[](pointer);
@@ -315,6 +317,15 @@ typename corevm::memory::object_container<T, AllocatorType>::size_type
 corevm::memory::object_container<T, AllocatorType>::max_size() const
 {
   return m_allocator.max_size();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::size_type
+corevm::memory::object_container<T, AllocatorType>::total_size() const
+{
+  return m_allocator.total_size();
 }
 
 // -----------------------------------------------------------------------------

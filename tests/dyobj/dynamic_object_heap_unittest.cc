@@ -85,10 +85,10 @@ TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
 
 // -----------------------------------------------------------------------------
 
-// [COREVM-147] Fix dyobj heap max allocation test
-/*
 TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
 {
+  /* NOTE: This test may not work if using buddy allocation for the heap. */
+
   auto max_size = m_heap.max_size();
   std::vector<corevm::dyobj::dyobj_id> ids;
 
@@ -110,6 +110,5 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
     m_heap.erase(ids[i]);
   }
 }
-*/
 
 // -----------------------------------------------------------------------------
