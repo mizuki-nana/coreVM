@@ -581,16 +581,16 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
       {
         block_descriptor_type next_block = static_cast<block_descriptor_type>(*next_itr);
 
-        bool isSplit = is_bit_set_uint8(current_block.flags, FLAG_SPLIT) &&
+        bool is_split = is_bit_set_uint8(current_block.flags, FLAG_SPLIT) &&
           !is_bit_set_uint8(next_block.flags, FLAG_SPLIT);
 
-        bool isParentSplit = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
+        bool is_parent_split = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
 
-        if (isSplit && current_block.actual_size == 0 && next_block.actual_size == 0)
+        if (is_split && current_block.actual_size == 0 && next_block.actual_size == 0)
         {
           uint8_t flags = 0;
 
-          if (isParentSplit)
+          if (is_parent_split)
           {
             set_nth_bit_uint8(&flags, FLAG_PARENT_SPLIT);
             set_nth_bit_uint8(&flags, FLAG_SPLIT);

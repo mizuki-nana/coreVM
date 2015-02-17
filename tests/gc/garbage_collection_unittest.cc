@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/dyobj/dynamic_object.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
 #include "../../include/gc/garbage_collector.h"
-#include "../../include/gc/garbage_collection_scheme.h"
+#include "../../include/gc/reference_count_garbage_collection_scheme.h"
 
 #include <sneaker/testing/_unittest.h>
 
