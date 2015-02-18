@@ -20,14 +20,17 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRONTEND_ERRORS_H_
-#define COREVM_FRONTEND_ERRORS_H_
+#ifndef COREVM_CONFIGURATION_H_
+#define COREVM_CONFIGURATION_H_
 
-#include "../errors.h"
+#include "errors.h"
 
-#include <boost/format.hpp>
+#include <sneaker/json/json.h>
 
 #include <string>
+
+
+using sneaker::json::JSON;
 
 
 namespace corevm {
@@ -36,59 +39,33 @@ namespace corevm {
 namespace frontend {
 
 
-class runtime_error : public corevm::runtime_error
+class configuration
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
-    corevm::runtime_error(what_arg)
-  {
-  }
+  explicit configuration(const std::string&);
 
-  explicit runtime_error(const char* what_arg):
-    corevm::runtime_error(what_arg)
-  {
-  }
-};
+  void load_config() throw(corevm::frontend::configuration_loading_error);
 
-// -----------------------------------------------------------------------------
-
-class file_loading_error : public corevm::frontend::runtime_error
-{
 public:
-  explicit file_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
+  /* Value accessors. */
+  uint64_t alloc_size() const;
 
-  explicit file_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
+private:
+  void set_values(const JSON&);
+
+  uint64_t m_alloc_size;
+
+private:
+  static const std::string schema;
+
+  const std::string m_path;
 };
 
-// -----------------------------------------------------------------------------
 
-class configuration_loading_error : public corevm::frontend::runtime_error
-{
-public:
-  explicit configuration_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
-
-  explicit configuration_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
-
-}; /* end namespace frontend */
+} /* end namespace frontend */
 
 
 } /* end namespace corevm */
 
 
-#endif /* COREVM_FRONTEND_ERRORS_H_ */
+#endif /* COREVM_CONFIGURATION_H_ */

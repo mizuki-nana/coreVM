@@ -20,75 +20,70 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRONTEND_ERRORS_H_
-#define COREVM_FRONTEND_ERRORS_H_
+#include "../../include/frontend/configuration.h"
 
-#include "../errors.h"
+#include <sneaker/testing/_unittest.h>
 
-#include <boost/format.hpp>
-
+#include <fstream>
 #include <string>
 
 
-namespace corevm {
-
-
-namespace frontend {
-
-
-class runtime_error : public corevm::runtime_error
+class configuration_unittest : public ::testing::Test
 {
-public:
-  explicit runtime_error(const std::string& what_arg):
-    corevm::runtime_error(what_arg)
+protected:
+  static const char* PATH;
+
+  virtual void SetUp()
   {
+    std::ofstream f(PATH, std::ios::binary);
+    f << this->content();
+    f.close();
   }
 
-  explicit runtime_error(const char* what_arg):
-    corevm::runtime_error(what_arg)
+  virtual void TearDown()
   {
+    remove(PATH);
+  }
+
+  virtual const std::string content()
+  {
+    static const std::string content(
+      "{"
+        "\"alloc-size\": 1024"
+      "}"
+    );
+
+    return content;
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class file_loading_error : public corevm::frontend::runtime_error
-{
-public:
-  explicit file_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
-
-  explicit file_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
-};
+const char* configuration_unittest::PATH = "./sample-config.config";
 
 // -----------------------------------------------------------------------------
 
-class configuration_loading_error : public corevm::frontend::runtime_error
+TEST_F(configuration_unittest, TestLoadSuccessful)
 {
-public:
-  explicit configuration_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
+  corevm::frontend::configuration configuration(PATH);
 
-  explicit configuration_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
-  {
-  }
-};
+  configuration.load_config();
+
+  ASSERT_EQ(1024, configuration.alloc_size());
+}
 
 // -----------------------------------------------------------------------------
 
+TEST_F(configuration_unittest, TestLoadFailsWithInvalidPath)
+{
+  corevm::frontend::configuration configuration("$%^some-invalid-path!@#");
 
-}; /* end namespace frontend */
+  ASSERT_THROW(
+    {
+      configuration.load_config();
+    },
+    corevm::frontend::configuration_loading_error
+  );
+}
 
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_FRONTEND_ERRORS_H_ */
+// -----------------------------------------------------------------------------
