@@ -331,6 +331,11 @@ void
 corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_deletion_error)
 {
+  if (key == corevm::dyobj::NONESET_NTVHNDL_KEY)
+  {
+    return;
+  }
+
   try
   {
     m_ntvhndl_pool.erase(key);
@@ -446,6 +451,14 @@ corevm::runtime::process::maybe_gc()
     return;
   }
 
+  do_gc();
+};
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::do_gc()
+{
   this->pause_exec();
 
   corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(
@@ -463,7 +476,7 @@ corevm::runtime::process::maybe_gc()
   );
 
   this->resume_exec();
-};
+}
 
 // -----------------------------------------------------------------------------
 

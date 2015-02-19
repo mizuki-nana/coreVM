@@ -821,6 +821,29 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
 
 // -----------------------------------------------------------------------------
 
+class instrs_runtime_instrs_test : public instrs_unittest
+{
+protected:
+  corevm::runtime::process m_process;
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_runtime_instrs_test, TestInstrGC)
+{
+  process::adapter(m_process).help_create_dyobj();
+
+  ASSERT_EQ(1, m_process.heap_size());
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr_handler_gc handler;
+  handler.execute(instr, m_process);
+
+  ASSERT_EQ(0, m_process.heap_size());
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_control_instrs_test : public instrs_unittest
 {
 public:

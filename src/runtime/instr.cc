@@ -79,6 +79,10 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::GETARGS,   { .num_oprd=0, .str="getargs",   .handler=std::make_shared<corevm::runtime::instr_handler_getargs>()   } },
   { corevm::runtime::instr_enum::GETKWARGS, { .num_oprd=0, .str="getkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_getkwargs>() } },
 
+  /* ------------------------- Runtime instructions ------------------------- */
+
+  { corevm::runtime::instr_enum::GC,        { .num_oprd=0, .str="gc",        .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        } },
+
   /* ---------------- Arithmetic and logic instructions --------------------- */
 
   { corevm::runtime::instr_enum::POS,       { .num_oprd=0, .str="pos",       .handler=std::make_shared<corevm::runtime::instr_handler_pos>()       } },
@@ -1019,6 +1023,15 @@ corevm::runtime::instr_handler_getkwargs::execute(
 
   corevm::types::native_type_handle hndl = map;
   frame.push_eval_stack(hndl);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_gc::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  process.do_gc();
 }
 
 // -----------------------------------------------------------------------------

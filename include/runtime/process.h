@@ -149,6 +149,8 @@ public:
 
   void maybe_gc();
 
+  void do_gc();
+
   bool can_execute();
 
   void pause_exec();
