@@ -90,6 +90,10 @@ public:
 
   bool is_garbage_collectible() const noexcept;
 
+  uint32_t attr_count() const {
+    return m_attrs.size();
+  }
+
   bool hasattr(attr_key_type) const noexcept;
 
   void putattr(attr_key_type, dyobj_id_type) noexcept;
@@ -99,6 +103,11 @@ public:
 
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::object_attribute_not_found_error);
+
+  // Convenience method.
+  const runtime::closure_ctx& get_closure_ctx() const {
+    return m_closure_ctx;
+  }
 
   void closure_ctx(runtime::closure_ctx*) const;
 

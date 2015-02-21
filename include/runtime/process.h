@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <climits>
 #include <cstdint>
 #include <list>
+#include <ostream>
 #include <stack>
 #include <type_traits>
 #include <unordered_map>
@@ -177,6 +178,8 @@ public:
 
   void get_compartment(corevm::runtime::compartment_id, corevm::runtime::compartment**);
 
+  friend std::ostream& operator<<(std::ostream&, const corevm::runtime::process&);
+
 private:
   bool pre_start();
 
@@ -207,6 +210,8 @@ private:
     "Compartment ID incompatibility"
   );
 };
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */

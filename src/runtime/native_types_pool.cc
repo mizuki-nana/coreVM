@@ -22,8 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/native_types_pool.h"
 #include "../../include/runtime/common.h"
-
 #include "../../include/runtime/utils.h"
+
+#include <ostream>
 
 
 namespace {
@@ -65,6 +66,14 @@ _MyType::size_type
 corevm::runtime::native_types_pool::max_size() const
 {
   return m_container.max_size();
+}
+
+// -----------------------------------------------------------------------------
+
+_MyType::size_type
+corevm::runtime::native_types_pool::total_size() const
+{
+  return m_container.total_size();
 }
 
 // -----------------------------------------------------------------------------
@@ -121,5 +130,36 @@ corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
 
   m_container.destroy(ptr);
 }
+
+// -----------------------------------------------------------------------------
+
+namespace corevm {
+
+
+namespace runtime {
+
+
+std::ostream&
+operator<<(std::ostream& ost, const corevm::runtime::native_types_pool& pool)
+{
+  ost << "Native types pool: ";
+  ost << pool.size() << "/" << pool.max_size();
+  ost << " (" << pool.total_size() << " bytes)";
+  ost << std::endl << std::endl;
+
+  ost << "-- BEGIN --" << std::endl;
+  ost << std::endl;
+  ost << pool.m_container;
+  ost << std::endl;
+  ost << "-- END --" << std::endl;
+
+  return ost;
+}
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
 
 // -----------------------------------------------------------------------------

@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <unordered_map>
 
@@ -860,6 +861,10 @@ typedef struct instr
   const corevm::runtime::instr_oprd oprd1;
   const corevm::runtime::instr_oprd oprd2;
 } instr;
+
+// -----------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream&, const corevm::runtime::instr&);
 
 // -----------------------------------------------------------------------------
 

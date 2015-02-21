@@ -20,13 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_VECTOR_H_
-#define COREVM_VECTOR_H_
-
-#include "instr.h"
+#include "../../include/runtime/closure.h"
 
 #include <ostream>
-#include <vector>
 
 
 namespace corevm {
@@ -35,19 +31,24 @@ namespace corevm {
 namespace runtime {
 
 
-typedef std::vector<corevm::runtime::instr> vector;
+std::ostream& operator<<(
+  std::ostream& ost, const corevm::runtime::closure& closure)
+{
+  ost << "Closure" << std::endl;
+  ost << std::endl;
+  ost << "-- BEGIN --" << std::endl;
+  ost << std::endl;
+  ost << "ID: " << closure.id << std::endl;
+  ost << "Parent ID: " << closure.parent_id << std::endl;
+  ost << "Vector: " << std::endl << closure.vector;
+  ost << std::endl;
+  ost << "-- END --" << std::endl;
 
-// -----------------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream&, const corevm::runtime::vector&);
-
-// -----------------------------------------------------------------------------
+  return ost;
+}
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
-
-
-#endif /* COREVM_VECTOR_H_ */
+} /* end namespace corevm */

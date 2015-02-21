@@ -23,15 +23,26 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/dyobj/common.h"
 #include "../../include/dyobj/dynamic_object.h"
 #include "../../include/dyobj/dynamic_object_heap.h"
+#include "../../include/dyobj/dynamic_object_manager.h"
 #include "../../include/gc/garbage_collector.h"
 #include "../../include/gc/garbage_collection_scheme.h"
 
 #include <sneaker/testing/_unittest.h>
 
+#include <sstream>
 #include <vector>
 
 
-class dummy_dynamic_object_manager {};
+class dummy_dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+{
+public:
+  virtual bool garbage_collectible() const noexcept { return true; }
+  virtual void on_create() noexcept {}
+  virtual void on_setattr() noexcept {}
+  virtual void on_delattr() noexcept {}
+  virtual void on_delete() noexcept {}
+  virtual void on_exit() noexcept {}
+};
 
 // -----------------------------------------------------------------------------
 
@@ -109,6 +120,28 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
   {
     m_heap.erase(ids[i]);
   }
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(dynamic_object_heap_unittest, TestOutputStream)
+{
+  corevm::dyobj::dyobj_id id1 = m_heap.create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_heap.create_dyobj();
+  corevm::dyobj::dyobj_id id3 = m_heap.create_dyobj();
+
+  ASSERT_NE(0, id1);
+  ASSERT_NE(0, id2);
+  ASSERT_NE(0, id3);
+
+  std::stringstream ss;
+  ss << m_heap;
+
+  ASSERT_NE(0, ss.str().size());
+
+  m_heap.erase(id1);
+  m_heap.erase(id2);
+  m_heap.erase(id3);
 }
 
 // -----------------------------------------------------------------------------

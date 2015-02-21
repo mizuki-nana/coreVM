@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <iterator>
+#include <ostream>
 #include <set>
 
 
@@ -459,6 +460,29 @@ corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
 
   pointer p = static_cast<pointer>(*itr.m_inner);
   destroy(p);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+std::ostream&
+operator<<(std::ostream& ost, const corevm::memory::object_container<T, AllocatorType>& container)
+{
+  ost << "object container: ";
+  ost << container.size() << "/" << container.max_size();
+  ost << " (" << container.total_size() << " bytes)";
+  ost << std::endl << std::endl;
+
+  ost << "-- BEGIN --" << std::endl;
+  for (auto itr = container.cbegin(); itr != container.cend(); ++itr)
+  {
+    const T* t = itr.operator->();
+    ost << t << std::endl;
+  }
+
+  ost << "-- END --" << std::endl;
+
+  return ost;
 }
 
 // -----------------------------------------------------------------------------

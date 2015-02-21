@@ -42,6 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 #include <cstdint>
 #include <list>
+#include <ostream>
 #include <stack>
 #include <stdexcept>
 #include <unordered_map>
@@ -618,5 +619,49 @@ corevm::runtime::process::get_compartment(
     *ptr = &m_compartments[id];
   }
 }
+
+// -----------------------------------------------------------------------------
+
+namespace corevm {
+
+
+namespace runtime {
+
+
+std::ostream& operator<<(
+  std::ostream& ost, const corevm::runtime::process& process)
+{
+  ost << "Process" << std::endl;
+  ost << std::endl;
+  ost << "-- BEGIN --" << std::endl;
+  ost << "Heap size: " << process.heap_size() << std::endl;
+  ost << "Max heap size: " << process.max_heap_size() << std::endl;
+  ost << "Native types pool size: " << process.ntvhndl_pool_size() << std::endl;
+  ost << "Max native types pool size: " << process.max_ntvhndl_pool_size() << std::endl;
+  ost << "Compartments: " << process.m_compartments.size() << std::endl;
+  ost << std::endl;
+
+  for (auto itr = process.m_compartments.cbegin();
+       itr != process.m_compartments.cend();
+       ++itr)
+  {
+    const corevm::runtime::compartment& compartment = *itr;
+    ost << compartment << std::endl;
+  }
+
+  ost << "-- END --" << std::endl;
+  ost << std::endl;
+
+  ost << process.m_dynamic_object_heap << std::endl;
+  ost << process.m_ntvhndl_pool << std::endl;
+
+  return ost;
+}
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
 
 // -----------------------------------------------------------------------------

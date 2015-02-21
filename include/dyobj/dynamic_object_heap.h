@@ -34,7 +34,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <cstdint>
+#include <iomanip>
 #include <limits>
+#include <ostream>
 #include <stdexcept>
 #include <type_traits>
 
@@ -295,6 +297,38 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
   obj_ptr->set_id(id);
 
   return id;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class dynamic_object_manager>
+std::ostream&
+operator<<(std::ostream& ost, const corevm::dyobj::dynamic_object_heap<dynamic_object_manager>& heap)
+{
+  using T = typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type;
+
+  ost << "Dynamic object heap: ";
+  ost << heap.size() << "/" << heap.max_size();
+  ost << " (" << heap.total_size() << " bytes)";
+  ost << std::endl << std::endl;
+
+  ost << "-- BEGIN --" << std::endl;
+  for (auto itr = heap.cbegin(); itr != heap.cend(); ++itr)
+  {
+    const T* t = itr.operator->();
+    ost << t << "  ";
+    ost << "id[" << std::setw(4) << std::hex << std::showbase << t->id() << std::noshowbase << std::dec << "] ";
+    ost << "flags[" << std::setw(4) << std::hex << std::showbase << t->flags() << std::noshowbase << std::dec << "] ";
+    ost << "attrs[" << std::setw(4) << t->attr_count() << "] ";
+    ost << "garbage-collectible[" << std::setw(1) << t->is_garbage_collectible() << "] ";
+    ost << "ntvhndl[" << std::setw(4) << std::hex << std::showbase << t->get_ntvhndl_key() << std::noshowbase << std::dec << "] ";
+    ost << "closure[" << std::setw(8) << t->get_closure_ctx().compartment_id << ":" << t->get_closure_ctx().closure_id << "] ";
+    ost << std::endl;
+  }
+
+  ost << "-- END --" << std::endl;
+
+  return ost;
 }
 
 // -----------------------------------------------------------------------------

@@ -21,16 +21,20 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/closure.h"
+#include "../../include/runtime/closure_ctx.h"
 #include "../../include/runtime/common.h"
 #include "../../include/runtime/gc_rule.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/process_runner.h"
 #include "../../include/runtime/sighandler_registrar.h"
 #include "../../include/runtime/vector.h"
+#include "../../include/types/native_type_handle.h"
+#include "../../include/types/types.h"
 
 #include <sneaker/testing/_unittest.h>
 
 #include <cstdint>
+#include <sstream>
 
 
 class process_unittest : public ::testing::Test {};
@@ -285,6 +289,79 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
   process.get_frame_by_closure_ctx(ctx2, &ptr);
 
   ASSERT_NE(nullptr, ptr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_unittest, TestOutputStream)
+{
+  corevm::runtime::process process;
+
+  // Compartment 1
+
+  corevm::runtime::compartment compartment1("./example.core");
+
+  corevm::runtime::vector vector1 {
+    { .code=6, .oprd1=421, .oprd2=523 },
+    { .code=5, .oprd1=532, .oprd2=0   },
+    { .code=2, .oprd1=72,  .oprd2=0   },
+  };
+
+  corevm::runtime::closure closure1 {
+    .id=2,
+    .parent_id=1,
+    .vector=vector1
+  };
+
+  corevm::runtime::closure_table closure_table1 {
+    closure1
+  };
+
+  compartment1.set_closure_table(closure_table1);
+
+  process.insert_compartment(compartment1);
+
+  // Compartment 2
+
+  corevm::runtime::compartment compartment2("./tests/sample01.core");
+
+  corevm::runtime::vector vector2 {
+    { .code=17, .oprd1=957, .oprd2=0  },
+    { .code=59, .oprd1=0,   .oprd2=0  },
+    { .code=22, .oprd1=5,   .oprd2=0  },
+  };
+
+  corevm::runtime::closure closure2 {
+    .id=1,
+    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
+    .vector=vector2
+  };
+
+  corevm::runtime::closure_table closure_table2 {
+    closure2
+  };
+
+  compartment2.set_closure_table(closure_table2);
+
+  process.insert_compartment(compartment2);
+
+  auto id = corevm::runtime::process::adapter(process).help_create_dyobj();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  obj.set_ntvhndl_key(1);
+  obj.set_closure_ctx(
+    corevm::runtime::closure_ctx {
+      .compartment_id=1,
+      .closure_id=2
+    }
+  );
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(32);
+  process.insert_ntvhndl(hndl);
+
+  std::stringstream ss;
+  ss << process;
+
+  ASSERT_NE(0, ss.str().size());
 }
 
 // -----------------------------------------------------------------------------

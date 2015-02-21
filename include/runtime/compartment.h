@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 
+#include <ostream>
 #include <string>
 
 
@@ -56,6 +57,8 @@ public:
   void set_closure_table(const corevm::runtime::closure_table&);
 
   bool get_starting_closure(corevm::runtime::closure*);
+
+  friend std::ostream& operator<<(std::ostream&, const corevm::runtime::compartment&);
 
 private:
   const std::string m_path;

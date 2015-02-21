@@ -20,13 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_VECTOR_H_
-#define COREVM_VECTOR_H_
-
-#include "instr.h"
+#include "../../include/runtime/vector.h"
 
 #include <ostream>
-#include <vector>
 
 
 namespace corevm {
@@ -35,19 +31,20 @@ namespace corevm {
 namespace runtime {
 
 
-typedef std::vector<corevm::runtime::instr> vector;
+std::ostream& operator<<(
+  std::ostream& ost, const corevm::runtime::vector& vector)
+{
+  for (auto itr = vector.cbegin(); itr != vector.cend(); ++itr)
+  {
+    const corevm::runtime::instr& instr = *itr;
+    ost << instr << std::endl;
+  }
 
-// -----------------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream&, const corevm::runtime::vector&);
-
-// -----------------------------------------------------------------------------
-
-
-}; /* end namespace runtime */
-
-
-}; /* end namespace corevm */
+  return ost;
+}
 
 
-#endif /* COREVM_VECTOR_H_ */
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

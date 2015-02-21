@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <set>
+#include <sstream>
 
 
 using sneaker::allocator::object_traits;
@@ -452,6 +453,29 @@ TEST_F(object_container_unittest, TestAllocationOverMaxSize)
     T* ptr = ptrs[i];
     m_container.destroy(ptr);
   }
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(object_container_unittest, TestOutputStream)
+{
+  T* p1 = m_container.create();
+  T* p2 = m_container.create();
+  T* p3 = m_container.create();
+
+  ASSERT_NE(nullptr, p1);
+  ASSERT_NE(nullptr, p2);
+  ASSERT_NE(nullptr, p3);
+
+  std::stringstream ss;
+
+  ss << m_container;
+
+  ASSERT_NE(0, ss.str().size());
+
+  m_container.destroy(p1);
+  m_container.destroy(p2);
+  m_container.destroy(p3);
 }
 
 // -----------------------------------------------------------------------------

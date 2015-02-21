@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/compartment.h"
 
 #include <algorithm>
+#include <ostream>
 
 
 // -----------------------------------------------------------------------------
@@ -131,5 +132,42 @@ corevm::runtime::compartment::get_starting_closure(
 
   return false;
 }
+
+// -----------------------------------------------------------------------------
+
+
+namespace corevm {
+
+
+namespace runtime {
+
+
+std::ostream& operator<<(
+  std::ostream& ost, const corevm::runtime::compartment& compartment)
+{
+  const std::string LINE = "----------------------------";
+  ost << LINE << std::endl;
+  ost << "Compartment" << std::endl;
+  ost << std::endl;
+  ost << "Path: " << compartment.path() << std::endl;
+  ost << std::endl;
+
+  for (auto itr = compartment.m_closure_table.cbegin();
+      itr != compartment.m_closure_table.cend();
+      ++itr)
+  {
+    const corevm::runtime::closure& closure = *itr;
+    ost << closure << std::endl;
+  }
+
+  return ost;
+}
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
+
 
 // -----------------------------------------------------------------------------

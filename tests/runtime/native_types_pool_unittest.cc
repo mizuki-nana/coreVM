@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/testing/_unittest.h>
 
 #include <cstdint>
+#include <sstream>
 
 
 class native_types_pool_unittest : public ::testing::Test {};
@@ -109,6 +110,23 @@ TEST_F(native_types_pool_unittest, TestCreateAndErase)
     },
     corevm::runtime::native_type_handle_not_found_error
   );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_types_pool_unittest, TestOutputStream)
+{
+  corevm::runtime::native_types_pool pool;
+  pool.create();
+  pool.create();
+  pool.create();
+
+  ASSERT_EQ(3, pool.size());
+
+  std::stringstream ss;
+  ss << pool;
+
+  ASSERT_NE(0, ss.str().size());
 }
 
 // -----------------------------------------------------------------------------

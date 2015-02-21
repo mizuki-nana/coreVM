@@ -20,34 +20,45 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_VECTOR_H_
-#define COREVM_VECTOR_H_
+#include "../../include/runtime/compartment.h"
+#include "../../include/runtime/closure.h"
+#include "../../include/runtime/vector.h"
 
-#include "instr.h"
+#include <sneaker/testing/_unittest.h>
 
-#include <ostream>
-#include <vector>
-
-
-namespace corevm {
+#include <sstream>
 
 
-namespace runtime {
-
-
-typedef std::vector<corevm::runtime::instr> vector;
+class compartment_unittest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream&, const corevm::runtime::vector&);
+TEST_F(compartment_unittest, TestOutputStream)
+{
+  corevm::runtime::compartment compartment("./example.core");
+
+  corevm::runtime::vector vector {
+    { .code=6, .oprd1=421, .oprd2=523 },
+    { .code=5, .oprd1=532, .oprd2=0   },
+    { .code=2, .oprd1=72,  .oprd2=0   },
+  };
+
+  corevm::runtime::closure closure {
+    .id=2,
+    .parent_id=1,
+    .vector=vector
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure
+  };
+
+  compartment.set_closure_table(closure_table);
+
+  std::stringstream ss;
+  ss << compartment;
+
+  ASSERT_NE(0, ss.str().size());
+}
 
 // -----------------------------------------------------------------------------
-
-
-}; /* end namespace runtime */
-
-
-}; /* end namespace corevm */
-
-
-#endif /* COREVM_VECTOR_H_ */

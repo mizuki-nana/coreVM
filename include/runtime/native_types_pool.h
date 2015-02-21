@@ -37,6 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <string>
 #include <limits>
+#include <ostream>
 #include <type_traits>
 
 
@@ -102,6 +103,8 @@ public:
 
   size_type max_size() const;
 
+  size_type total_size() const;
+
   reference at(const corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_not_found_error);
 
@@ -111,9 +114,13 @@ public:
   void erase(const corevm::dyobj::ntvhndl_key&)
     throw(corevm::runtime::native_type_handle_not_found_error);
 
+  friend std::ostream& operator<<(std::ostream&, const corevm::runtime::native_types_pool&);
+
 private:
   container_type m_container;
 };
+
+// -----------------------------------------------------------------------------
 
 
 }; /* end namespace runtime */
