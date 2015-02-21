@@ -49,7 +49,8 @@ protected:
   {
     static const std::string content(
       "{"
-        "\"alloc-size\": 1024"
+        "\"alloc-size\": 1024,"
+        "\"gc-interval\": 100"
       "}"
     );
 
@@ -70,6 +71,7 @@ TEST_F(configuration_unittest, TestLoadSuccessful)
   configuration.load_config();
 
   ASSERT_EQ(1024, configuration.alloc_size());
+  ASSERT_EQ(100, configuration.gc_interval());
 }
 
 // -----------------------------------------------------------------------------

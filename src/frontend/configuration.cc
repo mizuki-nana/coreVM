@@ -46,6 +46,9 @@ const std::string corevm::frontend::configuration::schema = \
     "\"properties\": {"
       "\"alloc-size\": {"
         "\"type\": \"integer\""
+      "},"
+      "\"gc-interval\": {"
+        "\"type\": \"integer\""
       "}"
     "}"
   "}";
@@ -55,6 +58,7 @@ const std::string corevm::frontend::configuration::schema = \
 corevm::frontend::configuration::configuration(const std::string& path)
   :
   m_alloc_size(0),
+  m_gc_interval(0),
   m_path(path)
 {
 }
@@ -65,6 +69,14 @@ uint64_t
 corevm::frontend::configuration::alloc_size() const
 {
   return m_alloc_size;
+}
+
+// -----------------------------------------------------------------------------
+
+uint32_t
+corevm::frontend::configuration::gc_interval() const
+{
+  return m_gc_interval;
 }
 
 // -----------------------------------------------------------------------------
@@ -146,6 +158,13 @@ corevm::frontend::configuration::set_values(const JSON& config_json)
   {
     JSON alloc_size_raw = config_obj.at("alloc-size");
     m_alloc_size = static_cast<uint64_t>(alloc_size_raw.int_value());
+  }
+
+  // GC interval.
+  if (config_obj.find("gc-interval") != config_obj.end())
+  {
+    JSON gc_interval_raw = config_obj.at("gc-interval");
+    m_gc_interval = static_cast<uint32_t>(gc_interval_raw.int_value());
   }
 }
 

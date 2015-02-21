@@ -50,10 +50,13 @@ public:
   /* Value accessors. */
   uint64_t alloc_size() const;
 
+  uint32_t gc_interval() const;
+
 private:
   void set_values(const JSON&);
 
   uint64_t m_alloc_size;
+  uint32_t m_gc_interval;
 
 private:
   static const std::string schema;
