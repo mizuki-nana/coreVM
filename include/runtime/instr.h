@@ -277,6 +277,12 @@ enum instr_enum : uint32_t
    */
   GC,
 
+  /**
+   * <debug, _, _>
+   * Show debug information.
+   */
+  DEBUG,
+
   /* ------------------ Arithmetic and logic instructions ------------------- */
 
   /**
@@ -1202,6 +1208,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_gc : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_debug : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

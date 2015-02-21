@@ -31,6 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <csignal>
 #include <cstdlib>
 #include <iomanip>
+#include <iostream>
 #include <memory>
 #include <ostream>
 #include <stdexcept>
@@ -111,6 +112,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   /* ------------------------- Runtime instructions ------------------------- */
 
   { corevm::runtime::instr_enum::GC,        { .num_oprd=0, .str="gc",        .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        } },
+  { corevm::runtime::instr_enum::DEBUG,     { .num_oprd=0, .str="debug",     .handler=std::make_shared<corevm::runtime::instr_handler_debug>()      } },
 
   /* ---------------- Arithmetic and logic instructions --------------------- */
 
@@ -1061,6 +1063,15 @@ corevm::runtime::instr_handler_gc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   process.do_gc();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_debug::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  std::cout << process << std::endl;
 }
 
 // -----------------------------------------------------------------------------
