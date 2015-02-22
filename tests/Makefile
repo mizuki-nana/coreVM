@@ -43,11 +43,11 @@ SUBDIRS=$(MEMORY) $(DYOBJ) $(GC) $(TYPES) $(RUNTIME) $(FRONTEND)
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	CFLAGS += -D LINUX
-	LFLAGS += -lboost_system -lboost_regex
+	LFLAGS += -lboost_system -lboost_regex -lboost_program_options
 endif
 ifeq ($(UNAME_S), Darwin)
 	CFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
-	LFLAGS += -lboost_system-mt -lboost_regex-mt
+	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
 endif
 
 

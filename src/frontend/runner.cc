@@ -20,68 +20,71 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "../../include/frontend/runner.h"
+
+#include "../../include/errors.h"
+#include "../../include/frontend/bytecode_loader.h"
 #include "../../include/frontend/configuration.h"
+#include "../../include/runtime/process.h"
+#include "../../include/runtime/process_runner.h"
 
-#include <sneaker/testing/_unittest.h>
-
-#include <fstream>
+#include <cerrno>
+#include <cstring>
+#include <iostream>
 #include <string>
 
 
-class configuration_unittest : public ::testing::Test
-{
-protected:
-  static const char* PATH;
-
-  virtual void SetUp()
-  {
-    std::ofstream f(PATH, std::ios::binary);
-    f << this->content();
-    f.close();
-  }
-
-  virtual void TearDown()
-  {
-    remove(PATH);
-  }
-
-  virtual const std::string content()
-  {
-    static const std::string content(
-      "{"
-        "\"alloc-size\": 1024,"
-        "\"gc-interval\": 100"
-      "}"
-    );
-
-    return content;
-  }
-};
-
 // -----------------------------------------------------------------------------
 
-const char* configuration_unittest::PATH = "./sample-config.config";
-
-// -----------------------------------------------------------------------------
-
-TEST_F(configuration_unittest, TestLoadSuccessful)
+corevm::frontend::runner::runner(
+  const std::string& path,
+  corevm::frontend::configuration& configuration)
+  :
+  m_path(path),
+  m_configuration(configuration)
 {
-  auto configuration = corevm::frontend::configuration::load_config(PATH);
-
-  ASSERT_EQ(1024, configuration.alloc_size());
-  ASSERT_EQ(100, configuration.gc_interval());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(configuration_unittest, TestLoadFailsWithInvalidPath)
+int
+corevm::frontend::runner::run() const noexcept
 {
-  ASSERT_THROW(
+  // TODO: [COREVM-158] Fill in configuration values to process
+  corevm::runtime::process process;
+
+  try
+  {
+    corevm::frontend::bytecode_loader::load(m_path, process);
+
+    bool res = corevm::runtime::process_runner(process).start();
+
+    if (!res)
     {
-      corevm::frontend::configuration::load_config("$%^some-invalid-path!@#");
-    },
-    corevm::frontend::configuration_loading_error
-  );
+      std::cerr << "Run failed: " << strerror(errno) << std::endl;
+      return -1;
+    }
+  }
+  catch (const corevm::runtime_error& ex)
+  {
+    std::cerr << "Runtime error: " << ex.what() << std::endl;
+    std::cerr << "Abort" << std::endl;
+    return -1;
+  }
+  catch (const std::exception& ex)
+  {
+    std::cerr << "Error: " << ex.what() << std::endl;
+    std::cerr << "Abort" << std::endl;
+    return -1;
+  }
+  catch (...)
+  {
+    std::cerr << "Unknown error" << std::endl;
+    std::cerr << "Abort" << std::endl;
+    return -1;
+  }
+
+  return 0;
 }
 
 // -----------------------------------------------------------------------------

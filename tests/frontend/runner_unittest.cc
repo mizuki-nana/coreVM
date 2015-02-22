@@ -20,59 +20,21 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CONFIGURATION_H_
-#define COREVM_CONFIGURATION_H_
+#include "../../include/frontend/runner.h"
 
-#include "errors.h"
+#include "../../include/frontend/configuration.h"
 
-#include <sneaker/json/json.h>
-
-#include <string>
+#include <sneaker/testing/_unittest.h>
 
 
-using sneaker::json::JSON;
+class runner_unittest : public ::testing::Test {};
 
 
-namespace corevm {
-
-
-namespace frontend {
-
-
-class configuration
+TEST_F(runner_unittest, TestRun)
 {
-public:
-  configuration();
+  corevm::frontend::configuration configuration;
 
-  static configuration load_config(const std::string&)
-    throw(corevm::frontend::configuration_loading_error);
+  int res = corevm::frontend::runner("./sample.core", configuration).run();
 
-public:
-  /* Value accessors. */
-  uint64_t alloc_size() const;
-
-  uint32_t gc_interval() const;
-
-  /* Value setters. */
-  void set_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
-
-private:
-  static void set_values(configuration&, const JSON&);
-
-  uint64_t m_alloc_size;
-  uint32_t m_gc_interval;
-
-private:
-  static const std::string schema;
-};
-
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_CONFIGURATION_H_ */
+  ASSERT_EQ(-1, res);
+}

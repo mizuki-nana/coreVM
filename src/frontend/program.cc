@@ -20,68 +20,67 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "../../include/frontend/program.h"
+
+#include "../../include/version.h"
 #include "../../include/frontend/configuration.h"
+#include "../../include/frontend/runner.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <boost/format.hpp>
+#include <sneaker/utility/cmdline_program.h>
 
-#include <fstream>
-#include <string>
+#include <cstdint>
 
-
-class configuration_unittest : public ::testing::Test
-{
-protected:
-  static const char* PATH;
-
-  virtual void SetUp()
-  {
-    std::ofstream f(PATH, std::ios::binary);
-    f << this->content();
-    f.close();
-  }
-
-  virtual void TearDown()
-  {
-    remove(PATH);
-  }
-
-  virtual const std::string content()
-  {
-    static const std::string content(
-      "{"
-        "\"alloc-size\": 1024,"
-        "\"gc-interval\": 100"
-      "}"
-    );
-
-    return content;
-  }
-};
 
 // -----------------------------------------------------------------------------
 
-const char* configuration_unittest::PATH = "./sample-config.config";
-
-// -----------------------------------------------------------------------------
-
-TEST_F(configuration_unittest, TestLoadSuccessful)
+corevm::frontend::program::program()
+  :
+  sneaker::utility::cmdline_program(
+    str(boost::format("coreVM %s") % COREVM_CANONICAL_VERSION).c_str()),
+  m_input_path(),
+  m_config_path(),
+  m_alloc_size(0),
+  m_gc_interval(0)
 {
-  auto configuration = corevm::frontend::configuration::load_config(PATH);
-
-  ASSERT_EQ(1024, configuration.alloc_size());
-  ASSERT_EQ(100, configuration.gc_interval());
+  add_positional_parameter("input", 1);
+  add_string_parameter("input", "Input file", &m_input_path);
+  add_string_parameter("config", "Configuration file", &m_config_path);
+  add_uint64_parameter("alloc-size", "Allocation size (bytes)", &m_alloc_size);
+  add_uint32_parameter("gc-interval", "GC interval (ms)", &m_gc_interval);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(configuration_unittest, TestLoadFailsWithInvalidPath)
+bool
+corevm::frontend::program::check_parameters() const
 {
-  ASSERT_THROW(
-    {
-      corevm::frontend::configuration::load_config("$%^some-invalid-path!@#");
-    },
-    corevm::frontend::configuration_loading_error
-  );
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+int
+corevm::frontend::program::do_run()
+{
+  corevm::frontend::configuration configuration;
+
+  if (option_provided("config"))
+  {
+    configuration = corevm::frontend::configuration::load_config(m_config_path);
+  }
+
+  if (option_provided("alloc-size"))
+  {
+    configuration.set_alloc_size(m_alloc_size);
+  }
+
+  if (option_provided("gc-interval"))
+  {
+    configuration.set_gc_interval(m_gc_interval);
+  }
+
+  return corevm::frontend::runner(m_input_path, configuration).run();
 }
 
 // -----------------------------------------------------------------------------

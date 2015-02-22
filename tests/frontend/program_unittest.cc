@@ -20,59 +20,29 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CONFIGURATION_H_
-#define COREVM_CONFIGURATION_H_
+#include "../../include/frontend/program.h"
 
-#include "errors.h"
-
-#include <sneaker/json/json.h>
-
-#include <string>
+#include <sneaker/testing/_unittest.h>
 
 
-using sneaker::json::JSON;
+class program_unittest : public ::testing::Test {};
 
 
-namespace corevm {
-
-
-namespace frontend {
-
-
-class configuration
+TEST_F(program_unittest, TestRun)
 {
-public:
-  configuration();
+  corevm::frontend::program program;
 
-  static configuration load_config(const std::string&)
-    throw(corevm::frontend::configuration_loading_error);
+  int argc = 2;
+  char** argv = nullptr;
+  argv = (char* [])
+  {
+    (char*)"coreVM",
+    (char*)"./sample.core",
+    (char*)"--config",
+    (char*)"./sample.config"
+  };
 
-public:
-  /* Value accessors. */
-  uint64_t alloc_size() const;
+  int res = program.run(argc, argv);
 
-  uint32_t gc_interval() const;
-
-  /* Value setters. */
-  void set_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
-
-private:
-  static void set_values(configuration&, const JSON&);
-
-  uint64_t m_alloc_size;
-  uint32_t m_gc_interval;
-
-private:
-  static const std::string schema;
-};
-
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_CONFIGURATION_H_ */
+  ASSERT_EQ(-1, res);
+}

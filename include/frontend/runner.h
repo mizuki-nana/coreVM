@@ -20,17 +20,12 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CONFIGURATION_H_
-#define COREVM_CONFIGURATION_H_
+#ifndef COREVM_RUNNER_H_
+#define COREVM_RUNNER_H_
 
-#include "errors.h"
-
-#include <sneaker/json/json.h>
+#include "configuration.h"
 
 #include <string>
-
-
-using sneaker::json::JSON;
 
 
 namespace corevm {
@@ -39,33 +34,16 @@ namespace corevm {
 namespace frontend {
 
 
-class configuration
+class runner
 {
 public:
-  configuration();
+  runner(const std::string&, corevm::frontend::configuration&);
 
-  static configuration load_config(const std::string&)
-    throw(corevm::frontend::configuration_loading_error);
-
-public:
-  /* Value accessors. */
-  uint64_t alloc_size() const;
-
-  uint32_t gc_interval() const;
-
-  /* Value setters. */
-  void set_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
+  int run() const noexcept;
 
 private:
-  static void set_values(configuration&, const JSON&);
-
-  uint64_t m_alloc_size;
-  uint32_t m_gc_interval;
-
-private:
-  static const std::string schema;
+  const std::string m_path;
+  corevm::frontend::configuration& m_configuration;
 };
 
 
@@ -75,4 +53,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_CONFIGURATION_H_ */
+#endif /* COREVM_RUNNER_H_ */
