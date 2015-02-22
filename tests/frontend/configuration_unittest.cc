@@ -85,3 +85,22 @@ TEST_F(configuration_unittest, TestLoadFailsWithInvalidPath)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(configuration_unittest, TestGetAndSet)
+{
+  corevm::frontend::configuration configuration;
+
+  ASSERT_EQ(0, configuration.alloc_size());
+  ASSERT_EQ(0, configuration.gc_interval());
+
+  uint64_t expected_alloc_size = 1024;
+  uint32_t expected_gc_interval = 32;
+
+  configuration.set_alloc_size(expected_alloc_size);
+  configuration.set_gc_interval(expected_gc_interval);
+
+  ASSERT_EQ(expected_alloc_size, configuration.alloc_size());
+  ASSERT_EQ(expected_gc_interval, configuration.gc_interval());
+}
+
+// -----------------------------------------------------------------------------

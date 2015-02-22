@@ -322,7 +322,7 @@ operator<<(std::ostream& ost, const corevm::dyobj::dynamic_object_heap<dynamic_o
     ost << "attrs[" << std::setw(4) << t->attr_count() << "] ";
     ost << "garbage-collectible[" << std::setw(1) << t->is_garbage_collectible() << "] ";
     ost << "ntvhndl[" << std::setw(4) << std::hex << std::showbase << t->get_ntvhndl_key() << std::noshowbase << std::dec << "] ";
-    ost << "closure[" << std::setw(8) << t->get_closure_ctx().compartment_id << ":" << t->get_closure_ctx().closure_id << "] ";
+    ost << "closure[" << std::setw(8) << t->closure_ctx().compartment_id << ":" << t->closure_ctx().closure_id << "] ";
     ost << std::endl;
   }
 

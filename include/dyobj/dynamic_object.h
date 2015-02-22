@@ -90,9 +90,7 @@ public:
 
   bool is_garbage_collectible() const noexcept;
 
-  uint32_t attr_count() const {
-    return m_attrs.size();
-  }
+  uint32_t attr_count() const;
 
   bool hasattr(attr_key_type) const noexcept;
 
@@ -104,12 +102,7 @@ public:
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::object_attribute_not_found_error);
 
-  // Convenience method.
-  const runtime::closure_ctx& get_closure_ctx() const {
-    return m_closure_ctx;
-  }
-
-  void closure_ctx(runtime::closure_ctx*) const;
+  const runtime::closure_ctx& closure_ctx() const;
 
   void set_closure_ctx(const runtime::closure_ctx&);
 
@@ -341,6 +334,15 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible() 
 
 // -----------------------------------------------------------------------------
 
+template<typename dynamic_object_manager>
+uint32_t
+corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_count() const
+{
+  return m_attrs.size();
+}
+
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::hasattr(
@@ -395,11 +397,10 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
 // -----------------------------------------------------------------------------
 
 template<class dynamic_object_manager>
-void
-corevm::dyobj::dynamic_object<dynamic_object_manager>::closure_ctx(
-  runtime::closure_ctx* ctx) const
+const corevm::runtime::closure_ctx&
+corevm::dyobj::dynamic_object<dynamic_object_manager>::closure_ctx() const
 {
-  *ctx = m_closure_ctx;
+  return m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------

@@ -601,8 +601,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETCXT)
 
   auto &obj = process::adapter(m_process).help_get_dyobj(actual_id);
 
-  corevm::runtime::closure_ctx ctx;
-  obj.closure_ctx(&ctx);
+  const corevm::runtime::closure_ctx& ctx = obj.closure_ctx();
 
   ASSERT_EQ(m_ctx.compartment_id, ctx.compartment_id);
   ASSERT_EQ(m_ctx.closure_id, ctx.closure_id);

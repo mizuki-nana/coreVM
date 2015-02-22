@@ -815,8 +815,7 @@ corevm::runtime::instr_handler_pinvk::execute(
     throw corevm::runtime::invocation_error(id);
   }
 
-  corevm::runtime::closure_ctx ctx;
-  obj.closure_ctx(&ctx);
+  const corevm::runtime::closure_ctx& ctx = obj.closure_ctx();
 
   if (ctx.compartment_id == corevm::runtime::NONESET_COMPARTMENT_ID)
   {
