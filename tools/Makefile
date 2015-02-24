@@ -19,8 +19,6 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO: [COREVM-161] Cleanup final build dependencies in Makefile
-
 CXX=`which clang++`
 CFLAGS=-Wall -std=c++11
 EXTRA_CFLAGS=-Wno-deprecated
@@ -29,22 +27,9 @@ LIBGTEST=/usr/lib/libgtest.a
 LIBSNEAKER=/usr/local/lib/libsneaker.a
 LIBRARIES=$(LIBGTEST)
 
-LIBCOREVM=libcorevm.a
+LIBCOREVM=../libcorevm.a
+
 LFLAGS=$(LIBCOREVM) $(LIBSNEAKER) -lgtest -lpthread
-
-MAIN=./src/main.cc
-
-COREVM=coreVM
-
-AR=ar
-ARFLAGS=rvs
-
-INCLUDE=./include
-SRC=./src
-TESTS=./tests
-TOOLS=./tools
-
-SUBDIRS=$(SRC) $(TESTS)
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -56,31 +41,13 @@ ifeq ($(UNAME_S), Darwin)
 	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
 endif
 
-
-export GTEST_COLOR=true
-
+BIN=./bin
 
 .PHONY: all
 all:
-	@$(MAKE) -C $(SRC)
-	@find . -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
-	@echo "\033[35mGenerated $(LIBCOREVM)"
-	@$(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $(MAIN) $(LFLAGS) -o $(COREVM)
-	@echo "\033[35mGenerated $(COREVM)"
-
-.PHONY: test
-test:
-	@$(MAKE) -C $(TESTS)
-	@-for dir in $(TESTS); do (find $$dir -type f -name "*.test" -exec '{}' \;); done
-	@echo "\033[32mTests run completed...\033[39m";
-
-.PHONY: tools
-tools:
-	@$(MAKE) -C $(TOOLS)
+	mkdir -p $(BIN)
+	for f in ./*.cc; do ($(CXX) $(CFLAGS) $(LIBRARIES) $$f $(LFLAGS) -o $(BIN)/$$f.out; echo "\033[35mGenerated $$f.out\033[39m"); done
 
 .PHONY: clean
 clean:
-	@-for dir in $(SUBDIRS); do ($(MAKE) -C $$dir clean;); done
-	@$(MAKE) clean -C $(TOOLS)
-	@-rm -rf $(LIBCOREVM)
-	@-rm -rf $(COREVM)
+	rm -rf $(BIN)

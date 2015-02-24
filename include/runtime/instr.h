@@ -1961,7 +1961,6 @@ public:
   static corevm::runtime::instr_info validate_instr(const corevm::runtime::instr&)
     throw(corevm::runtime::invalid_instr_error);
 
-private:
   static const map_type instr_info_map;
 };
 

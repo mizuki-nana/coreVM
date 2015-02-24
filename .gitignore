@@ -15,8 +15,9 @@
 # Tests
 *.test
 
-# Binary
+# Binaries
 coreVM
+tools/bin/*
 
 # Misc.
 *.DS_Store
