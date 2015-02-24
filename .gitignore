@@ -15,6 +15,9 @@
 # Tests
 *.test
 
+# Binary
+coreVM
+
 # Misc.
 *.DS_Store
 *.swp

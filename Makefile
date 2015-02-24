@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2014 Yanzheng Li
+# Copyright (c) 2015 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -19,6 +19,23 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# TODO: [COREVM-161] Cleanup final build dependencies in Makefile
+
+CXX=`which clang++`
+CFLAGS=-Wall -std=c++11
+EXTRA_CFLAGS=-Wno-deprecated
+
+LIBGTEST=/usr/lib/libgtest.a
+LIBSNEAKER=/usr/local/lib/libsneaker.a
+LIBRARIES=$(LIBGTEST)
+
+LIBCOREVM=libcorevm.a
+LFLAGS=$(LIBCOREVM) $(LIBSNEAKER) -lgtest -lpthread
+
+MAIN=./src/main.cc
+
+COREVM=coreVM
+
 AR=ar
 ARFLAGS=rvs
 
@@ -28,9 +45,17 @@ TESTS=./tests
 
 SUBDIRS=$(SRC) $(TESTS)
 
-LIBCOREVM=libcorevm.a
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Linux)
+	CFLAGS += -D LINUX
+	LFLAGS += -lboost_system -lboost_regex -lboost_program_options
+endif
+ifeq ($(UNAME_S), Darwin)
+	CFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
+	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
+endif
 
-### Environment variables ###
+
 export GTEST_COLOR=true
 
 
@@ -39,6 +64,8 @@ all:
 	@$(MAKE) -C $(SRC)
 	@find . -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
 	@echo "\033[35mGenerated $(LIBCOREVM)"
+	@$(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $(MAIN) $(LFLAGS) -o $(COREVM)
+	@echo "\033[35mGenerated $(COREVM)"
 
 .PHONY: test
 test:
@@ -50,3 +77,4 @@ test:
 clean:
 	@-for dir in $(SUBDIRS); do ($(MAKE) -C $$dir clean;); done
 	@-rm -rf $(LIBCOREVM)
+	@-rm -rf $(COREVM)

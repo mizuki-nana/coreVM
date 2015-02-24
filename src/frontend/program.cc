@@ -37,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 corevm::frontend::program::program()
   :
   sneaker::utility::cmdline_program(
-    str(boost::format("coreVM %s") % COREVM_CANONICAL_VERSION).c_str()),
+    str(boost::format("coreVM v%s") % COREVM_CANONICAL_VERSION).c_str()),
   m_input_path(),
   m_config_path(),
   m_alloc_size(0),
