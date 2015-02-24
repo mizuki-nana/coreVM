@@ -40,13 +40,15 @@ corevm::frontend::program::program()
     str(boost::format("coreVM v%s") % COREVM_CANONICAL_VERSION).c_str()),
   m_input_path(),
   m_config_path(),
-  m_alloc_size(0),
+  m_heap_alloc_size(0),
+  m_pool_alloc_size(0),
   m_gc_interval(0)
 {
   add_positional_parameter("input", 1);
   add_string_parameter("input", "Input file", &m_input_path);
   add_string_parameter("config", "Configuration file", &m_config_path);
-  add_uint64_parameter("alloc-size", "Allocation size (bytes)", &m_alloc_size);
+  add_uint64_parameter("heap-alloc-size", "Dynamic Object Heap allocation size (bytes)", &m_heap_alloc_size);
+  add_uint64_parameter("pool-alloc-size", "Native Types Pool allocation size (bytes)", &m_pool_alloc_size);
   add_uint32_parameter("gc-interval", "GC interval (ms)", &m_gc_interval);
 }
 
@@ -70,9 +72,14 @@ corevm::frontend::program::do_run()
     configuration = corevm::frontend::configuration::load_config(m_config_path);
   }
 
-  if (option_provided("alloc-size"))
+  if (option_provided("heap-alloc-size"))
   {
-    configuration.set_alloc_size(m_alloc_size);
+    configuration.set_heap_alloc_size(m_heap_alloc_size);
+  }
+
+  if (option_provided("pool-alloc-size"))
+  {
+    configuration.set_pool_alloc_size(m_pool_alloc_size);
   }
 
   if (option_provided("gc-interval"))

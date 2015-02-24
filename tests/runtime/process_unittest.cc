@@ -64,9 +64,28 @@ TEST_F(process_unittest, TestStart)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(process_unittest, TestMaxSizes)
+TEST_F(process_unittest, TestDefaultAndMaxSizes)
 {
   corevm::runtime::process process;
+
+  ASSERT_EQ(0, process.heap_size());
+  ASSERT_EQ(0, process.ntvhndl_pool_size());
+
+  ASSERT_LT(0, process.max_heap_size());
+  ASSERT_LT(0, process.max_ntvhndl_pool_size());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_unittest, TestInstantiateWithParameters)
+{
+  uint64_t heap_alloc_size = 2048;
+  uint64_t pool_alloc_size = 1024;
+
+  corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
+
+  ASSERT_EQ(0, process.heap_size());
+  ASSERT_EQ(0, process.ntvhndl_pool_size());
 
   ASSERT_LT(0, process.max_heap_size());
   ASSERT_LT(0, process.max_ntvhndl_pool_size());

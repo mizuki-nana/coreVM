@@ -53,14 +53,17 @@ int
 corevm::frontend::runner::run() const noexcept
 {
   // TODO: [COREVM-163] Refactor configuration default values ingestion
-  // TODO: [COREVM-164] Make native types handle allocation size configurable
-  uint64_t alloc_size = (
-    m_configuration.alloc_size() || corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE);
+
+  uint64_t heap_alloc_size = (
+    m_configuration.heap_alloc_size() || corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE);
+
+  uint64_t pool_alloc_size = (
+    m_configuration.pool_alloc_size() || corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE);
 
   uint32_t gc_interval = (
     m_configuration.gc_interval() || corevm::runtime::COREVM_DEFAULT_GC_INTERVAL);
 
-  corevm::runtime::process process(alloc_size);
+  corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
 
   try
   {

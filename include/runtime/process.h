@@ -96,7 +96,7 @@ public:
 
 public:
   process();
-  explicit process(uint64_t);
+  explicit process(uint64_t, uint64_t);
   ~process();
 
   /* Processes should not be copyable. */

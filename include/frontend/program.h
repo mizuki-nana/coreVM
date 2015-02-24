@@ -47,7 +47,8 @@ protected:
 private:
   std::string m_input_path;
   std::string m_config_path;
-  uint64_t m_alloc_size;
+  uint64_t m_heap_alloc_size;
+  uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
 };
 

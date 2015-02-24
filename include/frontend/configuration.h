@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/json/json.h>
 
+#include <cstdint>
 #include <string>
 
 
@@ -49,19 +50,24 @@ public:
 
 public:
   /* Value accessors. */
-  uint64_t alloc_size() const;
+  uint64_t heap_alloc_size() const;
+
+  uint64_t pool_alloc_size() const;
 
   uint32_t gc_interval() const;
 
   /* Value setters. */
-  void set_alloc_size(uint64_t);
+  void set_heap_alloc_size(uint64_t);
+
+  void set_pool_alloc_size(uint64_t);
 
   void set_gc_interval(uint32_t);
 
 private:
   static void set_values(configuration&, const JSON&);
 
-  uint64_t m_alloc_size;
+  uint64_t m_heap_alloc_size;
+  uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
 
 private:

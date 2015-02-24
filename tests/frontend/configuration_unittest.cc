@@ -49,7 +49,8 @@ protected:
   {
     static const std::string content(
       "{"
-        "\"alloc-size\": 1024,"
+        "\"heap-alloc-size\": 2048,"
+        "\"pool-alloc-size\": 1024,"
         "\"gc-interval\": 100"
       "}"
     );
@@ -68,7 +69,8 @@ TEST_F(configuration_unittest, TestLoadSuccessful)
 {
   auto configuration = corevm::frontend::configuration::load_config(PATH);
 
-  ASSERT_EQ(1024, configuration.alloc_size());
+  ASSERT_EQ(2048, configuration.heap_alloc_size());
+  ASSERT_EQ(1024, configuration.pool_alloc_size());
   ASSERT_EQ(100, configuration.gc_interval());
 }
 
@@ -90,16 +92,20 @@ TEST_F(configuration_unittest, TestGetAndSet)
 {
   corevm::frontend::configuration configuration;
 
-  ASSERT_EQ(0, configuration.alloc_size());
+  ASSERT_EQ(0, configuration.heap_alloc_size());
+  ASSERT_EQ(0, configuration.pool_alloc_size());
   ASSERT_EQ(0, configuration.gc_interval());
 
-  uint64_t expected_alloc_size = 1024;
+  uint64_t expected_heap_alloc_size = 2048;
+  uint64_t expected_pool_alloc_size = 1024;
   uint32_t expected_gc_interval = 32;
 
-  configuration.set_alloc_size(expected_alloc_size);
+  configuration.set_heap_alloc_size(expected_heap_alloc_size);
+  configuration.set_pool_alloc_size(expected_pool_alloc_size);
   configuration.set_gc_interval(expected_gc_interval);
 
-  ASSERT_EQ(expected_alloc_size, configuration.alloc_size());
+  ASSERT_EQ(expected_heap_alloc_size, configuration.heap_alloc_size());
+  ASSERT_EQ(expected_pool_alloc_size, configuration.pool_alloc_size());
   ASSERT_EQ(expected_gc_interval, configuration.gc_interval());
 }
 

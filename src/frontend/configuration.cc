@@ -45,7 +45,10 @@ const std::string corevm::frontend::configuration::schema = \
   "{"
     "\"type\": \"object\","
     "\"properties\": {"
-      "\"alloc-size\": {"
+      "\"heap-alloc-size\": {"
+        "\"type\": \"integer\""
+      "},"
+      "\"pool-alloc-size\": {"
         "\"type\": \"integer\""
       "},"
       "\"gc-interval\": {"
@@ -58,7 +61,8 @@ const std::string corevm::frontend::configuration::schema = \
 
 corevm::frontend::configuration::configuration()
   :
-  m_alloc_size(0),
+  m_heap_alloc_size(0),
+  m_pool_alloc_size(0),
   m_gc_interval(0)
 {
 }
@@ -66,9 +70,17 @@ corevm::frontend::configuration::configuration()
 // -----------------------------------------------------------------------------
 
 uint64_t
-corevm::frontend::configuration::alloc_size() const
+corevm::frontend::configuration::heap_alloc_size() const
 {
-  return m_alloc_size;
+  return m_heap_alloc_size;
+}
+
+// -----------------------------------------------------------------------------
+
+uint64_t
+corevm::frontend::configuration::pool_alloc_size() const
+{
+  return m_pool_alloc_size;
 }
 
 // -----------------------------------------------------------------------------
@@ -82,9 +94,17 @@ corevm::frontend::configuration::gc_interval() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_alloc_size(uint64_t alloc_size)
+corevm::frontend::configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
-  m_alloc_size = alloc_size;
+  m_heap_alloc_size = heap_alloc_size;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::frontend::configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
+{
+  m_pool_alloc_size = pool_alloc_size;
 }
 
 // -----------------------------------------------------------------------------
@@ -174,18 +194,28 @@ corevm::frontend::configuration::set_values(
 
   JSON::object config_obj = config_json.object_items();
 
-  // Set alloc size.
-  if (config_obj.find("alloc-size") != config_obj.end())
+  // Set heap alloc size.
+  if (config_obj.find("heap-alloc-size") != config_obj.end())
   {
-    JSON alloc_size_raw = config_obj.at("alloc-size");
-    configuration.m_alloc_size = static_cast<uint64_t>(alloc_size_raw.int_value());
+    JSON heap_alloc_size_raw = config_obj.at("heap-alloc-size");
+    uint64_t heap_alloc_size = static_cast<uint64_t>(heap_alloc_size_raw.int_value());
+    configuration.set_heap_alloc_size(heap_alloc_size);
+  }
+
+  // Set ntv hndl pool alloc size.
+  if (config_obj.find("pool-alloc-size") != config_obj.end())
+  {
+    JSON pool_alloc_size_raw = config_obj.at("pool-alloc-size");
+    uint64_t pool_alloc_size = static_cast<uint64_t>(pool_alloc_size_raw.int_value());
+    configuration.set_pool_alloc_size(pool_alloc_size);
   }
 
   // GC interval.
   if (config_obj.find("gc-interval") != config_obj.end())
   {
     JSON gc_interval_raw = config_obj.at("gc-interval");
-    configuration.m_gc_interval = static_cast<uint32_t>(gc_interval_raw.int_value());
+    uint32_t gc_interval = static_cast<uint32_t>(gc_interval_raw.int_value());
+    configuration.set_gc_interval(gc_interval);
   }
 }
 
