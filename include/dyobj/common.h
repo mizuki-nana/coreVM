@@ -27,14 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-// Default size of heap: 256 MB.
-const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
-
-
 namespace corevm {
 
 
 namespace dyobj {
+
+
+// Default size of heap: 256 MB.
+const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
 
 
 typedef uint32_t attr_key;

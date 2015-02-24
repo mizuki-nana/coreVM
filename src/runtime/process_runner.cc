@@ -22,12 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/runtime/process_runner.h"
 
+#include "../../include/runtime/common.h"
 #include "../../include/runtime/process.h"
 
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
+#include <cstdint>
 
-const int COREVM_PROCESS_DEFAULT_PAUSE_TIME = 10;
 
 // -----------------------------------------------------------------------------
 
@@ -39,7 +40,24 @@ corevm::runtime::process_runner::process_runner(
   corevm::runtime::process& process
 ) :
   sneaker::threading::fixed_time_interval_daemon_service(
-    COREVM_PROCESS_DEFAULT_PAUSE_TIME,
+    COREVM_DEFAULT_GC_INTERVAL,
+    corevm::runtime::process_runner::tick_handler,
+    false,
+    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
+  ),
+  m_process(process)
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::process_runner::process_runner(
+  corevm::runtime::process& process,
+  uint32_t gc_interval
+) :
+  sneaker::threading::fixed_time_interval_daemon_service(
+    gc_interval,
     corevm::runtime::process_runner::tick_handler,
     false,
     COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS

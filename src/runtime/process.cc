@@ -129,6 +129,23 @@ corevm::runtime::process::process()
 
 // -----------------------------------------------------------------------------
 
+corevm::runtime::process::process(uint64_t alloc_size)
+  :
+  m_pause_exec(false),
+  m_gc_flag(0),
+  m_pc(0),
+  m_dynamic_object_heap(alloc_size),
+  m_dyobj_stack(),
+  m_call_stack(),
+  m_ntvhndl_pool(),
+  m_sig_instr_map(),
+  m_compartments()
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::~process()
 {
   // Do nothing here.

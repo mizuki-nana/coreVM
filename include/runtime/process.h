@@ -95,7 +95,8 @@ public:
   friend class adapter;
 
 public:
-  explicit process();
+  process();
+  explicit process(uint64_t);
   ~process();
 
   /* Processes should not be copyable. */

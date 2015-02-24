@@ -22,9 +22,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "../../include/frontend/runner.h"
 
+#include "../../include/dyobj/common.h"
 #include "../../include/errors.h"
 #include "../../include/frontend/bytecode_loader.h"
 #include "../../include/frontend/configuration.h"
+#include "../../include/runtime/common.h"
 #include "../../include/runtime/process.h"
 #include "../../include/runtime/process_runner.h"
 
@@ -50,14 +52,21 @@ corevm::frontend::runner::runner(
 int
 corevm::frontend::runner::run() const noexcept
 {
-  // TODO: [COREVM-158] Fill in configuration values to process
-  corevm::runtime::process process;
+  // TODO: [COREVM-163] Refactor configuration default values ingestion
+  // TODO: [COREVM-164] Make native types handle allocation size configurable
+  uint64_t alloc_size = (
+    m_configuration.alloc_size() || corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE);
+
+  uint32_t gc_interval = (
+    m_configuration.gc_interval() || corevm::runtime::COREVM_DEFAULT_GC_INTERVAL);
+
+  corevm::runtime::process process(alloc_size);
 
   try
   {
     corevm::frontend::bytecode_loader::load(m_path, process);
 
-    bool res = corevm::runtime::process_runner(process).start();
+    bool res = corevm::runtime::process_runner(process, gc_interval).start();
 
     if (!res)
     {

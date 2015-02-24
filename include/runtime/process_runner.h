@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
+#include <cstdint>
+
 
 namespace corevm {
 
@@ -38,6 +40,7 @@ class process_runner : public sneaker::threading::fixed_time_interval_daemon_ser
 {
 public:
   explicit process_runner(corevm::runtime::process&);
+  process_runner(corevm::runtime::process&, uint32_t);
 
   bool start();
 
