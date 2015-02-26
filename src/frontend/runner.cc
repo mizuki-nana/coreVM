@@ -54,14 +54,14 @@ corevm::frontend::runner::run() const noexcept
 {
   // TODO: [COREVM-163] Refactor configuration default values ingestion
 
-  uint64_t heap_alloc_size = (
-    m_configuration.heap_alloc_size() || corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE);
+  uint64_t heap_alloc_size = m_configuration.heap_alloc_size() ? \
+    m_configuration.heap_alloc_size() : corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE;
 
-  uint64_t pool_alloc_size = (
-    m_configuration.pool_alloc_size() || corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE);
+  uint64_t pool_alloc_size = m_configuration.pool_alloc_size() ? \
+    m_configuration.pool_alloc_size() : corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE;
 
-  uint32_t gc_interval = (
-    m_configuration.gc_interval() || corevm::runtime::COREVM_DEFAULT_GC_INTERVAL);
+  uint32_t gc_interval = m_configuration.gc_interval() ? \
+    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
   corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
 

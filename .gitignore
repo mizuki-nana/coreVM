@@ -19,6 +19,9 @@
 coreVM
 tools/bin/*
 
+# coreVM bytecode
+*.core
+
 # Misc.
 *.DS_Store
 *.swp

@@ -292,6 +292,9 @@ Compiler:<br/>
 Target: x86_64-pc-linux-gnu
 Thread model: posix`
 
+Python:<br/>
+`Python 2.7.6 (default, Mar 22 2014, 22:59:56)`
+
 Make:<br/>
 `GNU Make 3.81`
 `This program built for x86_64-pc-linux-gnu`

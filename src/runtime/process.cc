@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
+#include <iterator>
 #include <list>
 #include <ostream>
 #include <stack>
@@ -403,7 +404,6 @@ bool
 corevm::runtime::process::pre_start()
 {
   corevm::runtime::closure closure;
-
   if (m_compartments.empty())
   {
     return false;
@@ -411,8 +411,18 @@ corevm::runtime::process::pre_start()
 
   bool res = m_compartments.front().get_starting_closure(&closure);
 
+  // If we found the starting compartment and closure, create a frame with the
+  // closure context, and loads and vector into the process.
   if (res)
   {
+    corevm::runtime::closure_ctx ctx {
+      .compartment_id = 0,
+      .closure_id = closure.id
+    };
+
+    corevm::runtime::frame frame(ctx);
+    push_frame(frame);
+
     insert_vector(closure.vector);
   }
 
@@ -590,8 +600,7 @@ corevm::runtime::process::set_sig_vector(
 void
 corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
 {
-  std::vector<corevm::runtime::instr>::iterator pos = m_instrs.begin() + m_pc + 1;
-  m_instrs.insert(pos, vector.begin(), vector.end());
+  std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
 }
 
 // -----------------------------------------------------------------------------

@@ -216,33 +216,33 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const JSON::object& closure = closure_raw.object_items();
 
     const JSON::string& __name__ = closure.at("__name__").string_value();
-    const JSON& __vector__ = closure.at("__vector__");
 
     const std::string name = static_cast<std::string>(__name__);
-    corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__vector__);
 
-    if (closure.find("__parent__") == closure.end())
-    {
-      process.append_vector(vector);
-      continue;
-    }
-
-    const JSON::string& __parent__ = closure.at("__parent__").string_value();
-    const std::string parent = static_cast<std::string>(__parent__);
-
+    // ID
     if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end())
     {
       str_to_closure_id_map[name] = closure_id++;
     }
+    corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
 
-    if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end())
+    // Parent ID
+    corevm::runtime::closure_id parent_id = corevm::runtime::NONESET_CLOSURE_ID;
+    if (closure.find("__parent__") != closure.end())
     {
-      str_to_closure_id_map[parent] = \
-        parent.empty() ? corevm::runtime::NONESET_CLOSURE_ID : closure_id++;
+      const JSON::string& __parent__ = closure.at("__parent__").string_value();
+      const std::string parent = static_cast<std::string>(__parent__);
+
+      if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end())
+      {
+        parent_id = closure_id++;
+        str_to_closure_id_map[parent] = parent_id;
+      }
     }
 
-    corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
-    corevm::runtime::closure_id parent_id = str_to_closure_id_map.at(parent);
+    // Vector
+    const JSON& __vector__ = closure.at("__vector__");
+    corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(__vector__);
 
     closure_table.push_back(
       corevm::runtime::closure {
