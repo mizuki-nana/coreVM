@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <csignal>
 #include <cstdlib>
@@ -34,7 +35,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <memory>
 #include <ostream>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 
 
 // -----------------------------------------------------------------------------
@@ -307,7 +310,44 @@ corevm::runtime::instr_handler::execute_binary_operator_instr(
 
 template<typename NativeType>
 void
-corevm::runtime::instr_handler::execute_native_type_creation_instr(
+corevm::runtime::instr_handler::execute_native_integer_type_creation_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = NativeType(instr.oprd1);
+
+  frame.push_eval_stack(hndl);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename NativeType>
+void
+corevm::runtime::instr_handler::execute_native_floating_type_creation_instr(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  std::stringstream oprd2_ss;
+  oprd2_ss << instr.oprd2;
+  std::string oprd2_str = oprd2_ss.str();
+
+  std::reverse(oprd2_str.begin(), oprd2_str.end());
+
+  std::stringstream ss;
+  ss << instr.oprd1 << "." << oprd2_str;
+
+  corevm::types::native_type_handle hndl = NativeType(stod(ss.str()));
+
+  frame.push_eval_stack(hndl);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename NativeType>
+void
+corevm::runtime::instr_handler::execute_native_complex_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::runtime::frame& frame = process.top_frame();
@@ -1404,7 +1444,7 @@ void
 corevm::runtime::instr_handler_int8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::int8>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int8>(
     instr,
     process
   );
@@ -1416,7 +1456,7 @@ void
 corevm::runtime::instr_handler_uint8::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::uint8>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint8>(
     instr,
     process
   );
@@ -1428,7 +1468,7 @@ void
 corevm::runtime::instr_handler_int16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::int16>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int16>(
     instr,
     process
   );
@@ -1440,7 +1480,7 @@ void
 corevm::runtime::instr_handler_uint16::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::uint16>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint16>(
     instr,
     process
   );
@@ -1452,7 +1492,7 @@ void
 corevm::runtime::instr_handler_int32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::int32>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int32>(
     instr,
     process
   );
@@ -1464,7 +1504,7 @@ void
 corevm::runtime::instr_handler_uint32::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::uint32>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint32>(
     instr,
     process
   );
@@ -1476,7 +1516,7 @@ void
 corevm::runtime::instr_handler_int64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::int64>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int64>(
     instr,
     process
   );
@@ -1488,7 +1528,7 @@ void
 corevm::runtime::instr_handler_uint64::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::uint64>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint64>(
     instr,
     process
   );
@@ -1500,7 +1540,7 @@ void
 corevm::runtime::instr_handler_bool::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::boolean>(
+  corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::boolean>(
     instr,
     process
   );
@@ -1512,7 +1552,7 @@ void
 corevm::runtime::instr_handler_dec1::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::decimal>(
+  corevm::runtime::instr_handler::execute_native_floating_type_creation_instr<corevm::types::decimal>(
     instr,
     process
   );
@@ -1524,7 +1564,7 @@ void
 corevm::runtime::instr_handler_dec2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::decimal2>(
+  corevm::runtime::instr_handler::execute_native_floating_type_creation_instr<corevm::types::decimal2>(
     instr,
     process
   );
@@ -1536,7 +1576,7 @@ void
 corevm::runtime::instr_handler_str::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::string>(
+  corevm::runtime::instr_handler::execute_native_complex_type_creation_instr<corevm::types::string>(
     instr,
     process
   );
@@ -1548,7 +1588,7 @@ void
 corevm::runtime::instr_handler_ary::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::array>(
+  corevm::runtime::instr_handler::execute_native_complex_type_creation_instr<corevm::types::array>(
     instr,
     process
   );
@@ -1560,7 +1600,7 @@ void
 corevm::runtime::instr_handler_map::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::instr_handler::execute_native_type_creation_instr<corevm::types::map>(
+  corevm::runtime::instr_handler::execute_native_complex_type_creation_instr<corevm::types::map>(
     instr,
     process
   );

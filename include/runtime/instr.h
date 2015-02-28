@@ -512,14 +512,20 @@ enum instr_enum : uint32_t
   BOOL,
 
   /**
-   * <dec1, #, _>
+   * <dec1, #, #>
    * Creates an instance of type `dec` and place it on top of eval stack.
+   * The first operand represents the whole number part, while the second
+   * operand represents the decimal part, expressed as integer in reverse
+   * order.
    */
   DEC1,
 
   /**
-   * <dec2, #, _>
+   * <dec2, #, #>
    * Creates an instance of type `dec2` and place it on top of eval stack.
+   * The first operand represents the whole number part, while the second
+   * operand represents the decimal part, expressed as integer in reverse
+   * order.
    */
   DEC2,
 
@@ -893,7 +899,15 @@ protected:
     const corevm::runtime::instr&, corevm::runtime::process&, InterfaceFunc);
 
   template<typename NativeType>
-  void execute_native_type_creation_instr(
+  void execute_native_integer_type_creation_instr(
+    const corevm::runtime::instr&, corevm::runtime::process&);
+
+  template<typename NativeType>
+  void execute_native_floating_type_creation_instr(
+    const corevm::runtime::instr&, corevm::runtime::process&);
+
+  template<typename NativeType>
+  void execute_native_complex_type_creation_instr(
     const corevm::runtime::instr&, corevm::runtime::process&);
 
   template<typename InterfaceFunc>

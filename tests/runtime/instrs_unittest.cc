@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <climits>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <list>
 
 
@@ -1124,6 +1125,47 @@ protected:
     ASSERT_EQ(expected_result, actual_result);
   }
 
+  template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
+  void execute_instr_and_assert_result_equals_operand(const corevm::runtime::instr& instr)
+  {
+    InstrHandlerCls instr_handler;
+
+    instr_handler.execute(instr, m_process);
+
+    corevm::runtime::frame& frame = m_process.top_frame();
+    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    IntrinsicType expected_result = static_cast<IntrinsicType>(instr.oprd1);
+
+    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
+      result_handle
+    );
+
+    ASSERT_EQ(expected_result, actual_result);
+  }
+
+  template<typename InstrHandlerCls, typename IntrinsicType>
+  void execute_native_floating_type_creation_instr_and_assert_result(
+    const corevm::runtime::instr& instr, IntrinsicType expected_result)
+  {
+    InstrHandlerCls instr_handler;
+
+    instr_handler.execute(instr, m_process);
+
+    corevm::runtime::frame& frame = m_process.top_frame();
+    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
+      result_handle
+    );
+
+    ASSERT_DOUBLE_EQ(expected_result, actual_result);
+  }
+
   uint32_t m_expected_eval_stack_size = 1;
   corevm::runtime::process m_process;
   corevm::runtime::frame* m_frame = new corevm::runtime::frame(m_ctx);
@@ -1365,6 +1407,143 @@ class instrs_native_types_instrs_test : public instrs_eval_stack_instrs_test {};
 
 // -----------------------------------------------------------------------------
 
+class instrs_native_integer_type_creation_instrs_test : public instrs_native_types_instrs_test
+{
+public:
+  virtual void SetUp()
+  {
+    push_eval_stack_and_frame(eval_oprds_list{});
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT8)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::INT8,
+    .oprd1 = std::numeric_limits<int8_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_int8, int8_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT8)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::UINT8,
+    .oprd1 = std::numeric_limits<uint8_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_uint8, uint8_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT16)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::INT16,
+    .oprd1 = std::numeric_limits<int16_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand
+    <corevm::runtime::instr_handler_int16, int16_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT16)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::UINT16,
+    .oprd1 = std::numeric_limits<uint16_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_uint16, uint16_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT32)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::INT32,
+    .oprd1 = std::numeric_limits<int32_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_int32, int32_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT32)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::UINT32,
+    .oprd1 = std::numeric_limits<uint32_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_uint32, uint32_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT64)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::INT64,
+    .oprd1 = std::numeric_limits<int64_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_int64, int64_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT64)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::UINT64,
+    .oprd1 = std::numeric_limits<uint64_t>::max(),
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_uint64, uint64_t>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrBOOL)
+{
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::BOOL,
+    .oprd1 = 1,
+    .oprd2 = 0
+  };
+
+  execute_instr_and_assert_result_equals_operand<
+    corevm::runtime::instr_handler_bool, bool>(instr);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_type_creation_instrs_test : public instrs_native_types_instrs_test
 {
 public:
@@ -1376,79 +1555,30 @@ public:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrINT8)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_int8, int8_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrUINT8)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_uint8, uint8_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrINT16)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_int16, int16_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrUINT16)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_uint16, uint16_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrINT32)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_int32, int32_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrUINT32)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_uint32, uint32_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrINT64)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_int64, int64_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrUINT64)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_uint64, uint64_t>(0);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_native_type_creation_instrs_test, TestInstrBOOL)
-{
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_bool, bool>(true);
-}
-
-// -----------------------------------------------------------------------------
-
 TEST_F(instrs_native_type_creation_instrs_test, TestInstrDEC1)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_dec1, float>(0.0);
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::DEC1,
+    .oprd1 = 12345,
+    .oprd2 = 98760
+  };
+
+  execute_native_floating_type_creation_instr_and_assert_result<
+    corevm::runtime::instr_handler_dec1, float>(instr, 12345.06789);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(instrs_native_type_creation_instrs_test, TestInstrDEC2)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_dec2, double>(0.0);
+  corevm::runtime::instr instr {
+    .code = corevm::runtime::instr_enum::DEC2,
+    .oprd1 = 1234567890,
+    .oprd2 = 9876543210
+  };
+
+  execute_native_floating_type_creation_instr_and_assert_result<
+    corevm::runtime::instr_handler_dec2, double>(instr, 1234567890.0123456789);
 }
 
 // -----------------------------------------------------------------------------

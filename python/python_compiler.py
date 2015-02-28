@@ -96,8 +96,8 @@ class BytecodeGenerator(ast.NodeVisitor):
     """ ----------------------------- expr --------------------------------- """
 
     def visit_BinOp(self, node):
-        self.visit(node.left)
         self.visit(node.right)
+        self.visit(node.left)
         self.visit(node.op)
 
     def visit_Num(self, node):
