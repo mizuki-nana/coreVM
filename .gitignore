@@ -15,6 +15,9 @@
 # Tests
 *.test
 
+# Outputs
+instrs_info.json
+
 # Binaries
 coreVM
 tools/bin/*

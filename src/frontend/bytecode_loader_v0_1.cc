@@ -137,18 +137,18 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
         "\"closure\": {"
           "\"type\": \"object\","
           "\"properties\": {"
-            "\"__name__\": {"
-              "\"type\": \"string\""
+            "\"__id__\": {"
+              "\"type\": \"integer\""
             "},"
             "\"__vector__\": {"
               "\"$ref\": \"#/definitions/vector\""
             "},"
             "\"__parent__\": {"
-              "\"type\": \"string\""
+              "\"type\": \"integer\""
             "}"
           "},"
           "\"required\": ["
-            "\"__name__\","
+            "\"__id__\","
             "\"__vector__\""
           "]"
         "}"
@@ -203,10 +203,7 @@ corevm::frontend::bytecode_loader_v0_1::load(
 
   /* --------------------------- Load closures. --------------------------- */
 
-  // Translate closure names to IDs.
-  std::unordered_map<std::string, corevm::runtime::closure_id> str_to_closure_id_map;
   corevm::runtime::closure_table closure_table;
-  corevm::runtime::closure_id closure_id;
 
   const JSON::array& closures = json_object.at("__MAIN__").array_items();
 
@@ -215,29 +212,16 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const JSON& closure_raw = static_cast<JSON>(*itr);
     const JSON::object& closure = closure_raw.object_items();
 
-    const JSON::string& __name__ = closure.at("__name__").string_value();
-
-    const std::string name = static_cast<std::string>(__name__);
-
     // ID
-    if (str_to_closure_id_map.find(name) == str_to_closure_id_map.end())
-    {
-      str_to_closure_id_map[name] = closure_id++;
-    }
-    corevm::runtime::closure_id id = str_to_closure_id_map.at(name);
+    const int __id__ = closure.at("__id__").int_value();
+    corevm::runtime::closure_id id = __id__;
 
     // Parent ID
     corevm::runtime::closure_id parent_id = corevm::runtime::NONESET_CLOSURE_ID;
     if (closure.find("__parent__") != closure.end())
     {
-      const JSON::string& __parent__ = closure.at("__parent__").string_value();
-      const std::string parent = static_cast<std::string>(__parent__);
-
-      if (str_to_closure_id_map.find(parent) == str_to_closure_id_map.end())
-      {
-        parent_id = closure_id++;
-        str_to_closure_id_map[parent] = parent_id;
-      }
+      const int __parent__ = closure.at("__parent__").int_value();
+      parent_id = __parent__;
     }
 
     // Vector

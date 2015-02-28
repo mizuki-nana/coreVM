@@ -21,6 +21,7 @@
 
 import ast
 import optparse
+import pprint
 import simplejson
 import sys
 
@@ -33,6 +34,35 @@ class Instr(object):
         self.code = code
         self.oprd1 = oprd1
         self.oprd2 = oprd2
+
+    def to_json(self):
+        return [self.code, self.oprd1, self.oprd2]
+
+
+class Closure(object):
+
+    __closure_id = 0
+
+    def __init__(self, name, parent_name, parent_id):
+        self.name = name
+        self.parent_name = parent_name
+        self.vector = []
+        self.closure_id = Closure.__closure_id
+        self.parent_id = parent_id
+        Closure.__closure_id += 1
+
+    def to_json(self):
+        json_dict = {
+            '__id__': self.closure_id,
+            '__vector__': [
+                instr.to_json() for instr in self.vector
+            ]
+        }
+
+        if self.parent_id is not None:
+            json_dict['__parent__'] = self.parent_id
+
+        return json_dict
 
 
 class BytecodeGenerator(ast.NodeVisitor):
@@ -52,10 +82,22 @@ class BytecodeGenerator(ast.NodeVisitor):
     encoding = 'utf8'
     author = 'Yanzheng Li'
 
-    def __init__(self, output_file, instr_str_to_code_map):
+    default_closure_name = '__main__'
+
+    def __init__(self, output_file, instr_str_to_code_map, debug_mode=False):
         self.output_file = output_file
         self.instr_str_to_code_map = instr_str_to_code_map
-        self.vector = []
+        self.debug_mode = debug_mode
+
+        # encoding map
+        self.encoding_id = 0
+        self.encoding_map = dict()
+
+        # closure map
+        self.current_closure_name = self.default_closure_name
+        self.closure_map = {
+            self.current_closure_name: Closure(self.current_closure_name, '', None)
+        }
 
     def finalize(self):
         structured_bytecode = {
@@ -66,32 +108,78 @@ class BytecodeGenerator(ast.NodeVisitor):
             'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
             'encoding': self.encoding,
             'author': self.author,
-            'encoding_map': [],
-            '__MAIN__': [
+            'encoding_map': [
                 {
-                    '__name__': '__main__',
-                    '__vector__': [
-                        [
-                            instr.code,
-                            instr.oprd1,
-                            instr.oprd2
-                        ] for instr in self.vector
-                    ]
-                },
+                    'key': key,
+                    'value': value
+                }
+                for key, value in self.encoding_map.iteritems()
+            ],
+            '__MAIN__': [
+                closure.to_json() for closure in self.closure_map.itervalues()
             ]
         }
+
+        if self.debug_mode:
+            print 'Writing the following to %s' % self.output_file
+            pprint.pprint(structured_bytecode)
 
         with open(self.output_file, 'w') as fd:
             fd.write(simplejson.dumps(structured_bytecode))
 
+    def __current_vector(self):
+        return self.closure_map[self.current_closure_name].vector
+
     def __add_instr(self, code, oprd1, oprd2):
-        self.vector.append(
+        self.__current_vector().append(
             Instr(
                 self.instr_str_to_code_map[code],
                 oprd1,
                 oprd2
             )
         )
+
+    def __mingle_name(self, name):
+        # TDOO: Add support for actual name minglings.
+        return name
+
+    def __get_encoding_id(self, name):
+        if name not in self.encoding_map:
+            self.encoding_id += 1
+            self.encoding_map[name] = self.encoding_id
+
+        return self.encoding_map[name]
+
+    """ ----------------------------- stmt --------------------------------- """
+
+    def visit_FunctionDef(self, node):
+        # step in
+        name = self.__mingle_name(node.name)
+
+        self.closure_map[name] = Closure(
+            name,
+            self.current_closure_name,
+            self.closure_map[self.current_closure_name].closure_id
+        )
+
+        self.current_closure_name = name
+
+        for stmt in node.body:
+            self.visit(stmt)
+        self.visit(node.args)
+
+        # step out
+        self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
+
+        # In the outer closure, set the closure id on the object
+
+        # TODO: [COREVM-170] Add support for object creation flags in Python compiler
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
+        self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+
+    def visit_Expr(self, node):
+        self.visit(node.value)
 
     """ ----------------------------- expr --------------------------------- """
 
@@ -100,8 +188,23 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.visit(node.left)
         self.visit(node.op)
 
+    def visit_Call(self, node):
+        # TODO: [COREVM-169] Add support for functional call arguments in Python tests
+        self.visit(node.func)
+        self.__add_instr('pinvk', 0, 0)
+        self.__add_instr('invk', 0, 0)
+
     def visit_Num(self, node):
         self.__add_instr('uint32', node.n, 0)
+
+    def visit_Name(self, node):
+        name = node.id
+
+        if isinstance(node.ctx, ast.Load):
+            self.__add_instr('ldobj', self.__get_encoding_id(name), 0)
+        else:
+            # TODO: Add support for other types of ctx of `Name` node.
+            pass
 
     """ --------------------------- operator ------------------------------- """
 
@@ -184,6 +287,12 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_NotIn(self, node):
         pass
 
+    """ --------------------------- arguments ------------------------------ """
+
+    def visit_arguments(self, node):
+        # TODO: [COREVM-169] Add support for functional call arguments in Python tests
+        pass
+
 
 def main():
     parser = optparse.OptionParser(
@@ -213,6 +322,14 @@ def main():
         help='Output file'
     )
 
+    parser.add_option(
+        '-d',
+        '--debug',
+        action='store_true',
+        dest='debug_mode',
+        help='Debug mode'
+    )
+
     options, _ = parser.parse_args()
 
     if not options.input_file:
@@ -235,13 +352,19 @@ def main():
     with open(options.input_file, 'r') as fd:
         tree = ast.parse(fd.read())
 
+    generator = BytecodeGenerator(
+        options.output_file,
+        instr_str_to_code_map,
+        debug_mode=options.debug_mode
+    )
+
     try:
-        generator = BytecodeGenerator(options.output_file, instr_str_to_code_map)
         generator.visit(tree)
         generator.finalize()
     except Exception as ex:
-        sys.stderr.write('Failed to compile %s' % options.input_file)
-        sys.stderr.write(ex)
+        sys.stderr.write('Failed to compile %s\n' % options.input_file)
+        sys.stderr.write(str(ex))
+        sys.stderr.write('\n')
         sys.exit(-1)
 
 
