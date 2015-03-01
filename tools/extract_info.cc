@@ -95,8 +95,8 @@ extract_info::do_run()
 
   ss << "{" << std::endl;
 
-  ss << INDENTATION << INSTR_STR_TO_CODE_MAP << ": " << extract_instr_info() << "," << std::endl;
-  ss << INDENTATION << DYOBJ_FLAG_STR_TO_VALUE_MAP << ": " << extract_flags_info() << std::endl;
+  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
+  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP << DOUBLE_QUOTE << ": " << extract_flags_info() << std::endl;
 
   ss << "}" << std::endl;
 

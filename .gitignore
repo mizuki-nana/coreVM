@@ -16,7 +16,7 @@
 *.test
 
 # Outputs
-instrs_info.json
+info.json
 
 # Binaries
 coreVM

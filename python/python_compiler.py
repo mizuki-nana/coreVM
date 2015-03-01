@@ -28,6 +28,10 @@ import sys
 from datetime import datetime
 
 
+INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
+DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
+
+
 class Instr(object):
 
     def __init__(self, code, oprd1, oprd2):
@@ -84,10 +88,16 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     default_closure_name = '__main__'
 
-    def __init__(self, output_file, instr_str_to_code_map, debug_mode=False):
-        self.output_file = output_file
-        self.instr_str_to_code_map = instr_str_to_code_map
-        self.debug_mode = debug_mode
+    def __init__(self, options):
+        self.output_file = options.output_file
+        self.debug_mode = options.debug_mode
+
+        # Read info file
+        with open(options.info_file, 'r') as fd:
+            info_json = simplejson.load(fd)
+
+        self.instr_str_to_code_map = info_json[INSTR_STR_TO_CODE_MAP]
+        self.dyobj_flag_str_to_value_map = info_json[DYOBJ_FLAG_STR_TO_VALUE_MAP]
 
         # encoding map
         self.encoding_id = 0
@@ -150,6 +160,14 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         return self.encoding_map[name]
 
+    def __get_dyobj_flag(self, flags):
+        value = 0
+
+        for flag in flags:
+            value |= (1 << self.dyobj_flag_str_to_value_map[flag])
+
+        return value
+
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
@@ -174,7 +192,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         # In the outer closure, set the closure id on the object
 
         # TODO: [COREVM-170] Add support for object creation flags in Python compiler
-        self.__add_instr('new', 0, 0)
+        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
 
@@ -308,11 +326,11 @@ def main():
     )
 
     parser.add_option(
-        '-n',
-        '--instr-info-file',
+        '-f',
+        '--info-file',
         action='store',
-        dest='instr_info_file',
-        help='Instruction Info File')
+        dest='info_file',
+        help='Info File')
 
     parser.add_option(
         '-o',
@@ -336,29 +354,20 @@ def main():
         sys.stderr.write('Input file not specified\n')
         return -1
 
-    if not options.instr_info_file:
-        sys.stderr.write('Instruction info file not specified\n')
+    if not options.info_file:
+        sys.stderr.write('Info file not specified\n')
         return -1
 
     if not options.output_file:
         sys.stderr.write('Output file not specified\n')
         return -1
 
-    # Extract instr info
-    instr_str_to_code_map = None
-    with open(options.instr_info_file, 'r') as fd:
-        instr_str_to_code_map = simplejson.load(fd)
-
-    with open(options.input_file, 'r') as fd:
-        tree = ast.parse(fd.read())
-
-    generator = BytecodeGenerator(
-        options.output_file,
-        instr_str_to_code_map,
-        debug_mode=options.debug_mode
-    )
-
     try:
+        generator = BytecodeGenerator(options)
+
+        with open(options.input_file, 'r') as fd:
+            tree = ast.parse(fd.read())
+
         generator.visit(tree)
         generator.finalize()
     except Exception as ex:

@@ -35,7 +35,7 @@ import subprocess
 PYTHON = 'python'
 PYTHON_SOURCE_DIR = './python/src/'
 PYTHON_COMPILER = './python/python_compiler.py'
-INSTR_INFO_FILE = './instrs_info.json'
+INFO_FILE = './info.json'
 COREVM = './coreVM'
 
 
@@ -70,8 +70,8 @@ def main():
                 PYTHON_COMPILER,
                 '--input',
                 path,
-                '--instr-info-file',
-                INSTR_INFO_FILE,
+                '--info-file',
+                INFO_FILE,
                 '--output',
                 output_path
             ]
