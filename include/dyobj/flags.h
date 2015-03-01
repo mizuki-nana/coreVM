@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_DYOBJ_FLAGS_H_
 
 #include <cstdint>
+#include <vector>
 
 
 namespace corevm {
@@ -62,8 +63,22 @@ enum flags : uint32_t
 
 };
 
+// -----------------------------------------------------------------------------
 
 bool is_valid_flag_bit(char);
+
+// -----------------------------------------------------------------------------
+
+const std::vector<const char*>
+DYOBJ_FLAG_VALUES_ARRAY {
+  "DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE",
+  "DYOBJ_IS_INDELIBLE",
+  "DYOBJ_IS_INVISIBLE_TO_USER",
+  "DYOBJ_IS_NON_CALLABLE",
+  "DYOBJ_IS_IMMUTABLE",
+};
+
+// -----------------------------------------------------------------------------
 
 
 }; /* end namespace dyobj */

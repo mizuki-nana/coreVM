@@ -19,7 +19,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
 #define COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
 
-
+#include "../include/dyobj/flags.h"
 #include "../include/runtime/instr.h"
 
 #include <sneaker/utility/cmdline_program.h>
@@ -28,12 +28,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ostream>
 #include <ios>
 #include <sstream>
+#include <string>
 
 
-class extract_instr_info : public sneaker::utility::cmdline_program
+class extract_info : public sneaker::utility::cmdline_program
 {
 public:
-  extract_instr_info();
+  extract_info();
 
 protected:
   virtual int do_run();
@@ -41,6 +42,9 @@ protected:
   virtual bool check_parameters() const;
 
 private:
+  const std::string extract_instr_info() const;
+  const std::string extract_flags_info() const;
+
   std::string m_output;
 };
 
@@ -50,9 +54,16 @@ private:
 
 // -----------------------------------------------------------------------------
 
-extract_instr_info::extract_instr_info()
+const std::string INDENTATION = "    ";
+const std::string DOUBLE_QUOTE= "\"";
+const std::string INSTR_STR_TO_CODE_MAP = "INSTR_STR_TO_CODE_MAP";
+const std::string DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
+
+// -----------------------------------------------------------------------------
+
+extract_info::extract_info()
   :
-  sneaker::utility::cmdline_program("Extract coreVM instruction set info"),
+  sneaker::utility::cmdline_program("Extract coreVM info"),
   m_output()
 {
   add_positional_parameter("output", 1);
@@ -62,7 +73,7 @@ extract_instr_info::extract_instr_info()
 // -----------------------------------------------------------------------------
 
 bool
-extract_instr_info::check_parameters() const
+extract_info::check_parameters() const
 {
   return true;
 }
@@ -70,7 +81,7 @@ extract_instr_info::check_parameters() const
 // -----------------------------------------------------------------------------
 
 int
-extract_instr_info::do_run()
+extract_info::do_run()
 {
   std::ofstream fd(m_output.c_str(), std::ios::out);
 
@@ -81,26 +92,11 @@ extract_instr_info::do_run()
 
   std::stringstream ss;
 
-  const std::string INDENTATION = "    ";
-  const std::string DOUBLE_QUOTE= "\"";
 
   ss << "{" << std::endl;
 
-  for (auto itr = corevm::runtime::instr_handler_meta::instr_info_map.begin();
-       itr != corevm::runtime::instr_handler_meta::instr_info_map.end();)
-  {
-    const corevm::runtime::instr_code& code = itr->first;
-    const corevm::runtime::instr_info& info = itr->second;
-
-    ss << INDENTATION << DOUBLE_QUOTE << info.str << DOUBLE_QUOTE << ": " << code;
-
-    if (++itr != corevm::runtime::instr_handler_meta::instr_info_map.end())
-    {
-      ss << ",";
-    }
-
-    ss << std::endl;
-  }
+  ss << INDENTATION << INSTR_STR_TO_CODE_MAP << ": " << extract_instr_info() << "," << std::endl;
+  ss << INDENTATION << DYOBJ_FLAG_STR_TO_VALUE_MAP << ": " << extract_flags_info() << std::endl;
 
   ss << "}" << std::endl;
 
@@ -113,9 +109,71 @@ extract_instr_info::do_run()
 
 // -----------------------------------------------------------------------------
 
+const std::string
+extract_info::extract_instr_info() const
+{
+  std::stringstream ss;
+
+  ss << "{" << std::endl;
+
+  for (auto itr = corevm::runtime::instr_handler_meta::instr_info_map.begin();
+       itr != corevm::runtime::instr_handler_meta::instr_info_map.end();)
+  {
+    const corevm::runtime::instr_code& code = itr->first;
+    const corevm::runtime::instr_info& info = itr->second;
+
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str << DOUBLE_QUOTE << ": " << code;
+
+    if (++itr != corevm::runtime::instr_handler_meta::instr_info_map.end())
+    {
+      ss << ",";
+    }
+
+    ss << std::endl;
+  }
+
+  ss << INDENTATION << "}";
+
+  return std::move(ss.str());
+}
+
+
+// -----------------------------------------------------------------------------
+
+const std::string
+extract_info::extract_flags_info() const
+{
+  std::stringstream ss;
+
+  auto array_size = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY.size();
+
+  ss << "{" << std::endl;
+
+  for (auto i = 0; i < array_size; ++i)
+  {
+    uint32_t flag_value = i;
+    const char* flag_str = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY[i];
+
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str) << DOUBLE_QUOTE << ": " << flag_value;
+
+    if (i + 1 != array_size)
+    {
+      ss << ",";
+    }
+
+    ss << std::endl;
+  }
+
+  ss << INDENTATION << "}";
+
+  return std::move(ss.str());
+}
+
+// -----------------------------------------------------------------------------
+
 int main(int argc, char** argv)
 {
-  extract_instr_info program;
+  extract_info program;
   return program.run(argc, argv);
 }
 
