@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/memory/sequential_allocation_scheme.h"
 
 #include <sneaker/libc/math.h>
+#include <sneaker/libc/utils.h>
 
 #include <algorithm>
 #include <cstdint>
@@ -31,6 +32,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <string>
 
+
+// -----------------------------------------------------------------------------
 
 typedef corevm::memory::sequential_allocation_scheme::iterator iterator_type;
 typedef corevm::memory::sequential_allocation_scheme::const_iterator const_iterator_type;
@@ -427,28 +430,6 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
 
 /* ---------------- corevm::memory::buddy_allocation_scheme ----------------- */
 
-
-// -----------------------------------------------------------------------------
-
-// Helper functions
-// TODO: [COREVM-77] Move helper functions away
-void
-set_nth_bit_uint8(uint8_t *val, char bit)
-{
-  uint8_t b = (1 << (bit - 1));
-  *val = *val | b;
-}
-
-// -----------------------------------------------------------------------------
-
-int
-is_bit_set_uint8(uint32_t val, char bit)
-{
-  uint8_t v = val;
-  uint8_t b = (1 << (bit - 1));
-  v = v & b;
-  return (v >> (bit - 1)) == 1;
-}
 
 // -----------------------------------------------------------------------------
 
