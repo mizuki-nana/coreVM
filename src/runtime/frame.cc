@@ -235,6 +235,15 @@ corevm::runtime::frame::has_param_value_pairs() const
 
 // -----------------------------------------------------------------------------
 
+bool
+corevm::runtime::frame::has_param_value_pair_with_key(
+  const corevm::runtime::variable_key key) const
+{
+  return m_param_value_map.find(key) != m_param_value_map.end();
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::put_param_value_pair(
   const corevm::runtime::variable_key key, const corevm::dyobj::dyobj_id& id)

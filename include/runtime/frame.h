@@ -99,6 +99,8 @@ public:
 
   bool has_param_value_pairs() const;
 
+  bool has_param_value_pair_with_key(const corevm::runtime::variable_key) const;
+
   void put_param_value_pair(const corevm::runtime::variable_key, const corevm::dyobj::dyobj_id&);
 
   const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key)

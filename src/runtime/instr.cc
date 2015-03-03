@@ -1048,9 +1048,17 @@ corevm::runtime::instr_handler_getkwarg::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
-  corevm::dyobj::dyobj_id id = frame.pop_param_value_pair(key);
 
-  process.push_stack(id);
+  if (frame.has_param_value_pair_with_key(key))
+  {
+    corevm::dyobj::dyobj_id id = frame.pop_param_value_pair(key);
+    process.push_stack(id);
+  }
+  else
+  {
+    instr_addr relative_addr = static_cast<instr_addr>(instr.oprd2);
+    process.set_pc(process.pc() + relative_addr);
+  }
 }
 
 // -----------------------------------------------------------------------------
