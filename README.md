@@ -315,6 +315,10 @@ The latest build of coreVM depends on the following libraries:
 coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 
+## Blog Posts
+Follow the latest news and updates on the [coreVM Official Blog](https://corevm.ghost.io/).
+
+
 ## Inquiries
 For technical issues and bugs, please file new issues on GitHub.
 For all other inquiries, please e-mail myself at
