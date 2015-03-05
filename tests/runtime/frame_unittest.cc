@@ -144,11 +144,11 @@ TEST_F(frame_unittest, TestPutAndGetParams)
 
   ASSERT_EQ(false, frame.has_params());
 
-  corevm::dyobj::dyobj_id id2 = 200;
   corevm::dyobj::dyobj_id id1 = 1000;
+  corevm::dyobj::dyobj_id id2 = 200;
 
-  frame.put_param(id2);
   frame.put_param(id1);
+  frame.put_param(id2);
 
   ASSERT_EQ(true, frame.has_params());
 

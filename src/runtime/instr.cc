@@ -107,6 +107,8 @@ corevm::runtime::instr_handler_meta::instr_info_map {
 
   { corevm::runtime::instr_enum::PUTARG,    { .num_oprd=0, .str="putarg",    .handler=std::make_shared<corevm::runtime::instr_handler_putarg>()    } },
   { corevm::runtime::instr_enum::PUTKWARG,  { .num_oprd=1, .str="putkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_putkwarg>()  } },
+  { corevm::runtime::instr_enum::PUTARGS,   { .num_oprd=0, .str="putargs",   .handler=std::make_shared<corevm::runtime::instr_handler_putargs>()   } },
+  { corevm::runtime::instr_enum::PUTKWARGS, { .num_oprd=0, .str="putkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_putkwargs>() } },
   { corevm::runtime::instr_enum::GETARG,    { .num_oprd=0, .str="getarg",    .handler=std::make_shared<corevm::runtime::instr_handler_getarg>()    } },
   { corevm::runtime::instr_enum::GETKWARG,  { .num_oprd=1, .str="getkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_getkwarg>()  } },
   { corevm::runtime::instr_enum::GETARGS,   { .num_oprd=0, .str="getargs",   .handler=std::make_shared<corevm::runtime::instr_handler_getargs>()   } },
@@ -1026,6 +1028,60 @@ corevm::runtime::instr_handler_putkwarg::execute(
   corevm::dyobj::dyobj_id id = process.pop_stack();
 
   frame.put_param_value_pair(key, id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_putargs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::dyobj::ntvhndl_key key = obj.get_ntvhndl_key();
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
+
+  corevm::types::native_type_handle result;
+  corevm::types::interface_to_ary(hndl, result);
+
+  corevm::types::native_array array = \
+    corevm::types::get_value_from_handle<corevm::types::native_array>(result);
+
+  for (auto itr = array.begin(); itr != array.end(); ++itr)
+  {
+    corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(*itr);
+    frame.put_param(id);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_putkwargs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::dyobj::ntvhndl_key key = obj.get_ntvhndl_key();
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
+
+  corevm::types::native_type_handle result;
+  corevm::types::interface_to_map(hndl, result);
+
+  corevm::types::native_map map = \
+    corevm::types::get_value_from_handle<corevm::types::native_map>(result);
+
+  for (auto itr = map.begin(); itr != map.end(); ++itr)
+  {
+    corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(itr->first);
+    corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
+
+    frame.put_param_value_pair(key, id);
+  }
 }
 
 // -----------------------------------------------------------------------------

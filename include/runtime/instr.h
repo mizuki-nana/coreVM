@@ -242,6 +242,25 @@ enum instr_enum : uint32_t
   PUTKWARG,
 
   /**
+   * <putargs, _, _>
+   * Pops the top object off the stack, retrieves its native type handle
+   * as a native type array, and then iterate through each array element,
+   * use it as an object ID to retrieve an object from the heap, and assigns
+   * it as the next argument for the next call.
+   */
+  PUTARGS,
+
+  /**
+   * <putkwargs, _, _>
+   * Pops the top object off the stack, retrieves its native type handle
+   * as a native type map, and then iterate through each key-value pair,
+   * use the value as an object ID to retrieve an object from the heap,
+   * and use the key as an encoding ID to assign the object as the next
+   * keyword-argument for the next call.
+   */
+  PUTKWARGS,
+
+  /**
    * <getarg, _, _>
    * Pops off the first argument for the current call and put it on
    * top of the stack.
@@ -1178,6 +1197,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_putkwarg : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_putargs : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_putkwargs : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

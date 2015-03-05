@@ -220,8 +220,8 @@ corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_err
     throw corevm::runtime::missing_parameter_error();
   }
 
-  corevm::dyobj::dyobj_id id = m_params_list.back();
-  m_params_list.pop_back();
+  corevm::dyobj::dyobj_id id = m_params_list.front();
+  m_params_list.pop_front();
   return id;
 }
 

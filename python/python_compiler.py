@@ -24,6 +24,7 @@ import optparse
 import pprint
 import simplejson
 import sys
+import traceback
 
 from datetime import datetime
 
@@ -182,16 +183,18 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.current_closure_name = name
 
+        # Off-load arguments.
+        self.visit(node.args)
+
+        # Statements.
         for stmt in node.body:
             self.visit(stmt)
-        self.visit(node.args)
 
         # step out
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
 
         # In the outer closure, set the closure id on the object
 
-        # TODO: [COREVM-170] Add support for object creation flags in Python compiler
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
@@ -207,13 +210,51 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.visit(node.op)
 
     def visit_Call(self, node):
-        # TODO: [COREVM-169] Add support for functional call arguments in Python tests
+        # explicit args
+        for arg in node.args:
+            self.visit(arg)
+
+        # explicit kwargs
+        for keyword in node.keywords:
+            self.visit(keyword.value)
+
+        # implicit args
+        if node.starargs:
+            self.visit(node.starargs)
+
+        # implicit kwargs
+        if node.kwargs:
+            self.visit(node.kwargs)
+
         self.visit(node.func)
         self.__add_instr('pinvk', 0, 0)
+
+        # The order of loading arguments onto the next frame has to be opposite
+        # than the way they are being evaluated, since they are placed on the
+        # stack.
+
+        # implicit kwargs
+        if node.kwargs:
+            self.__add_instr('putkwargs', 0, 0)
+
+        # implicit args
+        if node.starargs:
+            self.__add_instr('putargs', 0, 0)
+
+        # explicit kwargs
+        for keyword in node.keywords:
+            self.__add_instr('putkwarg', self.__get_encoding_id(keyword.arg), 0)
+
+        # explicit args
+        for arg in node.args:
+            self.__add_instr('putarg', 0, 0)
+
         self.__add_instr('invk', 0, 0)
 
     def visit_Num(self, node):
+        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('uint32', node.n, 0)
+        self.__add_instr('sethndl', 0, 0)
 
     def visit_Name(self, node):
         name = node.id
@@ -232,38 +273,48 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     """ --------------------------- operator ------------------------------- """
 
+    def __add_binary_operator_instr(self, code):
+        # TODO: replace simplistic boxing logic here.
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('pop', 0, 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('pop', 0, 0)
+        self.__add_instr(code, 0, 0)
+        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
+        self.__add_instr('sethndl', 0, 0)
+
     def visit_Add(self, node):
-        self.__add_instr('add', 0, 0)
+        self.__add_binary_operator_instr('add')
 
     def visit_Sub(self, node):
-        self.__add_instr('sub', 0, 0)
+        self.__add_binary_operator_instr('sub')
 
     def visit_Mult(self, node):
-        self.__add_instr('mul', 0, 0)
+        self.__add_binary_operator_instr('mul')
 
     def visit_Div(self, node):
-        self.__add_instr('div', 0, 0)
+        self.__add_binary_operator_instr('div')
 
     def visit_Mod(self, node):
-        self.__add_instr('mod', 0, 0)
+        self.__add_binary_operator_instr('mod')
 
     def visit_Pow(self, node):
-        self.__add_instr('pow', 0, 0)
+        self.__add_binary_operator_instr('pow')
 
     def visit_LShift(self, node):
-        self.__add_instr('bls', 0, 0)
+        self.__add_binary_operator_instr('bls')
 
     def visit_RShift(self, node):
-        self.__add_instr('rls', 0, 0)
+        self.__add_binary_operator_instr('rls')
 
     def visit_BitOr(self, node):
-        self.__add_instr('bor', 0, 0)
+        self.__add_binary_operator_instr('bor')
 
     def visit_BitXor(self, node):
-        self.__add_instr('bxor', 0, 0)
+        self.__add_binary_operator_instr('bxor')
 
     def visit_BitAnd(self, node):
-        self.__add_instr('band', 0, 0)
+        self.__add_binary_operator_instr('band')
 
     """ ---------------------------- unaryop ------------------------------- """
 
@@ -332,7 +383,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             for arg in node.args:
                 if closest_arg is None:
                     closest_arg = arg
-                elif arg.col_offset < closest_arg.col_offset and arg.col_offset < default.col_offset:
+                elif arg.col_offset > closest_arg.col_offset and arg.col_offset < default.col_offset:
                     closest_arg = arg
 
             assert closest_arg
@@ -439,6 +490,8 @@ def main():
         sys.stderr.write('Failed to compile %s\n' % options.input_file)
         sys.stderr.write(str(ex))
         sys.stderr.write('\n')
+        if options.debug_mode:
+            print traceback.format_exc()
         sys.exit(-1)
 
 
