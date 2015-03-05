@@ -117,7 +117,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   /* ------------------------- Runtime instructions ------------------------- */
 
   { corevm::runtime::instr_enum::GC,        { .num_oprd=0, .str="gc",        .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        } },
-  { corevm::runtime::instr_enum::DEBUG,     { .num_oprd=0, .str="debug",     .handler=std::make_shared<corevm::runtime::instr_handler_debug>()      } },
+  { corevm::runtime::instr_enum::DEBUG,     { .num_oprd=0, .str="debug",     .handler=std::make_shared<corevm::runtime::instr_handler_debug>()     } },
 
   /* ---------------- Arithmetic and logic instructions --------------------- */
 
@@ -742,7 +742,7 @@ corevm::runtime::instr_handler_gethndl::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
+  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
 
   if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -781,7 +781,7 @@ corevm::runtime::instr_handler_clrhndl::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.get_ntvhndl_key();
+  corevm::dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
 
   if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -1040,7 +1040,7 @@ corevm::runtime::instr_handler_putargs::execute(
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  corevm::dyobj::ntvhndl_key key = obj.get_ntvhndl_key();
+  corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
 
   corevm::types::native_type_handle result;
@@ -1066,7 +1066,7 @@ corevm::runtime::instr_handler_putkwargs::execute(
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  corevm::dyobj::ntvhndl_key key = obj.get_ntvhndl_key();
+  corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
 
   corevm::types::native_type_handle result;

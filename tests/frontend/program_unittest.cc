@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <iostream>
+
 
 class program_unittest : public ::testing::Test {};
 
@@ -45,4 +47,6 @@ TEST_F(program_unittest, TestRun)
   int res = program.run(argc, argv);
 
   ASSERT_EQ(-1, res);
+
+  std::cout << "(error here expected)" << std::endl;
 }

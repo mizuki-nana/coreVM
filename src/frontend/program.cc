@@ -57,7 +57,7 @@ corevm::frontend::program::program()
 bool
 corevm::frontend::program::check_parameters() const
 {
-  return true;
+  return !m_input_path.empty();
 }
 
 // -----------------------------------------------------------------------------

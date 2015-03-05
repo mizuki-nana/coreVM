@@ -80,7 +80,7 @@ public:
 
   dynamic_object_manager& manager() noexcept;
 
-  corevm::dyobj::ntvhndl_key get_ntvhndl_key() const noexcept;
+  corevm::dyobj::ntvhndl_key ntvhndl_key() const noexcept;
   void set_ntvhndl_key(corevm::dyobj::ntvhndl_key) noexcept;
   void clear_ntvhndl_key() noexcept;
 
@@ -253,7 +253,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::manager() noexcept
 
 template<class dynamic_object_manager>
 corevm::dyobj::ntvhndl_key
-corevm::dyobj::dynamic_object<dynamic_object_manager>::get_ntvhndl_key() const noexcept
+corevm::dyobj::dynamic_object<dynamic_object_manager>::ntvhndl_key() const noexcept
 {
   return m_ntvhndl_key;
 }

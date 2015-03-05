@@ -36,8 +36,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/sighandler_registrar.h"
 #include "../../include/runtime/vector.h"
 
-#include <sneaker/atomic/atomic_incrementor.h>
-
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -73,7 +71,7 @@ private:
 public:
   virtual void operator()(const dynamic_object_type& obj)
   {
-    this->m_list.push_back(obj.get_ntvhndl_key());
+    this->m_list.push_back(obj.ntvhndl_key());
   }
 
   const std::list<corevm::dyobj::ntvhndl_key>& list() const
@@ -561,7 +559,7 @@ corevm::runtime::process::get_frame_by_closure_ctx(
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::should_gc()
+corevm::runtime::process::should_gc() const
 {
   size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 

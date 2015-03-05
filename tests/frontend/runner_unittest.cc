@@ -26,6 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <iostream>
+
 
 class runner_unittest : public ::testing::Test {};
 
@@ -37,4 +39,6 @@ TEST_F(runner_unittest, TestRun)
   int res = corevm::frontend::runner("./sample.core", configuration).run();
 
   ASSERT_EQ(-1, res);
+
+  std::cout << "(error here expected)" << std::endl;
 }

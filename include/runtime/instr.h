@@ -1470,6 +1470,7 @@ public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
 };
 
+// -----------------------------------------------------------------------------
 
 class instr_handler_lor : public instr_handler
 {

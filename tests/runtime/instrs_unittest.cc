@@ -498,7 +498,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETHNDL)
 
   auto &obj = process::adapter(m_process).help_get_dyobj(id);
 
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.get_ntvhndl_key());
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.ntvhndl_key());
 }
 
 // -----------------------------------------------------------------------------
@@ -518,7 +518,7 @@ TEST_F(instrs_obj_unittest, TestInstrCLRHNDL)
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
   auto &obj2 = process::adapter(m_process).help_get_dyobj(id);
-  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj2.get_ntvhndl_key());
+  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj2.ntvhndl_key());
 
   ASSERT_FALSE(m_process.has_ntvhndl(ntvhndl_key));
 }

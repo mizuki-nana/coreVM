@@ -184,7 +184,7 @@ public:
 private:
   bool pre_start();
 
-  bool should_gc();
+  bool should_gc() const;
 
   void insert_vector(corevm::runtime::vector& vector);
 
