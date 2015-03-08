@@ -59,7 +59,7 @@ corevm::runtime::frame::eval_stack_size() const
 // -----------------------------------------------------------------------------
 
 corevm::runtime::instr_addr
-corevm::runtime::frame::get_start_addr() const
+corevm::runtime::frame::start_addr() const
 {
   return m_return_addr + 1;
 }
@@ -67,7 +67,7 @@ corevm::runtime::frame::get_start_addr() const
 // -----------------------------------------------------------------------------
 
 corevm::runtime::instr_addr
-corevm::runtime::frame::get_return_addr() const
+corevm::runtime::frame::return_addr() const
 {
   return m_return_addr;
 }

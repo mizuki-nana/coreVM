@@ -33,7 +33,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <algorithm>
 #include <cstdint>
+#include <iterator>
 #include <sstream>
 
 
@@ -89,6 +91,86 @@ TEST_F(process_unittest, TestInstantiateWithParameters)
 
   ASSERT_LT(0, process.max_heap_size());
   ASSERT_LT(0, process.max_ntvhndl_pool_size());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_unittest, TestAppendVector)
+{
+  // The process's vector is inaccessible to the outside world, so we need to
+  // simulate its implementation here.
+  corevm::runtime::vector target {
+    { .code=6, .oprd1=421, .oprd2=52 },
+    { .code=5, .oprd1=532, .oprd2=0  },
+    { .code=2, .oprd1=72,  .oprd2=0  },
+  };
+
+  corevm::runtime::vector src {
+    { .code=36, .oprd1=41, .oprd2=81 },
+    { .code=37, .oprd1=27, .oprd2=0  },
+    { .code=83, .oprd1=93, .oprd2=0  },
+  };
+
+  std::copy(src.begin(), src.end(), std::back_inserter(target));
+
+  corevm::runtime::vector expected {
+    { .code=6, .oprd1=421, .oprd2=52 },
+    { .code=5, .oprd1=532, .oprd2=0  },
+    { .code=2, .oprd1=72,  .oprd2=0  },
+    { .code=36, .oprd1=41, .oprd2=81 },
+    { .code=37, .oprd1=27, .oprd2=0  },
+    { .code=83, .oprd1=93, .oprd2=0  },
+  };
+
+  ASSERT_EQ(expected, target);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_unittest, TestInsertVector)
+{
+  // The process's vector is inaccessible to the outside world, so we need to
+  // simulate its implementation here.
+  corevm::runtime::vector target {
+    { .code=6,  .oprd1=421, .oprd2=52 },
+    { .code=5,  .oprd1=532, .oprd2=0  },
+    { .code=2,  .oprd1=72,  .oprd2=0  },
+    { .code=71, .oprd1=25,  .oprd2=0  },
+    { .code=18, .oprd1=51,  .oprd2=43 },
+    { .code=17, .oprd1=11,  .oprd2=99 },
+    { .code=33, .oprd1=88,  .oprd2=55 },
+    { .code=88, .oprd1=11,  .oprd2=91 },
+    { .code=17, .oprd1=71,  .oprd2=23 },
+    { .code=91, .oprd1=64,  .oprd2=67 },
+  };
+
+  corevm::runtime::vector src {
+    { .code=36, .oprd1=41,  .oprd2=81 },
+    { .code=37, .oprd1=27,  .oprd2=0  },
+    { .code=83, .oprd1=93,  .oprd2=0  },
+  };
+
+  int64_t fake_pc = 5;
+
+  target.insert(target.begin() + fake_pc + 1, src.begin(), src.end());
+
+  corevm::runtime::vector expected {
+    { .code=6,  .oprd1=421, .oprd2=52 },
+    { .code=5,  .oprd1=532, .oprd2=0  },
+    { .code=2,  .oprd1=72,  .oprd2=0  },
+    { .code=71, .oprd1=25,  .oprd2=0  },
+    { .code=18, .oprd1=51,  .oprd2=43 },
+    { .code=17, .oprd1=11,  .oprd2=99 },
+    { .code=36, .oprd1=41,  .oprd2=81 },
+    { .code=37, .oprd1=27,  .oprd2=0  },
+    { .code=83, .oprd1=93,  .oprd2=0  },
+    { .code=33, .oprd1=88,  .oprd2=55 },
+    { .code=88, .oprd1=11,  .oprd2=91 },
+    { .code=17, .oprd1=71,  .oprd2=23 },
+    { .code=91, .oprd1=64,  .oprd2=67 },
+  };
+
+  ASSERT_EQ(expected, target);
 }
 
 // -----------------------------------------------------------------------------
@@ -165,22 +247,46 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   ASSERT_EQ(false, process.has_frame());
   ASSERT_EQ(0, process.call_stack_size());
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
-    .closure_id = corevm::runtime::NONESET_CLOSURE_ID
+  corevm::runtime::compartment compartment("./example.core");
+
+  corevm::runtime::vector vector {
+    { .code=6, .oprd1=421, .oprd2=523 },
+    { .code=5, .oprd1=532, .oprd2=0   },
+    { .code=2, .oprd1=72,  .oprd2=0   },
   };
 
-  corevm::runtime::frame frame1(ctx);
-  process.push_frame(frame1);
+  corevm::runtime::closure closure {
+    .id=1,
+    .parent_id=0,
+    .vector=vector
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure
+  };
+
+  compartment.set_closure_table(closure_table);
+
+  // simulate `process::pre_start()`.
+  process.insert_compartment(compartment);
+  process.append_vector(vector);
+  process.set_pc(0);
+
+  // TODO: [COREVM-179] Make process::insert_compartment return the ID of the inserted compartment
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = 0,
+    .closure_id = closure.id,
+  };
+
+  corevm::runtime::frame frame(ctx);
+  frame.set_return_addr(process.pc());
+  process.push_frame(frame);
+  process.insert_vector(closure.vector);
 
   ASSERT_EQ(true, process.has_frame());
   ASSERT_EQ(1, process.call_stack_size());
 
-  corevm::runtime::frame frame2(ctx);
-  process.push_frame(frame2);
-
-  ASSERT_EQ(true, process.has_frame());
-  ASSERT_EQ(2, process.call_stack_size());
+  auto original_pc = process.pc();
 
   ASSERT_NO_THROW(
     {
@@ -188,14 +294,7 @@ TEST_F(process_unittest, TestPushAndPopFrames)
     }
   );
 
-  ASSERT_EQ(true, process.has_frame());
-  ASSERT_EQ(1, process.call_stack_size());
-
-  ASSERT_NO_THROW(
-    {
-      process.pop_frame();
-    }
-  );
+  ASSERT_EQ(original_pc, process.pc());
 
   ASSERT_EQ(false, process.has_frame());
   ASSERT_EQ(0, process.call_stack_size());

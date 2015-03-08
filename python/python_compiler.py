@@ -46,7 +46,8 @@ class Instr(object):
 
 class Closure(object):
 
-    __closure_id = 0
+    # Has to be a non-zero value.
+    __closure_id = 1
 
     def __init__(self, name, parent_name, parent_id):
         self.name = name
@@ -151,7 +152,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         )
 
     def __mingle_name(self, name):
-        # TDOO: Add support for actual name minglings.
+        # TDOO: [COREVM-177] Add support for name mingling in Python compiler
         return name
 
     def __get_encoding_id(self, name):
@@ -190,6 +191,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         for stmt in node.body:
             self.visit(stmt)
 
+        # Explicit return.
+        self.__add_instr('rtrn', 0, 0)
+
         # step out
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
 
@@ -198,6 +202,17 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+
+    def visit_Return(self, node):
+        # TODO: [COREVM-176] Support return value in Python
+        self.__add_instr('rtrn', 0, 0)
+
+    def visit_Print(self, node):
+        # TODO: [COREVM-178] Support for printing multiple values in Python
+        if node.values:
+            self.visit(node.values[0])
+
+        self.__add_instr('print', 0, 0)
 
     def visit_Expr(self, node):
         self.visit(node.value)
@@ -252,7 +267,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('invk', 0, 0)
 
     def visit_Num(self, node):
-        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
+        self.__add_instr('new', 0, 0)
         self.__add_instr('uint32', node.n, 0)
         self.__add_instr('sethndl', 0, 0)
 
@@ -270,6 +285,11 @@ class BytecodeGenerator(ast.NodeVisitor):
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass
+
+    def visit_Str(self, node):
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('str', self.__get_encoding_id(node.s), 0)
+        self.__add_instr('sethndl', 0, 0)
 
     """ --------------------------- operator ------------------------------- """
 
@@ -412,7 +432,8 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.visit(default)
                 vector_length2 = len(self.__current_vector())
                 length_diff = vector_length2 - vector_length1
-                self.__current_vector()[vector_length1 - 1] = Instr('jmp', length_diff + 1, 0)
+                self.__current_vector()[vector_length1 - 1] = Instr(
+                    self.instr_str_to_code_map['jmp'], length_diff + 1, 0)
             else:
                 # This is an arg. It's handled in `visit_Name()`.
                 self.visit(arg)

@@ -43,6 +43,7 @@ INCLUDE=./include
 SRC=./src
 TESTS=./tests
 TOOLS=./tools
+PYTHON_DIR=./python
 
 SUBDIRS=$(SRC) $(TESTS)
 
@@ -56,6 +57,8 @@ ifeq ($(UNAME_S), Darwin)
 	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
 endif
 
+PYTHON=`which python`
+BOOTSTRAP_TESTS=bootstrap_tests.py
 
 export GTEST_COLOR=true
 
@@ -77,6 +80,10 @@ test:
 .PHONY: tools
 tools:
 	@$(MAKE) -C $(TOOLS)
+
+.PHONY: python
+python:
+	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
 
 .PHONY: clean
 clean:

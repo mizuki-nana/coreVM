@@ -103,8 +103,6 @@ public:
   process(const process&) = delete;
   process& operator=(const process&) = delete;
 
-  const corevm::runtime::instr_addr current_addr() const;
-
   uint64_t call_stack_size() const;
 
   bool has_frame() const;
@@ -144,6 +142,8 @@ public:
 
   void append_vector(const corevm::runtime::vector&);
 
+  void insert_vector(corevm::runtime::vector& vector);
+
   void get_frame_by_closure_ctx(
     corevm::runtime::closure_ctx&, corevm::runtime::frame**);
 
@@ -182,11 +182,11 @@ public:
   friend std::ostream& operator<<(std::ostream&, const corevm::runtime::process&);
 
 private:
+  bool is_valid_pc() const;
+
   bool pre_start();
 
   bool should_gc() const;
-
-  void insert_vector(corevm::runtime::vector& vector);
 
   bool m_pause_exec;
   uint8_t m_gc_flag;

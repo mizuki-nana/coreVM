@@ -95,6 +95,8 @@ private:
 } /* end namespace corevm */
 
 
+// -----------------------------------------------------------------------------
+
 corevm::dyobj::dyobj_id
 corevm::runtime::process::adapter::help_create_dyobj()
 {
@@ -115,7 +117,7 @@ corevm::runtime::process::process()
   :
   m_pause_exec(false),
   m_gc_flag(0),
-  m_pc(0),
+  m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(),
   m_dyobj_stack(),
   m_call_stack(),
@@ -148,14 +150,6 @@ corevm::runtime::process::process(uint64_t heap_alloc_size, uint64_t pool_alloc_
 corevm::runtime::process::~process()
 {
   // Do nothing here.
-}
-
-// -----------------------------------------------------------------------------
-
-const corevm::runtime::instr_addr
-corevm::runtime::process::current_addr() const
-{
-  return m_pc;
 }
 
 // -----------------------------------------------------------------------------
@@ -215,6 +209,22 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
     }
   );
 
+  set_pc(frame.return_addr());
+
+  corevm::runtime::compartment_id compartment_id = frame.closure_ctx().compartment_id;
+  corevm::runtime::compartment* compartment = nullptr;
+  this->get_compartment(compartment_id, &compartment);
+
+  assert(compartment);
+
+  corevm::runtime::closure_id closure_id = frame.closure_ctx().closure_id;
+  corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
+
+  auto begin_itr = m_instrs.begin() + pc();
+  auto end_itr = begin_itr + closure.vector.size();
+
+  m_instrs.erase(begin_itr, end_itr);
+
   m_call_stack.pop_back();
 }
 
@@ -237,7 +247,8 @@ corevm::runtime::process::stack_size() const
 // -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id&
-corevm::runtime::process::top_stack() throw(corevm::runtime::object_stack_empty_error)
+corevm::runtime::process::top_stack()
+  throw(corevm::runtime::object_stack_empty_error)
 {
   if (m_dyobj_stack.empty())
   {
@@ -258,7 +269,8 @@ corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 const corevm::dyobj::dyobj_id
-corevm::runtime::process::pop_stack() throw(corevm::runtime::object_stack_empty_error)
+corevm::runtime::process::pop_stack()
+  throw(corevm::runtime::object_stack_empty_error)
 {
   if (m_dyobj_stack.empty())
   {
@@ -391,9 +403,17 @@ corevm::runtime::process::resume_exec()
 // -----------------------------------------------------------------------------
 
 bool
+corevm::runtime::process::is_valid_pc() const
+{
+  return m_pc != NONESET_INSTR_ADDR && (m_pc >= 0 && m_pc < m_instrs.size());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 corevm::runtime::process::can_execute()
 {
-  return m_pc < m_instrs.size();
+  return is_valid_pc();
 }
 
 // -----------------------------------------------------------------------------
@@ -418,10 +438,13 @@ corevm::runtime::process::pre_start()
       .closure_id = closure.id
     };
 
+    append_vector(closure.vector);
+
     corevm::runtime::frame frame(ctx);
+    frame.set_return_addr(m_pc);
     push_frame(frame);
 
-    insert_vector(closure.vector);
+    m_pc = 0;
   }
 
   return res;
@@ -518,14 +541,13 @@ void
 corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   throw(corevm::runtime::invalid_instr_addr_error)
 {
-  if (addr >= m_instrs.size())
+  if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
+      (addr < 0 || addr >= m_instrs.size()) )
   {
     throw corevm::runtime::invalid_instr_addr_error();
   }
 
   m_pc = addr;
-
-  m_instrs.erase(m_instrs.begin() + pc(), m_instrs.end());
 }
 
 // -----------------------------------------------------------------------------
@@ -533,7 +555,24 @@ corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
 void
 corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
-  m_instrs.insert(m_instrs.end(), vector.begin(), vector.end());
+  // Inserts the vector at the very end of the instr array.
+  // (This is different than `process::insert_vector`.
+  //
+  // NOTE: Please update `process_unittest::TestAppendVector` if the
+  // behavior here changes.
+  std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
+{
+  // We want to insert the vector right after the current pc().
+  //
+  // NOTE: Please update `process_unittest::TestInsertVector` if the
+  // behavior here changes.
+  m_instrs.insert(m_instrs.begin() + pc() + 1, vector.begin(), vector.end());
 }
 
 // -----------------------------------------------------------------------------
@@ -572,10 +611,14 @@ corevm::runtime::process::should_gc() const
       continue;
     }
 
-    corevm::runtime::gc_rule_meta::gc_bitfields bit = static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
-    const corevm::runtime::gc_rule* gc_rule = corevm::runtime::gc_rule_meta::get_gc_rule(bit);
+    corevm::runtime::gc_rule_meta::gc_bitfields bit = \
+      static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
 
-    if (gc_rule && gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this)))
+    const corevm::runtime::gc_rule* gc_rule = \
+      corevm::runtime::gc_rule_meta::get_gc_rule(bit);
+
+    if (gc_rule &&
+        gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this)))
     {
       return true;
     }
@@ -591,14 +634,6 @@ corevm::runtime::process::set_sig_vector(
   sig_atomic_t sig, corevm::runtime::vector& vector)
 {
   m_sig_instr_map.insert({sig, vector});
-}
-
-// -----------------------------------------------------------------------------
-
-void
-corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
-{
-  std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
 }
 
 // -----------------------------------------------------------------------------
@@ -673,6 +708,8 @@ std::ostream& operator<<(
     ost << compartment << std::endl;
   }
 
+  ost << "Total Instructions: " << process.m_instrs.size() << std::endl;
+  ost << "Program counter: " << process.pc() << std::endl;
   ost << "-- END --" << std::endl;
   ost << std::endl;
 

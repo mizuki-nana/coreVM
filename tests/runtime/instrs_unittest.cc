@@ -1036,7 +1036,7 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
 
-  ASSERT_EQ(m_process.pc(), actual_frame.get_return_addr());
+  ASSERT_EQ(m_process.pc(), actual_frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
@@ -1053,8 +1053,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMP)
   corevm::runtime::frame frame(m_ctx);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = m_process.current_addr();
-  ASSERT_EQ(0, current_addr);
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
   corevm::runtime::instr instr {
     .code=0,
@@ -1065,9 +1064,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMP)
   corevm::runtime::instr_handler_jmp handler;
   handler.execute(instr, m_process);
 
-  current_addr = m_process.current_addr();
-
-  ASSERT_EQ(8, current_addr);
+  ASSERT_EQ(8, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------
@@ -1080,8 +1077,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF)
   frame.push_eval_stack(hndl);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = m_process.current_addr();
-  ASSERT_EQ(0, current_addr);
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
   corevm::runtime::instr instr {
     .code=0,
@@ -1092,9 +1088,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF)
   corevm::runtime::instr_handler_jmpif handler;
   handler.execute(instr, m_process);
 
-  current_addr = m_process.current_addr();
-
-  ASSERT_EQ(8, current_addr);
+  ASSERT_EQ(8, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------
@@ -1107,8 +1101,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
   frame.push_eval_stack(hndl);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr_addr current_addr = m_process.current_addr();
-  ASSERT_EQ(0, current_addr);
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
   corevm::runtime::instr instr {
     .code=0,
@@ -1119,9 +1112,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
   corevm::runtime::instr_handler_jmpif handler;
   handler.execute(instr, m_process);
 
-  current_addr = m_process.current_addr();
-
-  ASSERT_EQ(0, current_addr);
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------

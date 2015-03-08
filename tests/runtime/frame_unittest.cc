@@ -41,7 +41,7 @@ protected:
 TEST_F(frame_unittest, TestInitialization)
 {
   corevm::runtime::frame frame(m_closure_ctx);
-  ASSERT_EQ(-1, frame.get_return_addr());
+  ASSERT_EQ(-1, frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
@@ -49,11 +49,11 @@ TEST_F(frame_unittest, TestInitialization)
 TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 {
   corevm::runtime::frame frame(m_closure_ctx);
-  ASSERT_EQ(-1, frame.get_return_addr());
+  ASSERT_EQ(-1, frame.return_addr());
 
   corevm::runtime::instr_addr expected_return_addr = 555;
   frame.set_return_addr(expected_return_addr);
-  ASSERT_EQ(expected_return_addr, frame.get_return_addr());
+  ASSERT_EQ(expected_return_addr, frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
