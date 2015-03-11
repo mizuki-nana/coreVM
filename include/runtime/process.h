@@ -112,6 +112,8 @@ public:
 
   void push_frame(corevm::runtime::frame&);
 
+  void emplace_frame(const corevm::runtime::closure_ctx&);
+
   void pop_frame() throw(corevm::runtime::frame_not_found_error);
 
   uint64_t stack_size() const;

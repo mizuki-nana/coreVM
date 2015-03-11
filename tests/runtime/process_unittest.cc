@@ -309,6 +309,31 @@ TEST_F(process_unittest, TestPushAndPopFrames)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(process_unittest, TestEmplaceFrame)
+{
+  corevm::runtime::process process;
+
+  ASSERT_EQ(false, process.has_frame());
+  ASSERT_EQ(0, process.call_stack_size());
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = 0,
+    .closure_id = 0,
+  };
+
+  process.emplace_frame(ctx);
+
+  ASSERT_EQ(true, process.has_frame());
+  ASSERT_EQ(1, process.call_stack_size());
+
+  auto& frame = process.top_frame();
+
+  ASSERT_EQ(ctx.compartment_id, frame.closure_ctx().compartment_id);
+  ASSERT_EQ(ctx.closure_id, frame.closure_ctx().closure_id);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
 {
   corevm::runtime::process process;

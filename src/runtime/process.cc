@@ -238,6 +238,14 @@ corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::process::emplace_frame(const corevm::runtime::closure_ctx& ctx)
+{
+  m_call_stack.emplace_back(ctx);
+}
+
+// -----------------------------------------------------------------------------
+
 uint64_t
 corevm::runtime::process::stack_size() const
 {

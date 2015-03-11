@@ -880,8 +880,7 @@ corevm::runtime::instr_handler_pinvk::execute(
     throw corevm::runtime::closure_not_found_error(ctx.closure_id);
   }
 
-  corevm::runtime::frame frame(ctx);
-  process.push_frame(frame);
+  process.emplace_frame(ctx);
 }
 
 // -----------------------------------------------------------------------------
