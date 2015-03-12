@@ -457,7 +457,7 @@ enum instr_enum : uint32_t
   GTE,
 
   /**
-   * <lts, _, _>
+   * <lte, _, _>
    * Pops the top two elements on the eval stack, applies the less or equality
    * operation and push result onto eval stack.
    */
