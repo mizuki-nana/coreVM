@@ -192,6 +192,10 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::TOARY,     { .num_oprd=0, .str="2ary",      .handler=std::make_shared<corevm::runtime::instr_handler_2ary>()      } },
   { corevm::runtime::instr_enum::TOMAP,     { .num_oprd=0, .str="2map",      .handler=std::make_shared<corevm::runtime::instr_handler_2map>()      } },
 
+  /* ----------------- Native type manipulation instructions ---------------- */
+
+  { corevm::runtime::instr_enum::TRUTHY,    { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()     } },
+
   /* --------------------- String type instructions ------------------------- */
 
   { corevm::runtime::instr_enum::STRLEN,    { .num_oprd=0, .str="strlen",    .handler=std::make_shared<corevm::runtime::instr_handler_strlen>()    } },
@@ -954,7 +958,7 @@ corevm::runtime::instr_handler_jmpif::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::runtime::instr_addr starting_addr = frame.start_addr();
+  corevm::runtime::instr_addr starting_addr = process.pc(); //frame.start_addr();
   corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
@@ -1907,6 +1911,19 @@ corevm::runtime::instr_handler_2map::execute(
     instr,
     process,
     corevm::types::interface_to_map
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_truthy::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_unary_operator_instr(
+    instr,
+    process,
+    corevm::types::interface_compute_truthy_value
   );
 }
 

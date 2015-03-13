@@ -30,15 +30,18 @@ python python/bootstrap_tests.py
 """
 
 import glob
+import optparse
 import os
 import subprocess
 
 
 PYTHON = 'python'
-PYTHON_SOURCE_DIR = './python/src/'
+PYTHON_TESTS_DIR = './python/tests/'
 PYTHON_COMPILER = './python/python_compiler.py'
+PYTHON_CODE_TRANSFORMER = './python/code_transformer.py'
 INFO_FILE = './info.json'
 COREVM = './coreVM'
+INTERMEDIATE_EXTENSION = '.tmp.py'
 BYTECODE_EXTENSION = '.core'
 
 
@@ -53,8 +56,23 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def input_to_output_path(path):
-    return path + BYTECODE_EXTENSION
+def code_transformer_input_to_output_path(path):
+    return os.path.splitext(path)[0] + INTERMEDIATE_EXTENSION
+
+
+def compiler_input_to_output_path(path):
+    return code_transformer_input_to_output_path(path) + BYTECODE_EXTENSION
+
+
+def code_transformer_cmdl_args(path):
+    return [
+        PYTHON,
+        PYTHON_CODE_TRANSFORMER,
+        '--input',
+        path,
+        '--output',
+        code_transformer_input_to_output_path(path)
+    ]
 
 
 def compiler_cmdl_args(path):
@@ -62,45 +80,95 @@ def compiler_cmdl_args(path):
         PYTHON,
         PYTHON_COMPILER,
         '--input',
-        path,
+        code_transformer_input_to_output_path(path),
         '--info-file',
         INFO_FILE,
         '--output',
-        input_to_output_path(path)
+        compiler_input_to_output_path(path)
     ]
 
 
 def corevm_cmdl_args(path):
-    return [COREVM, '--input', input_to_output_path(path)]
+    return [COREVM, '--input', compiler_input_to_output_path(path)]
 
 
-def main():
-    inputs = glob.glob(PYTHON_SOURCE_DIR + '*.py')
+def run(options):
+    inputs = glob.glob(PYTHON_TESTS_DIR + '*.py')
+    real_inputs = []
 
     print 'Bootstrapping Python tests...'
     print 'Testing using the following %d input file(s):' % len(inputs)
     for path in inputs:
-        print path
+        if not path.endswith(INTERMEDIATE_EXTENSION):
+            real_inputs.append(path)
+            print path
 
     # Bring blank line.
     print
 
-    for path in inputs:
+    for path in real_inputs:
         info = path
 
-        retcode = subprocess.call(compiler_cmdl_args(path))
+        args = code_transformer_cmdl_args(path)
+        if options.debug_mode:
+            print subprocess.list2cmdline(args)
+
+        retcode = subprocess.call(args)
+
+        if retcode != 0:
+            info += (bcolors.WARNING + ' [FAILED]' + bcolors.ENDC)
+            print info
+            continue
+
+        args = compiler_cmdl_args(path)
+        if options.debug_mode:
+            print subprocess.list2cmdline(args)
+
+        retcode = subprocess.call(args)
+        if retcode != 0:
+            info += (bcolors.WARNING + ' [FAILED]' + bcolors.ENDC)
+            print info
+            continue
+
+        args = corevm_cmdl_args(path)
+        if options.debug_mode:
+            print subprocess.list2cmdline(args)
+
+        retcode = subprocess.call(args)
 
         if retcode == 0:
-            retcode = subprocess.call(corevm_cmdl_args(path))
-
-            if retcode == 0:
-                info += (bcolors.OKGREEN + ' [SUCCESS]' + bcolors.ENDC)
-            else:
-                info += (bcolors.FAIL + ' [FAILED]' + bcolors.ENDC)
+            info += (bcolors.OKGREEN + ' [SUCCESS]' + bcolors.ENDC)
         else:
-            info += (bcolors.WARNING + ' [FAILED]' + bcolors.ENDC)
+            info += (bcolors.FAIL + ' [FAILED]' + bcolors.ENDC)
 
         print info
+
+    if not options.debug_mode:
+        outputs = glob.glob(PYTHON_TESTS_DIR + '*.tmp.py')
+        for output in outputs:
+            os.remove(output)
+
+        outputs = glob.glob(PYTHON_TESTS_DIR + '*.core')
+        for output in outputs:
+            os.remove(output)
+
+
+def main():
+    parser = optparse.OptionParser(
+        usage='usage: %prog [options]',
+        version='%prog v0.1')
+
+    parser.add_option(
+        '-d',
+        '--debug',
+        action='store_true',
+        dest='debug_mode',
+        help='Debug mode'
+    )
+
+    options, _ = parser.parse_args()
+
+    run(options)
 
 
 if __name__ == '__main__':

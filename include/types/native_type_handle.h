@@ -127,6 +127,7 @@ class native_type_increment_visitor : public native_type_unary_visitor<increment
 class native_type_decrement_visitor : public native_type_unary_visitor<decrement> {};
 class native_type_logical_not_visitor : public native_type_unary_visitor<logical_not> {};
 class native_type_bitwise_not_visitor : public native_type_unary_visitor<bitwise_not> {};
+class native_type_truthy_visitor : public native_type_unary_visitor<truthy> {};
 
 // -----------------------------------------------------------------------------
 

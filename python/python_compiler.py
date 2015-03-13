@@ -33,6 +33,30 @@ INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
 DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
 
 
+class VectorString(object):
+
+    def __init__(self, s):
+        self.s = s
+
+    @classmethod
+    def is_vector_string(cls, s):
+        # TODO: Need more robust checking.
+        s = s.strip()
+        return s.startswith('### BEGIN VECTOR ###') and s.endswith('### END VECTOR ###')
+
+    def to_raw_vector(self):
+        vector = []
+
+        lines = self.s.split('\n')
+
+        for line in lines:
+            if not 'VECTOR' in line and len(line) > 5:
+                line = line.strip('[ ]\n')
+                vector.append(line.split(','))
+
+        return vector
+
+
 class Instr(object):
 
     def __init__(self, code, oprd1, oprd2):
@@ -90,6 +114,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     default_closure_name = '__main__'
 
+    in_class_def = False
+
     def __init__(self, options):
         self.output_file = options.output_file
         self.debug_mode = options.debug_mode
@@ -110,6 +136,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.closure_map = {
             self.current_closure_name: Closure(self.current_closure_name, '', None)
         }
+
+        # states
+        self.under_class_def = False
 
     def finalize(self):
         structured_bytecode = {
@@ -201,10 +230,35 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
+        self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
+        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+
+        if not self.in_class_def:
+            self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+
+    def visit_ClassDef(self, node):
+        # Step in.
+        self.in_class_def = True
+
+        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+        self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+        self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
+        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+
+        for stmt in node.body:
+            # TODO|NOTE: currently only supports functions.
+            if isinstance(stmt, ast.FunctionDef):
+                self.visit(stmt)
+                self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
+
+        # Step out.
+        self.in_class_def = False
 
     def visit_Return(self, node):
         # TODO: [COREVM-176] Support return value in Python
+        if node.value:
+            self.visit(node.value)
         self.__add_instr('rtrn', 0, 0)
 
     def visit_Print(self, node):
@@ -213,6 +267,27 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(node.values[0])
 
         self.__add_instr('print', 0, 0)
+
+    def visit_If(self, node):
+        self.visit(node.test)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('truthy', 0, 0)
+
+        # Add `jmpif` here.
+        self.__add_instr('jmpif', 0, 0)
+        vector_length1 = len(self.__current_vector())
+
+        for stmt in node.orelse:
+            self.visit(stmt)
+
+        # Add `jmpif` here.
+        vector_length2 = len(self.__current_vector())
+        length_diff = vector_length2 - vector_length1
+        self.__current_vector()[vector_length1 - 1] = Instr(
+            self.instr_str_to_code_map['jmpif'], length_diff, 0)
+
+        for stmt in node.body:
+            self.visit(stmt)
 
     def visit_Expr(self, node):
         self.visit(node.value)
@@ -224,7 +299,15 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.visit(node.left)
         self.visit(node.op)
 
+    def visit_Compare(self, node):
+        # Note: Only supports one comparison now.
+        self.visit(node.comparators[0])
+        self.visit(node.left)
+        self.visit(node.ops[0])
+
     def visit_Call(self, node):
+        self.visit(node.func)
+
         # explicit args
         for arg in node.args:
             self.visit(arg)
@@ -243,6 +326,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.visit(node.func)
         self.__add_instr('pinvk', 0, 0)
+        self.__add_instr('pop', 0, 0)
 
         # The order of loading arguments onto the next frame has to be opposite
         # than the way they are being evaluated, since they are placed on the
@@ -276,20 +360,46 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         if isinstance(node.ctx, ast.Load):
             self.__add_instr('ldobj', self.__get_encoding_id(name), 0)
+        elif isinstance(node.ctx, ast.Name):
+            self.__add_instr('ldobj', self.__get_encoding_id(name), 0)
         elif isinstance(node.ctx, ast.Param):
             # For loading parameters
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
             self.__add_instr('getarg', 0, 0)
-            self.__add_instr('stobj', self.__get_encoding_id(node.id), 0)
+            self.__add_instr('stobj', self.__get_encoding_id(name), 0)
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass
 
     def visit_Str(self, node):
-        self.__add_instr('new', 0, 0)
-        self.__add_instr('str', self.__get_encoding_id(node.s), 0)
-        self.__add_instr('sethndl', 0, 0)
+        if not VectorString.is_vector_string(node.s):
+            self.__add_instr('new', 0, 0)
+            self.__add_instr('str', self.__get_encoding_id(node.s), 0)
+            self.__add_instr('sethndl', 0, 0)
+        else:
+            raw_vector = VectorString(node.s).to_raw_vector()
+
+            for raw_piece in raw_vector:
+                if len(raw_piece) < 3:
+                    continue
+                raw_code, raw_oprd1, raw_oprd2 = raw_piece
+                code = raw_code.strip()
+                raw_oprd1 = raw_oprd1.strip()
+                raw_oprd2 = raw_oprd2.strip()
+
+                if raw_code in ('ldobj', 'stobj', 'setattr', 'getattr', 'putkwarg', 'str'):
+                    oprd1 = self.__get_encoding_id(raw_oprd1)
+                else:
+                    oprd1 = int(raw_oprd1)
+                oprd2 = int(raw_oprd2)
+
+                self.__add_instr(code, oprd1, oprd2)
+
+    def visit_Attribute(self, node):
+        # Note: ignoring ctx here
+        self.visit(node.value)
+        self.__add_instr('getattr', self.__get_encoding_id(node.attr), 0)
 
     """ --------------------------- operator ------------------------------- """
 
@@ -371,10 +481,12 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('gte', 0, 0)
 
     def visit_Is(self, node):
-        pass
+        self.__add_instr('objeq', 0, 0)
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
 
     def visit_IsNot(self, node):
-        pass
+        self.__add_instr('objneq', 0, 0)
 
     def visit_In(self, node):
         pass
@@ -501,6 +613,16 @@ def main():
 
     try:
         generator = BytecodeGenerator(options)
+
+        with open('python/src/__builtin__.py', 'r') as fd:
+            builtin_tree = ast.parse(fd.read())
+
+        generator.visit(builtin_tree)
+
+        with open('python/src/int.py', 'r') as fd:
+            int_tree = ast.parse(fd.read())
+
+        generator.visit(int_tree)
 
         with open(options.input_file, 'r') as fd:
             tree = ast.parse(fd.read())

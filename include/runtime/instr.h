@@ -661,6 +661,15 @@ enum instr_enum : uint32_t
    */
   TOMAP,
 
+  /* ----------------- Native type manipulation instructions ---------------- */
+
+  /**
+   * <truthy, _, _>
+   * Computes a boolean truthy value based on the top element on the eval stack,
+   * and puts it on top of the stack.
+   */
+  TRUTHY,
+
   /* ---------------------- String type instructions ------------------------ */
 
   /**
@@ -1728,6 +1737,20 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_2map : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+
+/* ------------------ Native type manipulation instructions ----------------- */
+
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_truthy : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

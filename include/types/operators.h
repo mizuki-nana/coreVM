@@ -165,6 +165,51 @@ corevm::types::bitwise_not::operator()<corevm::types::map>(const corevm::types::
 
 // -----------------------------------------------------------------------------
 
+class truthy : public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle)
+  {
+    typename corevm::types::boolean::value_type value =
+      static_cast<typename corevm::types::boolean::value_type>(handle.value);
+
+    return value;
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::boolean::value_type
+corevm::types::truthy::operator()<corevm::types::boolean>(const corevm::types::string& handle)
+{
+  return !handle.value.empty();
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::boolean::value_type
+corevm::types::truthy::operator()<corevm::types::boolean>(const corevm::types::array& handle)
+{
+  return !handle.value.empty();
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::boolean::value_type
+corevm::types::truthy::operator()<corevm::types::boolean>(const corevm::types::map& handle)
+{
+  return !handle.value.empty();
+}
+
+// -----------------------------------------------------------------------------
+
 class addition : public binary_op
 {
 public:

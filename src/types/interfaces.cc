@@ -411,6 +411,19 @@ void corevm::types::interface_to_map(
 // -----------------------------------------------------------------------------
 
 
+/* ----------------------- MANIPULATION OPERATION --------------------------- */
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_compute_truthy_value(
+  native_type_handle& operand, native_type_handle& result)
+{
+  __interface_apply_unary_operator<native_type_truthy_visitor>(operand, result);
+}
+
+// -----------------------------------------------------------------------------
+
+
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 
 
