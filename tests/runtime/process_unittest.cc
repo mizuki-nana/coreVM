@@ -278,6 +278,8 @@ TEST_F(process_unittest, TestPushAndPopFrames)
     .closure_id = closure.id,
   };
 
+  process.emplace_invocation_ctx(ctx);
+
   corevm::runtime::frame frame(ctx);
   frame.set_return_addr(process.pc());
   process.push_frame(frame);

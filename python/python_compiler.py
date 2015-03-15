@@ -307,45 +307,11 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_Call(self, node):
         self.visit(node.func)
+        self.__add_instr('pinvk', 0, 0)
 
         # explicit args
         for arg in node.args:
             self.visit(arg)
-
-        # explicit kwargs
-        for keyword in node.keywords:
-            self.visit(keyword.value)
-
-        # implicit args
-        if node.starargs:
-            self.visit(node.starargs)
-
-        # implicit kwargs
-        if node.kwargs:
-            self.visit(node.kwargs)
-
-        self.visit(node.func)
-        self.__add_instr('pinvk', 0, 0)
-        self.__add_instr('pop', 0, 0)
-
-        # The order of loading arguments onto the next frame has to be opposite
-        # than the way they are being evaluated, since they are placed on the
-        # stack.
-
-        # implicit kwargs
-        if node.kwargs:
-            self.__add_instr('putkwargs', 0, 0)
-
-        # implicit args
-        if node.starargs:
-            self.__add_instr('putargs', 0, 0)
-
-        # explicit kwargs
-        for keyword in node.keywords:
-            self.__add_instr('putkwarg', self.__get_encoding_id(keyword.arg), 0)
-
-        # explicit args
-        for arg in node.args:
             self.__add_instr('putarg', 0, 0)
 
         self.__add_instr('invk', 0, 0)

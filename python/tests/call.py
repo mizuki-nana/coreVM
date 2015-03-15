@@ -1,21 +1,26 @@
-def hello_world_again():
+def do_math(arg):
+    print 'Time to have fun!'
+    return int(5)
+
+def hello_world_again(arg):
     print 'Hello world again!'
 
-def introduction():
+def introduction(arg):
     print 'My name is Will :-)'
     # test explicit return should work.
     return
 
-def hello_world():
+def hello_world(arg):
     print 'Hello world!'
-    introduction()
+    introduction(arg)
 
-def main():
+def main(arg):
     print 'Hi'
-    hello_world()
-    hello_world_again()
-    hello_world()
+    hello_world(arg)
+    hello_world_again(do_math(arg))
+    hello_world(arg)
     print 'Bye'
 
-main()
+print 'Starting...'
+main(int(1))
 print 'Done!'

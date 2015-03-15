@@ -88,6 +88,17 @@ public:
 
 // -----------------------------------------------------------------------------
 
+class invocation_ctx_not_found_error : public corevm::runtime::runtime_error
+{
+public:
+  invocation_ctx_not_found_error():
+    corevm::runtime::runtime_error("Invocation context not found")
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
+
 class evaluation_stack_empty_error : public corevm::runtime::runtime_error
 {
 public:

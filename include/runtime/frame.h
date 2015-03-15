@@ -47,8 +47,6 @@ namespace runtime {
  * - Pointer to the address caller frame.
  * - Visible local variables.
  * - Invisible local variables.
- * - Parameter list (args).
- * - Optional parameter <-> default value mapping (kwargs).
  * - Evaluation stack.
  * - Closure context.
  */
@@ -91,23 +89,6 @@ public:
 
   void set_invisible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
 
-  bool has_params() const;
-
-  void put_param(const corevm::dyobj::dyobj_id&);
-
-  const corevm::dyobj::dyobj_id pop_param() throw(corevm::runtime::missing_parameter_error);
-
-  bool has_param_value_pairs() const;
-
-  bool has_param_value_pair_with_key(const corevm::runtime::variable_key) const;
-
-  void put_param_value_pair(const corevm::runtime::variable_key, const corevm::dyobj::dyobj_id&);
-
-  const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key)
-    throw(corevm::runtime::missing_parameter_error);
-
-  std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
-
   std::list<corevm::dyobj::dyobj_id> get_visible_objs() const;
 
   std::list<corevm::dyobj::dyobj_id> get_invisible_objs() const;
@@ -119,8 +100,6 @@ protected:
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;
-  std::list<corevm::dyobj::dyobj_id> m_params_list;
-  std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_param_value_map;
   std::stack<corevm::types::native_type_handle> m_eval_stack;
 };
 

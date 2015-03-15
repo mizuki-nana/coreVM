@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/dyobj/flags.h"
 #include "../../include/runtime/closure.h"
 #include "../../include/runtime/common.h"
+#include "../../include/runtime/invocation_ctx.h"
 #include "../../include/runtime/process.h"
 #include "../../include/types/interfaces.h"
 #include "../../include/types/native_type_handle.h"
@@ -619,17 +620,17 @@ protected:
 
 TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
 {
-  corevm::runtime::frame frame(m_ctx);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::dyobj::dyobj_id id = 1;
   m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   ASSERT_THROW(
     {
-      actual_frame.pop_param();
+      actual_invk_ctx.pop_param();
     },
     corevm::runtime::missing_parameter_error
   );
@@ -638,7 +639,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
   corevm::runtime::instr_handler_putarg handler;
   handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param();
+  corevm::dyobj::dyobj_id actual_id = actual_invk_ctx.pop_param();
 
   ASSERT_EQ(id, actual_id);
 }
@@ -647,18 +648,18 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
 
 TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARG)
 {
-  corevm::runtime::frame frame(m_ctx);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::variable_key key = 3;
   corevm::dyobj::dyobj_id id = 2;
   m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   ASSERT_THROW(
     {
-      actual_frame.pop_param_value_pair(key);
+      actual_invk_ctx.pop_param_value_pair(key);
     },
     corevm::runtime::missing_parameter_error
   );
@@ -672,7 +673,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARG)
   corevm::runtime::instr_handler_putkwarg handler;
   handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id actual_id = actual_frame.pop_param_value_pair(key);
+  corevm::dyobj::dyobj_id actual_id = actual_invk_ctx.pop_param_value_pair(key);
 
   ASSERT_EQ(id, actual_id);
 }
@@ -681,8 +682,8 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARG)
 
 TEST_F(instrs_functions_instrs_test, TestInstrPUTARGS)
 {
-  corevm::runtime::frame frame(m_ctx);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
   auto& obj = process::adapter(m_process).help_get_dyobj(id);
@@ -702,15 +703,15 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARGS)
 
   m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_putargs handler;
   handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id arg_id1 = actual_frame.pop_param();
-  corevm::dyobj::dyobj_id arg_id2 = actual_frame.pop_param();
-  corevm::dyobj::dyobj_id arg_id3 = actual_frame.pop_param();
+  corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param();
+  corevm::dyobj::dyobj_id arg_id2 = actual_invk_ctx.pop_param();
+  corevm::dyobj::dyobj_id arg_id3 = actual_invk_ctx.pop_param();
 
   ASSERT_EQ(id1, arg_id1);
   ASSERT_EQ(id2, arg_id2);
@@ -721,8 +722,8 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARGS)
 
 TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARGS)
 {
-  corevm::runtime::frame frame(m_ctx);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
   auto& obj = process::adapter(m_process).help_get_dyobj(id);
@@ -746,18 +747,19 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARGS)
 
   m_process.push_stack(id);
 
-  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_putkwargs handler;
   handler.execute(instr, m_process);
 
-  corevm::dyobj::dyobj_id arg_id1 = actual_frame.pop_param_value_pair(key1);
-  corevm::dyobj::dyobj_id arg_id2 = actual_frame.pop_param_value_pair(key2);
-  corevm::dyobj::dyobj_id arg_id3 = actual_frame.pop_param_value_pair(key3);
-
+  corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param_value_pair(key1);
   ASSERT_EQ(id1, arg_id1);
+
+  corevm::dyobj::dyobj_id arg_id2 = actual_invk_ctx.pop_param_value_pair(key2);
   ASSERT_EQ(id2, arg_id2);
+
+  corevm::dyobj::dyobj_id arg_id3 = actual_invk_ctx.pop_param_value_pair(key3);
   ASSERT_EQ(id3, arg_id3);
 }
 
@@ -766,10 +768,10 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARGS)
 TEST_F(instrs_functions_instrs_test, TestInstrGETARG)
 {
   corevm::dyobj::dyobj_id id = 1;
-  corevm::runtime::frame frame(m_ctx);
-  frame.put_param(id);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  invk_ctx.put_param(id);
 
-  m_process.push_frame(frame);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getarg handler;
@@ -787,9 +789,9 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARG)
   corevm::runtime::variable_key key = 22;
   corevm::dyobj::dyobj_id id = 100;
 
-  corevm::runtime::frame frame(m_ctx);
-  frame.put_param_value_pair(key, id);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  invk_ctx.put_param_value_pair(key, id);
+  m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::instr instr {
     .code=0,
@@ -813,22 +815,24 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARGS)
   corevm::dyobj::dyobj_id id2 = 200;
   corevm::dyobj::dyobj_id id3 = 300;
 
-  corevm::runtime::frame frame(m_ctx);
-  frame.put_param(id1);
-  frame.put_param(id2);
-  frame.put_param(id3);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  invk_ctx.put_param(id1);
+  invk_ctx.put_param(id2);
+  invk_ctx.put_param(id3);
+  m_process.push_invocation_ctx(invk_ctx);
+  m_process.emplace_frame(m_ctx);
 
-  ASSERT_EQ(true, frame.has_params());
+  ASSERT_EQ(true, invk_ctx.has_params());
 
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getargs handler;
   handler.execute(instr, m_process);
 
-  corevm::runtime::frame actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
-  ASSERT_EQ(false, actual_frame.has_params());
+  ASSERT_EQ(false, actual_invk_ctx.has_params());
 
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle hndl = actual_frame.pop_eval_stack();
 
   corevm::types::native_type_handle result_handle1;
@@ -865,22 +869,24 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
   corevm::dyobj::dyobj_id id2 = 200;
   corevm::dyobj::dyobj_id id3 = 300;
 
-  corevm::runtime::frame frame(m_ctx);
-  frame.put_param_value_pair(key1, id1);
-  frame.put_param_value_pair(key2, id2);
-  frame.put_param_value_pair(key3, id3);
-  m_process.push_frame(frame);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  invk_ctx.put_param_value_pair(key1, id1);
+  invk_ctx.put_param_value_pair(key2, id2);
+  invk_ctx.put_param_value_pair(key3, id3);
+  m_process.push_invocation_ctx(invk_ctx);
+  m_process.emplace_frame(m_ctx);
 
-  ASSERT_EQ(true, frame.has_param_value_pairs());
+  ASSERT_EQ(true, invk_ctx.has_param_value_pairs());
 
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_getkwargs handler;
   handler.execute(instr, m_process);
 
-  corevm::runtime::frame actual_frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
-  ASSERT_EQ(false, actual_frame.has_param_value_pairs());
+  ASSERT_EQ(false, actual_invk_ctx.has_param_value_pairs());
 
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle hndl = actual_frame.pop_eval_stack();
 
   corevm::types::native_type_handle key_handle1 = corevm::types::uint64(key1);
@@ -989,9 +995,9 @@ TEST_F(instrs_control_instrs_test, TestInstrPINVK)
   corevm::runtime::instr_handler_pinvk handler;
   handler.execute(instr, m_process);
 
-  corevm::runtime::frame& frame = m_process.top_frame();
+  corevm::runtime::invocation_ctx& invk_ctx = m_process.top_invocation_ctx();
 
-  corevm::runtime::closure_ctx ctx = frame.closure_ctx();
+  corevm::runtime::closure_ctx ctx = invk_ctx.ctx();
 
   ASSERT_TRUE(m_ctx == ctx);
 }
@@ -1006,8 +1012,8 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
   m_ctx.compartment_id = compartment_id;
   m_ctx.closure_id = closure_id;
 
-  corevm::runtime::frame frame(m_ctx);
-  m_process.push_frame(frame);
+  m_process.emplace_frame(m_ctx);
+  m_process.emplace_invocation_ctx(m_ctx);
 
   corevm::runtime::vector vector;
   corevm::runtime::closure closure {
@@ -1088,7 +1094,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF)
   corevm::runtime::instr_handler_jmpif handler;
   handler.execute(instr, m_process);
 
-  ASSERT_EQ(8, m_process.pc());
+  ASSERT_EQ(7, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------

@@ -34,8 +34,6 @@ corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx)
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
-  m_params_list(),
-  m_param_value_map(),
   m_eval_stack()
 {
   // Do nothing here.
@@ -192,99 +190,6 @@ corevm::runtime::frame::set_invisible_var(
   corevm::runtime::variable_key var_key, corevm::dyobj::dyobj_id obj_id)
 {
   m_invisible_vars[var_key] = obj_id;
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-corevm::runtime::frame::has_params() const
-{
-  return !m_params_list.empty();
-}
-
-// -----------------------------------------------------------------------------
-
-void
-corevm::runtime::frame::put_param(const corevm::dyobj::dyobj_id& id)
-{
-  m_params_list.push_back(id);
-}
-
-// -----------------------------------------------------------------------------
-
-const corevm::dyobj::dyobj_id
-corevm::runtime::frame::pop_param() throw(corevm::runtime::missing_parameter_error)
-{
-  if (m_params_list.empty())
-  {
-    throw corevm::runtime::missing_parameter_error();
-  }
-
-  corevm::dyobj::dyobj_id id = m_params_list.front();
-  m_params_list.pop_front();
-  return id;
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-corevm::runtime::frame::has_param_value_pairs() const
-{
-  return !m_param_value_map.empty();
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-corevm::runtime::frame::has_param_value_pair_with_key(
-  const corevm::runtime::variable_key key) const
-{
-  return m_param_value_map.find(key) != m_param_value_map.end();
-}
-
-// -----------------------------------------------------------------------------
-
-void
-corevm::runtime::frame::put_param_value_pair(
-  const corevm::runtime::variable_key key, const corevm::dyobj::dyobj_id& id)
-{
-  m_param_value_map[key] = id;
-}
-
-// -----------------------------------------------------------------------------
-
-const corevm::dyobj::dyobj_id
-corevm::runtime::frame::pop_param_value_pair(
-  const corevm::runtime::variable_key key) throw(corevm::runtime::missing_parameter_error)
-{
-  auto itr = m_param_value_map.find(key);
-
-  if (itr == m_param_value_map.end())
-  {
-    throw corevm::runtime::missing_parameter_error();
-  }
-
-  corevm::dyobj::dyobj_id id = itr->second;
-
-  m_param_value_map.erase(itr);
-
-  return id;
-}
-
-// -----------------------------------------------------------------------------
-
-std::list<corevm::runtime::variable_key>
-corevm::runtime::frame::param_value_pair_keys() const
-{
-  std::list<corevm::runtime::variable_key> keys;
-
-  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
-  {
-    corevm::runtime::variable_key key = itr->first;
-    keys.push_back(key);
-  }
-
-  return keys;
 }
 
 // -----------------------------------------------------------------------------

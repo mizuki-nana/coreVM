@@ -191,7 +191,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Num(self, node):
-        return '__call(int)' #% str(node.n)
+        return '__call(int, %s)' % str(node.n)
 
     def visit_Name(self, node):
         return node.id
