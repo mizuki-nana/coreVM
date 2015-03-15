@@ -28,10 +28,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-corevm::runtime::frame::frame(corevm::runtime::closure_ctx closure_ctx)
+// -----------------------------------------------------------------------------
+
+corevm::runtime::frame::frame(const corevm::runtime::closure_ctx& closure_ctx)
   :
   m_closure_ctx(closure_ctx),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
+  m_visible_vars(),
+  m_invisible_vars(),
+  m_eval_stack()
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::frame::frame(
+  const corevm::runtime::closure_ctx& closure_ctx,
+  corevm::runtime::instr_addr return_addr)
+  :
+  m_closure_ctx(closure_ctx),
+  m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
   m_eval_stack()

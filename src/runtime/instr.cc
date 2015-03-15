@@ -896,12 +896,7 @@ corevm::runtime::instr_handler_invk::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::runtime::closure_ctx ctx = process.top_invocation_ctx().ctx();
-
-  process.emplace_frame(ctx);
-
-  corevm::runtime::frame& frame = process.top_frame();
-
-  frame.set_return_addr(process.pc());
+  process.emplace_frame(ctx, process.pc());
 
   corevm::runtime::compartment* compartment = nullptr;
   process.get_compartment(ctx.compartment_id, &compartment);

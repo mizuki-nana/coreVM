@@ -53,7 +53,10 @@ namespace runtime {
 class frame
 {
 public:
-  explicit frame(corevm::runtime::closure_ctx);
+  explicit frame(const corevm::runtime::closure_ctx&);
+
+  frame(const corevm::runtime::closure_ctx&, corevm::runtime::instr_addr);
+
   ~frame();
 
   uint32_t eval_stack_size() const;

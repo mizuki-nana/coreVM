@@ -251,6 +251,15 @@ corevm::runtime::process::emplace_frame(const corevm::runtime::closure_ctx& ctx)
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::process::emplace_frame(
+  const corevm::runtime::closure_ctx& ctx, corevm::runtime::instr_addr return_addr)
+{
+  m_call_stack.emplace_back(ctx, return_addr);
+}
+
+// -----------------------------------------------------------------------------
+
 uint64_t
 corevm::runtime::process::stack_size() const
 {
@@ -498,9 +507,7 @@ corevm::runtime::process::pre_start()
 
     append_vector(closure.vector);
 
-    corevm::runtime::frame frame(ctx);
-    frame.set_return_addr(m_pc);
-    push_frame(frame);
+    emplace_frame(ctx, m_pc);
 
     emplace_invocation_ctx(ctx);
 
