@@ -719,12 +719,12 @@ corevm::runtime::process::handle_signal(
 
 // -----------------------------------------------------------------------------
 
-size_t
+corevm::runtime::compartment_id
 corevm::runtime::process::insert_compartment(
   const corevm::runtime::compartment& compartment)
 {
   m_compartments.push_back(compartment);
-  return m_compartments.size();
+  return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);
 }
 
 // -----------------------------------------------------------------------------

@@ -268,13 +268,12 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   compartment.set_closure_table(closure_table);
 
   // simulate `process::pre_start()`.
-  process.insert_compartment(compartment);
+  auto compartment_id = process.insert_compartment(compartment);
   process.append_vector(vector);
   process.set_pc(0);
 
-  // TODO: [COREVM-179] Make process::insert_compartment return the ID of the inserted compartment
   corevm::runtime::closure_ctx ctx {
-    .compartment_id = 0,
+    .compartment_id = compartment_id,
     .closure_id = closure.id,
   };
 
@@ -434,6 +433,19 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
   process.get_frame_by_closure_ctx(ctx2, &ptr);
 
   ASSERT_NE(nullptr, ptr);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_unittest, TestInsertCompartment)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::compartment compartment("./example.core");
+
+  auto compartment_id = process.insert_compartment(compartment);
+
+  ASSERT_NE(corevm::runtime::NONESET_COMPARTMENT_ID, compartment_id);
 }
 
 // -----------------------------------------------------------------------------

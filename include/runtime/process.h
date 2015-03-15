@@ -189,7 +189,8 @@ public:
 
   native_types_pool_type::size_type max_ntvhndl_pool_size() const;
 
-  size_t insert_compartment(const corevm::runtime::compartment&);
+  corevm::runtime::compartment_id insert_compartment(
+    const corevm::runtime::compartment&);
 
   void get_compartment(corevm::runtime::compartment_id, corevm::runtime::compartment**);
 
