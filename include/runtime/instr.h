@@ -171,6 +171,15 @@ enum instr_enum : uint32_t
    */
   SETCTX,
 
+  /**
+   * <cldobj, oprd1, oprd2>
+   * Conditionally loads an object associated with the variable key value
+   * represented by either `oprd1` or `oprd2`, by evaluating the boolean
+   * equivalent of the object on top of the evaluation stack. Loads `oprd1`
+   * if the value evaluates to true, `oprd2` otherwise.
+   */
+  CLDOBJ,
+
   /* ------------------------ Control instructions -------------------------- */
 
   /**
@@ -1125,6 +1134,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_setctx : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_cldobj : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

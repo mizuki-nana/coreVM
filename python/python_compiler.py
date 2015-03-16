@@ -261,6 +261,10 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(node.value)
         self.__add_instr('rtrn', 0, 0)
 
+    def visit_Assign(self, node):
+        self.visit(node.value)
+        self.visit(node.targets[0])
+
     def visit_Print(self, node):
         # TODO: [COREVM-178] Support for printing multiple values in Python
         if node.values:
@@ -333,6 +337,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
             self.__add_instr('getarg', 0, 0)
+            self.__add_instr('stobj', self.__get_encoding_id(name), 0)
+        elif isinstance(node.ctx, ast.Store):
             self.__add_instr('stobj', self.__get_encoding_id(name), 0)
         else:
             # TODO: Add support for other types of ctx of `Name` node.
@@ -430,29 +436,35 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_Eq(self, node):
         self.__add_instr('eq', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_NotEq(self, node):
         self.__add_instr('neq', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_Lt(self, node):
         self.__add_instr('lt', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_LtE(self, node):
         self.__add_instr('lte', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_Gt(self, node):
         self.__add_instr('gt', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_GtE(self, node):
         self.__add_instr('gte', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_Is(self, node):
         self.__add_instr('objeq', 0, 0)
-        self.__add_instr('new', 0, 0)
-        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_IsNot(self, node):
         self.__add_instr('objneq', 0, 0)
+        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_In(self, node):
         pass
@@ -584,6 +596,11 @@ def main():
             builtin_tree = ast.parse(fd.read())
 
         generator.visit(builtin_tree)
+
+        with open('python/src/bool.py', 'r') as fd:
+            bool_tree = ast.parse(fd.read())
+
+        generator.visit(bool_tree)
 
         with open('python/src/int.py', 'r') as fd:
             int_tree = ast.parse(fd.read())

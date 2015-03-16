@@ -13,6 +13,7 @@ class object:
         ### END VECTOR ###
         """
 
+
 def __call(caller, arg):
     # Need to support *args and **kwargs.
     if caller.__class__ is type:

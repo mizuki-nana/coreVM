@@ -101,6 +101,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::OBJEQ,     { .num_oprd=0, .str="objeq",     .handler=std::make_shared<corevm::runtime::instr_handler_objeq>()     } },
   { corevm::runtime::instr_enum::OBJNEQ,    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    } },
   { corevm::runtime::instr_enum::SETCTX,    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    } },
+  { corevm::runtime::instr_enum::CLDOBJ,    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    } },
 
   /* -------------------------- Control instructions ------------------------ */
 
@@ -856,6 +857,67 @@ corevm::runtime::instr_handler_setctx::execute(
   };
 
   obj.set_closure_ctx(ctx);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_cldobj::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle res;
+
+  corevm::types::interface_to_bool(hndl, res);
+
+  bool value = corevm::types::get_value_from_handle<bool>(res);
+
+  corevm::runtime::variable_key key1 = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  corevm::runtime::variable_key key2 = static_cast<corevm::runtime::variable_key>(instr.oprd2);
+
+  corevm::runtime::variable_key key = value ? key1 : key2;
+
+  corevm::runtime::frame* frame_ptr = &frame;
+
+  while (!frame_ptr->has_visible_var(key))
+  {
+    corevm::runtime::compartment_id compartment_id = frame_ptr->closure_ctx().compartment_id;
+    corevm::runtime::compartment* compartment = nullptr;
+
+    process.get_compartment(compartment_id, &compartment);
+
+    if (!compartment)
+    {
+      throw corevm::runtime::compartment_not_found_error(compartment_id);
+    }
+
+    corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
+    corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
+
+    corevm::runtime::closure_id parent_closure_id = closure.parent_id;
+
+    if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+    {
+      throw corevm::runtime::local_variable_not_found_error();
+    }
+
+    closure_ctx ctx {
+      .compartment_id = compartment_id,
+      .closure_id = parent_closure_id
+    };
+
+    process.get_frame_by_closure_ctx(ctx, &frame_ptr);
+
+    // Theoretically, the pointer that points to the frame that's
+    // associated with the parent closure should exist.
+    assert(frame_ptr);
+  }
+
+  auto id = frame_ptr->get_visible_var(key);
+
+  process.push_stack(id);
 }
 
 // -----------------------------------------------------------------------------

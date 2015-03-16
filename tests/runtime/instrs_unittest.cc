@@ -611,6 +611,74 @@ TEST_F(instrs_obj_unittest, TestInstrSETCXT)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrCLDOBJ)
+{
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+  corevm::runtime::closure_id parent_closure_id = 100;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+  corevm::runtime::vector vector;
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  corevm::runtime::closure_ctx ctx2 {
+    .compartment_id = compartment_id,
+    .closure_id = parent_closure_id
+  };
+
+  corevm::runtime::closure closure {
+    .id = closure_id,
+    .parent_id = parent_closure_id,
+    .vector = vector
+  };
+
+  corevm::runtime::closure parent_closure {
+    .id = parent_closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
+    .vector = vector
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure,
+    parent_closure
+  };
+
+  corevm::runtime::frame frame(ctx1);
+  corevm::runtime::frame parent_frame(ctx2);
+  compartment.set_closure_table(closure_table);
+
+  m_process.insert_compartment(compartment);
+
+  corevm::runtime::variable_key key1 = 123;
+  corevm::dyobj::dyobj_id id1 = 456;
+  frame.set_visible_var(key1, id1);
+
+  corevm::runtime::variable_key key2 = 321;
+  corevm::dyobj::dyobj_id id2 = 654;
+  parent_frame.set_visible_var(key2, id2);
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(false);
+  frame.push_eval_stack(hndl);
+
+  m_process.push_frame(parent_frame);
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key1),
+    .oprd2=static_cast<corevm::runtime::instr_oprd>(key2),
+  };
+
+  execute_instr<corevm::runtime::instr_handler_cldobj>(instr, 1);
+
+  ASSERT_EQ(id2, m_process.top_stack());
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_functions_instrs_test : public instrs_unittest {
 protected:
   corevm::runtime::process m_process;
