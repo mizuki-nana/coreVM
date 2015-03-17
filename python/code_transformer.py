@@ -217,7 +217,7 @@ class CodeTransformer(ast.NodeVisitor):
         return node.id
 
     def visit_Str(self, node):
-        return '\'{s}\''.format(s=node.s)
+        return '__call(str, \"%s\")' % str(node.s)
 
     """ --------------------------- operator ------------------------------- """
 

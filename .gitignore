@@ -15,6 +15,9 @@
 # Tests
 *.test
 
+# Python
+*.pyc
+
 # Outputs
 info.json
 *.tmp.py

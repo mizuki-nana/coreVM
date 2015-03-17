@@ -34,6 +34,9 @@ import optparse
 import os
 import subprocess
 
+from colors import colors
+from stdout_comparator import StdoutComparator
+
 
 PYTHON = 'python'
 PYTHON_TESTS_DIR = './python/tests/'
@@ -43,17 +46,6 @@ INFO_FILE = './info.json'
 COREVM = './coreVM'
 INTERMEDIATE_EXTENSION = '.tmp.py'
 BYTECODE_EXTENSION = '.core'
-
-
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 
 def code_transformer_input_to_output_path(path):
@@ -92,6 +84,10 @@ def corevm_cmdl_args(path):
     return [COREVM, '--input', compiler_input_to_output_path(path)]
 
 
+def python_cmdl_args(path):
+    return [PYTHON, path]
+
+
 def run(options):
     inputs = glob.glob(PYTHON_TESTS_DIR + '*.py')
     real_inputs = []
@@ -116,7 +112,7 @@ def run(options):
         retcode = subprocess.call(args)
 
         if retcode != 0:
-            info += (bcolors.WARNING + ' [FAILED]' + bcolors.ENDC)
+            info += (colors.WARNING + ' [FAILED]' + colors.ENDC)
             print info
             continue
 
@@ -126,7 +122,7 @@ def run(options):
 
         retcode = subprocess.call(args)
         if retcode != 0:
-            info += (bcolors.WARNING + ' [FAILED]' + bcolors.ENDC)
+            info += (colors.WARNING + ' [FAILED]' + colors.ENDC)
             print info
             continue
 
@@ -134,12 +130,12 @@ def run(options):
         if options.debug_mode:
             print subprocess.list2cmdline(args)
 
-        retcode = subprocess.call(args)
+        retcode = StdoutComparator(args, python_cmdl_args(path)).run()
 
         if retcode == 0:
-            info += (bcolors.OKGREEN + ' [SUCCESS]' + bcolors.ENDC)
+            info += (colors.OKGREEN + ' [SUCCESS]' + colors.ENDC)
         else:
-            info += (bcolors.FAIL + ' [FAILED]' + bcolors.ENDC)
+            info += (colors.FAIL + ' [FAILED]' + colors.ENDC)
 
         print info
 

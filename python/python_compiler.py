@@ -114,8 +114,6 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     default_closure_name = '__main__'
 
-    in_class_def = False
-
     def __init__(self, options):
         self.output_file = options.output_file
         self.debug_mode = options.debug_mode
@@ -138,7 +136,13 @@ class BytecodeGenerator(ast.NodeVisitor):
         }
 
         # states
-        self.under_class_def = False
+        self.current_class_name = ''
+
+    def read_from_source(self, path):
+        with open(path, 'r') as fd:
+            tree = ast.parse(fd.read())
+
+        self.visit(tree)
 
     def finalize(self):
         structured_bytecode = {
@@ -182,7 +186,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def __mingle_name(self, name):
         # TDOO: [COREVM-177] Add support for name mingling in Python compiler
-        return name
+        return self.current_class_name + '.' + name
 
     def __get_encoding_id(self, name):
         if name not in self.encoding_map:
@@ -233,12 +237,12 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
 
-        if not self.in_class_def:
+        if not self.current_class_name:
             self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
 
     def visit_ClassDef(self, node):
         # Step in.
-        self.in_class_def = True
+        self.current_class_name = self.current_class_name + '::' + node.name
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
@@ -253,7 +257,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
 
         # Step out.
-        self.in_class_def = False
+        self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
 
     def visit_Return(self, node):
         # TODO: [COREVM-176] Support return value in Python
@@ -592,25 +596,13 @@ def main():
     try:
         generator = BytecodeGenerator(options)
 
-        with open('python/src/__builtin__.py', 'r') as fd:
-            builtin_tree = ast.parse(fd.read())
+        generator.read_from_source('python/src/__builtin__.py')
+        generator.read_from_source('python/src/bool.py')
+        generator.read_from_source('python/src/int.py')
+        generator.read_from_source('python/src/str.py')
 
-        generator.visit(builtin_tree)
+        generator.read_from_source(options.input_file)
 
-        with open('python/src/bool.py', 'r') as fd:
-            bool_tree = ast.parse(fd.read())
-
-        generator.visit(bool_tree)
-
-        with open('python/src/int.py', 'r') as fd:
-            int_tree = ast.parse(fd.read())
-
-        generator.visit(int_tree)
-
-        with open(options.input_file, 'r') as fd:
-            tree = ast.parse(fd.read())
-
-        generator.visit(tree)
         generator.finalize()
     except Exception as ex:
         sys.stderr.write('Failed to compile %s\n' % options.input_file)
