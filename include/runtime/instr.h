@@ -180,6 +180,22 @@ enum instr_enum : uint32_t
    */
   CLDOBJ,
 
+  /**
+   * <setattrs, _, _>
+   * Converts the native type handle on top of the eval stack to a native map,
+   * and use its key-value pairs as attribute name-value pairs to set on the
+   * object on the top of the stack.
+   */
+  SETATTRS,
+
+  /**
+   * <rsetattrs, attr, _>
+   * Reverse set attributes. Set the object on top of stack as the attribute
+   * values onto the objects pointed to as values in the native map equivalent
+   * on top of the eval stack.
+   */
+  RSETATTRS,
+
   /* ------------------------ Control instructions -------------------------- */
 
   /**
@@ -889,6 +905,14 @@ enum instr_enum : uint32_t
   MAPPUT,
 
   /**
+   * <mapset, key, _>
+   * Converts the top element on the eval stack to a native map, and insert a
+   * key-value pair into it, with the key represented as the first operand,
+   * and the value as the object on top of the stack.
+   */
+  MAPSET,
+
+  /**
    * <mapers, _, _>
    * Pops the top element on the eval stack, and performs the "map erase"
    * operation.
@@ -1142,6 +1166,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_cldobj : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_setattrs : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_rsetattrs : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
@@ -2018,6 +2058,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_mapput : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mapset : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

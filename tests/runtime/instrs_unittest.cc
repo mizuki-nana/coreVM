@@ -679,6 +679,101 @@ TEST_F(instrs_obj_unittest, TestInstrCLDOBJ)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
+{
+  corevm::dyobj::dyobj_id id1 = process::adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = process::adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id3 = process::adapter(m_process).help_create_dyobj();
+
+  corevm::types::native_type_handle hndl = corevm::types::native_map {
+    { 1, static_cast<corevm::types::native_map_mapped_type>(id1) },
+    { 2, static_cast<corevm::types::native_map_mapped_type>(id2) },
+    { 3, static_cast<corevm::types::native_map_mapped_type>(id3) },
+  };
+
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  corevm::runtime::frame frame(ctx);
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(id);
+
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1= 0,
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_setattrs>(instr, 1);
+
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto& obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+  ASSERT_EQ(id1, obj.getattr(1));
+  ASSERT_EQ(id2, obj.getattr(2));
+  ASSERT_EQ(id3, obj.getattr(3));
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
+{
+  corevm::dyobj::dyobj_id id1 = process::adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id2 = process::adapter(m_process).help_create_dyobj();
+  corevm::dyobj::dyobj_id id3 = process::adapter(m_process).help_create_dyobj();
+
+  corevm::types::native_type_handle hndl = corevm::types::native_map {
+    { 1, static_cast<corevm::types::native_map_mapped_type>(id1) },
+    { 2, static_cast<corevm::types::native_map_mapped_type>(id2) },
+    { 3, static_cast<corevm::types::native_map_mapped_type>(id3) },
+  };
+
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  corevm::runtime::frame frame(ctx);
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(id);
+
+  m_process.push_frame(frame);
+
+  corevm::dyobj::attr_key attr = 1;
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr),
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_rsetattrs>(instr, 1);
+
+  auto& obj1 = process::adapter(m_process).help_get_dyobj(id1);
+  auto& obj2 = process::adapter(m_process).help_get_dyobj(id2);
+  auto& obj3 = process::adapter(m_process).help_get_dyobj(id3);
+
+  ASSERT_EQ(id, obj1.getattr(attr));
+  ASSERT_EQ(id, obj2.getattr(attr));
+  ASSERT_EQ(id, obj3.getattr(attr));
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_functions_instrs_test : public instrs_unittest {
 protected:
   corevm::runtime::process m_process;
@@ -1259,6 +1354,26 @@ protected:
     InstrHandlerCls instr_handler;
 
     corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+
+    instr_handler.execute(instr, m_process);
+
+    corevm::runtime::frame& frame = m_process.top_frame();
+    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    IntrinsicType actual_result = corevm::types::get_value_from_handle<IntrinsicType>(
+      result_handle
+    );
+
+    ASSERT_EQ(expected_result, actual_result);
+  }
+
+  template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
+  void execute_instr_and_assert_result(
+    corevm::runtime::instr instr, IntrinsicType expected_result)
+  {
+    InstrHandlerCls instr_handler;
 
     instr_handler.execute(instr, m_process);
 
@@ -2435,6 +2550,53 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPPUT)
 
   execute_instr_and_assert_result<corevm::runtime::instr_handler_mapput,
     corevm::types::native_map>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPSET)
+{
+  corevm::types::native_type_handle hndl = corevm::types::native_map {
+    { 1, 100 },
+    { 2, 200 },
+    { 3, 300 }
+  };
+
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  corevm::runtime::frame frame(ctx);
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(id);
+
+  m_process.push_frame(frame);
+
+  corevm::types::native_map_key_type key = 4;
+  corevm::types::native_map_mapped_type value = \
+    static_cast<corevm::types::native_map_mapped_type>(id);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2 = 0
+  };
+
+  corevm::types::native_map res {
+    { 1, 100 },
+    { 2, 200 },
+    { 3, 300 },
+    { key, value }
+  };
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_mapset, corevm::types::native_map>(instr, res);
 }
 
 // -----------------------------------------------------------------------------

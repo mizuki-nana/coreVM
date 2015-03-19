@@ -391,7 +391,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key,
   corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type obj_id) noexcept
 {
-  m_attrs.insert({attr_key, obj_id});
+  m_attrs[attr_key] = obj_id;
 }
 
 // -----------------------------------------------------------------------------

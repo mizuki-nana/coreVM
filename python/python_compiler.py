@@ -203,6 +203,32 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         return value
 
+    def __process_raw_instr(self, raw_instr):
+        INSTRS_NEED_ENCODING_ID = (
+            'ldobj',
+            'stobj',
+            'setattr',
+            'getattr',
+            'putkwarg',
+            'rsetattrs',
+            'str'
+        )
+        raw_code, raw_oprd1, raw_oprd2 = raw_instr
+
+        raw_code = raw_code.strip()
+        raw_oprd1 = raw_oprd1.strip()
+        raw_oprd2 = raw_oprd2.strip()
+
+        code = raw_code.strip()
+
+        if raw_code in INSTRS_NEED_ENCODING_ID:
+            oprd1 = self.__get_encoding_id(raw_oprd1)
+        else:
+            oprd1 = int(raw_oprd1)
+        oprd2 = int(raw_oprd2)
+
+        return code, oprd1, oprd2
+
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
@@ -245,6 +271,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_class_name = self.current_class_name + '::' + node.name
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
+        self.__add_instr('map', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
@@ -253,8 +281,13 @@ class BytecodeGenerator(ast.NodeVisitor):
         for stmt in node.body:
             # TODO|NOTE: currently only supports functions.
             if isinstance(stmt, ast.FunctionDef):
+                self.__add_instr('gethndl', 0, 0)
                 self.visit(stmt)
+                self.__add_instr('ldobj', self.__get_encoding_id('MethodType'), 0)
+                self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+                self.__add_instr('mapset', self.__get_encoding_id(stmt.name), 0)
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
+                self.__add_instr('sethndl', 0, 0)
 
         # Step out.
         self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
@@ -356,19 +389,11 @@ class BytecodeGenerator(ast.NodeVisitor):
         else:
             raw_vector = VectorString(node.s).to_raw_vector()
 
-            for raw_piece in raw_vector:
-                if len(raw_piece) < 3:
+            for raw_instr in raw_vector:
+                if len(raw_instr) < 3:
                     continue
-                raw_code, raw_oprd1, raw_oprd2 = raw_piece
-                code = raw_code.strip()
-                raw_oprd1 = raw_oprd1.strip()
-                raw_oprd2 = raw_oprd2.strip()
 
-                if raw_code in ('ldobj', 'stobj', 'setattr', 'getattr', 'putkwarg', 'str'):
-                    oprd1 = self.__get_encoding_id(raw_oprd1)
-                else:
-                    oprd1 = int(raw_oprd1)
-                oprd2 = int(raw_oprd2)
+                code, oprd1, oprd2 = self.__process_raw_instr(raw_instr)
 
                 self.__add_instr(code, oprd1, oprd2)
 

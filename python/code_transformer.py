@@ -72,7 +72,7 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__indent()
 
-        base_str += ''.join([self.visit(stmt) for stmt in node.body])
+        base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
         base_str = base_str.replace(', )', ')')
         base_str += '\n'
 
@@ -108,10 +108,10 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Assign(self, node):
-        base_str = '{indentation}{exprs} = {value}\n'.format(
-          indentation=self.__indentation(),
-          exprs=', '.join([self.visit(expr) for expr in node.exprs]),
-          value=self.visit(node.value)
+        base_str = '{indentation}{targets} = {value}\n'.format(
+            indentation=self.__indentation(),
+            targets=', '.join([self.visit(target) for target in node.targets]),
+            value=self.visit(node.value)
         )
 
         return base_str
@@ -151,6 +151,9 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Expr(self, node):
         return self.visit(node.value)
+
+    def visit_Pass(self, node):
+        return '{indentation}pass'.format(indentation=self.__indentation())
 
     """ ----------------------------- expr --------------------------------- """
 
@@ -206,12 +209,17 @@ class CodeTransformer(ast.NodeVisitor):
         base_str += ')'
 
         base_str = base_str.replace(', )', ')')
-        base_str += '\n'
 
         return base_str
 
     def visit_Num(self, node):
         return '__call(int, %s)' % str(node.n)
+
+    def visit_Attribute(self, node):
+        return '{expr}.{attr}'.format(
+            expr=self.visit(node.value),
+            attr=str(node.attr)
+        )
 
     def visit_Name(self, node):
         return node.id

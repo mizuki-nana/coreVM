@@ -102,6 +102,8 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::OBJNEQ,    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    } },
   { corevm::runtime::instr_enum::SETCTX,    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    } },
   { corevm::runtime::instr_enum::CLDOBJ,    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    } },
+  { corevm::runtime::instr_enum::SETATTRS,  { .num_oprd=0, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  } },
+  { corevm::runtime::instr_enum::RSETATTRS, { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() } },
 
   /* -------------------------- Control instructions ------------------------ */
 
@@ -234,6 +236,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::MAPEMP,    { .num_oprd=0, .str="mapemp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapemp>()    } },
   { corevm::runtime::instr_enum::MAPAT,     { .num_oprd=0, .str="mapat",     .handler=std::make_shared<corevm::runtime::instr_handler_mapat>()     } },
   { corevm::runtime::instr_enum::MAPPUT,    { .num_oprd=0, .str="mapput",    .handler=std::make_shared<corevm::runtime::instr_handler_mapput>()    } },
+  { corevm::runtime::instr_enum::MAPSET,    { .num_oprd=1, .str="mapset",    .handler=std::make_shared<corevm::runtime::instr_handler_mapset>()    } },
   { corevm::runtime::instr_enum::MAPERS,    { .num_oprd=0, .str="mapers",    .handler=std::make_shared<corevm::runtime::instr_handler_mapers>()    } },
   { corevm::runtime::instr_enum::MAPCLR,    { .num_oprd=0, .str="mapclr",    .handler=std::make_shared<corevm::runtime::instr_handler_mapclr>()    } },
   { corevm::runtime::instr_enum::MAPSWP,    { .num_oprd=0, .str="mapswp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapswp>()    } },
@@ -918,6 +921,75 @@ corevm::runtime::instr_handler_cldobj::execute(
   auto id = frame_ptr->get_visible_var(key);
 
   process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_setattrs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle res;
+
+  corevm::types::interface_to_map(hndl, res);
+
+  corevm::types::native_map map = corevm::types::get_value_from_handle<
+    corevm::types::native_map>(res);
+
+  for (auto itr = map.begin(); itr != map.end(); ++itr)
+  {
+    corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(itr->first);
+    corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
+
+    auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+    attr_obj.manager().on_setattr();
+    obj.putattr(attr_key, attr_id);
+  }
+
+  res = map;
+
+  frame.push_eval_stack(res);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_rsetattrs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+
+  corevm::dyobj::dyobj_id attr_id = process.top_stack();
+  auto& attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle res;
+
+  corevm::types::interface_to_map(hndl, res);
+
+  corevm::types::native_map map = corevm::types::get_value_from_handle<
+    corevm::types::native_map>(res);
+
+  for (auto itr = map.begin(); itr != map.end(); ++itr)
+  {
+    corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
+
+    auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+    attr_obj.manager().on_setattr();
+    obj.putattr(attr_key, attr_id);
+  }
+
+  res = map;
+
+  frame.push_eval_stack(res);
 }
 
 // -----------------------------------------------------------------------------
@@ -2360,6 +2432,34 @@ corevm::runtime::instr_handler_mapput::execute(
     process,
     corevm::types::interface_map_put
   );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mapset::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::types::native_map_key_type key = static_cast<
+    corevm::types::native_map_key_type>(instr.oprd1);
+
+  corevm::dyobj::dyobj_id id = process.top_stack();
+
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle res;
+
+  corevm::types::interface_to_map(hndl, res);
+
+  corevm::types::native_map map = corevm::types::get_value_from_handle<
+    corevm::types::native_map>(res);
+
+  map[key] = id;
+
+  res = map;
+
+  frame.push_eval_stack(res);
 }
 
 // -----------------------------------------------------------------------------

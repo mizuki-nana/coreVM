@@ -90,14 +90,10 @@ def python_cmdl_args(path):
 
 def run(options):
     inputs = glob.glob(PYTHON_TESTS_DIR + '*.py')
-    real_inputs = []
+    real_inputs = [path for path in inputs if not path.endswith(INTERMEDIATE_EXTENSION)]
 
     print 'Bootstrapping Python tests...'
-    print 'Testing using the following %d input file(s):' % len(inputs)
-    for path in inputs:
-        if not path.endswith(INTERMEDIATE_EXTENSION):
-            real_inputs.append(path)
-            print path
+    print 'Testing using the following %d input file(s):' % len(real_inputs)
 
     # Bring blank line.
     print
