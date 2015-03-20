@@ -695,6 +695,13 @@ enum instr_enum : uint32_t
    */
   TRUTHY,
 
+  /**
+   * <repr, _, _>
+   * Computes the string equivalent representation of the element on top of the
+   * eval stack, and push it on top of the stack.
+   */
+  REPR,
+
   /* ---------------------- String type instructions ------------------------ */
 
   /**
@@ -1808,6 +1815,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_truthy : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_repr : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

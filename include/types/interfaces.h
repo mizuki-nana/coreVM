@@ -253,6 +253,11 @@ void interface_compute_truthy_value(
 
 // -----------------------------------------------------------------------------
 
+void interface_compute_repr_value(
+  native_type_handle& operand, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 

@@ -57,6 +57,19 @@ using native_type_handle = typename boost::variant<
 // -----------------------------------------------------------------------------
 
 template<class op>
+class native_type_pure_visitor : public boost::static_visitor<native_type_handle>
+{
+public:
+  template<typename T>
+  native_type_handle operator()(const T& operand) const
+  {
+    return op().template operator()<T>(operand);
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<class op>
 class native_type_unary_visitor : public boost::static_visitor<native_type_handle>
 {
 public:
@@ -117,6 +130,10 @@ public:
     return static_cast<T>(handle.value);
   }
 };
+
+// -----------------------------------------------------------------------------
+
+class native_type_repr_visitor : public native_type_pure_visitor<repr> {};
 
 // -----------------------------------------------------------------------------
 

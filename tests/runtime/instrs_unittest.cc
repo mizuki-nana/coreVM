@@ -2050,6 +2050,132 @@ TEST_F(instrs_native_type_conversion_instrs_test, TestInstr2MAP)
 
 // -----------------------------------------------------------------------------
 
+class instrs_native_type_manipulation_instrs_test : public instrs_native_types_instrs_test
+{
+protected:
+  virtual void SetUp()
+  {
+    m_process.emplace_frame(m_ctx);
+  }
+
+  template<typename InstrHandlerCls, typename TargetNativeType>
+  void execute_instr_and_assert_result(typename TargetNativeType::value_type& expected_value)
+  {
+    InstrHandlerCls instr_handler;
+
+    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+
+    instr_handler.execute(instr, m_process);
+
+    corevm::runtime::frame& frame = m_process.top_frame();
+
+    corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
+
+    auto actual_value = corevm::types::get_value_from_handle<
+      typename TargetNativeType::value_type>(result_handle);
+
+    ASSERT_EQ(expected_value, actual_value);
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_01)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(5);
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("5");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_02)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::decimal(3.141592);
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("3.141592");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_03)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::boolean(false);
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("0");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_04)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::string("Hello world!");
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("Hello world!");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_05)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::array({1, 2, 3});
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("<array>");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_06)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::map({ { 1 , 2 } });
+
+  frame.push_eval_stack(hndl);
+
+  corevm::types::native_string expected_value("<map>");
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_type_complex_instrs_test : public instrs_native_types_instrs_test
 {
 public:

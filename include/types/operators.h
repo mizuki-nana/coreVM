@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types.h"
 
 #include <cmath>
+#include <iomanip>
+#include <sstream>
 
 
 namespace corevm {
@@ -206,6 +208,44 @@ typename corevm::types::boolean::value_type
 corevm::types::truthy::operator()<corevm::types::boolean>(const corevm::types::map& handle)
 {
   return !handle.value.empty();
+}
+
+// -----------------------------------------------------------------------------
+
+class repr: public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename corevm::types::string::value_type operator()(const T& handle)
+  {
+    std::stringstream ss;
+    ss << std::setprecision(8) << handle.value;
+
+    typename corevm::types::string::value_type value =
+      static_cast<typename corevm::types::string::value_type>(ss.str());
+
+    return value;
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::repr::operator()<corevm::types::array>(const corevm::types::array& handle)
+{
+  return static_cast<corevm::types::string::value_type>("<array>");
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::repr::operator()<corevm::types::map>(const corevm::types::map& handle)
+{
+  return static_cast<corevm::types::string::value_type>("<map>");
 }
 
 // -----------------------------------------------------------------------------
