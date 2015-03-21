@@ -234,6 +234,51 @@ TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(dynamic_object_unittest, TestCopyFrom)
+{
+  dynamic_object_type obj;
+
+  corevm::runtime::closure_ctx expected_ctx {
+    .compartment_id = 123,
+    .closure_id = 456
+  };
+
+  obj.set_closure_ctx(expected_ctx);
+
+  corevm::dyobj::attr_key key1 = 123;
+  corevm::dyobj::attr_key key2 = 456;
+  corevm::dyobj::attr_key key3 = 789;
+
+  corevm::dyobj::dyobj_id attr_id1 = 321;
+  corevm::dyobj::dyobj_id attr_id2 = 654;
+  corevm::dyobj::dyobj_id attr_id3 = 987;
+
+  obj.putattr(key1, attr_id1);
+  obj.putattr(key2, attr_id2);
+  obj.putattr(key3, attr_id3);
+
+  char flag1 = corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
+  char flag2 = corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE;
+
+  obj.set_flag(flag1);
+  obj.set_flag(flag2);
+
+  dynamic_object_type dst;
+
+  dst.copy_from(obj);
+
+  ASSERT_EQ(obj.closure_ctx().compartment_id, dst.closure_ctx().compartment_id);
+  ASSERT_EQ(obj.closure_ctx().closure_id, dst.closure_ctx().closure_id);
+
+  ASSERT_EQ(obj.getattr(key1), dst.getattr(key1));
+  ASSERT_EQ(obj.getattr(key2), dst.getattr(key2));
+  ASSERT_EQ(obj.getattr(key3), dst.getattr(key3));
+
+  ASSERT_EQ(obj.flags(), dst.flags());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_unittest, TestEquality)
 {
   dynamic_object_type obj;

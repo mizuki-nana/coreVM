@@ -181,10 +181,13 @@ enum instr_enum : uint32_t
   CLDOBJ,
 
   /**
-   * <setattrs, _, _>
+   * <setattrs, #, #>
    * Converts the native type handle on top of the eval stack to a native map,
    * and use its key-value pairs as attribute name-value pairs to set on the
-   * object on the top of the stack.
+   * object on the top of the stack. The first operand is a boolean value
+   * specifying whether each mapped object should be cloned before set on the
+   * target object. The second operand is a boolean value indicating if
+   * the native map values should be overriden with the cloned object IDs.
    */
   SETATTRS,
 

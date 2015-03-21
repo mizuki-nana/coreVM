@@ -15,7 +15,7 @@ class object:
         [ldobj, cls, 0]
         [gethndl, 0, 0]
         [setattr, __class__, 0]
-        [setattrs, 0, 0]
+        [setattrs, 1, 1]
         [rsetattrs, im_self, 0]
         ### END VECTOR ###
         """

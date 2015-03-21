@@ -111,6 +111,8 @@ public:
   template<typename Function>
   void iterate(Function) noexcept;
 
+  void copy_from(const dynamic_object<dynamic_object_manager>&);
+
 private:
   void check_flag_bit(char) const throw(corevm::dyobj::invalid_flag_bit_error);
 
@@ -445,6 +447,20 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::iterate(Function func) no
       );
     }
   );
+}
+
+// -----------------------------------------------------------------------------
+
+template <class dynamic_object_manager>
+void
+corevm::dyobj::dynamic_object<dynamic_object_manager>::copy_from(
+  const dynamic_object<dynamic_object_manager>& src)
+{
+  // NOTE: Need to be careful about what fields are being copied here.
+  m_flags = src.m_flags;
+  m_attrs = src.m_attrs;
+  m_ntvhndl_key = src.m_ntvhndl_key;
+  m_closure_ctx = src.m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------

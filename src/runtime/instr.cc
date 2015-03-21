@@ -102,7 +102,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::OBJNEQ,    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    } },
   { corevm::runtime::instr_enum::SETCTX,    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    } },
   { corevm::runtime::instr_enum::CLDOBJ,    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    } },
-  { corevm::runtime::instr_enum::SETATTRS,  { .num_oprd=0, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  } },
+  { corevm::runtime::instr_enum::SETATTRS,  { .num_oprd=2, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  } },
   { corevm::runtime::instr_enum::RSETATTRS, { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() } },
 
   /* -------------------------- Control instructions ------------------------ */
@@ -943,14 +943,36 @@ corevm::runtime::instr_handler_setattrs::execute(
   corevm::types::native_map map = corevm::types::get_value_from_handle<
     corevm::types::native_map>(res);
 
+  // If we should clone each mapped object before setting it.
+  bool should_clone = static_cast<bool>(instr.oprd1);
+  bool should_override_map_values = static_cast<bool>(instr.oprd2);
+
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
     corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(itr->first);
     corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
     auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
-    attr_obj.manager().on_setattr();
-    obj.putattr(attr_key, attr_id);
+
+    if (should_clone)
+    {
+      auto cloned_attr_id = corevm::runtime::process::adapter(process).help_create_dyobj();
+      auto& cloned_attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(cloned_attr_id);
+
+      cloned_attr_obj.copy_from(attr_obj);
+      cloned_attr_obj.manager().on_setattr();
+      obj.putattr(attr_key, cloned_attr_id);
+
+      if (should_override_map_values)
+      {
+        itr->second = static_cast<corevm::types::native_map_mapped_type>(cloned_attr_id);
+      }
+    }
+    else
+    {
+      attr_obj.manager().on_setattr();
+      obj.putattr(attr_key, attr_id);
+    }
   }
 
   res = map;
