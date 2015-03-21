@@ -11,3 +11,6 @@ class str(object):
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
+
+    def __str__(self, arg_):
+        return self

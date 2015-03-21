@@ -12,6 +12,12 @@ class bool(object):
         ### END VECTOR ###
         """
 
+    def __str__(self, arg_):
+        if self:
+            return __call(str, 'True')
+        else:
+            return __call(str, 'False')
+
 ### True
 """
 ### BEGIN VECTOR ###
@@ -23,6 +29,8 @@ class bool(object):
 [stobj, True, 0]
 ### END VECTOR ###
 """
+True = __call(bool, 1)
+
 
 ### False
 """
@@ -35,3 +43,5 @@ class bool(object):
 [stobj, False, 0]
 ### END VECTOR ###
 """
+
+False = __call(bool, 0)

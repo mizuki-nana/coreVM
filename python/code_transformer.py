@@ -120,8 +120,10 @@ class CodeTransformer(ast.NodeVisitor):
         base_str = '{indentation}print'.format(indentation=self.__indentation())
 
         if node.values:
-            values_str = '.'.join([self.visit(value) for value in node.values])
-            base_str += (' ' + values_str)
+            # NOTE: Passing a value of `1` as the second argument as it is just
+            # a placeholder for the second parameter right now, until support
+            # for *args and **kwargs are in place.
+            base_str += (' ' + '__call(' + self.visit(node.values[0]) + '.__str__' + ', 1)')
 
         base_str += '\n'
 
