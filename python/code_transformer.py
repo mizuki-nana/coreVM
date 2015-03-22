@@ -160,7 +160,7 @@ class CodeTransformer(ast.NodeVisitor):
     """ ----------------------------- expr --------------------------------- """
 
     def visit_BinOp(self, node):
-        base_str = '{lhs}.{func}({lhs}, {rhs})'
+        base_str = '__call({lhs}.{func}, {rhs})'
 
         return base_str.format(
             lhs=self.visit(node.left),

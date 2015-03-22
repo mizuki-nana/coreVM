@@ -426,19 +426,19 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('sethndl', 0, 0)
 
     def visit_Add(self, node):
-        self.__add_binary_operator_instr('add')
+        raise NotImplemented
 
     def visit_Sub(self, node):
-        self.__add_binary_operator_instr('sub')
+        raise NotImplemented
 
     def visit_Mult(self, node):
-        self.__add_binary_operator_instr('mul')
+        raise NotImplemented
 
     def visit_Div(self, node):
-        self.__add_binary_operator_instr('div')
+        raise NotImplemented
 
     def visit_Mod(self, node):
-        self.__add_binary_operator_instr('mod')
+        raise NotImplemented
 
     def visit_Pow(self, node):
         self.__add_binary_operator_instr('pow')
