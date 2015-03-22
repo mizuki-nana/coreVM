@@ -215,7 +215,9 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Num(self, node):
-        return '__call(int, %s)' % str(node.n)
+        num_type = 'float' if isinstance(node.n, float) else 'int'
+        return '__call({num_type}, {n})'.format(
+            num_type=num_type, n=str(node.n))
 
     def visit_Attribute(self, node):
         return '{expr}.{attr}'.format(

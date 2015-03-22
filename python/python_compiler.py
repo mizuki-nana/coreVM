@@ -358,8 +358,19 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('invk', 0, 0)
 
     def visit_Num(self, node):
+        num_type = 'dec2' if isinstance(node.n, float) else 'int64'
+
         self.__add_instr('new', 0, 0)
-        self.__add_instr('uint32', node.n, 0)
+
+        if isinstance(node.n, int):
+            self.__add_instr(num_type, node.n, 0)
+        else:
+            # If the number if a float, split the number into its integer
+            # and decimal parts, and express the decimal part in reverse order.
+            integer_part = int(node.n)
+            decimal_part = int(str(node.n).split('.')[1][::-1])
+            self.__add_instr(num_type, integer_part, decimal_part)
+
         self.__add_instr('sethndl', 0, 0)
 
     def visit_Name(self, node):
@@ -624,6 +635,7 @@ def main():
         generator.read_from_source('python/src/__builtin__.py')
         generator.read_from_source('python/src/bool.py')
         generator.read_from_source('python/src/int.py')
+        generator.read_from_source('python/src/float.py')
         generator.read_from_source('python/src/str.py')
 
         generator.read_from_source(options.input_file)

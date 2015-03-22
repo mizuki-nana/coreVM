@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types.h"
 
 #include <cmath>
-#include <iomanip>
+#include <ios>
 #include <sstream>
 
 
@@ -218,8 +218,9 @@ public:
   template<typename R, typename T>
   typename corevm::types::string::value_type operator()(const T& handle)
   {
+    // TODO: The current precision is not always accurate.
     std::stringstream ss;
-    ss << std::setprecision(8) << handle.value;
+    ss << std::fixed << handle.value;
 
     typename corevm::types::string::value_type value =
       static_cast<typename corevm::types::string::value_type>(ss.str());

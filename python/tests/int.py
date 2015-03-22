@@ -1,1 +1,2 @@
-print int(1)
+print 1234567890
+print int(987654321)
