@@ -61,8 +61,6 @@ public:
 
   uint32_t eval_stack_size() const;
 
-  corevm::runtime::instr_addr start_addr() const;
-
   corevm::runtime::instr_addr return_addr() const;
 
   void set_return_addr(const corevm::runtime::instr_addr);

@@ -1101,7 +1101,10 @@ TEST_F(instrs_runtime_instrs_test, TestInstrDEBUG)
 {
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   corevm::runtime::instr_handler_debug handler;
+
   handler.execute(instr, m_process);
+
+  std::cout << "(output above expected)" << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -1160,7 +1163,7 @@ TEST_F(instrs_control_instrs_test, TestInstrPINVK)
 
   corevm::runtime::invocation_ctx& invk_ctx = m_process.top_invocation_ctx();
 
-  corevm::runtime::closure_ctx ctx = invk_ctx.ctx();
+  corevm::runtime::closure_ctx ctx = invk_ctx.closure_ctx();
 
   ASSERT_TRUE(m_ctx == ctx);
 }
@@ -1233,7 +1236,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMP)
   corevm::runtime::instr_handler_jmp handler;
   handler.execute(instr, m_process);
 
-  ASSERT_EQ(8, m_process.pc());
+  ASSERT_EQ(7, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------

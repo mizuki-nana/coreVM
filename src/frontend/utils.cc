@@ -108,7 +108,7 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
   const std::string def(
     str(boost::format(unformatted_def) % ss.str().c_str()));
 
-  return def;
+  return std::move(def);
 }
 
 // -----------------------------------------------------------------------------
@@ -133,7 +133,7 @@ corevm::frontend::get_v0_1_instr_oprd_schema_definition()
     )
   );
 
-  return def;
+  return std::move(def);
 }
 
 // -----------------------------------------------------------------------------
@@ -166,7 +166,7 @@ corevm::frontend::get_v0_1_vector_schema_definition()
     )
   );
 
-  return def;
+  return std::move(def);
 }
 
 // -----------------------------------------------------------------------------

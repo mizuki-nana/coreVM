@@ -45,9 +45,9 @@ typedef std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_i
 class invocation_ctx
 {
 public:
-  explicit invocation_ctx(const closure_ctx&);
+  explicit invocation_ctx(const corevm::runtime::closure_ctx&);
 
-  const closure_ctx& ctx() const;
+  const closure_ctx& closure_ctx() const;
 
   const param_list_type& params_list() const;
 
@@ -73,7 +73,7 @@ public:
   std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
 
 private:
-  corevm::runtime::closure_ctx m_ctx;
+  corevm::runtime::closure_ctx m_closure_ctx;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
 };

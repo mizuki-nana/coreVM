@@ -47,7 +47,7 @@ protected:
 TEST_F(invocation_ctx_unittest, TestInitialization)
 {
   corevm::runtime::invocation_ctx invk_ctx(m_ctx);
-  ASSERT_TRUE(m_ctx == invk_ctx.ctx());
+  ASSERT_TRUE(m_ctx == invk_ctx.closure_ctx());
 }
 
 // -----------------------------------------------------------------------------

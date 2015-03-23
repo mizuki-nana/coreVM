@@ -1034,7 +1034,7 @@ void
 corevm::runtime::instr_handler_invk::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::closure_ctx ctx = process.top_invocation_ctx().ctx();
+  corevm::runtime::closure_ctx ctx = process.top_invocation_ctx().closure_ctx();
   process.emplace_frame(ctx, process.pc());
 
   corevm::runtime::compartment* compartment = nullptr;
@@ -1071,7 +1071,7 @@ corevm::runtime::instr_handler_jmp::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::runtime::instr_addr starting_addr = frame.start_addr();
+  corevm::runtime::instr_addr starting_addr = process.pc();
   corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
@@ -1096,7 +1096,7 @@ corevm::runtime::instr_handler_jmpif::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::runtime::instr_addr starting_addr = process.pc(); //frame.start_addr();
+  corevm::runtime::instr_addr starting_addr = process.pc();
   corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
