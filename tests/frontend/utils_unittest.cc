@@ -25,8 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "../../include/runtime/vector.h"
 
 #include <sneaker/testing/_unittest.h>
-#include <sneaker/json/json_parser.h>
 #include <sneaker/json/json.h>
+#include <sneaker/json/json_parser.h>
+#include <sneaker/json/json_schema.h>
 
 #include <string>
 
@@ -66,6 +67,28 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
   ASSERT_EQ(22, instr3.code);
   ASSERT_EQ(33, instr3.oprd1);
   ASSERT_EQ(0, instr3.oprd2);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(utils_unittest, TestValidateInvalidVectorFails)
+{
+  // Invalid instruction code.
+  const std::string vector_str = "["
+    "[700, 0, 0]"
+  "]";
+
+  const JSON vector_json = sneaker::json::parse(vector_str);
+  const JSON schema_json = sneaker::json::parse(
+    corevm::frontend::get_v0_1_vector_schema_definition()
+  );
+
+  ASSERT_THROW(
+    {
+      sneaker::json::json_schema::validate(vector_json, schema_json);
+    },
+    sneaker::json::json_validation_error
+  );
 }
 
 // -----------------------------------------------------------------------------

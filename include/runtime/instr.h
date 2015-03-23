@@ -2135,9 +2135,6 @@ public:
   static corevm::runtime::instr_info find(corevm::runtime::instr_code instr_code)
     throw(corevm::runtime::invalid_instr_error);
 
-  static corevm::runtime::instr_info validate_instr(const corevm::runtime::instr&)
-    throw(corevm::runtime::invalid_instr_error);
-
   static const map_type instr_info_map;
 };
 

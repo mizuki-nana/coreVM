@@ -261,24 +261,6 @@ corevm::runtime::instr_handler_meta::find(corevm::runtime::instr_code instr_code
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::instr_info
-corevm::runtime::instr_handler_meta::validate_instr(
-  const corevm::runtime::instr& instr) throw(corevm::runtime::invalid_instr_error)
-{
-  corevm::runtime::instr_enum instr_code = static_cast<corevm::runtime::instr_enum>(instr.code);
-
-  try
-  {
-    return corevm::runtime::instr_handler_meta::instr_info_map.at(instr_code);
-  }
-  catch (const std::out_of_range&)
-  {
-    throw corevm::runtime::invalid_instr_error();
-  }
-}
-
-// -----------------------------------------------------------------------------
-
 const std::string
 corevm::runtime::instr_handler_meta::instr_to_string(const corevm::runtime::instr& instr)
 {

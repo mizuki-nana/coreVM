@@ -129,11 +129,7 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
             "}"
           "}"
         "},"
-        "\"instr\": {"
-          "\"code\": %1%,"
-          "\"oprd\": %2%"
-        "},"
-        "\"vector\": %3%,"
+        "\"vector\": %1%,"
         "\"closure\": {"
           "\"type\": \"object\","
           "\"properties\": {"
@@ -159,8 +155,6 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
   const std::string def(
     str(
       boost::format(unformatted_def)
-        % get_v0_1_instr_code_schema_definition()
-        % get_v0_1_instr_oprd_schema_definition()
         % get_v0_1_vector_schema_definition()
     )
   );
