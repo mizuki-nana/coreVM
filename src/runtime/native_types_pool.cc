@@ -20,9 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/runtime/native_types_pool.h"
-#include "../../include/runtime/common.h"
-#include "../../include/runtime/utils.h"
+#include "native_types_pool.h"
+#include "common.h"
+#include "utils.h"
 
 #include <ostream>
 
@@ -99,6 +99,7 @@ corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
 
 corevm::dyobj::ntvhndl_key
 corevm::runtime::native_types_pool::create()
+  throw(corevm::runtime::native_type_handle_insertion_error)
 {
   auto ptr = m_container.create();
 

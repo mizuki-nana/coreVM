@@ -20,10 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/memory/allocation_policy.h"
-#include "../../include/memory/sequential_allocation_scheme.h"
-#include "../../include/memory/errors.h"
-#include "../../include/memory/object_container.h"
+#include "memory/allocation_policy.h"
+#include "memory/sequential_allocation_scheme.h"
+#include "memory/errors.h"
+#include "memory/object_container.h"
 
 #include <sneaker/allocator/object_traits.h>
 #include <sneaker/testing/_unittest.h>

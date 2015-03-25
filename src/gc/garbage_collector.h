@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_GARBAGE_COLLECTOR_H_
 #define COREVM_GARBAGE_COLLECTOR_H_
 
-#include "../dyobj/dynamic_object_heap.h"
+#include "dyobj/dynamic_object_heap.h"
 
 #include <algorithm>
 

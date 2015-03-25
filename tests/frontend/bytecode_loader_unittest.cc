@@ -20,14 +20,17 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_unittest.h"
+#include "bytecode_loader_unittest_base.h"
 
-#include "../../include/frontend/bytecode_loader.h"
-#include "../../include/runtime/process.h"
+#include "frontend/bytecode_loader.h"
+#include "runtime/process.h"
 
 #include <sneaker/testing/_unittest.h>
 
 #include <string>
+
+
+class bytecode_loader_unittest : public bytecode_loader_unittest_base {};
 
 
 TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)

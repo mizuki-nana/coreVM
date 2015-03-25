@@ -20,9 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/frontend/utils.h"
-#include "../../include/runtime/instr.h"
-#include "../../include/runtime/vector.h"
+#include "frontend/utils.h"
+#include "runtime/instr.h"
+#include "runtime/vector.h"
 
 #include <sneaker/testing/_unittest.h>
 #include <sneaker/json/json.h>

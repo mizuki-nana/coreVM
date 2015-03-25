@@ -20,42 +20,43 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_LOADER_UNITTEST_H_
-#define COREVM_BYTECODE_LOADER_UNITTEST_H_
+#ifndef COREVM_RUNTIME_UTILS_H_
+#define COREVM_RUNTIME_UTILS_H_
 
-#include <sneaker/testing/_unittest.h>
+#include "dyobj/common.h"
 
-#include <fstream>
+#include <cstdint>
 
 
-class bytecode_loader_unittest : public ::testing::Test
+namespace corevm {
+
+
+namespace runtime {
+
+
+using corevm::dyobj::ntvhndl_key;
+
+// -----------------------------------------------------------------------------
+
+inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
 {
-protected:
-  static const char* PATH;
-
-  virtual void SetUp()
-  {
-    std::ofstream f(PATH, std::ios::binary);
-    f << this->bytecode();
-    f.close();
-  }
-
-  virtual void TearDown()
-  {
-    remove(PATH);
-  }
-
-  virtual const char* bytecode()
-  {
-    return "";
-  }
-};
+  return static_cast<ntvhndl_key>( (uint8_t*)(ptr) - (uint8_t*)(NULL) );
+}
 
 // -----------------------------------------------------------------------------
 
-const char* bytecode_loader_unittest::PATH = "./example.corevm";
+inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
+{
+  return reinterpret_cast<void*>(key);
+}
 
 // -----------------------------------------------------------------------------
 
 
-#endif /* COREVM_BYTECODE_LOADER_UNITTEST_H_ */
+}; /* end namespace runtime */
+
+
+}; /* end namespace corevm */
+
+
+#endif /* COREVM_RUNTIME_UTILS_H_ */

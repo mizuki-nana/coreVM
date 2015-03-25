@@ -34,10 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_types_pool.h"
 #include "sighandler.h"
 #include "vector.h"
-#include "../../include/dyobj/common.h"
-#include "../../include/dyobj/dynamic_object_heap.h"
-#include "../../include/gc/garbage_collector.h"
-#include "../../include/gc/reference_count_garbage_collection_scheme.h"
+#include "dyobj/common.h"
+#include "dyobj/dynamic_object_heap.h"
+#include "gc/garbage_collector.h"
+#include "gc/reference_count_garbage_collection_scheme.h"
 
 #include <climits>
 #include <cstdint>

@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
 #define COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
 
-#include "../include/dyobj/flags.h"
-#include "../include/runtime/instr.h"
+#include "dyobj/flags.h"
+#include "runtime/instr.h"
 
 #include <sneaker/utility/cmdline_program.h>
 

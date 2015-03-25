@@ -20,20 +20,44 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#ifndef COREVM_BYTECODE_LOADER_V0_1_H_
+#define COREVM_BYTECODE_LOADER_V0_1_H_
+
+#include "bytecode_loader.h"
+
 #include "runtime/process.h"
-#include "runtime/sighandler_registrar.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <sneaker/json/json.h>
+
+#include <string>
 
 
-class sighandler_registrar_test : public ::testing::Test {};
+namespace corevm {
+
+
+namespace frontend {
+
+
+using sneaker::json::JSON;
 
 // -----------------------------------------------------------------------------
 
-TEST_F(sighandler_registrar_test, TestInit)
+class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader
 {
-  corevm::runtime::process process;
-  corevm::runtime::sighandler_registrar::init(&process);
-}
+public:
+  virtual void load(const std::string&, const JSON&, corevm::runtime::process&);
+  virtual const std::string format() const;
+  virtual const std::string version() const;
+  virtual const std::string schema() const;
+};
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */
+
+
+#endif /* COREVM_BYTECODE_LOADER_V0_1_H_ */

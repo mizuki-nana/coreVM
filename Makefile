@@ -21,73 +21,98 @@
 
 # TODO: [COREVM-161] Cleanup final build dependencies in Makefile
 
+TOP_DIR=$(CURDIR)
+BUILD_DIR=$(TOP_DIR)/build
+BIN=$(TOP_DIR)/bin
+SRC=src
+TESTS=tests
+TOOLS=tools
+PYTHON_DIR=python
+MAIN_CC=$(SRC)/corevm/main.cc
+
+PYTHON=`which python`
 CXX=`which clang++`
-CFLAGS=-Wall -std=c++11
-EXTRA_CFLAGS=-Wno-deprecated
+CXXFLAGS=-Wall -std=c++11 -I$(TOP_DIR)/$(SRC)
+EXTRA_CXXFLAGS=-Wno-deprecated
 
-LIBGTEST=/usr/lib/libgtest.a
-LIBSNEAKER=/usr/local/lib/libsneaker.a
-LIBRARIES=$(LIBGTEST)
-
-LIBCOREVM=libcorevm.a
-LFLAGS=$(LIBCOREVM) $(LIBSNEAKER) -lgtest -lpthread
-
-MAIN=./src/main.cc
-
-COREVM=coreVM
+LFLAGS=-lsneaker -lpthread
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Linux)
+	CXXFLAGS += -D LINUX
+	LFLAGS += -lboost_system -lboost_regex -lboost_program_options
+endif
+ifeq ($(UNAME_S), Darwin)
+	CXXFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
+	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
+endif
 
 AR=ar
 ARFLAGS=rvs
 
-INCLUDE=./include
-SRC=./src
-TESTS=./tests
-TOOLS=./tools
-PYTHON_DIR=./python
+LIBCOREVM=libcorevm.a
+COREVM=coreVM
 
-SUBDIRS=$(SRC) $(TESTS)
-
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S), Linux)
-	CFLAGS += -D LINUX
-	LFLAGS += -lboost_system -lboost_regex -lboost_program_options
-endif
-ifeq ($(UNAME_S), Darwin)
-	CFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
-	LFLAGS += -lboost_system-mt -lboost_regex-mt -lboost_program_options
-endif
-
-PYTHON=`which python`
 BOOTSTRAP_TESTS=bootstrap_tests.py
+PYTHON_TESTS=python_tests
+RUN_TESTS=run_tests
+
 
 export GTEST_COLOR=true
 
 
+include src/include.mk
+include tests/include.mk
+
+
+OBJECTS = $(patsubst $(TOP_DIR)/%.cc, $(BUILD_DIR)/%.o, $(SOURCES))
+TEST_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(BUILD_DIR)/%.o,$(TEST_SOURCES))
+
+
 .PHONY: all
-all:
-	@$(MAKE) -C $(SRC)
+all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS)
+
+
+$(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -c $(TOP_DIR)/$*.cc -o $@
+
+
+$(LIBCOREVM): $(OBJECTS)
+	mkdir -p $(@D)
 	@find . -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
-	@echo "\033[35mGenerated $(LIBCOREVM)"
-	@$(CXX) $(CFLAGS) $(EXTRA_CFLAGS) $(LIBRARIES) $(MAIN) $(LFLAGS) -o $(COREVM)
-	@echo "\033[35mGenerated $(COREVM)"
+	@echo "\033[35mGenerated $(LIBCOREVM)\033[0m"
 
-.PHONY: test
-test:
-	@$(MAKE) -C $(TESTS)
-	@-for dir in $(TESTS); do (find $$dir -type f -name "*.test" -exec '{}' \;); done
-	@echo "\033[32mTests run completed...\033[39m";
 
-.PHONY: tools
-tools:
-	@$(MAKE) -C $(TOOLS)
+.PHONY: $(COREVM)
+$(COREVM): $(LIBCOREVM)
+	mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(MAIN_CC) -o $(COREVM) $^ $(LFLAGS)
+	@echo "\033[35mGenerated $(COREVM)\033[0m"
 
-.PHONY: python
-python:
+
+.PHONY: $(TOOLS)
+$(TOOLS): $(LIBCOREVM)
+	mkdir -p $(BIN)
+	-for f in $(TOOLS)/*.cc; do ($(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $$f -o $$f.out $^ $(LFLAGS); mv $$f.out $(BIN)/); done
+
+
+.PHONY: $(PYTHON_TESTS)
+$(PYTHON_TESTS): $(COREVM)
 	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
+
+
+.PHONY: $(TESTS)
+$(TESTS): $(TEST_OBJECTS)
+	mkdir -p $(@D)
+	mkdir -p $(BIN)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_OBJECTS) -o $(BIN)/$(RUN_TESTS) libcorevm.a $(LFLAGS) -lgtest
+	exec $(BIN)/$(RUN_TESTS)
+	@echo "\033[32mTests run completed...\033[0m";
+
 
 .PHONY: clean
 clean:
-	@-for dir in $(SUBDIRS); do ($(MAKE) -C $$dir clean;); done
-	@$(MAKE) clean -C $(TOOLS)
-	@-rm -rf $(LIBCOREVM)
-	@-rm -rf $(COREVM)
+	@-rm -rf $(BUILD_DIR)
+	@-rm -rf $(BIN)
+	@-rm -f $(LIBCOREVM)
+	@-rm -f $(COREVM)

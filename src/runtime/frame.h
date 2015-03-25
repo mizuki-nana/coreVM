@@ -26,8 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
-#include "../../include/dyobj/dyobj_id.h"
-#include "../../include/types/native_type_handle.h"
+#include "dyobj/dyobj_id.h"
+#include "types/native_type_handle.h"
 
 #include <cstdint>
 #include <list>

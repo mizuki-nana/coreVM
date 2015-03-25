@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "dyobj_id.h"
-#include "../errors.h"
+#include "corevm/errors.h"
 
 #include <boost/format.hpp>
 

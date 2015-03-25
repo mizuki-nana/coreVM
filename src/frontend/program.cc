@@ -20,11 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/frontend/program.h"
+#include "program.h"
 
-#include "../../include/version.h"
-#include "../../include/frontend/configuration.h"
-#include "../../include/frontend/runner.h"
+#include "configuration.h"
+#include "runner.h"
+#include "corevm/version.h"
 
 #include <boost/format.hpp>
 #include <sneaker/utility/cmdline_program.h>

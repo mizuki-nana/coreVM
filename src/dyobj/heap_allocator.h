@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_HEAP_ALLOCATOR_H_
 #define COREVM_HEAP_ALLOCATOR_H_
 
-#include "common.h"
-#include "../memory/allocation_policy.h"
+#include "dyobj/common.h"
+#include "memory/allocation_policy.h"
 
 #include <sneaker/allocator/object_traits.h>
 

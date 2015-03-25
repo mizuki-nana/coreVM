@@ -24,8 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define RUNTIME_ERRORS_H_
 
 #include "common.h"
-#include "../errors.h"
-#include "../dyobj/dyobj_id.h"
+#include "corevm/errors.h"
+#include "dyobj/dyobj_id.h"
 
 #include <boost/format.hpp>
 

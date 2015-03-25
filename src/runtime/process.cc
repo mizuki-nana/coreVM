@@ -20,21 +20,21 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/runtime/process.h"
+#include "process.h"
 
-#include "../../include/dyobj/common.h"
-#include "../../include/dyobj/dynamic_object_heap.h"
-#include "../../include/gc/garbage_collector.h"
-#include "../../include/gc/garbage_collection_scheme.h"
-#include "../../include/runtime/closure.h"
-#include "../../include/runtime/common.h"
-#include "../../include/runtime/errors.h"
-#include "../../include/runtime/frame.h"
-#include "../../include/runtime/gc_rule.h"
-#include "../../include/runtime/instr.h"
-#include "../../include/runtime/native_types_pool.h"
-#include "../../include/runtime/sighandler_registrar.h"
-#include "../../include/runtime/vector.h"
+#include "closure.h"
+#include "common.h"
+#include "errors.h"
+#include "frame.h"
+#include "gc_rule.h"
+#include "instr.h"
+#include "native_types_pool.h"
+#include "sighandler_registrar.h"
+#include "vector.h"
+#include "dyobj/common.h"
+#include "dyobj/dynamic_object_heap.h"
+#include "gc/garbage_collector.h"
+#include "gc/garbage_collection_scheme.h"
 
 #include <algorithm>
 #include <cassert>

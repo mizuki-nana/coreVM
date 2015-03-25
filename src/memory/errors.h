@@ -20,46 +20,39 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRONTEND_UTILS_H_
-#define COREVM_FRONTEND_UTILS_H_
+#ifndef COREVM_MEMORY_ERRORS_H_
+#define COREVM_MEMORY_ERRORS_H_
 
-#include "../runtime/vector.h"
+#include "corevm/errors.h"
 
+#include <boost/format.hpp>
+
+#include <cstdint>
 #include <string>
-
-#include <sneaker/json/json.h>
 
 
 namespace corevm {
 
 
-namespace frontend {
+namespace memory {
 
 
-using sneaker::json::JSON;
+class invalid_address_error : public corevm::runtime_error
+{
+public:
+  explicit invalid_address_error(const uint64_t addr):
+    corevm::runtime_error(
+      str(boost::format("Invalid object address %lu encountered") % addr)
+    )
+  {
+  }
+};
 
-// -----------------------------------------------------------------------------
 
-corevm::runtime::vector get_vector_from_json(const JSON&);
-
-// -----------------------------------------------------------------------------
-
-const std::string get_v0_1_instr_code_schema_definition();
-
-// -----------------------------------------------------------------------------
-
-const std::string get_v0_1_instr_oprd_schema_definition();
-
-// -----------------------------------------------------------------------------
-
-const std::string get_v0_1_vector_schema_definition();
-
-// -----------------------------------------------------------------------------
-
-}; /* end namespace frontend */
+}; /* end namespace memory */
 
 
 }; /* end namespace corevm */
 
 
-#endif /* COREVM_FRONTEND_UTILS_H_ */
+#endif /* COREVM_MEMORY_ERRORS_H_ */

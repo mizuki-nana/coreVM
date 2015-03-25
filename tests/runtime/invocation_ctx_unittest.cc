@@ -20,11 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/runtime/invocation_ctx.h"
-#include "../../include/runtime/closure_ctx.h"
-#include "../../include/runtime/common.h"
-#include "../../include/runtime/errors.h"
-#include "../../include/dyobj/dyobj_id.h"
+#include "runtime/invocation_ctx.h"
+#include "runtime/closure_ctx.h"
+#include "runtime/common.h"
+#include "runtime/errors.h"
+#include "dyobj/dyobj_id.h"
 
 #include <sneaker/testing/_unittest.h>
 

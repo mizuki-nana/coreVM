@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/gc/reference_count_garbage_collection_scheme.h"
+#include "reference_count_garbage_collection_scheme.h"
 
 #include <sneaker/algorithm/tarjan.h>
 
@@ -179,8 +179,8 @@ public:
     vertices_map_type& vertices_map,
     neighbor_set_type& non_garbage_collectible_neighbors)
     :
-    m_vertices_map(vertices_map),
-    m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors)
+    m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors),
+    m_vertices_map(vertices_map)
   {
   }
 

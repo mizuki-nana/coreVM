@@ -20,44 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_BYTECODE_LOADER_V0_1_H_
-#define COREVM_BYTECODE_LOADER_V0_1_H_
-
-#include "bytecode_loader.h"
-
-#include "../runtime/process.h"
-
-#include <sneaker/json/json.h>
-
-#include <string>
+#include "bytecode_loader_unittest_base.h"
 
 
-namespace corevm {
-
-
-namespace frontend {
-
-
-using sneaker::json::JSON;
-
-// -----------------------------------------------------------------------------
-
-class bytecode_loader_v0_1 : public corevm::frontend::bytecode_loader
-{
-public:
-  virtual void load(const std::string&, const JSON&, corevm::runtime::process&);
-  virtual const std::string format() const;
-  virtual const std::string version() const;
-  virtual const std::string schema() const;
-};
-
-// -----------------------------------------------------------------------------
-
-
-} /* end namespace frontend */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_BYTECODE_LOADER_V0_1_H_ */
+const char* bytecode_loader_unittest_base::PATH = "./example.corevm";

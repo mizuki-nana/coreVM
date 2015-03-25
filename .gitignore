@@ -12,19 +12,16 @@
 *.la
 *.a
 
-# Tests
-*.test
-
 # Python
 *.pyc
 
 # Outputs
+build/
+bin/
+coreVM
 info.json
 *.tmp.py
-
-# Binaries
-coreVM
-tools/bin/*
+*.out
 
 # coreVM bytecode
 *.core

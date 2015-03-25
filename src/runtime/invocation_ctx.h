@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
-#include "../dyobj/dyobj_id.h"
+#include "dyobj/dyobj_id.h"
 
 #include <list>
 #include <unordered_map>

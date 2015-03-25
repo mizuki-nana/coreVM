@@ -20,10 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/dyobj/dynamic_object.h"
-#include "../../include/dyobj/dynamic_object_heap.h"
-#include "../../include/gc/garbage_collector.h"
-#include "../../include/gc/reference_count_garbage_collection_scheme.h"
+#include "dyobj/dynamic_object.h"
+#include "dyobj/dynamic_object_heap.h"
+#include "gc/garbage_collector.h"
+#include "gc/reference_count_garbage_collection_scheme.h"
 
 #include <sneaker/testing/_unittest.h>
 

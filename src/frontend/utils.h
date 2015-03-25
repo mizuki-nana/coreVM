@@ -20,11 +20,46 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../include/frontend/program.h"
+#ifndef COREVM_FRONTEND_UTILS_H_
+#define COREVM_FRONTEND_UTILS_H_
+
+#include "runtime/vector.h"
+
+#include <string>
+
+#include <sneaker/json/json.h>
 
 
-int main(int argc, char** argv)
-{
-  corevm::frontend::program program;
-  return program.run(argc, argv);
-}
+namespace corevm {
+
+
+namespace frontend {
+
+
+using sneaker::json::JSON;
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::vector get_vector_from_json(const JSON&);
+
+// -----------------------------------------------------------------------------
+
+const std::string get_v0_1_instr_code_schema_definition();
+
+// -----------------------------------------------------------------------------
+
+const std::string get_v0_1_instr_oprd_schema_definition();
+
+// -----------------------------------------------------------------------------
+
+const std::string get_v0_1_vector_schema_definition();
+
+// -----------------------------------------------------------------------------
+
+}; /* end namespace frontend */
+
+
+}; /* end namespace corevm */
+
+
+#endif /* COREVM_FRONTEND_UTILS_H_ */

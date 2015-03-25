@@ -23,14 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYNAMIC_OBJECT_HEAP_H_
 #define COREVM_DYNAMIC_OBJECT_HEAP_H_
 
-#include "common.h"
-#include "dyobj_id.h"
-#include "dynamic_object.h"
-#include "errors.h"
-#include "heap_allocator.h"
-#include "../memory/errors.h"
-#include "../memory/object_container.h"
-#include "../memory/sequential_allocation_scheme.h"
+#include "dyobj/common.h"
+#include "dyobj/dyobj_id.h"
+#include "dyobj/dynamic_object.h"
+#include "dyobj/errors.h"
+#include "dyobj/heap_allocator.h"
+#include "memory/errors.h"
+#include "memory/object_container.h"
+#include "memory/sequential_allocation_scheme.h"
 
 #include <algorithm>
 #include <cstdint>

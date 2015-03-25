@@ -20,9 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "../../include/runtime/frame.h"
-#include "../../include/runtime/common.h"
-#include "../../include/types/native_type_handle.h"
+#include "runtime/frame.h"
+#include "runtime/common.h"
+#include "types/native_type_handle.h"
 
 #include <sneaker/testing/_unittest.h>
 

@@ -25,12 +25,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "errors.h"
-#include "../dyobj/common.h"
-#include "../memory/allocator.h"
-#include "../memory/allocation_policy.h"
-#include "../memory/object_container.h"
-#include "../memory/sequential_allocation_scheme.h"
-#include "../types/native_type_handle.h"
+#include "dyobj/common.h"
+#include "memory/allocator.h"
+#include "memory/allocation_policy.h"
+#include "memory/object_container.h"
+#include "memory/sequential_allocation_scheme.h"
+#include "types/native_type_handle.h"
 
 #include <sneaker/allocator/object_traits.h>
 

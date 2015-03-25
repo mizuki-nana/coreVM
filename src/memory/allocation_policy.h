@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ALLOCATION_POLICY_H_
 #define COREVM_ALLOCATION_POLICY_H_
 
-#include "allocator.h"
+#include "memory/allocator.h"
 
 #include <sneaker/allocator/alloc_policy.h>
 

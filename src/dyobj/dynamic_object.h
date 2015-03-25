@@ -23,11 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYNAMIC_OBJECT_H_
 #define COREVM_DYNAMIC_OBJECT_H_
 
-#include "common.h"
-#include "dyobj_id.h"
-#include "flags.h"
-#include "errors.h"
-#include "../runtime/closure_ctx.h"
+#include "dyobj/common.h"
+#include "dyobj/dyobj_id.h"
+#include "dyobj/flags.h"
+#include "dyobj/errors.h"
+#include "runtime/closure_ctx.h"
 
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>

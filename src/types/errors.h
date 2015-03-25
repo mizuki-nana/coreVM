@@ -23,9 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TYPES_ERRORS_H_
 #define COREVM_TYPES_ERRORS_H_
 
-#include <string>
+#include "corevm/errors.h"
+
 #include <boost/format.hpp>
-#include "../errors.h"
+
+#include <string>
 
 
 namespace corevm {

@@ -20,39 +20,75 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_MEMORY_ERRORS_H_
-#define COREVM_MEMORY_ERRORS_H_
+#ifndef COREVM_FRONTEND_ERRORS_H_
+#define COREVM_FRONTEND_ERRORS_H_
 
-#include "../errors.h"
+#include "corevm/errors.h"
 
 #include <boost/format.hpp>
 
-#include <cstdint>
 #include <string>
 
 
 namespace corevm {
 
 
-namespace memory {
+namespace frontend {
 
 
-class invalid_address_error : public corevm::runtime_error
+class runtime_error : public corevm::runtime_error
 {
 public:
-  explicit invalid_address_error(const uint64_t addr):
-    corevm::runtime_error(
-      str(boost::format("Invalid object address %lu encountered") % addr)
-    )
+  explicit runtime_error(const std::string& what_arg):
+    corevm::runtime_error(what_arg)
+  {
+  }
+
+  explicit runtime_error(const char* what_arg):
+    corevm::runtime_error(what_arg)
   {
   }
 };
 
+// -----------------------------------------------------------------------------
 
-}; /* end namespace memory */
+class file_loading_error : public corevm::frontend::runtime_error
+{
+public:
+  explicit file_loading_error(const std::string& what_arg):
+    corevm::frontend::runtime_error(what_arg)
+  {
+  }
+
+  explicit file_loading_error(const char* what_arg):
+    corevm::frontend::runtime_error(what_arg)
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class configuration_loading_error : public corevm::frontend::runtime_error
+{
+public:
+  explicit configuration_loading_error(const std::string& what_arg):
+    corevm::frontend::runtime_error(what_arg)
+  {
+  }
+
+  explicit configuration_loading_error(const char* what_arg):
+    corevm::frontend::runtime_error(what_arg)
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
 
 
-}; /* end namespace corevm */
+}; /* end namespace frontend */
 
 
-#endif /* COREVM_MEMORY_ERRORS_H_ */
+} /* end namespace corevm */
+
+
+#endif /* COREVM_FRONTEND_ERRORS_H_ */

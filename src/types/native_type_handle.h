@@ -23,10 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_NATIVE_TYPE_HANDLE_H_
 #define COREVM_NATIVE_TYPE_HANDLE_H_
 
-#include <boost/variant/variant.hpp>
-#include <boost/variant/static_visitor.hpp>
 #include "operators.h"
 #include "types.h"
+
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/variant.hpp>
 
 
 namespace corevm {

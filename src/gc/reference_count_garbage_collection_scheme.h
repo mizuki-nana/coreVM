@@ -25,9 +25,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "garbage_collection_scheme.h"
 
-#include "../dyobj/dynamic_object.h"
-#include "../dyobj/dynamic_object_heap.h"
-#include "../dyobj/dynamic_object_manager.h"
+#include "dyobj/dynamic_object.h"
+
+#include "dyobj/dynamic_object_heap.h"
+#include "dyobj/dynamic_object_manager.h"
 
 #include <cstdint>
 

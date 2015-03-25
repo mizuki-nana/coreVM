@@ -20,43 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_UTILS_H_
-#define COREVM_RUNTIME_UTILS_H_
-
-#include "../dyobj/common.h"
-
-#include <cstdint>
+#include "frontend/program.h"
 
 
-namespace corevm {
-
-
-namespace runtime {
-
-
-using corevm::dyobj::ntvhndl_key;
-
-// -----------------------------------------------------------------------------
-
-inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
+int main(int argc, char** argv)
 {
-  return static_cast<ntvhndl_key>( (uint8_t*)(ptr) - (uint8_t*)(NULL) );
+  corevm::frontend::program program;
+  return program.run(argc, argv);
 }
-
-// -----------------------------------------------------------------------------
-
-inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
-{
-  return reinterpret_cast<void*>(key);
-}
-
-// -----------------------------------------------------------------------------
-
-
-}; /* end namespace runtime */
-
-
-}; /* end namespace corevm */
-
-
-#endif /* COREVM_RUNTIME_UTILS_H_ */
