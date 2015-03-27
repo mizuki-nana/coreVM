@@ -114,21 +114,21 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
     {
       obj.delattr(key1);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key2);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key3);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   obj.putattr(key1, mock_attrs[key1]);
@@ -169,21 +169,21 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
     {
       obj.delattr(key1);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key2);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key3);
     },
-    corevm::dyobj::object_attribute_deletion_error
+    corevm::dyobj::object_attribute_not_found_error
   );
 
   ASSERT_THROW(

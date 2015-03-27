@@ -70,6 +70,25 @@ corevm::runtime::compartment::get_encoding_string(uint64_t key) const
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::compartment::get_encoding_string(
+  uint64_t key, std::string* str) const
+{
+  if (!str)
+  {
+    return;
+  }
+
+  auto itr = m_encoding_map.find(key);
+
+  if (itr != m_encoding_map.end())
+  {
+    *str = static_cast<std::string>(itr->second);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 size_t
 corevm::runtime::compartment::closure_count() const
 {

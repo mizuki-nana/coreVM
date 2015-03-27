@@ -464,7 +464,8 @@ void corevm::types::interface_string_clear(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_at(
-  native_type_handle& operand, native_type_handle& index, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -478,7 +479,8 @@ void corevm::types::interface_string_at(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_append(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -493,7 +495,8 @@ void corevm::types::interface_string_append(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_pushback(
-  native_type_handle& operand, native_type_handle& c, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& c,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -549,7 +552,8 @@ void corevm::types::interface_string_insert_char(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_erase(
-  native_type_handle& operand, native_type_handle& pos, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& pos,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -575,7 +579,9 @@ void corevm::types::interface_string_erase2(
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
   size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
 
-  corevm::types::native_string result_value = string_value.erase(pos_value, len_value);
+  corevm::types::native_string result_value = \
+    string_value.erase(pos_value, len_value);
+
   result = result_value;
 }
 
@@ -606,7 +612,8 @@ void corevm::types::interface_string_replace_str(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_swap(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -621,7 +628,8 @@ void corevm::types::interface_string_swap(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_substr(
-  native_type_handle& operand, native_type_handle& pos, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& pos,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -646,14 +654,17 @@ void corevm::types::interface_string_substr2(
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
   size_t len_value = corevm::types::get_value_from_handle<size_t>(len);
 
-  corevm::types::native_string result_value = string_value.substr(pos_value, len_value);
+  corevm::types::native_string result_value = \
+    string_value.substr(pos_value, len_value);
+
   result = result_value;
 }
 
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_find(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -681,14 +692,17 @@ void corevm::types::interface_string_find2(
 
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
 
-  corevm::types::uint32 result_value = string_value.find(other_string_value, pos_value);
+  corevm::types::uint32 result_value = \
+    string_value.find(other_string_value, pos_value);
+
   result = result_value;
 }
 
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_string_rfind(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result)
 {
   corevm::types::native_string string_value = \
     corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
@@ -716,7 +730,9 @@ void corevm::types::interface_string_rfind2(
 
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
 
-  corevm::types::uint32 result_value = string_value.rfind(other_string_value, pos_value);
+  corevm::types::uint32 result_value = \
+    string_value.rfind(other_string_value, pos_value);
+
   result = result_value;
 }
 
@@ -753,7 +769,8 @@ void corevm::types::interface_array_empty(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_at(
-  native_type_handle& operand, native_type_handle& index, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result)
 {
   corevm::types::native_array array_value = \
     corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
@@ -791,7 +808,8 @@ void corevm::types::interface_array_back(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_append(
-  native_type_handle& operand, native_type_handle& data, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& data,
+  native_type_handle& result)
 {
   corevm::types::native_array array_value = \
     corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
@@ -818,7 +836,8 @@ void corevm::types::interface_array_pop(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_array_swap(
-  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result)
 {
   corevm::types::native_array array_value = \
     corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
@@ -875,7 +894,8 @@ void corevm::types::interface_map_empty(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_at(
-  native_type_handle& operand, native_type_handle& key, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result)
 {
   corevm::types::native_map map_value = \
     corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
@@ -911,7 +931,8 @@ void corevm::types::interface_map_put(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_erase(
-  native_type_handle& operand, native_type_handle& key, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result)
 {
   corevm::types::native_map map_value = \
     corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
@@ -938,7 +959,8 @@ void corevm::types::interface_map_clear(
 // -----------------------------------------------------------------------------
 
 void corevm::types::interface_map_swap(
-  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result)
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result)
 {
   corevm::types::native_map map_value = \
     corevm::types::get_value_from_handle<corevm::types::native_map>(operand);

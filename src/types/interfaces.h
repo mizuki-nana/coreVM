@@ -275,27 +275,32 @@ void interface_string_clear(
 // -----------------------------------------------------------------------------
 
 void interface_string_at(
-  native_type_handle& operand, native_type_handle& index, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_append(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_pushback(
-  native_type_handle& operand, native_type_handle& c, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& c,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_insert_str(
-  native_type_handle& operand, native_type_handle& pos, native_type_handle& str, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos,
+  native_type_handle& str, native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_insert_char(
-  native_type_handle& operand, native_type_handle& pos, native_type_handle& c, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos, native_type_handle& c,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -326,27 +331,32 @@ void interface_string_substr(
 // -----------------------------------------------------------------------------
 
 void interface_string_substr2(
-  native_type_handle& operand, native_type_handle& pos, native_type_handle& len, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& pos,
+  native_type_handle& len, native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_find(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_find2(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& pos, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& pos, native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_rfind(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_string_rfind2(
-  native_type_handle& operand, native_type_handle& str, native_type_handle& pos, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& str,
+  native_type_handle& pos, native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -367,7 +377,8 @@ void interface_array_empty(
 // -----------------------------------------------------------------------------
 
 void interface_array_at(
-  native_type_handle& operand, native_type_handle& index, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -382,7 +393,8 @@ void interface_array_back(
 // -----------------------------------------------------------------------------
 
 void interface_array_append(
-  native_type_handle& operand, native_type_handle& data, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& data,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -392,7 +404,8 @@ void interface_array_pop(
 // -----------------------------------------------------------------------------
 
 void interface_array_swap(
-  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -418,17 +431,20 @@ void interface_map_empty(
 // -----------------------------------------------------------------------------
 
 void interface_map_at(
-  native_type_handle& operand, native_type_handle& key, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_map_put(
-  native_type_handle& operand, native_type_handle& key, native_type_handle& data, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& data, native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
 void interface_map_erase(
-  native_type_handle& operand, native_type_handle& key, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 
@@ -438,7 +454,8 @@ void interface_map_clear(
 // -----------------------------------------------------------------------------
 
 void interface_map_swap(
-  native_type_handle& operand, native_type_handle& other_operand, native_type_handle& result);
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result);
 
 // -----------------------------------------------------------------------------
 

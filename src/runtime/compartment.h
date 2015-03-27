@@ -49,6 +49,8 @@ public:
   std::string get_encoding_string(uint64_t) const
     throw(corevm::runtime::encoding_string_not_found_error);
 
+  void get_encoding_string(uint64_t, std::string*) const;
+
   size_t closure_count() const;
 
   const corevm::runtime::closure get_closure_by_id(

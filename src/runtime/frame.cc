@@ -114,6 +114,20 @@ corevm::runtime::frame::pop_eval_stack()
 
 // -----------------------------------------------------------------------------
 
+corevm::types::native_type_handle&
+corevm::runtime::frame::top_eval_stack()
+  throw(corevm::runtime::evaluation_stack_empty_error)
+{
+  if (m_eval_stack.empty())
+  {
+    throw corevm::runtime::evaluation_stack_empty_error();
+  }
+
+  return m_eval_stack.top();
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_visible_var(
   const corevm::runtime::variable_key var_key) const

@@ -466,7 +466,9 @@ corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
 
 template<typename T, typename AllocatorType>
 std::ostream&
-operator<<(std::ostream& ost, const corevm::memory::object_container<T, AllocatorType>& container)
+operator<<(
+  std::ostream& ost,
+  const corevm::memory::object_container<T, AllocatorType>& container)
 {
   ost << "object container: ";
   ost << container.size() << "/" << container.max_size();

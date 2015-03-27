@@ -255,7 +255,8 @@ corevm::types::native_map::operator>=(const native_map&) const
 // -----------------------------------------------------------------------------
 
 corevm::types::native_map::mapped_type&
-corevm::types::native_map::at(const key_type& k) throw(corevm::types::out_of_range_error)
+corevm::types::native_map::at(const key_type& k)
+  throw(corevm::types::out_of_range_error)
 {
   try
   {

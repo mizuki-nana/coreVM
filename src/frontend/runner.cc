@@ -26,10 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bytecode_loader.h"
 #include "configuration.h"
 #include "dyobj/common.h"
+#include "dyobj/errors.h"
 #include "runtime/common.h"
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
 
+#include <boost/format.hpp>
 #include <sneaker/utility/stack_trace.h>
 
 #include <cerrno>
@@ -37,6 +39,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 
+// -----------------------------------------------------------------------------
+
+static void
+try_get_attr_name(
+  corevm::runtime::process& process,
+  corevm::dyobj::attr_key attr_key,
+  corevm::dyobj::dyobj_id id,
+  std::string* attr_name)
+{
+  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  corevm::runtime::compartment* compartment = nullptr;
+  process.get_compartment(obj.closure_ctx().compartment_id, &compartment);
+
+  if (compartment)
+  {
+    compartment->get_encoding_string((uint64_t)attr_key, attr_name);
+  }
+}
 
 // -----------------------------------------------------------------------------
 
@@ -91,6 +112,23 @@ corevm::frontend::runner::run() const noexcept
       std::cerr << "Run failed: " << strerror(errno) << std::endl;
       print_stack_trace();
       return -1;
+    }
+  }
+  catch (const corevm::dyobj::object_attribute_not_found_error& ex)
+  {
+    // Try to find the attribute name.
+    std::string attr_name;
+    try_get_attr_name(process, ex.attr_key, ex.id, &attr_name);
+
+    if (!attr_name.empty())
+    {
+      throw corevm::dyobj::object_attribute_not_found_error(
+        str(
+          boost::format(
+            "Attribute %s not found in object %#x"
+          ) % attr_name.c_str() % ex.id
+        )
+      );
     }
   }
   catch (const corevm::runtime_error& ex)

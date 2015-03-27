@@ -42,8 +42,8 @@ typedef corevm::memory::sequential_block_descriptor block_descriptor_type;
 // -----------------------------------------------------------------------------
 
 corevm::memory::sequential_allocation_scheme::sequential_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   m_total_size(total_size)
 {
 }
@@ -251,12 +251,14 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
 // -----------------------------------------------------------------------------
 
 corevm::memory::first_fit_allocation_scheme::first_fit_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   corevm::memory::sequential_allocation_scheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
 }
+
+// -----------------------------------------------------------------------------
 
 iterator_type
 corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
@@ -279,8 +281,8 @@ corevm::memory::first_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 corevm::memory::best_fit_allocation_scheme::best_fit_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   corevm::memory::sequential_allocation_scheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
@@ -333,8 +335,8 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 corevm::memory::worst_fit_allocation_scheme::worst_fit_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   corevm::memory::sequential_allocation_scheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
@@ -387,8 +389,8 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 corevm::memory::next_fit_allocation_scheme::next_fit_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   corevm::memory::sequential_allocation_scheme(total_size)
 {
   m_last_itr = this->begin();
@@ -442,8 +444,8 @@ const uint8_t corevm::memory::buddy_allocation_scheme::FLAG_PARENT_SPLIT = 2;
 // -----------------------------------------------------------------------------
 
 corevm::memory::buddy_allocation_scheme::buddy_allocation_scheme(
-  size_t total_size
-):
+  size_t total_size)
+  :
   corevm::memory::sequential_allocation_scheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
@@ -550,7 +552,7 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
   {
     has_freed_blocks = false;
 
-    for (iterator_type itr = begin(); itr != end(); itr++)
+    for (iterator_type itr = begin(); itr != end(); ++itr)
     {
       iterator_type current_itr = itr;
       iterator_type next_itr = current_itr;

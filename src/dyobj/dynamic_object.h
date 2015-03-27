@@ -55,7 +55,7 @@ public:
   typedef attr_map_type::iterator iterator;
   typedef attr_map_type::const_iterator const_iterator;
 
-  explicit dynamic_object();
+  dynamic_object();
 
   /* Dynamic objects should not be copyable. */
   dynamic_object(const dynamic_object&) = delete;
@@ -97,7 +97,7 @@ public:
   void putattr(attr_key_type, dyobj_id_type) noexcept;
 
   void delattr(attr_key_type)
-    throw(corevm::dyobj::object_attribute_deletion_error);
+    throw(corevm::dyobj::object_attribute_not_found_error);
 
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::object_attribute_not_found_error);
@@ -359,11 +359,11 @@ template<class dynamic_object_manager>
 void
 corevm::dyobj::dynamic_object<dynamic_object_manager>::delattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key)
-  throw(corevm::dyobj::object_attribute_deletion_error)
+  throw(corevm::dyobj::object_attribute_not_found_error)
 {
   if (m_attrs.erase(attr_key) != 1)
   {
-    throw corevm::dyobj::object_attribute_deletion_error(attr_key, id());
+    throw corevm::dyobj::object_attribute_not_found_error(attr_key, id());
   }
 }
 

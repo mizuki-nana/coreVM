@@ -26,8 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/interfaces.h"
 #include "types/types.h"
 
-#include <boost/format.hpp>
-
 #include <algorithm>
 #include <cassert>
 #include <csignal>
@@ -197,7 +195,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
 
   /* ----------------- Native type manipulation instructions ---------------- */
 
-  { corevm::runtime::instr_enum::TRUTHY,    { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()     } },
+  { corevm::runtime::instr_enum::TRUTHY,    { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()    } },
   { corevm::runtime::instr_enum::REPR,      { .num_oprd=0, .str="repr",      .handler=std::make_shared<corevm::runtime::instr_handler_repr>()      } },
 
   /* --------------------- String type instructions ------------------------- */
@@ -257,14 +255,6 @@ corevm::runtime::instr_handler_meta::find(corevm::runtime::instr_code instr_code
   }
 
   return corevm::runtime::instr_handler_meta::instr_info_map.at(instr_code);
-}
-
-// -----------------------------------------------------------------------------
-
-const std::string
-corevm::runtime::instr_handler_meta::instr_to_string(const corevm::runtime::instr& instr)
-{
-  return str(boost::format("<%lu %llu %llu>") % instr.code % instr.oprd1 % instr.oprd2);
 }
 
 // -----------------------------------------------------------------------------
@@ -2068,12 +2058,11 @@ corevm::runtime::instr_handler_repr::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle oprd = frame.pop_eval_stack();
+  corevm::types::native_type_handle& oprd = frame.top_eval_stack();
   corevm::types::native_type_handle result;
 
   corevm::types::interface_compute_repr_value(oprd, result);
 
-  frame.push_eval_stack(oprd);
   frame.push_eval_stack(result);
 }
 

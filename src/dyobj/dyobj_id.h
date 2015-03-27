@@ -40,8 +40,6 @@ typedef uint64_t dyobj_id;
 const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
 
 
-std::string id_to_string(corevm::dyobj::dyobj_id);
-
 // -----------------------------------------------------------------------------
 
 inline dyobj_id obj_ptr_to_id(void* ptr)

@@ -29,7 +29,6 @@ COREVM_DIR=corevm
 
 SOURCES += $(TOP_DIR)/$(SRC)/$(MEMORY)/sequential_allocation_scheme.cc
 
-SOURCES += $(TOP_DIR)/$(SRC)/$(DYOBJ)/dyobj_id.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(DYOBJ)/flags.cc
 
 SOURCES += $(TOP_DIR)/$(SRC)/$(GC)/mark_and_sweep_garbage_collection_scheme.cc

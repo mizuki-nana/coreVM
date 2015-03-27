@@ -219,7 +219,8 @@ corevm::types::native_array::operator>>(const native_array&) const
 // -----------------------------------------------------------------------------
 
 corevm::types::native_array::reference
-corevm::types::native_array::at(size_type n) throw(corevm::types::out_of_range_error)
+corevm::types::native_array::at(size_type n)
+  throw(corevm::types::out_of_range_error)
 {
   try
   {

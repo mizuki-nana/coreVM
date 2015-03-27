@@ -20,9 +20,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
-#define COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_
-
 #include "dyobj/flags.h"
 #include "runtime/instr.h"
 
@@ -51,9 +48,6 @@ private:
 
   std::string m_output;
 };
-
-
-#endif /* COREVM_TOOLS_EXTRACT_INSTRS_INFO_H_ */
 
 
 // -----------------------------------------------------------------------------
@@ -96,11 +90,13 @@ extract_info::do_run()
 
   std::stringstream ss;
 
-
   ss << "{" << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
-  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP << DOUBLE_QUOTE << ": " << extract_flags_info() << std::endl;
+  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP \
+    << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
+
+  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP \
+    << DOUBLE_QUOTE << ": " << extract_flags_info() << std::endl;
 
   ss << "}" << std::endl;
 
@@ -126,7 +122,8 @@ extract_info::extract_instr_info() const
     const corevm::runtime::instr_code& code = itr->first;
     const corevm::runtime::instr_info& info = itr->second;
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str << DOUBLE_QUOTE << ": " << code;
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str \
+      << DOUBLE_QUOTE << ": " << code;
 
     if (++itr != corevm::runtime::instr_handler_meta::instr_info_map.end())
     {
@@ -158,7 +155,8 @@ extract_info::extract_flags_info() const
     uint32_t flag_value = i;
     const char* flag_str = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY[i];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str) << DOUBLE_QUOTE << ": " << flag_value;
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str) \
+      << DOUBLE_QUOTE << ": " << flag_value;
 
     if (i + 1 != array_size)
     {

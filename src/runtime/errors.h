@@ -170,10 +170,7 @@ class object_deletion_error : public corevm::runtime::runtime_error
 public:
   explicit object_deletion_error(const corevm::dyobj::dyobj_id id):
     corevm::runtime::runtime_error(
-      str(
-        format("Cannot delete object %s") % corevm::dyobj::id_to_string(id)
-      )
-    )
+      str(format("Cannot delete object %#x") % id))
   {
   }
 };
@@ -185,10 +182,7 @@ class invocation_error : public corevm::runtime::runtime_error
 public:
   explicit invocation_error(const corevm::dyobj::dyobj_id id):
     corevm::runtime::runtime_error(
-      str(
-        format("Cannot invoke call on object %s") % corevm::dyobj::id_to_string(id)
-      )
-    )
+      str(format("Cannot invoke call on object %#x") % id))
   {
   }
 };

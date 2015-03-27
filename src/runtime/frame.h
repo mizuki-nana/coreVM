@@ -41,10 +41,9 @@ namespace runtime {
 
 
 /**
- * Each frame is supposed to have:
+ * Each frame is consisted of:
  *
  * - Return address.
- * - Pointer to the address caller frame.
  * - Visible local variables.
  * - Invisible local variables.
  * - Evaluation stack.
@@ -68,6 +67,9 @@ public:
   void push_eval_stack(corevm::types::native_type_handle&);
 
   corevm::types::native_type_handle pop_eval_stack()
+    throw(corevm::runtime::evaluation_stack_empty_error);
+
+  corevm::types::native_type_handle& top_eval_stack()
     throw(corevm::runtime::evaluation_stack_empty_error);
 
   bool has_visible_var(const corevm::runtime::variable_key) const;
