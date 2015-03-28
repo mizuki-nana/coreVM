@@ -43,7 +43,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <list>
 #include <ostream>
-#include <stack>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -195,7 +194,14 @@ public:
   corevm::runtime::compartment_id insert_compartment(
     const corevm::runtime::compartment&);
 
-  void get_compartment(corevm::runtime::compartment_id, corevm::runtime::compartment**);
+  void get_compartment(
+    corevm::runtime::compartment_id, corevm::runtime::compartment**);
+
+  void reset();
+
+  // NOTE: Once the stack is unwinded, the action cannot be undone.
+  static void unwind_stack(
+    corevm::runtime::process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
   friend std::ostream& operator<<(std::ostream&, const corevm::runtime::process&);
 
@@ -211,7 +217,7 @@ private:
   corevm::runtime::instr_addr m_pc;
   corevm::runtime::vector m_instrs;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
-  std::stack<corevm::dyobj::dyobj_id> m_dyobj_stack;
+  std::list<corevm::dyobj::dyobj_id> m_dyobj_stack;
   std::list<corevm::runtime::frame> m_call_stack;
   std::list<invocation_ctx> m_invocation_ctx_stack;
   native_types_pool_type m_ntvhndl_pool;

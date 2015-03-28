@@ -174,3 +174,41 @@ corevm::frontend::get_v0_1_vector_schema_definition()
 }
 
 // -----------------------------------------------------------------------------
+
+const std::string
+corevm::frontend::get_v0_1_locs_schema_definition()
+{
+  static const std::string def(
+    "{"
+      "\"type\": \"array\","
+      "\"items\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"index\": {"
+            "\"type\": \"integer\""
+          "},"
+          "\"loc\": {"
+            "\"type\": \"object\","
+            "\"properties\": {"
+              "\"lineno\": {"
+                "\"type\": \"integer\""
+              "},"
+              "\"col_offset\": {"
+                "\"type\": \"integer\""
+              "}"
+            "},"
+            "\"additionalProperties\": false,"
+            "\"required\": ["
+              "\"lineno\","
+              "\"col_offset\""
+            "]"
+          "}"
+        "}"
+      "}"
+    "}"
+  );
+
+  return def;
+}
+
+// -----------------------------------------------------------------------------

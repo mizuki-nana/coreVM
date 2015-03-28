@@ -38,6 +38,7 @@ std::ostream& operator<<(
   ost << std::endl;
   ost << "-- BEGIN --" << std::endl;
   ost << std::endl;
+  ost << "Name: " << closure.name << std::endl;
   ost << "ID: " << closure.id << std::endl;
   ost << "Parent ID: " << closure.parent_id << std::endl;
   ost << "Vector: " << std::endl << closure.vector;

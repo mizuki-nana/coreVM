@@ -74,6 +74,10 @@ typedef std::unordered_map<uint64_t, std::string> encoding_map;
 const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
 
 
+// Default number of stacks to unwind on failures.
+const size_t COREVM_DEFAULT_STACK_UNWIND_COUNT = 5;
+
+
 } /* end namespace runtime */
 
 

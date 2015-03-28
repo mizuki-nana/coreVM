@@ -324,7 +324,7 @@ corevm::runtime::process::top_stack()
     THROW(corevm::runtime::object_stack_empty_error());
   }
 
-  return m_dyobj_stack.top();
+  return m_dyobj_stack.back();
 }
 
 // -----------------------------------------------------------------------------
@@ -332,7 +332,7 @@ corevm::runtime::process::top_stack()
 void
 corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 {
-  m_dyobj_stack.push(id);
+  m_dyobj_stack.push_back(id);
 }
 
 // -----------------------------------------------------------------------------
@@ -346,8 +346,8 @@ corevm::runtime::process::pop_stack()
     THROW(corevm::runtime::object_stack_empty_error());
   }
 
-  corevm::dyobj::dyobj_id id = m_dyobj_stack.top();
-  m_dyobj_stack.pop();
+  corevm::dyobj::dyobj_id id = m_dyobj_stack.back();
+  m_dyobj_stack.pop_back();
   return id;
 }
 
@@ -748,6 +748,83 @@ corevm::runtime::process::get_compartment(
   {
     *ptr = &m_compartments[id];
   }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::reset()
+{
+  m_gc_flag = 0;
+  m_pc = corevm::runtime::NONESET_INSTR_ADDR;
+  m_dyobj_stack.clear();
+  m_call_stack.clear();
+  m_invocation_ctx_stack.clear();
+  m_compartments.clear();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::unwind_stack(
+  corevm::runtime::process& process, size_t limit)
+{
+  size_t unwind_count = 0;
+  std::stringstream ss;
+
+  ss << "Trackback:" << std::endl;
+
+  while (process.has_frame())
+  {
+    corevm::runtime::frame& frame = process.top_frame();
+
+    auto ctx = frame.closure_ctx();
+
+    corevm::runtime::compartment* compartment = nullptr;
+
+    process.get_compartment(ctx.compartment_id, &compartment);
+
+#if __DEBUG__
+    ASSERT(compartment);
+#endif
+
+    ss << "    " << "File " << '\"' << compartment->path() << '\"';
+
+    corevm::runtime::closure* closure = nullptr;
+    compartment->get_closure_by_id(ctx.closure_id, &closure);
+
+#if __DEBUG__
+    ASSERT(closure);
+#endif
+
+    corevm::runtime::loc_table& locs = closure->locs;
+
+    int32_t index = process.pc() - frame.return_addr();
+
+    if (locs.find(index) != locs.end())
+    {
+      const corevm::runtime::loc_info& loc = locs.at(index);
+
+      ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
+    }
+
+    ss << " in " << closure->name;
+
+    ss << std::endl;
+
+    process.pop_frame();
+
+    ++unwind_count;
+
+    if (limit && unwind_count >= limit)
+    {
+      break;
+    }
+  }
+
+  process.reset();
+
+  std::cerr << std::endl << ss.str() << std::endl;
 }
 
 // -----------------------------------------------------------------------------

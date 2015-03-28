@@ -116,6 +116,8 @@ corevm::frontend::runner::run() const noexcept
       print_stack_trace();
 #endif
 
+      corevm::runtime::process::unwind_stack(process);
+
       return -1;
     }
   }
@@ -145,6 +147,8 @@ corevm::frontend::runner::run() const noexcept
     print_stack_trace();
 #endif
 
+    corevm::runtime::process::unwind_stack(process);
+
     return -1;
   }
   catch (const std::exception& ex)
@@ -156,6 +160,8 @@ corevm::frontend::runner::run() const noexcept
     print_stack_trace();
 #endif
 
+    corevm::runtime::process::unwind_stack(process);
+
     return -1;
   }
   catch (...)
@@ -166,6 +172,8 @@ corevm::frontend::runner::run() const noexcept
 #if __DEBUG__
     print_stack_trace();
 #endif
+
+    corevm::runtime::process::unwind_stack(process);
 
     return -1;
   }

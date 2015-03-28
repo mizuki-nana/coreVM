@@ -33,6 +33,84 @@ class compartment_unittest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
+TEST_F(compartment_unittest, TestGetClosureByID)
+{
+  corevm::runtime::compartment compartment("./example.core");
+
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+
+  corevm::runtime::closure closure {
+    .name = "__main__",
+    .id=2,
+    .parent_id=1,
+    .vector=vector,
+    .locs = locs
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure
+  };
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure* result = nullptr;
+
+  compartment.get_closure_by_id(closure.id, &result);
+
+  ASSERT_NE(nullptr, result);
+
+  ASSERT_EQ(closure.id, result->id);
+  ASSERT_EQ(closure.parent_id, result->parent_id);
+
+  corevm::runtime::closure* result2 = nullptr;
+  corevm::runtime::closure_id invalid_id = 0xfff;
+
+  compartment.get_closure_by_id(invalid_id, &result2);
+
+  ASSERT_EQ(nullptr, result2);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(compartment_unittest, TestGetClosureByID2)
+{
+  corevm::runtime::compartment compartment("./example.core");
+
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+
+  corevm::runtime::closure closure {
+    .name = "__main__",
+    .id=2,
+    .parent_id=1,
+    .vector=vector,
+    .locs = locs
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure
+  };
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure result = compartment.get_closure_by_id(closure.id);
+
+  ASSERT_EQ(closure.id, result.id);
+  ASSERT_EQ(closure.parent_id, result.parent_id);
+
+  corevm::runtime::closure_id invalid_id = 0xfff;
+
+  ASSERT_THROW(
+    {
+      compartment.get_closure_by_id(invalid_id);
+    },
+    corevm::runtime::closure_not_found_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(compartment_unittest, TestOutputStream)
 {
   corevm::runtime::compartment compartment("./example.core");
@@ -44,6 +122,7 @@ TEST_F(compartment_unittest, TestOutputStream)
   };
 
   corevm::runtime::closure closure {
+    .name = "__main__",
     .id=2,
     .parent_id=1,
     .vector=vector

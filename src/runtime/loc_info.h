@@ -20,15 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_COMPARTMENT_H_
-#define COREVM_COMPARTMENT_H_
+#ifndef COREVM_LOC_INFO_H_
+#define COREVM_LOC_INFO_H_
 
-#include "closure.h"
-#include "common.h"
-#include "errors.h"
-
-#include <ostream>
-#include <string>
+#include <unordered_map>
 
 
 namespace corevm {
@@ -37,47 +32,25 @@ namespace corevm {
 namespace runtime {
 
 
-class compartment
+// -----------------------------------------------------------------------------
+
+struct loc_info
 {
-public:
-  explicit compartment(const std::string&);
-
-  const std::string& path() const;
-
-  void set_encoding_map(const corevm::runtime::encoding_map&);
-
-  std::string get_encoding_string(uint64_t) const
-    throw(corevm::runtime::encoding_string_not_found_error);
-
-  void get_encoding_string(uint64_t, std::string*) const;
-
-  size_t closure_count() const;
-
-  const corevm::runtime::closure
-    get_closure_by_id(corevm::runtime::closure_id) const
-    throw(corevm::runtime::closure_not_found_error);
-
-  void get_closure_by_id(
-    corevm::runtime::closure_id, corevm::runtime::closure** closure);
-
-  void set_closure_table(const corevm::runtime::closure_table&);
-
-  bool get_starting_closure(corevm::runtime::closure*);
-
-  friend std::ostream& operator<<(
-    std::ostream&, const corevm::runtime::compartment&);
-
-private:
-  const std::string m_path;
-  corevm::runtime::encoding_map m_encoding_map;
-  corevm::runtime::closure_table m_closure_table;
+  int32_t lineno;
+  int32_t col_offset;
 };
 
+// -----------------------------------------------------------------------------
 
-}; /* end namespace runtime */
+typedef std::unordered_map<int32_t, loc_info> loc_table;
+
+// -----------------------------------------------------------------------------
 
 
-}; /* end namespace corevm */
+} /* end namespace runtime */
 
 
-#endif /* COREVM_COMPARTMENT_H_ */
+} /* end namespace corevm */
+
+
+#endif /* COREVM_LOC_INFO_H_ */

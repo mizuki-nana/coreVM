@@ -130,6 +130,27 @@ corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::compartment::get_closure_by_id(
+  corevm::runtime::closure_id id, corevm::runtime::closure** closure_ptr)
+{
+  auto itr = std::find_if(
+    m_closure_table.begin(),
+    m_closure_table.end(),
+    [&id](const closure& closure) -> bool {
+      return closure.id == id;
+    }
+  );
+
+  if (itr != m_closure_table.end())
+  {
+    corevm::runtime::closure& res = *itr;
+    *closure_ptr = &res;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::compartment::get_starting_closure(
   corevm::runtime::closure* closure)

@@ -68,21 +68,38 @@ class Instr(object):
         return [self.code, self.oprd1, self.oprd2]
 
 
+class Loc(object):
+
+    def __init__(self, lineno, col_offset):
+        self.lineno = lineno
+        self.col_offset = col_offset
+
+    @classmethod
+    def from_node(cls, node):
+        return Loc(node.lineno, node.col_offset)
+
+
 class Closure(object):
 
     # Has to be a non-zero value.
     __closure_id = 1
 
-    def __init__(self, name, parent_name, parent_id):
+    def __init__(self, original_name, name, parent_name, parent_id):
+        self.original_name = original_name
         self.name = name
         self.parent_name = parent_name
         self.vector = []
+        self.locs = {} # mapping of instr index to loc info
         self.closure_id = Closure.__closure_id
         self.parent_id = parent_id
         Closure.__closure_id += 1
 
+    def add_loc(self, index, loc):
+        self.locs[index] = loc
+
     def to_json(self):
         json_dict = {
+            'name': self.original_name,
             '__id__': self.closure_id,
             '__vector__': [
                 instr.to_json() for instr in self.vector
@@ -91,6 +108,18 @@ class Closure(object):
 
         if self.parent_id is not None:
             json_dict['__parent__'] = self.parent_id
+
+        if self.locs:
+            json_dict['locs'] = [
+                {
+                    'index': index,
+                    'loc': {
+                        'lineno': loc.lineno,
+                        'col_offset': loc.col_offset
+                    }
+                }
+                for index, loc in self.locs.iteritems()
+            ]
 
         return json_dict
 
@@ -132,7 +161,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         # closure map
         self.current_closure_name = self.default_closure_name
         self.closure_map = {
-            self.current_closure_name: Closure(self.current_closure_name, '', None)
+            self.current_closure_name: Closure(
+                self.current_closure_name, self.current_closure_name, '', None)
         }
 
         # states
@@ -172,10 +202,13 @@ class BytecodeGenerator(ast.NodeVisitor):
         with open(self.output_file, 'w') as fd:
             fd.write(simplejson.dumps(structured_bytecode))
 
-    def __current_vector(self):
-        return self.closure_map[self.current_closure_name].vector
+    def __current_closure(self):
+        return self.closure_map[self.current_closure_name]
 
-    def __add_instr(self, code, oprd1, oprd2):
+    def __current_vector(self):
+        return self.__current_closure().vector
+
+    def __add_instr(self, code, oprd1, oprd2, loc=None):
         self.__current_vector().append(
             Instr(
                 self.instr_str_to_code_map[code],
@@ -183,6 +216,9 @@ class BytecodeGenerator(ast.NodeVisitor):
                 oprd2
             )
         )
+
+        if loc:
+            self.__current_closure().add_loc(len(self.__current_vector()) - 1, loc)
 
     def __mingle_name(self, name):
         # TDOO: [COREVM-177] Add support for name mingling in Python compiler
@@ -236,6 +272,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         name = self.__mingle_name(node.name)
 
         self.closure_map[name] = Closure(
+            node.name,
             name,
             self.current_closure_name,
             self.closure_map[self.current_closure_name].closure_id
@@ -307,15 +344,15 @@ class BytecodeGenerator(ast.NodeVisitor):
         if node.values:
             self.visit(node.values[0])
 
-        self.__add_instr('print', 0, 0)
+        self.__add_instr('print', 0, 0, loc=Loc.from_node(node))
 
     def visit_If(self, node):
         self.visit(node.test)
-        self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('truthy', 0, 0)
+        self.__add_instr('gethndl', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('truthy', 0, 0, loc=Loc.from_node(node))
 
         # Add `jmpif` here.
-        self.__add_instr('jmpif', 0, 0)
+        self.__add_instr('jmpif', 0, 0, loc=Loc.from_node(node))
         vector_length1 = len(self.__current_vector())
 
         for stmt in node.orelse:
@@ -360,43 +397,43 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Num(self, node):
         num_type = 'dec2' if isinstance(node.n, float) else 'int64'
 
-        self.__add_instr('new', 0, 0)
+        self.__add_instr('new', 0, 0, loc=Loc.from_node(node))
 
         if isinstance(node.n, int):
-            self.__add_instr(num_type, node.n, 0)
+            self.__add_instr(num_type, node.n, 0, loc=Loc.from_node(node))
         else:
             # If the number if a float, split the number into its integer
             # and decimal parts, and express the decimal part in reverse order.
             integer_part = int(node.n)
             decimal_part = int(str(node.n).split('.')[1][::-1])
-            self.__add_instr(num_type, integer_part, decimal_part)
+            self.__add_instr(num_type, integer_part, decimal_part, loc=Loc.from_node(node))
 
-        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
 
     def visit_Name(self, node):
         name = node.id
 
         if isinstance(node.ctx, ast.Load):
-            self.__add_instr('ldobj', self.__get_encoding_id(name), 0)
+            self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Name):
-            self.__add_instr('ldobj', self.__get_encoding_id(name), 0)
+            self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Param):
             # For loading parameters
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
-            self.__add_instr('getarg', 0, 0)
-            self.__add_instr('stobj', self.__get_encoding_id(name), 0)
+            self.__add_instr('getarg', 0, 0, loc=Loc.from_node(node))
+            self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Store):
-            self.__add_instr('stobj', self.__get_encoding_id(name), 0)
+            self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass
 
     def visit_Str(self, node):
         if not VectorString.is_vector_string(node.s):
-            self.__add_instr('new', 0, 0)
-            self.__add_instr('str', self.__get_encoding_id(node.s), 0)
-            self.__add_instr('sethndl', 0, 0)
+            self.__add_instr('new', 0, 0, loc=Loc.from_node(node))
+            self.__add_instr('str', self.__get_encoding_id(node.s), 0, loc=Loc.from_node(node))
+            self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
         else:
             raw_vector = VectorString(node.s).to_raw_vector()
 
@@ -406,12 +443,12 @@ class BytecodeGenerator(ast.NodeVisitor):
 
                 code, oprd1, oprd2 = self.__process_raw_instr(raw_instr)
 
-                self.__add_instr(code, oprd1, oprd2)
+                self.__add_instr(code, oprd1, oprd2, loc=Loc.from_node(node))
 
     def visit_Attribute(self, node):
         # Note: ignoring ctx here
         self.visit(node.value)
-        self.__add_instr('getattr', self.__get_encoding_id(node.attr), 0)
+        self.__add_instr('getattr', self.__get_encoding_id(node.attr), 0, loc=Loc.from_node(node))
 
     """ --------------------------- operator ------------------------------- """
 
@@ -475,7 +512,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     """ ----------------------------- cmpop -------------------------------- """
 
     def visit_Eq(self, node):
-        self.__add_instr('eq', 0, 0)
+        self.__add_instr('eq', 0, 0, loc=Loc.from_node(node))
         self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_NotEq(self, node):
@@ -556,26 +593,26 @@ class BytecodeGenerator(ast.NodeVisitor):
                 # jump over before hand, so we will need to calculate the
                 # difference in the size of the vector, and reset the `jmp`
                 # instr afterward.
-                self.__add_instr('getkwarg', self.__get_encoding_id(arg.id), 2)
+                self.__add_instr('getkwarg', self.__get_encoding_id(arg.id), 2, loc=Loc.from_node(node))
                 self.__add_instr('jmp', 0, 0) # offset addr to be set
                 vector_length1 = len(self.__current_vector())
                 self.visit(default)
                 vector_length2 = len(self.__current_vector())
                 length_diff = vector_length2 - vector_length1
                 self.__current_vector()[vector_length1 - 1] = Instr(
-                    self.instr_str_to_code_map['jmp'], length_diff + 1, 0)
+                    self.instr_str_to_code_map['jmp'], length_diff + 1, 0, loc=Loc.from_node(node))
             else:
                 # This is an arg. It's handled in `visit_Name()`.
                 self.visit(arg)
 
         # Pull out rest of the args (*args).
         if node.vararg:
-            self.__add_instr('getargs', 0, 0)
+            self.__add_instr('getargs', 0, 0, loc=Loc.from_node(node))
             # TODO: Retrieve args stored as an array on top of eval stack.
 
         # Pull out rest of the kwargs (**kwarg).
         if node.kwarg:
-            self.__add_instr('getkwargs', 0, 0)
+            self.__add_instr('getkwargs', 0, 0, loc=Loc.from_node(node))
             # TODO: retrieve kwargs stored as a map on top of eval stack.
 
 
