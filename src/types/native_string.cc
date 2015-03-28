@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_string.h"
 
 #include "errors.h"
+#include "corevm/macros.h"
 
 #include <cstdint>
 #include <stdexcept>
@@ -62,14 +63,14 @@ corevm::types::native_string::native_string(native_string_base&& str)
 
 corevm::types::native_string::native_string(int8_t)
 {
-  throw corevm::types::conversion_error("int8", "string");
+  THROW(corevm::types::conversion_error("int8", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
 corevm::types::native_string::operator int8_t() const
 {
-  throw corevm::types::conversion_error("string", "int8");
+  THROW(corevm::types::conversion_error("string", "int8"));
 }
 
 // -----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ corevm::types::native_string::operator int8_t() const
 corevm::types::native_string&
 corevm::types::native_string::operator+() const
 {
-  throw corevm::types::invalid_operator_error("+", "string");
+  THROW(corevm::types::invalid_operator_error("+", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -85,7 +86,7 @@ corevm::types::native_string::operator+() const
 corevm::types::native_string&
 corevm::types::native_string::operator-() const
 {
-  throw corevm::types::invalid_operator_error("-", "string");
+  THROW(corevm::types::invalid_operator_error("-", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -93,7 +94,7 @@ corevm::types::native_string::operator-() const
 corevm::types::native_string&
 corevm::types::native_string::operator++() const
 {
-  throw corevm::types::invalid_operator_error("++", "string");
+  THROW(corevm::types::invalid_operator_error("++", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -101,7 +102,7 @@ corevm::types::native_string::operator++() const
 corevm::types::native_string&
 corevm::types::native_string::operator--() const
 {
-  throw corevm::types::invalid_operator_error("--", "string");
+  THROW(corevm::types::invalid_operator_error("--", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -109,7 +110,7 @@ corevm::types::native_string::operator--() const
 corevm::types::native_string&
 corevm::types::native_string::operator!() const
 {
-  throw corevm::types::invalid_operator_error("!", "string");
+  THROW(corevm::types::invalid_operator_error("!", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -117,7 +118,7 @@ corevm::types::native_string::operator!() const
 corevm::types::native_string&
 corevm::types::native_string::operator~() const
 {
-  throw corevm::types::invalid_operator_error("~", "string");
+  THROW(corevm::types::invalid_operator_error("~", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -125,7 +126,7 @@ corevm::types::native_string::operator~() const
 corevm::types::native_string&
 corevm::types::native_string::operator+(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("+", "string");
+  THROW(corevm::types::invalid_operator_error("+", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -133,7 +134,7 @@ corevm::types::native_string::operator+(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator-(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("-", "string");
+  THROW(corevm::types::invalid_operator_error("-", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -141,7 +142,7 @@ corevm::types::native_string::operator-(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator*(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("*", "string");
+  THROW(corevm::types::invalid_operator_error("*", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -149,7 +150,7 @@ corevm::types::native_string::operator*(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator/(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("/", "string");
+  THROW(corevm::types::invalid_operator_error("/", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -157,7 +158,7 @@ corevm::types::native_string::operator/(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator%(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("%", "string");
+  THROW(corevm::types::invalid_operator_error("%", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -165,7 +166,7 @@ corevm::types::native_string::operator%(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator&&(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("&&", "string");
+  THROW(corevm::types::invalid_operator_error("&&", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -173,7 +174,7 @@ corevm::types::native_string::operator&&(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator||(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("||", "string");
+  THROW(corevm::types::invalid_operator_error("||", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -181,7 +182,7 @@ corevm::types::native_string::operator||(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator&(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("&", "string");
+  THROW(corevm::types::invalid_operator_error("&", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -189,7 +190,7 @@ corevm::types::native_string::operator&(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator|(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("|", "string");
+  THROW(corevm::types::invalid_operator_error("|", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -197,7 +198,7 @@ corevm::types::native_string::operator|(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator^(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("^", "string");
+  THROW(corevm::types::invalid_operator_error("^", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -205,7 +206,7 @@ corevm::types::native_string::operator^(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator<<(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error("<<", "string");
+  THROW(corevm::types::invalid_operator_error("<<", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -213,7 +214,7 @@ corevm::types::native_string::operator<<(const native_string&) const
 corevm::types::native_string&
 corevm::types::native_string::operator>>(const native_string&) const
 {
-  throw corevm::types::invalid_operator_error(">>", "string");
+  THROW(corevm::types::invalid_operator_error(">>", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -228,7 +229,7 @@ corevm::types::native_string::at(size_type n)
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -244,7 +245,7 @@ corevm::types::native_string::at(size_type n) const
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -262,7 +263,7 @@ corevm::types::native_string::insert(
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -279,7 +280,7 @@ corevm::types::native_string::insert(size_type pos, size_type n, value_type c)
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -296,7 +297,7 @@ corevm::types::native_string::erase(size_type pos)
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -313,7 +314,7 @@ corevm::types::native_string::erase(size_type pos, size_type len)
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 
@@ -330,7 +331,7 @@ corevm::types::native_string::replace(size_type pos, size_type len,
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("String index out of range");
+    THROW(corevm::types::out_of_range_error("String index out of range"));
   }
 }
 

@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_types_pool.h"
 #include "common.h"
 #include "utils.h"
+#include "corevm/macros.h"
 
 #include <ostream>
 
@@ -89,7 +90,7 @@ corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
 
   if (ptr == nullptr)
   {
-    throw corevm::runtime::native_type_handle_not_found_error();
+    THROW(corevm::runtime::native_type_handle_not_found_error());
   }
 
   return *ptr;
@@ -105,9 +106,8 @@ corevm::runtime::native_types_pool::create()
 
   if (ptr == nullptr)
   {
-    throw corevm::runtime::native_type_handle_insertion_error(
-      "insufficient memory to store native type handle"
-    );
+    THROW(corevm::runtime::native_type_handle_insertion_error(
+      "insufficient memory to store native type handle"));
   }
 
   return corevm::runtime::ptr_to_ntvhndl_key(ptr);
@@ -126,7 +126,7 @@ corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
 
   if (ptr == nullptr)
   {
-    throw corevm::runtime::native_type_handle_not_found_error();
+    THROW(corevm::runtime::native_type_handle_not_found_error());
   }
 
   m_container.destroy(ptr);

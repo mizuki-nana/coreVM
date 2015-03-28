@@ -22,13 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "utils.h"
 
+#include "corevm/macros.h"
 #include "runtime/instr.h"
 #include "runtime/vector.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
 
-#include <cassert>
 #include <limits>
 #include <sstream>
 #include <string>
@@ -38,7 +38,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 corevm::runtime::vector
 corevm::frontend::get_vector_from_json(const JSON& json)
 {
-  assert(json.type() == JSON::ARRAY);
+#if __DEBUG__
+  ASSERT(json.type() == JSON::ARRAY);
+#endif
 
   const JSON::array& vector_array = json.array_items();
   corevm::runtime::vector vector;
@@ -48,7 +50,9 @@ corevm::frontend::get_vector_from_json(const JSON& json)
     const JSON& instr_json = *itr;
     const JSON::array& instr_tuple = instr_json.array_items();
 
-    assert(instr_tuple.size() == 3);
+#if __DEBUG__
+    ASSERT(instr_tuple.size() == 3);
+#endif
 
     const JSON& code_raw = instr_tuple[0];
     const JSON& oprd1_raw = instr_tuple[1];

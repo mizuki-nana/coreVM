@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "utils.h"
+#include "corevm/macros.h"
 #include "runtime/process.h"
 #include "runtime/sighandler_registrar.h"
 #include "runtime/vector.h"
@@ -171,13 +172,13 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   }
   catch (const std::ios_base::failure& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format(
           "Error while loading file \"%s\": %s"
         ) % m_path % ex.what()
       )
-    );
+    ));
   }
 
   std::string content = buffer.str();
@@ -190,13 +191,13 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format(
           "Error while parsing file \"%s\": %s"
         ) % m_path % ex.what()
       )
-    );
+    ));
   }
 
   this->validate(content_json);
@@ -232,11 +233,11 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )
-    );
+    ));
   }
 }
 

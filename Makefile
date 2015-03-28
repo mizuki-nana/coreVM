@@ -32,7 +32,7 @@ MAIN_CC=$(SRC)/corevm/main.cc
 
 PYTHON=`which python`
 CXX=`which clang++`
-CXXFLAGS=-Wall -std=c++11 -I$(TOP_DIR)/$(SRC)
+CXXFLAGS=-Wall -std=c++11 -D__DEBUG__=1 -I$(TOP_DIR)/$(SRC)
 EXTRA_CXXFLAGS=-Wno-deprecated
 
 LFLAGS=-lsneaker -lpthread

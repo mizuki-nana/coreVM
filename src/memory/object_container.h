@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_OBJECT_CONTAINER_H_
 
 #include "errors.h"
+#include "corevm/macros.h"
 
 #include <cstdint>
 #include <iterator>
@@ -395,7 +396,7 @@ corevm::memory::object_container<T, AllocatorType>::at(pointer p)
 {
   if (!check_ptr(p))
   {
-    throw invalid_address_error(PTR_TO_INT(p));
+    THROW(invalid_address_error(PTR_TO_INT(p)));
   }
 
   return static_cast<pointer>((void*)p);
@@ -410,7 +411,7 @@ corevm::memory::object_container<T, AllocatorType>::at(const_pointer p) const
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {
-    throw invalid_address_error(PTR_TO_INT(p));
+    THROW(invalid_address_error(PTR_TO_INT(p)));
   }
 
   return static_cast<const_pointer>((void*)p);
@@ -424,7 +425,7 @@ corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
 {
   if (!check_ptr(p))
   {
-    throw invalid_address_error(PTR_TO_INT(p));
+    THROW(invalid_address_error(PTR_TO_INT(p)));
   }
 
   m_allocator.destroy(p);

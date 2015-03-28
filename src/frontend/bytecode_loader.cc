@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bytecode_loader_v0_1.h"
 #include "errors.h"
 #include "utils.h"
+#include "corevm/macros.h"
 #include "corevm/version.h"
 #include "runtime/process.h"
 #include "runtime/vector.h"
@@ -103,11 +104,8 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
 
   if (loaders.empty())
   {
-    throw file_loading_error(
-      str(
-        boost::format("Unrecognized format: \"%s\"") % format
-      )
-    );
+    THROW(file_loading_error(
+      str(boost::format("Unrecognized format: \"%s\"") % format)));
   }
 
   auto itr = std::find_if(
@@ -120,11 +118,11 @@ corevm::frontend::internal::schema_repository::load_by_format_and_version(
 
   if (itr == loaders.end())
   {
-    throw file_loading_error(
+    THROW(file_loading_error(
       str(
         boost::format("Unrecognized format-version: \"%s\"") % format_version
       )
-    );
+    ));
   }
 
   return static_cast<bytecode_loader*>(*itr);
@@ -155,11 +153,11 @@ corevm::frontend::bytecode_loader::validate_and_load(
 
   if (target_version_str != COREVM_SHORT_CANONICAL_VERSION)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format("Invalid target-version: %s") % target_version_str
       )
-    );
+    ));
   }
 
   const JSON::string& format = json_object.at("format").string_value();
@@ -182,11 +180,11 @@ corevm::frontend::bytecode_loader::validate_and_load(
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format("Invalid format in file: %s") % ex.what()
       )
-    );
+    ));
   }
 
   // Load
@@ -211,13 +209,13 @@ corevm::frontend::bytecode_loader::load(
   }
   catch (const std::ios_base::failure& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format(
           "Error while loading file \"%s\": %s"
         ) % path % ex.what()
       )
-    );
+    ));
   }
 
   std::string content = buffer.str();
@@ -230,11 +228,11 @@ corevm::frontend::bytecode_loader::load(
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    throw corevm::frontend::file_loading_error(
+    THROW(corevm::frontend::file_loading_error(
       str(
         boost::format("Error while parsing file \"%s\": %s") % path % ex.what()
       )
-    );
+    ));
   }
 
   bytecode_loader::validate_and_load(path, content_json, process);

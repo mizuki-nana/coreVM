@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "errors.h"
+#include "corevm/macros.h"
 
 #include <cstdint>
 
@@ -104,7 +105,7 @@ corevm::runtime::frame::pop_eval_stack()
 {
   if (m_eval_stack.empty())
   {
-    throw corevm::runtime::evaluation_stack_empty_error();
+    THROW(corevm::runtime::evaluation_stack_empty_error());
   }
 
   corevm::types::native_type_handle operand = m_eval_stack.top();
@@ -120,7 +121,7 @@ corevm::runtime::frame::top_eval_stack()
 {
   if (m_eval_stack.empty())
   {
-    throw corevm::runtime::evaluation_stack_empty_error();
+    THROW(corevm::runtime::evaluation_stack_empty_error());
   }
 
   return m_eval_stack.top();
@@ -144,7 +145,7 @@ corevm::runtime::frame::get_visible_var(
 {
   if (!has_visible_var(var_key))
   {
-    throw corevm::runtime::local_variable_not_found_error();
+    THROW(corevm::runtime::local_variable_not_found_error());
   }
 
   return m_visible_vars.at(var_key);
@@ -188,7 +189,7 @@ corevm::runtime::frame::get_invisible_var(
 {
   if (!has_invisible_var(var_key))
   {
-    throw corevm::runtime::local_variable_not_found_error();
+    THROW(corevm::runtime::local_variable_not_found_error());
   }
 
   return m_invisible_vars.at(var_key);

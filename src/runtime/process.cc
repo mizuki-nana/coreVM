@@ -31,13 +31,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_types_pool.h"
 #include "sighandler_registrar.h"
 #include "vector.h"
+#include "corevm/macros.h"
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/garbage_collector.h"
 #include "gc/garbage_collection_scheme.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cstdint>
 #include <iterator>
 #include <list>
@@ -178,7 +178,7 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
 {
   if (m_call_stack.empty())
   {
-    throw corevm::runtime::frame_not_found_error();
+    THROW(corevm::runtime::frame_not_found_error());
   }
 
   return m_call_stack.back();
@@ -218,7 +218,9 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   corevm::runtime::compartment* compartment = nullptr;
   this->get_compartment(compartment_id, &compartment);
 
-  assert(compartment);
+#if __DEBUG__
+  ASSERT(compartment);
+#endif
 
   corevm::runtime::closure_id closure_id = frame.closure_ctx().closure_id;
   corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
@@ -274,7 +276,7 @@ corevm::runtime::process::top_invocation_ctx()
 {
   if (m_invocation_ctx_stack.empty())
   {
-    throw invocation_ctx_not_found_error();
+    THROW(invocation_ctx_not_found_error());
   }
 
   return m_invocation_ctx_stack.back();
@@ -301,11 +303,11 @@ corevm::runtime::process::emplace_invocation_ctx(
 
 void
 corevm::runtime::process::pop_invocation_ctx()
-  throw (corevm::runtime::invocation_ctx_not_found_error)
+  throw(corevm::runtime::invocation_ctx_not_found_error)
 {
   if (m_invocation_ctx_stack.empty())
   {
-    throw invocation_ctx_not_found_error();
+    THROW(invocation_ctx_not_found_error());
   }
 
   m_invocation_ctx_stack.pop_back();
@@ -319,7 +321,7 @@ corevm::runtime::process::top_stack()
 {
   if (m_dyobj_stack.empty())
   {
-    throw corevm::runtime::object_stack_empty_error();
+    THROW(corevm::runtime::object_stack_empty_error());
   }
 
   return m_dyobj_stack.top();
@@ -341,7 +343,7 @@ corevm::runtime::process::pop_stack()
 {
   if (m_dyobj_stack.empty())
   {
-    throw corevm::runtime::object_stack_empty_error();
+    THROW(corevm::runtime::object_stack_empty_error());
   }
 
   corevm::dyobj::dyobj_id id = m_dyobj_stack.top();
@@ -438,7 +440,7 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
   }
   catch(const corevm::runtime::native_type_handle_not_found_error)
   {
-    throw corevm::runtime::native_type_handle_deletion_error();
+    THROW(corevm::runtime::native_type_handle_deletion_error());
   }
 }
 
@@ -447,7 +449,9 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 const corevm::runtime::instr_handler*
 corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
 {
-  corevm::runtime::instr_info instr_info = corevm::runtime::instr_handler_meta::find(code);
+  corevm::runtime::instr_info instr_info = \
+    corevm::runtime::instr_handler_meta::find(code);
+
   return instr_info.handler.get();
 }
 
@@ -611,7 +615,7 @@ corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
       (addr < 0 || addr >= m_instrs.size()) )
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
 
   m_pc = addr;

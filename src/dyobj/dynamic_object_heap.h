@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYNAMIC_OBJECT_HEAP_H_
 #define COREVM_DYNAMIC_OBJECT_HEAP_H_
 
+#include "corevm/macros.h"
 #include "dyobj/common.h"
 #include "dyobj/dyobj_id.h"
 #include "dyobj/dynamic_object.h"
@@ -272,7 +273,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::at(
 
   if (ptr == nullptr)
   {
-    throw corevm::dyobj::object_not_found_error(id);
+    THROW(corevm::dyobj::object_not_found_error(id));
   }
 
   return *ptr;
@@ -289,7 +290,7 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
 
   if (obj_ptr == nullptr)
   {
-    throw corevm::dyobj::object_creation_error();
+    THROW(corevm::dyobj::object_creation_error());
   }
 
   auto id = corevm::dyobj::obj_ptr_to_id(obj_ptr);

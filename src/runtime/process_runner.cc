@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "process.h"
+#include "corevm/macros.h"
 
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
@@ -87,7 +88,10 @@ corevm::runtime::process_runner::start()
 void
 corevm::runtime::process_runner::tick_handler(void* arg)
 {
-  assert(arg);
+#if __DEBUG__
+  ASSERT(arg);
+#endif
+
   corevm::runtime::process_runner* runner = static_cast<corevm::runtime::process_runner*>(arg);
   runner->gc();
 }

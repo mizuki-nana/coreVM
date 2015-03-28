@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "errors.h"
+#include "corevm/macros.h"
 #include "dyobj/dyobj_id.h"
 
 
@@ -86,7 +87,7 @@ corevm::runtime::invocation_ctx::pop_param()
 {
   if (m_params_list.empty())
   {
-    throw corevm::runtime::missing_parameter_error();
+    THROW(corevm::runtime::missing_parameter_error());
   }
 
   corevm::dyobj::dyobj_id id = m_params_list.front();
@@ -131,7 +132,7 @@ corevm::runtime::invocation_ctx::pop_param_value_pair(
 
   if (itr == m_param_value_map.end())
   {
-    throw corevm::runtime::missing_parameter_error();
+    THROW(corevm::runtime::missing_parameter_error());
   }
 
   corevm::dyobj::dyobj_id id = itr->second;

@@ -131,7 +131,7 @@ public:
   void emplace_invocation_ctx(const corevm::runtime::closure_ctx&);
 
   void pop_invocation_ctx()
-    throw (corevm::runtime::invocation_ctx_not_found_error);
+    throw(corevm::runtime::invocation_ctx_not_found_error);
 
   const corevm::dyobj::dyobj_id& top_stack()
     throw(corevm::runtime::object_stack_empty_error);

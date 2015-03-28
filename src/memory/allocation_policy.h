@@ -23,11 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ALLOCATION_POLICY_H_
 #define COREVM_ALLOCATION_POLICY_H_
 
+#include "corevm/macros.h"
 #include "memory/allocator.h"
 
 #include <sneaker/allocator/alloc_policy.h>
 
-#include <cassert>
 #include <cstdint>
 
 
@@ -137,7 +137,10 @@ corevm::memory::allocation_policy<T, AllocationScheme>::deallocate(
 )
 {
   int res = m_allocator.deallocate(p);
-  assert(res == 1);
+
+#if __DEBUG__
+  ASSERT(res == 1);
+#endif
 }
 
 // -----------------------------------------------------------------------------

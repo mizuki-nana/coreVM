@@ -24,13 +24,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "process.h"
+#include "corevm/macros.h"
 
 
 void
 corevm::runtime::sighandler_SIGFPE::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::execution_signal_error("SIGFPE");
+  THROW(corevm::runtime::execution_signal_error("SIGFPE"));
 }
 
 // -----------------------------------------------------------------------------
@@ -39,7 +40,7 @@ void
 corevm::runtime::sighandler_SIGILL::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::execution_signal_error("SIGILL");
+  THROW(corevm::runtime::execution_signal_error("SIGILL"));
 }
 
 // -----------------------------------------------------------------------------
@@ -48,7 +49,7 @@ void
 corevm::runtime::sighandler_SIGSEGV::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::execution_signal_error("SIGSEGV");
+  THROW(corevm::runtime::execution_signal_error("SIGSEGV"));
 }
 
 // -----------------------------------------------------------------------------
@@ -57,7 +58,7 @@ void
 corevm::runtime::sighandler_SIGBUS::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::execution_signal_error("SIGBUS");
+  THROW(corevm::runtime::execution_signal_error("SIGBUS"));
 }
 
 // -----------------------------------------------------------------------------
@@ -66,7 +67,7 @@ void
 corevm::runtime::sighandler_SIGABRT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::termination_signal_error("SIGABRT");
+  THROW(corevm::runtime::termination_signal_error("SIGABRT"));
 }
 
 // -----------------------------------------------------------------------------
@@ -75,7 +76,7 @@ void
 corevm::runtime::sighandler_SIGINT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::termination_signal_error("SIGINT");
+  THROW(corevm::runtime::termination_signal_error("SIGINT"));
 }
 
 // -----------------------------------------------------------------------------
@@ -84,7 +85,7 @@ void
 corevm::runtime::sighandler_SIGTERM::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::termination_signal_error("SIGTERM");
+  THROW(corevm::runtime::termination_signal_error("SIGTERM"));
 }
 
 // -----------------------------------------------------------------------------
@@ -93,7 +94,7 @@ void
 corevm::runtime::sighandler_SIGQUIT::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::termination_signal_error("SIGQUIT");
+  THROW(corevm::runtime::termination_signal_error("SIGQUIT"));
 }
 
 // -----------------------------------------------------------------------------
@@ -129,7 +130,7 @@ void
 corevm::runtime::sighandler_SIGPIPE::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::operation_signal_error("SIGPIPE");
+  THROW(corevm::runtime::operation_signal_error("SIGPIPE"));
 }
 
 // -----------------------------------------------------------------------------
@@ -138,7 +139,7 @@ void
 corevm::runtime::sighandler_SIGLOST::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::operation_signal_error("SIGLOST");
+  THROW(corevm::runtime::operation_signal_error("SIGLOST"));
 }
 
 // -----------------------------------------------------------------------------
@@ -147,7 +148,7 @@ void
 corevm::runtime::sighandler_SIGXCPU::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::operation_signal_error("SIGXCPU");
+  THROW(corevm::runtime::operation_signal_error("SIGXCPU"));
 }
 
 // -----------------------------------------------------------------------------
@@ -156,7 +157,7 @@ void
 corevm::runtime::sighandler_SIGXFSZ::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::operation_signal_error("SIGXFSZ");
+  THROW(corevm::runtime::operation_signal_error("SIGXFSZ"));
 }
 
 // -----------------------------------------------------------------------------
@@ -165,7 +166,7 @@ void
 corevm::runtime::sighandler_SIGIO::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::io_signal_error("SIGIO");
+  THROW(corevm::runtime::io_signal_error("SIGIO"));
 }
 
 // -----------------------------------------------------------------------------
@@ -174,7 +175,7 @@ void
 corevm::runtime::sighandler_SIGURG::handle_signal(
   sig_atomic_t signum, corevm::runtime::process& process)
 {
-  throw corevm::runtime::io_signal_error("SIGURG");
+  THROW(corevm::runtime::io_signal_error("SIGURG"));
 }
 
 // -----------------------------------------------------------------------------

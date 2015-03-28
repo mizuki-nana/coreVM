@@ -23,12 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "configuration.h"
 
 #include "errors.h"
+#include "corevm/macros.h"
 
 #include <boost/format.hpp>
 #include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
-#include <cassert>
 #include <fstream>
 #include <ios>
 #include <sstream>
@@ -132,13 +132,13 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const std::ios_base::failure& ex)
   {
-    throw corevm::frontend::configuration_loading_error(
+    THROW(corevm::frontend::configuration_loading_error(
       str(
         boost::format(
           "Error loading configuration file %s: %s"
         ) % path % ex.what()
       )
-    );
+    ));
   }
 
   std::string content = buffer.str();
@@ -151,13 +151,13 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    throw corevm::frontend::configuration_loading_error(
+    THROW(corevm::frontend::configuration_loading_error(
       str(
         boost::format(
           "Error parsing configuration file %s: %s"
         ) % path % ex.what()
       )
-    );
+    ));
   }
 
   JSON schema_json = sneaker::json::parse(configuration::schema);
@@ -168,13 +168,13 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    throw corevm::frontend::configuration_loading_error(
+    THROW(corevm::frontend::configuration_loading_error(
       str(
         boost::format(
           "Invalid configuration file %s: %s"
         ) % path % ex.what()
       )
-    );
+    ));
   }
 
   corevm::frontend::configuration configuration;
@@ -190,7 +190,9 @@ void
 corevm::frontend::configuration::set_values(
   corevm::frontend::configuration& configuration, const JSON& config_json)
 {
-  assert(config_json.is_object());
+#if __DEBUG__
+  ASSERT(config_json.is_object());
+#endif
 
   JSON::object config_obj = config_json.object_items();
 

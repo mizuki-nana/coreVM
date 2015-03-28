@@ -23,11 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr.h"
 
 #include "process.h"
+#include "corevm/macros.h"
 #include "types/interfaces.h"
 #include "types/types.h"
 
 #include <algorithm>
-#include <cassert>
 #include <csignal>
 #include <cstdlib>
 #include <iomanip>
@@ -251,7 +251,7 @@ corevm::runtime::instr_handler_meta::find(corevm::runtime::instr_code instr_code
   auto itr = corevm::runtime::instr_handler_meta::instr_info_map.find(instr_code);
 
   if (itr == corevm::runtime::instr_handler_meta::instr_info_map.end()) {
-    throw corevm::runtime::invalid_instr_error();
+    THROW(corevm::runtime::invalid_instr_error());
   }
 
   return corevm::runtime::instr_handler_meta::instr_info_map.at(instr_code);
@@ -475,7 +475,7 @@ corevm::runtime::instr_handler_ldobj::execute(
 
     if (!compartment)
     {
-      throw corevm::runtime::compartment_not_found_error(compartment_id);
+      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
     }
 
     corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
@@ -485,7 +485,7 @@ corevm::runtime::instr_handler_ldobj::execute(
 
     if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
     {
-      throw corevm::runtime::local_variable_not_found_error();
+      THROW(corevm::runtime::local_variable_not_found_error());
     }
 
     closure_ctx ctx {
@@ -497,7 +497,9 @@ corevm::runtime::instr_handler_ldobj::execute(
 
     // Theoretically, the pointer that points to the frame that's
     // associated with the parent closure should exist.
-    assert(frame_ptr);
+#if __DEBUG__
+    ASSERT(frame_ptr);
+#endif
   }
 
   auto id = frame_ptr->get_visible_var(key);
@@ -549,9 +551,8 @@ corevm::runtime::instr_handler_setattr::execute(
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
-    throw corevm::runtime::invalid_operation_error(
-      str(format("cannot mutate immutable object 0x%08x") % target_id)
-    );
+    THROW(corevm::runtime::invalid_operation_error(
+      str(format("cannot mutate immutable object 0x%08x") % target_id)));
   }
 
   auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
@@ -574,9 +575,8 @@ corevm::runtime::instr_handler_delattr::execute(
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
-    throw corevm::runtime::invalid_operation_error(
-      str(format("cannot mutate immutable object 0x%08x") % id)
-    );
+    THROW(corevm::runtime::invalid_operation_error(
+      str(format("cannot mutate immutable object 0x%08x") % id)));
   }
 
   corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
@@ -640,7 +640,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
     if (!compartment)
     {
-      throw corevm::runtime::compartment_not_found_error(compartment_id);
+      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
     }
 
     corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
@@ -650,7 +650,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
     if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
     {
-      throw corevm::runtime::local_variable_not_found_error();
+      THROW(corevm::runtime::local_variable_not_found_error());
     }
 
     closure_ctx ctx {
@@ -662,7 +662,9 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
     // Theoretically, the pointer that points to the frame that's
     // associated with the parent closure should exist.
-    assert(frame_ptr);
+#if __DEBUG__
+    ASSERT(frame_ptr);
+#endif
   }
 
   auto id = frame_ptr->get_invisible_var(key);
@@ -698,7 +700,7 @@ corevm::runtime::instr_handler_delobj::execute(
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
-    throw corevm::runtime::object_deletion_error(id);
+    THROW(corevm::runtime::object_deletion_error(id));
   }
 
   obj.manager().on_delete();
@@ -718,7 +720,7 @@ corevm::runtime::instr_handler_delobj2::execute(
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
-    throw corevm::runtime::object_deletion_error(id);
+    THROW(corevm::runtime::object_deletion_error(id));
   }
 
   obj.manager().on_delete();
@@ -738,7 +740,7 @@ corevm::runtime::instr_handler_gethndl::execute(
 
   if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
   {
-    throw corevm::runtime::native_type_handle_not_found_error();
+    THROW(corevm::runtime::native_type_handle_not_found_error());
   }
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -777,7 +779,7 @@ corevm::runtime::instr_handler_clrhndl::execute(
 
   if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
   {
-    throw corevm::runtime::native_type_handle_deletion_error();
+    THROW(corevm::runtime::native_type_handle_deletion_error());
   }
 
   process.erase_ntvhndl(ntvhndl_key);
@@ -866,7 +868,7 @@ corevm::runtime::instr_handler_cldobj::execute(
 
     if (!compartment)
     {
-      throw corevm::runtime::compartment_not_found_error(compartment_id);
+      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
     }
 
     corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
@@ -876,7 +878,7 @@ corevm::runtime::instr_handler_cldobj::execute(
 
     if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
     {
-      throw corevm::runtime::local_variable_not_found_error();
+      THROW(corevm::runtime::local_variable_not_found_error());
     }
 
     closure_ctx ctx {
@@ -888,7 +890,9 @@ corevm::runtime::instr_handler_cldobj::execute(
 
     // Theoretically, the pointer that points to the frame that's
     // associated with the parent closure should exist.
-    assert(frame_ptr);
+#if __DEBUG__
+    ASSERT(frame_ptr);
+#endif
   }
 
   auto id = frame_ptr->get_visible_var(key);
@@ -998,19 +1002,19 @@ corevm::runtime::instr_handler_pinvk::execute(
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE))
   {
-    throw corevm::runtime::invocation_error(id);
+    THROW(corevm::runtime::invocation_error(id));
   }
 
   const corevm::runtime::closure_ctx& ctx = obj.closure_ctx();
 
   if (ctx.compartment_id == corevm::runtime::NONESET_COMPARTMENT_ID)
   {
-    throw corevm::runtime::compartment_not_found_error(ctx.compartment_id);
+    THROW(corevm::runtime::compartment_not_found_error(ctx.compartment_id));
   }
 
   if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
   {
-    throw corevm::runtime::closure_not_found_error(ctx.closure_id);
+    THROW(corevm::runtime::closure_not_found_error(ctx.closure_id));
   }
 
   corevm::runtime::invocation_ctx invk_ctx(ctx);
@@ -1047,7 +1051,7 @@ corevm::runtime::instr_handler_rtrn::execute(
 
   if (return_addr == corevm::runtime::NONESET_INSTR_ADDR)
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
 
   process.pop_frame();
@@ -1066,11 +1070,11 @@ corevm::runtime::instr_handler_jmp::execute(
 
   if (addr == corevm::runtime::NONESET_INSTR_ADDR)
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
   else if (addr < starting_addr)
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
 
   process.set_pc(addr);
@@ -1091,11 +1095,11 @@ corevm::runtime::instr_handler_jmpif::execute(
 
   if (addr == corevm::runtime::NONESET_INSTR_ADDR)
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
   else if (addr < starting_addr)
   {
-    throw corevm::runtime::invalid_instr_addr_error();
+    THROW(corevm::runtime::invalid_instr_addr_error());
   }
 
   corevm::types::native_type_handle hndl = frame.pop_eval_stack();
@@ -1326,7 +1330,7 @@ corevm::runtime::instr_handler_print::execute(
 
   if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
   {
-    throw corevm::runtime::native_type_handle_not_found_error();
+    THROW(corevm::runtime::native_type_handle_not_found_error());
   }
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -1820,7 +1824,7 @@ corevm::runtime::instr_handler_str::execute(
 
     if (!compartment)
     {
-      throw corevm::runtime::compartment_not_found_error(compartment_id);
+      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
     }
 
     str = compartment->get_encoding_string(encoding_key);

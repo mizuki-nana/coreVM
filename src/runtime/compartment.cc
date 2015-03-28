@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "compartment.h"
 
+#include "corevm/macros.h"
+
 #include <algorithm>
 #include <ostream>
 
@@ -62,7 +64,7 @@ corevm::runtime::compartment::get_encoding_string(uint64_t key) const
 
   if (itr == m_encoding_map.end())
   {
-    throw corevm::runtime::encoding_string_not_found_error(key);
+    THROW(corevm::runtime::encoding_string_not_found_error(key));
   }
 
   return static_cast<std::string>(itr->second);
@@ -120,7 +122,7 @@ corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
 
   if (itr == m_closure_table.end())
   {
-    throw corevm::runtime::closure_not_found_error(id);
+    THROW(corevm::runtime::closure_not_found_error(id));
   }
 
   return static_cast<corevm::runtime::closure>(*itr);

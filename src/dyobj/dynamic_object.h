@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYNAMIC_OBJECT_H_
 #define COREVM_DYNAMIC_OBJECT_H_
 
+#include "corevm/macros.h"
 #include "dyobj/common.h"
 #include "dyobj/dyobj_id.h"
 #include "dyobj/flags.h"
@@ -288,7 +289,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) 
 {
   if (!corevm::dyobj::is_valid_flag_bit(bit))
   {
-    throw corevm::dyobj::invalid_flag_bit_error();
+    THROW(corevm::dyobj::invalid_flag_bit_error());
   }
 }
 
@@ -363,7 +364,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::delattr(
 {
   if (m_attrs.erase(attr_key) != 1)
   {
-    throw corevm::dyobj::object_attribute_not_found_error(attr_key, id());
+    THROW(corevm::dyobj::object_attribute_not_found_error(attr_key, id()));
   }
 }
 
@@ -379,7 +380,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
 
   if (itr == m_attrs.cend())
   {
-    throw corevm::dyobj::object_attribute_not_found_error(attr_key, id());
+    THROW(corevm::dyobj::object_attribute_not_found_error(attr_key, id()));
   }
 
   return static_cast<corevm::dyobj::dyobj_id>(itr->second);

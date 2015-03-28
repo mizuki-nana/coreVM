@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "native_array.h"
 
 #include "errors.h"
+#include "corevm/macros.h"
 
 #include <cstdint>
 #include <stdexcept>
@@ -62,14 +63,14 @@ corevm::types::native_array::native_array(std::initializer_list<value_type> il)
 
 corevm::types::native_array::native_array(int8_t)
 {
-  throw corevm::types::conversion_error("int8", "array");
+  THROW(corevm::types::conversion_error("int8", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
 corevm::types::native_array::operator int8_t() const
 {
-  throw corevm::types::conversion_error("array", "int8");
+  THROW(corevm::types::conversion_error("array", "int8"));
 }
 
 // -----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ corevm::types::native_array::operator int8_t() const
 corevm::types::native_array&
 corevm::types::native_array::operator+() const
 {
-  throw corevm::types::invalid_operator_error("+", "array");
+  THROW(corevm::types::invalid_operator_error("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -85,7 +86,7 @@ corevm::types::native_array::operator+() const
 corevm::types::native_array&
 corevm::types::native_array::operator-() const
 {
-  throw corevm::types::invalid_operator_error("-", "array");
+  THROW(corevm::types::invalid_operator_error("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -93,7 +94,7 @@ corevm::types::native_array::operator-() const
 corevm::types::native_array&
 corevm::types::native_array::operator++() const
 {
-  throw corevm::types::invalid_operator_error("++", "array");
+  THROW(corevm::types::invalid_operator_error("++", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -101,7 +102,7 @@ corevm::types::native_array::operator++() const
 corevm::types::native_array&
 corevm::types::native_array::operator--() const
 {
-  throw corevm::types::invalid_operator_error("--", "array");
+  THROW(corevm::types::invalid_operator_error("--", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -109,7 +110,7 @@ corevm::types::native_array::operator--() const
 corevm::types::native_array&
 corevm::types::native_array::operator!() const
 {
-  throw corevm::types::invalid_operator_error("!", "array");
+  THROW(corevm::types::invalid_operator_error("!", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -117,7 +118,7 @@ corevm::types::native_array::operator!() const
 corevm::types::native_array&
 corevm::types::native_array::operator~() const
 {
-  throw corevm::types::invalid_operator_error("~", "array");
+  THROW(corevm::types::invalid_operator_error("~", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -125,7 +126,7 @@ corevm::types::native_array::operator~() const
 corevm::types::native_array&
 corevm::types::native_array::operator+(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("+", "array");
+  THROW(corevm::types::invalid_operator_error("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -133,7 +134,7 @@ corevm::types::native_array::operator+(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator-(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("-", "array");
+  THROW(corevm::types::invalid_operator_error("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -141,7 +142,7 @@ corevm::types::native_array::operator-(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator*(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("*", "array");
+  THROW(corevm::types::invalid_operator_error("*", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -149,7 +150,7 @@ corevm::types::native_array::operator*(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator/(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("/", "array");
+  THROW(corevm::types::invalid_operator_error("/", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -157,7 +158,7 @@ corevm::types::native_array::operator/(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator%(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("%", "array");
+  THROW(corevm::types::invalid_operator_error("%", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -165,7 +166,7 @@ corevm::types::native_array::operator%(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator&&(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("&&", "array");
+  THROW(corevm::types::invalid_operator_error("&&", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -173,7 +174,7 @@ corevm::types::native_array::operator&&(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator||(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("||", "array");
+  THROW(corevm::types::invalid_operator_error("||", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -181,7 +182,7 @@ corevm::types::native_array::operator||(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator&(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("&", "array");
+  THROW(corevm::types::invalid_operator_error("&", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -189,7 +190,7 @@ corevm::types::native_array::operator&(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator|(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("|", "array");
+  THROW(corevm::types::invalid_operator_error("|", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -197,7 +198,7 @@ corevm::types::native_array::operator|(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator^(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("^", "array");
+  THROW(corevm::types::invalid_operator_error("^", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -205,7 +206,7 @@ corevm::types::native_array::operator^(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator<<(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error("<<", "array");
+  THROW(corevm::types::invalid_operator_error("<<", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -213,7 +214,7 @@ corevm::types::native_array::operator<<(const native_array&) const
 corevm::types::native_array&
 corevm::types::native_array::operator>>(const native_array&) const
 {
-  throw corevm::types::invalid_operator_error(">>", "array");
+  THROW(corevm::types::invalid_operator_error(">>", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -228,7 +229,7 @@ corevm::types::native_array::at(size_type n)
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("Array index out of range");
+    THROW(corevm::types::out_of_range_error("Array index out of range"));
   }
 }
 
@@ -244,7 +245,7 @@ corevm::types::native_array::at(size_type n) const
   }
   catch (const std::out_of_range&)
   {
-    throw corevm::types::out_of_range_error("Array index out of range");
+    THROW(corevm::types::out_of_range_error("Array index out of range"));
   }
 }
 

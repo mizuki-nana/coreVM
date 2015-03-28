@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "types.h"
+#include "corevm/macros.h"
 
 #include <cmath>
 #include <ios>
@@ -106,7 +107,7 @@ typename corevm::types::boolean::value_type
 corevm::types::decrement::operator()<corevm::types::boolean>(
   const corevm::types::boolean& handle)
 {
-  throw corevm::types::invalid_operator_error("--", "boolean");
+  THROW(corevm::types::invalid_operator_error("--", "boolean"));
 }
 
 // -----------------------------------------------------------------------------
