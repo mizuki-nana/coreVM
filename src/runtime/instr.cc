@@ -102,6 +102,8 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::CLDOBJ,    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    } },
   { corevm::runtime::instr_enum::SETATTRS,  { .num_oprd=2, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  } },
   { corevm::runtime::instr_enum::RSETATTRS, { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() } },
+  { corevm::runtime::instr_enum::PUTOBJ,    { .num_oprd=0, .str="putobj",    .handler=std::make_shared<corevm::runtime::instr_handler_putobj>()    } },
+  { corevm::runtime::instr_enum::GETOBJ,    { .num_oprd=0, .str="getobj",    .handler=std::make_shared<corevm::runtime::instr_handler_getobj>()    } },
 
   /* -------------------------- Control instructions ------------------------ */
 
@@ -110,6 +112,7 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::RTRN,      { .num_oprd=0, .str="rtrn",      .handler=std::make_shared<corevm::runtime::instr_handler_rtrn>()      } },
   { corevm::runtime::instr_enum::JMP,       { .num_oprd=1, .str="jmp",       .handler=std::make_shared<corevm::runtime::instr_handler_jmp>()       } },
   { corevm::runtime::instr_enum::JMPIF,     { .num_oprd=1, .str="jmpif",     .handler=std::make_shared<corevm::runtime::instr_handler_jmpif>()     } },
+  { corevm::runtime::instr_enum::JMPR,      { .num_oprd=1, .str="jmpr",      .handler=std::make_shared<corevm::runtime::instr_handler_jmpr>()      } },
   { corevm::runtime::instr_enum::EXC,       { .num_oprd=0, .str="exc",       .handler=std::make_shared<corevm::runtime::instr_handler_exc>()       } },
   { corevm::runtime::instr_enum::EXC2,      { .num_oprd=0, .str="exc2",      .handler=std::make_shared<corevm::runtime::instr_handler_exc2>()      } },
   { corevm::runtime::instr_enum::EXIT,      { .num_oprd=1, .str="exit",      .handler=std::make_shared<corevm::runtime::instr_handler_exit>()      } },
@@ -994,6 +997,35 @@ corevm::runtime::instr_handler_rsetattrs::execute(
 // -----------------------------------------------------------------------------
 
 void
+corevm::runtime::instr_handler_putobj::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::uint64(id);
+
+  frame.push_eval_stack(hndl);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_getobj::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+  auto hndl = frame.pop_eval_stack();
+
+  corevm::dyobj::dyobj_id id = corevm::types::get_value_from_handle<
+    corevm::dyobj::dyobj_id>(hndl);
+
+  process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
 corevm::runtime::instr_handler_pinvk::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
@@ -1113,6 +1145,31 @@ corevm::runtime::instr_handler_jmpif::execute(
   {
     process.set_pc(addr);
   }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_jmpr::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+  corevm::runtime::instr_addr starting_addr = frame.return_addr() + 1;
+  corevm::runtime::instr_addr relative_addr = \
+    static_cast<corevm::runtime::instr_addr>(instr.oprd1);
+
+  corevm::runtime::instr_addr addr = starting_addr + relative_addr;
+
+  if (addr == corevm::runtime::NONESET_INSTR_ADDR)
+  {
+    THROW(corevm::runtime::invalid_instr_addr_error());
+  }
+  else if (addr < starting_addr)
+  {
+    THROW(corevm::runtime::invalid_instr_addr_error());
+  }
+
+  process.set_pc(addr);
 }
 
 // -----------------------------------------------------------------------------

@@ -774,6 +774,75 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrPUTOBJ)
+{
+  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+
+  m_process.push_stack(id);
+
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  m_process.emplace_frame(ctx);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = 0,
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_putobj>(instr, 1);
+
+  corevm::runtime::frame& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle& hndl = frame.top_eval_stack();
+
+  corevm::dyobj::dyobj_id actual_id = \
+    corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(hndl);
+
+  ASSERT_EQ(id, actual_id);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrGETOBJ)
+{
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = closure_id
+  };
+
+  corevm::runtime::frame frame(ctx);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint64(10);
+
+  frame.push_eval_stack(hndl);
+
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = 0,
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_getobj>(instr, 1);
+
+  corevm::dyobj::dyobj_id id = m_process.top_stack();
+
+  ASSERT_EQ(10, id);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_functions_instrs_test : public instrs_unittest {
 protected:
   corevm::runtime::process m_process;
@@ -1285,6 +1354,27 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
   handler.execute(instr, m_process);
 
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_control_instrs_test, TestInstrJMPR)
+{
+  corevm::runtime::frame frame(m_ctx);
+  m_process.push_frame(frame);
+
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(5),
+    .oprd2=0
+  };
+
+  corevm::runtime::instr_handler_jmp handler;
+  handler.execute(instr, m_process);
+
+  ASSERT_EQ(4, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------

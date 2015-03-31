@@ -72,6 +72,9 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__indent()
 
+        if node.args.vararg:
+            base_str += '{vararg} = __call(list, {vararg})\n'.format(vararg=node.args.vararg)
+
         base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
         base_str = base_str.replace(', )', ')')
         base_str += '\n'
@@ -116,16 +119,39 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_AugAssign(self, node):
+        base_str = '{indentation}{target} = __call({target}.{func}, {value})\n'.format(
+            indentation=self.__indentation(),
+            target=self.visit(node.target),
+            func=self.visit(node.op),
+            value=self.visit(node.value)
+        )
+
+        return base_str
+
     def visit_Print(self, node):
         base_str = '{indentation}print'.format(indentation=self.__indentation())
 
         if node.values:
-            # NOTE: Passing a value of `1` as the second argument as it is just
-            # a placeholder for the second parameter right now, until support
-            # for *args and **kwargs are in place.
-            base_str += (' ' + '__call(' + self.visit(node.values[0]) + '.__str__' + ', 1)')
+            base_str += (' ' + '__call(' + self.visit(node.values[0]) + '.__str__' + ')')
 
         base_str += '\n'
+
+        return base_str
+
+    def visit_For(self, node):
+        base_str = '{indentation}for {target} in {iter}:\n'.format(
+            indentation=self.__indentation(),
+            target=self.visit(node.target),
+            iter=self.visit(node.iter)
+        )
+
+        self.__indent()
+
+        for stmt in node.body:
+            base_str += (self.visit(stmt) + '\n')
+
+        self.__dedent()
 
         return base_str
 
@@ -167,6 +193,9 @@ class CodeTransformer(ast.NodeVisitor):
             func=self.visit(node.op),
             rhs=self.visit(node.right)
         )
+
+    def visit_ListComp(self, node):
+        pass
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
@@ -225,6 +254,9 @@ class CodeTransformer(ast.NodeVisitor):
             attr=str(node.attr)
         )
 
+    def visit_List(self, node):
+        return '__call(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
+
     def visit_Name(self, node):
         return node.id
 
@@ -257,6 +289,11 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Is(self, node):
         return 'is'
+
+    """ ------------------------- comprehension ---------------------------- """
+
+    def visit_comprehension(self, node):
+        raise NotImplementedError
 
     """ --------------------------- arguments ------------------------------ """
 

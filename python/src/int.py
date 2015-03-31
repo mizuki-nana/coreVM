@@ -12,7 +12,7 @@ class int(object):
         ### END VECTOR ###
         """
 
-    def __str__(self, arg_):
+    def __str__(self):
         """
         ### BEGIN VECTOR ###
         [ldobj, self, 0]

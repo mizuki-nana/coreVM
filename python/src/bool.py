@@ -12,7 +12,7 @@ class bool(object):
         ### END VECTOR ###
         """
 
-    def __str__(self, arg_):
+    def __str__(self):
         if self:
             return __call(str, 'True')
         else:

@@ -199,6 +199,19 @@ enum instr_enum : uint32_t
    */
   RSETATTRS,
 
+  /**
+   * <putobj, _, _>
+   * Pops the object on top of the stack, and pushes its value onto the top
+   * of the current evaluation stack.
+   */
+  PUTOBJ,
+
+  /**
+   * <getobj, _, _>
+   * Pops the top of the eval stack, and put its value on the object stack.
+   */
+  GETOBJ,
+
   /* ------------------------ Control instructions -------------------------- */
 
   /**
@@ -233,6 +246,14 @@ enum instr_enum : uint32_t
    * element on the eval stacks evaluates to True.
    */
   JMPIF,
+
+  /**
+   * <jmpr, #, >
+   * (Relative) jump.
+   * Unconditionally jumps to an instruction with an offset starting from
+   * the beginning of the current frame.
+   */
+  JMPR,
 
   /**
    * <exc, _, _>
@@ -1199,6 +1220,22 @@ public:
 
 // -----------------------------------------------------------------------------
 
+class instr_handler_putobj : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_getobj : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
 
 /* ------------------------ Control instructions ---------------------------- */
 
@@ -1238,6 +1275,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_jmpif : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_jmpr : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

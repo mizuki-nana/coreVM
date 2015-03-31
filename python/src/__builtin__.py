@@ -8,7 +8,7 @@ class MethodType:
 
 class object:
 
-    def __new__(cls, arg):
+    def __new__(cls, *arg):
         """
         ### BEGIN VECTOR ###
         [new, 0, 0]
@@ -20,13 +20,13 @@ class object:
         ### END VECTOR ###
         """
 
-def __call(caller, arg):
+def __call(caller, *arg):
     # Need to support *args and **kwargs.
     if caller.__class__ is type:
-        obj = object.__new__(caller, arg)
-        caller.__init__(obj, arg)
+        obj = object.__new__(caller, *arg)
+        caller.__init__(obj, *arg)
         return obj
     elif caller.__class__ is MethodType:
-        return caller(caller.im_self, arg)
+        return caller(caller.im_self, *arg)
     else:
-        return caller(arg)
+        return caller(*arg)

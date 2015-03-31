@@ -22,7 +22,9 @@
 import ast
 import optparse
 import pprint
+import random
 import simplejson
+import string
 import sys
 import traceback
 
@@ -265,6 +267,9 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         return code, oprd1, oprd2
 
+    def __get_random_name(self):
+        return ''.join(random.choice(string.ascii_letters) for _ in xrange(5))
+
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
@@ -339,12 +344,68 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.visit(node.value)
         self.visit(node.targets[0])
 
+    def visit_AugAssign(self, node):
+        pass
+
     def visit_Print(self, node):
         # TODO: [COREVM-178] Support for printing multiple values in Python
         if node.values:
             self.visit(node.values[0])
 
         self.__add_instr('print', 0, 0, loc=Loc.from_node(node))
+
+    def visit_For(self, node):
+        index_name = self.__get_random_name()
+        iter_name = self.__get_random_name()
+
+        # Store index object into a variable.
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('uint32', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(index_name), 0)
+
+        # Store iter object into a variable.
+        self.visit(node.iter)
+        self.__add_instr('stobj2', self.__get_encoding_id(iter_name), 0)
+
+        vector_length1 = len(self.__current_vector())
+
+        self.__add_instr('ldobj2', self.__get_encoding_id(iter_name), 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('arylen', 0, 0)
+        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('gte', 0, 0) # The opposite of `lt` check.
+
+        self.__add_instr('jmpif', 0, 0)
+        vector_length2 = len(self.__current_vector())
+
+        # Get item from array, and load into target.
+        self.__add_instr('ldobj2', self.__get_encoding_id(iter_name), 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('aryat', 0, 0)
+        self.__add_instr('getobj', 0, 0)
+        self.__add_instr('stobj', self.__get_encoding_id(node.target.id), 0)
+
+        # Execute body instruction.
+        for stmt in node.body:
+           self.visit(stmt)
+
+        # Increment index.
+        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('inc', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('jmpr', vector_length1 - 1, 0)
+
+        vector_length3 = len(self.__current_vector())
+
+        length_diff = vector_length3 - vector_length2
+        self.__current_vector()[vector_length2 - 1] = Instr(
+            self.instr_str_to_code_map['jmpif'], length_diff, 0)
 
     def visit_If(self, node):
         self.visit(node.test)
@@ -392,7 +453,34 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(arg)
             self.__add_instr('putarg', 0, 0)
 
+        # implicit args
+        if node.starargs:
+            self.visit(node.starargs)
+            self.__add_instr('putargs', 0, 0)
+
         self.__add_instr('invk', 0, 0)
+
+    def visit_List(self, node):
+        random_name = self.__get_random_name()
+
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('ary', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(random_name), 0)
+
+        for item in node.elts:
+            tmp_name = self.__get_random_name()
+            self.visit(item)
+            self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('putobj', 0, 0)
+            self.__add_instr('aryapnd', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('sethndl', 0, 0)
+
+        self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
 
     def visit_Num(self, node):
         num_type = 'dec2' if isinstance(node.n, float) else 'int64'
@@ -463,19 +551,19 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('sethndl', 0, 0)
 
     def visit_Add(self, node):
-        raise NotImplemented
+        pass
 
     def visit_Sub(self, node):
-        raise NotImplemented
+        pass
 
     def visit_Mult(self, node):
-        raise NotImplemented
+        pass
 
     def visit_Div(self, node):
-        raise NotImplemented
+        pass
 
     def visit_Mod(self, node):
-        raise NotImplemented
+        pass
 
     def visit_Pow(self, node):
         self.__add_binary_operator_instr('pow')
@@ -607,8 +695,10 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # Pull out rest of the args (*args).
         if node.vararg:
-            self.__add_instr('getargs', 0, 0, loc=Loc.from_node(node))
-            # TODO: Retrieve args stored as an array on top of eval stack.
+            self.__add_instr('getargs', 0, 0)
+            self.__add_instr('new', 0, 0)
+            self.__add_instr('sethndl', 0, 0)
+            self.__add_instr('stobj', self.__get_encoding_id(node.vararg), 0)
 
         # Pull out rest of the kwargs (**kwarg).
         if node.kwarg:
@@ -674,6 +764,7 @@ def main():
         generator.read_from_source('python/src/int.py')
         generator.read_from_source('python/src/float.py')
         generator.read_from_source('python/src/str.py')
+        generator.read_from_source('python/src/list.py')
 
         generator.read_from_source(options.input_file)
 

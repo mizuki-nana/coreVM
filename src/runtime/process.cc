@@ -225,7 +225,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   corevm::runtime::closure_id closure_id = frame.closure_ctx().closure_id;
   corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
 
-  auto begin_itr = m_instrs.begin() + pc();
+  auto begin_itr = m_instrs.begin() + pc() + 1;
   auto end_itr = begin_itr + closure.vector.size();
 
   m_instrs.erase(begin_itr, end_itr);
@@ -535,7 +535,7 @@ corevm::runtime::process::start()
   {
     while (m_pause_exec) {}
 
-    corevm::runtime::instr instr = static_cast<corevm::runtime::instr>(m_instrs[m_pc]);
+    const corevm::runtime::instr& instr = m_instrs[m_pc];
 
     corevm::runtime::instr_handler* handler =
       const_cast<corevm::runtime::instr_handler*>(this->get_instr_handler(instr.code));
