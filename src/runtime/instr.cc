@@ -764,9 +764,18 @@ corevm::runtime::instr_handler_sethndl::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
-  corevm::dyobj::ntvhndl_key ntvhndl_key = process.insert_ntvhndl(hndl);
+  corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
 
-  obj.set_ntvhndl_key(ntvhndl_key);
+  if (key == corevm::dyobj::NONESET_NTVHNDL_KEY)
+  {
+    corevm::dyobj::ntvhndl_key new_ntvhndl_key = process.insert_ntvhndl(hndl);
+
+    obj.set_ntvhndl_key(new_ntvhndl_key);
+  }
+  else
+  {
+    process.get_ntvhndl(key) = hndl;
+  }
 }
 
 // -----------------------------------------------------------------------------
