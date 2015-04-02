@@ -173,7 +173,7 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_If(self, node):
         base_str = '{indentation}if {expr}:\n'.format(
             indentation=self.__indentation(),
-            expr=node.test
+            expr=self.visit(node.test)
         )
 
         self.__indent()
@@ -220,12 +220,33 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
-        base_str = '{indentation}{left} {op} {comparator}'.format(
-          indentation=self.__indentation(),
-          left=self.visit(node.left),
-          op=self.visit(node.ops[0]),
-          comparator=self.visit(node.comparators[0])
-        )
+        op = node.ops[0]
+
+        if any(
+            (
+                isinstance(op, ast.Eq),
+                isinstance(op, ast.NotEq),
+                isinstance(op, ast.Lt),
+                isinstance(op, ast.LtE),
+                isinstance(op, ast.Gt),
+                isinstance(op, ast.GtE),
+            )
+        ):
+            base_str='{indentation}__call({left}.{op_func}, {right})'.format(
+                indentation=self.__indentation(),
+                left=self.visit(node.left),
+                op_func=self.visit(op),
+                right=self.visit(node.comparators[0])
+            )
+        else:
+            # TODO: special support for `is` and `is not` can be removed once
+            # dynamic dispatching is supported.
+            base_str = '{indentation}{left} {op} {comparator}'.format(
+              indentation=self.__indentation(),
+              left=self.visit(node.left),
+              op=self.visit(op),
+              comparator=self.visit(node.comparators[0])
+            )
 
         return base_str
 
@@ -309,7 +330,32 @@ class CodeTransformer(ast.NodeVisitor):
     """ ----------------------------- cmpop -------------------------------- """
 
     def visit_Is(self, node):
+        # TODO: special support for `is` and `is not` can be removed once
+        # dynamic dispatching is supported.
         return 'is'
+
+    def visit_IsNot(self, node):
+        # TODO: special support for `is` and `is not` can be removed once
+        # dynamic dispatching is supported.
+        print 'is not'
+
+    def visit_Eq(self, node):
+        return '__eq__'
+
+    def visit_NotEq(self, node):
+        return '__neq__'
+
+    def visit_Lt(self, node):
+        return '__lt__'
+
+    def visit_LtE(self, node):
+        return '__lte__'
+
+    def visit_Gt(self, node):
+        return '__gt__'
+
+    def visit_GtE(self, node):
+        return '__gte__'
 
     """ ------------------------- comprehension ---------------------------- """
 

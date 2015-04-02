@@ -13,3 +13,21 @@ True is False
 # print True * False
 # print False / True
 # print False % True
+
+if True == bool(1):
+    print 'Integrity of truth is rock solid'
+
+if False != True:
+    print 'Opposite polarity do not match'
+
+if False < True:
+    print 'The truth always triumphs'
+
+if bool(0) <= bool(1):
+    print 'The truth still triumphs'
+
+if True > False:
+    print 'The truth remains triumphant'
+
+if bool(100) >= bool(0):
+    print 'The truth remains triumphant eternally'

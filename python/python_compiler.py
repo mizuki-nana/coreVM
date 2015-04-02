@@ -659,34 +659,32 @@ class BytecodeGenerator(ast.NodeVisitor):
     """ ----------------------------- cmpop -------------------------------- """
 
     def visit_Eq(self, node):
-        self.__add_instr('eq', 0, 0, loc=Loc.from_node(node))
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_NotEq(self, node):
-        self.__add_instr('neq', 0, 0)
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_Lt(self, node):
-        self.__add_instr('lt', 0, 0)
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_LtE(self, node):
-        self.__add_instr('lte', 0, 0)
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_Gt(self, node):
-        self.__add_instr('gt', 0, 0)
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_GtE(self, node):
-        self.__add_instr('gte', 0, 0)
-        self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+        pass
 
     def visit_Is(self, node):
+        # TODO: logic can be placed under `object.__eq__` once
+        # dynamic dispatching is supported.
         self.__add_instr('objeq', 0, 0)
         self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
     def visit_IsNot(self, node):
+        # TODO: logic can be placed under `object.__eq__` once
+        # dynamic dispatching is supported.
         self.__add_instr('objneq', 0, 0)
         self.__add_instr('cldobj', self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
