@@ -136,7 +136,7 @@ corevm::runtime::process::process(
   :
   m_pause_exec(false),
   m_gc_flag(0),
-  m_pc(0),
+  m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(heap_alloc_size),
   m_dyobj_stack(),
   m_call_stack(),

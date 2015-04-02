@@ -1164,6 +1164,7 @@ corevm::runtime::instr_handler_jmpr::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
   corevm::runtime::instr_addr starting_addr = frame.return_addr() + 1;
+
   corevm::runtime::instr_addr relative_addr = \
     static_cast<corevm::runtime::instr_addr>(instr.oprd1);
 
