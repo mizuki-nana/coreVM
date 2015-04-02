@@ -197,7 +197,9 @@ roadmap in the near future, with their respective completion dates and ETAs:
   GC implementation and integration (done)    |            Aug, 2014
   Bytecode loading and validation (done)      |            Feb, 2015
   Frontend and runtime integration (done)     |            Feb, 2015
-  Bug fixes and regression tests              |            Mar, 2015
+  Bug fixes and regression tests (done)       |            Mar, 2015
+  Support basic features in Python            |            Mar, 2015
+  Convergence for Python basic features       |            Apr, 2015
   Benchmark infrastructure                    |            Apr, 2015
   Docker integration                          |            Apr, 2015
   Continuous integration                      |            Apr, 2015
