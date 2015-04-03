@@ -223,6 +223,13 @@ class CodeTransformer(ast.NodeVisitor):
             args=self.visit(node.args),
             body=self.visit(node.body))
 
+    def visit_IfExp(self, node):
+        return '({body} if {test} else {orelse})'.format(
+            body=self.visit(node.body),
+            test=self.visit(node.test),
+            orelse=self.visit(node.orelse)
+        )
+
     def visit_ListComp(self, node):
         pass
 
@@ -266,30 +273,27 @@ class CodeTransformer(ast.NodeVisitor):
             caller=self.visit(node.func)
         )
 
-        if node.args:
-            base_str += (', ' + ', '.join([self.visit(arg) for arg in node.args]))
+        parts = []
 
-        if node.kwargs:
-            kwargs_str = ', '.join(
-                [
-                    '{keyword}={value}'.format(
-                        keyword=keyword.arg,
-                        value=self.visit(keyword.value)
-                    )
-                    for keyword in node.keywords
-                ]
+        parts.extend([self.visit(arg) for arg in node.args])
+        parts.extend([
+            '{keyword}={value}'.format(
+                keyword=keyword.arg,
+                value=self.visit(keyword.value)
             )
-            base_str += (', ' + kwargs_str)
+            for keyword in node.keywords
+        ])
 
         if node.starargs:
-            base_str += (', ' + '*' + self.visit(node.starargs))
+            parts.append('*' + self.visit(node.starargs))
 
         if node.kwargs:
-            base_str += (', ' + '**' + self.visit(node.kwargs))
+            parts.append('**' + self.visit(node.kwargs))
+
+        if parts:
+            base_str += (',' + ', '.join(parts))
 
         base_str += ')'
-
-        base_str = base_str.replace(', )', ')')
 
         return base_str
 

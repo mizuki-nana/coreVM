@@ -39,3 +39,9 @@ def lambda_caller(arg):
 
 
 print lambda_caller(3)
+
+
+print 'I can do math' if lambda_caller(1) else 'I suck at math'
+
+
+print 'Nested if-esle WTF :D' if (True if 1 + 1 == 2 else False) else 'This is too confusing @__@'

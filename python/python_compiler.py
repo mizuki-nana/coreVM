@@ -609,6 +609,25 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         return name
 
+    def visit_IfExp(self, node):
+        self.visit(node.test)
+
+        self.__add_instr('gethndl', 0, 0)
+        self.__add_instr('truthy', 0, 0)
+        self.__add_instr('jmpif', 0, 0)
+
+        vector_length1 = len(self.__current_vector())
+
+        self.visit(node.orelse)
+
+        vector_length2 = len(self.__current_vector())
+        length_diff = vector_length2 - vector_length1
+
+        self.visit(node.body)
+
+        self.__current_vector()[vector_length1 - 1] = Instr(
+            self.instr_str_to_code_map['jmpif'], length_diff, 0)
+
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
         self.visit(node.comparators[0])
