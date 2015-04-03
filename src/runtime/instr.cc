@@ -1143,7 +1143,7 @@ corevm::runtime::instr_handler_jmpif::execute(
     THROW(corevm::runtime::invalid_instr_addr_error());
   }
 
-  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle hndl = frame.top_eval_stack();
   corevm::types::native_type_handle hndl2;
 
   corevm::types::interface_to_bool(hndl, hndl2);

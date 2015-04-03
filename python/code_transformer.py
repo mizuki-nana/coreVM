@@ -206,6 +206,10 @@ class CodeTransformer(ast.NodeVisitor):
 
     """ ----------------------------- expr --------------------------------- """
 
+    def visit_BoolOp(self, node):
+        return (' %s ' % self.visit(node.op)).join(
+            [self.visit(value) for value in node.values])
+
     def visit_BinOp(self, node):
         base_str = '__call({lhs}.{func}, {rhs})'
 
@@ -304,6 +308,14 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Str(self, node):
         return '__call(str, \"%s\")' % str(node.s)
+
+    """ ---------------------------- boolop -------------------------------- """
+
+    def visit_And(self, node):
+        return 'and'
+
+    def visit_Or(self, node):
+        return 'or'
 
     """ --------------------------- operator ------------------------------- """
 
