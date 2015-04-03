@@ -770,12 +770,17 @@ corevm::runtime::process::unwind_stack(
   corevm::runtime::process& process, size_t limit)
 {
   size_t unwind_count = 0;
-  std::stringstream ss;
+  std::vector<std::string> output_lines;
 
-  ss << "Trackback:" << std::endl;
+  if (limit)
+  {
+    output_lines.reserve(limit);
+  }
 
   while (process.has_frame())
   {
+    std::stringstream line_ss;
+
     corevm::runtime::frame& frame = process.top_frame();
 
     auto ctx = frame.closure_ctx();
@@ -788,7 +793,7 @@ corevm::runtime::process::unwind_stack(
     ASSERT(compartment);
 #endif
 
-    ss << "    " << "File " << '\"' << compartment->path() << '\"';
+    line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
 
     corevm::runtime::closure* closure = nullptr;
     compartment->get_closure_by_id(ctx.closure_id, &closure);
@@ -805,12 +810,12 @@ corevm::runtime::process::unwind_stack(
     {
       const corevm::runtime::loc_info& loc = locs.at(index);
 
-      ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
+      line_ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
     }
 
-    ss << " in " << closure->name;
+    line_ss << " in " << closure->name;
 
-    ss << std::endl;
+    output_lines.push_back(std::move(line_ss.str()));
 
     process.pop_frame();
 
@@ -824,7 +829,15 @@ corevm::runtime::process::unwind_stack(
 
   process.reset();
 
-  std::cerr << std::endl << ss.str() << std::endl;
+  // Dump output.
+  std::cerr << "Trackback:" << std::endl;
+  for (auto itr = output_lines.crbegin(); itr != output_lines.crend(); ++itr)
+  {
+    const std::string& line_str = *itr;
+    std::cerr << line_str << std::endl;
+  }
+
+  std::cerr << std::endl;
 }
 
 // -----------------------------------------------------------------------------
