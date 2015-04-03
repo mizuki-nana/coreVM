@@ -341,7 +341,12 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('rtrn', 0, 0)
 
     def visit_Assign(self, node):
-        self.visit(node.value)
+        res = self.visit(node.value)
+
+        if isinstance(node.value, ast.Lambda):
+            assert res # This is the name of the lambda closure.
+            self.__add_instr('setctx', self.closure_map[res].closure_id, 0)
+
         self.visit(node.targets[0])
 
     def visit_AugAssign(self, node):
@@ -574,6 +579,35 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.visit(node.right)
         self.visit(node.left)
         self.visit(node.op)
+
+    def visit_Lambda(self, node):
+        # This is very similar to `visit_FunctionDef`.
+
+        # step in
+        name = 'lambda_' + self.__get_random_name()
+
+        self.closure_map[name] = Closure(
+            name,
+            name,
+            self.current_closure_name,
+            self.closure_map[self.current_closure_name].closure_id
+        )
+
+        self.current_closure_name = name
+
+        # Off-load arguments.
+        self.visit(node.args)
+
+        # Expr.
+        self.visit(node.body)
+
+        # Explicit return.
+        self.__add_instr('rtrn', 0, 0)
+
+        # step out
+        self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
+
+        return name
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.

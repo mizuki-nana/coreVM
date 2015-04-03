@@ -76,7 +76,6 @@ class CodeTransformer(ast.NodeVisitor):
             base_str += '{vararg} = __call(list, {vararg})\n'.format(vararg=node.args.vararg)
 
         base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
-        base_str = base_str.replace(', )', ')')
         base_str += '\n'
 
         self.__dedent()
@@ -218,6 +217,11 @@ class CodeTransformer(ast.NodeVisitor):
             func=self.visit(node.op),
             rhs=self.visit(node.right)
         )
+
+    def visit_Lambda(self, node):
+        return 'lambda {args}: {body}'.format(
+            args=self.visit(node.args),
+            body=self.visit(node.body))
 
     def visit_ListComp(self, node):
         pass
@@ -379,8 +383,6 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_arguments(self, node):
         # A mapping of the closest arguments to their default values by their
         # column offset, for explicit kwargs.
-        base_str = ''
-
         closest_args_to_defaults = {}
 
         # Traverse through the default values, and find the closest arguments
@@ -397,21 +399,23 @@ class CodeTransformer(ast.NodeVisitor):
 
             closest_args_to_defaults[closest_arg.col_offset] = default
 
+        parts = []
+
         # Iterate through the arguments.
         for arg in node.args:
             default = closest_args_to_defaults.get(arg.col_offset)
             if default:
-                base_str += (arg.id + '=' + self.visit(default) + ', ')
+                parts.append(arg.id + '=' + self.visit(default))
             else:
-                base_str += (arg.id + ', ')
+                parts.append(arg.id)
 
         if node.vararg:
-            base_str += ('*' + node.vararg + ', ')
+            parts.append('*' + node.vararg)
 
         if node.kwarg:
-            base_str += ('**' + node.kwarg + ', ')
+            parts.append('**' + node.kwarg)
 
-        return base_str
+        return ', '.join(parts)
 
 
 def main():

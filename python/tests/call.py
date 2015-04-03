@@ -24,3 +24,18 @@ def main(arg):
 print 'Starting...'
 main(int(1))
 print 'Done!'
+
+
+func = lambda x: x * 2
+
+print func(1)
+
+
+def lambda_caller(arg):
+    def inner(arg):
+        func = lambda arg: arg * arg
+        return func(arg)
+    return inner(arg)
+
+
+print lambda_caller(3)
