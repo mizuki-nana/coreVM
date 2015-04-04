@@ -6,6 +6,16 @@ print 567 * 654
 print 101 / 11
 print 110 % 33
 
+print ~1
+print ~0
+
+print not 1
+print not 0
+
+print -1
+print +0
+print -(+123)
+print +(-(+321))
 
 if 1 == 1:
     print 'You cannot argue with that'

@@ -784,16 +784,16 @@ class BytecodeGenerator(ast.NodeVisitor):
     """ ---------------------------- unaryop ------------------------------- """
 
     def visit_Invert(self, node):
-        self.__add_instr('bnot', 0, 0)
+        pass
 
     def visit_Not(self, node):
-        self.__add_instr('lnot', 0, 0)
+        pass
 
     def visit_UAdd(self, node):
-        self.__add_instr('pos', 0, 0)
+        pass
 
     def visit_USub(self, node):
-        self.__add_instr('neg', 0, 0)
+        pass
 
     """ ----------------------------- cmpop -------------------------------- """
 

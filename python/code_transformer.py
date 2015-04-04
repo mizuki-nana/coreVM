@@ -218,6 +218,11 @@ class CodeTransformer(ast.NodeVisitor):
             rhs=self.visit(node.right)
         )
 
+    def visit_UnaryOp(self, node):
+        return '__call({operand}.{op_func})'.format(
+            operand=self.visit(node.operand),
+            op_func=self.visit(node.op))
+
     def visit_Lambda(self, node):
         return 'lambda {args}: {body}'.format(
             args=self.visit(node.args),
@@ -344,8 +349,17 @@ class CodeTransformer(ast.NodeVisitor):
 
     """ ---------------------------- unaryop ------------------------------- """
 
+    def visit_Invert(self, node):
+        return '__invert__'
+
     def visit_Not(self, node):
-        return 'not'
+        return '__not__'
+
+    def visit_UAdd(self, node):
+        return '__pos__'
+
+    def visit_USub(self, node):
+        return '__neg__'
 
     """ ----------------------------- cmpop -------------------------------- """
 

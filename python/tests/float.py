@@ -5,6 +5,14 @@ print 99.838301 - 99.000123
 print 123.456 * 987.654
 print 999.666333 / 3.00
 
+# NOTE: We cannot simply do `-9.999999` here because the Python `ast` module
+# treats that as a single number instead of a unary negation operator applied
+# on a floating number.
+# (Python 2.7.6 on Ubuntu 14.04).
+print -(9.999999)
+print +10.123456
+print +(-(-(123.725197)))
+
 # TODO: [COREVM-196] Modulus operator for float type inaccurate
 #print 100.000001 % 33.000000
 

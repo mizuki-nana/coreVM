@@ -4,6 +4,18 @@ print bool(1)
 print bool(0)
 True is False
 
+# Python returns int type.
+print ~True
+print ~bool(0)
+
+print not True
+print not bool(0)
+
+print -True
+print +False
+print -(+True)
+print +(-(+bool(0)))
+
 # NOTE: Python prints arithmetic operations on bools as `1`s and `0`s, but we
 # actually print them as `True` and `False`, so can't do stdout comparision.
 # ( Kinda sad :'( )
