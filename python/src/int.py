@@ -112,6 +112,125 @@ class int(object):
         """
         return __call(int, res_)
 
+    def __pow__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [pow, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __lshift__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [bls, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __rshift__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [brs, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __or__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [bor, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __xor__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [bxor, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __and__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [band, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
+    def __floordiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [div, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
     def __invert__(self):
         """
         ### BEGIN VECTOR ###

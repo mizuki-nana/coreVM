@@ -3,6 +3,16 @@ print False
 print bool(1)
 print bool(0)
 True is False
+True ** False
+False << True
+True >> False
+True | False
+bool(0) | False
+False & True
+True & bool(1)
+True ^ bool(0)
+bool(0) ^ bool(1)
+bool(1) // bool(1)
 
 # Python returns int type.
 print ~True

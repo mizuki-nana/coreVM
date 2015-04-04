@@ -111,6 +111,40 @@ class float(object):
         """
         return __call(float, res_)
 
+    def __pow__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [pow, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(float, res_)
+
+    def __floordiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [div, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
     # NOTE: `float` type does not support `__invert__` and `__not__`.
 
     def __pos__(self):

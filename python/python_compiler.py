@@ -764,22 +764,25 @@ class BytecodeGenerator(ast.NodeVisitor):
         pass
 
     def visit_Pow(self, node):
-        self.__add_binary_operator_instr('pow')
+        pass
 
     def visit_LShift(self, node):
-        self.__add_binary_operator_instr('bls')
+        pass
 
     def visit_RShift(self, node):
-        self.__add_binary_operator_instr('rls')
+        pass
 
     def visit_BitOr(self, node):
-        self.__add_binary_operator_instr('bor')
+        pass
 
     def visit_BitXor(self, node):
-        self.__add_binary_operator_instr('bxor')
+        pass
 
     def visit_BitAnd(self, node):
-        self.__add_binary_operator_instr('band')
+        pass
+
+    def visit_FloorDiv(self, node):
+        pass
 
     """ ---------------------------- unaryop ------------------------------- """
 

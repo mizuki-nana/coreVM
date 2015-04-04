@@ -347,6 +347,27 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_Mod(self, node):
         return '__mod__'
 
+    def visit_Pow(self, node):
+        return '__pow__'
+
+    def visit_LShift(self, node):
+        return '__lshift__'
+
+    def visit_RShift(self, node):
+        return '__rshift__'
+
+    def visit_BitOr(self, node):
+        return '__or__'
+
+    def visit_BitXor(self, node):
+        return '__xor__'
+
+    def visit_BitAnd(self, node):
+        return '__and__'
+
+    def visit_FloorDiv(self, node):
+        return '__floordiv__'
+
     """ ---------------------------- unaryop ------------------------------- """
 
     def visit_Invert(self, node):

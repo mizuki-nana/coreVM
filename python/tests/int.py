@@ -5,6 +5,13 @@ print 987654321 - 123456789
 print 567 * 654
 print 101 / 11
 print 110 % 33
+print 2**3
+print 1 << 3
+print 99 >> 2
+print 123 | 321
+print 12345 ^ 67890
+print 10101 & 8563732
+print 5 // 2
 
 print ~1
 print ~0
