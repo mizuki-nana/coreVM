@@ -47,10 +47,6 @@ enum flags : uint32_t
 
   DYOBJ_IS_INDELIBLE,
 
-  /* ------------- Bits that pertain to the scope of objects ---------------- */
-
-  DYOBJ_IS_INVISIBLE_TO_USER,
-
   /* ------- Bits that pertain to the various attributes of objects --------- */
 
   DYOBJ_IS_NON_CALLABLE,
@@ -73,7 +69,6 @@ const std::vector<const char*>
 DYOBJ_FLAG_VALUES_ARRAY {
   "DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE",
   "DYOBJ_IS_INDELIBLE",
-  "DYOBJ_IS_INVISIBLE_TO_USER",
   "DYOBJ_IS_NON_CALLABLE",
   "DYOBJ_IS_IMMUTABLE",
 };

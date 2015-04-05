@@ -86,8 +86,6 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::GETATTR,   { .num_oprd=1, .str="getattr",   .handler=std::make_shared<corevm::runtime::instr_handler_getattr>()   } },
   { corevm::runtime::instr_enum::SETATTR,   { .num_oprd=1, .str="setattr",   .handler=std::make_shared<corevm::runtime::instr_handler_setattr>()   } },
   { corevm::runtime::instr_enum::DELATTR,   { .num_oprd=1, .str="delattr",   .handler=std::make_shared<corevm::runtime::instr_handler_delattr>()   } },
-  { corevm::runtime::instr_enum::MUTE,      { .num_oprd=1, .str="mute",      .handler=std::make_shared<corevm::runtime::instr_handler_mute>()      } },
-  { corevm::runtime::instr_enum::UNMUTE,    { .num_oprd=1, .str="unmute",    .handler=std::make_shared<corevm::runtime::instr_handler_unmute>()    } },
   { corevm::runtime::instr_enum::POP,       { .num_oprd=0, .str="pop",       .handler=std::make_shared<corevm::runtime::instr_handler_pop>()       } },
   { corevm::runtime::instr_enum::LDOBJ2,    { .num_oprd=1, .str="ldobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_ldobj2>()    } },
   { corevm::runtime::instr_enum::STOBJ2,    { .num_oprd=1, .str="stobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_stobj2>()    } },
@@ -104,6 +102,10 @@ corevm::runtime::instr_handler_meta::instr_info_map {
   { corevm::runtime::instr_enum::RSETATTRS, { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() } },
   { corevm::runtime::instr_enum::PUTOBJ,    { .num_oprd=0, .str="putobj",    .handler=std::make_shared<corevm::runtime::instr_handler_putobj>()    } },
   { corevm::runtime::instr_enum::GETOBJ,    { .num_oprd=0, .str="getobj",    .handler=std::make_shared<corevm::runtime::instr_handler_getobj>()    } },
+  { corevm::runtime::instr_enum::SETFLGC,   { .num_oprd=1, .str="setflgc",   .handler=std::make_shared<corevm::runtime::instr_handler_setflgc>()   } },
+  { corevm::runtime::instr_enum::SETFLDEL,  { .num_oprd=1, .str="setfldel",  .handler=std::make_shared<corevm::runtime::instr_handler_setfldel>()  } },
+  { corevm::runtime::instr_enum::SETFLCALL, { .num_oprd=1, .str="setflcall", .handler=std::make_shared<corevm::runtime::instr_handler_setflcall>() } },
+  { corevm::runtime::instr_enum::SETFLMUTE, { .num_oprd=1, .str="setflmute", .handler=std::make_shared<corevm::runtime::instr_handler_setflmute>() } },
 
   /* -------------------------- Control instructions ------------------------ */
 
@@ -593,30 +595,6 @@ corevm::runtime::instr_handler_delattr::execute(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::instr_handler_mute::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process)
-{
-  corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
-
-  obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
-}
-
-// -----------------------------------------------------------------------------
-
-void
-corevm::runtime::instr_handler_unmute::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process)
-{
-  corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
-
-  obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
-}
-
-// -----------------------------------------------------------------------------
-
-void
 corevm::runtime::instr_handler_pop::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
@@ -1030,6 +1008,90 @@ corevm::runtime::instr_handler_getobj::execute(
     corevm::dyobj::dyobj_id>(hndl);
 
   process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_setflgc::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  bool on_off = static_cast<bool>(instr.oprd1);
+
+  if (on_off)
+  {
+    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+  }
+  else
+  {
+    obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_setfldel::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  bool on_off = static_cast<bool>(instr.oprd1);
+
+  if (on_off)
+  {
+    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE);
+  }
+  else
+  {
+    obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_setflcall::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  bool on_off = static_cast<bool>(instr.oprd1);
+
+  if (on_off)
+  {
+    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE);
+  }
+  else
+  {
+    obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_setflmute::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+
+  bool on_off = static_cast<bool>(instr.oprd1);
+
+  if (on_off)
+  {
+    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
+  }
+  else
+  {
+    obj.clear_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
+  }
 }
 
 // -----------------------------------------------------------------------------

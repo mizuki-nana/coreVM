@@ -25,6 +25,9 @@ class NoneType(object):
 __call(NoneType)
 """
 ### BEGIN VECTOR ###
+[setflgc, 1, 0]
+[setfldel, 1, 0]
+[setflmute, 1, 0]
 [stobj, None, 0]
 ### END VECTOR ###
 """

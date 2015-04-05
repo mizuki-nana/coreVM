@@ -259,46 +259,6 @@ TEST_F(instrs_obj_unittest, TestInstrDELATTR)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(instrs_obj_unittest, TestInstrMUTE)
-{
-  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
-  m_process.push_stack(id);
-
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
-  execute_instr<corevm::runtime::instr_handler_mute>(instr, 1);
-
-  corevm::dyobj::dyobj_id expected_id = id;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
-
-  ASSERT_EQ(expected_id, actual_id);
-
-  auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
-
-  ASSERT_EQ(false, actual_obj.get_flag(corevm::dyobj::DYOBJ_IS_IMMUTABLE));
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instrs_obj_unittest, TestInstrUNMUTE)
-{
-  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
-  m_process.push_stack(id);
-
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
-  execute_instr<corevm::runtime::instr_handler_unmute>(instr, 1);
-
-  corevm::dyobj::dyobj_id expected_id = id;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
-
-  ASSERT_EQ(expected_id, actual_id);
-
-  auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
-
-  ASSERT_EQ(true, actual_obj.get_flag(corevm::dyobj::DYOBJ_IS_IMMUTABLE));
-}
-
-// -----------------------------------------------------------------------------
-
 TEST_F(instrs_obj_unittest, TestInstrPOP)
 {
   corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
@@ -839,6 +799,95 @@ TEST_F(instrs_obj_unittest, TestInstrGETOBJ)
   corevm::dyobj::dyobj_id id = m_process.top_stack();
 
   ASSERT_EQ(10, id);
+}
+
+// -----------------------------------------------------------------------------
+
+class instrs_obj_flag_unittest : public instrs_obj_unittest
+{
+protected:
+  void _SetUp()
+  {
+    corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
+    m_process.push_stack(id);
+  }
+
+  void _TearDown()
+  {
+    m_process.pop_stack();
+  }
+
+  template<class InstrHandlerCls>
+  void execute_instr_and_assert_result(const corevm::dyobj::flags flag)
+  {
+    execute_instr_with_toggle_on<InstrHandlerCls>(flag);
+    execute_instr_with_toggle_off<InstrHandlerCls>(flag);
+  }
+
+private:
+  template<class InstrHandlerCls>
+  void execute_instr_with_toggle_on(const corevm::dyobj::flags flag)
+  {
+    corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
+    _execute_and_assert_result<InstrHandlerCls>(instr, flag);
+  }
+
+  template<class InstrHandlerCls>
+  void execute_instr_with_toggle_off(const corevm::dyobj::flags flag)
+  {
+    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+    _execute_and_assert_result<InstrHandlerCls>(instr, flag);
+  }
+
+  template<class InstrHandlerCls>
+  void _execute_and_assert_result(
+    const corevm::runtime::instr& instr, const corevm::dyobj::flags flag)
+  {
+    _SetUp();
+
+    execute_instr<InstrHandlerCls>(instr);
+
+    corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+    auto &actual_obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+    bool on_off = static_cast<bool>(instr.oprd1);
+
+    ASSERT_EQ(on_off, actual_obj.get_flag(flag));
+
+    _TearDown();
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_flag_unittest, TestInstrSETFLGC)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_setflgc>(
+    corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_flag_unittest, TestInstrSETFLDEL)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_setfldel>(
+    corevm::dyobj::flags::DYOBJ_IS_INDELIBLE);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_flag_unittest, TestInstrSETFLCALL)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_setflcall>(
+    corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_flag_unittest, TestInstrSETFLMUTE)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_setflmute>(
+    corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
 }
 
 // -----------------------------------------------------------------------------

@@ -550,6 +550,15 @@ class bool(object):
 ### END VECTOR ###
 """
 True = __call(bool, 1)
+"""
+### BEGIN VECTOR ###
+[ldobj, True, 0]
+[setflgc, 1, 0]
+[setfldel, 1, 0]
+[setflmute, 1, 0]
+[pop, 0, 0]
+### END VECTOR ###
+"""
 
 
 ### False
@@ -563,5 +572,13 @@ True = __call(bool, 1)
 [stobj, False, 0]
 ### END VECTOR ###
 """
-
 False = __call(bool, 0)
+"""
+### BEGIN VECTOR ###
+[ldobj, False, 0]
+[setflgc, 1, 0]
+[setfldel, 1, 0]
+[setflmute, 1, 0]
+[pop, 0, 0]
+### END VECTOR ###
+"""
