@@ -145,6 +145,98 @@ class float(object):
         """
         return __call(int, res_)
 
+    def __iadd__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [add, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __isub__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [sub, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __imul__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mul, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __idiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [div, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __imod__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mod, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ipow__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pow, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ifloordiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [div, 0, 0]
+        [2int64, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
     # NOTE: `float` type does not support `__invert__` and `__not__`.
 
     def __pos__(self):

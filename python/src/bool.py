@@ -222,6 +222,162 @@ class bool(object):
         """
         return __call(int, res_)
 
+    def __iadd__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [add, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __isub__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [sub, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __imul__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mul, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __idiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [div, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __imod__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mod, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ipow__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [pow, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ilshift__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [bls, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __irshift__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [brs, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ior__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [bor, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ixor__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [bxor, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __iand__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [band, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __ifloordiv__(self, value):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, value, 0]
+        [gethndl, 0, 0]
+        [pop, 0, 0]
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [div, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
     def __invert__(self):
         """
         ### BEGIN VECTOR ###

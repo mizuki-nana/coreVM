@@ -119,14 +119,28 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_AugAssign(self, node):
-        base_str = '{indentation}{target} = __call({target}.{func}, {value})\n'.format(
+        # The `ast` module does not have node types for aug-assignment operators.
+        # So we have to map them to their corresponding methods.
+        OP_AST_TYPE_TO_METHOD_MAP = {
+            ast.Add: '__iadd__',
+            ast.Sub: '__isub__',
+            ast.Mult: '__imul__',
+            ast.Div: '__idiv__',
+            ast.Mod: '__imod__',
+            ast.Pow: '__ipow__',
+            ast.LShift: '__ilshift__',
+            ast.RShift: '__irshift__',
+            ast.BitOr: '__ior__',
+            ast.BitXor: '__ixor__',
+            ast.BitAnd: '__iand__',
+            ast.FloorDiv: '__ifloordiv__',
+        }
+
+        return '{indentation}__call({target}.{func}, {value})\n'.format(
             indentation=self.__indentation(),
             target=self.visit(node.target),
-            func=self.visit(node.op),
-            value=self.visit(node.value)
-        )
-
-        return base_str
+            func=OP_AST_TYPE_TO_METHOD_MAP[type(node.op)],
+            value=self.visit(node.value))
 
     def visit_Print(self, node):
         base_str = '{indentation}print'.format(indentation=self.__indentation())
@@ -261,7 +275,7 @@ class CodeTransformer(ast.NodeVisitor):
         else:
             # TODO: special support for `is` and `is not` can be removed once
             # dynamic dispatching is supported.
-            base_str = '{indentation}{left} {op} {comparator}'.format(
+            base_str = '{indentation}({left} {op} {comparator})'.format(
               indentation=self.__indentation(),
               left=self.visit(node.left),
               op=self.visit(op),
@@ -392,7 +406,7 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_IsNot(self, node):
         # TODO: special support for `is` and `is not` can be removed once
         # dynamic dispatching is supported.
-        print 'is not'
+        return 'is not'
 
     def visit_Eq(self, node):
         return '__eq__'
