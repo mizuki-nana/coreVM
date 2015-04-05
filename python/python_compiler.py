@@ -960,8 +960,13 @@ def main():
     try:
         generator = BytecodeGenerator(options)
 
+        # Loads the built-in definitions.
+        # NOTE: The definition of `bool` has to come before all other types.
+        # because it defines the names `True` and `False` that are needed in
+        # the logic.
         generator.read_from_source('python/src/__builtin__.py')
         generator.read_from_source('python/src/bool.py')
+        generator.read_from_source('python/src/none.py')
         generator.read_from_source('python/src/int.py')
         generator.read_from_source('python/src/float.py')
         generator.read_from_source('python/src/str.py')
