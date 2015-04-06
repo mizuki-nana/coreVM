@@ -116,16 +116,15 @@ extract_info::extract_instr_info() const
 
   ss << "{" << std::endl;
 
-  for (auto itr = corevm::runtime::instr_handler_meta::instr_info_map.begin();
-       itr != corevm::runtime::instr_handler_meta::instr_info_map.end();)
+  for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
-    const corevm::runtime::instr_code& code = itr->first;
-    const corevm::runtime::instr_info& info = itr->second;
+    const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
+    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::get(code);
 
     ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str \
       << DOUBLE_QUOTE << ": " << code;
 
-    if (++itr != corevm::runtime::instr_handler_meta::instr_info_map.end())
+    if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)
     {
       ss << ",";
     }

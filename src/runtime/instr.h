@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 #include <ostream>
 #include <string>
-#include <unordered_map>
 
 
 namespace corevm {
@@ -986,6 +985,9 @@ enum instr_enum : uint32_t
    */
   MAPSWP,
 
+  /* -------------------------------- Max ----------------------------------- */
+
+  INSTR_CODE_MAX,
 };
 
 // -----------------------------------------------------------------------------
@@ -2210,13 +2212,10 @@ typedef struct instr_info
 class instr_handler_meta
 {
 public:
-  using map_type = typename std::unordered_map<
-    corevm::runtime::instr_code, corevm::runtime::instr_info>;
-
-  static corevm::runtime::instr_info find(corevm::runtime::instr_code instr_code)
+  static corevm::runtime::instr_info get(corevm::runtime::instr_code instr_code)
     throw(corevm::runtime::invalid_instr_error);
 
-  static const map_type instr_info_map;
+  static const corevm::runtime::instr_info instr_set[INSTR_CODE_MAX];
 };
 
 // -----------------------------------------------------------------------------

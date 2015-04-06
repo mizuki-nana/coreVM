@@ -43,6 +43,34 @@ using corevm::runtime::process;
 
 // -----------------------------------------------------------------------------
 
+class instr_handler_meta_unittest : public ::testing::Test {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instr_handler_meta_unittest, TestGetSuccessful)
+{
+  corevm::runtime::instr_code code = corevm::runtime::instr_enum::LDOBJ;
+  corevm::runtime::instr_info info = corevm::runtime::instr_handler_meta::get(code);
+
+  ASSERT_STREQ("ldobj", info.str.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instr_handler_meta_unittest, TestGetFailsWithInvalidCode)
+{
+  corevm::runtime::instr_code code = corevm::runtime::instr_enum::INSTR_CODE_MAX;
+
+  ASSERT_THROW(
+    {
+      corevm::runtime::instr_handler_meta::get(code);
+    },
+    corevm::runtime::invalid_instr_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_unittest : public ::testing::Test
 {
 public:

@@ -52,7 +52,9 @@ std::ostream& operator<<(
 {
   ost << std::hex << std::showbase;
   ost << std::setiosflags(std::ios::left);
-  ost << std::setw(6) << instr.code << " " << std::setw(6) << instr.oprd1 << " " << std::setw(6) << instr.oprd2;
+  ost << std::setw(6) << instr.code << " ";
+  ost << std::setw(6) << instr.oprd1 << " ";
+  ost << std::setw(6) << instr.oprd2;
   ost << std::resetiosflags(std::ios::adjustfield);
   ost << std::noshowbase << std::dec;
   return ost;
@@ -75,191 +77,190 @@ bool operator==(const instr& lhs, const instr& rhs)
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::instr_handler_meta::map_type
-corevm::runtime::instr_handler_meta::instr_info_map {
+const corevm::runtime::instr_info
+corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
 
   /* -------------------------- Object instructions ------------------------- */
 
-  { corevm::runtime::instr_enum::NEW,       { .num_oprd=0, .str="new",       .handler=std::make_shared<corevm::runtime::instr_handler_new>()       } },
-  { corevm::runtime::instr_enum::LDOBJ,     { .num_oprd=1, .str="ldobj",     .handler=std::make_shared<corevm::runtime::instr_handler_ldobj>()     } },
-  { corevm::runtime::instr_enum::STOBJ,     { .num_oprd=1, .str="stobj",     .handler=std::make_shared<corevm::runtime::instr_handler_stobj>()     } },
-  { corevm::runtime::instr_enum::GETATTR,   { .num_oprd=1, .str="getattr",   .handler=std::make_shared<corevm::runtime::instr_handler_getattr>()   } },
-  { corevm::runtime::instr_enum::SETATTR,   { .num_oprd=1, .str="setattr",   .handler=std::make_shared<corevm::runtime::instr_handler_setattr>()   } },
-  { corevm::runtime::instr_enum::DELATTR,   { .num_oprd=1, .str="delattr",   .handler=std::make_shared<corevm::runtime::instr_handler_delattr>()   } },
-  { corevm::runtime::instr_enum::POP,       { .num_oprd=0, .str="pop",       .handler=std::make_shared<corevm::runtime::instr_handler_pop>()       } },
-  { corevm::runtime::instr_enum::LDOBJ2,    { .num_oprd=1, .str="ldobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_ldobj2>()    } },
-  { corevm::runtime::instr_enum::STOBJ2,    { .num_oprd=1, .str="stobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_stobj2>()    } },
-  { corevm::runtime::instr_enum::DELOBJ,    { .num_oprd=1, .str="delobj",    .handler=std::make_shared<corevm::runtime::instr_handler_delobj>()    } },
-  { corevm::runtime::instr_enum::DELOBJ2,   { .num_oprd=1, .str="delobj2",   .handler=std::make_shared<corevm::runtime::instr_handler_delobj2>()   } },
-  { corevm::runtime::instr_enum::GETHNDL,   { .num_oprd=0, .str="gethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_gethndl>()   } },
-  { corevm::runtime::instr_enum::SETHNDL,   { .num_oprd=0, .str="sethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_sethndl>()   } },
-  { corevm::runtime::instr_enum::CLRHNDL,   { .num_oprd=0, .str="clrhndl",   .handler=std::make_shared<corevm::runtime::instr_handler_clrhndl>()   } },
-  { corevm::runtime::instr_enum::OBJEQ,     { .num_oprd=0, .str="objeq",     .handler=std::make_shared<corevm::runtime::instr_handler_objeq>()     } },
-  { corevm::runtime::instr_enum::OBJNEQ,    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    } },
-  { corevm::runtime::instr_enum::SETCTX,    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    } },
-  { corevm::runtime::instr_enum::CLDOBJ,    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    } },
-  { corevm::runtime::instr_enum::SETATTRS,  { .num_oprd=2, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  } },
-  { corevm::runtime::instr_enum::RSETATTRS, { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() } },
-  { corevm::runtime::instr_enum::PUTOBJ,    { .num_oprd=0, .str="putobj",    .handler=std::make_shared<corevm::runtime::instr_handler_putobj>()    } },
-  { corevm::runtime::instr_enum::GETOBJ,    { .num_oprd=0, .str="getobj",    .handler=std::make_shared<corevm::runtime::instr_handler_getobj>()    } },
-  { corevm::runtime::instr_enum::SETFLGC,   { .num_oprd=1, .str="setflgc",   .handler=std::make_shared<corevm::runtime::instr_handler_setflgc>()   } },
-  { corevm::runtime::instr_enum::SETFLDEL,  { .num_oprd=1, .str="setfldel",  .handler=std::make_shared<corevm::runtime::instr_handler_setfldel>()  } },
-  { corevm::runtime::instr_enum::SETFLCALL, { .num_oprd=1, .str="setflcall", .handler=std::make_shared<corevm::runtime::instr_handler_setflcall>() } },
-  { corevm::runtime::instr_enum::SETFLMUTE, { .num_oprd=1, .str="setflmute", .handler=std::make_shared<corevm::runtime::instr_handler_setflmute>() } },
+  /* NEW       */    { .num_oprd=0, .str="new",       .handler=std::make_shared<corevm::runtime::instr_handler_new>()       },
+  /* LDOBJ     */    { .num_oprd=1, .str="ldobj",     .handler=std::make_shared<corevm::runtime::instr_handler_ldobj>()     },
+  /* STOBJ     */    { .num_oprd=1, .str="stobj",     .handler=std::make_shared<corevm::runtime::instr_handler_stobj>()     },
+  /* GETATTR   */    { .num_oprd=1, .str="getattr",   .handler=std::make_shared<corevm::runtime::instr_handler_getattr>()   },
+  /* SETATTR   */    { .num_oprd=1, .str="setattr",   .handler=std::make_shared<corevm::runtime::instr_handler_setattr>()   },
+  /* DELATTR   */    { .num_oprd=1, .str="delattr",   .handler=std::make_shared<corevm::runtime::instr_handler_delattr>()   },
+  /* POP       */    { .num_oprd=0, .str="pop",       .handler=std::make_shared<corevm::runtime::instr_handler_pop>()       },
+  /* LDOBJ2    */    { .num_oprd=1, .str="ldobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_ldobj2>()    },
+  /* STOBJ2    */    { .num_oprd=1, .str="stobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_stobj2>()    },
+  /* DELOBJ    */    { .num_oprd=1, .str="delobj",    .handler=std::make_shared<corevm::runtime::instr_handler_delobj>()    },
+  /* DELOBJ2   */    { .num_oprd=1, .str="delobj2",   .handler=std::make_shared<corevm::runtime::instr_handler_delobj2>()   },
+  /* GETHNDL   */    { .num_oprd=0, .str="gethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_gethndl>()   },
+  /* SETHNDL   */    { .num_oprd=0, .str="sethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_sethndl>()   },
+  /* CLRHNDL   */    { .num_oprd=0, .str="clrhndl",   .handler=std::make_shared<corevm::runtime::instr_handler_clrhndl>()   },
+  /* OBJEQ     */    { .num_oprd=0, .str="objeq",     .handler=std::make_shared<corevm::runtime::instr_handler_objeq>()     },
+  /* OBJNEQ    */    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    },
+  /* SETCTX    */    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    },
+  /* CLDOBJ    */    { .num_oprd=2, .str="cldobj",    .handler=std::make_shared<corevm::runtime::instr_handler_cldobj>()    },
+  /* SETATTRS  */    { .num_oprd=2, .str="setattrs",  .handler=std::make_shared<corevm::runtime::instr_handler_setattrs>()  },
+  /* RSETATTRS */    { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() },
+  /* PUTOBJ    */    { .num_oprd=0, .str="putobj",    .handler=std::make_shared<corevm::runtime::instr_handler_putobj>()    },
+  /* GETOBJ    */    { .num_oprd=0, .str="getobj",    .handler=std::make_shared<corevm::runtime::instr_handler_getobj>()    },
+  /* SETFLGC   */    { .num_oprd=1, .str="setflgc",   .handler=std::make_shared<corevm::runtime::instr_handler_setflgc>()   },
+  /* SETFLDEL  */    { .num_oprd=1, .str="setfldel",  .handler=std::make_shared<corevm::runtime::instr_handler_setfldel>()  },
+  /* SETFLCALL */    { .num_oprd=1, .str="setflcall", .handler=std::make_shared<corevm::runtime::instr_handler_setflcall>() },
+  /* SETFLMUTE */    { .num_oprd=1, .str="setflmute", .handler=std::make_shared<corevm::runtime::instr_handler_setflmute>() },
 
   /* -------------------------- Control instructions ------------------------ */
 
-  { corevm::runtime::instr_enum::PINVK,     { .num_oprd=0, .str="pinvk",     .handler=std::make_shared<corevm::runtime::instr_handler_pinvk>()     } },
-  { corevm::runtime::instr_enum::INVK,      { .num_oprd=0, .str="invk",      .handler=std::make_shared<corevm::runtime::instr_handler_invk>()      } },
-  { corevm::runtime::instr_enum::RTRN,      { .num_oprd=0, .str="rtrn",      .handler=std::make_shared<corevm::runtime::instr_handler_rtrn>()      } },
-  { corevm::runtime::instr_enum::JMP,       { .num_oprd=1, .str="jmp",       .handler=std::make_shared<corevm::runtime::instr_handler_jmp>()       } },
-  { corevm::runtime::instr_enum::JMPIF,     { .num_oprd=1, .str="jmpif",     .handler=std::make_shared<corevm::runtime::instr_handler_jmpif>()     } },
-  { corevm::runtime::instr_enum::JMPR,      { .num_oprd=1, .str="jmpr",      .handler=std::make_shared<corevm::runtime::instr_handler_jmpr>()      } },
-  { corevm::runtime::instr_enum::EXC,       { .num_oprd=0, .str="exc",       .handler=std::make_shared<corevm::runtime::instr_handler_exc>()       } },
-  { corevm::runtime::instr_enum::EXC2,      { .num_oprd=0, .str="exc2",      .handler=std::make_shared<corevm::runtime::instr_handler_exc2>()      } },
-  { corevm::runtime::instr_enum::EXIT,      { .num_oprd=1, .str="exit",      .handler=std::make_shared<corevm::runtime::instr_handler_exit>()      } },
+  /* PINVK     */    { .num_oprd=0, .str="pinvk",     .handler=std::make_shared<corevm::runtime::instr_handler_pinvk>()     },
+  /* INVK      */    { .num_oprd=0, .str="invk",      .handler=std::make_shared<corevm::runtime::instr_handler_invk>()      },
+  /* RTRN      */    { .num_oprd=0, .str="rtrn",      .handler=std::make_shared<corevm::runtime::instr_handler_rtrn>()      },
+  /* JMP       */    { .num_oprd=1, .str="jmp",       .handler=std::make_shared<corevm::runtime::instr_handler_jmp>()       },
+  /* JMPIF     */    { .num_oprd=1, .str="jmpif",     .handler=std::make_shared<corevm::runtime::instr_handler_jmpif>()     },
+  /* JMPR      */    { .num_oprd=1, .str="jmpr",      .handler=std::make_shared<corevm::runtime::instr_handler_jmpr>()      },
+  /* EXC       */    { .num_oprd=0, .str="exc",       .handler=std::make_shared<corevm::runtime::instr_handler_exc>()       },
+  /* EXC2      */    { .num_oprd=0, .str="exc2",      .handler=std::make_shared<corevm::runtime::instr_handler_exc2>()      },
+  /* EXIT      */    { .num_oprd=1, .str="exit",      .handler=std::make_shared<corevm::runtime::instr_handler_exit>()      },
 
   /* ------------------------- Function instructions ------------------------ */
 
-  { corevm::runtime::instr_enum::PUTARG,    { .num_oprd=0, .str="putarg",    .handler=std::make_shared<corevm::runtime::instr_handler_putarg>()    } },
-  { corevm::runtime::instr_enum::PUTKWARG,  { .num_oprd=1, .str="putkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_putkwarg>()  } },
-  { corevm::runtime::instr_enum::PUTARGS,   { .num_oprd=0, .str="putargs",   .handler=std::make_shared<corevm::runtime::instr_handler_putargs>()   } },
-  { corevm::runtime::instr_enum::PUTKWARGS, { .num_oprd=0, .str="putkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_putkwargs>() } },
-  { corevm::runtime::instr_enum::GETARG,    { .num_oprd=0, .str="getarg",    .handler=std::make_shared<corevm::runtime::instr_handler_getarg>()    } },
-  { corevm::runtime::instr_enum::GETKWARG,  { .num_oprd=1, .str="getkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_getkwarg>()  } },
-  { corevm::runtime::instr_enum::GETARGS,   { .num_oprd=0, .str="getargs",   .handler=std::make_shared<corevm::runtime::instr_handler_getargs>()   } },
-  { corevm::runtime::instr_enum::GETKWARGS, { .num_oprd=0, .str="getkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_getkwargs>() } },
+  /* PUTARG    */    { .num_oprd=0, .str="putarg",    .handler=std::make_shared<corevm::runtime::instr_handler_putarg>()    },
+  /* PUTKWARG  */    { .num_oprd=1, .str="putkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_putkwarg>()  },
+  /* PUTARGS   */    { .num_oprd=0, .str="putargs",   .handler=std::make_shared<corevm::runtime::instr_handler_putargs>()   },
+  /* PUTKWARGS */    { .num_oprd=0, .str="putkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_putkwargs>() },
+  /* GETARG    */    { .num_oprd=0, .str="getarg",    .handler=std::make_shared<corevm::runtime::instr_handler_getarg>()    },
+  /* GETKWARG  */    { .num_oprd=1, .str="getkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_getkwarg>()  },
+  /* GETARGS   */    { .num_oprd=0, .str="getargs",   .handler=std::make_shared<corevm::runtime::instr_handler_getargs>()   },
+  /* GETKWARGS */    { .num_oprd=0, .str="getkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_getkwargs>() },
 
   /* ------------------------- Runtime instructions ------------------------- */
 
-  { corevm::runtime::instr_enum::GC,        { .num_oprd=0, .str="gc",        .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        } },
-  { corevm::runtime::instr_enum::DEBUG,     { .num_oprd=0, .str="debug",     .handler=std::make_shared<corevm::runtime::instr_handler_debug>()     } },
-  { corevm::runtime::instr_enum::PRINT,     { .num_oprd=0, .str="print",     .handler=std::make_shared<corevm::runtime::instr_handler_print>()     } },
+  /* GC        */    { .num_oprd=0, .str="gc",        .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        },
+  /* DEBUG     */    { .num_oprd=0, .str="debug",     .handler=std::make_shared<corevm::runtime::instr_handler_debug>()     },
+  /* PRINT     */    { .num_oprd=0, .str="print",     .handler=std::make_shared<corevm::runtime::instr_handler_print>()     },
 
   /* ---------------- Arithmetic and logic instructions --------------------- */
 
-  { corevm::runtime::instr_enum::POS,       { .num_oprd=0, .str="pos",       .handler=std::make_shared<corevm::runtime::instr_handler_pos>()       } },
-  { corevm::runtime::instr_enum::NEG,       { .num_oprd=0, .str="neg",       .handler=std::make_shared<corevm::runtime::instr_handler_neg>()       } },
-  { corevm::runtime::instr_enum::INC,       { .num_oprd=0, .str="inc",       .handler=std::make_shared<corevm::runtime::instr_handler_inc>()       } },
-  { corevm::runtime::instr_enum::DEC,       { .num_oprd=0, .str="dec",       .handler=std::make_shared<corevm::runtime::instr_handler_dec>()       } },
-  { corevm::runtime::instr_enum::ADD,       { .num_oprd=0, .str="add",       .handler=std::make_shared<corevm::runtime::instr_handler_add>()       } },
-  { corevm::runtime::instr_enum::SUB,       { .num_oprd=0, .str="sub",       .handler=std::make_shared<corevm::runtime::instr_handler_sub>()       } },
-  { corevm::runtime::instr_enum::MUL,       { .num_oprd=0, .str="mul",       .handler=std::make_shared<corevm::runtime::instr_handler_mul>()       } },
-  { corevm::runtime::instr_enum::DIV,       { .num_oprd=0, .str="div",       .handler=std::make_shared<corevm::runtime::instr_handler_div>()       } },
-  { corevm::runtime::instr_enum::MOD,       { .num_oprd=0, .str="mod",       .handler=std::make_shared<corevm::runtime::instr_handler_mod>()       } },
-  { corevm::runtime::instr_enum::POW,       { .num_oprd=0, .str="pow",       .handler=std::make_shared<corevm::runtime::instr_handler_pow>()       } },
-  { corevm::runtime::instr_enum::BNOT,      { .num_oprd=0, .str="bnot",      .handler=std::make_shared<corevm::runtime::instr_handler_bnot>()      } },
-  { corevm::runtime::instr_enum::BAND,      { .num_oprd=0, .str="band",      .handler=std::make_shared<corevm::runtime::instr_handler_band>()      } },
-  { corevm::runtime::instr_enum::BOR,       { .num_oprd=0, .str="bor",       .handler=std::make_shared<corevm::runtime::instr_handler_bor>()       } },
-  { corevm::runtime::instr_enum::BXOR,      { .num_oprd=0, .str="bxor",      .handler=std::make_shared<corevm::runtime::instr_handler_bxor>()      } },
-  { corevm::runtime::instr_enum::BLS,       { .num_oprd=0, .str="bls",       .handler=std::make_shared<corevm::runtime::instr_handler_bls>()       } },
-  { corevm::runtime::instr_enum::BRS,       { .num_oprd=0, .str="brs",       .handler=std::make_shared<corevm::runtime::instr_handler_brs>()       } },
-  { corevm::runtime::instr_enum::EQ,        { .num_oprd=0, .str="eq",        .handler=std::make_shared<corevm::runtime::instr_handler_eq>()        } },
-  { corevm::runtime::instr_enum::NEQ,       { .num_oprd=0, .str="neq",       .handler=std::make_shared<corevm::runtime::instr_handler_neq>()       } },
-  { corevm::runtime::instr_enum::GT,        { .num_oprd=0, .str="gt",        .handler=std::make_shared<corevm::runtime::instr_handler_gt>()        } },
-  { corevm::runtime::instr_enum::LT,        { .num_oprd=0, .str="lt",        .handler=std::make_shared<corevm::runtime::instr_handler_lt>()        } },
-  { corevm::runtime::instr_enum::GTE,       { .num_oprd=0, .str="gte",       .handler=std::make_shared<corevm::runtime::instr_handler_gte>()       } },
-  { corevm::runtime::instr_enum::LTE,       { .num_oprd=0, .str="lte",       .handler=std::make_shared<corevm::runtime::instr_handler_lte>()       } },
-  { corevm::runtime::instr_enum::LNOT,      { .num_oprd=0, .str="lnot",      .handler=std::make_shared<corevm::runtime::instr_handler_lnot>()      } },
-  { corevm::runtime::instr_enum::LAND,      { .num_oprd=0, .str="land",      .handler=std::make_shared<corevm::runtime::instr_handler_land>()      } },
-  { corevm::runtime::instr_enum::LOR,       { .num_oprd=0, .str="lor",       .handler=std::make_shared<corevm::runtime::instr_handler_lor>()       } },
+  /* POS      */     { .num_oprd=0, .str="pos",       .handler=std::make_shared<corevm::runtime::instr_handler_pos>()       },
+  /* NEG      */     { .num_oprd=0, .str="neg",       .handler=std::make_shared<corevm::runtime::instr_handler_neg>()       },
+  /* INC      */     { .num_oprd=0, .str="inc",       .handler=std::make_shared<corevm::runtime::instr_handler_inc>()       },
+  /* DEC      */     { .num_oprd=0, .str="dec",       .handler=std::make_shared<corevm::runtime::instr_handler_dec>()       },
+  /* ADD      */     { .num_oprd=0, .str="add",       .handler=std::make_shared<corevm::runtime::instr_handler_add>()       },
+  /* SUB      */     { .num_oprd=0, .str="sub",       .handler=std::make_shared<corevm::runtime::instr_handler_sub>()       },
+  /* MUL      */     { .num_oprd=0, .str="mul",       .handler=std::make_shared<corevm::runtime::instr_handler_mul>()       },
+  /* DIV      */     { .num_oprd=0, .str="div",       .handler=std::make_shared<corevm::runtime::instr_handler_div>()       },
+  /* MOD      */     { .num_oprd=0, .str="mod",       .handler=std::make_shared<corevm::runtime::instr_handler_mod>()       },
+  /* POW      */     { .num_oprd=0, .str="pow",       .handler=std::make_shared<corevm::runtime::instr_handler_pow>()       },
+  /* BNOT     */     { .num_oprd=0, .str="bnot",      .handler=std::make_shared<corevm::runtime::instr_handler_bnot>()      },
+  /* BAND     */     { .num_oprd=0, .str="band",      .handler=std::make_shared<corevm::runtime::instr_handler_band>()      },
+  /* BOR      */     { .num_oprd=0, .str="bor",       .handler=std::make_shared<corevm::runtime::instr_handler_bor>()       },
+  /* BXOR     */     { .num_oprd=0, .str="bxor",      .handler=std::make_shared<corevm::runtime::instr_handler_bxor>()      },
+  /* BLS      */     { .num_oprd=0, .str="bls",       .handler=std::make_shared<corevm::runtime::instr_handler_bls>()       },
+  /* BRS      */     { .num_oprd=0, .str="brs",       .handler=std::make_shared<corevm::runtime::instr_handler_brs>()       },
+  /* EQ       */     { .num_oprd=0, .str="eq",        .handler=std::make_shared<corevm::runtime::instr_handler_eq>()        },
+  /* NEQ      */     { .num_oprd=0, .str="neq",       .handler=std::make_shared<corevm::runtime::instr_handler_neq>()       },
+  /* GT       */     { .num_oprd=0, .str="gt",        .handler=std::make_shared<corevm::runtime::instr_handler_gt>()        },
+  /* LT       */     { .num_oprd=0, .str="lt",        .handler=std::make_shared<corevm::runtime::instr_handler_lt>()        },
+  /* GTE      */     { .num_oprd=0, .str="gte",       .handler=std::make_shared<corevm::runtime::instr_handler_gte>()       },
+  /* LTE      */     { .num_oprd=0, .str="lte",       .handler=std::make_shared<corevm::runtime::instr_handler_lte>()       },
+  /* LNOT     */     { .num_oprd=0, .str="lnot",      .handler=std::make_shared<corevm::runtime::instr_handler_lnot>()      },
+  /* LAND     */     { .num_oprd=0, .str="land",      .handler=std::make_shared<corevm::runtime::instr_handler_land>()      },
+  /* LOR      */     { .num_oprd=0, .str="lor",       .handler=std::make_shared<corevm::runtime::instr_handler_lor>()       },
 
   /* ----------------- Native type creation instructions -------------------- */
 
-  { corevm::runtime::instr_enum::INT8,      { .num_oprd=1, .str="int8",      .handler=std::make_shared<corevm::runtime::instr_handler_int8>()      } },
-  { corevm::runtime::instr_enum::UINT8,     { .num_oprd=1, .str="uint8",     .handler=std::make_shared<corevm::runtime::instr_handler_uint8>()     } },
-  { corevm::runtime::instr_enum::INT16,     { .num_oprd=1, .str="int16",     .handler=std::make_shared<corevm::runtime::instr_handler_int16>()     } },
-  { corevm::runtime::instr_enum::UINT16,    { .num_oprd=1, .str="uint16",    .handler=std::make_shared<corevm::runtime::instr_handler_uint16>()    } },
-  { corevm::runtime::instr_enum::INT32,     { .num_oprd=1, .str="int32",     .handler=std::make_shared<corevm::runtime::instr_handler_int32>()     } },
-  { corevm::runtime::instr_enum::UINT32,    { .num_oprd=1, .str="uint32",    .handler=std::make_shared<corevm::runtime::instr_handler_uint32>()    } },
-  { corevm::runtime::instr_enum::INT64,     { .num_oprd=1, .str="int64",     .handler=std::make_shared<corevm::runtime::instr_handler_int64>()     } },
-  { corevm::runtime::instr_enum::UINT64,    { .num_oprd=1, .str="uint64",    .handler=std::make_shared<corevm::runtime::instr_handler_uint64>()    } },
-  { corevm::runtime::instr_enum::BOOL,      { .num_oprd=1, .str="bool",      .handler=std::make_shared<corevm::runtime::instr_handler_bool>()      } },
-  { corevm::runtime::instr_enum::DEC1,      { .num_oprd=1, .str="dec1",      .handler=std::make_shared<corevm::runtime::instr_handler_dec1>()      } },
-  { corevm::runtime::instr_enum::DEC2,      { .num_oprd=1, .str="dec2",      .handler=std::make_shared<corevm::runtime::instr_handler_dec2>()      } },
-  { corevm::runtime::instr_enum::STR,       { .num_oprd=1, .str="str",       .handler=std::make_shared<corevm::runtime::instr_handler_str>()       } },
-  { corevm::runtime::instr_enum::ARY,       { .num_oprd=0, .str="ary",       .handler=std::make_shared<corevm::runtime::instr_handler_ary>()       } },
-  { corevm::runtime::instr_enum::MAP,       { .num_oprd=0, .str="map",       .handler=std::make_shared<corevm::runtime::instr_handler_map>()       } },
+  /* INT8     */     { .num_oprd=1, .str="int8",      .handler=std::make_shared<corevm::runtime::instr_handler_int8>()      },
+  /* UINT8    */     { .num_oprd=1, .str="uint8",     .handler=std::make_shared<corevm::runtime::instr_handler_uint8>()     },
+  /* INT16    */     { .num_oprd=1, .str="int16",     .handler=std::make_shared<corevm::runtime::instr_handler_int16>()     },
+  /* UINT16   */     { .num_oprd=1, .str="uint16",    .handler=std::make_shared<corevm::runtime::instr_handler_uint16>()    },
+  /* INT32    */     { .num_oprd=1, .str="int32",     .handler=std::make_shared<corevm::runtime::instr_handler_int32>()     },
+  /* UINT32   */     { .num_oprd=1, .str="uint32",    .handler=std::make_shared<corevm::runtime::instr_handler_uint32>()    },
+  /* INT64    */     { .num_oprd=1, .str="int64",     .handler=std::make_shared<corevm::runtime::instr_handler_int64>()     },
+  /* UINT64   */     { .num_oprd=1, .str="uint64",    .handler=std::make_shared<corevm::runtime::instr_handler_uint64>()    },
+  /* BOOL     */     { .num_oprd=1, .str="bool",      .handler=std::make_shared<corevm::runtime::instr_handler_bool>()      },
+  /* DEC1     */     { .num_oprd=1, .str="dec1",      .handler=std::make_shared<corevm::runtime::instr_handler_dec1>()      },
+  /* DEC2     */     { .num_oprd=1, .str="dec2",      .handler=std::make_shared<corevm::runtime::instr_handler_dec2>()      },
+  /* STR      */     { .num_oprd=1, .str="str",       .handler=std::make_shared<corevm::runtime::instr_handler_str>()       },
+  /* ARY      */     { .num_oprd=0, .str="ary",       .handler=std::make_shared<corevm::runtime::instr_handler_ary>()       },
+  /* MAP      */     { .num_oprd=0, .str="map",       .handler=std::make_shared<corevm::runtime::instr_handler_map>()       },
 
   /* ----------------- Native type conversion instructions ------------------ */
 
-  { corevm::runtime::instr_enum::TOINT8,    { .num_oprd=0, .str="2int8",     .handler=std::make_shared<corevm::runtime::instr_handler_2int8>()     } },
-  { corevm::runtime::instr_enum::TOUINT8,   { .num_oprd=0, .str="2uint8",    .handler=std::make_shared<corevm::runtime::instr_handler_2uint8>()    } },
-  { corevm::runtime::instr_enum::TOINT16,   { .num_oprd=0, .str="2int16",    .handler=std::make_shared<corevm::runtime::instr_handler_2int16>()    } },
-  { corevm::runtime::instr_enum::TOUINT16,  { .num_oprd=0, .str="2uint16",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint16>()   } },
-  { corevm::runtime::instr_enum::TOINT32,   { .num_oprd=0, .str="2int32",    .handler=std::make_shared<corevm::runtime::instr_handler_2int32>()    } },
-  { corevm::runtime::instr_enum::TOUINT32,  { .num_oprd=0, .str="2uint32",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint32>()   } },
-  { corevm::runtime::instr_enum::TOINT64,   { .num_oprd=1, .str="2int64",    .handler=std::make_shared<corevm::runtime::instr_handler_2int64>()    } },
-  { corevm::runtime::instr_enum::TOUINT64,  { .num_oprd=1, .str="2uint64",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint64>()   } },
-  { corevm::runtime::instr_enum::TOBOOL,    { .num_oprd=0, .str="2bool",     .handler=std::make_shared<corevm::runtime::instr_handler_2bool>()     } },
-  { corevm::runtime::instr_enum::TODEC1,    { .num_oprd=0, .str="2dec1",     .handler=std::make_shared<corevm::runtime::instr_handler_2dec1>()     } },
-  { corevm::runtime::instr_enum::TODEC2,    { .num_oprd=0, .str="2dec2",     .handler=std::make_shared<corevm::runtime::instr_handler_2dec2>()     } },
-  { corevm::runtime::instr_enum::TOSTR,     { .num_oprd=0, .str="2str",      .handler=std::make_shared<corevm::runtime::instr_handler_2str>()      } },
-  { corevm::runtime::instr_enum::TOARY,     { .num_oprd=0, .str="2ary",      .handler=std::make_shared<corevm::runtime::instr_handler_2ary>()      } },
-  { corevm::runtime::instr_enum::TOMAP,     { .num_oprd=0, .str="2map",      .handler=std::make_shared<corevm::runtime::instr_handler_2map>()      } },
+  /* TOINT8   */     { .num_oprd=0, .str="2int8",     .handler=std::make_shared<corevm::runtime::instr_handler_2int8>()     },
+  /* TOUINT8  */     { .num_oprd=0, .str="2uint8",    .handler=std::make_shared<corevm::runtime::instr_handler_2uint8>()    },
+  /* TOINT16  */     { .num_oprd=0, .str="2int16",    .handler=std::make_shared<corevm::runtime::instr_handler_2int16>()    },
+  /* TOUINT16 */     { .num_oprd=0, .str="2uint16",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint16>()   },
+  /* TOINT32  */     { .num_oprd=0, .str="2int32",    .handler=std::make_shared<corevm::runtime::instr_handler_2int32>()    },
+  /* TOUINT32 */     { .num_oprd=0, .str="2uint32",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint32>()   },
+  /* TOINT64  */     { .num_oprd=1, .str="2int64",    .handler=std::make_shared<corevm::runtime::instr_handler_2int64>()    },
+  /* TOUINT64 */     { .num_oprd=1, .str="2uint64",   .handler=std::make_shared<corevm::runtime::instr_handler_2uint64>()   },
+  /* TOBOOL   */     { .num_oprd=0, .str="2bool",     .handler=std::make_shared<corevm::runtime::instr_handler_2bool>()     },
+  /* TODEC1   */     { .num_oprd=0, .str="2dec1",     .handler=std::make_shared<corevm::runtime::instr_handler_2dec1>()     },
+  /* TODEC2   */     { .num_oprd=0, .str="2dec2",     .handler=std::make_shared<corevm::runtime::instr_handler_2dec2>()     },
+  /* TOSTR    */     { .num_oprd=0, .str="2str",      .handler=std::make_shared<corevm::runtime::instr_handler_2str>()      },
+  /* TOARY    */     { .num_oprd=0, .str="2ary",      .handler=std::make_shared<corevm::runtime::instr_handler_2ary>()      },
+  /* TOMAP    */     { .num_oprd=0, .str="2map",      .handler=std::make_shared<corevm::runtime::instr_handler_2map>()      },
 
   /* ----------------- Native type manipulation instructions ---------------- */
 
-  { corevm::runtime::instr_enum::TRUTHY,    { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()    } },
-  { corevm::runtime::instr_enum::REPR,      { .num_oprd=0, .str="repr",      .handler=std::make_shared<corevm::runtime::instr_handler_repr>()      } },
+  /* TRUTHY   */     { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()    },
+  /* REPR     */     { .num_oprd=0, .str="repr",      .handler=std::make_shared<corevm::runtime::instr_handler_repr>()      },
 
   /* --------------------- String type instructions ------------------------- */
 
-  { corevm::runtime::instr_enum::STRLEN,    { .num_oprd=0, .str="strlen",    .handler=std::make_shared<corevm::runtime::instr_handler_strlen>()    } },
-  { corevm::runtime::instr_enum::STRCLR,    { .num_oprd=0, .str="strclr",    .handler=std::make_shared<corevm::runtime::instr_handler_strclr>()    } },
-  { corevm::runtime::instr_enum::STRAPD,    { .num_oprd=0, .str="strapd",    .handler=std::make_shared<corevm::runtime::instr_handler_strapd>()    } },
-  { corevm::runtime::instr_enum::STRPSH,    { .num_oprd=0, .str="strpsh",    .handler=std::make_shared<corevm::runtime::instr_handler_strpsh>()    } },
-  { corevm::runtime::instr_enum::STRIST,    { .num_oprd=0, .str="strist",    .handler=std::make_shared<corevm::runtime::instr_handler_strist>()    } },
-  { corevm::runtime::instr_enum::STRIST2,   { .num_oprd=0, .str="strist2",   .handler=std::make_shared<corevm::runtime::instr_handler_strist2>()   } },
-  { corevm::runtime::instr_enum::STRERS,    { .num_oprd=0, .str="strers",    .handler=std::make_shared<corevm::runtime::instr_handler_strers>()    } },
-  { corevm::runtime::instr_enum::STRERS2,   { .num_oprd=0, .str="strers2",   .handler=std::make_shared<corevm::runtime::instr_handler_strers2>()   } },
-  { corevm::runtime::instr_enum::STRRPLC,   { .num_oprd=0, .str="strrplc",   .handler=std::make_shared<corevm::runtime::instr_handler_strrplc>()   } },
-  { corevm::runtime::instr_enum::STRSWP,    { .num_oprd=0, .str="strswp",    .handler=std::make_shared<corevm::runtime::instr_handler_strswp>()    } },
-  { corevm::runtime::instr_enum::STRSUB,    { .num_oprd=0, .str="strsub",    .handler=std::make_shared<corevm::runtime::instr_handler_strsub>()    } },
-  { corevm::runtime::instr_enum::STRSUB2,   { .num_oprd=0, .str="strsub2",   .handler=std::make_shared<corevm::runtime::instr_handler_strsub2>()   } },
-  { corevm::runtime::instr_enum::STRFND,    { .num_oprd=0, .str="strfnd",    .handler=std::make_shared<corevm::runtime::instr_handler_strfnd>()    } },
-  { corevm::runtime::instr_enum::STRFND2,   { .num_oprd=0, .str="strfnd2",   .handler=std::make_shared<corevm::runtime::instr_handler_strfnd2>()   } },
-  { corevm::runtime::instr_enum::STRRFND,   { .num_oprd=0, .str="strrfnd",   .handler=std::make_shared<corevm::runtime::instr_handler_strrfnd>()   } },
-  { corevm::runtime::instr_enum::STRRFND2,  { .num_oprd=0, .str="strrfnd2",  .handler=std::make_shared<corevm::runtime::instr_handler_strrfnd2>()  } },
+  /* STRLEN   */     { .num_oprd=0, .str="strlen",    .handler=std::make_shared<corevm::runtime::instr_handler_strlen>()    },
+  /* STRCLR   */     { .num_oprd=0, .str="strclr",    .handler=std::make_shared<corevm::runtime::instr_handler_strclr>()    },
+  /* STRAPD   */     { .num_oprd=0, .str="strapd",    .handler=std::make_shared<corevm::runtime::instr_handler_strapd>()    },
+  /* STRPSH   */     { .num_oprd=0, .str="strpsh",    .handler=std::make_shared<corevm::runtime::instr_handler_strpsh>()    },
+  /* STRIST   */     { .num_oprd=0, .str="strist",    .handler=std::make_shared<corevm::runtime::instr_handler_strist>()    },
+  /* STRIST2  */     { .num_oprd=0, .str="strist2",   .handler=std::make_shared<corevm::runtime::instr_handler_strist2>()   },
+  /* STRERS   */     { .num_oprd=0, .str="strers",    .handler=std::make_shared<corevm::runtime::instr_handler_strers>()    },
+  /* STRERS2  */     { .num_oprd=0, .str="strers2",   .handler=std::make_shared<corevm::runtime::instr_handler_strers2>()   },
+  /* STRRPLC  */     { .num_oprd=0, .str="strrplc",   .handler=std::make_shared<corevm::runtime::instr_handler_strrplc>()   },
+  /* STRSWP   */     { .num_oprd=0, .str="strswp",    .handler=std::make_shared<corevm::runtime::instr_handler_strswp>()    },
+  /* STRSUB   */     { .num_oprd=0, .str="strsub",    .handler=std::make_shared<corevm::runtime::instr_handler_strsub>()    },
+  /* STRSUB2  */     { .num_oprd=0, .str="strsub2",   .handler=std::make_shared<corevm::runtime::instr_handler_strsub2>()   },
+  /* STRFND   */     { .num_oprd=0, .str="strfnd",    .handler=std::make_shared<corevm::runtime::instr_handler_strfnd>()    },
+  /* STRFND2  */     { .num_oprd=0, .str="strfnd2",   .handler=std::make_shared<corevm::runtime::instr_handler_strfnd2>()   },
+  /* STRRFND  */     { .num_oprd=0, .str="strrfnd",   .handler=std::make_shared<corevm::runtime::instr_handler_strrfnd>()   },
+  /* STRRFND2 */     { .num_oprd=0, .str="strrfnd2",  .handler=std::make_shared<corevm::runtime::instr_handler_strrfnd2>()  },
 
   /* --------------------- Array type instructions -------------------------- */
 
-  { corevm::runtime::instr_enum::ARYLEN,    { .num_oprd=0, .str="arylen",    .handler=std::make_shared<corevm::runtime::instr_handler_arylen>()    } },
-  { corevm::runtime::instr_enum::ARYEMP,    { .num_oprd=0, .str="aryemp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryemp>()    } },
-  { corevm::runtime::instr_enum::ARYAT,     { .num_oprd=0, .str="aryat",     .handler=std::make_shared<corevm::runtime::instr_handler_aryat>()     } },
-  { corevm::runtime::instr_enum::ARYFRT,    { .num_oprd=0, .str="aryfrt",    .handler=std::make_shared<corevm::runtime::instr_handler_aryfrt>()    } },
-  { corevm::runtime::instr_enum::ARYBAK,    { .num_oprd=0, .str="arybak",    .handler=std::make_shared<corevm::runtime::instr_handler_arybak>()    } },
-  { corevm::runtime::instr_enum::ARYAPND,   { .num_oprd=0, .str="aryapnd",   .handler=std::make_shared<corevm::runtime::instr_handler_aryapnd>()   } },
-  { corevm::runtime::instr_enum::ARYPOP,    { .num_oprd=0, .str="arypop",    .handler=std::make_shared<corevm::runtime::instr_handler_arypop>()    } },
-  { corevm::runtime::instr_enum::ARYSWP,    { .num_oprd=0, .str="aryswp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryswp>()    } },
-  { corevm::runtime::instr_enum::ARYCLR,    { .num_oprd=0, .str="aryclr",    .handler=std::make_shared<corevm::runtime::instr_handler_aryclr>()    } },
+  /* ARYLEN   */     { .num_oprd=0, .str="arylen",    .handler=std::make_shared<corevm::runtime::instr_handler_arylen>()    },
+  /* ARYEMP   */     { .num_oprd=0, .str="aryemp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryemp>()    },
+  /* ARYAT    */     { .num_oprd=0, .str="aryat",     .handler=std::make_shared<corevm::runtime::instr_handler_aryat>()     },
+  /* ARYFRT   */     { .num_oprd=0, .str="aryfrt",    .handler=std::make_shared<corevm::runtime::instr_handler_aryfrt>()    },
+  /* ARYBAK   */     { .num_oprd=0, .str="arybak",    .handler=std::make_shared<corevm::runtime::instr_handler_arybak>()    },
+  /* ARYAPND  */     { .num_oprd=0, .str="aryapnd",   .handler=std::make_shared<corevm::runtime::instr_handler_aryapnd>()   },
+  /* ARYPOP   */     { .num_oprd=0, .str="arypop",    .handler=std::make_shared<corevm::runtime::instr_handler_arypop>()    },
+  /* ARYSWP   */     { .num_oprd=0, .str="aryswp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryswp>()    },
+  /* ARYCLR   */     { .num_oprd=0, .str="aryclr",    .handler=std::make_shared<corevm::runtime::instr_handler_aryclr>()    },
 
   /* --------------------- Map type instructions ---------------------------- */
 
-  { corevm::runtime::instr_enum::MAPLEN,    { .num_oprd=0, .str="maplen",    .handler=std::make_shared<corevm::runtime::instr_handler_maplen>()    } },
-  { corevm::runtime::instr_enum::MAPEMP,    { .num_oprd=0, .str="mapemp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapemp>()    } },
-  { corevm::runtime::instr_enum::MAPAT,     { .num_oprd=0, .str="mapat",     .handler=std::make_shared<corevm::runtime::instr_handler_mapat>()     } },
-  { corevm::runtime::instr_enum::MAPPUT,    { .num_oprd=0, .str="mapput",    .handler=std::make_shared<corevm::runtime::instr_handler_mapput>()    } },
-  { corevm::runtime::instr_enum::MAPSET,    { .num_oprd=1, .str="mapset",    .handler=std::make_shared<corevm::runtime::instr_handler_mapset>()    } },
-  { corevm::runtime::instr_enum::MAPERS,    { .num_oprd=0, .str="mapers",    .handler=std::make_shared<corevm::runtime::instr_handler_mapers>()    } },
-  { corevm::runtime::instr_enum::MAPCLR,    { .num_oprd=0, .str="mapclr",    .handler=std::make_shared<corevm::runtime::instr_handler_mapclr>()    } },
-  { corevm::runtime::instr_enum::MAPSWP,    { .num_oprd=0, .str="mapswp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapswp>()    } },
+  /* MAPLEN   */     { .num_oprd=0, .str="maplen",    .handler=std::make_shared<corevm::runtime::instr_handler_maplen>()    },
+  /* MAPEMP   */     { .num_oprd=0, .str="mapemp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapemp>()    },
+  /* MAPAT    */     { .num_oprd=0, .str="mapat",     .handler=std::make_shared<corevm::runtime::instr_handler_mapat>()     },
+  /* MAPPUT   */     { .num_oprd=0, .str="mapput",    .handler=std::make_shared<corevm::runtime::instr_handler_mapput>()    },
+  /* MAPSET   */     { .num_oprd=1, .str="mapset",    .handler=std::make_shared<corevm::runtime::instr_handler_mapset>()    },
+  /* MAPERS   */     { .num_oprd=0, .str="mapers",    .handler=std::make_shared<corevm::runtime::instr_handler_mapers>()    },
+  /* MAPCLR   */     { .num_oprd=0, .str="mapclr",    .handler=std::make_shared<corevm::runtime::instr_handler_mapclr>()    },
+  /* MAPSWP   */     { .num_oprd=0, .str="mapswp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapswp>()    },
 
 };
 
 // -----------------------------------------------------------------------------
 
 corevm::runtime::instr_info
-corevm::runtime::instr_handler_meta::find(corevm::runtime::instr_code instr_code)
+corevm::runtime::instr_handler_meta::get(corevm::runtime::instr_code code)
   throw(corevm::runtime::invalid_instr_error)
 {
-  auto itr = corevm::runtime::instr_handler_meta::instr_info_map.find(instr_code);
-
-  if (itr == corevm::runtime::instr_handler_meta::instr_info_map.end()) {
+  if (code < 0 || code >= corevm::runtime::instr_enum::INSTR_CODE_MAX)
+  {
     THROW(corevm::runtime::invalid_instr_error());
   }
 
-  return corevm::runtime::instr_handler_meta::instr_info_map.at(instr_code);
+  return corevm::runtime::instr_handler_meta::instr_set[code];
 }
 
 // -----------------------------------------------------------------------------

@@ -92,21 +92,21 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
   std::stringstream ss;
   ss << "[";
 
-  for (auto itr = runtime::instr_handler_meta::instr_info_map.begin();
-       itr != runtime::instr_handler_meta::instr_info_map.end();
-       ++itr)
+  for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
-    const runtime::instr_code& code = itr->first;
+    const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
+    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::get(code);
+
     ss << code;
 
-    auto itr_ = itr;
-    ++itr_;
-
-    if (itr_ != runtime::instr_handler_meta::instr_info_map.end())
+    if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)
     {
       ss << ",";
     }
+
+    ss << std::endl;
   }
+
   ss << "]";
 
   const std::string def(
