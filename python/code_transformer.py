@@ -357,7 +357,12 @@ class CodeTransformer(ast.NodeVisitor):
         )
 
     def visit_List(self, node):
+        # TODO: disregarding `node.ctx` here.
         return '__call(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
+
+    def visit_Tuple(self, node):
+        # TODO: disregarding `node.ctx` here.
+        return '__call(tuple, (' + ','.join([self.visit(expr) for expr in node.elts]) + '))'
 
     def visit_Name(self, node):
         return node.id

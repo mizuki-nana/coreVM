@@ -863,6 +863,24 @@ void corevm::types::interface_array_clear(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_array_merge(
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result)
+{
+  corevm::types::native_array array_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+
+  corevm::types::native_array other_array_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_array>(other_operand);
+
+  array_value.insert(
+    array_value.end(), other_array_value.begin(), other_array_value.end());
+
+  result = array_value;
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* --------------------------- MAP OPERATIONS ------------------------------- */
 

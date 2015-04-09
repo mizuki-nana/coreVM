@@ -2772,6 +2772,24 @@ TEST_F(instrs_native_array_type_complex_instrs_test, TestInstrARYCLR)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_array_type_complex_instrs_test, TestInstrARYMRG)
+{
+  corevm::types::native_array array { 1, 2, 3 };
+  corevm::types::native_array other_array { 4, 5, 6 };
+
+  corevm::types::native_array expected_result {1, 2, 3, 4, 5, 6};
+
+  corevm::types::native_type_handle oprd = array;
+  corevm::types::native_type_handle other_oprd = other_array;
+
+  push_eval_stack_and_frame(eval_oprds_list{ oprd, other_oprd });
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_arymrg,
+    corevm::types::native_array>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_map_type_complex_instrs_test : public instrs_native_type_complex_instrs_test {};
 
 // -----------------------------------------------------------------------------

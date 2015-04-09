@@ -235,6 +235,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* ARYPOP   */     { .num_oprd=0, .str="arypop",    .handler=std::make_shared<corevm::runtime::instr_handler_arypop>()    },
   /* ARYSWP   */     { .num_oprd=0, .str="aryswp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryswp>()    },
   /* ARYCLR   */     { .num_oprd=0, .str="aryclr",    .handler=std::make_shared<corevm::runtime::instr_handler_aryclr>()    },
+  /* ARYMRG   */     { .num_oprd=0, .str="arymrg",    .handler=std::make_shared<corevm::runtime::instr_handler_arymrg>()    },
 
   /* --------------------- Map type instructions ---------------------------- */
 
@@ -2524,6 +2525,19 @@ corevm::runtime::instr_handler_aryclr::execute(
     instr,
     process,
     corevm::types::interface_array_clear
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_arymrg::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    instr,
+    process,
+    corevm::types::interface_array_merge
   );
 }
 

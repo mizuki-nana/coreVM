@@ -414,6 +414,12 @@ void interface_array_clear(
 
 // -----------------------------------------------------------------------------
 
+void interface_array_merge(
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 
 /* ---------------------------- MAP OPERATIONS ------------------------------ */
 

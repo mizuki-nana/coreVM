@@ -714,6 +714,28 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
 
+    def visit_Tuple(self, node):
+        random_name = self.__get_random_name()
+
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('ary', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(random_name), 0)
+
+        for item in node.elts:
+            tmp_name = self.__get_random_name()
+            self.visit(item)
+            self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('putobj', 0, 0)
+            self.__add_instr('aryapnd', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('sethndl', 0, 0)
+
+        self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+
     def visit_Num(self, node):
         num_type = 'dec2' if isinstance(node.n, float) else 'int64'
 
@@ -1014,6 +1036,7 @@ def main():
         generator.read_from_source('python/src/str.py')
         generator.read_from_source('python/src/list.py')
         generator.read_from_source('python/src/dict.py')
+        generator.read_from_source('python/src/tuple.py')
 
         generator.read_from_source(options.input_file)
 

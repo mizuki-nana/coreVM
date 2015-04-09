@@ -926,6 +926,13 @@ enum instr_enum : uint32_t
    */
   ARYCLR,
 
+  /**
+   * <arymrg, _, _>
+   * Pops the top two elements on the eval stack, converts them to arrays,
+   * merge them into one single array, and put it back to the eval stack.
+   */
+  ARYMRG,
+
   /* ------------------------- Map type instructions ------------------------ */
 
   /**
@@ -2137,6 +2144,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_aryclr : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_arymrg : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
