@@ -15,6 +15,13 @@ class str(object):
     def __str__(self):
         return self
 
+    def __repr__(self):
+        res = __call(str, '')
+        __call(res.__add__, __call(str, "'"))
+        __call(res.__add__, self)
+        __call(res.__add__, __call(str, "'"))
+        return res
+
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###

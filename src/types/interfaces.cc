@@ -973,3 +973,51 @@ void corevm::types::interface_map_swap(
 }
 
 // -----------------------------------------------------------------------------
+
+void corevm::types::interface_map_keys(
+  native_type_handle& operand, native_type_handle& result)
+{
+  corevm::types::native_map map_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+
+  corevm::types::native_array array_value;
+
+  for (auto itr = map_value.begin(); itr != map_value.end(); ++itr)
+  {
+    corevm::types::native_map_key_type key = \
+      static_cast<corevm::types::native_map_key_type>(itr->first);
+
+    corevm::types::native_array_element_type element = \
+      static_cast<corevm::types::native_array_element_type>(key);
+
+    array_value.push_back(element);
+  }
+
+  result = std::move(array_value);
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_map_vals(
+  native_type_handle& operand, native_type_handle& result)
+{
+  corevm::types::native_map map_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+
+  corevm::types::native_array array_value;
+
+  for (auto itr = map_value.begin(); itr != map_value.end(); ++itr)
+  {
+    corevm::types::native_map_mapped_type value = \
+      static_cast<corevm::types::native_map_mapped_type>(itr->second);
+
+    corevm::types::native_array_element_type element = \
+      static_cast<corevm::types::native_array_element_type>(value);
+
+    array_value.push_back(element);
+  }
+
+  result = std::move(array_value);
+}
+
+// -----------------------------------------------------------------------------

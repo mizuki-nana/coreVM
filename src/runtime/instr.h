@@ -985,6 +985,20 @@ enum instr_enum : uint32_t
    */
   MAPSWP,
 
+  /**
+   * <mapkeys, _, _>
+   * Inserts the keys of the map on top of the eval stack into an array,
+   * and place it on top of the eval stack.
+   */
+  MAPKEYS,
+
+  /**
+   * <mapvals, _, _>
+   * Inserts the values of the map on top of the eval stack into an array,
+   * and place it on top of the eval stack.
+   */
+  MAPVALS,
+
   /* -------------------------------- Max ----------------------------------- */
 
   INSTR_CODE_MAX,
@@ -2193,6 +2207,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_mapswp : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mapkeys : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mapvals : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

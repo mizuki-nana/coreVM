@@ -16,14 +16,15 @@ class list(object):
         """
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
-        [putobj, 0, 0]
-        [ldobj, arg, 0]
         [gethndl, 0, 0]
-        [pop, 0, 0]
+        [ldobj, arg, 0]
+        [putobj, 0, 0]
         [aryapnd, 0, 0]
+        [ldobj, self, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
+        return None
 
     def __len__(self):
         """
@@ -45,9 +46,12 @@ class list(object):
         res = __call(str, '')
         __call(res.__add__, __call(str, '['))
         for item in self:
-            __call(res.__add__, __call(item.__str__)) # res += str(item)
+            __call(res.__add__, __call(item.__repr__)) # res += str(item)
             if __call(index.__lt__, top_index):
                 __call(res.__add__, __call(str, ', '))
             index = __call(index.__add__, 1)
         __call(res.__add__, __call(str, ']'))
         return res
+
+    def __repr__(self):
+        return __call(self.__str__)

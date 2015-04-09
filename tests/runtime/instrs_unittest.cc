@@ -2964,3 +2964,45 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPSWP)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPKEYS)
+{
+  corevm::types::native_map map {
+    { 1, 11 },
+    { 2, 22 },
+    { 3, 33 },
+  };
+
+  // Result order is nondeterministic?
+  corevm::types::native_array expected_result = { 3, 1, 2 };
+
+  corevm::types::native_type_handle oprd = map;
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapkeys,
+    corevm::types::native_array>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPVALS)
+{
+  corevm::types::native_map map {
+    { 1, 11 },
+    { 2, 22 },
+    { 3, 33 },
+  };
+
+  // Result order is nondeterministic?
+  corevm::types::native_array expected_result = { 33, 11, 22 };
+
+  corevm::types::native_type_handle oprd = map;
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd});
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapvals,
+    corevm::types::native_array>(expected_result);
+}
+
+// -----------------------------------------------------------------------------

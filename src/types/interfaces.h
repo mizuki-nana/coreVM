@@ -459,6 +459,15 @@ void interface_map_swap(
 
 // -----------------------------------------------------------------------------
 
+void interface_map_keys(
+  native_type_handle& operand, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
+void interface_map_vals(
+  native_type_handle& operand, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
 
 } /* end namespace types */
 

@@ -26,6 +26,9 @@ class float(object):
         """
         return __call(str, value)
 
+    def __repr__(self):
+        return __call(self.__str__)
+
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###

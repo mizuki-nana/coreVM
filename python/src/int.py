@@ -12,6 +12,9 @@ class int(object):
         ### END VECTOR ###
         """
 
+    def __hash__(self):
+        return __call(int, self)
+
     def __str__(self):
         """
         ### BEGIN VECTOR ###
@@ -26,6 +29,9 @@ class int(object):
         """
         str_obj = __call(str, value)
         return str_obj
+
+    def __repr__(self):
+        return __call(self.__str__)
 
     def __add__(self, value):
         """

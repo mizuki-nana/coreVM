@@ -20,6 +20,7 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import ast
+import itertools
 import optparse
 import pprint
 import random
@@ -330,6 +331,16 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.__add_instr('mapset', self.__get_encoding_id(stmt.name), 0)
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
                 self.__add_instr('sethndl', 0, 0)
+            elif isinstance(stmt, ast.ClassDef):
+                tmp_name = self.__get_random_name()
+                self.visit(stmt)
+                self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
+                self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+                self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
+                self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
+            else:
+                # TODO: handle other cases.
+                pass
 
         # Step out.
         self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
@@ -627,6 +638,37 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__current_vector()[vector_length1 - 1] = Instr(
             self.instr_str_to_code_map['jmpif'], length_diff, 0)
+
+    def visit_Dict(self, node):
+        assert len(node.keys) == len(node.values)
+
+        dict_name = self.__get_random_name()
+
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('map', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(dict_name), 0)
+
+        for key, value in itertools.izip(node.keys, node.values):
+            key_name = self.__get_random_name()
+            self.visit(key)
+            self.__add_instr('stobj2', self.__get_encoding_id(key_name), 0)
+
+            value_name = self.__get_random_name()
+            self.visit(value)
+            self.__add_instr('stobj2', self.__get_encoding_id(value_name), 0)
+
+            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(key_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(value_name), 0)
+            self.__add_instr('putobj', 0, 0)
+
+            self.__add_instr('mapput', 0, 0)
+
+            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+            self.__add_instr('sethndl', 0, 0)
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
@@ -971,6 +1013,7 @@ def main():
         generator.read_from_source('python/src/float.py')
         generator.read_from_source('python/src/str.py')
         generator.read_from_source('python/src/list.py')
+        generator.read_from_source('python/src/dict.py')
 
         generator.read_from_source(options.input_file)
 

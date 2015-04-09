@@ -246,6 +246,8 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* MAPERS   */     { .num_oprd=0, .str="mapers",    .handler=std::make_shared<corevm::runtime::instr_handler_mapers>()    },
   /* MAPCLR   */     { .num_oprd=0, .str="mapclr",    .handler=std::make_shared<corevm::runtime::instr_handler_mapclr>()    },
   /* MAPSWP   */     { .num_oprd=0, .str="mapswp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapswp>()    },
+  /* MAPKEYS  */     { .num_oprd=0, .str="mapkeys",   .handler=std::make_shared<corevm::runtime::instr_handler_mapkeys>()   },
+  /* MAPVALS  */     { .num_oprd=0, .str="mapvals",   .handler=std::make_shared<corevm::runtime::instr_handler_mapvals>()   },
 
 };
 
@@ -2641,6 +2643,32 @@ corevm::runtime::instr_handler_mapswp::execute(
     instr,
     process,
     corevm::types::interface_map_swap
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mapkeys::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
+    instr,
+    process,
+    corevm::types::interface_map_keys
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mapvals::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
+    instr,
+    process,
+    corevm::types::interface_map_vals
   );
 }
 

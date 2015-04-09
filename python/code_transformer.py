@@ -249,6 +249,35 @@ class CodeTransformer(ast.NodeVisitor):
             orelse=self.visit(node.orelse)
         )
 
+    def visit_Dict(self, node):
+        assert len(node.keys) == len(node.values)
+
+        base_str = '__call(dict, '
+
+        base_str += '{\n'
+
+        self.__indent()
+
+        for i in xrange(len(node.keys)):
+            base_str += '{indentation}{key}: {value},\n'.format(
+                indentation=self.__indentation(),
+                key='__call({obj}.__hash__)'.format(
+                    obj=self.visit(node.keys[i])
+                ),
+                value='__call(dict.__dict_KeyValuePair, {key}, {value})'.format(
+                    key=self.visit(node.keys[i]),
+                    value=self.visit(node.values[i])
+                )
+            )
+
+        self.__dedent()
+
+        base_str += '}'
+
+        base_str += ')'
+
+        return base_str
+
     def visit_ListComp(self, node):
         pass
 

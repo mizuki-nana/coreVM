@@ -36,10 +36,10 @@ namespace corevm {
 namespace types {
 
 
-typedef uint64_t element_type;
+typedef uint64_t native_array_element_type;
 
 
-using native_array_base = typename std::vector<element_type>;
+using native_array_base = typename std::vector<native_array_element_type>;
 
 
 class native_array : public native_array_base
