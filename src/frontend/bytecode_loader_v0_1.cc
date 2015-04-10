@@ -115,6 +115,7 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
         "\"format\","
         "\"format-version\","
         "\"target-version\","
+        "\"path\","
         "\"encoding\","
         "\"encoding_map\","
         "\"__MAIN__\""
@@ -177,12 +178,15 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
 
 void
 corevm::frontend::bytecode_loader_v0_1::load(
-  const std::string& path, const JSON& content_json,
+  const std::string& path,
+  const JSON& content_json,
   corevm::runtime::process& process)
 {
-  corevm::runtime::compartment compartment(path);
-
   const JSON::object& json_object = content_json.object_items();
+
+  const std::string& source_path = json_object.at("path").string_value();
+
+  corevm::runtime::compartment compartment(source_path);
 
   // Load encoding map.
   corevm::runtime::encoding_map encoding_map;

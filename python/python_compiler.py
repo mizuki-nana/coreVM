@@ -147,6 +147,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     default_closure_name = '__main__'
 
     def __init__(self, options):
+        self.input_file = options.input_file
         self.output_file = options.output_file
         self.debug_mode = options.debug_mode
 
@@ -182,7 +183,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             'format': self.format,
             'format-version': self.format_version,
             'target-version': self.target_version,
-            'path': '',
+            'path': self.input_file,
             'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
             'encoding': self.encoding,
             'author': self.author,
