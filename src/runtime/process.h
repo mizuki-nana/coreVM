@@ -138,6 +138,8 @@ public:
   const corevm::dyobj::dyobj_id pop_stack()
     throw(corevm::runtime::object_stack_empty_error);
 
+  void swap_stack();
+
   void push_stack(corevm::dyobj::dyobj_id&);
 
   bool has_ntvhndl(corevm::dyobj::ntvhndl_key&);

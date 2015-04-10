@@ -200,6 +200,12 @@ enum instr_enum : uint32_t
   GETOBJ,
 
   /**
+   * <swap, _, _>
+   * Swaps the top two objects on top of the stack.
+   */
+  SWAP,
+
+  /**
    * <setflgc, #, _>
    * Sets the `IS_NOT_GARBAGE_COLLECTIBLE` flag on the object on top of the
    * stack.
@@ -1258,6 +1264,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_getobj : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_swap : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

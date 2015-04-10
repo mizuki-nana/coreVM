@@ -9,3 +9,5 @@ class MyObject(object):
 
 o = MyObject(1)
 o.run('Hello world')
+o.name = 'Will'
+print o.name

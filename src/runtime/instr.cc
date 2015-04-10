@@ -104,6 +104,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* RSETATTRS */    { .num_oprd=1, .str="rsetattrs", .handler=std::make_shared<corevm::runtime::instr_handler_rsetattrs>() },
   /* PUTOBJ    */    { .num_oprd=0, .str="putobj",    .handler=std::make_shared<corevm::runtime::instr_handler_putobj>()    },
   /* GETOBJ    */    { .num_oprd=0, .str="getobj",    .handler=std::make_shared<corevm::runtime::instr_handler_getobj>()    },
+  /* SWAP      */    { .num_oprd=0, .str="swap",      .handler=std::make_shared<corevm::runtime::instr_handler_swap>()      },
   /* SETFLGC   */    { .num_oprd=1, .str="setflgc",   .handler=std::make_shared<corevm::runtime::instr_handler_setflgc>()   },
   /* SETFLDEL  */    { .num_oprd=1, .str="setfldel",  .handler=std::make_shared<corevm::runtime::instr_handler_setfldel>()  },
   /* SETFLCALL */    { .num_oprd=1, .str="setflcall", .handler=std::make_shared<corevm::runtime::instr_handler_setflcall>() },
@@ -1012,6 +1013,15 @@ corevm::runtime::instr_handler_getobj::execute(
     corevm::dyobj::dyobj_id>(hndl);
 
   process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_swap::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  process.swap_stack();
 }
 
 // -----------------------------------------------------------------------------

@@ -831,6 +831,38 @@ TEST_F(instrs_obj_unittest, TestInstrGETOBJ)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrSWAP)
+{
+  corevm::dyobj::dyobj_id id1 = 1;
+  corevm::dyobj::dyobj_id id2 = 2;
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = 0,
+    .oprd2 = 0
+  };
+
+  ASSERT_THROW(
+    {
+      execute_instr<corevm::runtime::instr_handler_swap>(instr, 2);
+    },
+    corevm::runtime::invalid_operation_error
+  );
+
+  m_process.push_stack(id2);
+  m_process.push_stack(id1);
+
+  ASSERT_EQ(id1, m_process.top_stack());
+
+  execute_instr<corevm::runtime::instr_handler_swap>(instr, 2);
+
+  corevm::dyobj::dyobj_id top_id = m_process.top_stack();
+
+  ASSERT_EQ(id2, top_id);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_obj_flag_unittest : public instrs_obj_unittest
 {
 protected:

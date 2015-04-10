@@ -44,6 +44,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ostream>
 #include <stack>
 #include <stdexcept>
+#include <utility>
 #include <unordered_map>
 
 #include <setjmp.h>
@@ -349,6 +350,31 @@ corevm::runtime::process::pop_stack()
   corevm::dyobj::dyobj_id id = m_dyobj_stack.back();
   m_dyobj_stack.pop_back();
   return id;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::swap_stack()
+{
+  if (m_dyobj_stack.size() < 2)
+  {
+    THROW(corevm::runtime::invalid_operation_error(
+      "Cannot swap top of object stack"));
+  }
+
+  auto itr = m_dyobj_stack.begin();
+  auto itr2 = m_dyobj_stack.begin();
+
+  std::advance(itr, m_dyobj_stack.size() - 2);
+  std::advance(itr2, m_dyobj_stack.size() - 1);
+
+#if __DEBUG__
+  ASSERT(itr != m_dyobj_stack.end());
+  ASSERT(itr2 != m_dyobj_stack.end());
+#endif
+
+  std::swap(*itr, *itr2);
 }
 
 // -----------------------------------------------------------------------------

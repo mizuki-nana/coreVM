@@ -240,6 +240,28 @@ TEST_F(process_unittest, TestPushAndPopStack)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(process_unittest, TestSwapStack)
+{
+  corevm::runtime::process process;
+
+  corevm::dyobj::dyobj_id id1 = 1;
+  corevm::dyobj::dyobj_id id2 = 2;
+
+  process.push_stack(id2);
+  process.push_stack(id1);
+
+  ASSERT_EQ(id1, process.top_stack());
+
+  process.swap_stack();
+
+  ASSERT_EQ(id2, process.top_stack());
+
+  ASSERT_EQ(id2, process.pop_stack());
+  ASSERT_EQ(id1, process.pop_stack());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestPushAndPopFrames)
 {
   corevm::runtime::process process;
