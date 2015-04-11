@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dyobj/flags.h"
+#include "dyobj/util.h"
 #include "runtime/closure.h"
 #include "runtime/common.h"
 #include "runtime/invocation_ctx.h"
@@ -211,13 +212,32 @@ TEST_F(instrs_obj_unittest, TestInstrSTOBJ)
 
 TEST_F(instrs_obj_unittest, TestInstrGETATTR)
 {
-  corevm::dyobj::attr_key attr_key = 333;
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_key, .oprd2=0 };
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+
+  uint64_t attr_str_key = 333;
+  const std::string attr_str = "Hello world";
+
+  corevm::runtime::encoding_map encoding_table {
+    { attr_str_key, attr_str }
+  };
+
+  compartment.set_encoding_map(encoding_table);
+  m_process.insert_compartment(compartment);
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = corevm::runtime::NONESET_CLOSURE_ID,
+  };
+  m_process.emplace_frame(ctx);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=attr_str_key, .oprd2=0 };
 
   corevm::dyobj::dyobj_id id1 = process::adapter(m_process).help_create_dyobj();
   corevm::dyobj::dyobj_id id2 = process::adapter(m_process).help_create_dyobj();
 
   auto &obj = process::adapter(m_process).help_get_dyobj(id1);
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
   obj.putattr(attr_key, id2);
   m_process.push_stack(id1);
 
@@ -233,8 +253,27 @@ TEST_F(instrs_obj_unittest, TestInstrGETATTR)
 
 TEST_F(instrs_obj_unittest, TestInstrSETATTR)
 {
-  corevm::dyobj::attr_key attr_key = 789;
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_key, .oprd2=0 };
+  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+
+  uint64_t attr_str_key = 333;
+  const std::string attr_str = "Hello world";
+
+  corevm::runtime::encoding_map encoding_table {
+    { attr_str_key, attr_str }
+  };
+
+  compartment.set_encoding_map(encoding_table);
+  m_process.insert_compartment(compartment);
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = corevm::runtime::NONESET_CLOSURE_ID,
+  };
+
+  m_process.emplace_frame(ctx);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=attr_str_key, .oprd2=0 };
 
   corevm::dyobj::dyobj_id id1 = process::adapter(m_process).help_create_dyobj();
   corevm::dyobj::dyobj_id id2 = process::adapter(m_process).help_create_dyobj();
@@ -250,6 +289,8 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR)
   ASSERT_EQ(expected_id, actual_id);
 
   auto &obj = process::adapter(m_process).help_get_dyobj(actual_id);
+
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
   ASSERT_TRUE(obj.hasattr(attr_key));
 
@@ -679,21 +720,43 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
     { 3, static_cast<corevm::types::native_map_mapped_type>(id3) },
   };
 
+  auto ntvhndl_key = m_process.insert_ntvhndl(hndl);
+
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 10;
+
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+
+  const std::string attr_str1 = "__init__";
+  const std::string attr_str2 = "__len__";
+  const std::string attr_str3 = "__iter__";
+
+  corevm::runtime::encoding_map encoding_map {
+    { 1, attr_str1 },
+    { 2, attr_str2 },
+    { 3, attr_str3 },
+  };
+  compartment.set_encoding_map(encoding_map);
+  m_process.insert_compartment(compartment);
+
+  corevm::dyobj::attr_key attr_key1 = corevm::dyobj::hash_attr_str(attr_str1);
+  corevm::dyobj::attr_key attr_key2 = corevm::dyobj::hash_attr_str(attr_str2);
+  corevm::dyobj::attr_key attr_key3 = corevm::dyobj::hash_attr_str(attr_str3);
 
   corevm::runtime::closure_ctx ctx {
     .compartment_id = compartment_id,
     .closure_id = closure_id
   };
 
-  corevm::runtime::frame frame(ctx);
-  frame.push_eval_stack(hndl);
+  corevm::dyobj::dyobj_id dst_id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(dst_id);
 
-  corevm::dyobj::dyobj_id id = process::adapter(m_process).help_create_dyobj();
-  m_process.push_stack(id);
+  corevm::dyobj::dyobj_id src_id = process::adapter(m_process).help_create_dyobj();
+  auto& src_obj = process::adapter(m_process).help_get_dyobj(src_id);
+  src_obj.set_ntvhndl_key(ntvhndl_key);
+  src_obj.set_closure_ctx(ctx);
 
-  m_process.push_frame(frame);
+  m_process.push_stack(src_id);
 
   corevm::runtime::instr instr {
     .code = 0,
@@ -704,11 +767,14 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
   execute_instr<corevm::runtime::instr_handler_setattrs>(instr, 1);
 
   corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(dst_id, actual_id);
+
   auto& obj = process::adapter(m_process).help_get_dyobj(actual_id);
 
-  ASSERT_EQ(id1, obj.getattr(1));
-  ASSERT_EQ(id2, obj.getattr(2));
-  ASSERT_EQ(id3, obj.getattr(3));
+  ASSERT_EQ(id1, obj.getattr(attr_key1));
+  ASSERT_EQ(id2, obj.getattr(attr_key2));
+  ASSERT_EQ(id3, obj.getattr(attr_key3));
 }
 
 // -----------------------------------------------------------------------------
@@ -726,11 +792,21 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
   };
 
   corevm::runtime::compartment_id compartment_id = 0;
-  corevm::runtime::closure_id closure_id = 10;
+
+  uint64_t attr_str_key = 333;
+  const std::string attr_str = "Hello world";
+
+  corevm::runtime::encoding_map encoding_table {
+    { attr_str_key, attr_str }
+  };
+
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+  compartment.set_encoding_map(encoding_table);
+  m_process.insert_compartment(compartment);
 
   corevm::runtime::closure_ctx ctx {
     .compartment_id = compartment_id,
-    .closure_id = closure_id
+    .closure_id = corevm::runtime::NONESET_CLOSURE_ID,
   };
 
   corevm::runtime::frame frame(ctx);
@@ -741,11 +817,11 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
 
   m_process.push_frame(frame);
 
-  corevm::dyobj::attr_key attr = 1;
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
   corevm::runtime::instr instr {
     .code = 0,
-    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr),
+    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr_str_key),
     .oprd2 = 0
   };
 
@@ -755,9 +831,9 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
   auto& obj2 = process::adapter(m_process).help_get_dyobj(id2);
   auto& obj3 = process::adapter(m_process).help_get_dyobj(id3);
 
-  ASSERT_EQ(id, obj1.getattr(attr));
-  ASSERT_EQ(id, obj2.getattr(attr));
-  ASSERT_EQ(id, obj3.getattr(attr));
+  ASSERT_EQ(id, obj1.getattr(attr_key));
+  ASSERT_EQ(id, obj2.getattr(attr_key));
+  ASSERT_EQ(id, obj3.getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------

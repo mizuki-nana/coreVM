@@ -315,6 +315,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_class_name = self.current_class_name + '::' + node.name
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
+        self.__add_instr('setctx', 0, 0)
         self.__add_instr('map', 0, 0)
         self.__add_instr('sethndl', 0, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)

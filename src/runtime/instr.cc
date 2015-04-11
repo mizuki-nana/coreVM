@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "process.h"
 #include "corevm/macros.h"
+#include "dyobj/util.h"
 #include "types/interfaces.h"
 #include "types/types.h"
 
@@ -41,11 +42,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+
 namespace corevm {
 
 
 namespace runtime {
 
+
+// -----------------------------------------------------------------------------
 
 std::ostream& operator<<(
   std::ostream& ost, const corevm::runtime::instr& instr)
@@ -69,11 +73,58 @@ bool operator==(const instr& lhs, const instr& rhs)
     lhs.oprd2 == rhs.oprd2;
 }
 
+// -----------------------------------------------------------------------------
+
+static corevm::dyobj::attr_key
+get_attr_key(
+  corevm::runtime::process& process,
+  corevm::runtime::compartment_id compartment_id,
+  uint64_t str_key,
+  bool from_current_compartment=false)
+{
+  corevm::runtime::compartment *compartment=nullptr;
+  process.get_compartment(compartment_id, &compartment);
+
+  if (!compartment)
+  {
+    if (!from_current_compartment)
+    {
+      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
+    }
+    else
+    {
+      ASSERT(compartment);
+    }
+  }
+
+  std::string attr_str;
+  compartment->get_encoding_string(str_key, &attr_str);
+
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  return attr_key;
+}
+
+// -----------------------------------------------------------------------------
+
+static corevm::dyobj::attr_key
+get_attr_key_from_current_compartment(
+  corevm::runtime::process& process,
+  uint64_t str_key)
+{
+  const corevm::runtime::frame& frame = process.top_frame();
+
+  return get_attr_key(
+    process, frame.closure_ctx().compartment_id, str_key, true);
+}
+
+// -----------------------------------------------------------------------------
 
 } /* end namespace runtime */
 
 
 } /* end namespace corevm */
+
 
 // -----------------------------------------------------------------------------
 
@@ -537,7 +588,9 @@ void
 corevm::runtime::instr_handler_getattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
+    process, str_key);
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
@@ -552,7 +605,9 @@ void
 corevm::runtime::instr_handler_setattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
+    process, str_key);
 
   corevm::dyobj::dyobj_id attr_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_id = process.pop_stack();
@@ -901,12 +956,15 @@ void
 corevm::runtime::instr_handler_setattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
+  corevm::dyobj::dyobj_id src_id = process.pop_stack();
+  auto& src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_id);
+
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
 
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle hndl = frame.pop_eval_stack();
+  corevm::types::native_type_handle hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
   corevm::types::native_type_handle res;
 
   corevm::types::interface_to_map(hndl, res);
@@ -920,15 +978,21 @@ corevm::runtime::instr_handler_setattrs::execute(
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
-    corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(itr->first);
+    uint64_t str_key = static_cast<uint64_t>(itr->first);
+    corevm::dyobj::attr_key attr_key = get_attr_key(
+      process, src_obj.closure_ctx().compartment_id, str_key);
+
     corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
     auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
 
     if (should_clone)
     {
-      auto cloned_attr_id = corevm::runtime::process::adapter(process).help_create_dyobj();
-      auto& cloned_attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(cloned_attr_id);
+      auto cloned_attr_id =
+        corevm::runtime::process::adapter(process).help_create_dyobj();
+
+      auto& cloned_attr_obj =
+        corevm::runtime::process::adapter(process).help_get_dyobj(cloned_attr_id);
 
       cloned_attr_obj.copy_from(attr_obj);
       cloned_attr_obj.manager().on_setattr();
@@ -957,12 +1021,14 @@ void
 corevm::runtime::instr_handler_rsetattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
+  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
+    process, str_key);
+
+  corevm::runtime::frame& frame = process.top_frame();
 
   corevm::dyobj::dyobj_id attr_id = process.top_stack();
   auto& attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
-
-  corevm::runtime::frame& frame = process.top_frame();
 
   corevm::types::native_type_handle hndl = frame.pop_eval_stack();
   corevm::types::native_type_handle res;

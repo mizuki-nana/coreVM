@@ -144,13 +144,13 @@ public:
 
   bool has_ntvhndl(corevm::dyobj::ntvhndl_key&);
 
-  corevm::types::native_type_handle& get_ntvhndl(corevm::dyobj::ntvhndl_key&)
+  corevm::types::native_type_handle& get_ntvhndl(corevm::dyobj::ntvhndl_key)
     throw(corevm::runtime::native_type_handle_not_found_error);
 
   corevm::dyobj::ntvhndl_key insert_ntvhndl(corevm::types::native_type_handle&)
     throw(corevm::runtime::native_type_handle_insertion_error);
 
-  void erase_ntvhndl(corevm::dyobj::ntvhndl_key&)
+  void erase_ntvhndl(corevm::dyobj::ntvhndl_key)
     throw(corevm::runtime::native_type_handle_deletion_error);
 
   const corevm::runtime::instr_addr pc() const;

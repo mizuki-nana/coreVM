@@ -429,7 +429,7 @@ corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 corevm::types::native_type_handle&
-corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key key)
   throw(corevm::runtime::native_type_handle_not_found_error)
 {
   return m_ntvhndl_pool.at(key);
@@ -452,7 +452,7 @@ corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key key)
   throw(corevm::runtime::native_type_handle_deletion_error)
 {
   if (key == corevm::dyobj::NONESET_NTVHNDL_KEY)

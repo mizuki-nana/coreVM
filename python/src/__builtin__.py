@@ -13,8 +13,8 @@ class object:
         ### BEGIN VECTOR ###
         [new, 0, 0]
         [ldobj, cls, 0]
-        [gethndl, 0, 0]
         [setattr, __class__, 0]
+        [ldobj, cls, 0]
         [setattrs, 1, 1]
         [rsetattrs, im_self, 0]
         ### END VECTOR ###
