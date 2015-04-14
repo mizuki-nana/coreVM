@@ -170,7 +170,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* JMPIF     */    { .num_oprd=1, .str="jmpif",     .handler=std::make_shared<corevm::runtime::instr_handler_jmpif>()     },
   /* JMPR      */    { .num_oprd=1, .str="jmpr",      .handler=std::make_shared<corevm::runtime::instr_handler_jmpr>()      },
   /* EXC       */    { .num_oprd=0, .str="exc",       .handler=std::make_shared<corevm::runtime::instr_handler_exc>()       },
-  /* EXC2      */    { .num_oprd=0, .str="exc2",      .handler=std::make_shared<corevm::runtime::instr_handler_exc2>()      },
+  /* EXCOBJ    */    { .num_oprd=0, .str="excobj",    .handler=std::make_shared<corevm::runtime::instr_handler_excobj>()    },
   /* EXIT      */    { .num_oprd=1, .str="exit",      .handler=std::make_shared<corevm::runtime::instr_handler_exit>()      },
 
   /* ------------------------- Function instructions ------------------------ */
@@ -1330,16 +1330,105 @@ void
 corevm::runtime::instr_handler_exc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  bool search_catch_sites = static_cast<bool>(instr.oprd1);
+
+  while (process.has_frame())
+  {
+    corevm::runtime::frame& frame = process.top_frame();
+    corevm::dyobj::dyobj_id exc_obj_id = process.pop_stack();
+    corevm::runtime::instr_addr starting_addr = frame.return_addr() + 1;
+    uint32_t dst = 0;
+
+    if (search_catch_sites)
+    {
+      corevm::runtime::compartment *compartment = nullptr;
+      process.get_compartment(frame.closure_ctx().compartment_id, &compartment);
+
+#if __DEBUG__
+      ASSERT(compartment);
+#endif
+
+      corevm::runtime::closure *closure = nullptr;
+      compartment->get_closure_by_id(frame.closure_ctx().closure_id, &closure);
+
+#if __DEBUG__
+      ASSERT(closure);
+#endif
+
+      uint32_t index = process.pc() - starting_addr;
+
+      if (search_catch_sites)
+      {
+        const auto& catch_sites = closure->catch_sites;
+
+        auto itr = std::find_if(
+          catch_sites.begin(),
+          catch_sites.end(),
+          [&index](const corevm::runtime::catch_site& catch_site) -> bool {
+            return index >= catch_site.from && index <= catch_site.to;
+          }
+        );
+
+        if (itr != catch_sites.end())
+        {
+          const corevm::runtime::catch_site& catch_site = *itr;
+
+          dst = catch_site.dst;
+        }
+      }
+    }
+
+    if (dst)
+    {
+      // A catch site found in the current frame. Jump to its destination.
+      frame.set_exc_obj(exc_obj_id);
+
+      corevm::runtime::instr_addr addr = \
+        starting_addr + static_cast<corevm::runtime::instr_addr>(dst);
+
+      // Minus one so that it will be `addr` after this instruction finishes,
+      // since the pc gets incremented after every instruction.
+      process.set_pc(addr - 1);
+      return;
+    }
+    else
+    {
+      // No matching catch site found in the current frame.
+      // Pop the current frame, and set the exc object on the previous frame.
+      process.pop_frame();
+
+      if (process.has_frame())
+      {
+        corevm::runtime::frame& previous_frame = process.top_frame();
+        previous_frame.set_exc_obj(exc_obj_id);
+
+        process.push_stack(exc_obj_id);
+
+        // Need to search catch sites in the other frames.
+        search_catch_sites = true;
+      }
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::instr_handler_exc2::execute(
+corevm::runtime::instr_handler_excobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  // TODO: to be implemented.
+  const corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::dyobj::dyobj_id exc_obj_id = frame.exc_obj();
+
+  if (!exc_obj_id)
+  {
+    THROW(corevm::runtime::invalid_operation_error("No exception raised"));
+  }
+  else
+  {
+    process.push_stack(exc_obj_id);
+  }
 }
 
 // -----------------------------------------------------------------------------

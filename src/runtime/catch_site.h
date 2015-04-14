@@ -20,18 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_H_
-#define COREVM_CLOSURE_H_
+#ifndef COREVM_CATCH_SITE_H_
+#define COREVM_CATCH_SITE_H_
 
-#include "catch_site.h"
-#include "common.h"
-#include "loc_info.h"
-#include "vector.h"
-
-#include <limits>
-#include <ostream>
-#include <string>
-#include <type_traits>
+#include <cstdint>
 #include <vector>
 
 
@@ -43,38 +35,24 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef struct closure
+struct catch_site
 {
-  std::string name;
-  corevm::runtime::closure_id id;
-  corevm::runtime::closure_id parent_id;
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
-} closure;
+  const uint32_t from;
+  const uint32_t to;
+  const uint32_t dst;
+};
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<corevm::runtime::closure> closure_table;
-
-// -----------------------------------------------------------------------------
-
-static_assert(
-  std::numeric_limits<closure_table::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::closure_id>::max(),
-  "Closure ID incompatibility");
-
-// -----------------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream&, const corevm::runtime::closure&);
+typedef std::vector<corevm::runtime::catch_site> catch_site_list;
 
 // -----------------------------------------------------------------------------
 
 
-} /* end namespace runtime */
+}; /* end namespace runtime */
 
 
-} /* end namespace corevm */
+}; /* end namespace corevm */
 
 
-#endif /* COREVM_CLOSURE_H_ */
+#endif /* COREVM_CATCH_SITE_H_ */

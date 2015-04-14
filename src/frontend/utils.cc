@@ -35,6 +35,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 
 
+// -----------------------------------------------------------------------------
+
 corevm::runtime::vector
 corevm::frontend::get_vector_from_json(const JSON& json)
 {
@@ -95,7 +97,6 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
   for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
-    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::get(code);
 
     ss << code;
 
@@ -202,6 +203,34 @@ corevm::frontend::get_v0_1_locs_schema_definition()
               "\"lineno\","
               "\"col_offset\""
             "]"
+          "}"
+        "}"
+      "}"
+    "}"
+  );
+
+  return def;
+}
+
+// -----------------------------------------------------------------------------
+
+const std::string
+corevm::frontend::get_v0_1_catch_sites_schema_definition()
+{
+  static const std::string def(
+    "{"
+      "\"type\": \"array\","
+      "\"items\": {"
+        "\"type\": \"object\","
+        "\"properties\": {"
+          "\"from\": {"
+            "\"type\": \"integer\""
+          "},"
+          "\"to\": {"
+            "\"type\": \"integer\""
+          "},"
+          "\"dst\": {"
+            "\"type\": \"integer\""
           "}"
         "}"
       "}"

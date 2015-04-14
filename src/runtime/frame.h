@@ -98,12 +98,17 @@ public:
 
   corevm::runtime::closure_ctx closure_ctx() const;
 
+  void set_exc_obj(corevm::dyobj::dyobj_id exc_obj);
+
+  corevm::dyobj::dyobj_id exc_obj() const;
+
 protected:
   const corevm::runtime::closure_ctx m_closure_ctx;
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;
   std::stack<corevm::types::native_type_handle> m_eval_stack;
+  corevm::dyobj::dyobj_id m_exc_obj;
 };
 
 

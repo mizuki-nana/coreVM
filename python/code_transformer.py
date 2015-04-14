@@ -205,6 +205,33 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_Raise(self, node):
+        base_str = '{indentation}raise'.format(indentation=self.__indentation())
+
+        if node.type:
+            base_str += (' ' + self.visit(node.type))
+        else:
+            # Raises an instance of `Exception` if target is not specified.
+            base_str += (' ' + '__call(Exception)')
+
+        return base_str
+
+    def visit_TryExcept(self, node):
+        base_str = '{indentation}try:\n'.format(
+            indentation=self.__indentation())
+
+        self.__indent()
+
+        for stmt in node.body:
+            base_str += (self.visit(stmt) + '\n')
+
+        self.__dedent()
+
+        for handler in node.handlers:
+            base_str += self.visit(handler)
+
+        return base_str
+
     def visit_Expr(self, node):
         return self.visit(node.value)
 
@@ -464,6 +491,33 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_comprehension(self, node):
         raise NotImplementedError
+
+    """ ------------------------- excepthandler ---------------------------- """
+
+    def visit_ExceptHandler(self, node):
+        def exception_type_and_name(node):
+            if node.type and node.name:
+                return ' {type} as {name}'.format(
+                    type=self.visit(node.type), name=self.visit(node.name))
+            elif node.type:
+                return ' {type}'.format(type=self.visit(node.type))
+            elif node.name:
+                return ' {name}'.format(name=self.visit(node.name))
+            else:
+                return ''
+
+        base_str = '{indentation}except{type_and_name}:\n'.format(
+            indentation=self.__indentation(),
+            type_and_name=exception_type_and_name(node))
+
+        self.__indent()
+
+        for stmt in node.body:
+            base_str += (self.visit(stmt) + '\n')
+
+        self.__dedent()
+
+        return base_str
 
     """ --------------------------- arguments ------------------------------ """
 

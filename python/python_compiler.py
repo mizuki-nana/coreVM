@@ -32,9 +32,12 @@ import traceback
 from datetime import datetime
 
 
+## -----------------------------------------------------------------------------
+
 INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
 DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
 
+## -----------------------------------------------------------------------------
 
 class VectorString(object):
 
@@ -59,6 +62,7 @@ class VectorString(object):
 
         return vector
 
+## -----------------------------------------------------------------------------
 
 class Instr(object):
 
@@ -70,6 +74,7 @@ class Instr(object):
     def to_json(self):
         return [self.code, self.oprd1, self.oprd2]
 
+## -----------------------------------------------------------------------------
 
 class Loc(object):
 
@@ -81,6 +86,30 @@ class Loc(object):
     def from_node(cls, node):
         return Loc(node.lineno, node.col_offset)
 
+## -----------------------------------------------------------------------------
+
+class CatchSite(object):
+
+    def __init__(self, from_value, to_value, dst_value):
+        self.from_value = int(from_value)
+        self.to_value = int(to_value)
+        self.dst_value = int(dst_value)
+
+    def to_json(self):
+        return {
+            'from': self.from_value,
+            'to': self.to_value,
+            'dst': self.dst_value
+        }
+
+## -----------------------------------------------------------------------------
+
+class TryExceptState(object):
+
+    def __init__(self):
+        self.in_except_block = False
+
+## -----------------------------------------------------------------------------
 
 class Closure(object):
 
@@ -93,6 +122,7 @@ class Closure(object):
         self.parent_name = parent_name
         self.vector = []
         self.locs = {} # mapping of instr index to loc info
+        self.catch_sites = []
         self.closure_id = Closure.__closure_id
         self.parent_id = parent_id
         Closure.__closure_id += 1
@@ -124,8 +154,15 @@ class Closure(object):
                 for index, loc in self.locs.iteritems()
             ]
 
+        if self.catch_sites:
+            json_dict['catch_sites'] = [
+                catch_site.to_json()
+                for catch_site in self.catch_sites
+            ]
+
         return json_dict
 
+## -----------------------------------------------------------------------------
 
 class BytecodeGenerator(ast.NodeVisitor):
     """Traverses through Python AST and generates version and format specific
@@ -171,6 +208,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # states
         self.current_class_name = ''
+        self.try_except_state = TryExceptState()
 
     def read_from_source(self, path):
         with open(path, 'r') as fd:
@@ -223,6 +261,9 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         if loc:
             self.__current_closure().add_loc(len(self.__current_vector()) - 1, loc)
+
+    def __add_catch_site(self, catch_site):
+        self.__current_closure().catch_sites.append(catch_site)
 
     def __mingle_name(self, name):
         # TDOO: [COREVM-177] Add support for name mingling in Python compiler
@@ -502,6 +543,88 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         for stmt in node.orelse:
             self.visit(stmt)
+
+    def visit_Raise(self, node):
+        self.visit(node.type)
+
+        # Do NOT turn on catch site searching in except blocks.
+        search_catch_sites = int(not self.try_except_state.in_except_block)
+
+        self.__add_instr('exc', search_catch_sites, 0)
+
+    def visit_TryExcept(self, node):
+        # TODO: Add support for `node.orelse`.
+        self.try_except_state.in_except_block = False
+
+        # Step in (for try-block stmts).
+        vector_length1 = len(self.__current_vector())
+
+        for stmt in node.body:
+            self.visit(stmt)
+
+        vector_length2 = len(self.__current_vector())
+
+        # Step out (for try-block stmts).
+        self.try_except_state.in_except_block = False
+
+        if node.handlers:
+            self.__add_catch_site(
+                CatchSite(
+                    from_value=vector_length1,
+                    to_value=vector_length2 - 1,
+                    dst_value=vector_length2
+                )
+            )
+
+        # Do the work inside `visit_excepthandler` here instead.
+        for i in xrange(len(node.handlers)):
+            handler = node.handlers[i]
+
+            vector_length3 = len(self.__current_vector())
+
+            self.visit(handler.type)
+            self.__add_instr('excobj', 0, 0)
+            self.__add_instr('getattr', self.__get_encoding_id('__class__'), 0)
+            self.__add_instr('swap', 0, 0)
+            self.__add_instr('objeq', 0, 0)
+
+            self.__add_instr('jmpif', 0, 0)
+
+            vector_length_x = len(self.__current_vector())
+
+            self.__add_instr('excobj', 0, 0)
+            self.__add_instr('exc', 1, 0)
+
+            vector_length_y = len(self.__current_vector())
+
+            length_diff = vector_length_y - vector_length_x
+            self.__current_vector()[vector_length_x - 1] = Instr(
+                self.instr_str_to_code_map['jmpif'], length_diff, 0)
+
+            # Step in (for except-block stmts).
+            self.try_except_state.in_except_block = True
+
+            if handler.name:
+                self.__add_instr('excobj', 0, 0)
+                self.visit(handler.name)
+
+            for stmt in handler.body:
+                self.visit(stmt)
+
+            # Step out (for except-block stmts).
+            self.try_except_state.in_except_block = False
+
+            vector_length4 = len(self.__current_vector())
+
+            dst_value = vector_length4 if i + 1 < len(node.handlers) else 0
+
+            self.__add_catch_site(
+                CatchSite(
+                  from_value=vector_length3,
+                  to_value=vector_length4 - 1,
+                  dst_value=dst_value
+                )
+            )
 
     def visit_Expr(self, node):
         self.visit(node.value)
@@ -911,6 +1034,12 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_NotIn(self, node):
         pass
 
+    """ ------------------------- excepthandler ---------------------------- """
+
+    def visit_excepthandler(self, node):
+        # Do nothing here. Except handlers are implemented in `visit_TryExcept`.
+        pass
+
     """ --------------------------- arguments ------------------------------ """
 
     def visit_arguments(self, node):
@@ -979,6 +1108,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('getkwargs', 0, 0, loc=Loc.from_node(node))
             # TODO: retrieve kwargs stored as a map on top of eval stack.
 
+## -----------------------------------------------------------------------------
 
 def main():
     parser = optparse.OptionParser(
@@ -1046,6 +1176,7 @@ def main():
         generator.read_from_source('python/src/list.py')
         generator.read_from_source('python/src/dict.py')
         generator.read_from_source('python/src/tuple.py')
+        generator.read_from_source('python/src/exceptions.py')
 
         generator.read_from_source(options.input_file)
 

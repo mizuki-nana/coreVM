@@ -37,7 +37,8 @@ corevm::runtime::frame::frame(const corevm::runtime::closure_ctx& closure_ctx)
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
-  m_eval_stack()
+  m_eval_stack(),
+  m_exc_obj(0)
 {
   // Do nothing here.
 }
@@ -52,7 +53,8 @@ corevm::runtime::frame::frame(
   m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
-  m_eval_stack()
+  m_eval_stack(),
+  m_exc_obj(0)
 {
   // Do nothing here.
 }
@@ -254,6 +256,22 @@ corevm::runtime::closure_ctx
 corevm::runtime::frame::closure_ctx() const
 {
   return m_closure_ctx;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::frame::set_exc_obj(corevm::dyobj::dyobj_id exc_obj)
+{
+  m_exc_obj = exc_obj;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::dyobj::dyobj_id
+corevm::runtime::frame::exc_obj() const
+{
+  return m_exc_obj;
 }
 
 // -----------------------------------------------------------------------------

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "utils.h"
+#include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/common.h"
 #include "runtime/compartment.h"
@@ -134,6 +135,7 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
         "},"
         "\"vector\": %1%,"
         "\"locs\": %2%,"
+        "\"catch_sites\": %3%,"
         "\"closure\": {"
           "\"type\": \"object\","
           "\"properties\": {"
@@ -151,6 +153,9 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
             "},"
             "\"locs\": {"
               "\"$ref\": \"#/definitions/locs\""
+            "},"
+            "\"catch_sites\": {"
+              "\"$ref\": \"#/definitions/catch_sites\""
             "}"
           "},"
           "\"required\": ["
@@ -168,6 +173,7 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
       boost::format(unformatted_def)
         % get_v0_1_vector_schema_definition()
         % get_v0_1_locs_schema_definition()
+        % get_v0_1_catch_sites_schema_definition()
     )
   );
 
@@ -268,13 +274,40 @@ corevm::frontend::bytecode_loader_v0_1::load(
       }
     }
 
+    corevm::runtime::catch_site_list catch_sites;
+
+    // Catch sites
+    if (closure.find("catch_sites") != closure.end())
+    {
+      const JSON::array items = closure.at("catch_sites").array_items();
+
+      for (auto catch_sites_itr = items.begin();
+          catch_sites_itr != items.end(); ++catch_sites_itr)
+      {
+        const JSON::object item = static_cast<JSON>(*catch_sites_itr).object_items();
+
+        const uint32_t from = item.at("from").int_value();
+        const uint32_t to = item.at("to").int_value();
+        const uint32_t dst = item.at("dst").int_value();
+
+        corevm::runtime::catch_site catch_site {
+          .from = from,
+          .to = to,
+          .dst = dst
+        };
+
+        catch_sites.push_back(catch_site);
+      }
+    }
+
     closure_table.push_back(
       corevm::runtime::closure {
         .name = name,
         .id = id,
         .parent_id = parent_id,
         .vector = vector,
-        .locs = locs_table
+        .locs = locs_table,
+        .catch_sites = catch_sites,
       }
     );
 
