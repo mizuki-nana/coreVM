@@ -79,7 +79,7 @@ $(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
 
 $(LIBCOREVM): $(OBJECTS)
 	mkdir -p $(@D)
-	@find . -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
+	@find $(BUILD_DIR)/$(SRC) -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
 	@echo "\033[35mGenerated $(LIBCOREVM)\033[0m"
 
 
