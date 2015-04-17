@@ -42,14 +42,30 @@ class dict(object):
 
     def keys(self):
         res = __call(list, [])
-        for item in __call(self.items):
-            __call(res.append, item.key)
+
+        iterator_ = __call(__call(self.items).__iter__)
+
+        try:
+            while True:
+                item = __call(iterator_.next)
+                __call(res.append, item.key)
+        except StopIteration:
+            pass
+
         return res
 
     def values(self):
         res = __call(list, [])
-        for item in __call(self.items):
-            __call(res.append, item.value)
+
+        iterator_ = __call(__call(self.items).__iter__)
+
+        try:
+            while True:
+                item = __call(iterator_.next)
+                __call(res.append, item.value)
+        except StopIteration:
+            pass
+
         return res
 
     def items(self):
@@ -74,21 +90,49 @@ class dict(object):
         top_index = __call(size.__sub__, 1)
         index = __call(int, 0)
 
-        for item in __call(self.items):
-            key_object = item.key
-            value_object = item.value
+        iterator_ = __call(__call(self.items).__iter__)
 
-            # Containers call `__repr__` on elements.
-            __call(res.__add__, __call(key_object.__repr__))
-            __call(res.__add__, __call(str, ': '))
-            __call(res.__add__, __call(value_object.__repr__))
+        try:
+            while True:
+                item = __call(iterator_.next)
 
-            if __call(index.__lt__, top_index):
-                __call(res.__add__, __call(str, ', '))
-            index = __call(index.__add__, 1)
+                key_object = item.key
+                value_object = item.value
 
-        __call(res.__add__, __call(str, '}'))
-        return res
+                # Containers call `__repr__` on elements.
+                __call(res.__add__, __call(key_object.__repr__))
+                __call(res.__add__, __call(str, ': '))
+                __call(res.__add__, __call(value_object.__repr__))
+
+                if __call(index.__lt__, top_index):
+                    __call(res.__add__, __call(str, ', '))
+
+                index = __call(index.__add__, 1)
+
+        except StopIteration:
+            __call(res.__add__, __call(str, '}'))
 
     def __repr__(self):
         return __call(self.__str__)
+
+    def __iter__(self):
+        return __call(dict_keyiterator, self)
+
+## -----------------------------------------------------------------------------
+
+class dict_keyiterator(object):
+
+    def __init__(self, iterable):
+        self.iterable = iterable
+        self.i = __call(int, 0)
+        self.n = __call(__call(iterable.keys).__len__)
+
+    def next(self):
+        if __call(self.i.__lt__, self.n):
+            key = __call(__call(self.iterable.keys).__getitem__, self.i)
+            __call(self.i.__iadd__, __call(int, 1))
+            return key
+        else:
+            raise __call(StopIteration)
+
+## -----------------------------------------------------------------------------

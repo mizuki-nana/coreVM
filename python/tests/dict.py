@@ -7,3 +7,6 @@ d = {
 print d
 print d.keys()
 print d.values()
+
+for key in d:
+    print key

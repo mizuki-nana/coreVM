@@ -118,7 +118,7 @@ def run(options):
 
         retcode = subprocess.call(args)
         if retcode != 0:
-            info += (colors.WARNING + ' [FAILED]' + colors.ENDC)
+            info += (colors.WARNING + ' [ERROR]' + colors.ENDC)
             print info
             continue
 

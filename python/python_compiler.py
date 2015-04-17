@@ -209,6 +209,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         # states
         self.current_class_name = ''
         self.try_except_state = TryExceptState()
+        self.continue_stmt_vector_lengths = []
+        self.break_stmt_vector_lengths = []
 
     def read_from_source(self, path):
         with open(path, 'r') as fd:
@@ -485,6 +487,9 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_While(self, node):
         # TODO: Handle `orelse` here.
         vector_length1 = len(self.__current_vector())
+        self.continue_stmt_vector_lengths.append(vector_length1)
+
+        break_line_length_count_before = len(self.break_stmt_vector_lengths)
 
         # Test expr.
         self.visit(node.test)
@@ -500,13 +505,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # Execute body instruction.
         for stmt in node.body:
-            if isinstance(stmt, ast.Break):
-                self.__add_instr('jmp', 0, 0)
-                break_line_length = len(self.__current_vector())
-            elif isinstance(stmt, ast.Continue):
-                self.__add_instr('jmpr', vector_length1 - 1, 0)
-            else:
-                self.visit(stmt)
+            self.visit(stmt)
 
         # Jump back to beginning.
         self.__add_instr('jmpr', vector_length1 - 1, 0)
@@ -517,10 +516,19 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__current_vector()[vector_length2 - 1] = Instr(
             self.instr_str_to_code_map['jmpif'], length_diff, 0)
 
-        if break_line_length:
+        break_line_length_count_after = len(self.break_stmt_vector_lengths)
+
+        # If there is a break stmt associated with this while-loop.
+        if break_line_length_count_after > break_line_length_count_before:
+            break_line_length = self.break_stmt_vector_lengths[-1]
             break_length_diff = vector_length3 - break_line_length
+
             self.__current_vector()[break_line_length - 1] = Instr(
                 self.instr_str_to_code_map['jmp'], break_length_diff, 0)
+
+            self.break_stmt_vector_lengths.pop()
+
+        self.continue_stmt_vector_lengths.pop()
 
     def visit_If(self, node):
         self.visit(node.test)
@@ -631,6 +639,15 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_Pass(self, node):
         pass
+
+    def visit_Break(self, node):
+        self.__add_instr('jmp', 0, 0)
+        break_line_length = len(self.__current_vector())
+        self.break_stmt_vector_lengths.append(break_line_length)
+
+    def visit_Continue(self, node):
+        assert self.continue_stmt_vector_lengths
+        self.__add_instr('jmpr', self.continue_stmt_vector_lengths[-1] - 1, 0)
 
     """ ----------------------------- expr --------------------------------- """
 
