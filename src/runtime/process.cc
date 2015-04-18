@@ -674,7 +674,7 @@ corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
 
 // -----------------------------------------------------------------------------
 
-void
+bool
 corevm::runtime::process::get_frame_by_closure_ctx(
   corevm::runtime::closure_ctx& closure_ctx, corevm::runtime::frame** frame_ptr)
 {
@@ -689,7 +689,10 @@ corevm::runtime::process::get_frame_by_closure_ctx(
   if (itr != m_call_stack.end())
   {
     *frame_ptr = &(*itr);
+    return true;
   }
+
+  return false;
 }
 
 // -----------------------------------------------------------------------------
@@ -787,6 +790,87 @@ corevm::runtime::process::reset()
   m_call_stack.clear();
   m_invocation_ctx_stack.clear();
   m_compartments.clear();
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::frame*
+corevm::runtime::process::find_frame_by_ctx(
+  corevm::runtime::closure_ctx ctx,
+  corevm::runtime::compartment* compartment,
+  corevm::runtime::process& process)
+{
+  ASSERT(compartment);
+
+  corevm::runtime::frame* frame = nullptr;
+
+  while (!frame)
+  {
+    bool res = process.get_frame_by_closure_ctx(ctx, &frame);
+
+    if (res)
+    {
+      ASSERT(frame);
+      break;
+    }
+
+    corevm::runtime::closure closure = compartment->get_closure_by_id(
+      ctx.closure_id);
+
+    ctx.closure_id = closure.parent_id;
+
+    if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+    {
+      ASSERT(!frame);
+      break;
+    }
+  }
+
+  return frame;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::frame*
+corevm::runtime::process::find_parent_frame_in_process(
+  corevm::runtime::frame* frame_ptr,
+  corevm::runtime::process& process)
+{
+  ASSERT(frame_ptr);
+
+  corevm::runtime::compartment_id compartment_id =
+    frame_ptr->closure_ctx().compartment_id;
+
+  corevm::runtime::compartment* compartment = nullptr;
+
+  process.get_compartment(compartment_id, &compartment);
+
+  if (!compartment)
+  {
+    THROW(corevm::runtime::compartment_not_found_error(compartment_id));
+  }
+
+  corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
+  corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
+
+  corevm::runtime::closure_id parent_closure_id = closure.parent_id;
+
+  ASSERT(closure.id != closure.parent_id);
+
+  if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+  {
+    return nullptr;
+  }
+
+  closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = parent_closure_id
+  };
+
+  frame_ptr = corevm::runtime::process::find_frame_by_ctx(
+    ctx, compartment, process);
+
+  return frame_ptr;
 }
 
 // -----------------------------------------------------------------------------

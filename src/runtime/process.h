@@ -162,7 +162,7 @@ public:
 
   void insert_vector(corevm::runtime::vector& vector);
 
-  void get_frame_by_closure_ctx(
+  bool get_frame_by_closure_ctx(
     corevm::runtime::closure_ctx&, corevm::runtime::frame**);
 
   void start();
@@ -200,6 +200,31 @@ public:
     corevm::runtime::compartment_id, corevm::runtime::compartment**);
 
   void reset();
+
+  /**
+   * Given a starting closure context, find the existing frame associated with
+   * it, following the closure tree.
+   *
+   * Returns a pointer that points to the frame, if found.
+   * Returns a null pointer otherwise.
+   */
+  static
+  corevm::runtime::frame* find_frame_by_ctx(
+    corevm::runtime::closure_ctx ctx,
+    corevm::runtime::compartment* compartment,
+    corevm::runtime::process& process);
+
+  /**
+   * Given a pointer to a starting frame, find the existing frame associated
+   * with the parent of the given frame's closure context.
+   *
+   * Returns a pointer that points to the frame, if found.
+   * Returns a null pointer otherwise.
+   */
+  static
+  corevm::runtime::frame* find_parent_frame_in_process(
+    corevm::runtime::frame* frame_ptr,
+    corevm::runtime::process& process);
 
   // NOTE: Once the stack is unwinded, the action cannot be undone.
   static void unwind_stack(

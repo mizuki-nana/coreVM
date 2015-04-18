@@ -208,6 +208,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # states
         self.current_class_name = ''
+        self.current_function_name = ''
         self.try_except_state = TryExceptState()
         self.continue_stmt_vector_lengths = []
         self.break_stmt_vector_lengths = []
@@ -318,17 +319,18 @@ class BytecodeGenerator(ast.NodeVisitor):
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
-        # step in
-        name = self.__mingle_name(node.name)
+        # Step in.
+        self.current_function_name = self.current_function_name + '::' + node.name
+        closure_name = self.current_class_name + '.' + self.current_function_name
 
-        self.closure_map[name] = Closure(
+        self.closure_map[closure_name] = Closure(
             node.name,
-            name,
+            closure_name,
             self.current_closure_name,
             self.closure_map[self.current_closure_name].closure_id
         )
 
-        self.current_closure_name = name
+        self.current_closure_name = closure_name
 
         # Off-load arguments.
         self.visit(node.args)
@@ -340,13 +342,14 @@ class BytecodeGenerator(ast.NodeVisitor):
         # Explicit return.
         self.__add_instr('rtrn', 0, 0)
 
-        # step out
+        # Step out.
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
+        self.current_function_name = '::'.join(self.current_function_name.split('::')[:-1])
 
         # In the outer closure, set the closure id on the object
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
-        self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
+        self.__add_instr('setctx', self.closure_map[closure_name].closure_id, 0)
         self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
 

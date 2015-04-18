@@ -131,6 +131,19 @@ except AnotherException:
 
 ## -----------------------------------------------------------------------------
 
+def parent():
+    def inner2():
+        raise Exception()
+
+    return inner2
+
+try:
+    parent()()
+except Exception:
+    print 'Exception from nested function caught.'
+
+## -----------------------------------------------------------------------------
+
 # TODO: Run this test when inheritance is supported.
 #try:
 #    raise YetAnotherException()

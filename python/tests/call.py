@@ -25,11 +25,13 @@ print 'Starting...'
 main(int(1))
 print 'Done!'
 
+## -----------------------------------------------------------------------------
 
 func = lambda x: x * 2
 
 print func(1)
 
+## -----------------------------------------------------------------------------
 
 def lambda_caller(arg):
     def inner(arg):
@@ -37,11 +39,28 @@ def lambda_caller(arg):
         return func(arg)
     return inner(arg)
 
-
 print lambda_caller(3)
 
+## -----------------------------------------------------------------------------
 
-print 'I can do math' if lambda_caller(1) else 'I suck at math'
+def lambda_caller2():
+    def inner2(arg):
+        func = lambda arg: arg ** arg
+        return func(arg)
+    return inner2
 
+print lambda_caller2()(5)
 
-print 'Nested if-esle WTF :D' if (True if 1 + 1 == 2 else False) else 'This is too confusing @__@'
+## -----------------------------------------------------------------------------
+
+def lambda_caller3():
+    def inner3(arg):
+        def inner4(arg):
+            func = lambda arg: arg ** arg
+            return func(arg)
+        return inner4(arg) * arg
+    return inner3
+
+print lambda_caller3()(5)
+
+## -----------------------------------------------------------------------------

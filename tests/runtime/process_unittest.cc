@@ -577,6 +577,299 @@ TEST_F(process_gc_rule_unittest, Test_gc_rule_by_ntvhndl_pool_size)
 
 // -----------------------------------------------------------------------------
 
+class process_find_frame_by_ctx_unittest : public process_unittest {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameWithAssociatedCtx)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure {
+    .id = 0
+  };
+
+  corevm::runtime::closure_table closure_table { closure };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = 0,
+    .closure_id = closure.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx);
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
+    ctx, &compartment, process);
+
+  ASSERT_NE(nullptr, res);
+  ASSERT_TRUE(ctx == res->closure_ctx());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameByTraverseClosureTree)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure1 {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = 1,
+    .parent_id = 0,
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = 2,
+    .parent_id = 1,
+  };
+
+  corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = 0,
+    .closure_id = closure1.id
+  };
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = closure3.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx1);
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
+    ctx3, &compartment, process);
+
+  ASSERT_NE(nullptr, res);
+  ASSERT_TRUE(ctx1 == res->closure_ctx());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_frame_by_ctx_unittest, TestFindMissingFrame)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure1 {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = 1,
+    .parent_id = 0,
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = 2,
+    .parent_id = 1,
+  };
+
+  corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = 0,
+    .closure_id = closure1.id
+  };
+
+  corevm::runtime::closure_ctx ctx2 {
+    .compartment_id = 0,
+    .closure_id = closure2.id
+  };
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = closure3.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx2);
+  process.emplace_frame(ctx3);
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
+    ctx1, &compartment, process);
+
+  ASSERT_EQ(nullptr, res);
+}
+
+// -----------------------------------------------------------------------------
+
+class process_find_parent_frame_in_process_unittest : public process_unittest {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameSuccessful)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure1 {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = 1,
+    .parent_id = 0,
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = 2,
+    .parent_id = 1,
+  };
+
+  corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = 0,
+    .closure_id = closure1.id
+  };
+
+  corevm::runtime::closure_ctx ctx2 {
+    .compartment_id = 0,
+    .closure_id = closure2.id
+  };
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = closure3.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx1);
+  process.emplace_frame(ctx2);
+  process.emplace_frame(ctx3);
+
+  corevm::runtime::frame* frame_ptr = &process.top_frame();
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_parent_frame_in_process(
+    frame_ptr, process);
+
+  ASSERT_NE(nullptr, res);
+  ASSERT_TRUE(ctx2 == res->closure_ctx());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameWithMissingIntermediateFrame)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure1 {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = 1,
+    .parent_id = 0,
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = 2,
+    .parent_id = 1,
+  };
+
+  corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = 0,
+    .closure_id = closure1.id
+  };
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = closure3.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx1);
+  process.emplace_frame(ctx3);
+
+  corevm::runtime::frame* frame_ptr = &process.top_frame();
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_parent_frame_in_process(
+    frame_ptr, process);
+
+  ASSERT_NE(nullptr, res);
+  ASSERT_TRUE(ctx1 == res->closure_ctx());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameFails)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure closure1 {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = 1,
+    .parent_id = 0,
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = 2,
+    .parent_id = 1,
+  };
+
+  corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("dummy-path");
+
+  compartment.set_closure_table(closure_table);
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = closure3.id
+  };
+
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx3);
+
+  corevm::runtime::frame* frame_ptr = &process.top_frame();
+
+  corevm::runtime::frame* res = corevm::runtime::process::find_parent_frame_in_process(
+    frame_ptr, process);
+
+  ASSERT_EQ(nullptr, res);
+}
+
+// -----------------------------------------------------------------------------
+
 class process_signal_handling_unittest : public process_unittest {};
 
 // -----------------------------------------------------------------------------
