@@ -219,6 +219,17 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__dedent()
 
+        if node.orelse:
+            base_str += '{indentation}else:\n'.format(
+                indentation=self.__indentation())
+
+            self.__indent()
+
+            for stmt in node.orelse:
+                base_str += (self.visit(stmt) + '\n')
+
+            self.__dedent()
+
         return base_str
 
     def visit_If(self, node):

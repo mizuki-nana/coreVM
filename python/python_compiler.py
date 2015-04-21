@@ -488,7 +488,6 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.instr_str_to_code_map['jmp'], break_length_diff, 0)
 
     def visit_While(self, node):
-        # TODO: Handle `orelse` here.
         vector_length1 = len(self.__current_vector())
         self.continue_stmt_vector_lengths.append(vector_length1)
 
@@ -515,6 +514,13 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         vector_length3 = len(self.__current_vector())
 
+        # Execute `else` part.
+        if node.orelse:
+            for stmt in node.orelse:
+                self.visit(stmt)
+
+        vector_length4 = len(self.__current_vector())
+
         length_diff = vector_length3 - vector_length2
         self.__current_vector()[vector_length2 - 1] = Instr(
             self.instr_str_to_code_map['jmpif'], length_diff, 0)
@@ -524,7 +530,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         # If there is a break stmt associated with this while-loop.
         if break_line_length_count_after > break_line_length_count_before:
             break_line_length = self.break_stmt_vector_lengths[-1]
-            break_length_diff = vector_length3 - break_line_length
+            break_length_diff = vector_length4 - break_line_length
 
             self.__current_vector()[break_line_length - 1] = Instr(
                 self.instr_str_to_code_map['jmp'], break_length_diff, 0)
