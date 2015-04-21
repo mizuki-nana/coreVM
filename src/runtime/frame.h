@@ -98,9 +98,11 @@ public:
 
   corevm::runtime::closure_ctx closure_ctx() const;
 
+  corevm::dyobj::dyobj_id exc_obj() const;
+
   void set_exc_obj(corevm::dyobj::dyobj_id exc_obj);
 
-  corevm::dyobj::dyobj_id exc_obj() const;
+  void clear_exc_obj();
 
 protected:
   const corevm::runtime::closure_ctx m_closure_ctx;

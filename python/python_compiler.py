@@ -564,7 +564,6 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('exc', search_catch_sites, 0)
 
     def visit_TryExcept(self, node):
-        # TODO: Add support for `node.orelse`.
         self.try_except_state.in_except_block = False
 
         # Step in (for try-block stmts).
@@ -586,6 +585,10 @@ class BytecodeGenerator(ast.NodeVisitor):
                     dst_value=vector_length2
                 )
             )
+
+        self.__add_instr('jmpexc', 0, 0)
+
+        vector_length_handlers_before = len(self.__current_vector())
 
         # Do the work inside `visit_excepthandler` here instead.
         for i in xrange(len(node.handlers)):
@@ -636,6 +639,32 @@ class BytecodeGenerator(ast.NodeVisitor):
                   dst_value=dst_value
                 )
             )
+
+        vector_length_handlers_after = len(self.__current_vector())
+
+        vector_length_handlers_diff = \
+            vector_length_handlers_after - vector_length_handlers_before
+
+        self.__current_vector()[vector_length_handlers_before - 1] = Instr(
+            self.instr_str_to_code_map['jmpexc'], vector_length_handlers_diff, 0)
+
+        self.__add_instr('jmpexc', 0, 1)
+
+        vector_length_before_orelse = len(self.__current_vector())
+
+        if node.orelse:
+            for stmt in node.orelse:
+                self.visit(stmt)
+
+        vector_length_after_orelse = len(self.__current_vector())
+
+        vector_length_orelse_diff = \
+            vector_length_after_orelse - vector_length_before_orelse
+
+        self.__current_vector()[vector_length_before_orelse - 1] = Instr(
+            self.instr_str_to_code_map['jmpexc'], vector_length_orelse_diff, 1)
+
+        self.__add_instr('clrexc', 0, 0)
 
     def visit_Expr(self, node):
         self.visit(node.value)

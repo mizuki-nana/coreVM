@@ -300,6 +300,25 @@ enum instr_enum : uint32_t
   EXCOBJ,
 
   /**
+   * <clrexc, _, _>
+   * Clears the exception object associated with the frame on top of the call
+   * stack.
+   */
+  CLREXC,
+
+  /**
+   * <jmpexc, #, #>
+   * Jumps to the specified address, based on the state of the exception object
+   * associated with the frame on top of the call stack.
+   * The first operand is the number of addresses to jump over starting from
+   * the current program counter.
+   * The second operand specifies whether or not to jump based on if the top of
+   * stack frame has an exception object. A value of `1` specifies the jump
+   * if the frame has an exception object, `0` otherwise.
+   */
+  JMPEXC,
+
+  /**
    * <exit, code, _>
    * Halts the execution of instructions and exits the program
    * (with an optional exit code).
@@ -1379,6 +1398,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_excobj : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_clrexc : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_jmpexc : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

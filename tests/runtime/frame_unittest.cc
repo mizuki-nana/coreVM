@@ -42,6 +42,7 @@ TEST_F(frame_unittest, TestInitialization)
 {
   corevm::runtime::frame frame(m_closure_ctx);
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
+  ASSERT_EQ(0, frame.exc_obj());
 }
 
 // -----------------------------------------------------------------------------
@@ -144,6 +145,24 @@ TEST_F(frame_unittest, TestInvisibleVars)
     },
     corevm::runtime::local_variable_not_found_error
   );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(frame_unittest, TestGetAndSetExcObj)
+{
+  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::dyobj::dyobj_id id = 1;
+
+  ASSERT_NE(id, frame.exc_obj());
+
+  frame.set_exc_obj(id);
+
+  ASSERT_EQ(id, frame.exc_obj());
+
+  frame.clear_exc_obj();
+
+  ASSERT_EQ(0, frame.exc_obj());
 }
 
 // -----------------------------------------------------------------------------

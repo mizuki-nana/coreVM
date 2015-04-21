@@ -260,6 +260,14 @@ corevm::runtime::frame::closure_ctx() const
 
 // -----------------------------------------------------------------------------
 
+corevm::dyobj::dyobj_id
+corevm::runtime::frame::exc_obj() const
+{
+  return m_exc_obj;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::frame::set_exc_obj(corevm::dyobj::dyobj_id exc_obj)
 {
@@ -268,10 +276,10 @@ corevm::runtime::frame::set_exc_obj(corevm::dyobj::dyobj_id exc_obj)
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
-corevm::runtime::frame::exc_obj() const
+void
+corevm::runtime::frame::clear_exc_obj()
 {
-  return m_exc_obj;
+  m_exc_obj = 0;
 }
 
 // -----------------------------------------------------------------------------

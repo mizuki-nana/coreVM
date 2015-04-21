@@ -1662,6 +1662,85 @@ TEST_F(instrs_obj_unittest, TestInstrEXCOBJ)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_control_instrs_test, TestInstrCLREXC)
+{
+  corevm::runtime::closure_ctx ctx {
+    .closure_id = 0,
+    .compartment_id = 0
+  };
+
+  corevm::runtime::frame frame(ctx);
+
+  ASSERT_EQ(0, frame.exc_obj());
+
+  corevm::dyobj::dyobj_id id = 1;
+
+  frame.set_exc_obj(id);
+
+  ASSERT_EQ(id, frame.exc_obj());
+
+  m_process.push_frame(frame);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = 0,
+    .oprd2 = 0
+  };
+
+  corevm::runtime::instr_handler_clrexc handler;
+  handler.execute(instr, m_process);
+
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
+
+  ASSERT_EQ(0, actual_frame.exc_obj());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_control_instrs_test, TestInstrJMPEXC)
+{
+  const corevm::runtime::closure_id closure_id = 0;
+  const corevm::runtime::compartment_id compartment_id = 0;
+
+  corevm::runtime::vector vector {
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+    { 0, 0, 0 },
+  };
+
+  corevm::runtime::closure_ctx ctx {
+    .closure_id = closure_id,
+    .compartment_id = compartment_id
+  };
+
+  corevm::dyobj::dyobj_id id = 1;
+
+  corevm::runtime::frame frame(ctx);
+  frame.set_exc_obj(id);
+  m_process.push_frame(frame);
+
+  // Emulate process starting condition.
+  m_process.insert_vector(vector);
+  m_process.set_pc(0);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1 = 6,
+    .oprd2 = 1
+  };
+
+  corevm::runtime::instr_handler_jmpexc handler;
+  handler.execute(instr, m_process);
+
+  ASSERT_EQ(6, m_process.pc());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_control_instrs_test, TestInstrEXIT)
 {
   auto sig_handler = [](int signum) {
