@@ -65,6 +65,9 @@ class list(object):
     def __repr__(self):
         return __call(self.__str__)
 
+    def __hash__(self):
+        raise __call(TypeError)
+
     def __iter__(self):
         return __call(listiterator, self)
 

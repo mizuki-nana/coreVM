@@ -258,6 +258,11 @@ void interface_compute_repr_value(
 
 // -----------------------------------------------------------------------------
 
+void interface_compute_hash_value(
+  native_type_handle& operand, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 

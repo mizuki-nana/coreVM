@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 #include <cmath>
+#include <functional>
 #include <ios>
 #include <sstream>
 
@@ -257,6 +258,83 @@ corevm::types::repr::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
   return static_cast<corevm::types::string::value_type>("<map>");
+}
+
+// -----------------------------------------------------------------------------
+
+class hash: public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename corevm::types::int64::value_type operator()(const T& handle)
+  {
+    std::hash<typename T::value_type> hash_func;
+    typename corevm::types::int64::value_type value = hash_func(handle.value);
+    return value;
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int64::value_type
+corevm::types::hash::operator()<corevm::types::string>(
+  const corevm::types::string& handle)
+{
+  uint64_t res = 0;
+
+  std::hash<corevm::types::native_string_base> hash_func;
+
+  res = hash_func(handle.value);
+
+  return static_cast<corevm::types::int64::value_type>(res);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int64::value_type
+corevm::types::hash::operator()<corevm::types::array>(
+  const corevm::types::array& handle)
+{
+  uint64_t res = 0;
+
+  std::hash<corevm::types::native_array_element_type> element_hash;
+
+  for (auto itr = handle.value.cbegin(); itr != handle.value.cend(); ++itr)
+  {
+    const auto& value = *itr;
+    res += element_hash(value);
+  }
+
+  return static_cast<corevm::types::int64::value_type>(res);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int64::value_type
+corevm::types::hash::operator()<corevm::types::map>(
+  const corevm::types::map& handle)
+{
+  uint64_t res = 0;
+
+  std::hash<corevm::types::native_map_key_type> key_hash;
+  std::hash<corevm::types::native_map_mapped_type> value_hash;
+
+  for (auto itr = handle.value.begin(); itr != handle.value.end(); ++itr)
+  {
+    const auto& key = itr->first;
+    const auto& value = itr->second;
+
+    res += key_hash(key);
+    res += value_hash(value);
+  }
+
+  return static_cast<corevm::types::int64::value_type>(res);
 }
 
 // -----------------------------------------------------------------------------

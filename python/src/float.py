@@ -29,6 +29,19 @@ class float(object):
     def __repr__(self):
         return __call(self.__str__)
 
+    def __hash__(self):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [hash, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###

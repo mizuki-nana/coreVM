@@ -2617,6 +2617,33 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_06)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrHASH)
+{
+  auto& frame = m_process.top_frame();
+
+  corevm::types::native_type_handle hndl = corevm::types::int32(123);
+
+  frame.push_eval_stack(hndl);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+
+  corevm::runtime::instr_handler_hash instr_handler;
+  instr_handler.execute(instr, m_process);
+
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  ASSERT_EQ(2, actual_frame.eval_stack_size());
+
+  corevm::types::native_type_handle result_handle = actual_frame.pop_eval_stack();
+
+  int64_t actual_result = corevm::types::get_value_from_handle<int64_t>(
+    result_handle
+  );
+
+  ASSERT_GT(actual_result, 0);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_type_complex_instrs_test : public instrs_native_types_instrs_test
 {
 public:

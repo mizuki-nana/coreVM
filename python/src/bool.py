@@ -18,6 +18,9 @@ class bool(object):
         else:
             return __call(str, 'False')
 
+    def __hash__(self):
+        return __call(int, self)
+
     def __repr__(self):
         return __call(self.__str__)
 

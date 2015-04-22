@@ -432,6 +432,14 @@ void corevm::types::interface_compute_repr_value(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_compute_hash_value(
+  native_type_handle& operand, native_type_handle& result)
+{
+  __interface_apply_unary_operator<native_type_hash_visitor>(operand, result);
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 

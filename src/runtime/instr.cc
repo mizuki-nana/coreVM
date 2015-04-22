@@ -258,6 +258,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
 
   /* TRUTHY   */     { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()    },
   /* REPR     */     { .num_oprd=0, .str="repr",      .handler=std::make_shared<corevm::runtime::instr_handler_repr>()      },
+  /* HASH     */     { .num_oprd=0, .str="hash",      .handler=std::make_shared<corevm::runtime::instr_handler_hash>()      },
 
   /* --------------------- String type instructions ------------------------- */
 
@@ -2330,6 +2331,22 @@ corevm::runtime::instr_handler_repr::execute(
   corevm::types::native_type_handle result;
 
   corevm::types::interface_compute_repr_value(oprd, result);
+
+  frame.push_eval_stack(result);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_hash::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::frame& frame = process.top_frame();
+
+  corevm::types::native_type_handle& oprd = frame.top_eval_stack();
+  corevm::types::native_type_handle result;
+
+  corevm::types::interface_compute_hash_value(oprd, result);
 
   frame.push_eval_stack(result);
 }

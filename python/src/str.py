@@ -22,6 +22,19 @@ class str(object):
         __call(res.__add__, __call(str, "'"))
         return res
 
+    def __hash__(self):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [hash, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(int, res_)
+
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###

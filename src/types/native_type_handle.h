@@ -58,13 +58,26 @@ using native_type_handle = typename boost::variant<
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_pure_visitor : public boost::static_visitor<native_type_handle>
+class native_type_intrinsic_unary_visitor : public boost::static_visitor<native_type_handle>
 {
 public:
   template<typename T>
   native_type_handle operator()(const T& operand) const
   {
     return op().template operator()<T>(operand);
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<class op, class R>
+class native_type_cast_unary_visitor : public boost::static_visitor<native_type_handle>
+{
+public:
+  template<typename T>
+  R operator()(const T& operand) const
+  {
+    return R(op().template operator()<T>(operand));
   }
 };
 
@@ -134,10 +147,6 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class native_type_repr_visitor : public native_type_pure_visitor<repr> {};
-
-// -----------------------------------------------------------------------------
-
 /* Unary operator visitors */
 class native_type_positive_visitor : public native_type_unary_visitor<positive> {};
 class native_type_negation_visitor : public native_type_unary_visitor<negation> {};
@@ -146,6 +155,8 @@ class native_type_decrement_visitor : public native_type_unary_visitor<decrement
 class native_type_logical_not_visitor : public native_type_unary_visitor<logical_not> {};
 class native_type_bitwise_not_visitor : public native_type_unary_visitor<bitwise_not> {};
 class native_type_truthy_visitor : public native_type_unary_visitor<truthy> {};
+class native_type_repr_visitor : public native_type_intrinsic_unary_visitor<repr> {};
+class native_type_hash_visitor : public native_type_cast_unary_visitor<hash, corevm::types::int64> {};
 
 // -----------------------------------------------------------------------------
 

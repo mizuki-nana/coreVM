@@ -66,6 +66,19 @@ class tuple(object):
     def __repr__(self):
         return __call(self.__str__)
 
+    def __hash__(self):
+        res = __call(int, 0)
+
+        iterator_ = __call(self.__iter__)
+        try:
+            while True:
+                item = __call(iterator_.next)
+                __call(res.__iadd__, __call(item.__hash__))
+        except StopIteration:
+            pass
+
+        return res
+
     def __iter__(self):
         return __call(tupleiterator, self)
 

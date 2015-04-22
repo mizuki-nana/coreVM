@@ -5,6 +5,13 @@ class Exception(object):
 
 ## -----------------------------------------------------------------------------
 
+class TypeError(Exception):
+
+    def __init__(self):
+        pass
+
+## -----------------------------------------------------------------------------
+
 class IndexError(Exception):
 
     def __init__(self):
