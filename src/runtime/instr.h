@@ -987,6 +987,13 @@ enum instr_enum : uint32_t
   MAPEMP,
 
   /**
+   * <mapfind, _, _>
+   * Pops the top two elements on the eval stack, and performs the "map find"
+   * operation.
+   */
+  MAPFIND,
+
+  /**
    * <mapat, _, _>
    * Pops the top two elements on the eval stack, and performs the "map at"
    * operation.
@@ -2243,6 +2250,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_mapemp : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mapfind : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

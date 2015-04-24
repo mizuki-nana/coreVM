@@ -17,7 +17,20 @@ def test_hash_list():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_getitem():
+    l = [1, 2, 3]
+    print l[0]
+    print l[1]
+    print l[2]
+    try:
+        print l[4]
+    except IndexError:
+        print 'Index out of bound'
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
+test_list_getitem()
 
 ## -----------------------------------------------------------------------------

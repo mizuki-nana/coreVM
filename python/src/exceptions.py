@@ -19,6 +19,13 @@ class IndexError(Exception):
 
 ## -----------------------------------------------------------------------------
 
+class KeyError(Exception):
+
+    def __init__(self):
+        pass
+
+## -----------------------------------------------------------------------------
+
 class StopIteration(Exception):
 
     def __init__(self):

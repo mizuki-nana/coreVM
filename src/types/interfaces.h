@@ -441,6 +441,12 @@ void interface_map_empty(
 
 // -----------------------------------------------------------------------------
 
+void interface_map_find(
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 void interface_map_at(
   native_type_handle& operand, native_type_handle& key,
   native_type_handle& result);

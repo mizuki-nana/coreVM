@@ -689,6 +689,18 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     """ ----------------------------- expr --------------------------------- """
 
+    def visit_Ellipsis(self, node):
+        raise NotImplementedError
+
+    def visit_Slice(self, node):
+        raise NotImplementedError
+
+    def visit_ExtSlice(self, node):
+        raise NotImplementedError
+
+    def visit_Index(self, node):
+        self.visit(node.value)
+
     def visit_BoolOp(self, node):
         assert len(node.values) >= 2
 
@@ -978,6 +990,9 @@ class BytecodeGenerator(ast.NodeVisitor):
             # NOTE: if this ever happens, then we have to take that type into
             # consideration.
             raise Exception('Unexpected type for node.ctx in visit_Attribute')
+
+    def visit_Subscript(self, node):
+        pass
 
     """ ---------------------------- boolop -------------------------------- """
 

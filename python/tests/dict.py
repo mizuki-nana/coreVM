@@ -49,10 +49,27 @@ def test_dict_hash():
 
 ## -----------------------------------------------------------------------------
 
+def test_dict_getitem():
+    d = {
+      1: 'Tomiko Van',
+      2: 'Once upon a time...',
+      'Hello': 'World',
+    }
+    print d[1]
+    print d[2]
+    print d['Hello']
+    try:
+        print d['some random key']
+    except KeyError:
+        print 'KeyError: key does not exist'
+
+## -----------------------------------------------------------------------------
+
 test_dict_repr_with_integer_keys()
 test_dict_repr_with_str_keys()
 test_dict_repr_with_boolean_keys()
 test_dict_repr_with_floating_number_keys()
 test_dict_hash()
+test_dict_getitem()
 
 ## -----------------------------------------------------------------------------

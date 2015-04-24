@@ -296,6 +296,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
 
   /* MAPLEN   */     { .num_oprd=0, .str="maplen",    .handler=std::make_shared<corevm::runtime::instr_handler_maplen>()    },
   /* MAPEMP   */     { .num_oprd=0, .str="mapemp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapemp>()    },
+  /* MAPFIND  */     { .num_oprd=0, .str="mapfind",   .handler=std::make_shared<corevm::runtime::instr_handler_mapfind>()   },
   /* MAPAT    */     { .num_oprd=0, .str="mapat",     .handler=std::make_shared<corevm::runtime::instr_handler_mapat>()     },
   /* MAPPUT   */     { .num_oprd=0, .str="mapput",    .handler=std::make_shared<corevm::runtime::instr_handler_mapput>()    },
   /* MAPSET   */     { .num_oprd=1, .str="mapset",    .handler=std::make_shared<corevm::runtime::instr_handler_mapset>()    },
@@ -2725,6 +2726,19 @@ corevm::runtime::instr_handler_mapat::execute(
     instr,
     process,
     corevm::types::interface_map_at
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mapfind::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    instr,
+    process,
+    corevm::types::interface_map_find
   );
 }
 

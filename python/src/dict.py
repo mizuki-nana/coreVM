@@ -82,6 +82,42 @@ class dict(object):
         """
         return __call(list, items_)
 
+    def __contains__(self, key):
+        key_hash = __call(key.__hash__)
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [ldobj, key_hash, 0]
+        [gethndl, 0, 0]
+        [mapfind, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call(bool, res_)
+
+    def __getitem__(self, key):
+        if __call(self.__contains__, key):
+            key_hash = __call(key.__hash__)
+
+            """
+            ### BEGIN VECTOR ###
+            [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [ldobj, key_hash, 0]
+            [gethndl, 0, 0]
+            [mapat, 0, 0]
+            [getobj, 0, 0]
+            [stobj, key_val_pair, 0]
+            ### END VECTOR ###
+            """
+            return key_val_pair.value
+        else:
+            raise __call(KeyError)
+
     def __str__(self):
         res = __call(str, '')
         __call(res.__add__, __call(str, '{'))

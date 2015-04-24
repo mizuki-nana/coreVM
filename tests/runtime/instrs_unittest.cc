@@ -3127,6 +3127,25 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPEMP)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPFIND)
+{
+  corevm::types::native_map map {
+    { 1, 100 }
+  };
+
+  corevm::types::uint64 key = 1;
+  corevm::types::native_type_handle oprd1 = map;
+  corevm::types::native_type_handle oprd2 = key;
+  bool expected_result = true;
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2});
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_mapfind, bool>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPAT)
 {
   corevm::types::native_map map {

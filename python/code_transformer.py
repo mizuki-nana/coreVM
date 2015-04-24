@@ -310,6 +310,18 @@ class CodeTransformer(ast.NodeVisitor):
 
     """ ----------------------------- expr --------------------------------- """
 
+    def visit_Ellipsis(self, node):
+        raise NotImplementedError
+
+    def visit_Slice(self, node):
+        raise NotImplementedError
+
+    def visit_ExtSlice(self, node):
+        raise NotImplementedError
+
+    def visit_Index(self, node):
+        return self.visit(node.value)
+
     def visit_BoolOp(self, node):
         return (' %s ' % self.visit(node.op)).join(
             [self.visit(value) for value in node.values])
@@ -445,6 +457,12 @@ class CodeTransformer(ast.NodeVisitor):
         return '{expr}.{attr}'.format(
             expr=self.visit(node.value),
             attr=str(node.attr)
+        )
+
+    def visit_Subscript(self, node):
+        return '__call({value}.__getitem__, {slice})'.format(
+            value=self.visit(node.value),
+            slice=self.visit(node.slice)
         )
 
     def visit_List(self, node):

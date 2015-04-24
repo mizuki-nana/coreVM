@@ -919,6 +919,22 @@ void corevm::types::interface_map_empty(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_map_find(
+  native_type_handle& operand, native_type_handle& key,
+  native_type_handle& result)
+{
+  corevm::types::native_map map_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+
+  corevm::types::native_map::key_type key_value = \
+    corevm::types::get_value_from_handle<corevm::types::native_map::key_type>(key);
+
+  corevm::types::boolean result_value = map_value.find(key_value) != map_value.end();
+  result = result_value;
+}
+
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_map_at(
   native_type_handle& operand, native_type_handle& key,
   native_type_handle& result)
