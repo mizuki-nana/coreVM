@@ -397,6 +397,12 @@ void interface_array_back(
 
 // -----------------------------------------------------------------------------
 
+void interface_array_put(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& value, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 void interface_array_append(
   native_type_handle& operand, native_type_handle& data,
   native_type_handle& result);

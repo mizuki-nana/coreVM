@@ -29,8 +29,32 @@ def test_list_getitem():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_setitem():
+    l = [1, 2]
+    print l[0]
+    l[0] = 2
+    print l[0]
+    l[0] += 3
+    print l[0]
+    l[1] = 5
+    print l
+    l[1] *= 10
+    print l
+    try:
+        l[1] = 10
+    except IndexError:
+        print 'Index out of bound'
+
+    try:
+        l[1] += 100
+    except IndexError:
+        print 'Index out of bound'
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
 test_list_getitem()
+test_list_setitem()
 
 ## -----------------------------------------------------------------------------

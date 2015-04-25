@@ -88,6 +88,25 @@ class list(object):
         """
         return res
 
+    def __setitem__(self, i, value):
+        if __call(i.__gte__, __call(self.__len__)):
+            raise __call(IndexError)
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [ldobj, i, 0]
+        [gethndl, 0, 0]
+        [ldobj, value, 0]
+        [putobj, 0, 0]
+        [aryput, 0, 0]
+        [ldobj, self, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+        return None
+
 ## -----------------------------------------------------------------------------
 
 class listiterator(object):

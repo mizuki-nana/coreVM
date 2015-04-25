@@ -815,6 +815,26 @@ void corevm::types::interface_array_back(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_array_put(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& value, native_type_handle& result)
+{
+  corevm::types::native_array array_value =
+    corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+
+  uint64_t index_value =
+    corevm::types::get_value_from_handle<uint64_t>(index);
+
+  corevm::types::native_array::value_type data_value =
+    corevm::types::get_value_from_handle<corevm::types::native_array::value_type>(value);
+
+  array_value.at(index_value) = data_value;
+
+  result = array_value;
+}
+
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_append(
   native_type_handle& operand, native_type_handle& data,
   native_type_handle& result)

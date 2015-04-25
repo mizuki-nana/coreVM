@@ -65,11 +65,38 @@ def test_dict_getitem():
 
 ## -----------------------------------------------------------------------------
 
+def test_dict_setitem():
+    d = {
+      1: 1,
+      2: 20,
+      3: 300,
+      'zigzagoon': True
+    }
+    d[1] = 10
+    print d[1]
+    d[2] *= 2
+    print d[2]
+    d[3] -= 100
+    print d[3]
+    d['zigzagoon'] = False
+    print d['zigzagoon']
+
+    d['Hello'] = 'world'
+    print d['Hello']
+
+    try:
+        d[4] += 1
+    except KeyError:
+        print 'KeyError: key does not exist'
+
+## -----------------------------------------------------------------------------
+
 test_dict_repr_with_integer_keys()
 test_dict_repr_with_str_keys()
 test_dict_repr_with_boolean_keys()
 test_dict_repr_with_floating_number_keys()
 test_dict_hash()
 test_dict_getitem()
+test_dict_setitem()
 
 ## -----------------------------------------------------------------------------

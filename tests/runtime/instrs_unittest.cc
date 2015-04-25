@@ -3007,6 +3007,25 @@ TEST_F(instrs_native_array_type_complex_instrs_test, TestInstrARYBAK)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_array_type_complex_instrs_test, TestInstrARYPUT)
+{
+  corevm::types::native_array array { 1, 2, 3 };
+  corevm::types::uint64 index = 2;
+  corevm::types::uint64 data = 4;
+  corevm::types::native_array expected_result { 1, 2, 4 };
+
+  corevm::types::native_type_handle oprd1 = array;
+  corevm::types::native_type_handle oprd2 = index;
+  corevm::types::native_type_handle oprd3 = data;
+
+  push_eval_stack_and_frame(eval_oprds_list{oprd1, oprd2, oprd3});
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_aryput,
+    corevm::types::native_array>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_native_array_type_complex_instrs_test, TestInstrARYAPND)
 {
   corevm::types::native_array array { 1, 2, 3 };

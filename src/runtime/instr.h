@@ -936,6 +936,13 @@ enum instr_enum : uint32_t
   ARYBAK,
 
   /**
+   * <aryput, _. _>
+   * Pops the top three elements on the eval stack, and performs the
+   * "array put" operation.
+   */
+  ARYPUT,
+
+  /**
    * <aryapnd, _, _>
    * Pops the top two elements on the eval stack, and performs the
    * "array append" operation.
@@ -2188,6 +2195,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_arybak : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_aryput : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

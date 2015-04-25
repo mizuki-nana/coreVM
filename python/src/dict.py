@@ -118,6 +118,40 @@ class dict(object):
         else:
             raise __call(KeyError)
 
+    def __setitem__(self, key, value):
+        key_hash = __call(key.__hash__)
+
+        if __call(self.__contains__, key):
+            """
+            ### BEGIN VECTOR ###
+            [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [ldobj, key_hash, 0]
+            [gethndl, 0, 0]
+            [mapat, 0, 0]
+            [getobj, 0, 0]
+            [stobj, key_val_pair, 0]
+            ### END VECTOR ###
+            """
+            key_val_pair.value = value
+        else:
+            key_val_pair = __call(__dict_KeyValuePair, key, value)
+            """
+            ### BEGIN VECTOR ###
+            [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [ldobj, key_hash, 0]
+            [gethndl, 0, 0]
+            [ldobj, key_val_pair, 0]
+            [putobj, 0, 0]
+            [mapput, 0, 0]
+            [ldobj, self, 0]
+            [sethndl, 0, 0]
+            ### END VECTOR ###
+            """
+
+        return None
+
     def __str__(self):
         res = __call(str, '')
         __call(res.__add__, __call(str, '{'))

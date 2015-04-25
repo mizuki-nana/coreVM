@@ -115,6 +115,15 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Assign(self, node):
+        if isinstance(node.targets[0], ast.Subscript):
+            # Special case for assignments on subscripts.
+            # TODO: need to handle assignment on multiple targets.
+            return '{indentation}__call({target}.__setitem__, {slice}, {value})'.format(
+                indentation=self.__indentation(),
+                target=self.visit(node.targets[0].value),
+                slice=self.visit(node.targets[0].slice),
+                value=self.visit(node.value))
+
         base_str = '{indentation}{targets} = {value}\n'.format(
             indentation=self.__indentation(),
             targets=', '.join([self.visit(target) for target in node.targets]),
