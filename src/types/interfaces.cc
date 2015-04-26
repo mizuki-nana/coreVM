@@ -1083,3 +1083,20 @@ void corevm::types::interface_map_vals(
 }
 
 // -----------------------------------------------------------------------------
+
+void corevm::types::interface_map_merge(
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result)
+{
+  corevm::types::native_map map_value =
+    corevm::types::get_value_from_handle<corevm::types::native_map>(operand);
+
+  corevm::types::native_map other_map_value =
+    corevm::types::get_value_from_handle<corevm::types::native_map>(other_operand);
+
+  map_value.insert(other_map_value.begin(), other_map_value.end());
+
+  result = map_value;
+}
+
+// -----------------------------------------------------------------------------

@@ -3360,3 +3360,37 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPVALS)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPMRG)
+{
+  corevm::types::native_map map1 {
+    { 1, 11 },
+    { 2, 22 },
+    { 3, 33 },
+  };
+
+  corevm::types::native_map map2 {
+    { 4, 44 },
+    { 5, 55 },
+    { 6, 66 },
+  };
+
+  corevm::types::native_map expected_result {
+    { 1, 11 },
+    { 2, 22 },
+    { 3, 33 },
+    { 4, 44 },
+    { 5, 55 },
+    { 6, 66 },
+  };
+
+  corevm::types::native_type_handle oprd1 = map1;
+  corevm::types::native_type_handle oprd2 = map2;
+
+  push_eval_stack_and_frame(eval_oprds_list{ oprd1, oprd2 });
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapmrg,
+    corevm::types::native_map>(expected_result);
+}
+
+// -----------------------------------------------------------------------------

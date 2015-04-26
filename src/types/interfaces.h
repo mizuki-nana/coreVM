@@ -492,6 +492,12 @@ void interface_map_vals(
 
 // -----------------------------------------------------------------------------
 
+void interface_map_merge(
+  native_type_handle& operand, native_type_handle& other_operand,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 } /* end namespace types */
 
 

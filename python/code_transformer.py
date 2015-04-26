@@ -390,6 +390,13 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_Set(self, node):
+        return '__call(set, {' + ', '.join(
+            [
+                '__call(set.__set_Item, {expr})'.format(expr=self.visit(expr))
+                for expr in node.elts
+            ]) + '})'
+
     def visit_ListComp(self, node):
         pass
 
@@ -412,6 +419,13 @@ class CodeTransformer(ast.NodeVisitor):
                 left=self.visit(node.left),
                 op_func=self.visit(op),
                 right=self.visit(node.comparators[0])
+            )
+        elif isinstance(op, ast.In):
+            base_str='{indentation}__call({left}.{op_func}, {right})'.format(
+                indentation=self.__indentation(),
+                left=self.visit(node.comparators[0]),
+                op_func=self.visit(op),
+                right=self.visit(node.left),
             )
         else:
             # TODO: special support for `is` and `is not` can be removed once
@@ -550,21 +564,11 @@ class CodeTransformer(ast.NodeVisitor):
 
     """ ----------------------------- cmpop -------------------------------- """
 
-    def visit_Is(self, node):
-        # TODO: special support for `is` and `is not` can be removed once
-        # dynamic dispatching is supported.
-        return 'is'
-
-    def visit_IsNot(self, node):
-        # TODO: special support for `is` and `is not` can be removed once
-        # dynamic dispatching is supported.
-        return 'is not'
-
     def visit_Eq(self, node):
         return '__eq__'
 
     def visit_NotEq(self, node):
-        return '__neq__'
+        return '__ne__'
 
     def visit_Lt(self, node):
         return '__lt__'
@@ -577,6 +581,22 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_GtE(self, node):
         return '__gte__'
+
+    def visit_Is(self, node):
+        # TODO: special support for `is` and `is not` can be removed once
+        # dynamic dispatching is supported.
+        return 'is'
+
+    def visit_IsNot(self, node):
+        # TODO: special support for `is` and `is not` can be removed once
+        # dynamic dispatching is supported.
+        return 'is not'
+
+    def visit_In(self, node):
+        return '__contains__'
+
+    def visit_NotIn(self, node):
+        pass
 
     """ ------------------------- comprehension ---------------------------- """
 

@@ -306,6 +306,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* MAPSWP   */     { .num_oprd=0, .str="mapswp",    .handler=std::make_shared<corevm::runtime::instr_handler_mapswp>()    },
   /* MAPKEYS  */     { .num_oprd=0, .str="mapkeys",   .handler=std::make_shared<corevm::runtime::instr_handler_mapkeys>()   },
   /* MAPVALS  */     { .num_oprd=0, .str="mapvals",   .handler=std::make_shared<corevm::runtime::instr_handler_mapvals>()   },
+  /* MAPMRG   */     { .num_oprd=0, .str="mapmrg",    .handler=std::make_shared<corevm::runtime::instr_handler_mapmrg>()    },
 
 };
 
@@ -2859,6 +2860,19 @@ corevm::runtime::instr_handler_mapvals::execute(
     instr,
     process,
     corevm::types::interface_map_vals
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_mapmrg::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    instr,
+    process,
+    corevm::types::interface_map_merge
   );
 }
 

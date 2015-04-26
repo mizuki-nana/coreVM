@@ -1057,6 +1057,13 @@ enum instr_enum : uint32_t
    */
   MAPVALS,
 
+  /**
+   * <mapmrg, _, _>
+   * Pops the top two elements on the eval stack, converts them to maps,
+   * merge them into one single map, and put it back to the eval stack.
+   */
+  MAPMRG,
+
   /* -------------------------------- Max ----------------------------------- */
 
   INSTR_CODE_MAX,
@@ -2337,6 +2344,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_mapvals : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_mapmrg : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

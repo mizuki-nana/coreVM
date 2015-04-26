@@ -300,7 +300,7 @@ class float(object):
         """
         return __call(bool, res_)
 
-    def __neq__(self, other):
+    def __ne__(self, other):
         """
         ### BEGIN VECTOR ###
         [ldobj, other, 0]

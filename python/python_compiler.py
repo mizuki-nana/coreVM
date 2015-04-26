@@ -862,6 +862,38 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
             self.__add_instr('sethndl', 0, 0)
 
+        self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+
+    def visit_Set(self, node):
+        set_name = self.__get_random_name()
+
+        self.__add_instr('new', 0, 0)
+        self.__add_instr('map', 0, 0)
+        self.__add_instr('sethndl', 0, 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(set_name), 0)
+
+        for elt in node.elts:
+            item_name = self.__get_random_name()
+
+            self.visit(elt)
+            self.__add_instr('stobj2', self.__get_encoding_id(item_name), 0)
+
+            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
+            self.__add_instr('getattr', self.__get_encoding_id('hash'), 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
+            self.__add_instr('getattr', self.__get_encoding_id('value'), 0)
+            self.__add_instr('putobj', 0, 0)
+
+            self.__add_instr('mapput', 0, 0)
+
+            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+            self.__add_instr('sethndl', 0, 0)
+
+        self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
         self.visit(node.comparators[0])
@@ -1244,8 +1276,9 @@ def main():
         generator.read_from_source('python/src/float.py')
         generator.read_from_source('python/src/str.py')
         generator.read_from_source('python/src/list.py')
-        generator.read_from_source('python/src/dict.py')
         generator.read_from_source('python/src/tuple.py')
+        generator.read_from_source('python/src/dict.py')
+        generator.read_from_source('python/src/set.py')
         generator.read_from_source('python/src/exceptions.py')
 
         generator.read_from_source(options.input_file)
