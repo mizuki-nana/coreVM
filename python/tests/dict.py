@@ -91,6 +91,29 @@ def test_dict_setitem():
 
 ## -----------------------------------------------------------------------------
 
+def test_dict_comprehension():
+    d = {
+      1: 1,
+      2: 2,
+      3: 3,
+    }
+
+    c = 2
+
+    print {k: v for k, v in d.items()}
+
+    print {k: v ** c for k, v in d.items()}
+
+    print {k: v ** c for k, v in d.items() if k % 2 == 0}
+
+    print {k: k * c for k in d.keys()}
+
+    print {v * c: v for v in d.values()}
+
+    print {v * c: v for v in d.values() if v % 2 == 0}
+
+## -----------------------------------------------------------------------------
+
 test_dict_repr_with_integer_keys()
 test_dict_repr_with_str_keys()
 test_dict_repr_with_boolean_keys()
@@ -98,5 +121,6 @@ test_dict_repr_with_floating_number_keys()
 test_dict_hash()
 test_dict_getitem()
 test_dict_setitem()
+test_dict_comprehension()
 
 ## -----------------------------------------------------------------------------

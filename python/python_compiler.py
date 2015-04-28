@@ -810,6 +810,11 @@ class BytecodeGenerator(ast.NodeVisitor):
         # step out
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
 
+        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
+        self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
+        self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
+        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+
         return name
 
     def visit_IfExp(self, node):
@@ -893,6 +898,21 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('sethndl', 0, 0)
 
         self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+
+    def visit_ListComp(self, node):
+        # Do nothing here.
+        # Comprehension syntax gets unwrapped in code_transformer.py
+        pass
+
+    def visit_SetComp(self, node):
+        # Do nothing here.
+        # Comprehension syntax gets unwrapped in code_transformer.py
+        pass
+
+    def visit_DictComp(self, node):
+        # Do nothing here.
+        # Comprehension syntax gets unwrapped in code_transformer.py
+        pass
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
@@ -1134,6 +1154,13 @@ class BytecodeGenerator(ast.NodeVisitor):
         pass
 
     def visit_NotIn(self, node):
+        pass
+
+    """ ------------------------- comprehension ---------------------------- """
+
+    def visit_comprehension(self, node):
+        # Do nothing here.
+        # Comprehension syntax gets unwrapped in code_transformer.py
         pass
 
     """ ------------------------- excepthandler ---------------------------- """

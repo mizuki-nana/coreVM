@@ -312,6 +312,19 @@ def test_set_equality():
 
 ## -----------------------------------------------------------------------------
 
+def test_set_comprehension():
+    l = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+
+    print {i % 2 for i in l} == set({0, 1})
+
+    c = 5
+
+    print {i * c for i in l} == set({50, 45, 40, 35, 30, 25, 20, 15, 10, 5})
+
+    print {i for i in l if i >= 3}
+
+## -----------------------------------------------------------------------------
+
 test_set_representation()
 test_set_add_and_clear()
 test_set_contains()
@@ -331,5 +344,6 @@ test_set_bitwise_or()
 test_set_bitwise_and()
 test_set_bitwise_xor()
 test_set_equality()
+test_set_comprehension()
 
 ## -----------------------------------------------------------------------------

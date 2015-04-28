@@ -398,7 +398,154 @@ class CodeTransformer(ast.NodeVisitor):
             ]) + '})'
 
     def visit_ListComp(self, node):
-        pass
+        # TODO: support multiple generators.
+        generator = node.generators[0]
+
+        iterable = self.visit(generator.iter)
+        elt = 'lambda {target}: {elt}'.format(
+            target=self.visit(generator.target),
+            elt=self.visit(node.elt))
+        res = '__call(list, [])'
+        synthesizer='lambda res, item: __call(res.append, item)'
+
+        predicate='None'
+
+        if generator.ifs:
+            # TODO: handle multiple `if`s.
+            predicate='lambda {target} : {expr}'.format(
+                target=self.visit(generator.target),
+                expr=self.visit(generator.ifs[0]))
+
+        return """
+               __call(
+                   __call(
+                       sequence_generator,
+                       {iterable},
+                       {elt},
+                       {res},
+                       {synthesizer},
+                       {predicate}
+                   ).eval
+               )
+               """.format(
+                        iterable=iterable,
+                        elt=elt,
+                        res=res,
+                        synthesizer=synthesizer,
+                        predicate=predicate)
+
+    def visit_SetComp(self, node):
+        # TODO: support multiple generators.
+        generator = node.generators[0]
+
+        iterable = self.visit(generator.iter)
+        elt = 'lambda {target}: {elt}'.format(
+            target=self.visit(generator.target),
+            elt=self.visit(node.elt))
+        res = '__call(set, {})'
+        synthesizer='lambda res, item: __call(res.add, item)'
+
+        predicate='None'
+
+        if generator.ifs:
+            # TODO: handle multiple `if`s.
+            predicate='lambda {target} : {expr}'.format(
+                target=self.visit(generator.target),
+                expr=self.visit(generator.ifs[0]))
+
+        return """
+               __call(
+                   __call(
+                       sequence_generator,
+                       {iterable},
+                       {elt},
+                       {res},
+                       {synthesizer},
+                       {predicate}
+                   ).eval
+               )
+               """.format(
+                        iterable=iterable,
+                        elt=elt,
+                        res=res,
+                        synthesizer=synthesizer,
+                        predicate=predicate)
+
+    def visit_DictComp(self, node):
+        # TODO: support multiple generators.
+        generator = node.generators[0]
+
+        iterable = self.visit(generator.iter)
+        res = '__call(dict, {})'
+        synthesizer='lambda res, key, value: __call(res.__setitem__, key, value)'
+        predicate='None'
+
+        if isinstance(generator.target, ast.Tuple):
+            # Dict comprehension where the target is a tuple
+            # (i.e. key and value).
+            # E.g.
+            # new_dict = {k: v * 2 for k, v in old_dict}
+            assert len(generator.target.elts) >= 2
+            targets = ', '.join([
+                self.visit(target) for target in generator.target.elts])
+            generator_type = 'dict_pair_generator'
+            elt = """
+                  lambda {targets}:
+                      __call(
+                          dict.__dict_KeyValuePair,
+                          {key},
+                          {value})
+                  """.format(
+                            targets=targets,
+                            key=self.visit(node.key),
+                            value=self.visit(node.value))
+
+            if generator.ifs:
+                # TODO: handle multiple `if`s.
+                predicate='lambda {targets} : {expr}'.format(
+                    targets=targets,
+                    expr=self.visit(generator.ifs[0]))
+        else:
+            # Dict comprehension where the target is a single item
+            # (i.e. key or value).
+            # E.g.
+            # new_dict = {k: k * 2 for k in old_dict.keys()}
+            generator_type = 'dict_item_generator'
+            elt = """
+                  lambda {target}:
+                      __call(
+                          dict.__dict_KeyValuePair,
+                          {key},
+                          {value})
+                  """.format(
+                            target=self.visit(generator.target),
+                            key=self.visit(node.key),
+                            value=self.visit(node.value))
+
+            if generator.ifs:
+                # TODO: handle multiple `if`s.
+                predicate='lambda {target} : {expr}'.format(
+                    target=self.visit(generator.target),
+                    expr=self.visit(generator.ifs[0]))
+
+        return """
+               __call(
+                   __call(
+                       {generator_type},
+                       {iterable},
+                       {elt},
+                       {res},
+                       {synthesizer},
+                       {predicate}
+                   ).eval
+               )
+               """.format(
+                        generator_type=generator_type,
+                        iterable=iterable,
+                        elt=elt,
+                        res=res,
+                        synthesizer=synthesizer,
+                        predicate=predicate)
 
     def visit_Compare(self, node):
         # Note: Only supports one comparison now.
@@ -601,7 +748,9 @@ class CodeTransformer(ast.NodeVisitor):
     """ ------------------------- comprehension ---------------------------- """
 
     def visit_comprehension(self, node):
-        raise NotImplementedError
+        # Do nothing here.
+        # Handled in `visit_ListComp`, `visit_SetComp`, and `visit_DictComp`.
+        pass
 
     """ ------------------------- excepthandler ---------------------------- """
 

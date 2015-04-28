@@ -52,9 +52,21 @@ def test_list_setitem():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_comprehension():
+    l = [1, 2, 3, 4, 5]
+    print [i for i in l]
+
+    c = 5
+    print [i * c for i in l]
+
+    print [i for i in l if i <= 3]
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
 test_list_getitem()
 test_list_setitem()
+test_list_comprehension()
 
 ## -----------------------------------------------------------------------------
