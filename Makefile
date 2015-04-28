@@ -28,6 +28,7 @@ SRC=src
 TESTS=tests
 TOOLS=tools
 PYTHON_DIR=python
+PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 MAIN_CC=$(SRC)/corevm/main.cc
 
 PYTHON=`which python`
@@ -116,3 +117,5 @@ clean:
 	@-rm -rf $(BIN)
 	@-rm -f $(LIBCOREVM)
 	@-rm -f $(COREVM)
+	@-rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
+	@-rm -f $(PYTHON_TESTS_DIR)/*.tmp.py.core
