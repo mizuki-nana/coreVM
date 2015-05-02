@@ -866,7 +866,7 @@ TEST_F(instrs_obj_unittest, TestInstrPUTOBJ)
 
   corevm::types::native_type_handle& hndl = frame.top_eval_stack();
 
-  corevm::dyobj::dyobj_id actual_id = \
+  corevm::dyobj::dyobj_id actual_id =
     corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(hndl);
 
   ASSERT_EQ(id, actual_id);
@@ -3229,7 +3229,7 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPSET)
   m_process.push_frame(frame);
 
   corevm::types::native_map_key_type key = 4;
-  corevm::types::native_map_mapped_type value = \
+  corevm::types::native_map_mapped_type value =
     static_cast<corevm::types::native_map_mapped_type>(id);
 
   corevm::runtime::instr instr {

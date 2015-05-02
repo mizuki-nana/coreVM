@@ -75,20 +75,20 @@ public:
   bool has_visible_var(const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)
-    const throw(corevm::runtime::local_variable_not_found_error);
+    const throw(corevm::runtime::name_not_found_error);
 
   corevm::dyobj::dyobj_id pop_visible_var(const corevm::runtime::variable_key)
-    throw(corevm::runtime::local_variable_not_found_error);
+    throw(corevm::runtime::name_not_found_error);
 
   void set_visible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
 
   bool has_invisible_var(const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id get_invisible_var(const corevm::runtime::variable_key)
-    const throw(corevm::runtime::local_variable_not_found_error);
+    const throw(corevm::runtime::name_not_found_error);
 
   corevm::dyobj::dyobj_id pop_invisible_var(const corevm::runtime::variable_key)
-    throw(corevm::runtime::local_variable_not_found_error);
+    throw(corevm::runtime::name_not_found_error);
 
   void set_invisible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
 

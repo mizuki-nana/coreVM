@@ -179,8 +179,6 @@ public:
 
   const corevm::runtime::instr_handler* get_instr_handler(corevm::runtime::instr_code);
 
-  void set_encoding_key_value_pair(uint64_t, const std::string&);
-
   void set_sig_vector(sig_atomic_t, corevm::runtime::vector&);
 
   void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);

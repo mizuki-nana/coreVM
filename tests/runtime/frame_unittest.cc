@@ -99,7 +99,7 @@ TEST_F(frame_unittest, TestVisibleVars)
     {
       frame.get_visible_var(var_key);
     },
-    corevm::runtime::local_variable_not_found_error
+    corevm::runtime::name_not_found_error
   );
 
   frame.set_visible_var(var_key, obj_id);
@@ -112,7 +112,7 @@ TEST_F(frame_unittest, TestVisibleVars)
     {
       frame.get_visible_var(var_key);
     },
-    corevm::runtime::local_variable_not_found_error
+    corevm::runtime::name_not_found_error
   );
 }
 
@@ -130,7 +130,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
     {
       frame.get_invisible_var(var_key);
     },
-    corevm::runtime::local_variable_not_found_error
+    corevm::runtime::name_not_found_error
   );
 
   frame.set_invisible_var(var_key, obj_id);
@@ -143,7 +143,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
     {
       frame.get_invisible_var(var_key);
     },
-    corevm::runtime::local_variable_not_found_error
+    corevm::runtime::name_not_found_error
   );
 }
 

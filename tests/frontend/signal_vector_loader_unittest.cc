@@ -58,7 +58,7 @@ const char* signal_vector_loader_unittest::PATH = "./example.sigvec";
 
 // -----------------------------------------------------------------------------
 
-const std::string signal_vector_loader_unittest::SIGNAL_VECTOR = \
+const std::string signal_vector_loader_unittest::SIGNAL_VECTOR =
   "{"
     "\"signals\": {"
       "\"SIGFPE\": ["
@@ -87,7 +87,7 @@ TEST_F(signal_vector_loader_unittest, TestLoadSuccessful)
 
 TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
 {
-  const std::string INVALID_SIGNAL_VECTOR = \
+  const std::string INVALID_SIGNAL_VECTOR =
     "{"
       "\"signals\": {"
         "\"SIGFPE\": ["

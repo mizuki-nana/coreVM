@@ -55,6 +55,12 @@ typedef uint8_t gc_bitfield_t;
 typedef int64_t closure_id;
 
 
+typedef uint64_t encoding_key;
+
+
+typedef std::unordered_map<encoding_key, std::string> encoding_map;
+
+
 typedef int32_t compartment_id;
 
 
@@ -65,9 +71,6 @@ const closure_id NONESET_CLOSURE_ID = -1;
 
 
 const instr_addr NONESET_INSTR_ADDR = -1;
-
-
-typedef std::unordered_map<uint64_t, std::string> encoding_map;
 
 
 // Default size of native types pool: 128 MB.

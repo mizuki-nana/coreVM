@@ -196,7 +196,7 @@ corevm::frontend::bytecode_loader_v0_1::load(
 
   // Load encoding map.
   corevm::runtime::encoding_map encoding_map;
-  const JSON::array& encoding_array = \
+  const JSON::array& encoding_array =
     json_object.at("encoding_map").array_items();
 
   for (auto itr = encoding_array.begin(); itr != encoding_array.end(); ++itr)
@@ -209,7 +209,8 @@ corevm::frontend::bytecode_loader_v0_1::load(
     const JSON& raw_key = encoding_pair.at("value");
 
     const std::string value = static_cast<std::string>(raw_value.string_value());
-    const uint64_t key = static_cast<uint64_t>(raw_key.int_value());
+    const corevm::runtime::encoding_key key =
+      static_cast<corevm::runtime::encoding_key>(raw_key.int_value());
 
     encoding_map[key] = value;
   }
@@ -244,7 +245,7 @@ corevm::frontend::bytecode_loader_v0_1::load(
 
     // Vector
     const JSON& __vector__ = closure.at("__vector__");
-    corevm::runtime::vector vector = \
+    corevm::runtime::vector vector =
       corevm::frontend::get_vector_from_json(__vector__);
 
     corevm::runtime::loc_table locs_table;

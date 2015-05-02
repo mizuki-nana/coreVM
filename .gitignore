@@ -19,7 +19,7 @@
 build/
 bin/
 coreVM
-info.json
+corevm_metadata.json
 *.tmp.py
 *.out
 

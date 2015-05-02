@@ -122,7 +122,17 @@ TEST_F(process_unittest, TestAppendVector)
     { .code=83, .oprd1=93, .oprd2=0  },
   };
 
-  ASSERT_EQ(expected, target);
+  ASSERT_EQ(expected.size(), target.size());
+
+  for (size_t i = 0; i < expected.size(); ++i)
+  {
+    const auto& expected_instr = expected[i];
+    const auto& actual_instr = target[i];
+
+    ASSERT_EQ(expected_instr.code, actual_instr.code);
+    ASSERT_EQ(expected_instr.oprd1, actual_instr.oprd1);
+    ASSERT_EQ(expected_instr.oprd2, actual_instr.oprd2);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -170,7 +180,17 @@ TEST_F(process_unittest, TestInsertVector)
     { .code=91, .oprd1=64,  .oprd2=67 },
   };
 
-  ASSERT_EQ(expected, target);
+  ASSERT_EQ(expected.size(), target.size());
+
+  for (size_t i = 0; i < expected.size(); ++i)
+  {
+    const auto& expected_instr = expected[i];
+    const auto& actual_instr = target[i];
+
+    ASSERT_EQ(expected_instr.code, actual_instr.code);
+    ASSERT_EQ(expected_instr.oprd1, actual_instr.oprd1);
+    ASSERT_EQ(expected_instr.oprd2, actual_instr.oprd2);
+  }
 }
 
 // -----------------------------------------------------------------------------

@@ -32,10 +32,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class extract_info : public sneaker::utility::cmdline_program
+class extract_metadata : public sneaker::utility::cmdline_program
 {
 public:
-  extract_info();
+  extract_metadata();
 
 protected:
   virtual int do_run();
@@ -59,7 +59,7 @@ const std::string DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
 
 // -----------------------------------------------------------------------------
 
-extract_info::extract_info()
+extract_metadata::extract_metadata()
   :
   sneaker::utility::cmdline_program("Extract coreVM info"),
   m_output()
@@ -71,7 +71,7 @@ extract_info::extract_info()
 // -----------------------------------------------------------------------------
 
 bool
-extract_info::check_parameters() const
+extract_metadata::check_parameters() const
 {
   return true;
 }
@@ -79,7 +79,7 @@ extract_info::check_parameters() const
 // -----------------------------------------------------------------------------
 
 int
-extract_info::do_run()
+extract_metadata::do_run()
 {
   std::ofstream fd(m_output.c_str(), std::ios::out);
 
@@ -110,7 +110,7 @@ extract_info::do_run()
 // -----------------------------------------------------------------------------
 
 const std::string
-extract_info::extract_instr_info() const
+extract_metadata::extract_instr_info() const
 {
   std::stringstream ss;
 
@@ -141,7 +141,7 @@ extract_info::extract_instr_info() const
 // -----------------------------------------------------------------------------
 
 const std::string
-extract_info::extract_flags_info() const
+extract_metadata::extract_flags_info() const
 {
   std::stringstream ss;
 
@@ -174,7 +174,7 @@ extract_info::extract_flags_info() const
 
 int main(int argc, char** argv)
 {
-  extract_info program;
+  extract_metadata program;
   return program.run(argc, argv);
 }
 

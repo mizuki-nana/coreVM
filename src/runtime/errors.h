@@ -110,10 +110,10 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class local_variable_not_found_error : public corevm::runtime::runtime_error
+class name_not_found_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit local_variable_not_found_error():
+  explicit name_not_found_error():
     corevm::runtime::runtime_error("Local variable not found")
   {
   }
@@ -234,7 +234,7 @@ public:
 class encoding_string_not_found_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit encoding_string_not_found_error(uint64_t key):
+  explicit encoding_string_not_found_error(corevm::runtime::encoding_key key):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot find encoding string for key: %llu") % key)
     )

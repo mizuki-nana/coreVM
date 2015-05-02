@@ -105,6 +105,9 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noex
     return object.is_garbage_collectible();
   };
 
+  // NOTE: Cannot use `std::remove_if` here because certain implementations
+  // require copying the underlying container elements, in this case
+  // `dynamic_object_type`, which does not support explicit copy semantics.
   for (auto itr = m_heap.begin(); itr != m_heap.end();)
   {
     if (remove_criterion(itr))

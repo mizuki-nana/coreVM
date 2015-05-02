@@ -20,32 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ALLOCATION_SCHEME_H_
-#define COREVM_ALLOCATION_SCHEME_H_
-
-#include <cstdlib>
+#include "allocation_scheme.h"
 
 
-namespace corevm {
-
-
-namespace memory {
-
-
-class allocation_scheme
+corevm::memory::allocation_scheme::~allocation_scheme()
 {
-public:
-  virtual ~allocation_scheme();
-
-  virtual ssize_t malloc(size_t) noexcept = 0;
-  virtual ssize_t free(size_t) noexcept = 0;
-};
-
-
-} /* end namespace memory */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_ALLOCATION_SCHEME_H_ */
+  // Do nothing here.
+}

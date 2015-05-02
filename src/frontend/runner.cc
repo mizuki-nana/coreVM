@@ -56,7 +56,8 @@ try_get_attr_name(
 
   if (compartment)
   {
-    compartment->get_encoding_string((uint64_t)attr_key, attr_name);
+    compartment->get_encoding_string(
+      static_cast<corevm::runtime::encoding_key>(attr_key), attr_name);
   }
 }
 

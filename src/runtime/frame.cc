@@ -143,11 +143,11 @@ corevm::runtime::frame::has_visible_var(
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::get_visible_var(
   const corevm::runtime::variable_key var_key) const
-  throw(corevm::runtime::local_variable_not_found_error)
+  throw(corevm::runtime::name_not_found_error)
 {
   if (!has_visible_var(var_key))
   {
-    THROW(corevm::runtime::local_variable_not_found_error());
+    THROW(corevm::runtime::name_not_found_error());
   }
 
   return m_visible_vars.at(var_key);
@@ -157,7 +157,7 @@ corevm::runtime::frame::get_visible_var(
 
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_visible_var(const corevm::runtime::variable_key var_key)
-  throw(corevm::runtime::local_variable_not_found_error)
+  throw(corevm::runtime::name_not_found_error)
 {
   corevm::dyobj::dyobj_id obj_id = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
@@ -187,11 +187,11 @@ corevm::runtime::frame::has_invisible_var(
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::get_invisible_var(
   const corevm::runtime::variable_key var_key) const
-  throw(corevm::runtime::local_variable_not_found_error)
+  throw(corevm::runtime::name_not_found_error)
 {
   if (!has_invisible_var(var_key))
   {
-    THROW(corevm::runtime::local_variable_not_found_error());
+    THROW(corevm::runtime::name_not_found_error());
   }
 
   return m_invisible_vars.at(var_key);
@@ -202,7 +202,7 @@ corevm::runtime::frame::get_invisible_var(
 corevm::dyobj::dyobj_id
 corevm::runtime::frame::pop_invisible_var(
   const corevm::runtime::variable_key var_key)
-  throw(corevm::runtime::local_variable_not_found_error)
+  throw(corevm::runtime::name_not_found_error)
 {
   corevm::dyobj::dyobj_id obj_id = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);

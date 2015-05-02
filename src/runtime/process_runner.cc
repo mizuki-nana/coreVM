@@ -38,8 +38,8 @@ const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
 // -----------------------------------------------------------------------------
 
 corevm::runtime::process_runner::process_runner(
-  corevm::runtime::process& process
-) :
+  corevm::runtime::process& process)
+  :
   sneaker::threading::fixed_time_interval_daemon_service(
     COREVM_DEFAULT_GC_INTERVAL,
     corevm::runtime::process_runner::tick_handler,
@@ -55,8 +55,8 @@ corevm::runtime::process_runner::process_runner(
 
 corevm::runtime::process_runner::process_runner(
   corevm::runtime::process& process,
-  uint32_t gc_interval
-) :
+  uint32_t gc_interval)
+  :
   sneaker::threading::fixed_time_interval_daemon_service(
     gc_interval,
     corevm::runtime::process_runner::tick_handler,
@@ -92,7 +92,9 @@ corevm::runtime::process_runner::tick_handler(void* arg)
   ASSERT(arg);
 #endif
 
-  corevm::runtime::process_runner* runner = static_cast<corevm::runtime::process_runner*>(arg);
+  corevm::runtime::process_runner* runner =
+    static_cast<corevm::runtime::process_runner*>(arg);
+
   runner->gc();
 }
 

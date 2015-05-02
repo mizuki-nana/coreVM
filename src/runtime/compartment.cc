@@ -57,7 +57,8 @@ corevm::runtime::compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 std::string
-corevm::runtime::compartment::get_encoding_string(uint64_t key) const
+corevm::runtime::compartment::get_encoding_string(
+  corevm::runtime::encoding_key key) const
   throw(corevm::runtime::encoding_string_not_found_error)
 {
   auto itr = m_encoding_map.find(key);
@@ -74,7 +75,7 @@ corevm::runtime::compartment::get_encoding_string(uint64_t key) const
 
 void
 corevm::runtime::compartment::get_encoding_string(
-  uint64_t key, std::string* str) const
+  corevm::runtime::encoding_key key, std::string* str) const
 {
   if (!str)
   {

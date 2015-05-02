@@ -66,20 +66,11 @@ std::ostream& operator<<(
 
 // -----------------------------------------------------------------------------
 
-bool operator==(const instr& lhs, const instr& rhs)
-{
-  return lhs.code == rhs.code &&
-    lhs.oprd1 == rhs.oprd1 &&
-    lhs.oprd2 == rhs.oprd2;
-}
-
-// -----------------------------------------------------------------------------
-
 static corevm::dyobj::attr_key
 get_attr_key(
   corevm::runtime::process& process,
   corevm::runtime::compartment_id compartment_id,
-  uint64_t str_key,
+  corevm::runtime::encoding_key str_key,
   bool from_current_compartment=false)
 {
   corevm::runtime::compartment *compartment=nullptr;
@@ -93,7 +84,9 @@ get_attr_key(
     }
     else
     {
+#if __DEBUG__
       ASSERT(compartment);
+#endif
     }
   }
 
@@ -110,7 +103,7 @@ get_attr_key(
 static corevm::dyobj::attr_key
 get_attr_key_from_current_compartment(
   corevm::runtime::process& process,
-  uint64_t str_key)
+  corevm::runtime::encoding_key str_key)
 {
   const corevm::runtime::frame& frame = process.top_frame();
 
@@ -541,7 +534,7 @@ corevm::runtime::instr_handler_ldobj::execute(
 
     if (!frame_ptr)
     {
-      THROW(corevm::runtime::local_variable_not_found_error());
+      THROW(corevm::runtime::name_not_found_error());
     }
   }
 
@@ -570,7 +563,7 @@ void
 corevm::runtime::instr_handler_getattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
     process, str_key);
 
@@ -587,7 +580,7 @@ void
 corevm::runtime::instr_handler_setattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
     process, str_key);
 
@@ -661,7 +654,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
     if (!frame_ptr)
     {
-      THROW(corevm::runtime::local_variable_not_found_error());
+      THROW(corevm::runtime::name_not_found_error());
     }
   }
 
@@ -873,7 +866,7 @@ corevm::runtime::instr_handler_cldobj::execute(
 
     if (!frame_ptr)
     {
-      THROW(corevm::runtime::local_variable_not_found_error());
+      THROW(corevm::runtime::name_not_found_error());
     }
   }
 
@@ -953,7 +946,7 @@ void
 corevm::runtime::instr_handler_rsetattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  uint64_t str_key = static_cast<uint64_t>(instr.oprd1);
+  auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
     process, str_key);
 
@@ -1239,7 +1232,7 @@ corevm::runtime::instr_handler_jmpr::execute(
   corevm::runtime::frame& frame = process.top_frame();
   corevm::runtime::instr_addr starting_addr = frame.return_addr() + 1;
 
-  corevm::runtime::instr_addr relative_addr = \
+  corevm::runtime::instr_addr relative_addr =
     static_cast<corevm::runtime::instr_addr>(instr.oprd1);
 
   corevm::runtime::instr_addr addr = starting_addr + relative_addr;
@@ -1315,7 +1308,7 @@ corevm::runtime::instr_handler_exc::execute(
       // A catch site found in the current frame. Jump to its destination.
       frame.set_exc_obj(exc_obj_id);
 
-      corevm::runtime::instr_addr addr = \
+      corevm::runtime::instr_addr addr =
         starting_addr + static_cast<corevm::runtime::instr_addr>(dst);
 
       // Minus one so that it will be `addr` after this instruction finishes,
@@ -1454,7 +1447,7 @@ corevm::runtime::instr_handler_putargs::execute(
   corevm::types::native_type_handle result;
   corevm::types::interface_to_ary(hndl, result);
 
-  corevm::types::native_array array = \
+  corevm::types::native_array array =
     corevm::types::get_value_from_handle<corevm::types::native_array>(result);
 
   for (auto itr = array.begin(); itr != array.end(); ++itr)
@@ -1480,7 +1473,7 @@ corevm::runtime::instr_handler_putkwargs::execute(
   corevm::types::native_type_handle result;
   corevm::types::interface_to_map(hndl, result);
 
-  corevm::types::native_map map = \
+  corevm::types::native_map map =
     corevm::types::get_value_from_handle<corevm::types::native_map>(result);
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
@@ -1605,7 +1598,7 @@ corevm::runtime::instr_handler_print::execute(
   corevm::types::native_type_handle result;
   corevm::types::interface_to_str(hndl, result);
 
-  corevm::types::native_string native_str = \
+  corevm::types::native_string native_str =
     corevm::types::get_value_from_handle<corevm::types::native_string>(result);
 
   const std::string& str = static_cast<std::string>(native_str);
@@ -2083,7 +2076,7 @@ corevm::runtime::instr_handler_str::execute(
 
   if (instr.oprd1 > 0)
   {
-    uint64_t encoding_key = static_cast<uint64_t>(instr.oprd1);
+    auto encoding_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
 
     corevm::runtime::compartment_id compartment_id = frame.closure_ctx().compartment_id;
     corevm::runtime::compartment* compartment = nullptr;

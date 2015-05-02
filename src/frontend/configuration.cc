@@ -41,7 +41,7 @@ using sneaker::json::JSON;
 
 // -----------------------------------------------------------------------------
 
-const std::string corevm::frontend::configuration::schema = \
+const std::string corevm::frontend::configuration::schema =
   "{"
     "\"type\": \"object\","
     "\"properties\": {"
@@ -200,7 +200,7 @@ corevm::frontend::configuration::set_values(
   if (config_obj.find("heap-alloc-size") != config_obj.end())
   {
     JSON heap_alloc_size_raw = config_obj.at("heap-alloc-size");
-    uint64_t heap_alloc_size = \
+    uint64_t heap_alloc_size =
       static_cast<uint64_t>(heap_alloc_size_raw.int_value());
     configuration.set_heap_alloc_size(heap_alloc_size);
   }
@@ -209,7 +209,7 @@ corevm::frontend::configuration::set_values(
   if (config_obj.find("pool-alloc-size") != config_obj.end())
   {
     JSON pool_alloc_size_raw = config_obj.at("pool-alloc-size");
-    uint64_t pool_alloc_size = \
+    uint64_t pool_alloc_size =
       static_cast<uint64_t>(pool_alloc_size_raw.int_value());
     configuration.set_pool_alloc_size(pool_alloc_size);
   }
@@ -218,7 +218,7 @@ corevm::frontend::configuration::set_values(
   if (config_obj.find("gc-interval") != config_obj.end())
   {
     JSON gc_interval_raw = config_obj.at("gc-interval");
-    uint32_t gc_interval = \
+    uint32_t gc_interval =
       static_cast<uint32_t>(gc_interval_raw.int_value());
     configuration.set_gc_interval(gc_interval);
   }

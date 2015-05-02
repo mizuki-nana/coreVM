@@ -46,10 +46,10 @@ public:
 
   void set_encoding_map(const corevm::runtime::encoding_map&);
 
-  std::string get_encoding_string(uint64_t) const
+  std::string get_encoding_string(corevm::runtime::encoding_key) const
     throw(corevm::runtime::encoding_string_not_found_error);
 
-  void get_encoding_string(uint64_t, std::string*) const;
+  void get_encoding_string(corevm::runtime::encoding_key, std::string*) const;
 
   size_t closure_count() const;
 

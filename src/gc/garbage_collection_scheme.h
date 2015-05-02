@@ -32,7 +32,11 @@ namespace corevm {
 namespace gc {
 
 
-class garbage_collection_scheme {};
+class garbage_collection_scheme
+{
+public:
+  virtual ~garbage_collection_scheme();
+};
 
 
 } /* end namespace gc */

@@ -60,11 +60,11 @@ corevm::frontend::get_vector_from_json(const JSON& json)
     const JSON& oprd1_raw = instr_tuple[1];
     const JSON& oprd2_raw = instr_tuple[2];
 
-    corevm::runtime::instr_code code = \
+    corevm::runtime::instr_code code =
       static_cast<corevm::runtime::instr_code>(code_raw.int_value());
-    corevm::runtime::instr_oprd oprd1 = \
+    corevm::runtime::instr_oprd oprd1 =
       static_cast<corevm::runtime::instr_oprd>(oprd1_raw.int_value());
-    corevm::runtime::instr_oprd oprd2 = \
+    corevm::runtime::instr_oprd oprd2 =
       static_cast<corevm::runtime::instr_oprd>(oprd2_raw.int_value());
 
     vector.push_back(

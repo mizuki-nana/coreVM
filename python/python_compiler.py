@@ -2,22 +2,23 @@
 
 # Copyright (c) 2015 Yanzheng Li
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to
-# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-# the Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 import ast
 import itertools
@@ -189,7 +190,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.debug_mode = options.debug_mode
 
         # Read info file
-        with open(options.info_file, 'r') as fd:
+        with open(options.metadata_file, 'r') as fd:
             info_json = simplejson.load(fd)
 
         self.instr_str_to_code_map = info_json[INSTR_STR_TO_CODE_MAP]
@@ -1253,11 +1254,11 @@ def main():
     )
 
     parser.add_option(
-        '-f',
-        '--info-file',
+        '-m',
+        '--metadata-file',
         action='store',
-        dest='info_file',
-        help='Info File')
+        dest='metadata_file',
+        help='coreVM metadata file')
 
     parser.add_option(
         '-o',
@@ -1281,7 +1282,7 @@ def main():
         sys.stderr.write('Input file not specified\n')
         return -1
 
-    if not options.info_file:
+    if not options.metadata_file:
         sys.stderr.write('Info file not specified\n')
         return -1
 

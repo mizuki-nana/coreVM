@@ -475,7 +475,7 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key key)
 const corevm::runtime::instr_handler*
 corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
 {
-  corevm::runtime::instr_info instr_info = \
+  corevm::runtime::instr_info instr_info =
     corevm::runtime::instr_handler_meta::get(code);
 
   return instr_info.handler.get();
@@ -711,10 +711,10 @@ corevm::runtime::process::should_gc() const
       continue;
     }
 
-    corevm::runtime::gc_rule_meta::gc_bitfields bit = \
+    corevm::runtime::gc_rule_meta::gc_bitfields bit =
       static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
 
-    const corevm::runtime::gc_rule* gc_rule = \
+    const corevm::runtime::gc_rule* gc_rule =
       corevm::runtime::gc_rule_meta::get_gc_rule(bit);
 
     if (gc_rule &&
@@ -800,7 +800,9 @@ corevm::runtime::process::find_frame_by_ctx(
   corevm::runtime::compartment* compartment,
   corevm::runtime::process& process)
 {
+#if __DEBUG__
   ASSERT(compartment);
+#endif
 
   corevm::runtime::frame* frame = nullptr;
 
@@ -810,7 +812,9 @@ corevm::runtime::process::find_frame_by_ctx(
 
     if (res)
     {
+#if __DEBUG__
       ASSERT(frame);
+#endif
       break;
     }
 
@@ -821,7 +825,9 @@ corevm::runtime::process::find_frame_by_ctx(
 
     if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
     {
+#if __DEBUG__
       ASSERT(!frame);
+#endif
       break;
     }
   }
@@ -836,7 +842,9 @@ corevm::runtime::process::find_parent_frame_in_process(
   corevm::runtime::frame* frame_ptr,
   corevm::runtime::process& process)
 {
+#if __DEBUG__
   ASSERT(frame_ptr);
+#endif
 
   corevm::runtime::compartment_id compartment_id =
     frame_ptr->closure_ctx().compartment_id;
@@ -855,7 +863,9 @@ corevm::runtime::process::find_parent_frame_in_process(
 
   corevm::runtime::closure_id parent_closure_id = closure.parent_id;
 
+#if __DEBUG__
   ASSERT(closure.id != closure.parent_id);
+#endif
 
   if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
   {

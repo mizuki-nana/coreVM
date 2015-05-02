@@ -210,10 +210,10 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
-    corevm::runtime::vector vector = \
+    corevm::runtime::vector vector =
       corevm::frontend::get_vector_from_json(signal_json);
 
-    sig_atomic_t sig = \
+    sig_atomic_t sig =
       corevm::runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
 
     process.set_sig_vector(sig, vector);
