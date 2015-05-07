@@ -23,4 +23,4 @@
 # SOFTWARE.
 
 avrogencpp -i corevm_bytecode_schema.json -o corevm_bytecode_schema.h -n corevm \
-  && mv corevm_bytecode_schema.h src/frontend/
+  && mv corevm_bytecode_schema.h src/corevm/

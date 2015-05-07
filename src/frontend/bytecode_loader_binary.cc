@@ -21,8 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "bytecode_loader_binary.h"
-#include "corevm_bytecode_schema.h"
 #include "errors.h"
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
 #include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/compartment.h"

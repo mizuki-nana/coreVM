@@ -30,6 +30,7 @@ TOOLS=tools
 PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 MAIN_CC=$(SRC)/corevm/main.cc
+COMPILED_BYTECODE_SCHEMA_HEADER=$(SRC)/corevm/corevm_bytecode_schema.h
 
 PYTHON=`which python`
 CXX=`which clang++`
@@ -59,6 +60,7 @@ RUN_TESTS=run_tests
 
 COMPILE_BYTECODE_SCHEMA=scripts/compile_bytecode_schema.sh
 
+
 export GTEST_COLOR=true
 
 
@@ -75,12 +77,16 @@ all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS)
 
 
 $(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
-	sh $(COMPILE_BYTECODE_SCHEMA)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -c $(TOP_DIR)/$*.cc -o $@
 
 
-$(LIBCOREVM): $(OBJECTS)
+.PHONY: $(COMPILED_BYTECODE_SCHEMA_HEADER)
+$(COMPILED_BYTECODE_SCHEMA_HEADER):
+	sh $(COMPILE_BYTECODE_SCHEMA)
+
+
+$(LIBCOREVM): $(COMPILED_BYTECODE_SCHEMA_HEADER) $(OBJECTS)
 	mkdir -p $(@D)
 	@find $(BUILD_DIR)/$(SRC) -name "*.o" | xargs $(AR) $(ARFLAGS) $(LIBCOREVM)
 	@echo "\033[35mGenerated $(LIBCOREVM)\033[0m"
@@ -117,6 +123,7 @@ $(TESTS): $(TEST_OBJECTS)
 clean:
 	@-rm -rf $(BUILD_DIR)
 	@-rm -rf $(BIN)
+	@-rm -f $(COMPILED_BYTECODE_SCHEMA_HEADER)
 	@-rm -f $(LIBCOREVM)
 	@-rm -f $(COREVM)
 	@-rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
