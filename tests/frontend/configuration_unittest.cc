@@ -51,7 +51,8 @@ protected:
       "{"
         "\"heap-alloc-size\": 2048,"
         "\"pool-alloc-size\": 1024,"
-        "\"gc-interval\": 100"
+        "\"gc-interval\": 100,"
+        "\"format\": \"binary\""
       "}"
     );
 
@@ -72,6 +73,7 @@ TEST_F(configuration_unittest, TestLoadSuccessful)
   ASSERT_EQ(2048, configuration.heap_alloc_size());
   ASSERT_EQ(1024, configuration.pool_alloc_size());
   ASSERT_EQ(100, configuration.gc_interval());
+  ASSERT_STREQ("binary", configuration.format().c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -95,18 +97,22 @@ TEST_F(configuration_unittest, TestGetAndSet)
   ASSERT_EQ(0, configuration.heap_alloc_size());
   ASSERT_EQ(0, configuration.pool_alloc_size());
   ASSERT_EQ(0, configuration.gc_interval());
+  ASSERT_STREQ("", configuration.format().c_str());
 
   uint64_t expected_heap_alloc_size = 2048;
   uint64_t expected_pool_alloc_size = 1024;
   uint32_t expected_gc_interval = 32;
+  const std::string expected_format = "text";
 
   configuration.set_heap_alloc_size(expected_heap_alloc_size);
   configuration.set_pool_alloc_size(expected_pool_alloc_size);
   configuration.set_gc_interval(expected_gc_interval);
+  configuration.set_format(expected_format);
 
   ASSERT_EQ(expected_heap_alloc_size, configuration.heap_alloc_size());
   ASSERT_EQ(expected_pool_alloc_size, configuration.pool_alloc_size());
   ASSERT_EQ(expected_gc_interval, configuration.gc_interval());
+  ASSERT_EQ(expected_format, configuration.format());
 }
 
 // -----------------------------------------------------------------------------

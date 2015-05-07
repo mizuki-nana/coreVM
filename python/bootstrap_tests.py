@@ -43,8 +43,13 @@ INTERMEDIATE_EXTENSION = '.tmp.py'
 
 ## -----------------------------------------------------------------------------
 
-def pyta_cmdl_args(path):
-    return [PYTHON, PYTA_PATH, path]
+def pyta_cmdl_args(path, options):
+    args = [PYTHON, PYTA_PATH, path]
+
+    if options.format:
+        args.extend(['--format', options.format])
+
+    return args
 
 ## -----------------------------------------------------------------------------
 
@@ -69,7 +74,7 @@ def run(options):
         info = path
 
         retcode = StdoutComparator(
-            pyta_cmdl_args(path), python_cmdl_args(path)).run()
+            pyta_cmdl_args(path, options), python_cmdl_args(path)).run()
 
         if retcode == 0:
             info += (colors.OKGREEN + ' [SUCCESS]' + colors.ENDC)
@@ -93,6 +98,15 @@ def main():
     parser = optparse.OptionParser(
         usage='usage: %prog [options]',
         version='%prog v0.1')
+
+    parser.add_option(
+        '-t',
+        '--format',
+        action='store',
+        dest='format',
+        default='binary',
+        help='Bytecode format (binary or text)'
+    )
 
     parser.add_option(
         '-d',

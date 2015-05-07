@@ -20,10 +20,12 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_v0_1.h"
+#include "bytecode_loader_text.h"
 
 #include "errors.h"
 #include "utils.h"
+#include "corevm/macros.h"
+#include "corevm/version.h"
 #include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/common.h"
@@ -35,38 +37,29 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
+#include <cstdint>
+#include <fstream>
+#include <ios>
+#include <sstream>
+#include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
-
-// -----------------------------------------------------------------------------
-
-const std::string BYTECODE_LOADER_V0_1_FORMAT = "application/json";
-
-// -----------------------------------------------------------------------------
-
-const std::string BYTECODE_LOADER_V0_1_VERSION = "0.1";
 
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::bytecode_loader_v0_1::format() const
+corevm::frontend::bytecode_loader_text::format() const
 {
-  return BYTECODE_LOADER_V0_1_FORMAT;
+  return "application/json";
 }
 
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::bytecode_loader_v0_1::version() const
-{
-  return BYTECODE_LOADER_V0_1_VERSION;
-}
-
-// -----------------------------------------------------------------------------
-
-const std::string
-corevm::frontend::bytecode_loader_v0_1::schema() const
+corevm::frontend::bytecode_loader_text::schema() const
 {
   static const std::string unformatted_def(
     "{"
@@ -183,7 +176,102 @@ corevm::frontend::bytecode_loader_v0_1::schema() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::bytecode_loader_v0_1::load(
+corevm::frontend::bytecode_loader_text::load(
+  const std::string& path, corevm::runtime::process& process)
+{
+  std::ifstream f(path, std::ios::binary);
+  std::stringstream buffer;
+
+  try
+  {
+    f.exceptions(std::ios::failbit | std::ios::badbit);
+    buffer << f.rdbuf();
+    f.close();
+  }
+  catch (const std::ios_base::failure& ex)
+  {
+    THROW(corevm::frontend::file_loading_error(
+      str(
+        boost::format(
+          "Error while loading file \"%s\": %s"
+        ) % path % ex.what()
+      )
+    ));
+  }
+
+  std::string content = buffer.str();
+
+  JSON content_json;
+
+  try
+  {
+    content_json = sneaker::json::parse(content);
+  }
+  catch (const sneaker::json::invalid_json_error& ex)
+  {
+    THROW(corevm::frontend::file_loading_error(
+      str(
+        boost::format("Error while parsing file \"%s\": %s") % path % ex.what()
+      )
+    ));
+  }
+
+  validate_and_load(path, content_json, process);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::frontend::bytecode_loader_text::validate_and_load(
+  const std::string& path,
+  const JSON& content_json,
+  corevm::runtime::process& process)
+{
+  const JSON::object& json_object = content_json.object_items();
+
+  const JSON::string& target_version = json_object.at("target-version").string_value();
+  const std::string target_version_str = static_cast<std::string>(target_version);
+
+  if (target_version_str != COREVM_SHORT_CANONICAL_VERSION)
+  {
+    THROW(corevm::frontend::file_loading_error(
+      str(
+        boost::format("Invalid target-version: %s") % target_version_str
+      )
+    ));
+  }
+
+  const JSON::string& format = json_object.at("format").string_value();
+  const JSON::string& format_version = json_object.at("format-version").string_value();
+
+  // TODO: validate format and format version.
+  const std::string& format_str = static_cast<std::string>(format);
+  const std::string& format_version_str = static_cast<std::string>(format_version);
+
+  const std::string& schema = this->schema();
+  const JSON schema_json = sneaker::json::parse(schema);
+
+  try
+  {
+    sneaker::json::json_schema::validate(content_json, schema_json);
+  }
+  catch (const sneaker::json::json_validation_error& ex)
+  {
+    THROW(corevm::frontend::file_loading_error(
+      str(
+        boost::format("Invalid format in file: %s") % ex.what()
+      )
+    ));
+  }
+
+  // Load
+  load_bytecode(path, content_json, process);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::frontend::bytecode_loader_text::load_bytecode(
   const std::string& path,
   const JSON& content_json,
   corevm::runtime::process& process)

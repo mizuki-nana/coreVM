@@ -36,11 +36,11 @@ CXX=`which clang++`
 CXXFLAGS=-Wall -std=c++11 -D__DEBUG__=1 -I$(TOP_DIR)/$(SRC)
 EXTRA_CXXFLAGS=-Wno-deprecated
 
-LFLAGS=-lsneaker -lpthread
+LFLAGS=-lsneaker -lpthread -lavrocpp_s
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	CXXFLAGS += -D LINUX
-	LFLAGS += -lboost_system -lboost_regex -lboost_program_options
+	LFLAGS += -lboost_system -lboost_regex -lboost_program_options -lboost_iostreams
 endif
 ifeq ($(UNAME_S), Darwin)
 	CXXFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
@@ -57,6 +57,7 @@ BOOTSTRAP_TESTS=bootstrap_tests.py
 PYTHON_TESTS=python_tests
 RUN_TESTS=run_tests
 
+COMPILE_BYTECODE_SCHEMA=scripts/compile_bytecode_schema.sh
 
 export GTEST_COLOR=true
 
@@ -74,6 +75,7 @@ all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS)
 
 
 $(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
+	sh $(COMPILE_BYTECODE_SCHEMA)
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) -c $(TOP_DIR)/$*.cc -o $@
 

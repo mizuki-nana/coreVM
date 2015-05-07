@@ -28,15 +28,24 @@ import random
 import simplejson
 import string
 import sys
+import time
 import traceback
 
 from datetime import datetime
+
+import avro.datafile
+import avro.io
+import avro.schema
 
 
 ## -----------------------------------------------------------------------------
 
 INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
 DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
+COREVM_BYTECODE_SCHEMA = 'corevm_bytecode_schema.json'
+BYTECODE_BINARY_FORMAT = 'binary'
+BYTECODE_TEXT_FORMAT = 'text'
+BYTECODE_FORMATS = (BYTECODE_BINARY_FORMAT, BYTECODE_TEXT_FORMAT)
 
 ## -----------------------------------------------------------------------------
 
@@ -72,8 +81,15 @@ class Instr(object):
         self.oprd1 = oprd1
         self.oprd2 = oprd2
 
-    def to_json(self):
-        return [self.code, self.oprd1, self.oprd2]
+    def to_json(self, binary=False):
+        if binary:
+            return {
+                'code': self.code,
+                'oprd1': self.oprd1,
+                'oprd2': self.oprd2
+            }
+        else:
+            return [self.code, self.oprd1, self.oprd2]
 
 ## -----------------------------------------------------------------------------
 
@@ -131,12 +147,12 @@ class Closure(object):
     def add_loc(self, index, loc):
         self.locs[index] = loc
 
-    def to_json(self):
+    def to_json(self, binary=False):
         json_dict = {
             'name': self.original_name,
             '__id__': self.closure_id,
             '__vector__': [
-                instr.to_json() for instr in self.vector
+                instr.to_json(binary=binary) for instr in self.vector
             ]
         }
 
@@ -144,16 +160,26 @@ class Closure(object):
             json_dict['__parent__'] = self.parent_id
 
         if self.locs:
-            json_dict['locs'] = [
-                {
-                    'index': index,
-                    'loc': {
+            if binary:
+                json_dict['locs'] = [
+                    {
+                        'index': index,
                         'lineno': loc.lineno,
                         'col_offset': loc.col_offset
                     }
-                }
-                for index, loc in self.locs.iteritems()
-            ]
+                    for index, loc in self.locs.iteritems()
+                ]
+            else:
+                json_dict['locs'] = [
+                    {
+                        'index': index,
+                        'loc': {
+                            'lineno': loc.lineno,
+                            'col_offset': loc.col_offset
+                        }
+                    }
+                    for index, loc in self.locs.iteritems()
+                ]
 
         if self.catch_sites:
             json_dict['catch_sites'] = [
@@ -220,7 +246,15 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.visit(tree)
 
-    def finalize(self):
+    def finalize(self, format):
+        if format == BYTECODE_BINARY_FORMAT:
+            self.finalize_binary()
+        elif format == BYTECODE_TEXT_FORMAT:
+            self.finalize_text()
+        else:
+            raise Exception('Invalid bytecode formats' % format)
+
+    def finalize_text(self):
         structured_bytecode = {
             'format': self.format,
             'format-version': self.format_version,
@@ -247,6 +281,37 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         with open(self.output_file, 'w') as fd:
             fd.write(simplejson.dumps(structured_bytecode))
+
+    def finalize_binary(self):
+        with open(COREVM_BYTECODE_SCHEMA, 'r') as schema_file:
+            bytecode_schema = avro.schema.parse(schema_file.read())
+
+        structured_bytecode = {
+            'format': self.format,
+            'format_version': self.format_version,
+            'target_version': self.target_version,
+            'path': self.input_file,
+            'timestamp': int(time.mktime(datetime.now().timetuple())),
+            'encoding': self.encoding,
+            'author': self.author,
+            'encoding_map': [
+                {
+                    'key': key,
+                    'value': value
+                }
+                for key, value in self.encoding_map.iteritems()
+            ],
+            '__MAIN__': [
+                closure.to_json(binary=True)
+                for closure in self.closure_map.itervalues()
+            ]
+        }
+
+        with open(self.output_file, 'w') as fd:
+            writer = avro.datafile.DataFileWriter(
+                fd, avro.io.DatumWriter(), bytecode_schema)
+            writer.append(structured_bytecode)
+            writer.close()
 
     def __current_closure(self):
         return self.closure_map[self.current_closure_name]
@@ -1269,6 +1334,15 @@ def main():
     )
 
     parser.add_option(
+        '-t',
+        '--format',
+        action='store',
+        dest='format',
+        default='binary',
+        help='Bytecode format (binary or text)'
+    )
+
+    parser.add_option(
         '-d',
         '--debug',
         action='store_true',
@@ -1280,15 +1354,19 @@ def main():
 
     if not options.input_file:
         sys.stderr.write('Input file not specified\n')
-        return -1
+        sys.exit(-1)
 
     if not options.metadata_file:
         sys.stderr.write('Info file not specified\n')
-        return -1
+        sys.exit(-1)
 
     if not options.output_file:
         sys.stderr.write('Output file not specified\n')
-        return -1
+        sys.exit(-1)
+
+    if options.format not in BYTECODE_FORMATS:
+        sys.stderr.write('Invalid bytecode format: %s\n' % options.format)
+        sys.exit(-1)
 
     try:
         generator = BytecodeGenerator(options)
@@ -1311,7 +1389,7 @@ def main():
 
         generator.read_from_source(options.input_file)
 
-        generator.finalize()
+        generator.finalize(format=options.format)
     except Exception as ex:
         sys.stderr.write('Failed to compile %s\n' % options.input_file)
         sys.stderr.write(str(ex))

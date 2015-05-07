@@ -20,17 +20,44 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_unittest_base.h"
-
-#include "frontend/bytecode_loader_v0_1.h"
+#include "frontend/bytecode_loader_text.h"
 #include "runtime/process.h"
 
 #include <sneaker/testing/_unittest.h>
 
+#include <fstream>
 #include <string>
 
 
-class bytecode_loader_v0_1_unittest : public bytecode_loader_unittest_base
+// -----------------------------------------------------------------------------
+
+const char* PATH = "./example.corevm";
+
+// -----------------------------------------------------------------------------
+
+class bytecode_loader_text_unittest_base : public ::testing::Test
+{
+protected:
+
+  virtual void SetUp()
+  {
+    std::ofstream f(PATH, std::ios::binary);
+    f << this->bytecode();
+    f.close();
+  }
+
+  virtual void TearDown()
+  {
+    remove(PATH);
+  }
+
+  virtual const char* bytecode() = 0;
+};
+
+
+// -----------------------------------------------------------------------------
+
+class bytecode_loader_text_unittest : public bytecode_loader_text_unittest_base
 {
 protected:
   virtual const char* bytecode()
@@ -87,16 +114,33 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bytecode_loader_v0_1_unittest, TestLoadSuccessful)
+TEST_F(bytecode_loader_text_unittest, TestLoadSuccessful)
 {
   corevm::runtime::process process;
+  corevm::frontend::bytecode_loader_text loader;
 
-  corevm::frontend::bytecode_loader::load(PATH, process);
+  loader.load(PATH, process);
 }
 
 // -----------------------------------------------------------------------------
 
-class bytecode_loader_v0_1_invalid_instr_unittest : public bytecode_loader_unittest_base
+TEST_F(bytecode_loader_text_unittest, TestLoadFailsWithInvalidPath)
+{
+  const std::string invalid_path("some/random/path/example.core");
+  corevm::runtime::process process;
+  corevm::frontend::bytecode_loader_text loader;
+
+  ASSERT_THROW(
+    {
+      loader.load(invalid_path, process);
+    },
+    corevm::frontend::file_loading_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+class bytecode_loader_text_invalid_instr_unittest : public bytecode_loader_text_unittest_base
 {
 protected:
   virtual const char* bytecode()
@@ -133,13 +177,14 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bytecode_loader_v0_1_invalid_instr_unittest, TestLoadFails)
+TEST_F(bytecode_loader_text_invalid_instr_unittest, TestLoadFails)
 {
   corevm::runtime::process process;
+  corevm::frontend::bytecode_loader_text loader;
 
   ASSERT_THROW(
     {
-      corevm::frontend::bytecode_loader::load(PATH, process);
+      loader.load(PATH, process);
     },
     corevm::frontend::file_loading_error
   );

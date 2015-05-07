@@ -23,7 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runner.h"
 
 #include "errors.h"
-#include "bytecode_loader.h"
+#include "bytecode_loader_binary.h"
+#include "bytecode_loader_text.h"
 #include "configuration.h"
 #include "corevm/macros.h"
 #include "dyobj/common.h"
@@ -33,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/process_runner.h"
 
 #include <boost/format.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <sneaker/utility/stack_trace.h>
 
 #include <cerrno>
@@ -101,11 +103,29 @@ corevm::frontend::runner::run() const noexcept
   uint32_t gc_interval = m_configuration.gc_interval() ? \
     m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
+  const std::string& format = m_configuration.format();
+
   corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
+
+  // TODO: Investigate if can use `std::unique_ptr` here with Clang++ 3.4.
+  boost::scoped_ptr<corevm::frontend::bytecode_loader> loader;
+
+  if (format == "text")
+  {
+    loader.reset(new corevm::frontend::bytecode_loader_text());
+  }
+  else
+  {
+    loader.reset(new corevm::frontend::bytecode_loader_binary());
+  }
+
+#if __DEBUG__
+  ASSERT(loader);
+#endif
 
   try
   {
-    corevm::frontend::bytecode_loader::load(m_path, process);
+    loader->load(m_path, process);
 
     bool res = corevm::runtime::process_runner(process, gc_interval).start();
 

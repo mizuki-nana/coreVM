@@ -20,28 +20,51 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_unittest_base.h"
+#ifndef COREVM_BYTECODE_LOADER_TEXT_H_
+#define COREVM_BYTECODE_LOADER_TEXT_H_
 
-#include "frontend/bytecode_loader.h"
+#include "bytecode_loader.h"
+
 #include "runtime/process.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <sneaker/json/json.h>
 
 #include <string>
 
 
-class bytecode_loader_unittest : public bytecode_loader_unittest_base {};
+namespace corevm {
 
 
-TEST_F(bytecode_loader_unittest, TestLoadFailsWithInvalidPath)
+namespace frontend {
+
+
+using sneaker::json::JSON;
+
+// -----------------------------------------------------------------------------
+
+class bytecode_loader_text : public corevm::frontend::bytecode_loader
 {
-  std::string invalid_path("some/random/path/example.core");
-  corevm::runtime::process process;
+public:
+  virtual void load(const std::string&, corevm::runtime::process&);
 
-  ASSERT_THROW(
-    {
-      corevm::frontend::bytecode_loader::load(invalid_path, process);
-    },
-    corevm::frontend::file_loading_error
-  );
-}
+  const std::string format() const;
+  const std::string schema() const;
+
+private:
+  void validate_and_load(
+    const std::string&, const JSON&, corevm::runtime::process&);
+
+  void load_bytecode(
+    const std::string&, const JSON&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */
+
+
+#endif /* COREVM_BYTECODE_LOADER_TEXT_H_ */

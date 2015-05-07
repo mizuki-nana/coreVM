@@ -20,6 +20,7 @@ build/
 bin/
 coreVM
 corevm_metadata.json
+src/frontend/corevm_bytecode_schema.h
 *.tmp.py
 *.out
 

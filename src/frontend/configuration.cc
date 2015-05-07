@@ -53,6 +53,13 @@ const std::string corevm::frontend::configuration::schema =
       "},"
       "\"gc-interval\": {"
         "\"type\": \"integer\""
+      "},"
+      "\"format\": {"
+        "\"type\": \"string\","
+        "\"enum\": ["
+          "\"text\","
+          "\"binary\""
+        "]"
       "}"
     "}"
   "}";
@@ -63,7 +70,8 @@ corevm::frontend::configuration::configuration()
   :
   m_heap_alloc_size(0),
   m_pool_alloc_size(0),
-  m_gc_interval(0)
+  m_gc_interval(0),
+  m_format()
 {
 }
 
@@ -93,6 +101,14 @@ corevm::frontend::configuration::gc_interval() const
 
 // -----------------------------------------------------------------------------
 
+const std::string&
+corevm::frontend::configuration::format() const
+{
+  return m_format;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::frontend::configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
@@ -113,6 +129,17 @@ void
 corevm::frontend::configuration::set_gc_interval(uint32_t gc_interval)
 {
   m_gc_interval = gc_interval;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::frontend::configuration::set_format(const std::string& format)
+{
+  if (format == "text" || format == "binary")
+  {
+    m_format = format;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -194,12 +221,12 @@ corevm::frontend::configuration::set_values(
   ASSERT(config_json.is_object());
 #endif
 
-  JSON::object config_obj = config_json.object_items();
+  const JSON::object& config_obj = config_json.object_items();
 
   // Set heap alloc size.
   if (config_obj.find("heap-alloc-size") != config_obj.end())
   {
-    JSON heap_alloc_size_raw = config_obj.at("heap-alloc-size");
+    const JSON& heap_alloc_size_raw = config_obj.at("heap-alloc-size");
     uint64_t heap_alloc_size =
       static_cast<uint64_t>(heap_alloc_size_raw.int_value());
     configuration.set_heap_alloc_size(heap_alloc_size);
@@ -208,7 +235,7 @@ corevm::frontend::configuration::set_values(
   // Set ntv hndl pool alloc size.
   if (config_obj.find("pool-alloc-size") != config_obj.end())
   {
-    JSON pool_alloc_size_raw = config_obj.at("pool-alloc-size");
+    const JSON& pool_alloc_size_raw = config_obj.at("pool-alloc-size");
     uint64_t pool_alloc_size =
       static_cast<uint64_t>(pool_alloc_size_raw.int_value());
     configuration.set_pool_alloc_size(pool_alloc_size);
@@ -217,10 +244,19 @@ corevm::frontend::configuration::set_values(
   // GC interval.
   if (config_obj.find("gc-interval") != config_obj.end())
   {
-    JSON gc_interval_raw = config_obj.at("gc-interval");
+    const JSON& gc_interval_raw = config_obj.at("gc-interval");
     uint32_t gc_interval =
       static_cast<uint32_t>(gc_interval_raw.int_value());
     configuration.set_gc_interval(gc_interval);
+  }
+
+  // Format.
+  if (config_obj.find("format") != config_obj.end())
+  {
+    const JSON& format_raw = config_obj.at("format");
+    const std::string& format =
+      static_cast<std::string>(format_raw.string_value());
+    configuration.set_format(format);
   }
 }
 

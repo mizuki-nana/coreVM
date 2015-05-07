@@ -20,7 +20,38 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_unittest_base.h"
+#ifndef COREVM_BYTECODE_LOADER_BINARY_H_
+#define COREVM_BYTECODE_LOADER_BINARY_H_
+
+#include "errors.h"
+#include "bytecode_loader.h"
+
+#include "runtime/process.h"
+
+#include <string>
+
+// -----------------------------------------------------------------------------
+
+namespace corevm {
 
 
-const char* bytecode_loader_unittest_base::PATH = "./example.corevm";
+namespace frontend {
+
+// -----------------------------------------------------------------------------
+
+class bytecode_loader_binary : public bytecode_loader
+{
+public:
+  virtual void load(const std::string&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */
+
+
+#endif /* COREVM_BYTECODE_LOADER_BINARY_H_*/

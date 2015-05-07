@@ -1,0 +1,157 @@
+{
+  "namespace": "corevm.avro",
+  "type": "record",
+  "name": "bytecode",
+  "fields": [
+    {
+      "name": "format",
+      "type": "string"
+    },
+    {
+      "name": "format_version",
+      "type": "string"
+    },
+    {
+      "name": "target_version",
+      "type": "string"
+    },
+    {
+      "name": "path",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": "long"
+    },
+    {
+      "name": "encoding",
+      "type": "string"
+    },
+    {
+      "name": "author",
+      "type": "string"
+    },
+    {
+      "name": "encoding_map",
+      "type": {
+        "type": "array",
+        "items":  {
+          "type": "record",
+          "name": "encoding_pair",
+          "fields": [
+            {
+              "name": "key",
+              "type": "string"
+            },
+            {
+              "name": "value",
+              "type": "long"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "__MAIN__",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "closure",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "__id__",
+              "type": "long"
+            },
+            {
+              "name": "__parent__",
+              "type": ["long", "null"]
+            },
+            {
+              "name": "__vector__",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "instr",
+                  "fields": [
+                    {
+                      "name": "code",
+                      "type": "long"
+                    },
+                    {
+                      "name": "oprd1",
+                      "type": "long"
+                    },
+                    {
+                      "name": "oprd2",
+                      "type": "long"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "locs",
+              "type": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "loc",
+                    "fields": [
+                      {
+                        "name": "index",
+                        "type": "long"
+                      },
+                      {
+                        "name": "lineno",
+                        "type": "long"
+                      },
+                      {
+                        "name": "col_offset",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                },
+                "null"
+              ]
+            },
+            {
+              "name": "catch_sites",
+              "type": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "catch_site",
+                    "fields": [
+                      {
+                        "name": "from",
+                        "type": "long"
+                      },
+                      {
+                        "name": "to",
+                        "type": "long"
+                      },
+                      {
+                        "name": "dst",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                },
+                "null"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
