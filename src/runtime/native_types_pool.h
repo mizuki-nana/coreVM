@@ -56,10 +56,10 @@ public:
   typedef corevm::types::native_type_handle value_type;
 
   template<typename T>
-  class allocator : public corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme>, public object_traits<T>
+  class allocator : public corevm::memory::allocation_policy<T, corevm::memory::next_fit_allocation_scheme>, public object_traits<T>
   {
     private:
-      using AllocationPolicyType = typename corevm::memory::allocation_policy<T, corevm::memory::first_fit_allocation_scheme>;
+      using AllocationPolicyType = typename corevm::memory::allocation_policy<T, corevm::memory::next_fit_allocation_scheme>;
 
     public:
       using value_type      = typename AllocationPolicyType::value_type;
@@ -109,6 +109,9 @@ public:
     throw(corevm::runtime::native_type_handle_not_found_error);
 
   corevm::dyobj::ntvhndl_key create()
+    throw(corevm::runtime::native_type_handle_insertion_error);
+
+  corevm::dyobj::ntvhndl_key create(corevm::types::native_type_handle& hndl)
     throw(corevm::runtime::native_type_handle_insertion_error);
 
   void erase(const corevm::dyobj::ntvhndl_key&)

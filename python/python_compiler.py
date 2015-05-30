@@ -1122,16 +1122,6 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     """ --------------------------- operator ------------------------------- """
 
-    def __add_binary_operator_instr(self, code):
-        # TODO: replace simplistic boxing logic here.
-        self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('pop', 0, 0)
-        self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('pop', 0, 0)
-        self.__add_instr(code, 0, 0)
-        self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
-        self.__add_instr('sethndl', 0, 0)
-
     def visit_Add(self, node):
         pass
 

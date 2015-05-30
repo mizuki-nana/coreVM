@@ -61,6 +61,18 @@ def __call(caller, *arg):
 
 ## -----------------------------------------------------------------------------
 
+def __call_cls(caller, *arg):
+    obj = object.__new__(caller, *arg)
+    caller.__init__(obj, *arg)
+    return obj
+
+## -----------------------------------------------------------------------------
+
+def __call_method(caller, *arg):
+    return caller(caller.im_self, *arg)
+
+## -----------------------------------------------------------------------------
+
 class sequence_generator(object):
 
     def __init__(self, iterable, elt, res, synthesizer, predicate):
@@ -73,22 +85,22 @@ class sequence_generator(object):
         self.predicate = predicate
 
     def eval(self):
-        iterator = __call(self.iterable.__iter__)
+        iterator = __call_method(self.iterable.__iter__)
 
         try:
             while True:
-                next_item = __call(iterator.next)
+                next_item = __call_method(iterator.next)
 
                 # TODO: associate types with lambdas, so that we can do
                 # None check on them.
                 okay = True
                 if self.predicate is not None:
-                    okay = __call(self.predicate, next_item)
+                    okay = self.predicate(next_item)
 
                 if okay:
-                    item = __call(self.elt, next_item)
+                    item = self.elt(next_item)
 
-                    __call(self.synthesizer, self.res, item)
+                    self.synthesizer(self.res, item)
         except StopIteration:
             pass
 
@@ -112,7 +124,7 @@ class dict_pair_generator(object):
 
         try:
             while True:
-                key_value_pair = __call(iterator.next)
+                key_value_pair = __call_method(iterator.next)
 
                 key = key_value_pair.key
                 value = key_value_pair.value
@@ -121,12 +133,12 @@ class dict_pair_generator(object):
                 # None check on them.
                 okay = True
                 if self.predicate is not None:
-                    okay = __call(self.predicate, key, value)
+                    okay = self.predicate(key, value)
 
                 if okay:
-                    item = __call(self.elt, key, value)
+                    item = self.elt(key, value)
 
-                    __call(self.synthesizer, self.res, item.key, item.value)
+                    self.synthesizer(self.res, item.key, item.value)
         except StopIteration:
             pass
 
@@ -146,22 +158,22 @@ class dict_item_generator(object):
         self.predicate = predicate
 
     def eval(self):
-        iterator = __call(self.iterable.__iter__)
+        iterator = __call_method(self.iterable.__iter__)
 
         try:
             while True:
-                next_item = __call(iterator.next)
+                next_item = __call_method(iterator.next)
 
                 # TODO: associate types with lambdas, so that we can do
                 # None check on them.
                 okay = True
                 if self.predicate is not None:
-                    okay = __call(self.predicate, next_item)
+                    okay = self.predicate(next_item)
 
                 if okay:
-                    item = __call(self.elt, next_item)
+                    item = self.elt(next_item)
 
-                    __call(self.synthesizer, self.res, item.key, item.value)
+                    self.synthesizer(self.res, item.key, item.value)
         except StopIteration:
             pass
 

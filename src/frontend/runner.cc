@@ -127,8 +127,11 @@ corevm::frontend::runner::run() const noexcept
   {
     loader->load(m_path, process);
 
-    bool res = corevm::runtime::process_runner(process, gc_interval).start();
+    // TODO: [COREVM-247] Enable garbage collection mechanism
+    // bool res = corevm::runtime::process_runner(process, gc_interval).start();
+    process.start();
 
+    bool res = true;
     if (!res)
     {
       std::cerr << "Run failed: " << strerror(errno) << std::endl;

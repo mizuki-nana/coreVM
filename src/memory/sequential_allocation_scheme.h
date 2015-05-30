@@ -50,19 +50,22 @@ class sequential_allocation_scheme : public corevm::memory::allocation_scheme
 public:
   explicit sequential_allocation_scheme(size_t);
 
-  using iterator = typename std::list<sequential_block_descriptor>::iterator;
-  using const_iterator = typename std::list<sequential_block_descriptor>::const_iterator;
+private:
+  using list_type = typename std::list<sequential_block_descriptor>;
 
-  iterator begin() noexcept;
-  iterator end() noexcept;
-
-  const_iterator cbegin() const noexcept;
-  const_iterator cend() const noexcept;
+public:
+  using iterator = list_type::iterator;
+  using const_iterator = list_type::const_iterator;
 
   virtual ssize_t malloc(size_t) noexcept;
   virtual ssize_t free(size_t) noexcept;
 
   void debug_print(uint32_t) const noexcept;
+
+  static const size_t LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD;
+
+  // Updatable for unit tests.
+  static bool SUPPRESS_LINEAR_SEARCH;
 
 protected:
   virtual sequential_block_descriptor default_block() const noexcept;

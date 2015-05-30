@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <iterator>
 #include <ostream>
-#include <set>
+#include <unordered_set>
 
 
 #define PTR_TO_INT(p) (uint8_t*)( (p) ) - (uint8_t*)(NULL)
@@ -68,7 +68,7 @@ public:
   typedef typename AllocatorType::size_type size_type;
 
 private:
-  using _HashSet = typename std::set<pointer>;
+  using _HashSet = typename std::unordered_set<pointer>;
 
 public:
   class iterator : public std::iterator<std::forward_iterator_tag, T>
@@ -237,6 +237,8 @@ public:
 
   pointer create();
 
+  pointer create(const_reference);
+
   pointer operator[](pointer);
   const_pointer operator[](const_pointer) const;
 
@@ -344,6 +346,26 @@ corevm::memory::object_container<T, AllocatorType>::create()
   }
 
   m_allocator.construct(p);
+
+  m_addrs.insert(p);
+
+  return p;
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::create(const_reference value)
+{
+  pointer p = m_allocator.allocate(1, 0);
+
+  if (!p)
+  {
+    return nullptr;
+  }
+
+  m_allocator.construct(p, value);
 
   m_addrs.insert(p);
 

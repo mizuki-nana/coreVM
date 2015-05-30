@@ -102,7 +102,7 @@ corevm::runtime::compartment::closure_count() const
 
 void
 corevm::runtime::compartment::set_closure_table(
-  const corevm::runtime::closure_table& closure_table)
+  const corevm::runtime::closure_table&& closure_table)
 {
   m_closure_table = closure_table;
 }
@@ -154,23 +154,19 @@ corevm::runtime::compartment::get_closure_by_id(
 
 bool
 corevm::runtime::compartment::get_starting_closure(
-  corevm::runtime::closure* closure)
+  corevm::runtime::closure** closure)
 {
-  auto itr = std::find_if(
-    m_closure_table.begin(),
-    m_closure_table.end(),
-    [](const corevm::runtime::closure& closure_) -> bool {
-      return (
-        closure_.id != corevm::runtime::NONESET_CLOSURE_ID &&
-        closure_.parent_id == corevm::runtime::NONESET_CLOSURE_ID
-      );
-    }
-  );
-
-  if (itr != m_closure_table.end())
+  for (auto i = 0; i < m_closure_table.size(); ++i)
   {
-    *closure = static_cast<corevm::runtime::closure>(*itr);
-    return true;
+    const corevm::runtime::closure& closure_ = m_closure_table[i];
+
+    if (closure_.id != corevm::runtime::NONESET_CLOSURE_ID &&
+        closure_.parent_id == corevm::runtime::NONESET_CLOSURE_ID)
+    {
+      *closure = const_cast<corevm::runtime::closure*>(&closure_);
+
+      return true;
+    }
   }
 
   return false;

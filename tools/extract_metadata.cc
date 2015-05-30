@@ -92,10 +92,10 @@ extract_metadata::do_run()
 
   ss << "{" << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP \
+  ss << INDENTATION << DOUBLE_QUOTE << INSTR_STR_TO_CODE_MAP
     << DOUBLE_QUOTE << ": " << extract_instr_info() << "," << std::endl;
 
-  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP \
+  ss << INDENTATION << DOUBLE_QUOTE << DYOBJ_FLAG_STR_TO_VALUE_MAP
     << DOUBLE_QUOTE << ": " << extract_flags_info() << std::endl;
 
   ss << "}" << std::endl;
@@ -119,9 +119,9 @@ extract_metadata::extract_instr_info() const
   for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
-    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::get(code);
+    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::instr_set[code];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str \
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str
       << DOUBLE_QUOTE << ": " << code;
 
     if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)
@@ -154,7 +154,7 @@ extract_metadata::extract_flags_info() const
     uint32_t flag_value = i;
     const char* flag_str = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY[i];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str) \
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str)
       << DOUBLE_QUOTE << ": " << flag_value;
 
     if (i + 1 != array_size)

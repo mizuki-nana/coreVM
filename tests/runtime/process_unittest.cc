@@ -307,7 +307,7 @@ TEST_F(process_unittest, TestPushAndPopFrames)
     closure
   };
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   // simulate `process::pre_start()`.
   auto compartment_id = process.insert_compartment(compartment);
@@ -516,7 +516,7 @@ TEST_F(process_unittest, TestOutputStream)
     closure1
   };
 
-  compartment1.set_closure_table(closure_table1);
+  compartment1.set_closure_table(std::move(closure_table1));
 
   process.insert_compartment(compartment1);
 
@@ -540,7 +540,7 @@ TEST_F(process_unittest, TestOutputStream)
     closure2
   };
 
-  compartment2.set_closure_table(closure_table2);
+  compartment2.set_closure_table(std::move(closure_table2));
 
   process.insert_compartment(compartment2);
 
@@ -613,7 +613,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameWithAssociatedCtx)
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx {
     .compartment_id = 0,
@@ -656,7 +656,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameByTraverseClosureTree)
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx1 {
     .compartment_id = 0,
@@ -704,7 +704,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindMissingFrame)
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx1 {
     .compartment_id = 0,
@@ -761,7 +761,7 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameSuccess
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx1 {
     .compartment_id = 0,
@@ -818,7 +818,7 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameWithMis
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx1 {
     .compartment_id = 0,
@@ -869,7 +869,7 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameFails)
 
   corevm::runtime::compartment compartment("dummy-path");
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure_ctx ctx3 {
     .compartment_id = 0,

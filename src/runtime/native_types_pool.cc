@@ -115,6 +115,23 @@ corevm::runtime::native_types_pool::create()
 
 // -----------------------------------------------------------------------------
 
+corevm::dyobj::ntvhndl_key
+corevm::runtime::native_types_pool::create(corevm::types::native_type_handle& hndl)
+  throw(corevm::runtime::native_type_handle_insertion_error)
+{
+  auto ptr = m_container.create(hndl);
+
+  if (ptr == nullptr)
+  {
+    THROW(corevm::runtime::native_type_handle_insertion_error(
+      "insufficient memory to store native type handle"));
+  }
+
+  return corevm::runtime::ptr_to_ntvhndl_key(ptr);
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
   throw(corevm::runtime::native_type_handle_not_found_error)

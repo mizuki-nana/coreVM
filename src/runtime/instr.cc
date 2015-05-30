@@ -140,6 +140,8 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* GETHNDL   */    { .num_oprd=0, .str="gethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_gethndl>()   },
   /* SETHNDL   */    { .num_oprd=0, .str="sethndl",   .handler=std::make_shared<corevm::runtime::instr_handler_sethndl>()   },
   /* CLRHNDL   */    { .num_oprd=0, .str="clrhndl",   .handler=std::make_shared<corevm::runtime::instr_handler_clrhndl>()   },
+  /* CPYHNDL   */    { .num_oprd=1, .str="cpyhndl",   .handler=std::make_shared<corevm::runtime::instr_handler_cpyhndl>()   },
+  /* CPYREPR   */    { .num_oprd=0, .str="cpyrepr",   .handler=std::make_shared<corevm::runtime::instr_handler_cpyrepr>()   },
   /* OBJEQ     */    { .num_oprd=0, .str="objeq",     .handler=std::make_shared<corevm::runtime::instr_handler_objeq>()     },
   /* OBJNEQ    */    { .num_oprd=0, .str="objneq",    .handler=std::make_shared<corevm::runtime::instr_handler_objneq>()    },
   /* SETCTX    */    { .num_oprd=1, .str="setctx",    .handler=std::make_shared<corevm::runtime::instr_handler_setctx>()    },
@@ -302,20 +304,6 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* MAPMRG   */     { .num_oprd=0, .str="mapmrg",    .handler=std::make_shared<corevm::runtime::instr_handler_mapmrg>()    },
 
 };
-
-// -----------------------------------------------------------------------------
-
-corevm::runtime::instr_info
-corevm::runtime::instr_handler_meta::get(corevm::runtime::instr_code code)
-  throw(corevm::runtime::invalid_instr_error)
-{
-  if (code < 0 || code >= corevm::runtime::instr_enum::INSTR_CODE_MAX)
-  {
-    THROW(corevm::runtime::invalid_instr_error());
-  }
-
-  return corevm::runtime::instr_handler_meta::instr_set[code];
-}
 
 // -----------------------------------------------------------------------------
 
@@ -509,8 +497,6 @@ corevm::runtime::instr_handler_new::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   auto id = corevm::runtime::process::adapter(process).help_create_dyobj();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
-  obj.manager().on_create();
 
   process.push_stack(id);
 }
@@ -784,6 +770,139 @@ corevm::runtime::instr_handler_clrhndl::execute(
 
   process.erase_ntvhndl(ntvhndl_key);
   obj.clear_ntvhndl_key();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_cpyhndl::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
+  corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
+
+  auto &src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_obj_id);
+  auto &target_obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_obj_id);
+
+  corevm::dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
+
+  if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
+  {
+    THROW(corevm::runtime::native_type_handle_deletion_error());
+  }
+
+  corevm::types::native_type_handle hndl = process.get_ntvhndl(ntvhndl_key);
+  corevm::types::native_type_handle res = hndl;
+
+  uint32_t type = static_cast<uint32_t>(instr.oprd1);
+
+  switch (type)
+  {
+    case 1:
+    {
+      corevm::types::interface_to_int8(hndl, res);
+      break;
+    }
+    case 2:
+    {
+      corevm::types::interface_to_uint8(hndl, res);
+      break;
+    }
+    case 3:
+    {
+      corevm::types::interface_to_int16(hndl, res);
+      break;
+    }
+    case 4:
+    {
+      corevm::types::interface_to_uint16(hndl, res);
+      break;
+    }
+    case 5:
+    {
+      corevm::types::interface_to_int32(hndl, res);
+      break;
+    }
+    case 6:
+    {
+      corevm::types::interface_to_uint32(hndl, res);
+      break;
+    }
+    case 7:
+    {
+      corevm::types::interface_to_int64(hndl, res);
+      break;
+    }
+    case 8:
+    {
+      corevm::types::interface_to_uint64(hndl, res);
+      break;
+    }
+    case 9:
+    {
+      corevm::types::interface_to_bool(hndl, res);
+      break;
+    }
+    case 10:
+    {
+      corevm::types::interface_to_dec1(hndl, res);
+      break;
+    }
+    case 11:
+    {
+      corevm::types::interface_to_dec2(hndl, res);
+      break;
+    }
+    case 12:
+    {
+      corevm::types::interface_to_str(hndl, res);
+      break;
+    }
+    case 13:
+    {
+      corevm::types::interface_to_ary(hndl, res);
+      break;
+    }
+    case 14:
+    {
+      corevm::types::interface_to_map(hndl, res);
+      break;
+    }
+    default:
+      // Ignore invalid type.
+      break;
+  }
+
+  auto new_key = process.insert_ntvhndl(res);
+  target_obj.set_ntvhndl_key(new_key);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_cpyrepr::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process)
+{
+  corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
+  corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
+
+  auto &src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_obj_id);
+  auto &target_obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_obj_id);
+
+  corevm::dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
+
+  if (ntvhndl_key == corevm::dyobj::NONESET_NTVHNDL_KEY)
+  {
+    THROW(corevm::runtime::native_type_handle_deletion_error());
+  }
+
+  corevm::types::native_type_handle hndl = process.get_ntvhndl(ntvhndl_key);
+  corevm::types::native_type_handle res;
+
+  corevm::types::interface_compute_repr_value(hndl, res);
+
+  auto new_key = process.insert_ntvhndl(res);
+  target_obj.set_ntvhndl_key(new_key);
 }
 
 // -----------------------------------------------------------------------------
@@ -1125,9 +1244,7 @@ corevm::runtime::instr_handler_pinvk::execute(
     THROW(corevm::runtime::closure_not_found_error(ctx.closure_id));
   }
 
-  corevm::runtime::invocation_ctx invk_ctx(ctx);
-
-  process.push_invocation_ctx(invk_ctx);
+  process.emplace_invocation_ctx(ctx);
 }
 
 // -----------------------------------------------------------------------------
@@ -1142,9 +1259,14 @@ corevm::runtime::instr_handler_invk::execute(
   corevm::runtime::compartment* compartment = nullptr;
   process.get_compartment(ctx.compartment_id, &compartment);
 
-  corevm::runtime::closure closure = compartment->get_closure_by_id(ctx.closure_id);
+  corevm::runtime::closure *closure = nullptr;
+  compartment->get_closure_by_id(ctx.closure_id, &closure);
 
-  process.insert_vector(closure.vector);
+#if __DEBUG__
+  ASSERT(closure);
+#endif
+
+  process.insert_vector(closure->vector);
 }
 
 // -----------------------------------------------------------------------------

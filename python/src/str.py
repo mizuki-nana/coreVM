@@ -25,12 +25,9 @@ class str(object):
     def __init__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [2str, 0, 0]
-        [pop, 0, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [ldobj, value, 0]
+        [cpyhndl, 12, 0]
         ### END VECTOR ###
         """
 
@@ -38,10 +35,10 @@ class str(object):
         return self
 
     def __repr__(self):
-        res = __call(str, '')
-        __call(res.__add__, __call(str, "'"))
-        __call(res.__add__, self)
-        __call(res.__add__, __call(str, "'"))
+        res = __call_cls(str, '')
+        __call_method(res.__add__, __call_cls(str, "'"))
+        __call_method(res.__add__, self)
+        __call_method(res.__add__, __call_cls(str, "'"))
         return res
 
     def __hash__(self):
@@ -55,7 +52,7 @@ class str(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __add__(self, other):
         """

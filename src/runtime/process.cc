@@ -195,11 +195,13 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   std::list<corevm::dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
   std::list<corevm::dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
 
+  corevm::runtime::process::adapter adapter(*this);
+
   std::for_each(
     visible_objs.begin(),
     visible_objs.end(),
-    [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = corevm::runtime::process::adapter(*this).help_get_dyobj(id);
+    [&adapter](corevm::dyobj::dyobj_id id) {
+      auto &obj = adapter.help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -207,8 +209,8 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   std::for_each(
     invisible_objs.begin(),
     invisible_objs.end(),
-    [this](corevm::dyobj::dyobj_id id) {
-      auto &obj = corevm::runtime::process::adapter(*this).help_get_dyobj(id);
+    [&adapter](corevm::dyobj::dyobj_id id) {
+      auto &obj = adapter.help_get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -224,10 +226,16 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
 #endif
 
   corevm::runtime::closure_id closure_id = frame.closure_ctx().closure_id;
-  corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
+  corevm::runtime::closure* closure_ptr = nullptr;
+
+  compartment->get_closure_by_id(closure_id, &closure_ptr);
+
+#if __DEBUG__
+  ASSERT(closure_ptr);
+#endif
 
   auto begin_itr = m_instrs.begin() + pc() + 1;
-  auto end_itr = begin_itr + closure.vector.size();
+  auto end_itr = begin_itr + closure_ptr->vector.size();
 
   m_instrs.erase(begin_itr, end_itr);
 
@@ -441,12 +449,7 @@ corevm::dyobj::ntvhndl_key
 corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
   throw(corevm::runtime::native_type_handle_insertion_error)
 {
-  auto key = m_ntvhndl_pool.create();
-
-  corevm::types::native_type_handle& hndl_ = m_ntvhndl_pool.at(key);
-  hndl_ = hndl;
-
-  return key;
+  return m_ntvhndl_pool.create(hndl);
 }
 
 // -----------------------------------------------------------------------------
@@ -472,17 +475,6 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key key)
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::instr_handler*
-corevm::runtime::process::get_instr_handler(corevm::runtime::instr_code code)
-{
-  corevm::runtime::instr_info instr_info =
-    corevm::runtime::instr_handler_meta::get(code);
-
-  return instr_info.handler.get();
-}
-
-// -----------------------------------------------------------------------------
-
 void
 corevm::runtime::process::pause_exec()
 {
@@ -499,7 +491,7 @@ corevm::runtime::process::resume_exec()
 
 // -----------------------------------------------------------------------------
 
-bool
+inline bool
 corevm::runtime::process::is_valid_pc() const
 {
   return m_pc != NONESET_INSTR_ADDR && (m_pc >= 0 && m_pc < m_instrs.size());
@@ -507,7 +499,7 @@ corevm::runtime::process::is_valid_pc() const
 
 // -----------------------------------------------------------------------------
 
-bool
+inline bool
 corevm::runtime::process::can_execute()
 {
   return is_valid_pc();
@@ -518,24 +510,28 @@ corevm::runtime::process::can_execute()
 bool
 corevm::runtime::process::pre_start()
 {
-  corevm::runtime::closure closure;
   if (m_compartments.empty())
   {
     return false;
   }
 
+  corevm::runtime::closure* closure = nullptr;
   bool res = m_compartments.front().get_starting_closure(&closure);
 
   // If we found the starting compartment and closure, create a frame with the
   // closure context, and loads and vector into the process.
   if (res)
   {
+#if __DEBUG__
+    ASSERT(closure);
+#endif
+
     corevm::runtime::closure_ctx ctx {
       .compartment_id = 0,
-      .closure_id = closure.id
+      .closure_id = closure->id
     };
 
-    append_vector(closure.vector);
+    append_vector(closure->vector);
 
     emplace_frame(ctx, m_pc);
 
@@ -563,9 +559,13 @@ corevm::runtime::process::start()
 
     const corevm::runtime::instr& instr = m_instrs[m_pc];
 
-    corevm::runtime::instr_handler* handler =
-      const_cast<corevm::runtime::instr_handler*>(this->get_instr_handler(instr.code));
+    auto handler = corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
 
+    handler->execute(instr, *this);
+
+    /**
+     * TODO: [COREVM-246] Enable support for signal handling mechanism
+     *
     sigsetjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
 
     if (!corevm::runtime::sighandler_registrar::is_sig_raised())
@@ -581,6 +581,8 @@ corevm::runtime::process::start()
     }
 
     corevm::runtime::sighandler_registrar::clear_sig_raised();
+    *
+    **/
 
     ++m_pc;
 
@@ -663,7 +665,7 @@ corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::insert_vector(corevm::runtime::vector& vector)
+corevm::runtime::process::insert_vector(const corevm::runtime::vector& vector)
 {
   // We want to insert the vector right after the current pc().
   //
@@ -700,6 +702,11 @@ corevm::runtime::process::get_frame_by_closure_ctx(
 bool
 corevm::runtime::process::should_gc() const
 {
+  if (!m_gc_flag)
+  {
+    return false;
+  }
+
   size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
   for (int i = 0; i < flag_size; ++i)

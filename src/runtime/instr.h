@@ -138,6 +138,39 @@ enum instr_enum : uint32_t
   CLRHNDL,
 
   /**
+   * <cpyhndl, #, _>
+   * Copies the native type handle associated from the object on top of the stack
+   * onto the next object on the stack.
+   *
+   * The first operand is a value specifying the type of conversion to perform
+   * on the native type handle copied. The values are:
+   *
+   * 0. None
+   * 1. int8
+   * 2. uint8
+   * 3. int16
+   * 4. uint16
+   * 5. int32
+   * 6. uint32
+   * 7. int64
+   * 8. uint64
+   * 9. boolean
+   * 10. decimal
+   * 11. decimal2
+   * 12. string
+   * 13. array
+   * 14. map
+   */
+  CPYHNDL,
+
+  /**
+   * <cpyrepr, _, _>
+   * Copies the string representation of the native type handle from the object
+   * on top of the stack onto the next object onto the stack.
+   */
+  CPYREPR,
+
+  /**
    * <objeq, _, _>
    * Pops off the top two objects on the stack and tests if they are the
    * same object.
@@ -1248,6 +1281,22 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_clrhndl : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_cpyhndl : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_cpyrepr : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
@@ -2367,9 +2416,6 @@ typedef struct instr_info
 class instr_handler_meta
 {
 public:
-  static corevm::runtime::instr_info get(corevm::runtime::instr_code instr_code)
-    throw(corevm::runtime::invalid_instr_error);
-
   static const corevm::runtime::instr_info instr_set[INSTR_CODE_MAX];
 };
 

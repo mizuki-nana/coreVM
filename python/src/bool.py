@@ -25,26 +25,23 @@ class bool(object):
     def __init__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [2bool, 0, 0]
-        [pop, 0, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [ldobj, value, 0]
+        [cpyhndl, 9, 0]
         ### END VECTOR ###
         """
 
     def __str__(self):
         if self:
-            return __call(str, 'True')
+            return __call_cls(str, 'True')
         else:
-            return __call(str, 'False')
+            return __call_cls(str, 'False')
 
     def __hash__(self):
-        return __call(int, self)
+        return __call_cls(int, self)
 
     def __repr__(self):
-        return __call(self.__str__)
+        return __call_method(self.__str__)
 
     def __add__(self, value):
         """
@@ -61,7 +58,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __sub__(self, value):
         """
@@ -78,7 +75,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __mul__(self, value):
         """
@@ -95,7 +92,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __div__(self, value):
         """
@@ -112,7 +109,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __mod__(self, value):
         """
@@ -129,7 +126,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __pow__(self, value):
         """
@@ -146,7 +143,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __lshift__(self, value):
         """
@@ -163,7 +160,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __rshift__(self, value):
         """
@@ -180,7 +177,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __or__(self, value):
         """
@@ -197,7 +194,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __xor__(self, value):
         """
@@ -214,7 +211,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __and__(self, value):
         """
@@ -231,7 +228,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __floordiv__(self, value):
         """
@@ -248,7 +245,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __iadd__(self, value):
         """
@@ -418,7 +415,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __not__(self):
         """
@@ -431,7 +428,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __pos__(self):
         """
@@ -445,7 +442,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __neg__(self):
         """
@@ -459,7 +456,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     # TODO: Equality methods can be placed under `object` once
     # dynamic dispatching is supported.
@@ -478,7 +475,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __ne__(self, other):
         """
@@ -495,7 +492,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __lt__(self, other):
         """
@@ -512,7 +509,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __lte__(self, other):
         """
@@ -529,7 +526,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __gt__(self, other):
         """
@@ -546,7 +543,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __gte__(self, other):
         """
@@ -563,7 +560,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
 
 ### True
@@ -577,7 +574,7 @@ class bool(object):
 [stobj, True, 0]
 ### END VECTOR ###
 """
-True = __call(bool, 1)
+True = __call_cls(bool, 1)
 """
 ### BEGIN VECTOR ###
 [ldobj, True, 0]
@@ -600,7 +597,7 @@ True = __call(bool, 1)
 [stobj, False, 0]
 ### END VECTOR ###
 """
-False = __call(bool, 0)
+False = __call_cls(bool, 0)
 """
 ### BEGIN VECTOR ###
 [ldobj, False, 0]

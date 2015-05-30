@@ -79,7 +79,7 @@ class CodeTransformer(ast.NodeVisitor):
         self.__indent()
 
         if node.args.vararg:
-            base_str += '{vararg} = __call(list, {vararg})\n'.format(vararg=node.args.vararg)
+            base_str += '{vararg} = __call_cls(list, {vararg})\n'.format(vararg=node.args.vararg)
 
         base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
         base_str += '\n'
@@ -119,7 +119,7 @@ class CodeTransformer(ast.NodeVisitor):
         if isinstance(node.targets[0], ast.Subscript):
             # Special case for assignments on subscripts.
             # TODO: need to handle assignment on multiple targets.
-            return '{indentation}__call({target}.__setitem__, {slice}, {value})'.format(
+            return '{indentation}__call_method({target}.__setitem__, {slice}, {value})'.format(
                 indentation=self.__indentation(),
                 target=self.visit(node.targets[0].value),
                 slice=self.visit(node.targets[0].slice),
@@ -151,7 +151,7 @@ class CodeTransformer(ast.NodeVisitor):
             ast.FloorDiv: '__ifloordiv__',
         }
 
-        return '{indentation}__call({target}.{func}, {value})\n'.format(
+        return '{indentation}__call_method({target}.{func}, {value})\n'.format(
             indentation=self.__indentation(),
             target=self.visit(node.target),
             func=OP_AST_TYPE_TO_METHOD_MAP[type(node.op)],
@@ -161,7 +161,7 @@ class CodeTransformer(ast.NodeVisitor):
         base_str = '{indentation}print'.format(indentation=self.__indentation())
 
         if node.values:
-            base_str += (' ' + '__call(' + self.visit(node.values[0]) + '.__str__' + ')')
+            base_str += (' ' + '__call_method(' + self.visit(node.values[0]) + '.__str__' + ')')
 
         base_str += '\n'
 
@@ -175,7 +175,7 @@ class CodeTransformer(ast.NodeVisitor):
 
         iterator_var_name = self.__get_random_name() + '_iterator_'
 
-        base_str += '{indentation}{iterator_var_name} = __call({iter}.__iter__)\n'.format(
+        base_str += '{indentation}{iterator_var_name} = __call_method({iter}.__iter__)\n'.format(
             indentation=self.__indentation(),
             iterator_var_name=iterator_var_name,
             iter=self.visit(node.iter)
@@ -187,7 +187,7 @@ class CodeTransformer(ast.NodeVisitor):
         # Indent lvl 2.
         self.__indent()
 
-        base_str += '{indentation}{target} = __call({iterator_var_name}.next)\n'.format(
+        base_str += '{indentation}{target} = __call_method({iterator_var_name}.next)\n'.format(
             indentation=self.__indentation(),
             target=self.visit(node.target),
             iterator_var_name=iterator_var_name
@@ -275,7 +275,7 @@ class CodeTransformer(ast.NodeVisitor):
             base_str += (' ' + self.visit(node.type))
         else:
             # Raises an instance of `Exception` if target is not specified.
-            base_str += (' ' + '__call(Exception)')
+            base_str += (' ' + '__call_cls(Exception)')
 
         return base_str
 
@@ -337,7 +337,7 @@ class CodeTransformer(ast.NodeVisitor):
             [self.visit(value) for value in node.values])
 
     def visit_BinOp(self, node):
-        base_str = '__call({lhs}.{func}, {rhs})'
+        base_str = '__call_method({lhs}.{func}, {rhs})'
 
         return base_str.format(
             lhs=self.visit(node.left),
@@ -346,7 +346,7 @@ class CodeTransformer(ast.NodeVisitor):
         )
 
     def visit_UnaryOp(self, node):
-        return '__call({operand}.{op_func})'.format(
+        return '__call_method({operand}.{op_func})'.format(
             operand=self.visit(node.operand),
             op_func=self.visit(node.op))
 
@@ -365,7 +365,7 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_Dict(self, node):
         assert len(node.keys) == len(node.values)
 
-        base_str = '__call(dict, '
+        base_str = '__call_cls(dict, '
 
         base_str += '{\n'
 
@@ -374,10 +374,10 @@ class CodeTransformer(ast.NodeVisitor):
         for i in xrange(len(node.keys)):
             base_str += '{indentation}{key}: {value},\n'.format(
                 indentation=self.__indentation(),
-                key='__call({obj}.__hash__)'.format(
+                key='__call_method({obj}.__hash__)'.format(
                     obj=self.visit(node.keys[i])
                 ),
-                value='__call(dict.__dict_KeyValuePair, {key}, {value})'.format(
+                value='__call_cls(dict.__dict_KeyValuePair, {key}, {value})'.format(
                     key=self.visit(node.keys[i]),
                     value=self.visit(node.values[i])
                 )
@@ -392,9 +392,9 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Set(self, node):
-        return '__call(set, {' + ', '.join(
+        return '__call_cls(set, {' + ', '.join(
             [
-                '__call(set.__set_Item, {expr})'.format(expr=self.visit(expr))
+                '__call_cls(set.__set_Item, {expr})'.format(expr=self.visit(expr))
                 for expr in node.elts
             ]) + '})'
 
@@ -406,8 +406,8 @@ class CodeTransformer(ast.NodeVisitor):
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
-        res = '__call(list, [])'
-        synthesizer='lambda res, item: __call(res.append, item)'
+        res = '__call_cls(list, [])'
+        synthesizer='lambda res, item: __call_method(res.append, item)'
 
         predicate='None'
 
@@ -418,8 +418,8 @@ class CodeTransformer(ast.NodeVisitor):
                 expr=self.visit(generator.ifs[0]))
 
         return """
-               __call(
-                   __call(
+               __call_method(
+                   __call_cls(
                        sequence_generator,
                        {iterable},
                        {elt},
@@ -443,8 +443,8 @@ class CodeTransformer(ast.NodeVisitor):
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
-        res = '__call(set, {})'
-        synthesizer='lambda res, item: __call(res.add, item)'
+        res = '__call_cls(set, {})'
+        synthesizer='lambda res, item: __call_method(res.add, item)'
 
         predicate='None'
 
@@ -455,8 +455,8 @@ class CodeTransformer(ast.NodeVisitor):
                 expr=self.visit(generator.ifs[0]))
 
         return """
-               __call(
-                   __call(
+               __call_method(
+                   __call_cls(
                        sequence_generator,
                        {iterable},
                        {elt},
@@ -477,8 +477,8 @@ class CodeTransformer(ast.NodeVisitor):
         generator = node.generators[0]
 
         iterable = self.visit(generator.iter)
-        res = '__call(dict, {})'
-        synthesizer='lambda res, key, value: __call(res.__setitem__, key, value)'
+        res = '__call_cls(dict, {})'
+        synthesizer='lambda res, key, value: __call_method(res.__setitem__, key, value)'
         predicate='None'
 
         if isinstance(generator.target, ast.Tuple):
@@ -492,7 +492,7 @@ class CodeTransformer(ast.NodeVisitor):
             generator_type = 'dict_pair_generator'
             elt = """
                   lambda {targets}:
-                      __call(
+                      __call_cls(
                           dict.__dict_KeyValuePair,
                           {key},
                           {value})
@@ -514,7 +514,7 @@ class CodeTransformer(ast.NodeVisitor):
             generator_type = 'dict_item_generator'
             elt = """
                   lambda {target}:
-                      __call(
+                      __call_cls(
                           dict.__dict_KeyValuePair,
                           {key},
                           {value})
@@ -530,8 +530,8 @@ class CodeTransformer(ast.NodeVisitor):
                     expr=self.visit(generator.ifs[0]))
 
         return """
-               __call(
-                   __call(
+               __call_method(
+                   __call_cls(
                        {generator_type},
                        {iterable},
                        {elt},
@@ -562,14 +562,14 @@ class CodeTransformer(ast.NodeVisitor):
                 isinstance(op, ast.GtE),
             )
         ):
-            base_str='{indentation}__call({left}.{op_func}, {right})'.format(
+            base_str='{indentation}__call_method({left}.{op_func}, {right})'.format(
                 indentation=self.__indentation(),
                 left=self.visit(node.left),
                 op_func=self.visit(op),
                 right=self.visit(node.comparators[0])
             )
         elif isinstance(op, ast.In):
-            base_str='{indentation}__call({left}.{op_func}, {right})'.format(
+            base_str='{indentation}__call_method({left}.{op_func}, {right})'.format(
                 indentation=self.__indentation(),
                 left=self.visit(node.comparators[0]),
                 op_func=self.visit(op),
@@ -621,7 +621,7 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Num(self, node):
         num_type = 'float' if isinstance(node.n, float) else 'int'
-        return '__call({num_type}, {n})'.format(
+        return '__call_cls({num_type}, {n})'.format(
             num_type=num_type, n=str(node.n))
 
     def visit_Attribute(self, node):
@@ -631,24 +631,24 @@ class CodeTransformer(ast.NodeVisitor):
         )
 
     def visit_Subscript(self, node):
-        return '__call({value}.__getitem__, {slice})'.format(
+        return '__call_method({value}.__getitem__, {slice})'.format(
             value=self.visit(node.value),
             slice=self.visit(node.slice)
         )
 
     def visit_List(self, node):
         # TODO: disregarding `node.ctx` here.
-        return '__call(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
+        return '__call_cls(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
 
     def visit_Tuple(self, node):
         # TODO: disregarding `node.ctx` here.
-        return '__call(tuple, (' + ','.join([self.visit(expr) for expr in node.elts]) + '))'
+        return '__call_cls(tuple, (' + ','.join([self.visit(expr) for expr in node.elts]) + '))'
 
     def visit_Name(self, node):
         return node.id
 
     def visit_Str(self, node):
-        return '__call(str, \"%s\")' % str(node.s)
+        return '__call_cls(str, \"%s\")' % str(node.s)
 
     """ ---------------------------- boolop -------------------------------- """
 

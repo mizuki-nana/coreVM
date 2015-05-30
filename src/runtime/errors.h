@@ -121,17 +121,6 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class invalid_instr_error : public corevm::runtime::runtime_error
-{
-public:
-  explicit invalid_instr_error():
-    corevm::runtime::runtime_error("Invalid instruction code encountered")
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
 class object_stack_empty_error : public corevm::runtime::runtime_error
 {
 public:

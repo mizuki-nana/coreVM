@@ -370,7 +370,7 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 
   m_container.destroy(p2);
 
-  ASSERT_EQ(m_container.begin(), itr);
+  ASSERT_NE(m_container.end(), itr);
 
   m_container.destroy(p);
 }

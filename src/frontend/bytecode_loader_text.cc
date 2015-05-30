@@ -402,7 +402,7 @@ corevm::frontend::bytecode_loader_text::load_bytecode(
 
   } /* end for-loop */
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   process.insert_compartment(compartment);
 }

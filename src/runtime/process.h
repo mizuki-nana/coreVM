@@ -160,7 +160,7 @@ public:
 
   void append_vector(const corevm::runtime::vector&);
 
-  void insert_vector(corevm::runtime::vector& vector);
+  void insert_vector(const corevm::runtime::vector& vector);
 
   bool get_frame_by_closure_ctx(
     corevm::runtime::closure_ctx&, corevm::runtime::frame**);
@@ -176,8 +176,6 @@ public:
   void pause_exec();
 
   void resume_exec();
-
-  const corevm::runtime::instr_handler* get_instr_handler(corevm::runtime::instr_code);
 
   void set_sig_vector(sig_atomic_t, corevm::runtime::vector&);
 

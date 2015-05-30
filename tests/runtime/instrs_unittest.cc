@@ -51,23 +51,9 @@ class instr_handler_meta_unittest : public ::testing::Test {};
 TEST_F(instr_handler_meta_unittest, TestGetSuccessful)
 {
   corevm::runtime::instr_code code = corevm::runtime::instr_enum::LDOBJ;
-  corevm::runtime::instr_info info = corevm::runtime::instr_handler_meta::get(code);
+  const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::instr_set[code];
 
   ASSERT_STREQ("ldobj", info.str.c_str());
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instr_handler_meta_unittest, TestGetFailsWithInvalidCode)
-{
-  corevm::runtime::instr_code code = corevm::runtime::instr_enum::INSTR_CODE_MAX;
-
-  ASSERT_THROW(
-    {
-      corevm::runtime::instr_handler_meta::get(code);
-    },
-    corevm::runtime::invalid_instr_error
-  );
 }
 
 // -----------------------------------------------------------------------------
@@ -162,7 +148,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
 
   corevm::runtime::frame frame(ctx1);
   corevm::runtime::frame parent_frame(ctx2);
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   m_process.insert_compartment(compartment);
 
@@ -384,7 +370,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
   corevm::runtime::frame frame(ctx1);
   corevm::runtime::frame parent_frame(ctx2);
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   m_process.insert_compartment(compartment);
 
@@ -555,6 +541,65 @@ TEST_F(instrs_obj_unittest, TestInstrCLRHNDL)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrCPYHNDL)
+{
+  corevm::dyobj::dyobj_id target_obj_id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(target_obj_id);
+
+  corevm::dyobj::dyobj_id src_obj_id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(src_obj_id);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(123);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+
+  auto &src_obj = process::adapter(m_process).help_get_dyobj(src_obj_id);
+  src_obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=6, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_cpyhndl>(instr, 0);
+
+  auto &target_obj = process::adapter(m_process).help_get_dyobj(target_obj_id);
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj.ntvhndl_key());
+
+  auto& res_hndl = m_process.get_ntvhndl(target_obj.ntvhndl_key());
+
+  uint32_t res_value = corevm::types::get_value_from_handle<uint32_t>(res_hndl);
+
+  ASSERT_EQ(123, res_value);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrCPYREPR)
+{
+  corevm::dyobj::dyobj_id target_obj_id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(target_obj_id);
+
+  corevm::dyobj::dyobj_id src_obj_id = process::adapter(m_process).help_create_dyobj();
+  m_process.push_stack(src_obj_id);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(123);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+
+  auto &src_obj = process::adapter(m_process).help_get_dyobj(src_obj_id);
+  src_obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_cpyrepr>(instr, 0);
+
+  auto &target_obj = process::adapter(m_process).help_get_dyobj(target_obj_id);
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj.ntvhndl_key());
+
+  auto& res_hndl = m_process.get_ntvhndl(target_obj.ntvhndl_key());
+
+  const corevm::types::native_string res_value =
+    corevm::types::get_value_from_handle<corevm::types::native_string>(res_hndl);
+
+  ASSERT_STREQ("123", res_value.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_obj_unittest, TestInstrOBJEQ)
 {
   corevm::dyobj::dyobj_id id1 = 1;
@@ -677,7 +722,7 @@ TEST_F(instrs_obj_unittest, TestInstrCLDOBJ)
 
   corevm::runtime::frame frame(ctx1);
   corevm::runtime::frame parent_frame(ctx2);
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   m_process.insert_compartment(compartment);
 
@@ -1446,7 +1491,7 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
     closure
   };
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
   m_process.insert_compartment(compartment);
 
   corevm::runtime::instr instr {
@@ -1601,7 +1646,7 @@ TEST_F(instrs_control_instrs_test, TestInstrEXC)
 
   corevm::runtime::closure_table closure_table { closure };
   corevm::runtime::compartment compartment(DUMMY_PATH);
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
   m_process.insert_compartment(compartment);
 
   corevm::dyobj::dyobj_id id = 1;

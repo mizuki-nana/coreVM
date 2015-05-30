@@ -144,6 +144,16 @@ template<typename AllocationSchemeType>
 class sequential_allocation_schemes_unittest :
   public allocator_unittest<AllocationSchemeType>
 {
+protected:
+  template<typename F>
+  void run(F func)
+  {
+    corevm::memory::sequential_allocation_scheme::SUPPRESS_LINEAR_SEARCH = true;
+    func();
+
+    corevm::memory::sequential_allocation_scheme::SUPPRESS_LINEAR_SEARCH = false;
+    func();
+  }
 };
 
 // -----------------------------------------------------------------------------
@@ -163,132 +173,150 @@ TYPED_TEST_CASE(sequential_allocation_schemes_unittest, ExtraAllocationSchemeTyp
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
 {
-  size_t size1 = HEAP_STORAGE_FOR_TEST / 2;
-  size_t size2 = HEAP_STORAGE_FOR_TEST - size1;
+  this->run(
+    [this]() {
+      size_t size1 = HEAP_STORAGE_FOR_TEST / 2;
+      size_t size2 = HEAP_STORAGE_FOR_TEST - size1;
 
-  ASSERT_EQ(HEAP_STORAGE_FOR_TEST, size1 + size2);
+      ASSERT_EQ(HEAP_STORAGE_FOR_TEST, size1 + size2);
 
-  void* p1 = this->allocate(size1);
-  assert(p1);
+      void* p1 = this->allocate(size1);
+      assert(p1);
 
-  void* p2 = this->allocate(size2);
-  assert(p2);
+      void* p2 = this->allocate(size2);
+      assert(p2);
 
-  ASSERT_NE(p1, p2);
+      ASSERT_NE(p1, p2);
 
-  // Test that we can do whatever we want with our pointers.
-  memset(p1, 1, size1);
-  memset(p2, 2, size2);
+      // Test that we can do whatever we want with our pointers.
+      memset(p1, 1, size1);
+      memset(p2, 2, size2);
 
-  // Test that additional allocation is not possible.
-  void* p3 = this->allocate(1);
-  ASSERT_EQ(nullptr, p3);
+      // Test that additional allocation is not possible.
+      void* p3 = this->allocate(1);
+      ASSERT_EQ(nullptr, p3);
 
-  int res1 = this->deallocate(p1);
-  ASSERT_EQ(1, res1);
+      int res1 = this->deallocate(p1);
+      ASSERT_EQ(1, res1);
 
-  int res2 = this->deallocate(p2);
-  ASSERT_EQ(1, res2);
+      int res2 = this->deallocate(p2);
+      ASSERT_EQ(1, res2);
+  });
 }
 
 // -----------------------------------------------------------------------------
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
 {
-  const size_t N = 8;
-  size_t chunk_size = HEAP_STORAGE_FOR_TEST / N;
+  this->run(
+    [this]() {
+      const size_t N = 8;
+      size_t chunk_size = HEAP_STORAGE_FOR_TEST / N;
 
-  void* ptrs[N];
+      void* ptrs[N];
 
-  const char* letters[N] = {
-    "a", "b", "c", "d", "e", "f", "g", "h"
-  };
+      const char* letters[N] = {
+        "a", "b", "c", "d", "e", "f", "g", "h"
+      };
 
-  for (int i = 0; i < N; ++i)
-  {
-    void* p = this->allocate(chunk_size);
-    assert(p);
-    p = static_cast<void*>(strcpy(static_cast<char*>(p), letters[i]));
-    ptrs[i] = p;
-  }
+      for (int i = 0; i < N; ++i)
+      {
+        void* p = this->allocate(chunk_size);
+        assert(p);
+        p = static_cast<void*>(strcpy(static_cast<char*>(p), letters[i]));
+        ptrs[i] = p;
+      }
 
-  // Test that additional allocation is not possible.
-  void* failed_ptr = this->allocate(1);
-  ASSERT_EQ(nullptr, failed_ptr);
+      // Test that additional allocation is not possible.
+      void* failed_ptr = this->allocate(1);
+      ASSERT_EQ(nullptr, failed_ptr);
 
-  for (int i = 0; i < N; ++i)
-  {
-    ASSERT_STREQ(letters[i], static_cast<char*>(ptrs[i]));
-  }
+      for (int i = 0; i < N; ++i)
+      {
+        ASSERT_STREQ(letters[i], static_cast<char*>(ptrs[i]));
+      }
 
-  for (int i = 0; i < N; ++i)
-  {
-    int res = this->deallocate(ptrs[i]);
-    ASSERT_EQ(1, res);
-  }
+      for (int i = 0; i < N; ++i)
+      {
+        int res = this->deallocate(ptrs[i]);
+        ASSERT_EQ(1, res);
+      }
+  });
 }
 
 // -----------------------------------------------------------------------------
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 {
-  size_t chunk_size_1 = HEAP_STORAGE_FOR_TEST / 3;
-  size_t chunk_size_2 = chunk_size_1;
-  size_t chunk_size_3 = HEAP_STORAGE_FOR_TEST - (chunk_size_1 + chunk_size_2);
+  this->run(
+    [this]() {
+      size_t chunk_size_1 = HEAP_STORAGE_FOR_TEST / 3;
+      size_t chunk_size_2 = chunk_size_1;
+      size_t chunk_size_3 = HEAP_STORAGE_FOR_TEST - (chunk_size_1 + chunk_size_2);
 
-  void* p1 = this->allocate(chunk_size_1);
-  ASSERT_NE(nullptr, p1);
+      void* p1 = this->allocate(chunk_size_1);
+      ASSERT_NE(nullptr, p1);
 
-  void* p2 = this->allocate(chunk_size_2);
-  ASSERT_NE(nullptr, p2);
+      void* p2 = this->allocate(chunk_size_2);
+      ASSERT_NE(nullptr, p2);
 
-  void* p3 = this->allocate(chunk_size_3);
-  ASSERT_NE(nullptr, p3);
+      void* p3 = this->allocate(chunk_size_3);
+      ASSERT_NE(nullptr, p3);
 
-  size_t new_chunk_size = HEAP_STORAGE_FOR_TEST / 2;
+      size_t new_chunk_size = HEAP_STORAGE_FOR_TEST / 2;
 
-  ASSERT_LT(new_chunk_size, (chunk_size_2 + chunk_size_3));
+      ASSERT_LT(new_chunk_size, (chunk_size_2 + chunk_size_3));
 
-  void* p = nullptr;
-  p = this->allocate(new_chunk_size);
-  ASSERT_EQ(nullptr, p);
+      void* p = nullptr;
+      p = this->allocate(new_chunk_size);
+      ASSERT_EQ(nullptr, p);
 
-  int res;
-  res = this->deallocate(p2);
-  ASSERT_EQ(1, res);
+      int res;
+      res = this->deallocate(p2);
+      ASSERT_EQ(1, res);
 
-  res = this->deallocate(p3);
-  ASSERT_EQ(1, res);
+      res = this->deallocate(p3);
+      ASSERT_EQ(1, res);
 
-  p = this->allocate(new_chunk_size);
-  ASSERT_NE(nullptr, p);
+      p = this->allocate(new_chunk_size);
+      ASSERT_NE(nullptr, p);
+
+      res = this->deallocate(p);
+      ASSERT_EQ(1, res);
+
+      res = this->deallocate(p1);
+      ASSERT_EQ(1, res);
+  });
 }
 
 // -----------------------------------------------------------------------------
 
 TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
 {
-  typedef int T;
-  uint64_t total_size = this->total_size();
-  uint64_t max_size = total_size / sizeof(T);
+  this->run(
+    [this]() {
+      typedef int T;
+      uint64_t total_size = this->total_size();
+      uint64_t max_size = total_size / sizeof(T);
 
-  std::vector<T*> ptrs(max_size);
+      std::vector<T*> ptrs(max_size);
 
-  for (auto i = 0; i < max_size; ++i)
-  {
-    void* ptr = this->allocate(sizeof(T));
-    ASSERT_NE(nullptr, ptr);
-    ptrs[i] = static_cast<T*>(ptr);
-  }
+      for (auto i = 0; i < max_size; ++i)
+      {
+        void* ptr = this->allocate(sizeof(T));
+        ASSERT_NE(nullptr, ptr);
+        ptrs[i] = static_cast<T*>(ptr);
+      }
 
-  void* ptr = this->allocate(sizeof(T));
-  ASSERT_EQ(nullptr, ptr);
+      void* ptr = this->allocate(sizeof(T));
+      ASSERT_EQ(nullptr, ptr);
 
-  for (auto i = 0; i < ptrs.size(); ++i)
-  {
-    int res = this->deallocate(static_cast<void*>(ptrs[i]));
-    ASSERT_EQ(1, res);
-  }
+      for (auto i = 0; i < ptrs.size(); ++i)
+      {
+        int res = this->deallocate(static_cast<void*>(ptrs[i]));
+        ASSERT_EQ(1, res);
+      }
+  });
 }
 
 // -----------------------------------------------------------------------------

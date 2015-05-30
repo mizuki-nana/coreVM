@@ -26,17 +26,14 @@ class set(object):
 
         def __init__(self, value):
             self.value = value
-            self.hash = __call(value.__hash__)
+            self.hash = __call_method(value.__hash__)
 
     def __init__(self, arg):
         """
         ### BEGIN VECTOR ###
-        [ldobj, arg, 0]
-        [gethndl, 0, 0]
-        [2map, 0, 0]
-        [pop, 0, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [ldobj, arg, 0]
+        [cpyhndl, 14, 0]
         ### END VECTOR ###
         """
 
@@ -51,19 +48,19 @@ class set(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __repr__(self):
-        return __call(self.__str__)
+        return __call_method(self.__str__)
 
     def __iter__(self):
-        return __call(setiterator, self)
+        return __call_cls(setiterator, self)
 
     def __hash__(self):
-        raise __call(TypeError)
+        raise __call_cls(TypeError)
 
     def __contains__(self, value):
-        item = __call(set.__set_Item, value)
+        item = __call_cls(set.__set_Item, value)
         value_hash = item.hash
 
         """
@@ -78,30 +75,30 @@ class set(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res_)
+        return __call_cls(bool, res_)
 
     def __str__(self):
-        res = __call(str, 'set([')
+        res = __call_cls(str, 'set([')
 
-        size = __call(self.__len__)
-        top_index = __call(size.__sub__, 1)
-        index = __call(int, 0)
+        size = __call_method(self.__len__)
+        top_index = __call_method(size.__sub__, 1)
+        index = __call_cls(int, 0)
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                item = __call(iterator_.next)
+                item = __call_method(iterator_.next)
 
-                __call(res.__add__, __call(item.__repr__))
+                __call_method(res.__add__, __call_method(item.__repr__))
 
-                if __call(index.__lt__, top_index):
-                    __call(res.__add__, __call(str, ', '))
+                if __call_method(index.__lt__, top_index):
+                    __call_method(res.__add__, __call_cls(str, ', '))
 
-                index = __call(index.__add__, 1)
+                index = __call_method(index.__add__, 1)
 
         except StopIteration:
-            __call(res.__add__, __call(str, '])'))
+            __call_method(res.__add__, __call_cls(str, '])'))
 
         return res
 
@@ -120,25 +117,25 @@ class set(object):
         [stobj, res, 0]
         ### END VECTOR ###
         """
-        return __call(bool, res)
+        return __call_cls(bool, res)
 
     def __ne__(self, other):
-        return __call(__call(self.__eq__, other).__not__)
+        return __call_method(__call_method(self.__eq__, other).__not__)
 
     def __sub__(self, other):
-        return __call(self.difference, other)
+        return __call_method(self.difference, other)
 
     def __or__(self, other):
-        return __call(self.union, other)
+        return __call_method(self.union, other)
 
     def __and__(self, other):
-        return __call(self.intersection, other)
+        return __call_method(self.intersection, other)
 
     def __xor__(self, other):
-        return __call(self.symmetric_difference, other)
+        return __call_method(self.symmetric_difference, other)
 
     def add(self, value):
-        item = __call(set.__set_Item, value)
+        item = __call_cls(set.__set_Item, value)
 
         """
         ### BEGIN VECTOR ###
@@ -167,8 +164,8 @@ class set(object):
         """
 
     def remove(self, value):
-        if __call(self.__contains__, value):
-            value_hash = __call(value.__hash__)
+        if __call_method(self.__contains__, value):
+            value_hash = __call_method(value.__hash__)
             """
             ### BEGIN VECTOR ###
             [ldobj, self, 0]
@@ -182,11 +179,11 @@ class set(object):
             """
             return None
         else:
-            raise __call(KeyError)
+            raise __call_cls(KeyError)
 
     def discard(self, value):
         try:
-            __call(self.remove, value)
+            __call_method(self.remove, value)
         except KeyError:
             pass
 
@@ -204,16 +201,16 @@ class set(object):
         """
 
     def issubset(self, other):
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         res = True
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                res = __call(other.__contains__, value)
-                if __call(res.__not__):
+                res = __call_method(other.__contains__, value)
+                if __call_method(res.__not__):
                     return False
         except StopIteration:
             pass
@@ -221,132 +218,132 @@ class set(object):
         return res
 
     def issuperset(self, other):
-        return __call(other.issubset, self)
+        return __call_method(other.issubset, self)
 
     def union(self, other):
-        res = __call(set, {})
+        res = __call_cls(set, {})
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                __call(res.add, value)
+                __call_method(res.add, value)
         except StopIteration:
             pass
 
-        iterator_ = __call(other.__iter__)
+        iterator_ = __call_method(other.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                __call(res.add, value)
+                __call_method(res.add, value)
         except StopIteration:
             pass
 
         return res
 
     def intersection(self, other):
-        res = __call(set, {})
+        res = __call_cls(set, {})
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                if __call(other.__contains__, value):
-                    __call(res.add, value)
+                if __call_method(other.__contains__, value):
+                    __call_method(res.add, value)
         except StopIteration:
             pass
 
         return res
 
     def intersection_update(self, other):
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                in_other = __call(other.__contains__, value)
-                not_in_other = __call(in_other.__not__)
+                in_other = __call_method(other.__contains__, value)
+                not_in_other = __call_method(in_other.__not__)
                 if not_in_other:
-                    __call(self.remove, value)
+                    __call_method(self.remove, value)
         except StopIteration:
             pass
 
     def difference(self, other):
-        res = __call(set, {})
+        res = __call_cls(set, {})
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                __call(res.add, value)
+                __call_method(res.add, value)
         except StopIteration:
             pass
 
-        iterator_ = __call(other.__iter__)
+        iterator_ = __call_method(other.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                __call(res.discard, value)
+                __call_method(res.discard, value)
         except StopIteration:
             pass
 
         return res
 
     def difference_update(self, other):
-        iterator_ = __call(other.__iter__)
+        iterator_ = __call_method(other.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                __call(self.discard, value)
+                __call_method(self.discard, value)
         except StopIteration:
             pass
 
     def symmetric_difference(self, other):
-        res = __call(set, {})
+        res = __call_cls(set, {})
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                in_other = __call(other.__contains__, value)
-                not_in_other = __call(in_other.__not__)
+                in_other = __call_method(other.__contains__, value)
+                not_in_other = __call_method(in_other.__not__)
                 if not_in_other:
-                    __call(res.add, value)
+                    __call_method(res.add, value)
         except StopIteration:
             pass
 
-        iterator_ = __call(other.__iter__)
+        iterator_ = __call_method(other.__iter__)
 
         try:
             while True:
-                value = __call(iterator_.next)
+                value = __call_method(iterator_.next)
 
-                in_self = __call(self.__contains__, value)
-                not_in_self = __call(in_self.__not__)
+                in_self = __call_method(self.__contains__, value)
+                not_in_self = __call_method(in_self.__not__)
                 if not_in_self:
-                    __call(res.add, value)
+                    __call_method(res.add, value)
         except StopIteration:
             pass
 
         return res
 
     def symmetric_difference_update(self, other):
-        new_set = __call(self.symmetric_difference, other)
+        new_set = __call_method(self.symmetric_difference, other)
 
         """
         ### BEGIN VECTOR ###
@@ -372,17 +369,17 @@ class setiterator(object):
         [stobj, items_, 0]
         ### END VECTOR ###
         """
-        self.items = __call(list, items_)
+        self.items = __call_cls(list, items_)
         self.iterable = iterable_
-        self.i = __call(int, 0)
-        self.n = __call(self.items.__len__)
+        self.i = __call_cls(int, 0)
+        self.n = __call_method(self.items.__len__)
 
     def next(self):
-        if __call(self.i.__lt__, self.n):
-            res = __call(self.items.__getitem__, self.i)
-            __call(self.i.__iadd__, __call(int, 1))
+        if __call_method(self.i.__lt__, self.n):
+            res = __call_method(self.items.__getitem__, self.i)
+            __call_method(self.i.__iadd__, __call_cls(int, 1))
             return res
         else:
-            raise __call(StopIteration)
+            raise __call_cls(StopIteration)
 
 ## -----------------------------------------------------------------------------

@@ -83,15 +83,6 @@ def run(options):
 
         print info
 
-    if not options.debug_mode:
-        outputs = glob.glob(PYTHON_TESTS_DIR + '*.tmp.py')
-        for output in outputs:
-            os.remove(output)
-
-        outputs = glob.glob(PYTHON_TESTS_DIR + '*.core')
-        for output in outputs:
-            os.remove(output)
-
 ## -----------------------------------------------------------------------------
 
 def main():
@@ -106,14 +97,6 @@ def main():
         dest='format',
         default='binary',
         help='Bytecode format (binary or text)'
-    )
-
-    parser.add_option(
-        '-d',
-        '--debug',
-        action='store_true',
-        dest='debug_mode',
-        help='Debug mode'
     )
 
     options, _ = parser.parse_args()

@@ -55,7 +55,7 @@ public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::first_fit_allocation_scheme>;
+  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::next_fit_allocation_scheme>;
   using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
 
   static_assert(
@@ -294,8 +294,8 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
   }
 
   auto id = corevm::dyobj::obj_ptr_to_id(obj_ptr);
-
   obj_ptr->set_id(id);
+  obj_ptr->manager().on_create();
 
   return id;
 }

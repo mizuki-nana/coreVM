@@ -52,7 +52,7 @@ TEST_F(compartment_unittest, TestGetClosureByID)
     closure
   };
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure* result = nullptr;
 
@@ -92,7 +92,7 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
     closure
   };
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   corevm::runtime::closure result = compartment.get_closure_by_id(closure.id);
 
@@ -132,7 +132,7 @@ TEST_F(compartment_unittest, TestOutputStream)
     closure
   };
 
-  compartment.set_closure_table(closure_table);
+  compartment.set_closure_table(std::move(closure_table));
 
   std::stringstream ss;
   ss << compartment;

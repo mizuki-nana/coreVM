@@ -25,12 +25,9 @@ class tuple(object):
     def __init__(self, arg):
         """
         ### BEGIN VECTOR ###
-        [ldobj, arg, 0]
-        [gethndl, 0, 0]
-        [2ary, 0, 0]
-        [pop, 0, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [ldobj, arg, 0]
+        [cpyhndl, 13, 0]
         ### END VECTOR ###
         """
 
@@ -45,7 +42,7 @@ class tuple(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls(int, res_)
 
     def __add__(self, other):
         """
@@ -60,53 +57,53 @@ class tuple(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(tuple, res_)
+        return __call_cls(tuple, res_)
 
     def __str__(self):
-        size = __call(self.__len__)
-        top_index = __call(size.__sub__, 1)
-        index = __call(int, 0)
-        res = __call(str, '')
-        __call(res.__add__, __call(str, '('))
+        size = __call_method(self.__len__)
+        top_index = __call_method(size.__sub__, 1)
+        index = __call_cls(int, 0)
+        res = __call_cls(str, '')
+        __call_method(res.__add__, __call_cls(str, '('))
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
         try:
             while True:
-                item = __call(iterator_.next)
+                item = __call_method(iterator_.next)
 
-                __call(res.__add__, __call(item.__repr__)) # res += str(item)
+                __call_method(res.__add__, __call_method(item.__repr__)) # res += str(item)
 
-                if __call(index.__lt__, top_index):
-                    __call(res.__add__, __call(str, ', '))
+                if __call_method(index.__lt__, top_index):
+                    __call_method(res.__add__, __call_cls(str, ', '))
 
-                __call(index.__iadd__, __call(int, 1))
+                __call_method(index.__iadd__, __call_cls(int, 1))
         except StopIteration:
-            __call(res.__add__, __call(str, ')'))
+            __call_method(res.__add__, __call_cls(str, ')'))
 
         return res
 
     def __repr__(self):
-        return __call(self.__str__)
+        return __call_method(self.__str__)
 
     def __hash__(self):
-        res = __call(int, 0)
+        res = __call_cls(int, 0)
 
-        iterator_ = __call(self.__iter__)
+        iterator_ = __call_method(self.__iter__)
         try:
             while True:
-                item = __call(iterator_.next)
-                __call(res.__iadd__, __call(item.__hash__))
+                item = __call_method(iterator_.next)
+                __call_method(res.__iadd__, __call_method(item.__hash__))
         except StopIteration:
             pass
 
         return res
 
     def __iter__(self):
-        return __call(tupleiterator, self)
+        return __call_cls(tupleiterator, self)
 
     def __getitem__(self, i):
-        if __call(i.__gte__, __call(self.__len__)):
-            raise __call(IndexError)
+        if __call_method(i.__gte__, __call_method(self.__len__)):
+            raise __call_cls(IndexError)
 
         """
         ### BEGIN VECTOR ###
@@ -127,15 +124,15 @@ class tupleiterator(object):
 
     def __init__(self, iterable_):
         self.iterable = iterable_
-        self.i = __call(int, 0)
-        self.n = __call(iterable_.__len__)
+        self.i = __call_cls(int, 0)
+        self.n = __call_method(iterable_.__len__)
 
     def next(self):
-        if __call(self.i.__lt__, self.n):
-            res = __call(self.iterable.__getitem__, self.i)
-            __call(self.i.__iadd__, __call(int, 1))
+        if __call_method(self.i.__lt__, self.n):
+            res = __call_method(self.iterable.__getitem__, self.i)
+            __call_method(self.i.__iadd__, __call_cls(int, 1))
             return res
         else:
-            raise __call(StopIteration)
+            raise __call_cls(StopIteration)
 
 ## -----------------------------------------------------------------------------

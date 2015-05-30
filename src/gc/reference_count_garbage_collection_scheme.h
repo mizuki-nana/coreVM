@@ -58,7 +58,7 @@ public:
 
       virtual inline void on_create() noexcept
       {
-        this->inc_ref_count();
+        // Do nothing here.
       }
 
       virtual inline void on_setattr() noexcept

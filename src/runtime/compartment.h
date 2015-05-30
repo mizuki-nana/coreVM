@@ -60,9 +60,9 @@ public:
   void get_closure_by_id(
     corevm::runtime::closure_id, corevm::runtime::closure** closure);
 
-  void set_closure_table(const corevm::runtime::closure_table&);
+  void set_closure_table(const corevm::runtime::closure_table&&);
 
-  bool get_starting_closure(corevm::runtime::closure*);
+  bool get_starting_closure(corevm::runtime::closure**);
 
   friend std::ostream& operator<<(
     std::ostream&, const corevm::runtime::compartment&);
