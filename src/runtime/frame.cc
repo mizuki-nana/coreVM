@@ -31,9 +31,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame::frame(const corevm::runtime::closure_ctx& closure_ctx)
+corevm::runtime::frame::frame(
+  const corevm::runtime::closure_ctx& closure_ctx,
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr)
   :
   m_closure_ctx(closure_ctx),
+  m_compartment_ptr(compartment_ptr),
+  m_closure_ptr(closure_ptr),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
@@ -47,9 +52,13 @@ corevm::runtime::frame::frame(const corevm::runtime::closure_ctx& closure_ctx)
 
 corevm::runtime::frame::frame(
   const corevm::runtime::closure_ctx& closure_ctx,
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr,
   corevm::runtime::instr_addr return_addr)
   :
   m_closure_ctx(closure_ctx),
+  m_compartment_ptr(compartment_ptr),
+  m_closure_ptr(closure_ptr),
   m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
@@ -256,6 +265,22 @@ corevm::runtime::closure_ctx
 corevm::runtime::frame::closure_ctx() const
 {
   return m_closure_ctx;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::compartment*
+corevm::runtime::frame::compartment_ptr() const
+{
+  return m_compartment_ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::closure*
+corevm::runtime::frame::closure_ptr() const
+{
+  return m_closure_ptr;
 }
 
 // -----------------------------------------------------------------------------

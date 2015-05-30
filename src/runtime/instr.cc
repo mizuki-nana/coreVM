@@ -69,27 +69,9 @@ std::ostream& operator<<(
 static corevm::dyobj::attr_key
 get_attr_key(
   corevm::runtime::process& process,
-  corevm::runtime::compartment_id compartment_id,
-  corevm::runtime::encoding_key str_key,
-  bool from_current_compartment=false)
+  corevm::runtime::compartment* compartment,
+  corevm::runtime::encoding_key str_key)
 {
-  corevm::runtime::compartment *compartment=nullptr;
-  process.get_compartment(compartment_id, &compartment);
-
-  if (!compartment)
-  {
-    if (!from_current_compartment)
-    {
-      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
-    }
-    else
-    {
-#if __DEBUG__
-      ASSERT(compartment);
-#endif
-    }
-  }
-
   std::string attr_str;
   compartment->get_encoding_string(str_key, &attr_str);
 
@@ -108,7 +90,7 @@ get_attr_key_from_current_compartment(
   const corevm::runtime::frame& frame = process.top_frame();
 
   return get_attr_key(
-    process, frame.closure_ctx().compartment_id, str_key, true);
+    process, frame.compartment_ptr(), str_key);
 }
 
 // -----------------------------------------------------------------------------
@@ -1020,11 +1002,22 @@ corevm::runtime::instr_handler_setattrs::execute(
   bool should_clone = static_cast<bool>(instr.oprd1);
   bool should_override_map_values = static_cast<bool>(instr.oprd2);
 
+  auto compartment_id = src_obj.closure_ctx().compartment_id;
+
+  corevm::runtime::compartment* compartment = nullptr;
+  process.get_compartment(compartment_id, &compartment);
+
+  if (!compartment)
+  {
+    THROW(corevm::runtime::compartment_not_found_error(compartment_id));
+  }
+
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
     uint64_t str_key = static_cast<uint64_t>(itr->first);
+
     corevm::dyobj::attr_key attr_key = get_attr_key(
-      process, src_obj.closure_ctx().compartment_id, str_key);
+      process, compartment, str_key);
 
     corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
@@ -1244,7 +1237,18 @@ corevm::runtime::instr_handler_pinvk::execute(
     THROW(corevm::runtime::closure_not_found_error(ctx.closure_id));
   }
 
-  process.emplace_invocation_ctx(ctx);
+  corevm::runtime::compartment* compartment = nullptr;
+  process.get_compartment(ctx.compartment_id, &compartment);
+
+  corevm::runtime::closure *closure = nullptr;
+  compartment->get_closure_by_id(ctx.closure_id, &closure);
+
+#if __DEBUG__
+  ASSERT(compartment);
+  ASSERT(closure);
+#endif
+
+  process.emplace_invocation_ctx(ctx, compartment, closure);
 }
 
 // -----------------------------------------------------------------------------
@@ -1253,19 +1257,13 @@ void
 corevm::runtime::instr_handler_invk::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  corevm::runtime::closure_ctx ctx = process.top_invocation_ctx().closure_ctx();
-  process.emplace_frame(ctx, process.pc());
+  auto& invk_ctx = process.top_invocation_ctx();
 
-  corevm::runtime::compartment* compartment = nullptr;
-  process.get_compartment(ctx.compartment_id, &compartment);
+  const corevm::runtime::closure_ctx& ctx = invk_ctx.closure_ctx();
+  corevm::runtime::compartment* compartment = invk_ctx.compartment_ptr();
+  corevm::runtime::closure* closure = invk_ctx.closure_ptr();
 
-  corevm::runtime::closure *closure = nullptr;
-  compartment->get_closure_by_id(ctx.closure_id, &closure);
-
-#if __DEBUG__
-  ASSERT(closure);
-#endif
-
+  process.emplace_frame(ctx, compartment, closure, process.pc());
   process.insert_vector(closure->vector);
 }
 
@@ -1388,15 +1386,7 @@ corevm::runtime::instr_handler_exc::execute(
 
     if (search_catch_sites)
     {
-      corevm::runtime::compartment *compartment = nullptr;
-      process.get_compartment(frame.closure_ctx().compartment_id, &compartment);
-
-#if __DEBUG__
-      ASSERT(compartment);
-#endif
-
-      corevm::runtime::closure *closure = nullptr;
-      compartment->get_closure_by_id(frame.closure_ctx().closure_id, &closure);
+      const corevm::runtime::closure *closure = frame.closure_ptr();
 
 #if __DEBUG__
       ASSERT(closure);
@@ -2200,15 +2190,7 @@ corevm::runtime::instr_handler_str::execute(
   {
     auto encoding_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
 
-    corevm::runtime::compartment_id compartment_id = frame.closure_ctx().compartment_id;
-    corevm::runtime::compartment* compartment = nullptr;
-
-    process.get_compartment(compartment_id, &compartment);
-
-    if (!compartment)
-    {
-      THROW(corevm::runtime::compartment_not_found_error(compartment_id));
-    }
+    const corevm::runtime::compartment* compartment = frame.compartment_ptr();
 
     str = compartment->get_encoding_string(encoding_key);
   }

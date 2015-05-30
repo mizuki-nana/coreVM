@@ -34,13 +34,18 @@ protected:
     .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
     .closure_id = corevm::runtime::NONESET_CLOSURE_ID
   };
+
+  corevm::runtime::compartment *m_compartment = new corevm::runtime::compartment("");
+  corevm::runtime::closure m_closure;
 };
 
 // -----------------------------------------------------------------------------
 
 TEST_F(frame_unittest, TestInitialization)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  ASSERT_EQ(m_compartment, frame.compartment_ptr());
+  ASSERT_EQ(&m_closure, frame.closure_ptr());
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
   ASSERT_EQ(0, frame.exc_obj());
 }
@@ -50,7 +55,7 @@ TEST_F(frame_unittest, TestInitialization)
 TEST_F(frame_unittest, TestInitializationWithReturnAddr)
 {
   corevm::runtime::instr_addr return_addr = 100;
-  corevm::runtime::frame frame(m_closure_ctx, return_addr);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure, return_addr);
 
   ASSERT_EQ(return_addr, frame.return_addr());
 }
@@ -59,7 +64,7 @@ TEST_F(frame_unittest, TestInitializationWithReturnAddr)
 
 TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
 
   corevm::runtime::instr_addr expected_return_addr = 555;
@@ -71,7 +76,7 @@ TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 
 TEST_F(frame_unittest, TestPushAndPopEvalStack)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::types::native_type_handle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(handle);
@@ -89,7 +94,7 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
 
 TEST_F(frame_unittest, TestVisibleVars)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = 1;
 
@@ -120,7 +125,7 @@ TEST_F(frame_unittest, TestVisibleVars)
 
 TEST_F(frame_unittest, TestInvisibleVars)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = 812;
 
@@ -151,7 +156,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
 
 TEST_F(frame_unittest, TestGetAndSetExcObj)
 {
-  corevm::runtime::frame frame(m_closure_ctx);
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::dyobj::dyobj_id id = 1;
 
   ASSERT_NE(id, frame.exc_obj());

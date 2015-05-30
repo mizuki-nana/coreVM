@@ -113,10 +113,14 @@ public:
 
   void push_frame(corevm::runtime::frame&);
 
-  void emplace_frame(const corevm::runtime::closure_ctx&);
+  void emplace_frame(
+    const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*, corevm::runtime::closure*);
 
   void emplace_frame(
-    const corevm::runtime::closure_ctx&, corevm::runtime::instr_addr);
+    const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*,
+    corevm::runtime::closure*, corevm::runtime::instr_addr);
 
   void pop_frame() throw(corevm::runtime::frame_not_found_error);
 
@@ -127,7 +131,9 @@ public:
 
   void push_invocation_ctx(const invocation_ctx&);
 
-  void emplace_invocation_ctx(const corevm::runtime::closure_ctx&);
+  void emplace_invocation_ctx(
+    const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*, corevm::runtime::closure*);
 
   void pop_invocation_ctx()
     throw(corevm::runtime::invocation_ctx_not_found_error);

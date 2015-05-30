@@ -31,9 +31,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 corevm::runtime::invocation_ctx::invocation_ctx(
-  const corevm::runtime::closure_ctx& ctx)
+  const corevm::runtime::closure_ctx& ctx,
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr)
   :
   m_closure_ctx(ctx),
+  m_compartment_ptr(compartment_ptr),
+  m_closure_ptr(closure_ptr),
   m_params_list(),
   m_param_value_map()
 {
@@ -45,6 +49,22 @@ const corevm::runtime::closure_ctx&
 corevm::runtime::invocation_ctx::closure_ctx() const
 {
   return m_closure_ctx;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::compartment*
+corevm::runtime::invocation_ctx::compartment_ptr() const
+{
+  return m_compartment_ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::closure*
+corevm::runtime::invocation_ctx::closure_ptr() const
+{
+  return m_closure_ptr;
 }
 
 // -----------------------------------------------------------------------------

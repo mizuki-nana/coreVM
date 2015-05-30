@@ -319,9 +319,9 @@ TEST_F(process_unittest, TestPushAndPopFrames)
     .closure_id = closure.id,
   };
 
-  process.emplace_invocation_ctx(ctx);
+  process.emplace_invocation_ctx(ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::frame frame(ctx);
+  corevm::runtime::frame frame(ctx, &compartment, &closure_table[0]);
   frame.set_return_addr(process.pc());
   process.push_frame(frame);
   process.insert_vector(closure.vector);
@@ -364,15 +364,30 @@ TEST_F(process_unittest, TestEmplaceFrame)
     .closure_id = 0,
   };
 
-  process.emplace_frame(ctx);
+  corevm::runtime::closure closure {
+    .id = ctx.closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure_table closure_table { closure };
+
+  corevm::runtime::compartment compartment("");
+
+  compartment.set_closure_table(std::move(closure_table));
+  process.insert_compartment(compartment);
+
+  process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
   ASSERT_EQ(true, process.has_frame());
   ASSERT_EQ(1, process.call_stack_size());
 
   auto& frame = process.top_frame();
 
+  ASSERT_EQ(&compartment, frame.compartment_ptr());
+  ASSERT_EQ(&closure_table[0], frame.closure_ptr());
   ASSERT_EQ(ctx.compartment_id, frame.closure_ctx().compartment_id);
   ASSERT_EQ(ctx.closure_id, frame.closure_ctx().closure_id);
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
@@ -460,8 +475,8 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
     .closure_id = closure_id3
   };
 
-  corevm::runtime::frame frame1(ctx3);
-  corevm::runtime::frame frame2(ctx2);
+  corevm::runtime::frame frame1(ctx3, nullptr, nullptr);
+  corevm::runtime::frame frame2(ctx2, nullptr, nullptr);
 
   corevm::runtime::frame* ptr = nullptr;
 
@@ -622,7 +637,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameWithAssociatedCtx)
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx);
+  process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
   corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
     ctx, &compartment, process);
@@ -670,7 +685,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameByTraverseClosureTree)
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx1);
+  process.emplace_frame(ctx1, &compartment, &closure_table[0]);
 
   corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
     ctx3, &compartment, process);
@@ -723,8 +738,8 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindMissingFrame)
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx2);
-  process.emplace_frame(ctx3);
+  process.emplace_frame(ctx2, &compartment, &closure_table[1], 0);
+  process.emplace_frame(ctx3, &compartment, &closure_table[2], 0);
 
   corevm::runtime::frame* res = corevm::runtime::process::find_frame_by_ctx(
     ctx1, &compartment, process);
@@ -780,9 +795,9 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameSuccess
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx1);
-  process.emplace_frame(ctx2);
-  process.emplace_frame(ctx3);
+  process.emplace_frame(ctx1, &compartment, &closure_table[0], 0);
+  process.emplace_frame(ctx2, &compartment, &closure_table[1], 0);
+  process.emplace_frame(ctx3, &compartment, &closure_table[2], 0);
 
   corevm::runtime::frame* frame_ptr = &process.top_frame();
 
@@ -832,8 +847,8 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameWithMis
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx1);
-  process.emplace_frame(ctx3);
+  process.emplace_frame(ctx1, &compartment, &closure_table[0], 0);
+  process.emplace_frame(ctx3, &compartment, &closure_table[2], 0);
 
   corevm::runtime::frame* frame_ptr = &process.top_frame();
 
@@ -878,7 +893,7 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameFails)
 
   process.insert_compartment(compartment);
 
-  process.emplace_frame(ctx3);
+  process.emplace_frame(ctx3, &compartment, &closure_table[2], 0);
 
   corevm::runtime::frame* frame_ptr = &process.top_frame();
 

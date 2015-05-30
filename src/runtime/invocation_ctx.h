@@ -23,7 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_INVOCATION_CTX_H_
 #define COREVM_INVOCATION_CTX_H_
 
+#include "closure.h"
 #include "closure_ctx.h"
+#include "compartment.h"
 #include "common.h"
 #include "errors.h"
 #include "dyobj/dyobj_id.h"
@@ -45,9 +47,14 @@ typedef std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_i
 class invocation_ctx
 {
 public:
-  explicit invocation_ctx(const corevm::runtime::closure_ctx&);
+  invocation_ctx(const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*, corevm::runtime::closure*);
 
   const closure_ctx& closure_ctx() const;
+
+  corevm::runtime::compartment* compartment_ptr() const;
+
+  corevm::runtime::closure* closure_ptr() const;
 
   const param_list_type& params_list() const;
 
@@ -74,6 +81,8 @@ public:
 
 private:
   corevm::runtime::closure_ctx m_closure_ctx;
+  corevm::runtime::compartment* m_compartment_ptr;
+  corevm::runtime::closure* m_closure_ptr;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
 };

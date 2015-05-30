@@ -23,7 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRAME_H_
 #define COREVM_FRAME_H_
 
+#include "closure.h"
 #include "closure_ctx.h"
+#include "compartment.h"
 #include "common.h"
 #include "errors.h"
 #include "dyobj/dyobj_id.h"
@@ -48,13 +50,18 @@ namespace runtime {
  * - Invisible local variables.
  * - Evaluation stack.
  * - Closure context.
+ * - A pointer to the associated compartment.
+ * - A pointer to the associated closure object.
  */
 class frame
 {
 public:
-  explicit frame(const corevm::runtime::closure_ctx&);
+  frame(const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*, corevm::runtime::closure*);
 
-  frame(const corevm::runtime::closure_ctx&, corevm::runtime::instr_addr);
+  frame(const corevm::runtime::closure_ctx&,
+    corevm::runtime::compartment*,
+    corevm::runtime::closure*, corevm::runtime::instr_addr);
 
   ~frame();
 
@@ -98,6 +105,10 @@ public:
 
   corevm::runtime::closure_ctx closure_ctx() const;
 
+  corevm::runtime::compartment* compartment_ptr() const;
+
+  corevm::runtime::closure* closure_ptr() const;
+
   corevm::dyobj::dyobj_id exc_obj() const;
 
   void set_exc_obj(corevm::dyobj::dyobj_id exc_obj);
@@ -106,6 +117,8 @@ public:
 
 protected:
   const corevm::runtime::closure_ctx m_closure_ctx;
+  corevm::runtime::compartment* m_compartment_ptr;
+  corevm::runtime::closure* m_closure_ptr;
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;

@@ -39,6 +39,9 @@ protected:
     .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
     .closure_id = corevm::runtime::NONESET_CLOSURE_ID
   };
+
+  corevm::runtime::compartment* m_compartment = new corevm::runtime::compartment("");
+  corevm::runtime::closure m_closure;
 };
 
 
@@ -46,15 +49,17 @@ protected:
 
 TEST_F(invocation_ctx_unittest, TestInitialization)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
   ASSERT_TRUE(m_ctx == invk_ctx.closure_ctx());
+  ASSERT_EQ(m_compartment, invk_ctx.compartment_ptr());
+  ASSERT_EQ(&m_closure, invk_ctx.closure_ptr());
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(invocation_ctx_unittest, TestPutAndGetParams)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   ASSERT_EQ(false, invk_ctx.has_params());
 
@@ -83,7 +88,7 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParams)
 
 TEST_F(invocation_ctx_unittest, TestPutAndGetParamValuePairs)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   ASSERT_EQ(false, invk_ctx.has_param_value_pairs());
 
@@ -114,7 +119,7 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParamValuePairs)
 
 TEST_F(invocation_ctx_unittest, TestListParamValuePairKeys)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx);
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   std::list<corevm::runtime::variable_key> expected_keys {};
   std::list<corevm::runtime::variable_key> actual_keys = invk_ctx.param_value_pair_keys();

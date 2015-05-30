@@ -217,22 +217,7 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
 
   set_pc(frame.return_addr());
 
-  corevm::runtime::compartment_id compartment_id = frame.closure_ctx().compartment_id;
-  corevm::runtime::compartment* compartment = nullptr;
-  this->get_compartment(compartment_id, &compartment);
-
-#if __DEBUG__
-  ASSERT(compartment);
-#endif
-
-  corevm::runtime::closure_id closure_id = frame.closure_ctx().closure_id;
-  corevm::runtime::closure* closure_ptr = nullptr;
-
-  compartment->get_closure_by_id(closure_id, &closure_ptr);
-
-#if __DEBUG__
-  ASSERT(closure_ptr);
-#endif
+  const corevm::runtime::closure* closure_ptr = frame.closure_ptr();
 
   auto begin_itr = m_instrs.begin() + pc() + 1;
   auto end_itr = begin_itr + closure_ptr->vector.size();
@@ -255,18 +240,26 @@ corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::emplace_frame(const corevm::runtime::closure_ctx& ctx)
+corevm::runtime::process::emplace_frame(
+  const corevm::runtime::closure_ctx& ctx,
+  corevm::runtime::compartment* compartment_ptr, corevm::runtime::closure* closure_ptr)
 {
-  m_call_stack.emplace_back(ctx);
+  ASSERT(compartment_ptr);
+  ASSERT(closure_ptr);
+  m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
 corevm::runtime::process::emplace_frame(
-  const corevm::runtime::closure_ctx& ctx, corevm::runtime::instr_addr return_addr)
+  const corevm::runtime::closure_ctx& ctx,
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr, corevm::runtime::instr_addr return_addr)
 {
-  m_call_stack.emplace_back(ctx, return_addr);
+  ASSERT(compartment_ptr);
+  ASSERT(closure_ptr);
+  m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr, return_addr);
 }
 
 // -----------------------------------------------------------------------------
@@ -303,9 +296,13 @@ corevm::runtime::process::push_invocation_ctx(const invocation_ctx& invk_ctx)
 
 void
 corevm::runtime::process::emplace_invocation_ctx(
-  const corevm::runtime::closure_ctx& ctx)
+  const corevm::runtime::closure_ctx& ctx,
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr)
 {
-  m_invocation_ctx_stack.emplace_back(ctx);
+  ASSERT(compartment_ptr);
+  ASSERT(closure_ptr);
+  m_invocation_ctx_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
 }
 
 // -----------------------------------------------------------------------------
@@ -516,7 +513,9 @@ corevm::runtime::process::pre_start()
   }
 
   corevm::runtime::closure* closure = nullptr;
-  bool res = m_compartments.front().get_starting_closure(&closure);
+  corevm::runtime::compartment* compartment = &m_compartments.front();
+
+  bool res = compartment->get_starting_closure(&closure);
 
   // If we found the starting compartment and closure, create a frame with the
   // closure context, and loads and vector into the process.
@@ -533,9 +532,9 @@ corevm::runtime::process::pre_start()
 
     append_vector(closure->vector);
 
-    emplace_frame(ctx, m_pc);
+    emplace_frame(ctx, compartment, closure, m_pc);
 
-    emplace_invocation_ctx(ctx);
+    emplace_invocation_ctx(ctx, compartment, closure);
 
     m_pc = 0;
   }
@@ -825,10 +824,14 @@ corevm::runtime::process::find_frame_by_ctx(
       break;
     }
 
-    corevm::runtime::closure closure = compartment->get_closure_by_id(
-      ctx.closure_id);
+    corevm::runtime::closure *closure = nullptr;
+    compartment->get_closure_by_id(ctx.closure_id, &closure);
 
-    ctx.closure_id = closure.parent_id;
+#if __DEBUG__
+    ASSERT(closure);
+#endif
+
+    ctx.closure_id = closure->parent_id;
 
     if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
     {
@@ -853,26 +856,13 @@ corevm::runtime::process::find_parent_frame_in_process(
   ASSERT(frame_ptr);
 #endif
 
-  corevm::runtime::compartment_id compartment_id =
-    frame_ptr->closure_ctx().compartment_id;
-
-  corevm::runtime::compartment* compartment = nullptr;
-
-  process.get_compartment(compartment_id, &compartment);
-
-  if (!compartment)
-  {
-    THROW(corevm::runtime::compartment_not_found_error(compartment_id));
-  }
-
-  corevm::runtime::closure_id closure_id = frame_ptr->closure_ctx().closure_id;
-  corevm::runtime::closure closure = compartment->get_closure_by_id(closure_id);
-
-  corevm::runtime::closure_id parent_closure_id = closure.parent_id;
+  const corevm::runtime::closure* closure = frame_ptr->closure_ptr();
 
 #if __DEBUG__
-  ASSERT(closure.id != closure.parent_id);
+  ASSERT(closure);
 #endif
+
+  corevm::runtime::closure_id parent_closure_id = closure->parent_id;
 
   if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
   {
@@ -880,9 +870,15 @@ corevm::runtime::process::find_parent_frame_in_process(
   }
 
   closure_ctx ctx {
-    .compartment_id = compartment_id,
+    .compartment_id = frame_ptr->closure_ctx().compartment_id,
     .closure_id = parent_closure_id
   };
+
+  corevm::runtime::compartment* compartment = frame_ptr->compartment_ptr();
+
+#if __DEBUG__
+  ASSERT(compartment);
+#endif
 
   frame_ptr = corevm::runtime::process::find_frame_by_ctx(
     ctx, compartment, process);
@@ -910,26 +906,13 @@ corevm::runtime::process::unwind_stack(
 
     corevm::runtime::frame& frame = process.top_frame();
 
-    auto ctx = frame.closure_ctx();
-
-    corevm::runtime::compartment* compartment = nullptr;
-
-    process.get_compartment(ctx.compartment_id, &compartment);
-
-#if __DEBUG__
-    ASSERT(compartment);
-#endif
+    const corevm::runtime::compartment* compartment = frame.compartment_ptr();
 
     line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
 
-    corevm::runtime::closure* closure = nullptr;
-    compartment->get_closure_by_id(ctx.closure_id, &closure);
+    const corevm::runtime::closure* closure = frame.closure_ptr();
 
-#if __DEBUG__
-    ASSERT(closure);
-#endif
-
-    corevm::runtime::loc_table& locs = closure->locs;
+    const corevm::runtime::loc_table& locs = closure->locs;
 
     int32_t index = process.pc() - frame.return_addr();
 
