@@ -312,6 +312,7 @@ The latest build of coreVM depends on the following libraries:
   * [Google Test] (https://code.google.com/p/googletest/) `version 1.6.0`
   * [Sneaker] (http://www.libsneaker.org/) `version 0.2.8`
   * [Apache Avro™] (https://avro.apache.org/docs/current/api/cpp/html/) `version 1.7.7`
+  * [benchmark] (https://github.com/google/benchmark) `version 0.1.0`
 
 
 ## License

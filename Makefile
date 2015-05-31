@@ -26,6 +26,7 @@ BUILD_DIR=$(TOP_DIR)/build
 BIN=$(TOP_DIR)/bin
 SRC=src
 TESTS=tests
+BENCHMARKS=benchmarks
 TOOLS=tools
 PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
@@ -58,6 +59,7 @@ COREVM=coreVM
 BOOTSTRAP_TESTS=bootstrap_tests.py
 PYTHON_TESTS=python_tests
 RUN_TESTS=run_tests
+RUN_BENCHMARKS=run_benchmarks
 
 COMPILE_BYTECODE_SCHEMA=scripts/compile_bytecode_schema.sh
 
@@ -67,14 +69,16 @@ export GTEST_COLOR=true
 
 include src/include.mk
 include tests/include.mk
+include benchmarks/include.mk
 
 
 OBJECTS = $(patsubst $(TOP_DIR)/%.cc, $(BUILD_DIR)/%.o, $(SOURCES))
 TEST_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(BUILD_DIR)/%.o,$(TEST_SOURCES))
+BENCHMARK_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(BUILD_DIR)/%.o,$(BENCHMARK_SOURCES))
 
 
 .PHONY: all
-all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS)
+all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS) $(BENCHMARKS)
 
 
 $(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
@@ -112,12 +116,21 @@ $(PYTHON_TESTS): $(COREVM)
 
 
 .PHONY: $(TESTS)
-$(TESTS): $(TEST_OBJECTS)
+$(TESTS): $(LIBCOREVM) $(TEST_OBJECTS)
 	mkdir -p $(@D)
 	mkdir -p $(BIN)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_OBJECTS) -o $(BIN)/$(RUN_TESTS) libcorevm.a $(LFLAGS) -lgtest
 	exec $(BIN)/$(RUN_TESTS)
 	@echo "\033[32mTests run completed...\033[0m";
+
+
+.PHONY: $(BENCHMARKS)
+$(BENCHMARKS): $(LIBCOREVM) $(BENCHMARK_OBJECTS)
+	mkdir -p $(@D)
+	mkdir -p $(BIN)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(BENCHMARK_OBJECTS) -o $(BIN)/$(RUN_BENCHMARKS) libcorevm.a $(LFLAGS) -lbenchmark
+	exec $(BIN)/$(RUN_BENCHMARKS)
+	@echo "\033[32mBenchmarks run completed...\033[0m";
 
 
 .PHONY: clean
