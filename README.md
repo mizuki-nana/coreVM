@@ -182,6 +182,18 @@ The last feature is to support native plugins, which allows developers to
 incorporate the execution of native code in conjunction with coreVM's execution,
 in order to allow more interactions with the operating system.
 
+### Project Pyta
+Besides the set of powerful features described above, another monumental
+endeavor in the project is to engineer a different implementation of the Python
+programming language, codenamed *Project Pyta*, using an approach that is
+completely different than that of CPython's by utilizing the capabilities of
+coreVM. Having the ability to support a real reference language complements the
+development of the VM as it helps to test the system and provides meaningful
+feedbacks to improve its stability and performance, as well as to enhance its
+capabilities and versatilities. Moreover, it also serves as an great example
+of developing compilers as well as the necessary tools for language developers
+to utilize and leverage the capabilities of coreVM.
+
 <br/>
 
 Below is a table of all the past milestones and some of the goals defined in the
@@ -198,19 +210,20 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Bytecode loading and validation (done)      |            Feb, 2015
   Frontend and runtime integration (done)     |            Feb, 2015
   Bug fixes and regression tests (done)       |            Mar, 2015
-  Support basic features in Python            |            Mar, 2015
-  Convergence for Python basic features       |            Apr, 2015
-  Benchmark infrastructure                    |            Apr, 2015
-  Docker integration                          |            Apr, 2015
-  Continuous integration                      |            Apr, 2015
-  Initial working build *                     |            Apr, 2015
-  Multi-threaded runtime                      |            May, 2015
-  JIT optimizations                           |            Jun, 2015
-  Debugging and Profiling APIs                |            Jul, 2015
-  Embedder APIs                               |            Sep, 2015
-  Extension APIs                              |            Nov, 2015
-  Parallelism support                         |            Jan, 2016
-  Address space layout randomization          |            Mar, 2016
+  Support basic features in Python (cont'd)   |            Mar, 2015
+  Python features convergence (cont'd)        |            Apr, 2015
+  Optimizations (cont'd)                      |            May, 2015
+  Benchmark infrastructure                    |            Jun, 2015
+  Docker integration                          |            Jun, 2015
+  Continuous integration                      |            Jun, 2015
+  Initial working build *                     |            Jul, 2015
+  Multi-threaded runtime                      |            TBD
+  JIT optimizations                           |            TBD
+  Debugging and Profiling APIs                |            TBD
+  Embedder APIs                               |            TBD
+  Extension APIs                              |            TBD
+  Parallelism support                         |            TBD
+  Address space layout randomization          |            TBD
 
 <br />
 Here's an illustration of the envisioned future architecture of coreVM:
