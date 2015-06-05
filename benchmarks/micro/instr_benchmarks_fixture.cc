@@ -37,14 +37,9 @@ const char* DUMMY_PATH = "./example.core";
 
 // -----------------------------------------------------------------------------
 
-const uint64_t BENCHMARKS_PROCESS_HEAP_ALLOC_SIZE = 2048;
-const uint64_t BENCHMARKS_PROCESS_POOL_ALLOC_SIZE = 2048;
-
-// -----------------------------------------------------------------------------
-
 corevm::benchmarks::instr_benchmarks_fixture::instr_benchmarks_fixture()
   :
-  m_process(BENCHMARKS_PROCESS_HEAP_ALLOC_SIZE, BENCHMARKS_PROCESS_POOL_ALLOC_SIZE)
+  m_process()
 {
   init();
 }

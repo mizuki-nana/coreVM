@@ -31,11 +31,11 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkInstrNEW(benchmark::State& state)
+template <class instr_handler_cls>
+static void BenchmarkNtvhndlCreationInstrs(benchmark::State& state)
 {
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
-  corevm::runtime::instr_handler_new handler;
+  instr_handler_cls handler;
 
   instr_benchmarks_fixture fixture;
 
@@ -47,6 +47,19 @@ void BenchmarkInstrNEW(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK(BenchmarkInstrNEW);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_int8);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_uint8);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_int16);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_uint16);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_int32);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_uint32);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_int64);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_uint64);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_bool);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_dec1);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_dec2);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_str);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_ary);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlCreationInstrs, corevm::runtime::instr_handler_map);
 
 // -----------------------------------------------------------------------------
