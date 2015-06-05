@@ -20,37 +20,38 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <benchmark/benchmark.h>
+#ifndef COREVM_INSTR_BENCHMARKS_FIXTURE_H_
+#define COREVM_INSTR_BENCHMARKS_FIXTURE_H_
 
-#include "runtime/instr.h"
+#include "runtime/frame.h"
+#include "runtime/invocation_ctx.h"
+#include "runtime/process.h"
 
-#include "instr_benchmarks_fixture.h"
+
+namespace corevm {
 
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+namespace benchmarks {
 
-// -----------------------------------------------------------------------------
 
-static
-void BenchmarkInstrNEW(benchmark::State& state)
+class instr_benchmarks_fixture
 {
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
-  corevm::runtime::instr_handler_new handler;
+public:
+  instr_benchmarks_fixture();
 
-  while (state.KeepRunning())
-  {
-      state.PauseTiming();
+  corevm::runtime::process& process();
 
-      instr_benchmarks_fixture fixture;
+protected:
+  virtual void init();
 
-      state.ResumeTiming();
+  corevm::runtime::process m_process;
+};
 
-      handler.execute(instr, fixture.process());
-  }
-}
 
-// -----------------------------------------------------------------------------
+} /* endnamespace benchmarks */
 
-BENCHMARK(BenchmarkInstrNEW);
 
-// -----------------------------------------------------------------------------
+} /* end namespace corevm */
+
+
+#endif /* COREVM_INSTR_BENCHMARKS_FIXTURE_H_ */
