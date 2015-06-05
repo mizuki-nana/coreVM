@@ -28,3 +28,4 @@ BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/instr_benchmarks_fixture.
 
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/object_instrs_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_creation_instrs_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_conversion_instrs_benchmark.cc
