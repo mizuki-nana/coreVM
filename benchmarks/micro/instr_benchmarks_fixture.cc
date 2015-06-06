@@ -30,6 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/process.h"
 #include "runtime/vector.h"
 
+#include <cassert>
+
 
 // -----------------------------------------------------------------------------
 
@@ -69,8 +71,12 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
     .closure_id = closure.id
   };
 
-  m_process.emplace_frame(ctx, &compartment, &closure_table.front());
-  m_process.emplace_invocation_ctx(ctx, &compartment, &closure_table.front());
+  corevm::runtime::compartment* compartment_ptr = nullptr;
+  m_process.get_compartment(compartment_id, &compartment_ptr);
+  assert(compartment_ptr);
+
+  m_process.emplace_frame(ctx, compartment_ptr, &closure_table.front());
+  m_process.emplace_invocation_ctx(ctx, compartment_ptr, &closure_table.front());
 }
 
 // -----------------------------------------------------------------------------
