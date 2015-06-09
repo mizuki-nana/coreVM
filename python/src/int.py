@@ -63,7 +63,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __sub__(self, value):
         """
@@ -80,7 +80,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __mul__(self, value):
         """
@@ -97,7 +97,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __div__(self, value):
         """
@@ -114,7 +114,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __mod__(self, value):
         """
@@ -131,7 +131,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __pow__(self, value):
         """
@@ -148,7 +148,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __lshift__(self, value):
         """
@@ -165,7 +165,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __rshift__(self, value):
         """
@@ -182,7 +182,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __or__(self, value):
         """
@@ -199,7 +199,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __xor__(self, value):
         """
@@ -216,7 +216,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __and__(self, value):
         """
@@ -233,7 +233,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __floordiv__(self, value):
         """
@@ -250,7 +250,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __iadd__(self, value):
         """
@@ -420,7 +420,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __not__(self):
         """
@@ -433,7 +433,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __pos__(self):
         """
@@ -446,7 +446,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __neg__(self):
         """
@@ -459,7 +459,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     # TODO: Equality methods can be placed under `object` once
     # dynamic dispatching is supported.
@@ -478,7 +478,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __ne__(self, other):
         """
@@ -495,7 +495,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __lt__(self, other):
         """
@@ -512,7 +512,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __lte__(self, other):
         """
@@ -529,7 +529,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __gt__(self, other):
         """
@@ -546,7 +546,7 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __gte__(self, other):
         """
@@ -563,4 +563,4 @@ class int(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)

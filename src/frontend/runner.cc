@@ -51,7 +51,7 @@ try_get_attr_name(
   corevm::dyobj::dyobj_id id,
   std::string* attr_name)
 {
-  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto& obj = process.get_dyobj(id);
 
   corevm::runtime::compartment* compartment = nullptr;
   process.get_compartment(obj.closure_ctx().compartment_id, &compartment);

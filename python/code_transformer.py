@@ -392,7 +392,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Set(self, node):
-        return '__call_cls(set, {' + ', '.join(
+        return '__call_cls_builtin(set, {' + ', '.join(
             [
                 '__call_cls(set.__set_Item, {expr})'.format(expr=self.visit(expr))
                 for expr in node.elts
@@ -406,7 +406,7 @@ class CodeTransformer(ast.NodeVisitor):
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
-        res = '__call_cls(list, [])'
+        res = '__call_cls_builtin(list, [])'
         synthesizer='lambda res, item: __call_method(res.append, item)'
 
         predicate='None'
@@ -443,7 +443,7 @@ class CodeTransformer(ast.NodeVisitor):
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
-        res = '__call_cls(set, {})'
+        res = '__call_cls_builtin(set, {})'
         synthesizer='lambda res, item: __call_method(res.add, item)'
 
         predicate='None'
@@ -477,7 +477,7 @@ class CodeTransformer(ast.NodeVisitor):
         generator = node.generators[0]
 
         iterable = self.visit(generator.iter)
-        res = '__call_cls(dict, {})'
+        res = '__call_cls_builtin(dict, {})'
         synthesizer='lambda res, key, value: __call_method(res.__setitem__, key, value)'
         predicate='None'
 
@@ -621,7 +621,7 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_Num(self, node):
         num_type = 'float' if isinstance(node.n, float) else 'int'
-        return '__call_cls({num_type}, {n})'.format(
+        return '__call_cls_builtin({num_type}, {n})'.format(
             num_type=num_type, n=str(node.n))
 
     def visit_Attribute(self, node):
@@ -638,17 +638,17 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_List(self, node):
         # TODO: disregarding `node.ctx` here.
-        return '__call_cls(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
+        return '__call_cls_builtin(list, [' + ', '.join([self.visit(expr) for expr in node.elts]) + '])'
 
     def visit_Tuple(self, node):
         # TODO: disregarding `node.ctx` here.
-        return '__call_cls(tuple, (' + ','.join([self.visit(expr) for expr in node.elts]) + '))'
+        return '__call_cls_builtin(tuple, (' + ','.join([self.visit(expr) for expr in node.elts]) + '))'
 
     def visit_Name(self, node):
         return node.id
 
     def visit_Str(self, node):
-        return '__call_cls(str, \"%s\")' % str(node.s)
+        return '__call_cls_builtin(str, \"%s\")' % str(node.s)
 
     """ ---------------------------- boolop -------------------------------- """
 

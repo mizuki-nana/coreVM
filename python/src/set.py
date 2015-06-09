@@ -48,7 +48,7 @@ class set(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __repr__(self):
         return __call_method(self.__str__)
@@ -78,11 +78,11 @@ class set(object):
         return __call_cls(bool, res_)
 
     def __str__(self):
-        res = __call_cls(str, 'set([')
+        res = __call_cls_builtin(str, 'set([')
 
         size = __call_method(self.__len__)
         top_index = __call_method(size.__sub__, 1)
-        index = __call_cls(int, 0)
+        index = __call_cls_builtin(int, 0)
 
         iterator_ = __call_method(self.__iter__)
 
@@ -93,12 +93,12 @@ class set(object):
                 __call_method(res.__add__, __call_method(item.__repr__))
 
                 if __call_method(index.__lt__, top_index):
-                    __call_method(res.__add__, __call_cls(str, ', '))
+                    __call_method(res.__add__, __call_cls_builtin(str, ', '))
 
                 index = __call_method(index.__add__, 1)
 
         except StopIteration:
-            __call_method(res.__add__, __call_cls(str, '])'))
+            __call_method(res.__add__, __call_cls_builtin(str, '])'))
 
         return res
 
@@ -276,7 +276,7 @@ class set(object):
             pass
 
     def difference(self, other):
-        res = __call_cls(set, {})
+        res = __call_cls_builtin(set, {})
 
         iterator_ = __call_method(self.__iter__)
 
@@ -312,7 +312,7 @@ class set(object):
             pass
 
     def symmetric_difference(self, other):
-        res = __call_cls(set, {})
+        res = __call_cls_builtin(set, {})
 
         iterator_ = __call_method(self.__iter__)
 
@@ -369,15 +369,15 @@ class setiterator(object):
         [stobj, items_, 0]
         ### END VECTOR ###
         """
-        self.items = __call_cls(list, items_)
+        self.items = __call_cls_builtin(list, items_)
         self.iterable = iterable_
-        self.i = __call_cls(int, 0)
+        self.i = __call_cls_builtin(int, 0)
         self.n = __call_method(self.items.__len__)
 
     def next(self):
         if __call_method(self.i.__lt__, self.n):
             res = __call_method(self.items.__getitem__, self.i)
-            __call_method(self.i.__iadd__, __call_cls(int, 1))
+            __call_method(self.i.__iadd__, __call_cls_builtin(int, 1))
             return res
         else:
             raise __call_cls(StopIteration)

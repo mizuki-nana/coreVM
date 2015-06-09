@@ -131,16 +131,10 @@ const int COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE = 0;
 
 // -----------------------------------------------------------------------------
 
-const int COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE = 16;
-
-// -----------------------------------------------------------------------------
-
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
-  m_attrs(corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type(
-    COREVM_DYNAMIC_OBJECT_ATTR_MAP_DEFAULT_SIZE)
-  ),
+  m_attrs(),
   m_manager(),
   m_ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY),
   m_closure_ctx(runtime::closure_ctx {

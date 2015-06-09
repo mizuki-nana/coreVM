@@ -33,9 +33,9 @@ class bool(object):
 
     def __str__(self):
         if self:
-            return __call_cls(str, 'True')
+            return __call_cls_builtin(str, 'True')
         else:
-            return __call_cls(str, 'False')
+            return __call_cls_builtin(str, 'False')
 
     def __hash__(self):
         return __call_cls(int, self)
@@ -58,7 +58,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __sub__(self, value):
         """
@@ -75,7 +75,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __mul__(self, value):
         """
@@ -92,7 +92,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __div__(self, value):
         """
@@ -109,7 +109,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __mod__(self, value):
         """
@@ -126,7 +126,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __pow__(self, value):
         """
@@ -428,7 +428,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __pos__(self):
         """
@@ -475,7 +475,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __ne__(self, other):
         """
@@ -492,7 +492,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __lt__(self, other):
         """
@@ -509,7 +509,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __lte__(self, other):
         """
@@ -526,7 +526,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __gt__(self, other):
         """
@@ -543,7 +543,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __gte__(self, other):
         """
@@ -560,7 +560,7 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
 
 ### True

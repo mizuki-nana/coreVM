@@ -35,10 +35,10 @@ class str(object):
         return self
 
     def __repr__(self):
-        res = __call_cls(str, '')
-        __call_method(res.__add__, __call_cls(str, "'"))
+        res = __call_cls_builtin(str, '')
+        __call_method(res.__add__, __call_cls_builtin(str, "'"))
         __call_method(res.__add__, self)
-        __call_method(res.__add__, __call_cls(str, "'"))
+        __call_method(res.__add__, __call_cls_builtin(str, "'"))
         return res
 
     def __hash__(self):
@@ -52,7 +52,7 @@ class str(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def __add__(self, other):
         """

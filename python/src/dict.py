@@ -57,10 +57,10 @@ class dict(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call(int, res_)
+        return __call_cls_builtin(int, res_)
 
     def keys(self):
-        res = __call_cls(list, [])
+        res = __call_cls_builtin(list, [])
 
         iterator_ = __call_method(__call_method(self.items).__iter__)
 
@@ -74,7 +74,7 @@ class dict(object):
         return res
 
     def values(self):
-        res = __call_cls(list, [])
+        res = __call_cls_builtin(list, [])
 
         iterator_ = __call_method(__call_method(self.items).__iter__)
 
@@ -99,7 +99,7 @@ class dict(object):
         [stobj, items_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(list, items_)
+        return __call_cls_builtin(list, items_)
 
     def __contains__(self, key):
         key_hash = __call_method(key.__hash__)
@@ -116,7 +116,7 @@ class dict(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(bool, res_)
+        return __call_cls_builtin(bool, res_)
 
     def __getitem__(self, key):
         if __call_method(self.__contains__, key):
@@ -172,12 +172,12 @@ class dict(object):
         return None
 
     def __str__(self):
-        res = __call_cls(str, '')
+        res = __call_cls_builtin(str, '')
         __call_method(res.__add__, __call_cls(str, '{'))
 
         size = __call_method(self.__len__)
         top_index = __call_method(size.__sub__, 1)
-        index = __call_cls(int, 0)
+        index = __call_cls_builtin(int, 0)
 
         iterator_ = __call_method(__call_method(self.items).__iter__)
 
@@ -190,16 +190,16 @@ class dict(object):
 
                 # Containers call `__repr__` on elements.
                 __call_method(res.__add__, __call_method(key_object.__repr__))
-                __call_method(res.__add__, __call_cls(str, ': '))
+                __call_method(res.__add__, __call_cls_builtin(str, ': '))
                 __call_method(res.__add__, __call_method(value_object.__repr__))
 
                 if __call_method(index.__lt__, top_index):
-                    __call_method(res.__add__, __call_cls(str, ', '))
+                    __call_method(res.__add__, __call_cls_builtin(str, ', '))
 
                 index = __call_method(index.__add__, 1)
 
         except StopIteration:
-            __call_method(res.__add__, __call_cls(str, '}'))
+            __call_method(res.__add__, __call_cls_builtin(str, '}'))
 
     def __repr__(self):
         return __call_method(self.__str__)
@@ -216,13 +216,13 @@ class dict_keyiterator(object):
 
     def __init__(self, iterable):
         self.iterable = iterable
-        self.i = __call_cls(int, 0)
+        self.i = __call_cls_builtin(int, 0)
         self.n = __call_method(__call_method(iterable.keys).__len__)
 
     def next(self):
         if __call_method(self.i.__lt__, self.n):
             key = __call_method(__call_method(self.iterable.keys).__getitem__, self.i)
-            __call_method(self.i.__iadd__, __call(int, 1))
+            __call_method(self.i.__iadd__, __call_cls_builtin(int, 1))
             return key
         else:
             raise __call_cls(StopIteration)

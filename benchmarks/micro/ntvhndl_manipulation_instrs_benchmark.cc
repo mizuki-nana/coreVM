@@ -59,6 +59,9 @@ BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_ha
 // -----------------------------------------------------------------------------
 
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::boolean);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::decimal);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::decimal2);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::native_string);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::native_array);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, corevm::runtime::instr_handler_repr, corevm::types::native_map);

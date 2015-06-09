@@ -407,12 +407,9 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_op
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle oprd = frame.pop_eval_stack();
-  corevm::types::native_type_handle result;
+  corevm::types::native_type_handle& oprd = frame.top_eval_stack();
 
-  interface_func(oprd, result);
-
-  frame.push_eval_stack(result);
+  interface_func(oprd, oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -425,12 +422,9 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
-  corevm::types::native_type_handle result;
+  corevm::types::native_type_handle& oprd2 = frame.top_eval_stack();
 
-  interface_func(oprd2, oprd1, result);
-
-  frame.push_eval_stack(result);
+  interface_func(oprd2, oprd1, oprd2);
 }
 
 // -----------------------------------------------------------------------------
@@ -444,12 +438,9 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
 
   corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
   corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd3 = frame.pop_eval_stack();
-  corevm::types::native_type_handle result;
+  corevm::types::native_type_handle& oprd3 = frame.top_eval_stack();
 
-  interface_func(oprd3, oprd2, oprd1, result);
-
-  frame.push_eval_stack(result);
+  interface_func(oprd3, oprd2, oprd1, oprd3);
 }
 
 // -----------------------------------------------------------------------------
@@ -464,12 +455,9 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
   corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
   corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
   corevm::types::native_type_handle oprd3 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd4 = frame.pop_eval_stack();
-  corevm::types::native_type_handle result;
+  corevm::types::native_type_handle& oprd4 = frame.top_eval_stack();
 
-  interface_func(oprd4, oprd3, oprd2, oprd1, result);
-
-  frame.push_eval_stack(result);
+  interface_func(oprd4, oprd3, oprd2, oprd1, oprd4);
 }
 
 // -----------------------------------------------------------------------------
@@ -478,7 +466,7 @@ void
 corevm::runtime::instr_handler_new::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
-  auto id = corevm::runtime::process::adapter(process).help_create_dyobj();
+  auto id = process.create_dyobj();
 
   process.push_stack(id);
 }
@@ -536,7 +524,7 @@ corevm::runtime::instr_handler_getattr::execute(
     process, str_key);
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
   corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
 
   process.push_stack(attr_id);
@@ -555,7 +543,7 @@ corevm::runtime::instr_handler_setattr::execute(
   corevm::dyobj::dyobj_id attr_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_id = process.pop_stack();
 
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_id);
+  auto &obj = process.get_dyobj(target_id);
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
@@ -563,7 +551,7 @@ corevm::runtime::instr_handler_setattr::execute(
       str(format("cannot mutate immutable object 0x%08x") % target_id)));
   }
 
-  auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+  auto &attr_obj = process.get_dyobj(attr_id);
   obj.putattr(attr_key, attr_id);
   attr_obj.manager().on_setattr();
 
@@ -579,7 +567,7 @@ corevm::runtime::instr_handler_delattr::execute(
   corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
@@ -588,7 +576,7 @@ corevm::runtime::instr_handler_delattr::execute(
   }
 
   corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
-  auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+  auto &attr_obj = process.get_dyobj(attr_id);
   attr_obj.manager().on_delattr();
   obj.delattr(attr_key);
 
@@ -655,7 +643,7 @@ corevm::runtime::instr_handler_delobj::execute(
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::dyobj::dyobj_id id = frame.pop_visible_var(key);
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
@@ -675,7 +663,7 @@ corevm::runtime::instr_handler_delobj2::execute(
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::dyobj::dyobj_id id = frame.pop_invisible_var(key);
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
@@ -693,7 +681,7 @@ corevm::runtime::instr_handler_gethndl::execute(
 {
   corevm::runtime::frame& frame = process.top_frame();
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
 
@@ -718,7 +706,7 @@ corevm::runtime::instr_handler_sethndl::execute(
   corevm::types::native_type_handle hndl = frame.pop_eval_stack();
 
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
 
@@ -730,7 +718,7 @@ corevm::runtime::instr_handler_sethndl::execute(
   }
   else
   {
-    process.get_ntvhndl(key) = hndl;
+    process.get_ntvhndl(key) = std::move(hndl);
   }
 }
 
@@ -741,7 +729,7 @@ corevm::runtime::instr_handler_clrhndl::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
 
@@ -763,8 +751,8 @@ corevm::runtime::instr_handler_cpyhndl::execute(
   corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
 
-  auto &src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_obj_id);
-  auto &target_obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_obj_id);
+  auto &src_obj = process.get_dyobj(src_obj_id);
+  auto &target_obj = process.get_dyobj(target_obj_id);
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
 
@@ -773,8 +761,8 @@ corevm::runtime::instr_handler_cpyhndl::execute(
     THROW(corevm::runtime::native_type_handle_deletion_error());
   }
 
-  corevm::types::native_type_handle hndl = process.get_ntvhndl(ntvhndl_key);
-  corevm::types::native_type_handle res = hndl;
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
+  corevm::types::native_type_handle res;
 
   uint32_t type = static_cast<uint32_t>(instr.oprd1);
 
@@ -868,8 +856,8 @@ corevm::runtime::instr_handler_cpyrepr::execute(
   corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
 
-  auto &src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_obj_id);
-  auto &target_obj = corevm::runtime::process::adapter(process).help_get_dyobj(target_obj_id);
+  auto &src_obj = process.get_dyobj(src_obj_id);
+  auto &target_obj = process.get_dyobj(target_obj_id);
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
 
@@ -926,7 +914,7 @@ corevm::runtime::instr_handler_setctx::execute(
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::runtime::closure_ctx frame_cls = frame.closure_ctx();
 
@@ -983,10 +971,10 @@ corevm::runtime::instr_handler_setattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id src_id = process.pop_stack();
-  auto& src_obj = corevm::runtime::process::adapter(process).help_get_dyobj(src_id);
+  auto& src_obj = process.get_dyobj(src_id);
 
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto& obj = process.get_dyobj(id);
 
   corevm::runtime::frame& frame = process.top_frame();
 
@@ -1021,15 +1009,12 @@ corevm::runtime::instr_handler_setattrs::execute(
 
     corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
-    auto &attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+    auto &attr_obj = process.get_dyobj(attr_id);
 
     if (should_clone)
     {
-      auto cloned_attr_id =
-        corevm::runtime::process::adapter(process).help_create_dyobj();
-
-      auto& cloned_attr_obj =
-        corevm::runtime::process::adapter(process).help_get_dyobj(cloned_attr_id);
+      auto cloned_attr_id = process.create_dyobj();
+      auto& cloned_attr_obj = process.get_dyobj(cloned_attr_id);
 
       cloned_attr_obj.copy_from(attr_obj);
       cloned_attr_obj.manager().on_setattr();
@@ -1065,7 +1050,7 @@ corevm::runtime::instr_handler_rsetattrs::execute(
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::dyobj::dyobj_id attr_id = process.top_stack();
-  auto& attr_obj = corevm::runtime::process::adapter(process).help_get_dyobj(attr_id);
+  auto& attr_obj = process.get_dyobj(attr_id);
 
   corevm::types::native_type_handle hndl = frame.pop_eval_stack();
   corevm::types::native_type_handle res;
@@ -1079,7 +1064,7 @@ corevm::runtime::instr_handler_rsetattrs::execute(
   {
     corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
-    auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+    auto &obj = process.get_dyobj(id);
     attr_obj.manager().on_setattr();
     obj.putattr(attr_key, attr_id);
   }
@@ -1134,7 +1119,7 @@ corevm::runtime::instr_handler_setflgc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
@@ -1155,7 +1140,7 @@ corevm::runtime::instr_handler_setfldel::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
@@ -1176,7 +1161,7 @@ corevm::runtime::instr_handler_setflcall::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
@@ -1197,7 +1182,7 @@ corevm::runtime::instr_handler_setflmute::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
@@ -1218,7 +1203,7 @@ corevm::runtime::instr_handler_pinvk::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto& obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto& obj = process.get_dyobj(id);
 
   if (obj.get_flag(corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE))
   {
@@ -1551,7 +1536,7 @@ corevm::runtime::instr_handler_putargs::execute(
 {
   corevm::runtime::invocation_ctx& invk_ctx = process.top_invocation_ctx();
   corevm::dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
@@ -1577,7 +1562,7 @@ corevm::runtime::instr_handler_putkwargs::execute(
 {
   corevm::runtime::invocation_ctx& invk_ctx = process.top_invocation_ctx();
   corevm::dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
@@ -1697,7 +1682,7 @@ corevm::runtime::instr_handler_print::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto &obj = process.get_dyobj(id);
 
   corevm::dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
 
@@ -1715,7 +1700,7 @@ corevm::runtime::instr_handler_print::execute(
 
   const std::string& str = static_cast<std::string>(native_str);
 
-  std::cout << str << std::endl;
+  puts(str.c_str());
 }
 
 // -----------------------------------------------------------------------------

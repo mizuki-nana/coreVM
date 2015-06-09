@@ -99,17 +99,17 @@ private:
 // -----------------------------------------------------------------------------
 
 corevm::dyobj::dyobj_id
-corevm::runtime::process::adapter::help_create_dyobj()
+corevm::runtime::process::create_dyobj()
 {
-  return m_process.m_dynamic_object_heap.create_dyobj();
+  return m_dynamic_object_heap.create_dyobj();
 }
 
 // -----------------------------------------------------------------------------
 
 corevm::runtime::process::dynamic_object_type&
-corevm::runtime::process::adapter::help_get_dyobj(corevm::dyobj::dyobj_id id)
+corevm::runtime::process::get_dyobj(corevm::dyobj::dyobj_id id)
 {
-  return m_process.m_dynamic_object_heap.at(id);
+  return m_dynamic_object_heap.at(id);
 }
 
 // -----------------------------------------------------------------------------
@@ -195,13 +195,11 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   std::list<corevm::dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
   std::list<corevm::dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
 
-  corevm::runtime::process::adapter adapter(*this);
-
   std::for_each(
     visible_objs.begin(),
     visible_objs.end(),
-    [&adapter](corevm::dyobj::dyobj_id id) {
-      auto &obj = adapter.help_get_dyobj(id);
+    [this](corevm::dyobj::dyobj_id id) {
+      auto &obj = this->get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -209,8 +207,8 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
   std::for_each(
     invisible_objs.begin(),
     invisible_objs.end(),
-    [&adapter](corevm::dyobj::dyobj_id id) {
-      auto &obj = adapter.help_get_dyobj(id);
+    [this](corevm::dyobj::dyobj_id id) {
+      auto &obj = this->get_dyobj(id);
       obj.manager().on_exit();
     }
   );
@@ -232,8 +230,25 @@ corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_err
 // -----------------------------------------------------------------------------
 
 void
+corevm::runtime::process::check_call_stack_capacity()
+{
+  size_t current_size = m_call_stack.size();
+  if (current_size == m_call_stack.capacity())
+  {
+    size_t new_size = current_size << 1;
+    if (new_size > current_size)
+    {
+      m_call_stack.reserve(new_size);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
 corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 {
+  check_call_stack_capacity();
   m_call_stack.push_back(frame);
 }
 
@@ -246,6 +261,7 @@ corevm::runtime::process::emplace_frame(
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
+  check_call_stack_capacity();
   m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
 }
 
@@ -287,8 +303,25 @@ corevm::runtime::process::top_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 void
+corevm::runtime::process::check_invk_ctx_stack_capacity()
+{
+  size_t current_size = m_invocation_ctx_stack.size();
+  if (current_size == m_invocation_ctx_stack.capacity())
+  {
+    size_t new_size = current_size << 1;
+    if (new_size > current_size)
+    {
+      m_invocation_ctx_stack.reserve(new_size);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
 corevm::runtime::process::push_invocation_ctx(const invocation_ctx& invk_ctx)
 {
+  check_invk_ctx_stack_capacity();
   m_invocation_ctx_stack.push_back(invk_ctx);
 }
 
@@ -302,6 +335,7 @@ corevm::runtime::process::emplace_invocation_ctx(
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
+  check_invk_ctx_stack_capacity();
   m_invocation_ctx_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
 }
 
@@ -338,6 +372,15 @@ corevm::runtime::process::top_stack()
 void
 corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 {
+  size_t current_size = m_dyobj_stack.size();
+  if (current_size == m_dyobj_stack.capacity())
+  {
+    size_t new_size = current_size << 1;
+    if (new_size > current_size)
+    {
+      m_dyobj_stack.reserve(new_size);
+    }
+  }
   m_dyobj_stack.push_back(id);
 }
 
@@ -368,18 +411,9 @@ corevm::runtime::process::swap_stack()
       "Cannot swap top of object stack"));
   }
 
-  auto itr = m_dyobj_stack.begin();
-  auto itr2 = m_dyobj_stack.begin();
-
-  std::advance(itr, m_dyobj_stack.size() - 2);
-  std::advance(itr2, m_dyobj_stack.size() - 1);
-
-#if __DEBUG__
-  ASSERT(itr != m_dyobj_stack.end());
-  ASSERT(itr2 != m_dyobj_stack.end());
-#endif
-
-  std::swap(*itr, *itr2);
+  auto& a = m_dyobj_stack[m_dyobj_stack.size() - 1];
+  auto& b = m_dyobj_stack[m_dyobj_stack.size() - 2];
+  std::swap(a, b);
 }
 
 // -----------------------------------------------------------------------------
@@ -537,6 +571,8 @@ corevm::runtime::process::pre_start()
     emplace_invocation_ctx(ctx, compartment, closure);
 
     m_pc = 0;
+
+    m_dyobj_stack.reserve(100);
   }
 
   return res;
@@ -558,7 +594,7 @@ corevm::runtime::process::start()
 
     const corevm::runtime::instr& instr = m_instrs[m_pc];
 
-    auto handler = corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
+    auto& handler = corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
 
     handler->execute(instr, *this);
 

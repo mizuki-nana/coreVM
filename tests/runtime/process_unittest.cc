@@ -559,8 +559,8 @@ TEST_F(process_unittest, TestOutputStream)
 
   process.insert_compartment(compartment2);
 
-  auto id = corevm::runtime::process::adapter(process).help_create_dyobj();
-  auto &obj = corevm::runtime::process::adapter(process).help_get_dyobj(id);
+  auto id = process.create_dyobj();
+  auto &obj = (process).get_dyobj(id);
   obj.set_ntvhndl_key(1);
   obj.set_closure_ctx(
     corevm::runtime::closure_ctx {

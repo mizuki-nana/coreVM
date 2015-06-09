@@ -217,6 +217,8 @@ public:
       friend class corevm::memory::object_container<T, AllocatorType>;
   };
 
+  object_container();
+
   explicit object_container(uint64_t);
 
   /* Object containers should not be copyable. */
@@ -257,6 +259,16 @@ private:
   AllocatorType m_allocator;
   _HashSet m_addrs;
 };
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+corevm::memory::object_container<T, AllocatorType>::object_container()
+  :
+  m_allocator()
+{
+  // Do nothing here.
+}
 
 // -----------------------------------------------------------------------------
 

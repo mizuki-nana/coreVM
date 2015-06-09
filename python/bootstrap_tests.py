@@ -73,8 +73,11 @@ def run(options):
     for path in real_inputs:
         info = path
 
-        retcode = StdoutComparator(
-            pyta_cmdl_args(path, options), python_cmdl_args(path)).run()
+        lhs_args = python_cmdl_args(path) \
+            if options.python_only else pyta_cmdl_args(path, options)
+        rhs_args = python_cmdl_args(path)
+
+        retcode = StdoutComparator(lhs_args, rhs_args).run()
 
         if retcode == 0:
             info += (colors.OKGREEN + ' [SUCCESS]' + colors.ENDC)
@@ -97,6 +100,15 @@ def main():
         dest='format',
         default='binary',
         help='Bytecode format (binary or text)'
+    )
+
+    parser.add_option(
+        '-p',
+        '--python-only',
+        action='store_true',
+        dest='python_only',
+        default=False,
+        help='Run Python only'
     )
 
     options, _ = parser.parse_args()

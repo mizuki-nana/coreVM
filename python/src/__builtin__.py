@@ -68,6 +68,23 @@ def __call_cls(caller, *arg):
 
 ## -----------------------------------------------------------------------------
 
+def __call_cls_builtin(cls, obj):
+    # Creates an object of builtin type by setting class properties directly
+    # on the raw object (boxing it).
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [ldobj, cls, 0]
+    [setattr, __class__, 0]
+    [ldobj, cls, 0]
+    [setattrs, 1, 1]
+    [rsetattrs, im_self, 0]
+    ### END VECTOR ###
+    """
+    return obj
+
+## -----------------------------------------------------------------------------
+
 def __call_method(caller, *arg):
     return caller(caller.im_self, *arg)
 

@@ -41,7 +41,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <climits>
 #include <cstdint>
-#include <list>
 #include <ostream>
 #include <type_traits>
 #include <unordered_map>
@@ -77,24 +76,6 @@ public:
   using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
   typedef corevm::runtime::native_types_pool native_types_pool_type;
 
-  class adapter
-  {
-    public:
-      explicit adapter(corevm::runtime::process& process):
-        m_process(process)
-      {
-      }
-
-      corevm::dyobj::dyobj_id help_create_dyobj();
-
-      dynamic_object_type& help_get_dyobj(corevm::dyobj::dyobj_id id);
-
-    private:
-      corevm::runtime::process& m_process;
-  };
-
-  friend class adapter;
-
 public:
   process();
   explicit process(uint64_t, uint64_t);
@@ -103,6 +84,10 @@ public:
   /* Processes should not be copyable. */
   process(const process&) = delete;
   process& operator=(const process&) = delete;
+
+  corevm::dyobj::dyobj_id create_dyobj();
+
+  dynamic_object_type& get_dyobj(corevm::dyobj::dyobj_id id);
 
   uint64_t call_stack_size() const;
 
@@ -241,14 +226,18 @@ private:
 
   bool should_gc() const;
 
+  void check_call_stack_capacity();
+
+  void check_invk_ctx_stack_capacity();
+
   bool m_pause_exec;
   uint8_t m_gc_flag;
   corevm::runtime::instr_addr m_pc;
   corevm::runtime::vector m_instrs;
   corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
-  std::list<corevm::dyobj::dyobj_id> m_dyobj_stack;
-  std::list<corevm::runtime::frame> m_call_stack;
-  std::list<invocation_ctx> m_invocation_ctx_stack;
+  std::vector<corevm::dyobj::dyobj_id> m_dyobj_stack;
+  std::vector<corevm::runtime::frame> m_call_stack;
+  std::vector<invocation_ctx> m_invocation_ctx_stack;
   native_types_pool_type m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
   std::vector<corevm::runtime::compartment> m_compartments;

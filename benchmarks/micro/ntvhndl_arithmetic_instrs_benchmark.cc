@@ -63,19 +63,15 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
 
   instr_benchmarks_fixture fixture;
 
-  // TODO: Investigate state pause/resume timing affects benchmark timing result.
-  while (state.KeepRunning())
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
-      state.PauseTiming();
       fixture.process().top_frame().push_eval_stack(oprd1);
       fixture.process().top_frame().push_eval_stack(oprd2);
-      state.ResumeTiming();
+  }
 
+  while (state.KeepRunning())
+  {
       handler.execute(instr, fixture.process());
-
-      state.PauseTiming();
-      fixture.process().top_frame().pop_eval_stack();
-      state.ResumeTiming();
   }
 }
 

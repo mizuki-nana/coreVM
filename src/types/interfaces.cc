@@ -33,9 +33,7 @@ template<typename native_type_visitor_type>
 inline void __interface_apply_unary_operator(
   native_type_handle& operand, native_type_handle& result)
 {
-  native_type_handle _result;
-  _result = corevm::types::apply_unary_visitor<native_type_visitor_type>(operand);
-  result = _result;
+  result = corevm::types::apply_unary_visitor<native_type_visitor_type>(operand);
 }
 
 // -----------------------------------------------------------------------------
@@ -104,9 +102,7 @@ template<typename native_type_visitor_type>
 inline void __interface_apply_binary_operator(
   native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result)
 {
-  native_type_handle _result;
-  _result = corevm::types::apply_binary_visitor<native_type_visitor_type>(lhs, rhs);
-  result = _result;
+  result = corevm::types::apply_binary_visitor<native_type_visitor_type>(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------

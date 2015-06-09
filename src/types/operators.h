@@ -27,10 +27,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types.h"
 #include "corevm/macros.h"
 
+#include <boost/lexical_cast.hpp>
+
 #include <cmath>
+#include <cstdio>
 #include <functional>
 #include <ios>
-#include <sstream>
 
 
 namespace corevm {
@@ -227,16 +229,55 @@ public:
   template<typename R, typename T>
   typename corevm::types::string::value_type operator()(const T& handle)
   {
-    // TODO: The current precision is not always accurate.
-    std::stringstream ss;
-    ss << std::fixed << handle.value;
-
-    typename corevm::types::string::value_type value =
-      static_cast<typename corevm::types::string::value_type>(ss.str());
-
-    return value;
+    // NOTES:
+    //  (1) The curent approach has precision and accuracy issues.
+    //  (2) Using `boost::lexical_cast` has ~ 3x performance gain over
+    //      using `std::stringstream`, obeserved in micro benchmark.
+    //
+    // Benchmarks for `boost::lexical_cast` vs. `std::stringstream` vs. `sprintf`:
+    // http://www.boost.org/doc/libs/1_58_0/doc/html/boost_lexical_cast/performance.html
+    //
+    // TODO: consider using `sprintf` here.
+    return boost::lexical_cast<corevm::types::string::value_type>(handle.value);
   }
 };
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::repr::operator()<corevm::types::decimal>(
+  const corevm::types::decimal& handle)
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%0.6f", handle.value);
+  return std::move(corevm::types::string::value_type(buf));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::repr::operator()<corevm::types::decimal2>(
+  const corevm::types::decimal2& handle)
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%0.6f", handle.value);
+  return std::move(corevm::types::string::value_type(buf));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::repr::operator()<corevm::types::string>(
+  const corevm::types::string& handle)
+{
+  return handle.value;
+}
 
 // -----------------------------------------------------------------------------
 
