@@ -53,7 +53,14 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
 {
   corevm::runtime::compartment compartment(DUMMY_PATH);
 
-  corevm::runtime::vector vector;
+  // Please note that setting this vector too long can cause runtime errors
+  // in certain benchmarks.
+  corevm::runtime::vector vector {
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+  };
 
   corevm::runtime::closure closure {
     .id = 0,
@@ -66,6 +73,7 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
 
   auto compartment_id = m_process.insert_compartment(compartment);
 
+  // TODO: consolidate this code with `process::pre_start()`.
   corevm::runtime::closure_ctx ctx {
     .compartment_id = compartment_id,
     .closure_id = closure.id
@@ -77,6 +85,10 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
 
   m_process.emplace_frame(ctx, compartment_ptr, &closure_table.front());
   m_process.emplace_invocation_ctx(ctx, compartment_ptr, &closure_table.front());
+
+  m_process.insert_vector(vector);
+
+  m_process.set_pc(0);
 }
 
 // -----------------------------------------------------------------------------
