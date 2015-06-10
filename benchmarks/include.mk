@@ -36,3 +36,4 @@ BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_arithmetic_instrs
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_creation_instrs_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_conversion_instrs_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_manipulation_instrs_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_string_instrs_benchmark.cc
