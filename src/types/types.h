@@ -67,7 +67,7 @@ class int8 : public native_type_wrapper
 public:
   typedef int8_t value_type;
 
-  int8() : value(0) {}
+  int8() noexcept : value(0) {}
   int8(value_type value) : value(value) {}
 
   value_type value;
@@ -80,7 +80,7 @@ class uint8 : public native_type_wrapper
 public:
   typedef uint8_t value_type;
 
-  uint8() : value(0) {}
+  uint8() noexcept : value(0) {}
   uint8(value_type value) : value(value) {}
 
   value_type value;
@@ -93,7 +93,7 @@ class int16 : public native_type_wrapper
 public:
   typedef int16_t value_type;
 
-  int16() : value(0) {}
+  int16() noexcept : value(0) {}
   int16(value_type value) : value(value) {}
 
   value_type value;
@@ -106,7 +106,7 @@ class uint16 : public native_type_wrapper
 public:
   typedef uint16_t value_type;
 
-  uint16() : value(0) {}
+  uint16() noexcept : value(0) {}
   uint16(value_type value) : value(value) {}
 
   value_type value;
@@ -119,7 +119,7 @@ class int32 : public native_type_wrapper
 public:
   typedef int32_t value_type;
 
-  int32() : value(0) {}
+  int32() noexcept : value(0) {}
   int32(value_type value) : value(value) {}
 
   value_type value;
@@ -132,7 +132,7 @@ class uint32 : public native_type_wrapper
 public:
   typedef uint32_t value_type;
 
-  uint32() : value(0) {}
+  uint32() noexcept : value(0) {}
   uint32(value_type value) : value(value) {}
 
   value_type value;
@@ -145,7 +145,7 @@ class int64 : public native_type_wrapper
 public:
   typedef int64_t value_type;
 
-  int64() : value(0) {}
+  int64() noexcept : value(0) {}
   int64(value_type value) : value(value) {}
 
   value_type value;
@@ -158,7 +158,7 @@ class uint64 : public native_type_wrapper
 public:
   typedef uint64_t value_type;
 
-  uint64() : value(0) {}
+  uint64() noexcept : value(0) {}
   uint64(value_type value) : value(value) {}
 
   value_type value;
@@ -171,7 +171,7 @@ class boolean : public native_type_wrapper
 public:
   typedef bool value_type;
 
-  boolean() : value(true) {}
+  boolean() noexcept : value(true) {}
   boolean(value_type value) : value(value) {}
 
   value_type value;
@@ -184,7 +184,7 @@ class decimal : public native_type_wrapper
 public:
   typedef float value_type;
 
-  decimal() : value(static_cast<value_type>(0.0)) {}
+  decimal() noexcept : value(static_cast<value_type>(0.0)) {}
   decimal(value_type value) : value(value) {}
 
   value_type value;
@@ -197,7 +197,7 @@ class decimal2 : public native_type_wrapper
 public:
   typedef double value_type;
 
-  decimal2() : value(static_cast<value_type>(0.0)) {}
+  decimal2() noexcept : value(static_cast<value_type>(0.0)) {}
   decimal2(value_type value) : value(value) {}
 
   value_type value;
@@ -210,7 +210,7 @@ class string : public native_type_wrapper
 public:
   typedef corevm::types::native_string value_type;
 
-  string() {}
+  string() noexcept {}
   string(value_type value) : value(value) {}
 
   value_type value;
@@ -223,7 +223,7 @@ class array : public native_type_wrapper
 public:
   typedef corevm::types::native_array value_type;
 
-  array() {}
+  array() noexcept {}
   array(value_type value) : value(value) {}
 
   value_type value;
@@ -236,7 +236,7 @@ class map : public native_type_wrapper
 public:
   typedef corevm::types::native_map value_type;
 
-  map() {}
+  map() noexcept {}
   map(value_type value) : value(value) {}
 
   value_type value;
