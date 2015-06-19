@@ -223,6 +223,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.dyobj_flag_str_to_value_map = info_json[DYOBJ_FLAG_STR_TO_VALUE_MAP]
 
         # encoding map
+        # NOTE: The encoding map will be flattened out into an array,
+        # where the ids will simply be indicies. Therefore the starting
+        # value has to be zero.
         self.encoding_id = 0
         self.encoding_map = dict()
 
@@ -255,6 +258,15 @@ class BytecodeGenerator(ast.NodeVisitor):
             raise Exception('Invalid bytecode formats' % format)
 
     def finalize_text(self):
+        """Finalize textual format encoding."""
+
+        # Flatten encoding map into array.
+        flipped_encoding_map = dict(
+            (value, key) for key, value in self.encoding_map.iteritems())
+
+        if flipped_encoding_map:
+            assert flipped_encoding_map.keys()[0] == 0
+
         structured_bytecode = {
             'format': self.format,
             'format-version': self.format_version,
@@ -264,11 +276,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             'encoding': self.encoding,
             'author': self.author,
             'encoding_map': [
-                {
-                    'key': key,
-                    'value': value
-                }
-                for key, value in self.encoding_map.iteritems()
+                flipped_encoding_map[key]
+                for key in sorted(flipped_encoding_map)
             ],
             '__MAIN__': [
                 closure.to_json() for closure in self.closure_map.itervalues()
@@ -283,8 +292,17 @@ class BytecodeGenerator(ast.NodeVisitor):
             fd.write(simplejson.dumps(structured_bytecode))
 
     def finalize_binary(self):
+        """Finalize binary format encoding."""
+
         with open(COREVM_BYTECODE_SCHEMA, 'r') as schema_file:
             bytecode_schema = avro.schema.parse(schema_file.read())
+
+        # Flatten encoding map into array.
+        flipped_encoding_map = dict(
+            (value, key) for key, value in self.encoding_map.iteritems())
+
+        if flipped_encoding_map:
+            assert flipped_encoding_map.keys()[0] == 0
 
         structured_bytecode = {
             'format': self.format,
@@ -295,11 +313,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             'encoding': self.encoding,
             'author': self.author,
             'encoding_map': [
-                {
-                    'key': key,
-                    'value': value
-                }
-                for key, value in self.encoding_map.iteritems()
+                flipped_encoding_map[key]
+                for key in sorted(flipped_encoding_map)
             ],
             '__MAIN__': [
                 closure.to_json(binary=True)
@@ -340,8 +355,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def __get_encoding_id(self, name):
         if name not in self.encoding_map:
-            self.encoding_id += 1
             self.encoding_map[name] = self.encoding_id
+            self.encoding_id += 1
 
         return self.encoding_map[name]
 
@@ -357,12 +372,20 @@ class BytecodeGenerator(ast.NodeVisitor):
         INSTRS_NEED_ENCODING_ID = (
             'ldobj',
             'stobj',
+            'cldobj',
+            'gethndl2',
             'setattr',
             'getattr',
             'putkwarg',
             'rsetattrs',
+            'setattrs2',
             'str'
         )
+
+        INSTRS_NEED_ENCODING_ID_2 = (
+            'cldobj'
+        )
+
         raw_code, raw_oprd1, raw_oprd2 = raw_instr
 
         raw_code = raw_code.strip()
@@ -375,7 +398,11 @@ class BytecodeGenerator(ast.NodeVisitor):
             oprd1 = self.__get_encoding_id(raw_oprd1)
         else:
             oprd1 = int(raw_oprd1)
-        oprd2 = int(raw_oprd2)
+
+        if raw_code in INSTRS_NEED_ENCODING_ID_2:
+            oprd2 = self.__get_encoding_id(raw_oprd2)
+        else:
+            oprd2 = int(raw_oprd2)
 
         return code, oprd1, oprd2
 
@@ -427,9 +454,6 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_class_name = self.current_class_name + '::' + node.name
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
-        self.__add_instr('setctx', 0, 0)
-        self.__add_instr('map', 0, 0)
-        self.__add_instr('sethndl', 0, 0)
         self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
@@ -438,13 +462,14 @@ class BytecodeGenerator(ast.NodeVisitor):
         for stmt in node.body:
             # TODO|NOTE: currently only supports functions.
             if isinstance(stmt, ast.FunctionDef):
-                self.__add_instr('gethndl', 0, 0)
+                tmp_name = self.__get_random_name()
                 self.visit(stmt)
                 self.__add_instr('ldobj', self.__get_encoding_id('MethodType'), 0)
                 self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
-                self.__add_instr('mapset', self.__get_encoding_id(stmt.name), 0)
+                self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
+                self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+                self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
-                self.__add_instr('sethndl', 0, 0)
             elif isinstance(stmt, ast.ClassDef):
                 tmp_name = self.__get_random_name()
                 self.visit(stmt)
@@ -562,8 +587,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         # Test expr.
         self.visit(node.test)
 
-        self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('truthy', 0, 0)
+        self.__add_instr('istruthy', 0, 0)
         self.__add_instr('lnot', 0, 0)
         self.__add_instr('jmpif', 0, 0)
 
@@ -607,8 +631,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_If(self, node):
         self.visit(node.test)
-        self.__add_instr('gethndl', 0, 0, loc=Loc.from_node(node))
-        self.__add_instr('truthy', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('istruthy', 0, 0, loc=Loc.from_node(node))
         self.__add_instr('lnot', 0, 0, loc=Loc.from_node(node))
 
         # Add `jmpif` here.
@@ -886,8 +909,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_IfExp(self, node):
         self.visit(node.test)
 
-        self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('truthy', 0, 0)
+        self.__add_instr('istruthy', 0, 0)
         self.__add_instr('jmpif', 0, 0)
 
         vector_length1 = len(self.__current_vector())

@@ -46,6 +46,7 @@ corevm::runtime::frame::frame(
   m_exc_obj(0)
 {
   // Do nothing here.
+  m_eval_stack.reserve(100);
 }
 
 // -----------------------------------------------------------------------------
@@ -66,6 +67,7 @@ corevm::runtime::frame::frame(
   m_exc_obj(0)
 {
   // Do nothing here.
+  m_eval_stack.reserve(100);
 }
 
 // -----------------------------------------------------------------------------
@@ -105,11 +107,19 @@ void
 corevm::runtime::frame::push_eval_stack(
   corevm::types::native_type_handle& operand)
 {
-  m_eval_stack.push(operand);
+  m_eval_stack.push_back(operand);
 }
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::frame::push_eval_stack(
+  corevm::types::native_type_handle&& operand)
+{
+  m_eval_stack.push_back(operand);
+}
+
+// -----------------------------------------------------------------------------
 corevm::types::native_type_handle
 corevm::runtime::frame::pop_eval_stack()
   throw(corevm::runtime::evaluation_stack_empty_error)
@@ -119,8 +129,8 @@ corevm::runtime::frame::pop_eval_stack()
     THROW(corevm::runtime::evaluation_stack_empty_error());
   }
 
-  corevm::types::native_type_handle operand = m_eval_stack.top();
-  m_eval_stack.pop();
+  corevm::types::native_type_handle operand = m_eval_stack.back();
+  m_eval_stack.pop_back();
   return operand;
 }
 
@@ -135,7 +145,7 @@ corevm::runtime::frame::top_eval_stack()
     THROW(corevm::runtime::evaluation_stack_empty_error());
   }
 
-  return m_eval_stack.top();
+  return m_eval_stack.back();
 }
 
 // -----------------------------------------------------------------------------

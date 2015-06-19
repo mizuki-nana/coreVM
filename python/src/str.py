@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
+## -----------------------------------------------------------------------------
+
 class str(object):
 
     def __init__(self, value):
@@ -35,17 +38,17 @@ class str(object):
         return self
 
     def __repr__(self):
+        CONST_STR_SINGLE_QUOTE = __call_cls_builtin(str, "'")
         res = __call_cls_builtin(str, '')
-        __call_method(res.__add__, __call_cls_builtin(str, "'"))
-        __call_method(res.__add__, self)
-        __call_method(res.__add__, __call_cls_builtin(str, "'"))
+        __call_method_1(res.__add__, CONST_STR_SINGLE_QUOTE)
+        __call_method_1(res.__add__, self)
+        __call_method_1(res.__add__, CONST_STR_SINGLE_QUOTE)
         return res
 
     def __hash__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [hash, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -59,11 +62,8 @@ class str(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [gethndl, 0, 0]
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
+        [gethndl2, other, 0]
         [strapd, 0, 0]
-        [pop, 0, 0]
         [sethndl, 0, 0]
-        [rtrn, 0, 0]
         ### END VECTOR ###
         """

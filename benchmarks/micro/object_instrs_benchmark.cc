@@ -48,7 +48,7 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 static
 void set_encoding_pair(
   corevm::runtime::process& process,
-  corevm::runtime::encoding_key key, const std::string& val)
+  const corevm::runtime::encoding_map& encoding_map)
 {
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::compartment* compartment = nullptr;
@@ -56,7 +56,6 @@ void set_encoding_pair(
 
   assert(compartment);
 
-  corevm::runtime::encoding_map encoding_map { { key, val } };
   compartment->set_encoding_map(encoding_map);
 }
 
@@ -151,11 +150,11 @@ static
 void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
 {
   const std::string attr_str = "hello_world";
-  auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
+  auto encoding_key = 0;
 
   corevm::runtime::instr instr {
     .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(attr_key),
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(encoding_key),
     .oprd2=0
   };
 
@@ -163,12 +162,14 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
 
   instr_benchmarks_fixture fixture;
 
-  set_encoding_pair(fixture.process(), attr_key, attr_str);
+  corevm::runtime::encoding_map encoding_map { attr_str };
+  set_encoding_pair(fixture.process(), encoding_map);
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
 
+  auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
   obj.putattr(attr_key, id2);
 
   while (state.KeepRunning())
@@ -185,7 +186,7 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::State& state)
 {
-  auto attr_key = 1;
+  auto attr_key = 0;
   corevm::runtime::instr instr {
     .code=0,
     .oprd1=static_cast<corevm::runtime::instr_oprd>(attr_key),
@@ -197,7 +198,9 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::St
   instr_benchmarks_fixture fixture;
 
   const std::string attr_str = "hello_world";
-  set_encoding_pair(fixture.process(), attr_key, attr_str);
+
+  corevm::runtime::encoding_map encoding_map { attr_str };
+  set_encoding_pair(fixture.process(), encoding_map);
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -421,14 +424,19 @@ void
 BenchmarkRSETATTRSInstr(benchmark::State& state)
 {
   const std::string attr_str = "hello_world";
-  auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
+  auto attr_key = 0;
 
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_key, .oprd2=0 };
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(attr_key),
+    .oprd2=0
+  };
   corevm::runtime::instr_handler_rsetattrs handler;
 
   instr_benchmarks_fixture fixture;
 
-  set_encoding_pair(fixture.process(), attr_key, attr_str);
+  corevm::runtime::encoding_map encoding_map { attr_str };
+  set_encoding_pair(fixture.process(), encoding_map);
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -451,6 +459,71 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void
+BenchmarkSETATTRS2Instr(benchmark::State& state)
+{
+  const std::string attr_str = "hello_world";
+  auto attr_key = 0;
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(attr_key),
+    .oprd2=0
+  };
+  corevm::runtime::instr_handler_setattrs2 handler;
+
+  instr_benchmarks_fixture fixture;
+
+  auto id = fixture.process().create_dyobj();
+  auto id2 = fixture.process().create_dyobj();
+
+  auto& obj = fixture.process().get_dyobj(id);
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = 0,
+    .closure_id = 0
+  };
+
+  obj.set_closure_ctx(ctx);
+
+  auto attr_obj_id1 = fixture.process().create_dyobj();
+  auto attr_obj_id2 = fixture.process().create_dyobj();
+  auto attr_obj_id3 = fixture.process().create_dyobj();
+
+  auto attr_key1 = 1;
+  auto attr_key2 = 2;
+  auto attr_key3 = 3;
+
+  const std::string attr_str1 = "attr1";
+  const std::string attr_str2 = "attr2";
+  const std::string attr_str3 = "attr3";
+
+  corevm::runtime::encoding_map encoding_map {
+    attr_str,
+    attr_str1,
+    attr_str2,
+    attr_str3,
+  };
+
+  set_encoding_pair(fixture.process(), encoding_map);
+
+  obj.putattr(attr_key1, attr_obj_id1);
+  obj.putattr(attr_key2, attr_obj_id2);
+  obj.putattr(attr_key3, attr_obj_id3);
+
+  fixture.process().push_stack(id2);
+
+  for (size_t i = 0; i < state.max_iterations; ++i)
+  {
+    fixture.process().push_stack(id);
+  }
+
+  STATE_RUN_LOOP();
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrs, corevm::runtime::instr_handler_new);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope, corevm::runtime::instr_handler_ldobj);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_stobj);
@@ -466,6 +539,7 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::i
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_sethndl);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_cpyhndl);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_cpyrepr);
+BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_istruthy);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration, corevm::runtime::instr_handler_clrhndl);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_objeq);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_objneq);
@@ -473,6 +547,7 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::i
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope, corevm::runtime::instr_handler_cldobj);
 BENCHMARK(BenchmarkSETATTRSInstr);
 BENCHMARK(BenchmarkRSETATTRSInstr);
+BENCHMARK(BenchmarkSETATTRS2Instr);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_putobj);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_getobj);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_swap);

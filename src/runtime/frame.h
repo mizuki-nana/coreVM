@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <list>
-#include <stack>
+#include <vector>
 
 
 namespace corevm {
@@ -72,6 +72,8 @@ public:
   void set_return_addr(const corevm::runtime::instr_addr);
 
   void push_eval_stack(corevm::types::native_type_handle&);
+
+  void push_eval_stack(corevm::types::native_type_handle&&);
 
   corevm::types::native_type_handle pop_eval_stack()
     throw(corevm::runtime::evaluation_stack_empty_error);
@@ -122,7 +124,7 @@ protected:
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;
-  std::stack<corevm::types::native_type_handle> m_eval_stack;
+  std::vector<corevm::types::native_type_handle> m_eval_stack;
   corevm::dyobj::dyobj_id m_exc_obj;
 };
 

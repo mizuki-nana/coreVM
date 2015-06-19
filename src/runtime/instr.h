@@ -132,6 +132,13 @@ enum instr_enum : uint32_t
   SETHNDL,
 
   /**
+   * <gethndl2, key, _>
+   * Copies of the native type handle of the named object in the current frame,
+   * and pushes it on top of the eval stack.
+   */
+  GETHNDL2,
+
+  /**
    * <clrhndl, _, _>
    * Clears the native handle from the top object of the stack.
    */
@@ -169,6 +176,13 @@ enum instr_enum : uint32_t
    * on top of the stack onto the next object onto the stack.
    */
   CPYREPR,
+
+  /*
+   * <istruthy, _, _>
+   * Computes the truthy value of the native type handle associated with the
+   * object on top of the stack, and push the result on top of the eval stack.
+   */
+  ISTRUTHY,
 
   /**
    * <objeq, _, _>
@@ -219,6 +233,15 @@ enum instr_enum : uint32_t
    * on top of the eval stack.
    */
   RSETATTRS,
+
+  /**
+   * <setattrs2, attr, _>
+   * Pops off the object on top of the stack, and set copies of all of its
+   * attributes onto the next on the stack. For each of the copied objects,
+   * set the second object on the stack as an attribute using the first operand
+   * as the attribute key.
+   */
+  SETATTRS2,
 
   /**
    * <putobj, _, _>
@@ -1280,6 +1303,14 @@ public:
 
 // -----------------------------------------------------------------------------
 
+class instr_handler_gethndl2 : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
 class instr_handler_clrhndl : public instr_handler
 {
 public:
@@ -1297,6 +1328,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_cpyrepr : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_istruthy : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
@@ -1345,6 +1384,14 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_rsetattrs : public instr_handler
+{
+public:
+  virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_setattrs2 : public instr_handler
 {
 public:
   virtual void execute(const corevm::runtime::instr&, corevm::runtime::process&);

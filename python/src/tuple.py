@@ -20,6 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+## -----------------------------------------------------------------------------
+
+CONST_STR_COMMA = __call_cls_builtin(str, ', ')
+CONST_STR_OPEN_PAREN  = __call_cls_builtin(str, '(')
+CONST_STR_CLOSE_PAREN  = __call_cls_builtin(str, ')')
+CONST_INT_1 = __call_cls_builtin(int, 1)
+
+## -----------------------------------------------------------------------------
+
 class tuple(object):
 
     def __init__(self, arg):
@@ -34,8 +43,7 @@ class tuple(object):
     def __len__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [arylen, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -47,10 +55,8 @@ class tuple(object):
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
+        [gethndl2, other, 0]
         [arymrg, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -60,57 +66,55 @@ class tuple(object):
         return __call_cls_builtin(tuple, res_)
 
     def __str__(self):
-        size = __call_method(self.__len__)
-        top_index = __call_method(size.__sub__, 1)
+        size = __call_method_0(self.__len__)
+        top_index = __call_method_1(size.__sub__, 1)
         index = __call_cls_builtin(int, 0)
         res = __call_cls_builtin(str, '')
-        __call_method(res.__add__, __call_cls_builtin(str, '('))
+        __call_method_1(res.__add__, CONST_STR_OPEN_PAREN)
 
-        iterator_ = __call_method(self.__iter__)
+        iterator_ = __call_method_0(self.__iter__)
         try:
             while True:
-                item = __call_method(iterator_.next)
+                item = __call_method_0(iterator_.next)
 
-                __call_method(res.__add__, __call_method(item.__repr__)) # res += str(item)
+                __call_method_1(res.__add__, __call_method_0(item.__repr__)) # res += str(item)
 
-                if __call_method(index.__lt__, top_index):
-                    __call_method(res.__add__, __call_cls_builtin(str, ', '))
+                if __call_method_1(index.__lt__, top_index):
+                    __call_method_1(res.__add__, CONST_STR_COMMA)
 
-                __call_method(index.__iadd__, __call_cls_builtin(int, 1))
+                __call_method_1(index.__iadd__, CONST_INT_1)
         except StopIteration:
-            __call_method(res.__add__, __call_cls_builtin(str, ')'))
+            __call_method_1(res.__add__, CONST_STR_CLOSE_PAREN)
 
         return res
 
     def __repr__(self):
-        return __call_method(self.__str__)
+        return __call_method_0(self.__str__)
 
     def __hash__(self):
         res = __call_cls_builtin(int, 0)
 
-        iterator_ = __call_method(self.__iter__)
+        iterator_ = __call_method_0(self.__iter__)
         try:
             while True:
-                item = __call_method(iterator_.next)
-                __call_method(res.__iadd__, __call_method(item.__hash__))
+                item = __call_method_0(iterator_.next)
+                __call_method_1(res.__iadd__, __call_method_0(item.__hash__))
         except StopIteration:
             pass
 
         return res
 
     def __iter__(self):
-        return __call_cls(tupleiterator, self)
+        return __call_cls_1(tupleiterator, self)
 
     def __getitem__(self, i):
-        if __call_method(i.__gte__, __call_method(self.__len__)):
-            raise __call_cls(IndexError)
+        if __call_method_1(i.__gte__, __call_method_0(self.__len__)):
+            raise __call_cls_0(IndexError)
 
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [ldobj, i, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
+        [gethndl2, i, 0]
         [aryat, 0, 0]
         [getobj, 0, 0]
         [stobj, res, 0]
@@ -125,14 +129,14 @@ class tupleiterator(object):
     def __init__(self, iterable_):
         self.iterable = iterable_
         self.i = __call_cls_builtin(int, 0)
-        self.n = __call_method(iterable_.__len__)
+        self.n = __call_method_0(iterable_.__len__)
 
     def next(self):
-        if __call_method(self.i.__lt__, self.n):
-            res = __call_method(self.iterable.__getitem__, self.i)
-            __call_method(self.i.__iadd__, __call_cls_builtin(int, 1))
+        if __call_method_1(self.i.__lt__, self.n):
+            res = __call_method_1(self.iterable.__getitem__, self.i)
+            __call_method_1(self.i.__iadd__, CONST_INT_1)
             return res
         else:
-            raise __call_cls(StopIteration)
+            raise __call_cls_0(StopIteration)
 
 ## -----------------------------------------------------------------------------

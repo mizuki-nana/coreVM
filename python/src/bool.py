@@ -41,17 +41,13 @@ class bool(object):
         return __call_cls(int, self)
 
     def __repr__(self):
-        return __call_method(self.__str__)
+        return __call_method_0(self.__str__)
 
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [add, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -63,12 +59,8 @@ class bool(object):
     def __sub__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [sub, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -80,12 +72,8 @@ class bool(object):
     def __mul__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [mul, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -97,12 +85,8 @@ class bool(object):
     def __div__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [div, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -114,12 +98,8 @@ class bool(object):
     def __mod__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [mod, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -131,12 +111,8 @@ class bool(object):
     def __pow__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [pow, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -148,12 +124,8 @@ class bool(object):
     def __lshift__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [bls, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -165,12 +137,8 @@ class bool(object):
     def __rshift__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [brs, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -182,12 +150,8 @@ class bool(object):
     def __or__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [bor, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -199,12 +163,8 @@ class bool(object):
     def __xor__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [bxor, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -216,12 +176,8 @@ class bool(object):
     def __and__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [band, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -233,12 +189,8 @@ class bool(object):
     def __floordiv__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
+        [gethndl2, self, 0]
         [div, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -250,9 +202,7 @@ class bool(object):
     def __iadd__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [add, 0, 0]
@@ -263,9 +213,7 @@ class bool(object):
     def __isub__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [sub, 0, 0]
@@ -276,9 +224,7 @@ class bool(object):
     def __imul__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [mul, 0, 0]
@@ -289,9 +235,7 @@ class bool(object):
     def __idiv__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [div, 0, 0]
@@ -302,9 +246,7 @@ class bool(object):
     def __imod__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [mod, 0, 0]
@@ -315,9 +257,7 @@ class bool(object):
     def __ipow__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [pow, 0, 0]
@@ -328,9 +268,7 @@ class bool(object):
     def __ilshift__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [bls, 0, 0]
@@ -341,9 +279,7 @@ class bool(object):
     def __irshift__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [brs, 0, 0]
@@ -354,9 +290,7 @@ class bool(object):
     def __ior__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [bor, 0, 0]
@@ -367,9 +301,7 @@ class bool(object):
     def __ixor__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [bxor, 0, 0]
@@ -380,9 +312,7 @@ class bool(object):
     def __iand__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [band, 0, 0]
@@ -393,9 +323,7 @@ class bool(object):
     def __ifloordiv__(self, value):
         """
         ### BEGIN VECTOR ###
-        [ldobj, value, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, value, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
         [div, 0, 0]
@@ -406,8 +334,7 @@ class bool(object):
     def __invert__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [2int8, 0, 0]
         [bnot, 0, 0]
         [new, 0, 0]
@@ -420,8 +347,7 @@ class bool(object):
     def __not__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [lnot, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -433,8 +359,7 @@ class bool(object):
     def __pos__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [2int8, 0, 0]
         [pos, 0, 0]
         [new, 0, 0]
@@ -442,13 +367,12 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_1(int, res_)
 
     def __neg__(self):
         """
         ### BEGIN VECTOR ###
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [gethndl2, self, 0]
         [2int8, 0, 0]
         [neg, 0, 0]
         [new, 0, 0]
@@ -456,19 +380,15 @@ class bool(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls(int, res_)
+        return __call_cls_1(int, res_)
 
     # TODO: Equality methods can be placed under `object` once
     # dynamic dispatching is supported.
     def __eq__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [eq, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -480,12 +400,8 @@ class bool(object):
     def __ne__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [neq, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -497,12 +413,8 @@ class bool(object):
     def __lt__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [lt, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -514,12 +426,8 @@ class bool(object):
     def __lte__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [lte, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -531,12 +439,8 @@ class bool(object):
     def __gt__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [gt, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -548,12 +452,8 @@ class bool(object):
     def __gte__(self, other):
         """
         ### BEGIN VECTOR ###
-        [ldobj, other, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
-        [ldobj, self, 0]
-        [gethndl, 0, 0]
-        [pop, 0, 0]
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [gte, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]

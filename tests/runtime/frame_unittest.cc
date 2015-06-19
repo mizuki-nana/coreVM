@@ -92,6 +92,24 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(frame_unittest, TestMovePushAndPopEvalStack)
+{
+  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::types::native_type_handle handle = corevm::types::uint8(5);
+
+  frame.push_eval_stack(std::move(handle));
+  corevm::types::native_type_handle popped_handle = frame.pop_eval_stack();
+
+  ASSERT_THROW(
+    {
+      frame.pop_eval_stack();
+    },
+    corevm::runtime::evaluation_stack_empty_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(frame_unittest, TestVisibleVars)
 {
   corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);

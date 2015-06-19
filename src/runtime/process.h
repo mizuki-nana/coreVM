@@ -183,6 +183,9 @@ public:
   corevm::runtime::compartment_id insert_compartment(
     const corevm::runtime::compartment&);
 
+  corevm::runtime::compartment_id insert_compartment(
+    const corevm::runtime::compartment&&);
+
   void get_compartment(
     corevm::runtime::compartment_id, corevm::runtime::compartment**);
 

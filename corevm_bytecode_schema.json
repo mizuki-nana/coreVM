@@ -36,18 +36,7 @@
       "type": {
         "type": "array",
         "items":  {
-          "type": "record",
-          "name": "encoding_pair",
-          "fields": [
-            {
-              "name": "key",
-              "type": "string"
-            },
-            {
-              "name": "value",
-              "type": "long"
-            }
-          ]
+          "type": "string"
         }
       }
     },

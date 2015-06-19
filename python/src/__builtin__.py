@@ -34,15 +34,14 @@ class MethodType:
 
 class object:
 
-    def __new__(cls, *arg):
+    def __new__(cls):
         """
         ### BEGIN VECTOR ###
         [new, 0, 0]
         [ldobj, cls, 0]
-        [setattr, __class__, 0]
+        [setattrs2, im_self, 0]
         [ldobj, cls, 0]
-        [setattrs, 1, 1]
-        [rsetattrs, im_self, 0]
+        [setattr, __class__, 0]
         ### END VECTOR ###
         """
 
@@ -68,6 +67,34 @@ def __call_cls(caller, *arg):
 
 ## -----------------------------------------------------------------------------
 
+def __call_cls_0(caller):
+    obj = object.__new__(caller)
+    caller.__init__(obj)
+    return obj
+
+## ----------------------------------------------------------------------------
+
+def __call_cls_1(caller, arg):
+    obj = object.__new__(caller, arg)
+    caller.__init__(obj, arg)
+    return obj
+
+## -----------------------------------------------------------------------------
+
+def __call_cls_2(caller, arg1, arg2):
+    obj = object.__new__(caller, arg1, arg2)
+    caller.__init__(obj, arg1, arg2)
+    return obj
+
+## -----------------------------------------------------------------------------
+
+def __call_cls_5(caller, arg1, arg2, arg3, arg4, arg5):
+    obj = object.__new__(caller, arg1, arg2, arg3, arg4, arg5)
+    caller.__init__(obj, arg1, arg2, arg3, arg4, arg5)
+    return obj
+
+## -----------------------------------------------------------------------------
+
 def __call_cls_builtin(cls, obj):
     # Creates an object of builtin type by setting class properties directly
     # on the raw object (boxing it).
@@ -75,10 +102,9 @@ def __call_cls_builtin(cls, obj):
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
     [ldobj, cls, 0]
-    [setattr, __class__, 0]
+    [setattrs2, im_self, 0]
     [ldobj, cls, 0]
-    [setattrs, 1, 1]
-    [rsetattrs, im_self, 0]
+    [setattr, __class__, 0]
     ### END VECTOR ###
     """
     return obj
@@ -87,6 +113,21 @@ def __call_cls_builtin(cls, obj):
 
 def __call_method(caller, *arg):
     return caller(caller.im_self, *arg)
+
+## -----------------------------------------------------------------------------
+
+def __call_method_0(caller):
+    return caller(caller.im_self)
+
+## -----------------------------------------------------------------------------
+
+def __call_method_1(caller, arg):
+    return caller(caller.im_self, arg)
+
+## -----------------------------------------------------------------------------
+
+def __call_method_2(caller, arg1, arg2):
+    return caller(caller.im_self, arg1, arg2)
 
 ## -----------------------------------------------------------------------------
 
@@ -102,11 +143,11 @@ class sequence_generator(object):
         self.predicate = predicate
 
     def eval(self):
-        iterator = __call_method(self.iterable.__iter__)
+        iterator = __call_method_0(self.iterable.__iter__)
 
         try:
             while True:
-                next_item = __call_method(iterator.next)
+                next_item = __call_method_0(iterator.next)
 
                 # TODO: associate types with lambdas, so that we can do
                 # None check on them.
@@ -141,7 +182,7 @@ class dict_pair_generator(object):
 
         try:
             while True:
-                key_value_pair = __call_method(iterator.next)
+                key_value_pair = __call_method_0(iterator.next)
 
                 key = key_value_pair.key
                 value = key_value_pair.value
@@ -175,11 +216,11 @@ class dict_item_generator(object):
         self.predicate = predicate
 
     def eval(self):
-        iterator = __call_method(self.iterable.__iter__)
+        iterator = __call_method_0(self.iterable.__iter__)
 
         try:
             while True:
-                next_item = __call_method(iterator.next)
+                next_item = __call_method_0(iterator.next)
 
                 # TODO: associate types with lambdas, so that we can do
                 # None check on them.

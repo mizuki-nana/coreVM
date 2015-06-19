@@ -35,33 +35,27 @@ namespace types {
 /* --------------------------- UNARY OPERATIONS ----------------------------- */
 
 
-void interface_apply_positive_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_positive_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_negation_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_negation_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_increment_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_increment_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_decrement_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_decrement_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_logical_not_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_logical_not_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_bitwise_not_operator(
-  native_type_handle& operand, native_type_handle& result);
+void interface_apply_bitwise_not_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
@@ -72,97 +66,97 @@ void interface_apply_bitwise_not_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_addition_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_subtraction_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_multiplication_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_division_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_modulus_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_pow_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_logical_and_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_logical_or_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_and_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_or_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_xor_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_left_shift_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_right_shift_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_eq_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_neq_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_lt_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_gt_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_lte_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
 void interface_apply_gte_operator(
-  native_type_handle& lhs, native_type_handle& rhs, native_type_handle& result);
+  native_type_handle& lhs, native_type_handle& rhs);
 
 // -----------------------------------------------------------------------------
 
@@ -172,73 +166,59 @@ void interface_apply_gte_operator(
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int8(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_int8(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint8(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_uint8(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int16(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_int16(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint16(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_uint16(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int32(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_int32(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint32(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_uint32(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int64(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_int64(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint64(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_uint64(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_bool(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_bool(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec1(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_dec1(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec2(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_dec2(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_str(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_str(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_ary(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_ary(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_map(
-  native_type_handle& operand, native_type_handle& result);
+void interface_to_map(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 

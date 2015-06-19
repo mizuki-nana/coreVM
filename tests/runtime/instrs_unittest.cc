@@ -204,12 +204,10 @@ TEST_F(instrs_obj_unittest, TestInstrGETATTR)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::compartment compartment(DUMMY_PATH);
 
-  uint64_t attr_str_key = 333;
+  uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::encoding_map encoding_table {
-    { attr_str_key, attr_str }
-  };
+  corevm::runtime::encoding_map encoding_table { attr_str };
 
   compartment.set_encoding_map(encoding_table);
 
@@ -255,12 +253,10 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::compartment compartment(DUMMY_PATH);
 
-  uint64_t attr_str_key = 333;
+  uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::encoding_map encoding_table {
-    { attr_str_key, attr_str }
-  };
+  corevm::runtime::encoding_map encoding_table { attr_str };
 
   compartment.set_encoding_map(encoding_table);
   m_process.insert_compartment(compartment);
@@ -542,6 +538,43 @@ TEST_F(instrs_obj_unittest, TestInstrSETHNDL)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrGETHNDL2)
+{
+  uint32_t expected_value = 123;
+
+  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+
+  corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::variable_key key = 1;
+  frame.set_visible_var(key, id);
+  m_process.push_frame(frame);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(expected_value);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+
+  auto &obj = m_process.get_dyobj(id);
+  obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_gethndl2>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::types::native_type_handle actual_handle = actual_frame.pop_eval_stack();
+
+  uint32_t actual_value = corevm::types::get_value_from_handle<uint32_t>(
+    actual_handle
+  );
+
+  ASSERT_EQ(expected_value, actual_value);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_obj_unittest, TestInstrCLRHNDL)
 {
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();
@@ -619,6 +652,31 @@ TEST_F(instrs_obj_unittest, TestInstrCPYREPR)
     corevm::types::get_value_from_handle<corevm::types::native_string>(res_hndl);
 
   ASSERT_STREQ("123", res_value.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrISTRUTHY)
+{
+  corevm::dyobj::dyobj_id src_obj_id = m_process.create_dyobj();
+  m_process.push_stack(src_obj_id);
+
+  corevm::types::native_type_handle hndl = corevm::types::uint32(123);
+  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+
+  auto &src_obj = m_process.get_dyobj(src_obj_id);
+  src_obj.set_ntvhndl_key(ntvhndl_key);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_istruthy>(instr, 1);
+
+  auto& frame = m_process.top_frame();
+  corevm::types::native_type_handle& res_hndl = frame.top_eval_stack();
+
+  const bool res_value =
+    corevm::types::get_value_from_handle<bool>(res_hndl);
+
+  ASSERT_EQ(true, res_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -783,9 +841,9 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
   corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
 
   corevm::types::native_type_handle hndl = corevm::types::native_map {
-    { 1, static_cast<corevm::types::native_map_mapped_type>(id1) },
-    { 2, static_cast<corevm::types::native_map_mapped_type>(id2) },
-    { 3, static_cast<corevm::types::native_map_mapped_type>(id3) },
+    { 0, static_cast<corevm::types::native_map_mapped_type>(id1) },
+    { 1, static_cast<corevm::types::native_map_mapped_type>(id2) },
+    { 2, static_cast<corevm::types::native_map_mapped_type>(id3) },
   };
 
   auto ntvhndl_key = m_process.insert_ntvhndl(hndl);
@@ -800,10 +858,11 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
   const std::string attr_str3 = "__iter__";
 
   corevm::runtime::encoding_map encoding_map {
-    { 1, attr_str1 },
-    { 2, attr_str2 },
-    { 3, attr_str3 },
+    attr_str1,
+    attr_str2,
+    attr_str3,
   };
+
   compartment.set_encoding_map(encoding_map);
   m_process.insert_compartment(compartment);
 
@@ -861,12 +920,10 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
 
   corevm::runtime::compartment_id compartment_id = 0;
 
-  uint64_t attr_str_key = 333;
+  uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::encoding_map encoding_table {
-    { attr_str_key, attr_str }
-  };
+  corevm::runtime::encoding_map encoding_table { attr_str };
 
   corevm::runtime::compartment compartment(DUMMY_PATH);
   compartment.set_encoding_map(encoding_table);
@@ -902,6 +959,90 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
   ASSERT_EQ(id, obj1.getattr(attr_key));
   ASSERT_EQ(id, obj2.getattr(attr_key));
   ASSERT_EQ(id, obj3.getattr(attr_key));
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrSETATTRS2)
+{
+  const std::string attr_str1 = "__init__";
+  const std::string attr_str2 = "__len__";
+  const std::string attr_str3 = "__iter__";
+
+  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+
+  corevm::dyobj::attr_key attr_key1 = corevm::dyobj::hash_attr_str(attr_str1);
+  corevm::dyobj::attr_key attr_key2 = corevm::dyobj::hash_attr_str(attr_str2);
+  corevm::dyobj::attr_key attr_key3 = corevm::dyobj::hash_attr_str(attr_str3);
+
+  corevm::dyobj::dyobj_id dst_id = m_process.create_dyobj();
+  m_process.push_stack(dst_id);
+
+  corevm::dyobj::dyobj_id src_id = m_process.create_dyobj();
+  auto& src_obj = m_process.get_dyobj(src_id);
+  src_obj.putattr(attr_key1, id1);
+  src_obj.putattr(attr_key2, id2);
+  src_obj.putattr(attr_key3, id3);
+
+  corevm::runtime::compartment_id compartment_id = 0;
+
+  uint64_t attr_str_key = 0;
+  const std::string attr_str = "im_self";
+
+  auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  corevm::runtime::encoding_map encoding_table { attr_str };
+
+  corevm::runtime::compartment compartment(DUMMY_PATH);
+  compartment.set_encoding_map(encoding_table);
+  m_process.insert_compartment(compartment);
+
+  corevm::runtime::closure_ctx ctx {
+    .compartment_id = compartment_id,
+    .closure_id = 0
+  };
+
+  corevm::runtime::closure closure {
+    .id = 0,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  m_process.emplace_frame(ctx, &compartment, &closure);
+
+  m_process.push_stack(dst_id);
+  m_process.push_stack(src_id);
+
+  corevm::runtime::instr instr {
+    .code = 0,
+    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr_str_key),
+    .oprd2 = 0
+  };
+
+  execute_instr<corevm::runtime::instr_handler_setattrs2>(instr, 2);
+
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(dst_id, actual_id);
+
+  auto& obj = m_process.get_dyobj(actual_id);
+
+  ASSERT_EQ(true, obj.hasattr(attr_key1));
+  ASSERT_EQ(true, obj.hasattr(attr_key2));
+  ASSERT_EQ(true, obj.hasattr(attr_key3));
+
+  auto new_id1 = obj.getattr(attr_key1);
+  auto new_id2 = obj.getattr(attr_key2);
+  auto new_id3 = obj.getattr(attr_key3);
+
+  auto& attr_obj1 = m_process.get_dyobj(new_id1);
+  auto& attr_obj2 = m_process.get_dyobj(new_id2);
+  auto& attr_obj3 = m_process.get_dyobj(new_id3);
+
+  ASSERT_EQ(dst_id, attr_obj1.getattr(attr_key));
+  ASSERT_EQ(dst_id, attr_obj2.getattr(attr_key));
+  ASSERT_EQ(dst_id, attr_obj3.getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------

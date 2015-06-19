@@ -46,6 +46,8 @@ public:
 
   void set_encoding_map(const corevm::runtime::encoding_map&);
 
+  void set_encoding_map(const corevm::runtime::encoding_map&&);
+
   std::string get_encoding_string(corevm::runtime::encoding_key) const
     throw(corevm::runtime::encoding_string_not_found_error);
 

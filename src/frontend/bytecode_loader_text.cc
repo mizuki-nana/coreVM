@@ -94,7 +94,7 @@ corevm::frontend::bytecode_loader_text::schema() const
         "\"encoding_map\": {"
           "\"type\": \"array\","
           "\"items\": {"
-            "\"$ref\": \"#/definitions/encoding_pair\""
+            "\"type\": \"string\""
           "}"
         "},"
         "\"__MAIN__\": {"
@@ -115,17 +115,6 @@ corevm::frontend::bytecode_loader_text::schema() const
         "\"__MAIN__\""
       "],"
       "\"definitions\": {"
-        "\"encoding_pair\": {"
-          "\"type\": \"object\","
-          "\"properties\": {"
-            "\"key\": {"
-              "\"type\": \"string\""
-            "},"
-            "\"value\": {"
-              "\"type\": \"integer\""
-            "}"
-          "}"
-        "},"
         "\"vector\": %1%,"
         "\"locs\": %2%,"
         "\"catch_sites\": %3%,"
@@ -283,27 +272,24 @@ corevm::frontend::bytecode_loader_text::load_bytecode(
   corevm::runtime::compartment compartment(source_path);
 
   // Load encoding map.
-  corevm::runtime::encoding_map encoding_map;
   const JSON::array& encoding_array =
     json_object.at("encoding_map").array_items();
 
-  for (auto itr = encoding_array.begin(); itr != encoding_array.end(); ++itr)
+  corevm::runtime::encoding_map encoding_map(encoding_array.size());
+
+  uint64_t i = 0;
+  for (auto itr = encoding_array.begin();
+       itr != encoding_array.end();
+       ++itr, ++i)
   {
-    const JSON& raw_encoding_pair = static_cast<JSON>(*itr);
-    const JSON::object& encoding_pair = raw_encoding_pair.object_items();
+    const JSON& raw_encoding_str = static_cast<JSON>(*itr);
+    const std::string encoding_str =
+      static_cast<std::string>(raw_encoding_str.string_value());
 
-    // Keys and values are flipped.
-    const JSON& raw_value = encoding_pair.at("key");
-    const JSON& raw_key = encoding_pair.at("value");
-
-    const std::string value = static_cast<std::string>(raw_value.string_value());
-    const corevm::runtime::encoding_key key =
-      static_cast<corevm::runtime::encoding_key>(raw_key.int_value());
-
-    encoding_map[key] = value;
+    encoding_map[i] = encoding_str;
   }
 
-  compartment.set_encoding_map(encoding_map);
+  compartment.set_encoding_map(std::move(encoding_map));
 
   /* --------------------------- Load closures. --------------------------- */
 
@@ -391,12 +377,12 @@ corevm::frontend::bytecode_loader_text::load_bytecode(
 
     closure_table.push_back(
       corevm::runtime::closure {
-        .name = name,
+        .name = std::move(name),
         .id = id,
         .parent_id = parent_id,
-        .vector = vector,
-        .locs = locs_table,
-        .catch_sites = catch_sites,
+        .vector = std::move(vector),
+        .locs = std::move(locs_table),
+        .catch_sites = std::move(catch_sites),
       }
     );
 
@@ -404,7 +390,7 @@ corevm::frontend::bytecode_loader_text::load_bytecode(
 
   compartment.set_closure_table(std::move(closure_table));
 
-  process.insert_compartment(compartment);
+  process.insert_compartment(std::move(compartment));
 }
 
 // -----------------------------------------------------------------------------

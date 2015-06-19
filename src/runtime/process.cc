@@ -275,6 +275,7 @@ corevm::runtime::process::emplace_frame(
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
+  //check_call_stack_capacity();
   m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr, return_addr);
 }
 
@@ -675,8 +676,8 @@ void
 corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   throw(corevm::runtime::invalid_instr_addr_error)
 {
-  if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
-      (addr < 0 || addr >= m_instrs.size()) )
+  if ( (uint64_t)addr >= m_instrs.size() &&
+      addr != corevm::runtime::NONESET_INSTR_ADDR )
   {
     THROW(corevm::runtime::invalid_instr_addr_error());
   }
@@ -804,6 +805,16 @@ corevm::runtime::process::handle_signal(
 corevm::runtime::compartment_id
 corevm::runtime::process::insert_compartment(
   const corevm::runtime::compartment& compartment)
+{
+  m_compartments.push_back(compartment);
+  return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::compartment_id
+corevm::runtime::process::insert_compartment(
+  const corevm::runtime::compartment&& compartment)
 {
   m_compartments.push_back(compartment);
   return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);

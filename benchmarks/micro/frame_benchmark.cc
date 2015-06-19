@@ -20,71 +20,51 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_COMMON_H_
-#define COREVM_RUNTIME_COMMON_H_
+#include <benchmark/benchmark.h>
 
-#include <cstdint>
-#include <string>
-#include <vector>
+#include "runtime/frame.h"
+#include "types/native_type_handle.h"
 
 
-namespace corevm {
+// -----------------------------------------------------------------------------
 
+static
+void BenchmarkPushEvalStack(benchmark::State& state)
+{
+  corevm::runtime::closure_ctx ctx;
 
-namespace runtime {
+  corevm::runtime::frame frame(ctx, NULL, NULL);
 
+  corevm::types::native_type_handle hndl =
+    corevm::types::native_string("hello world");
 
-const uint32_t COREVM_DEFAULT_GC_INTERVAL = 10;
+  while (state.KeepRunning())
+  {
+    frame.push_eval_stack(hndl);
+  }
+}
 
+// -----------------------------------------------------------------------------
 
-typedef int32_t instr_addr;
+static
+void BenchmarkPushEvalStack2(benchmark::State& state)
+{
+  corevm::runtime::closure_ctx ctx;
 
+  corevm::runtime::frame frame(ctx, NULL, NULL);
 
-typedef uint16_t instr_code;
+  corevm::types::native_type_handle hndl =
+    corevm::types::native_string("hello world");
 
+  while (state.KeepRunning())
+  {
+    frame.push_eval_stack(std::move(hndl));
+  }
+}
 
-typedef uint64_t instr_oprd;
+// -----------------------------------------------------------------------------
 
+BENCHMARK(BenchmarkPushEvalStack);
+BENCHMARK(BenchmarkPushEvalStack2);
 
-typedef int32_t variable_key;
-
-
-typedef uint8_t gc_bitfield_t;
-
-
-typedef int64_t closure_id;
-
-
-typedef uint64_t encoding_key;
-
-
-typedef std::vector<std::string> encoding_map;
-
-
-typedef int32_t compartment_id;
-
-
-const compartment_id NONESET_COMPARTMENT_ID = -1;
-
-
-const closure_id NONESET_CLOSURE_ID = -1;
-
-
-const instr_addr NONESET_INSTR_ADDR = -1;
-
-
-// Default size of native types pool: 128 MB.
-const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
-
-
-// Default number of stacks to unwind on failures.
-const size_t COREVM_DEFAULT_STACK_UNWIND_COUNT = 5;
-
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_RUNTIME_COMMON_H_ */
+// -----------------------------------------------------------------------------

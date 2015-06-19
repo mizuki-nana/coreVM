@@ -52,7 +52,7 @@ class NoneType(object):
 # so we cannot do `None = __call(NoneType)` here.
 #
 # TODO: Set the appropriate flags on the global object `None`.
-__call_cls(NoneType)
+__call_cls_0(NoneType)
 """
 ### BEGIN VECTOR ###
 [setflgc, 1, 0]

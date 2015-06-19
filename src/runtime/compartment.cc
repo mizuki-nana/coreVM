@@ -50,8 +50,16 @@ void
 corevm::runtime::compartment::set_encoding_map(
   const corevm::runtime::encoding_map& encoding_map)
 {
-  m_encoding_map.clear();
-  m_encoding_map.insert(encoding_map.begin(), encoding_map.end());
+  m_encoding_map = encoding_map;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::compartment::set_encoding_map(
+  const corevm::runtime::encoding_map&& encoding_map)
+{
+  m_encoding_map = encoding_map;
 }
 
 // -----------------------------------------------------------------------------
@@ -61,14 +69,12 @@ corevm::runtime::compartment::get_encoding_string(
   corevm::runtime::encoding_key key) const
   throw(corevm::runtime::encoding_string_not_found_error)
 {
-  auto itr = m_encoding_map.find(key);
-
-  if (itr == m_encoding_map.end())
+  if (key >= m_encoding_map.size())
   {
     THROW(corevm::runtime::encoding_string_not_found_error(key));
   }
 
-  return static_cast<std::string>(itr->second);
+  return m_encoding_map[key];
 }
 
 // -----------------------------------------------------------------------------
@@ -82,11 +88,9 @@ corevm::runtime::compartment::get_encoding_string(
     return;
   }
 
-  auto itr = m_encoding_map.find(key);
-
-  if (itr != m_encoding_map.end())
+  if (key < m_encoding_map.size())
   {
-    *str = static_cast<std::string>(itr->second);
+    *str = m_encoding_map[key];
   }
 }
 

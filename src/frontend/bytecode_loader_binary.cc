@@ -54,23 +54,7 @@ corevm::frontend::bytecode_loader_binary::load(
   corevm::runtime::compartment compartment(source_path);
 
   // Load encoding map.
-  corevm::runtime::encoding_map encoding_map;
-
-  for (auto itr = bytecode_data.encoding_map.cbegin();
-       itr != bytecode_data.encoding_map.cend();
-       ++itr)
-  {
-    const auto& encoding_pair = *itr;
-
-    // Keys and values are flipped.
-    const std::string& value = encoding_pair.key;
-    const auto key=
-      static_cast<corevm::runtime::encoding_key>(encoding_pair.value);
-
-    encoding_map[key] = value;
-  }
-
-  compartment.set_encoding_map(encoding_map);
+  compartment.set_encoding_map(bytecode_data.encoding_map);
 
   // Load closures.
   corevm::runtime::closure_table closure_table;
@@ -168,12 +152,12 @@ corevm::frontend::bytecode_loader_binary::load(
 
     closure_table.push_back(
       corevm::runtime::closure {
-        .name = name,
+        .name = std::move(name),
         .id = id,
         .parent_id = parent_id,
-        .vector = vector,
-        .locs = locs_table,
-        .catch_sites = catch_sites
+        .vector = std::move(vector),
+        .locs = std::move(locs_table),
+        .catch_sites = std::move(catch_sites)
       }
     );
 
@@ -181,7 +165,7 @@ corevm::frontend::bytecode_loader_binary::load(
 
   compartment.set_closure_table(std::move(closure_table));
 
-  process.insert_compartment(compartment);
+  process.insert_compartment(std::move(compartment));
 }
 
 // -----------------------------------------------------------------------------

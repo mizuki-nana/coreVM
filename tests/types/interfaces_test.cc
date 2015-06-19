@@ -32,9 +32,8 @@ public:
   void apply_unary_operator_and_assert_result(
     corevm::types::native_type_handle& operand, F func, T expected_value)
   {
-    corevm::types::native_type_handle result;
-    func(operand, result);
-    T actual_result = corevm::types::get_value_from_handle<T>(result);
+    func(operand);
+    T actual_result = corevm::types::get_value_from_handle<T>(operand);
     ASSERT_EQ(expected_value, actual_result);
   }
 };
@@ -147,9 +146,8 @@ public:
     T expected_value,
     bool is_decimal=false)
   {
-    corevm::types::native_type_handle result;
-    func(lhs, rhs, result);
-    T actual_result = corevm::types::get_value_from_handle<T>(result);
+    func(lhs, rhs);
+    T actual_result = corevm::types::get_value_from_handle<T>(rhs);
 
     if (!is_decimal)
     {
@@ -456,11 +454,9 @@ public:
   void apply_binary_operator_and_assert_result(
     corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs, F func)
   {
-    corevm::types::native_type_handle result;
-
     ASSERT_THROW(
       {
-        func(lhs, rhs, result);
+        func(lhs, rhs);
       },
       ErrorType
     );

@@ -454,7 +454,6 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::copy_from(
   // NOTE: Need to be careful about what fields are being copied here.
   m_flags = src.m_flags;
   m_attrs = src.m_attrs;
-  m_ntvhndl_key = src.m_ntvhndl_key;
   m_closure_ctx = src.m_closure_ctx;
 }
 
