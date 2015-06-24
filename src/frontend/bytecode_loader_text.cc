@@ -230,12 +230,14 @@ corevm::frontend::bytecode_loader_text::validate_and_load(
     ));
   }
 
+  // TODO: validate format and format version.
+  /*
   const JSON::string& format = json_object.at("format").string_value();
   const JSON::string& format_version = json_object.at("format-version").string_value();
 
-  // TODO: validate format and format version.
   const std::string& format_str = static_cast<std::string>(format);
   const std::string& format_version_str = static_cast<std::string>(format_version);
+  */
 
   const std::string& schema = this->schema();
   const JSON schema_json = sneaker::json::parse(schema);
@@ -357,9 +359,11 @@ corevm::frontend::bytecode_loader_text::load_bytecode(
       const JSON::array items = closure.at("catch_sites").array_items();
 
       for (auto catch_sites_itr = items.begin();
-          catch_sites_itr != items.end(); ++catch_sites_itr)
+          catch_sites_itr != items.end();
+          ++catch_sites_itr)
       {
-        const JSON::object item = static_cast<JSON>(*catch_sites_itr).object_items();
+        const JSON::object item =
+          static_cast<JSON>(*catch_sites_itr).object_items();
 
         const uint32_t from = item.at("from").int_value();
         const uint32_t to = item.at("to").int_value();

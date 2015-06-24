@@ -100,14 +100,14 @@ corevm::frontend::runner::run() const noexcept
   uint64_t pool_alloc_size = m_configuration.pool_alloc_size() ? \
     m_configuration.pool_alloc_size() : corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE;
 
-  uint32_t gc_interval = m_configuration.gc_interval() ? \
-    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
+  // [COREVM-247] Enable garbage collection mechanism
+  //uint32_t gc_interval = m_configuration.gc_interval() ? \
+  // m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
   const std::string& format = m_configuration.format();
 
   corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
 
-  // TODO: Investigate if can use `std::unique_ptr` here with Clang++ 3.4.
   boost::scoped_ptr<corevm::frontend::bytecode_loader> loader;
 
   if (format == "text")

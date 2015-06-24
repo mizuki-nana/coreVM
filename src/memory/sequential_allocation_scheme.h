@@ -35,6 +35,8 @@ namespace corevm {
 namespace memory {
 
 
+// -----------------------------------------------------------------------------
+
 typedef struct __sequential_block_descriptor
 {
   uint64_t size;

@@ -71,7 +71,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op, class R>
-class native_type_cast_unary_visitor : public boost::static_visitor<native_type_handle>
+class native_type_cast_unary_visitor : public boost::static_visitor<R>
 {
 public:
   template<typename T>
@@ -134,6 +134,44 @@ public:
 
 // -----------------------------------------------------------------------------
 
+template<class op, typename R>
+class native_type_typed_binary_visitor : public boost::static_visitor<R>
+{
+public:
+  template<typename T, typename U>
+  R operator()(const T& lhs, const U& rhs) const
+  {
+    if (sizeof(lhs) >= sizeof(rhs))
+    {
+      return R(op().template operator()<T>(lhs, rhs));
+    }
+    else
+    {
+      return R(op().template operator()<U>(lhs, rhs));
+    }
+  }
+
+  R operator()(
+    const corevm::types::string& lhs, const corevm::types::string& rhs) const
+  {
+    return R(op().template operator()<corevm::types::string>(lhs, rhs));
+  }
+
+  R operator()(
+    const corevm::types::array& lhs, const corevm::types::array& rhs) const
+  {
+    return R(op().template operator()<corevm::types::array>(lhs, rhs));
+  }
+
+  R operator()(
+    const corevm::types::map& lhs, const corevm::types::map& rhs) const
+  {
+    return R(op().template operator()<corevm::types::map>(lhs, rhs));
+  }
+};
+
+// -----------------------------------------------------------------------------
+
 template<typename T>
 class native_type_value_visitor : public boost::static_visitor<T>
 {
@@ -152,9 +190,9 @@ class native_type_positive_visitor : public native_type_unary_visitor<positive> 
 class native_type_negation_visitor : public native_type_unary_visitor<negation> {};
 class native_type_increment_visitor : public native_type_unary_visitor<increment> {};
 class native_type_decrement_visitor : public native_type_unary_visitor<decrement> {};
-class native_type_logical_not_visitor : public native_type_unary_visitor<logical_not> {};
+class native_type_logical_not_visitor : public native_type_cast_unary_visitor<logical_not, corevm::types::boolean> {};
 class native_type_bitwise_not_visitor : public native_type_unary_visitor<bitwise_not> {};
-class native_type_truthy_visitor : public native_type_unary_visitor<truthy> {};
+class native_type_truthy_visitor : public native_type_cast_unary_visitor<truthy, corevm::types::boolean> {};
 class native_type_repr_visitor : public native_type_intrinsic_unary_visitor<repr> {};
 class native_type_hash_visitor : public native_type_cast_unary_visitor<hash, corevm::types::int64> {};
 
@@ -167,19 +205,19 @@ class native_type_multiplication_visitor : public native_type_binary_visitor<mul
 class native_type_division_visitor : public native_type_binary_visitor<division> {};
 class native_type_modulus_visitor : public native_type_binary_visitor<modulus> {};
 class native_type_pow_visitor : public native_type_binary_visitor<pow_op> {};
-class native_type_logical_and_visitor : public native_type_binary_visitor<logical_and> {};
-class native_type_logical_or_visitor : public native_type_binary_visitor<logical_or> {};
+class native_type_logical_and_visitor : public native_type_typed_binary_visitor<logical_and, corevm::types::boolean> {};
+class native_type_logical_or_visitor : public native_type_typed_binary_visitor<logical_or, corevm::types::boolean> {};
 class native_type_bitwise_and_visitor : public native_type_binary_visitor<bitwise_and> {};
 class native_type_bitwise_or_visitor : public native_type_binary_visitor<bitwise_or> {};
 class native_type_bitwise_xor_visitor : public native_type_binary_visitor<bitwise_xor> {};
 class native_type_bitwise_left_shift_visitor : public native_type_binary_visitor<bitwise_left_shift> {};
 class native_type_bitwise_right_shift_visitor : public native_type_binary_visitor<bitwise_right_shift> {};
-class native_type_eq_visitor : public native_type_binary_visitor<eq> {};
-class native_type_neq_visitor : public native_type_binary_visitor<neq> {};
-class native_type_gt_visitor : public native_type_binary_visitor<gt> {};
-class native_type_lt_visitor : public native_type_binary_visitor<lt> {};
-class native_type_gte_visitor : public native_type_binary_visitor<gte> {};
-class native_type_lte_visitor : public native_type_binary_visitor<lte> {};
+class native_type_eq_visitor : public native_type_typed_binary_visitor<eq, corevm::types::boolean> {};
+class native_type_neq_visitor : public native_type_typed_binary_visitor<neq, corevm::types::boolean> {};
+class native_type_gt_visitor : public native_type_typed_binary_visitor<gt, corevm::types::boolean> {};
+class native_type_lt_visitor : public native_type_typed_binary_visitor<lt, corevm::types::boolean> {};
+class native_type_gte_visitor : public native_type_typed_binary_visitor<gte, corevm::types::boolean> {};
+class native_type_lte_visitor : public native_type_typed_binary_visitor<lte, corevm::types::boolean> {};
 
 // -----------------------------------------------------------------------------
 

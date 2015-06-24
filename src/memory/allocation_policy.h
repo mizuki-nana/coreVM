@@ -54,7 +54,9 @@ public:
   inline explicit allocation_policy(allocation_policy const&);
   inline ~allocation_policy();
 
-  inline virtual pointer allocate(size_type, typename std::allocator<void>::const_pointer=0);
+  inline virtual pointer allocate(
+    size_type, typename std::allocator<void>::const_pointer=0);
+
   inline virtual void deallocate(pointer, size_type);
 
   inline uint64_t base_addr() const;
@@ -184,7 +186,12 @@ bool operator==(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
+template<
+  typename T,
+  typename AllocationScheme,
+  typename U,
+  typename OtherAllocationScheme
+>
 inline
 bool operator==(
   allocation_policy<T, AllocationScheme> const& lhs,
@@ -195,7 +202,11 @@ bool operator==(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename other_allocation_policy_type>
+template<
+  typename T,
+  typename AllocationScheme,
+  typename other_allocation_policy_type
+>
 inline
 bool operator==(
   allocation_policy<T, AllocationScheme> const& lhs,
@@ -217,7 +228,12 @@ bool operator!=(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
+template<
+  typename T,
+  typename AllocationScheme,
+  typename U,
+  typename OtherAllocationScheme
+>
 inline
 bool operator!=(
   allocation_policy<T, AllocationScheme> const& lhs,
@@ -228,10 +244,15 @@ bool operator!=(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename other_allocation_policy_type>
+template<
+  typename T,
+  typename AllocationScheme,
+  typename other_allocation_policy_type
+>
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme> const& lhs, other_allocation_policy_type const& rhs)
+  allocation_policy<T, AllocationScheme> const& lhs,
+  other_allocation_policy_type const& rhs)
 {
   return !operator==(lhs, rhs);
 }

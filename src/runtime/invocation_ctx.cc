@@ -169,7 +169,8 @@ corevm::runtime::invocation_ctx::param_value_pair_keys() const
 {
   std::list<corevm::runtime::variable_key> keys;
 
-  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
+  for (auto itr = m_param_value_map.begin();
+       itr != m_param_value_map.end(); ++itr)
   {
     corevm::runtime::variable_key key = itr->first;
     keys.push_back(key);

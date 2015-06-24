@@ -275,7 +275,7 @@ corevm::runtime::process::emplace_frame(
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
-  //check_call_stack_capacity();
+  check_call_stack_capacity();
   m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr, return_addr);
 }
 
@@ -526,7 +526,7 @@ corevm::runtime::process::resume_exec()
 inline bool
 corevm::runtime::process::is_valid_pc() const
 {
-  return m_pc != NONESET_INSTR_ADDR && (m_pc >= 0 && m_pc < m_instrs.size());
+  return !((uint64_t)m_pc >= m_instrs.size());
 }
 
 // -----------------------------------------------------------------------------
@@ -560,6 +560,13 @@ corevm::runtime::process::pre_start()
     ASSERT(closure);
 #endif
 
+    // Reserve initial storage.
+    m_call_stack.reserve(100);
+
+    m_invocation_ctx_stack.reserve(100);
+
+    m_dyobj_stack.reserve(100);
+
     corevm::runtime::closure_ctx ctx {
       .compartment_id = 0,
       .closure_id = closure->id
@@ -572,8 +579,6 @@ corevm::runtime::process::pre_start()
     emplace_invocation_ctx(ctx, compartment, closure);
 
     m_pc = 0;
-
-    m_dyobj_stack.reserve(100);
   }
 
   return res;
@@ -630,12 +635,10 @@ corevm::runtime::process::start()
 void
 corevm::runtime::process::maybe_gc()
 {
-  if (!(this->should_gc()))
+  if (should_gc())
   {
-    return;
+    do_gc();
   }
-
-  do_gc();
 };
 
 // -----------------------------------------------------------------------------
@@ -676,8 +679,7 @@ void
 corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
   throw(corevm::runtime::invalid_instr_addr_error)
 {
-  if ( (uint64_t)addr >= m_instrs.size() &&
-      addr != corevm::runtime::NONESET_INSTR_ADDR )
+  if ( (uint64_t)addr >= m_instrs.size() )
   {
     THROW(corevm::runtime::invalid_instr_addr_error());
   }

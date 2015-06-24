@@ -96,7 +96,8 @@ corevm::runtime::frame::return_addr() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::frame::set_return_addr(const corevm::runtime::instr_addr return_addr)
+corevm::runtime::frame::set_return_addr(
+  const corevm::runtime::instr_addr return_addr)
 {
   m_return_addr = return_addr;
 }
@@ -175,7 +176,8 @@ corevm::runtime::frame::get_visible_var(
 // -----------------------------------------------------------------------------
 
 corevm::dyobj::dyobj_id
-corevm::runtime::frame::pop_visible_var(const corevm::runtime::variable_key var_key)
+corevm::runtime::frame::pop_visible_var(
+  const corevm::runtime::variable_key var_key)
   throw(corevm::runtime::name_not_found_error)
 {
   corevm::dyobj::dyobj_id obj_id = get_visible_var(var_key);

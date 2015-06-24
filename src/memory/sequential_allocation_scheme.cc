@@ -171,7 +171,10 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
 
     if (block_found.size > size)
     {
-      this->split(itr, block_found.size - size, static_cast<uint64_t>(block_found.offset + size));
+      this->split(
+        itr, block_found.size - size,
+        static_cast<uint64_t>(block_found.offset + size));
+
       block_found.size = size;
     }
 
@@ -207,7 +210,8 @@ ForwardIterator binary_find(
 // TODO: Move this to sneaker or somewhere else.
 template<class ForwardIterator, class T, class Compare, class Predicate>
 ForwardIterator binary_find_if(
-  ForwardIterator first, ForwardIterator last, const T& val, Compare comp, Predicate pred)
+  ForwardIterator first, ForwardIterator last,
+  const T& val, Compare comp, Predicate pred)
 {
   first = binary_find(first, last, val, comp);
 
@@ -231,13 +235,17 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     return block.offset == offset && block.actual_size != 0;
   };
 
-  if (m_blocks.size() <= LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD && !SUPPRESS_LINEAR_SEARCH)
+  if (m_blocks.size() <= LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD &&
+      !SUPPRESS_LINEAR_SEARCH)
   {
     itr = std::find_if(m_blocks.begin(), m_blocks.end(), pred);
   }
   else
   {
-    auto comp = [](const block_descriptor_type& lhs, const block_descriptor_type& rhs) -> bool {
+    auto comp = [](
+      const block_descriptor_type& lhs,
+      const block_descriptor_type& rhs) -> bool
+    {
       return lhs.offset < rhs.offset;
     };
 
@@ -314,7 +322,8 @@ corevm::memory::best_fit_allocation_scheme::find_fit(size_t size) noexcept
   iterator_type itr = std::min_element(
     m_blocks.begin(),
     m_blocks.end(),
-    [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
+    [size](
+      block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
       if (block_a.actual_size != 0)
       {
         return false;
@@ -368,7 +377,8 @@ corevm::memory::worst_fit_allocation_scheme::find_fit(size_t size) noexcept
   iterator_type itr = std::max_element(
     m_blocks.begin(),
     m_blocks.end(),
-    [size](block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
+    [size](
+      block_descriptor_type block_a, block_descriptor_type block_b) -> bool {
       if (block_b.actual_size != 0)
       {
         return false;
@@ -573,18 +583,22 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
       iterator_type next_itr = current_itr;
       ++next_itr;
 
-      block_descriptor_type current_block = static_cast<block_descriptor_type>(*itr);
+      block_descriptor_type current_block =
+        static_cast<block_descriptor_type>(*itr);
 
       if (itr != m_blocks.end() && next_itr != m_blocks.end())
       {
-        block_descriptor_type next_block = static_cast<block_descriptor_type>(*next_itr);
+        block_descriptor_type next_block =
+          static_cast<block_descriptor_type>(*next_itr);
 
         bool is_split = is_bit_set_uint8(current_block.flags, FLAG_SPLIT) &&
           !is_bit_set_uint8(next_block.flags, FLAG_SPLIT);
 
-        bool is_parent_split = is_bit_set_uint8(current_block.flags, FLAG_PARENT_SPLIT);
+        bool is_parent_split = is_bit_set_uint8(
+          current_block.flags, FLAG_PARENT_SPLIT);
 
-        if (is_split && current_block.actual_size == 0 && next_block.actual_size == 0)
+        if (is_split && current_block.actual_size == 0 &&
+            next_block.actual_size == 0)
         {
           uint8_t flags = 0;
 
