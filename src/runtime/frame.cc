@@ -117,7 +117,8 @@ void
 corevm::runtime::frame::push_eval_stack(
   corevm::types::native_type_handle&& operand)
 {
-  m_eval_stack.push_back(operand);
+  m_eval_stack.push_back(
+    std::forward<corevm::types::native_type_handle>(operand));
 }
 
 // -----------------------------------------------------------------------------
@@ -147,6 +148,22 @@ corevm::runtime::frame::top_eval_stack()
   }
 
   return m_eval_stack.back();
+}
+
+// -----------------------------------------------------------------------------
+
+const std::vector<corevm::types::native_type_handle>&
+corevm::runtime::frame::eval_stack() const
+{
+  return m_eval_stack;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::types::native_type_handle&
+corevm::runtime::frame::eval_stack_element(size_t i)
+{
+  return m_eval_stack[i];
 }
 
 // -----------------------------------------------------------------------------

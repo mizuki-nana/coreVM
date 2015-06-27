@@ -38,6 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 
 // -----------------------------------------------------------------------------
@@ -319,10 +320,19 @@ corevm::runtime::instr_handler::execute_binary_operator_instr(
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle lhs = frame.pop_eval_stack();
-  corevm::types::native_type_handle& rhs = frame.top_eval_stack();
+  size_t eval_stack_size = frame.eval_stack_size();
+
+  if (eval_stack_size < 2)
+  {
+    THROW(corevm::runtime::evaluation_stack_empty_error());
+  }
+
+  corevm::types::native_type_handle& lhs = frame.eval_stack_element(eval_stack_size - 1);
+  corevm::types::native_type_handle& rhs = frame.eval_stack_element(eval_stack_size - 2);
 
   interface_func(lhs, rhs);
+
+  std::swap(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -414,10 +424,17 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
-  corevm::types::native_type_handle& oprd2 = frame.top_eval_stack();
+  size_t eval_stack_size = frame.eval_stack_size();
 
-  interface_func(oprd2, oprd1, oprd2);
+  if (eval_stack_size < 2)
+  {
+    THROW(corevm::runtime::evaluation_stack_empty_error());
+  }
+
+  corevm::types::native_type_handle& oprd1 = frame.eval_stack_element(eval_stack_size - 1);
+  corevm::types::native_type_handle& oprd2 = frame.eval_stack_element(eval_stack_size - 2);
+
+  interface_func(oprd2, oprd1, oprd1);
 }
 
 // -----------------------------------------------------------------------------
@@ -429,11 +446,18 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
-  corevm::types::native_type_handle& oprd3 = frame.top_eval_stack();
+  size_t eval_stack_size = frame.eval_stack_size();
 
-  interface_func(oprd3, oprd2, oprd1, oprd3);
+  if (eval_stack_size < 3)
+  {
+    THROW(corevm::runtime::evaluation_stack_empty_error());
+  }
+
+  corevm::types::native_type_handle& oprd1 = frame.eval_stack_element(eval_stack_size - 1);
+  corevm::types::native_type_handle& oprd2 = frame.eval_stack_element(eval_stack_size - 2);
+  corevm::types::native_type_handle& oprd3 = frame.eval_stack_element(eval_stack_size - 3);
+
+  interface_func(oprd3, oprd2, oprd1, oprd1);
 }
 
 // -----------------------------------------------------------------------------
@@ -445,12 +469,19 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
 {
   corevm::runtime::frame& frame = process.top_frame();
 
-  corevm::types::native_type_handle oprd1 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd2 = frame.pop_eval_stack();
-  corevm::types::native_type_handle oprd3 = frame.pop_eval_stack();
-  corevm::types::native_type_handle& oprd4 = frame.top_eval_stack();
+  size_t eval_stack_size = frame.eval_stack_size();
 
-  interface_func(oprd4, oprd3, oprd2, oprd1, oprd4);
+  if (eval_stack_size < 4)
+  {
+    THROW(corevm::runtime::evaluation_stack_empty_error());
+  }
+
+  corevm::types::native_type_handle& oprd1 = frame.eval_stack_element(eval_stack_size - 1);
+  corevm::types::native_type_handle& oprd2 = frame.eval_stack_element(eval_stack_size - 2);
+  corevm::types::native_type_handle& oprd3 = frame.eval_stack_element(eval_stack_size - 3);
+  corevm::types::native_type_handle& oprd4 = frame.eval_stack_element(eval_stack_size - 4);
+
+  interface_func(oprd4, oprd3, oprd2, oprd1, oprd1);
 }
 
 // -----------------------------------------------------------------------------

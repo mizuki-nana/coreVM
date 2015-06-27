@@ -46,7 +46,7 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-      handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process());
   }
 }
 
@@ -58,20 +58,17 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle oprd1 = corevm::types::int8(12);
-  corevm::types::native_type_handle oprd2 = corevm::types::uint32(666);
+  corevm::types::native_type_handle oprd1 = corevm::types::int64(1);
+  corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
 
   instr_benchmarks_fixture fixture;
 
-  for (size_t i = 0; i < state.max_iterations; ++i)
-  {
-      fixture.process().top_frame().push_eval_stack(oprd1);
-      fixture.process().top_frame().push_eval_stack(oprd2);
-  }
+  fixture.process().top_frame().push_eval_stack(oprd1);
+  fixture.process().top_frame().push_eval_stack(oprd2);
 
   while (state.KeepRunning())
   {
-      handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process());
   }
 }
 
@@ -85,7 +82,8 @@ BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::inst
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_sub);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mul);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_div);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mod);
+// TODO: enable test
+//BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mod);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_pow);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_bnot);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_band);

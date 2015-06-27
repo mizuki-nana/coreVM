@@ -64,7 +64,31 @@ void BenchmarkPushEvalStack2(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkPopEvalStack(benchmark::State& state)
+{
+  corevm::runtime::closure_ctx ctx;
+
+  corevm::runtime::frame frame(ctx, NULL, NULL);
+
+  corevm::types::native_type_handle hndl =
+    corevm::types::native_string("hello world");
+
+  for (size_t i = 0; i < state.max_iterations; ++i)
+  {
+    frame.push_eval_stack(hndl);
+  }
+
+  while (state.KeepRunning())
+  {
+    frame.pop_eval_stack();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkPushEvalStack);
 BENCHMARK(BenchmarkPushEvalStack2);
+BENCHMARK(BenchmarkPopEvalStack);
 
 // -----------------------------------------------------------------------------

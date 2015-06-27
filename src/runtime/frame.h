@@ -81,6 +81,10 @@ public:
   corevm::types::native_type_handle& top_eval_stack()
     throw(corevm::runtime::evaluation_stack_empty_error);
 
+  const std::vector<corevm::types::native_type_handle>& eval_stack() const;
+
+  corevm::types::native_type_handle& eval_stack_element(size_t i);
+
   bool has_visible_var(const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)

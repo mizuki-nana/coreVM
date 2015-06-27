@@ -2029,7 +2029,8 @@ protected:
     instr_handler.execute(instr, m_process);
 
     corevm::runtime::frame& frame = m_process.top_frame();
-    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    ASSERT_GT(frame.eval_stack_size(), 0);
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
@@ -2049,7 +2050,8 @@ protected:
     instr_handler.execute(instr, m_process);
 
     corevm::runtime::frame& frame = m_process.top_frame();
-    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    ASSERT_GT(frame.eval_stack_size(), 0);
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
@@ -2068,7 +2070,8 @@ protected:
     instr_handler.execute(instr, m_process);
 
     corevm::runtime::frame& frame = m_process.top_frame();
-    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    ASSERT_GT(frame.eval_stack_size(), 0);
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
@@ -2090,7 +2093,8 @@ protected:
     instr_handler.execute(instr, m_process);
 
     corevm::runtime::frame& frame = m_process.top_frame();
-    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+
+    ASSERT_GT(frame.eval_stack_size(), 0);
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
@@ -2101,7 +2105,6 @@ protected:
     ASSERT_DOUBLE_EQ(expected_result, actual_result);
   }
 
-  uint32_t m_expected_eval_stack_size = 1;
   corevm::runtime::process m_process;
   corevm::runtime::frame* m_frame = new corevm::runtime::frame(m_ctx, m_compartment, &m_closure);
 };
@@ -2565,7 +2568,7 @@ public:
 
     corevm::runtime::frame& frame = m_process.top_frame();
 
-    ASSERT_EQ(m_expected_eval_stack_size, frame.eval_stack_size());
+    ASSERT_GT(frame.eval_stack_size(), 0);
 
     corevm::types::native_type_handle hndl = m_oprd;
 
