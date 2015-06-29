@@ -27,6 +27,7 @@ BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/main.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/instr_benchmarks_fixture.cc
 
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/allocators_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/variant_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/object_container_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/process_benchmark.cc

@@ -44,6 +44,7 @@ TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_map_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_string_type_interfaces_test.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_string_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_type_handle_unittest.cc
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/variant_unittest.cc
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/compartment_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/frame_unittest.cc
