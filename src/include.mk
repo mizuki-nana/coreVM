@@ -41,7 +41,6 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/interfaces.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/native_array.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/native_map.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/native_string.cc
-SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/types.cc
 
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/closure.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment.cc

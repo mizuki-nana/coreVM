@@ -26,8 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "operators.h"
 #include "types.h"
 
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/variant.hpp>
+#include "variant/static_visitor.h"
+#include "variant/variant.h"
 
 
 namespace corevm {
@@ -38,7 +38,7 @@ namespace types {
 
 // -----------------------------------------------------------------------------
 
-using native_type_handle = typename boost::variant<
+using native_type_handle = typename corevm::types::variant::variant<
   corevm::types::int8,
   corevm::types::uint8,
   corevm::types::int16,
@@ -58,7 +58,7 @@ using native_type_handle = typename boost::variant<
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_intrinsic_unary_visitor : public boost::static_visitor<native_type_handle>
+class native_type_intrinsic_unary_visitor : public variant::static_visitor<native_type_handle>
 {
 public:
   template<typename T>
@@ -71,7 +71,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op, class R>
-class native_type_cast_unary_visitor : public boost::static_visitor<R>
+class native_type_cast_unary_visitor : public variant::static_visitor<R>
 {
 public:
   template<typename T>
@@ -84,7 +84,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_unary_visitor : public boost::static_visitor<native_type_handle>
+class native_type_unary_visitor : public variant::static_visitor<native_type_handle>
 {
 public:
   template<typename T>
@@ -97,7 +97,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_binary_visitor : public boost::static_visitor<native_type_handle>
+class native_type_binary_visitor : public variant::static_visitor<native_type_handle>
 {
 public:
   template<typename T, typename U>
@@ -135,7 +135,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op, typename R>
-class native_type_typed_binary_visitor : public boost::static_visitor<R>
+class native_type_typed_binary_visitor : public variant::static_visitor<R>
 {
 public:
   template<typename T, typename U>
@@ -173,7 +173,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<typename T>
-class native_type_value_visitor : public boost::static_visitor<T>
+class native_type_value_visitor : public variant::static_visitor<T>
 {
 public:
   template<typename H>
@@ -225,7 +225,7 @@ template<typename T>
 T
 get_value_from_handle(corevm::types::native_type_handle& handle)
 {
-  return boost::apply_visitor(
+  return variant::apply_visitor(
     corevm::types::native_type_value_visitor<T>(), handle
   );
 }
@@ -236,7 +236,7 @@ template<class operator_visitor>
 corevm::types::native_type_handle
 apply_unary_visitor(corevm::types::native_type_handle& handle)
 {
-  return boost::apply_visitor(operator_visitor(), handle);
+  return variant::apply_visitor(operator_visitor(), handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -246,7 +246,7 @@ corevm::types::native_type_handle
 apply_binary_visitor(
   corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs)
 {
-  return boost::apply_visitor(operator_visitor(), lhs, rhs);
+  return variant::apply_visitor(operator_visitor(), lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
