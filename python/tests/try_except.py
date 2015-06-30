@@ -196,11 +196,12 @@ else:
 
 ## -----------------------------------------------------------------------------
 
-def run():
+# TODO: [COREVM-275] Python compiler elide closure of previously-named function
+def run2():
     parent()()
 
 try:
-    run()
+    run2()
 except:
     print 'Exception caught'
 else:

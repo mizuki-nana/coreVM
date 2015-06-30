@@ -1618,7 +1618,7 @@ TEST_F(instrs_control_instrs_test, TestInstrPINVK)
   auto& obj = m_process.get_dyobj(id);
 
   m_ctx.compartment_id = 0;
-  m_ctx.closure_id = 1;
+  m_ctx.closure_id = 0;
   obj.set_closure_ctx(m_ctx);
 
   corevm::runtime::closure closure {

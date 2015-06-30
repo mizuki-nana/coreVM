@@ -130,8 +130,8 @@ class TryExceptState(object):
 
 class Closure(object):
 
-    # Has to be a non-zero value.
-    __closure_id = 1
+    # Closure IDs are zero-based indices.
+    __closure_id = 0
 
     def __init__(self, original_name, name, parent_name, parent_id):
         self.original_name = original_name
@@ -279,9 +279,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 flipped_encoding_map[key]
                 for key in sorted(flipped_encoding_map)
             ],
-            '__MAIN__': [
-                closure.to_json() for closure in self.closure_map.itervalues()
-            ]
+            '__MAIN__': self.__finalize_closure_table(binary=True)
         }
 
         if self.debug_mode:
@@ -316,10 +314,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 flipped_encoding_map[key]
                 for key in sorted(flipped_encoding_map)
             ],
-            '__MAIN__': [
-                closure.to_json(binary=True)
-                for closure in self.closure_map.itervalues()
-            ]
+            '__MAIN__': self.__finalize_closure_table(binary=True)
         }
 
         with open(self.output_file, 'w') as fd:
@@ -327,6 +322,17 @@ class BytecodeGenerator(ast.NodeVisitor):
                 fd, avro.io.DatumWriter(), bytecode_schema)
             writer.append(structured_bytecode)
             writer.close()
+
+    def __finalize_closure_table(self, binary=False):
+        closure_table = sorted(
+            self.closure_map.values(),
+            key = lambda closure: closure.closure_id)
+
+        if closure_table:
+            assert (closure_table[0].closure_id == 0 and
+                closure_table[-1].closure_id == len(closure_table) - 1)
+
+        return [closure.to_json(binary=binary) for closure in closure_table]
 
     def __current_closure(self):
         return self.closure_map[self.current_closure_name]

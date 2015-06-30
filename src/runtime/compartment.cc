@@ -117,20 +117,12 @@ const corevm::runtime::closure
 corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
   const throw(corevm::runtime::closure_not_found_error)
 {
-  auto itr = std::find_if(
-    m_closure_table.begin(),
-    m_closure_table.end(),
-    [&id](const closure& closure) -> bool {
-      return closure.id == id;
-    }
-  );
-
-  if (itr == m_closure_table.end())
+  if (id < m_closure_table.size())
   {
-    THROW(corevm::runtime::closure_not_found_error(id));
+    return m_closure_table[id];
   }
 
-  return static_cast<corevm::runtime::closure>(*itr);
+  THROW(corevm::runtime::closure_not_found_error(id));
 }
 
 // -----------------------------------------------------------------------------
@@ -139,18 +131,9 @@ void
 corevm::runtime::compartment::get_closure_by_id(
   corevm::runtime::closure_id id, corevm::runtime::closure** closure_ptr)
 {
-  auto itr = std::find_if(
-    m_closure_table.begin(),
-    m_closure_table.end(),
-    [&id](const closure& closure) -> bool {
-      return closure.id == id;
-    }
-  );
-
-  if (itr != m_closure_table.end())
+  if (id < m_closure_table.size())
   {
-    corevm::runtime::closure& res = *itr;
-    *closure_ptr = &res;
+    *closure_ptr = &m_closure_table[id];
   }
 }
 

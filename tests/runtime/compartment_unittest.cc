@@ -42,8 +42,8 @@ TEST_F(compartment_unittest, TestGetClosureByID)
 
   corevm::runtime::closure closure {
     .name = "__main__",
-    .id=2,
-    .parent_id=1,
+    .id=0,
+    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
     .vector=vector,
     .locs = locs
   };
@@ -82,8 +82,8 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
 
   corevm::runtime::closure closure {
     .name = "__main__",
-    .id=2,
-    .parent_id=1,
+    .id=0,
+    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
     .vector=vector,
     .locs = locs
   };
