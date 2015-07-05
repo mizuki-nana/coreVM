@@ -214,9 +214,8 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Python features convergence (cont'd)        |            Apr, 2015
   Optimizations (cont'd)                      |            May, 2015
   Benchmark infrastructure                    |            Jun, 2015
-  Docker integration                          |            Jun, 2015
-  Continuous integration                      |            Jun, 2015
-  Initial working build *                     |            Jul, 2015
+  Optimizations (cont'd)                      |            Jul, 2015
+  Python features convergence (cont'd)        |            Jul, 2015
   Multi-threaded runtime                      |            TBD
   JIT optimizations                           |            TBD
   Debugging and Profiling APIs                |            TBD
