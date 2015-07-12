@@ -41,6 +41,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <iterator>
 #include <list>
+#include <limits>
 #include <ostream>
 #include <stack>
 #include <stdexcept>
@@ -72,16 +73,16 @@ private:
 public:
   virtual void operator()(const dynamic_object_type& obj)
   {
-    this->m_list.push_back(obj.ntvhndl_key());
+    this->m_ntvhndl_keys.push_back(obj.ntvhndl_key());
   }
 
-  const std::list<corevm::dyobj::ntvhndl_key>& list() const
+  const std::vector<corevm::dyobj::ntvhndl_key>& list() const
   {
-    return m_list;
+    return m_ntvhndl_keys;
   }
 
 private:
-  std::list<corevm::dyobj::ntvhndl_key> m_list;
+  std::vector<corevm::dyobj::ntvhndl_key> m_ntvhndl_keys;
 };
 
 // -----------------------------------------------------------------------------
@@ -95,6 +96,41 @@ private:
 
 } /* end namespace corevm */
 
+
+// -----------------------------------------------------------------------------
+
+const size_t DEFAULT_CALL_STACK_CAPACITY = 100;
+
+// -----------------------------------------------------------------------------
+
+const size_t DEFAULT_INVOCATION_STACK_CAPACITY = 100;
+
+// -----------------------------------------------------------------------------
+
+const size_t DEFAULT_OBJECT_STACK_CAPACITY = 100;
+
+// -----------------------------------------------------------------------------
+
+const size_t DEFAULT_COMPARTMENTS_TABLE_CAPACITY = 10;
+
+// -----------------------------------------------------------------------------
+
+
+// -----------------------------------------------------------------------------
+
+static_assert(
+  std::numeric_limits<corevm::runtime::vector::size_type>::max() >=
+  std::numeric_limits<corevm::runtime::instr_addr>::max(),
+  "Vector size incompatibility"
+);
+
+// -----------------------------------------------------------------------------
+
+static_assert(
+  std::numeric_limits<std::vector<corevm::runtime::compartment>::size_type>::max() >=
+  std::numeric_limits<corevm::runtime::compartment_id>::max(),
+  "Compartment ID incompatibility"
+);
 
 // -----------------------------------------------------------------------------
 
@@ -127,7 +163,7 @@ corevm::runtime::process::process()
   m_sig_instr_map(),
   m_compartments()
 {
-  // Do nothing here.
+  m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 }
 
 // -----------------------------------------------------------------------------
@@ -146,7 +182,7 @@ corevm::runtime::process::process(
   m_sig_instr_map(),
   m_compartments()
 {
-  // Do nothing here.
+  m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 }
 
 // -----------------------------------------------------------------------------
@@ -175,7 +211,8 @@ corevm::runtime::process::has_frame() const
 // -----------------------------------------------------------------------------
 
 corevm::runtime::frame&
-corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_error)
+corevm::runtime::process::top_frame()
+  throw(corevm::runtime::frame_not_found_error)
 {
   if (m_call_stack.empty())
   {
@@ -188,7 +225,8 @@ corevm::runtime::process::top_frame() throw(corevm::runtime::frame_not_found_err
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::pop_frame() throw(corevm::runtime::frame_not_found_error)
+corevm::runtime::process::pop_frame()
+  throw(corevm::runtime::frame_not_found_error)
 {
   corevm::runtime::frame& frame = this->top_frame();
 
@@ -257,7 +295,8 @@ corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 void
 corevm::runtime::process::emplace_frame(
   const corevm::runtime::closure_ctx& ctx,
-  corevm::runtime::compartment* compartment_ptr, corevm::runtime::closure* closure_ptr)
+  corevm::runtime::compartment* compartment_ptr,
+  corevm::runtime::closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -561,11 +600,11 @@ corevm::runtime::process::pre_start()
 #endif
 
     // Reserve initial storage.
-    m_call_stack.reserve(100);
+    m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
 
-    m_invocation_ctx_stack.reserve(100);
+    m_invocation_ctx_stack.reserve(DEFAULT_INVOCATION_STACK_CAPACITY);
 
-    m_dyobj_stack.reserve(100);
+    m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
 
     corevm::runtime::closure_ctx ctx {
       .compartment_id = 0,
@@ -600,7 +639,8 @@ corevm::runtime::process::start()
 
     const corevm::runtime::instr& instr = m_instrs[m_pc];
 
-    auto& handler = corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
+    auto& handler =
+      corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
 
     handler->execute(instr, *this);
 
@@ -818,7 +858,9 @@ corevm::runtime::compartment_id
 corevm::runtime::process::insert_compartment(
   const corevm::runtime::compartment&& compartment)
 {
-  m_compartments.push_back(compartment);
+  m_compartments.push_back(
+    std::forward<const corevm::runtime::compartment>(compartment));
+
   return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);
 }
 

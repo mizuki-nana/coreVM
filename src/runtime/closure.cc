@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "closure.h"
 
+#include <limits>
 #include <ostream>
 
 
@@ -30,6 +31,15 @@ namespace corevm {
 
 namespace runtime {
 
+
+// -----------------------------------------------------------------------------
+
+static_assert(
+  std::numeric_limits<closure_table::size_type>::max() >=
+  std::numeric_limits<corevm::runtime::closure_id>::max(),
+  "Closure ID incompatibility");
+
+// -----------------------------------------------------------------------------
 
 std::ostream& operator<<(
   std::ostream& ost, const corevm::runtime::closure& closure)
@@ -47,6 +57,8 @@ std::ostream& operator<<(
 
   return ost;
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */

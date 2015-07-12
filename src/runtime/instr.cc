@@ -39,6 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 
 // -----------------------------------------------------------------------------
@@ -1011,8 +1012,6 @@ corevm::runtime::instr_handler_cldobj::execute(
 
   corevm::types::native_type_handle hndl = frame.pop_eval_stack();
 
-  corevm::types::interface_to_bool(hndl);
-
   bool value = corevm::types::get_value_from_handle<bool>(hndl);
 
   corevm::runtime::variable_key key1 = static_cast<corevm::runtime::variable_key>(instr.oprd1);
@@ -1054,8 +1053,6 @@ corevm::runtime::instr_handler_setattrs::execute(
 
   corevm::types::native_type_handle hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
   corevm::types::native_type_handle res = hndl;
-
-  corevm::types::interface_to_map(res);
 
   corevm::types::native_map map = corevm::types::get_value_from_handle<
     corevm::types::native_map>(res);
@@ -1127,8 +1124,6 @@ corevm::runtime::instr_handler_rsetattrs::execute(
   auto& attr_obj = process.get_dyobj(attr_id);
 
   corevm::types::native_type_handle& hndl = frame.top_eval_stack();
-
-  corevm::types::interface_to_map(hndl);
 
   corevm::types::native_map map = corevm::types::get_value_from_handle<
     corevm::types::native_map>(hndl);
@@ -1421,8 +1416,6 @@ corevm::runtime::instr_handler_jmpif::execute(
 
   corevm::types::native_type_handle& hndl = frame.top_eval_stack();
 
-  corevm::types::interface_to_bool(hndl);
-
   bool value = corevm::types::get_value_from_handle<bool>(hndl);
 
   if (value)
@@ -1644,8 +1637,6 @@ corevm::runtime::instr_handler_putargs::execute(
   corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(key);
 
-  corevm::types::interface_to_ary(hndl);
-
   corevm::types::native_array array =
     corevm::types::get_value_from_handle<corevm::types::native_array>(hndl);
 
@@ -1668,8 +1659,6 @@ corevm::runtime::instr_handler_putkwargs::execute(
 
   corevm::dyobj::ntvhndl_key key = obj.ntvhndl_key();
   corevm::types::native_type_handle result = process.get_ntvhndl(key);
-
-  corevm::types::interface_to_map(result);
 
   corevm::types::native_map map =
     corevm::types::get_value_from_handle<corevm::types::native_map>(result);
@@ -1730,7 +1719,7 @@ corevm::runtime::instr_handler_getargs::execute(
     array.push_back(id);
   }
 
-  corevm::types::native_type_handle hndl = array;
+  corevm::types::native_type_handle hndl = std::move(array);
 
   frame.push_eval_stack(std::move(hndl));
 }
@@ -1745,7 +1734,7 @@ corevm::runtime::instr_handler_getkwargs::execute(
   corevm::runtime::invocation_ctx& invk_ctx = process.top_invocation_ctx();
   corevm::types::native_map map;
 
-  std::list<corevm::runtime::variable_key> params = invk_ctx.param_value_pair_keys();
+  std::vector<corevm::runtime::variable_key> params = invk_ctx.param_value_pair_keys();
 
   for (auto itr = params.begin(); itr != params.end(); ++itr)
   {
@@ -1755,7 +1744,7 @@ corevm::runtime::instr_handler_getkwargs::execute(
     map[key] = id;
   }
 
-  corevm::types::native_type_handle hndl = map;
+  corevm::types::native_type_handle hndl = std::move(map);
 
   frame.push_eval_stack(std::move(hndl));
 }
@@ -1795,7 +1784,6 @@ corevm::runtime::instr_handler_print::execute(
   }
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
-  corevm::types::interface_to_str(hndl);
 
   corevm::types::native_string native_str =
     corevm::types::get_value_from_handle<corevm::types::native_string>(hndl);
@@ -2971,8 +2959,6 @@ corevm::runtime::instr_handler_mapset::execute(
   corevm::runtime::frame& frame = process.top_frame();
 
   corevm::types::native_type_handle& res = frame.top_eval_stack();
-
-  corevm::types::interface_to_map(res);
 
   corevm::types::native_map map = corevm::types::get_value_from_handle<
     corevm::types::native_map>(res);

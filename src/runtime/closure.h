@@ -28,10 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "loc_info.h"
 #include "vector.h"
 
-#include <limits>
 #include <ostream>
 #include <string>
-#include <type_traits>
 #include <vector>
 
 
@@ -56,13 +54,6 @@ typedef struct closure
 // -----------------------------------------------------------------------------
 
 typedef std::vector<corevm::runtime::closure> closure_table;
-
-// -----------------------------------------------------------------------------
-
-static_assert(
-  std::numeric_limits<closure_table::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::closure_id>::max(),
-  "Closure ID incompatibility");
 
 // -----------------------------------------------------------------------------
 

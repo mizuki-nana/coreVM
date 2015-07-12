@@ -28,6 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <algorithm>
+
 
 // -----------------------------------------------------------------------------
 
@@ -74,14 +76,14 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParams)
   ASSERT_EQ(id1, invk_ctx.pop_param());
   ASSERT_EQ(id2, invk_ctx.pop_param());
 
+  ASSERT_EQ(false, invk_ctx.has_params());
+
   ASSERT_THROW(
     {
       invk_ctx.pop_param();
     },
     corevm::runtime::missing_parameter_error
   );
-
-  ASSERT_EQ(false, invk_ctx.has_params());
 }
 
 // -----------------------------------------------------------------------------
@@ -121,8 +123,8 @@ TEST_F(invocation_ctx_unittest, TestListParamValuePairKeys)
 {
   corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
 
-  std::list<corevm::runtime::variable_key> expected_keys {};
-  std::list<corevm::runtime::variable_key> actual_keys = invk_ctx.param_value_pair_keys();
+  std::vector<corevm::runtime::variable_key> expected_keys {};
+  std::vector<corevm::runtime::variable_key> actual_keys = invk_ctx.param_value_pair_keys();
 
   ASSERT_EQ(expected_keys, actual_keys);
 
@@ -137,8 +139,8 @@ TEST_F(invocation_ctx_unittest, TestListParamValuePairKeys)
   expected_keys = { key1, key2 };
   actual_keys = invk_ctx.param_value_pair_keys();
 
-  expected_keys.sort();
-  actual_keys.sort();
+  std::sort(expected_keys.begin(), expected_keys.end());
+  std::sort(actual_keys.begin(), actual_keys.end());
 
   ASSERT_EQ(expected_keys, actual_keys);
 }

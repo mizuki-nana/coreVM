@@ -30,8 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "errors.h"
 #include "dyobj/dyobj_id.h"
 
-#include <list>
 #include <unordered_map>
+#include <vector>
 
 
 namespace corevm {
@@ -40,7 +40,7 @@ namespace corevm {
 namespace runtime {
 
 
-typedef std::list<corevm::dyobj::dyobj_id> param_list_type;
+typedef std::vector<corevm::dyobj::dyobj_id> param_list_type;
 typedef std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> param_value_map_type;
 
 
@@ -77,7 +77,7 @@ public:
   const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key&)
     throw(corevm::runtime::missing_parameter_error);
 
-  std::list<corevm::runtime::variable_key> param_value_pair_keys() const;
+  std::vector<corevm::runtime::variable_key> param_value_pair_keys() const;
 
 private:
   corevm::runtime::closure_ctx m_closure_ctx;
@@ -85,6 +85,7 @@ private:
   corevm::runtime::closure* m_closure_ptr;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
+  size_t m_params_list_pop_index;
 };
 
 

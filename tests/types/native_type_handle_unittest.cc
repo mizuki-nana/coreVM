@@ -109,6 +109,46 @@ public:
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_type_handle_unittest, TestGetValueFromHandle)
+{
+  corevm::types::native_string str = "Hello world";
+  corevm::types::native_type_handle hndl = str;
+
+  corevm::types::native_string actual_string =
+    corevm::types::get_value_from_handle<corevm::types::native_string>(hndl);
+
+  ASSERT_EQ(actual_string, str);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_unittest, TestGetValueFromHandleWithInvalidType)
+{
+  corevm::types::native_string str = "Hello world";
+  corevm::types::native_type_handle hndl = str;
+
+  ASSERT_THROW(
+    {
+      corevm::types::get_value_from_handle<corevm::types::native_map>(hndl);
+    },
+    corevm::types::conversion_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_unittest, TestGetValueFromHandleWithCompatibleType)
+{
+  corevm::types::uint64 value = 10;
+  corevm::types::native_type_handle hndl = value;
+
+  bool actual_value = corevm::types::get_value_from_handle<bool>(hndl);
+
+  ASSERT_EQ(static_cast<bool>(value.value), actual_value);
+}
+
+// -----------------------------------------------------------------------------
+
 class native_type_handle_unary_operator_unittest : public native_type_handle_unittest {};
 
 // -----------------------------------------------------------------------------

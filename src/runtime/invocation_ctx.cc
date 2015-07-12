@@ -30,6 +30,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
+
+// -----------------------------------------------------------------------------
+
 corevm::runtime::invocation_ctx::invocation_ctx(
   const corevm::runtime::closure_ctx& ctx,
   corevm::runtime::compartment* compartment_ptr,
@@ -39,8 +43,10 @@ corevm::runtime::invocation_ctx::invocation_ctx(
   m_compartment_ptr(compartment_ptr),
   m_closure_ptr(closure_ptr),
   m_params_list(),
-  m_param_value_map()
+  m_param_value_map(),
+  m_params_list_pop_index(0)
 {
+  m_params_list.reserve(DEFAULT_PARAMS_LIST_CAPACITY);
 }
 
 // -----------------------------------------------------------------------------
@@ -88,7 +94,7 @@ corevm::runtime::invocation_ctx::param_value_map() const
 bool
 corevm::runtime::invocation_ctx::has_params() const
 {
-  return !m_params_list.empty();
+  return m_params_list_pop_index < m_params_list.size();
 }
 
 // -----------------------------------------------------------------------------
@@ -105,14 +111,12 @@ const corevm::dyobj::dyobj_id
 corevm::runtime::invocation_ctx::pop_param()
   throw(corevm::runtime::missing_parameter_error)
 {
-  if (m_params_list.empty())
+  if (m_params_list_pop_index >= m_params_list.size())
   {
     THROW(corevm::runtime::missing_parameter_error());
   }
 
-  corevm::dyobj::dyobj_id id = m_params_list.front();
-  m_params_list.pop_front();
-  return id;
+  return m_params_list[m_params_list_pop_index++];
 }
 
 // -----------------------------------------------------------------------------
@@ -164,10 +168,11 @@ corevm::runtime::invocation_ctx::pop_param_value_pair(
 
 // -----------------------------------------------------------------------------
 
-std::list<corevm::runtime::variable_key>
+std::vector<corevm::runtime::variable_key>
 corevm::runtime::invocation_ctx::param_value_pair_keys() const
 {
-  std::list<corevm::runtime::variable_key> keys;
+  std::vector<corevm::runtime::variable_key> keys;
+  keys.reserve(m_param_value_map.size());
 
   for (auto itr = m_param_value_map.begin();
        itr != m_param_value_map.end(); ++itr)

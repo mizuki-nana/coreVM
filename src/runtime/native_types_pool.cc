@@ -25,14 +25,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "utils.h"
 #include "corevm/macros.h"
 
+#include <limits>
 #include <ostream>
 
 
 namespace {
 
+// -----------------------------------------------------------------------------
+
 typedef corevm::runtime::native_types_pool _MyType;
 
+// -----------------------------------------------------------------------------
+
+static_assert(
+  std::numeric_limits<_MyType::container_type::size_type>::max() >=
+  std::numeric_limits<corevm::dyobj::ntvhndl_key>::max(),
+  "Native tyeps pool incompatibility"
+);
+
+// -----------------------------------------------------------------------------
+
 } /* anonymous namespace */
+
 
 
 // -----------------------------------------------------------------------------
