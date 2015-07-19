@@ -67,6 +67,10 @@ const size_t LOOP_COUNT = 80;
 
 // -----------------------------------------------------------------------------
 
+const size_t N = 10;
+
+// -----------------------------------------------------------------------------
+
 template <class allocation_scheme>
 class coreVMAllocatorRunner
 {
@@ -87,6 +91,20 @@ public:
     }
 
     for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+  }
+
+  void run_bulk()
+  {
+    void* mem[LOOP_COUNT * N];
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate_n(N, CHUNK_SIZE);
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT * N; ++i)
     {
       m_allocator.deallocate(mem[i]);
     }
@@ -132,6 +150,21 @@ public:
     for (size_t i = 0; i < LOOP_COUNT; ++i)
     {
       mem[i] = malloc(CHUNK_SIZE);
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      free(mem[i]);
+    }
+  }
+
+  void run_bulk()
+  {
+    void* mem[LOOP_COUNT];
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = calloc(N, CHUNK_SIZE);
     }
 
     for (size_t i = 0; i < LOOP_COUNT; ++i)
@@ -336,6 +369,19 @@ static void BenchmarkAllocator(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+template <class runner_cls>
+static void BenchmarkAllocatorBulkAllocation(benchmark::State& state)
+{
+  runner_cls runner;
+
+  while (state.KeepRunning())
+  {
+    runner.run_bulk();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK_TEMPLATE(BenchmarkAllocator, MallocRunner);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, StdAllocatorRunner);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, BoostPoolRunner<boost::default_user_allocator_malloc_free>);
@@ -354,5 +400,13 @@ BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::nex
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::buddy_allocation_scheme>);
+
+// -----------------------------------------------------------------------------
+
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, MallocRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::first_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
 
 // -----------------------------------------------------------------------------

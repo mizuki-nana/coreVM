@@ -85,6 +85,32 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(dynamic_object_heap_unittest, TestBulkCreate)
+{
+  const size_t N = 8;
+
+  auto * p = m_heap.create_dyobjs(N);
+  ASSERT_NE(nullptr, p);
+
+  for (size_t i = 0; i < N; ++i)
+  {
+    auto id = p[i].id();
+
+    ASSERT_NE(0, id);
+    auto & obj = m_heap.at(id);
+
+    ASSERT_EQ(id, obj.id());
+  }
+
+  // Clean up.
+  for (size_t i = 0; i < N; ++i)
+  {
+    m_heap.erase(p[i].id());
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
 {
   corevm::dyobj::dyobj_id id1 = 0;

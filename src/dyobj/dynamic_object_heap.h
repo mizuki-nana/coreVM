@@ -108,6 +108,9 @@ public:
   dynamic_object_id_type create_dyobj()
     throw(corevm::dyobj::object_creation_error);
 
+  dynamic_object_type* create_dyobjs(size_t n)
+    throw(corevm::dyobj::object_creation_error);
+
 private:
   dynamic_object_container_type m_container;
 };
@@ -298,6 +301,30 @@ corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobj()
   obj_ptr->manager().on_create();
 
   return id;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class dynamic_object_manager>
+typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::dynamic_object_type*
+corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::create_dyobjs(size_t n)
+  throw(corevm::dyobj::object_creation_error)
+{
+  auto ptr = m_container.create(n);
+
+  if (ptr == nullptr)
+  {
+    THROW(corevm::dyobj::object_creation_error());
+  }
+
+  for (size_t i = 0; i < n; ++i)
+  {
+    auto id = corevm::dyobj::obj_ptr_to_id(&ptr[i]);
+    ptr[i].set_id(id);
+    ptr[i].manager().on_create();
+  }
+
+  return ptr;
 }
 
 // -----------------------------------------------------------------------------

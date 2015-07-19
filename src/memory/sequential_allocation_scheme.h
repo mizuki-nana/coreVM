@@ -60,6 +60,7 @@ public:
   using const_iterator = list_type::const_iterator;
 
   virtual ssize_t malloc(size_t) noexcept;
+  virtual ssize_t calloc(size_t, size_t) noexcept;
   virtual ssize_t free(size_t) noexcept;
 
   void debug_print(uint32_t) const noexcept;
@@ -119,6 +120,8 @@ class next_fit_allocation_scheme : public corevm::memory::sequential_allocation_
 public:
   explicit next_fit_allocation_scheme(size_t total_size);
 
+  virtual ssize_t free(size_t) noexcept;
+
 protected:
   virtual iterator find_fit(size_t) noexcept;
 
@@ -133,6 +136,8 @@ public:
   explicit buddy_allocation_scheme(size_t total_size);
 
   virtual ssize_t malloc(size_t) noexcept;
+  virtual ssize_t calloc(size_t, size_t) noexcept;
+
 protected:
   virtual sequential_block_descriptor default_block() const noexcept;
   virtual iterator find_fit(size_t) noexcept;

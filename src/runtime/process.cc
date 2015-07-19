@@ -142,6 +142,14 @@ corevm::runtime::process::create_dyobj()
 
 // -----------------------------------------------------------------------------
 
+corevm::runtime::process::dynamic_object_type*
+corevm::runtime::process::create_dyobjs(size_t n)
+{
+  return m_dynamic_object_heap.create_dyobjs(n);
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::runtime::process::dynamic_object_type&
 corevm::runtime::process::get_dyobj(corevm::dyobj::dyobj_id id)
 {

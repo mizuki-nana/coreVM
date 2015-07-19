@@ -37,9 +37,17 @@ template<typename AllocationSchemeType>
 class allocator_unittest : public ::testing::Test
 {
 protected:
+  /**
+   * TODO: Remove helper methods.
+   */
   void* allocate(size_t size) noexcept
   {
     return m_allocator.allocate(size);
+  }
+
+  void* allocate_n(size_t num, size_t size) noexcept
+  {
+    return m_allocator.allocate_n(num, size);
   }
 
   int deallocate(void* ptr) noexcept
@@ -314,6 +322,109 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
       for (auto i = 0; i < ptrs.size(); ++i)
       {
         int res = this->deallocate(static_cast<void*>(ptrs[i]));
+        ASSERT_EQ(1, res);
+      }
+  });
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroNumber)
+{
+  const size_t num = 0;
+  const size_t size = HEAP_STORAGE_FOR_TEST / 4;
+
+  void* p = this->allocate_n(num, size);
+  ASSERT_EQ(nullptr, p);
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroSize)
+{
+  const size_t num = 4;
+  const size_t size = 0;
+
+  void* p = this->allocate_n(num, size);
+  ASSERT_EQ(nullptr, p);
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocOnFullCapacitySucceeds)
+{
+  this->run(
+    [this]() {
+      const size_t num = 8;
+      const size_t size = HEAP_STORAGE_FOR_TEST / num;
+
+      ASSERT_EQ(HEAP_STORAGE_FOR_TEST, num * size);
+
+      void* p = this->allocate_n(num, size);
+      ASSERT_NE(nullptr, p);
+
+      for (size_t i = 0; i < num; ++i)
+      {
+        int res = this->deallocate(static_cast<char*>(p) + i * size);
+        ASSERT_EQ(1, res);
+      }
+
+      int res = this->deallocate(p);
+      ASSERT_EQ(-1, res);
+  });
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithExcessiveSizeFails)
+{
+  const size_t num = 100;
+  const size_t size = HEAP_STORAGE_FOR_TEST;
+
+  ASSERT_LT(HEAP_STORAGE_FOR_TEST, num * size);
+
+  void* p = this->allocate_n(num, size);
+  ASSERT_EQ(nullptr, p);
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(sequential_allocation_schemes_unittest, TestInterleavedCallocAndMalloc)
+{
+  this->run(
+    [this]() {
+      const size_t num = 8;
+      const size_t size = HEAP_STORAGE_FOR_TEST / num;
+
+      void* p = this->allocate_n(num, size);
+      ASSERT_NE(nullptr, p);
+
+      int res = -1;
+
+      // Deallocate memories at indices 1, 3, 5, 7
+      res = this->deallocate(static_cast<char*>(p) + size * 1);
+      ASSERT_EQ(1, res);
+
+      res = this->deallocate(static_cast<char*>(p) + size * 3);
+      ASSERT_EQ(1, res);
+
+      res = this->deallocate(static_cast<char*>(p) + size * 5);
+      ASSERT_EQ(1, res);
+
+      res = this->deallocate(static_cast<char*>(p) + size * 7);
+      ASSERT_EQ(1, res);
+
+      // Allocate 4 times.
+      for (size_t i = 0; i < 4; ++i)
+      {
+        void* p_new = this->allocate(size);
+        ASSERT_NE(nullptr, p_new);
+      }
+
+      // Deallocate all memories.
+      for (size_t i = 0; i < num; ++i)
+      {
+        res = this->deallocate(static_cast<char*>(p) + size * i);
         ASSERT_EQ(1, res);
       }
   });

@@ -145,13 +145,14 @@ corevm::memory::sequential_allocation_scheme::combine_free_blocks() noexcept
     }
   }
 
-  std::remove_if(
+  auto new_end_itr = std::remove_if(
     m_blocks.begin(),
     m_blocks.end(),
     [](const block_descriptor_type& block) -> bool {
-      return block.actual_size == 0 && block.size == 0;
+      return block.actual_size == 0u && block.size == 0u;
     }
   );
+  m_blocks.erase(new_end_itr, m_blocks.end());
 }
 
 // -----------------------------------------------------------------------------
@@ -181,6 +182,54 @@ corevm::memory::sequential_allocation_scheme::malloc(size_t size) noexcept
     res = static_cast<ssize_t>(block_found.offset);
 
     *itr = block_found;
+  }
+
+  return res;
+}
+
+// -----------------------------------------------------------------------------
+
+ssize_t
+corevm::memory::sequential_allocation_scheme::calloc(size_t num, size_t size) noexcept
+{
+  // TODO: [COREVM-282] Optimize allocator
+  ssize_t res = -1;
+  size_t alloc_size = size * num;
+
+  iterator_type itr = this->find_fit(alloc_size);
+
+  if (itr != m_blocks.end())
+  {
+    block_descriptor_type block_found = static_cast<block_descriptor_type>(*itr);
+
+    if (block_found.size > alloc_size)
+    {
+      this->split(
+        itr, block_found.size - alloc_size,
+        static_cast<uint64_t>(block_found.offset + alloc_size));
+    }
+
+    block_found.size = size;
+    block_found.actual_size = size;
+    *itr = block_found;
+
+    res = static_cast<ssize_t>(block_found.offset);
+
+    if (num > 1)
+    {
+      uint64_t offset = block_found.offset + (uint64_t)size;
+      std::vector<block_descriptor_type> descriptors(num - 1);
+
+      for (size_t i = 0; i < descriptors.size(); ++i)
+      {
+        descriptors[i].size = size;
+        descriptors[i].actual_size = size;
+        descriptors[i].offset = offset;
+
+        offset += (uint64_t)size;
+      }
+      this->m_blocks.insert(++itr, descriptors.begin(), descriptors.end());
+    }
   }
 
   return res;
@@ -235,6 +284,11 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     return block.offset == offset && block.actual_size != 0;
   };
 
+  itr = std::find_if(m_blocks.begin(), m_blocks.end(), pred);
+
+  /**
+   * TODO: Investigate benefits of binary search instead of linear search.
+   *
   if (m_blocks.size() <= LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD &&
       !SUPPRESS_LINEAR_SEARCH)
   {
@@ -252,6 +306,8 @@ corevm::memory::sequential_allocation_scheme::free(size_t offset) noexcept
     block_descriptor_type ref { .offset = offset };
     itr = binary_find_if(m_blocks.begin(), m_blocks.end(), ref, comp, pred);
   }
+  *
+  **/
 
   if (itr != m_blocks.end())
   {
@@ -454,6 +510,23 @@ corevm::memory::next_fit_allocation_scheme::find_fit(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
+ssize_t
+corevm::memory::next_fit_allocation_scheme::free(size_t offset) noexcept
+{
+  if (m_last_itr != m_blocks.end())
+  {
+    const block_descriptor_type& block = *m_last_itr;
+    if (block.offset == offset)
+    {
+      m_last_itr = m_blocks.end();
+    }
+  }
+
+  return corevm::memory::sequential_allocation_scheme::free(offset);
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* ---------------- corevm::memory::buddy_allocation_scheme ----------------- */
 
@@ -510,6 +583,15 @@ corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
   }
 
   return res;
+}
+
+// -----------------------------------------------------------------------------
+
+ssize_t
+corevm::memory::buddy_allocation_scheme::calloc(size_t num, size_t size) noexcept
+{
+  // Buddy allocation scheme does not currently support `calloc`.
+  return -1;
 }
 
 // -----------------------------------------------------------------------------

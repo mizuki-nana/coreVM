@@ -53,6 +53,13 @@ public:
   allocator& operator=(const allocator&) = delete;
 
   void* allocate(size_t) noexcept;
+
+  /**
+   * Allocates `N` chunks of memory each of size `size`.
+   * Each chunk of memory can be deallocated individually.
+   */
+  void* allocate_n(size_t N, size_t size) noexcept;
+
   int deallocate(void*) noexcept;
 
   void debug_print() const noexcept;
@@ -143,6 +150,42 @@ corevm::memory::allocator<allocation_scheme>::allocate(size_t size) noexcept
     uint8_t* base = static_cast<uint8_t*>(m_heap);
     ptr = base + static_cast<uint32_t>(offset);
     m_allocated_size += static_cast<uint64_t>(size);
+
+#if __DEBUG__
+    ASSERT(m_allocated_size <= m_total_size);
+#endif
+  }
+
+  return ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class allocation_scheme>
+void*
+corevm::memory::allocator<allocation_scheme>::allocate_n(size_t num, size_t size) noexcept
+{
+  void* ptr = nullptr;
+
+  size_t alloc_size = size * num;
+
+  if (alloc_size > m_total_size)
+  {
+    return ptr;
+  }
+
+  if (!(alloc_size > 0))
+  {
+    return ptr;
+  }
+
+  ssize_t offset = m_allocation_scheme.calloc(num, size);
+
+  if (offset >= 0)
+  {
+    uint8_t* base = static_cast<uint8_t*>(m_heap);
+    ptr = base + static_cast<uint32_t>(offset);
+    m_allocated_size += static_cast<uint64_t>(alloc_size);
 
 #if __DEBUG__
     ASSERT(m_allocated_size <= m_total_size);

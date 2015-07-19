@@ -1154,7 +1154,10 @@ corevm::runtime::instr_handler_setattrs2::execute(
   corevm::dyobj::dyobj_id target_id = process.top_stack();
   auto& target_obj = process.get_dyobj(target_id);
 
-  for (auto itr = src_obj.begin(); itr != src_obj.end(); ++itr)
+  auto * objects = process.create_dyobjs(src_obj.attr_count());
+
+  size_t i = 0;
+  for (auto itr = src_obj.begin(); itr != src_obj.end(); ++itr, ++i)
   {
     corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(itr->first);
 
@@ -1162,14 +1165,13 @@ corevm::runtime::instr_handler_setattrs2::execute(
 
     auto &attr_obj = process.get_dyobj(attr_id);
 
-    auto cloned_attr_id = process.create_dyobj();
-    auto& cloned_attr_obj = process.get_dyobj(cloned_attr_id);
+    auto& cloned_attr_obj = objects[i];
 
     cloned_attr_obj.copy_from(attr_obj);
     cloned_attr_obj.manager().on_setattr();
     cloned_attr_obj.putattr(self_attr_key, target_id);
 
-    target_obj.putattr(attr_key, cloned_attr_id);
+    target_obj.putattr(attr_key, cloned_attr_obj.id());
   }
 }
 

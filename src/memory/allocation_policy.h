@@ -126,8 +126,16 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocate(
   typename std::allocator<void>::const_pointer
 )
 {
-  return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
-    m_allocator.allocate(n * sizeof(T)));
+  if (n == 1)
+  {
+    return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
+      m_allocator.allocate(sizeof(T)));
+  }
+  else
+  {
+    return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
+      m_allocator.allocate_n(n, sizeof(T)));
+  }
 }
 
 // -----------------------------------------------------------------------------

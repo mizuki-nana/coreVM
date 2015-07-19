@@ -75,6 +75,7 @@ protected:
   virtual void TearDown()
   {
     // Make sure test cases clean up the container properly.
+    ASSERT_EQ(0, m_container.size());
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
 
@@ -110,6 +111,64 @@ TEST_F(object_container_unittest, TestCreateAndUpdate)
     },
     corevm::memory::invalid_address_error
   );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(object_container_unittest, TestBulkCreateWithZeroNumber)
+{
+  const size_t N = 0;
+
+  T* p = m_container.create(N);
+  ASSERT_EQ(nullptr, p);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(object_container_unittest, TestBulkCreateAndUpdate)
+{
+  const size_t N = 8;
+
+  T* p = m_container.create(N);
+  ASSERT_NE(nullptr, p);
+
+  for (size_t i = 0; i < N; ++i)
+  {
+    p[i].data = i;
+  }
+
+  for (size_t i = 0; i < N; ++i)
+  {
+    T* t = m_container[&p[i]];
+    ASSERT_EQ(i, t->data);
+  }
+
+  ASSERT_EQ(N, m_container.size());
+
+  // Destroy objects 1, 3, 5, 7
+  for (size_t i = 0; (i * 2 + 1) < N; ++i)
+  {
+    m_container.destroy(&p[i * 2 + 1]);
+  }
+
+  ASSERT_EQ(4, m_container.size());
+
+  // Create four times.
+  for (size_t i = 0; i < 4; ++i)
+  {
+    T* t = m_container.create();
+    ASSERT_NE(nullptr, t);
+  }
+
+  ASSERT_EQ(N, m_container.size());
+
+  // Destroy all allocated objects.
+  for (size_t i = 0; i < N; ++i)
+  {
+    m_container.destroy(&p[i]);
+
+    ASSERT_EQ(nullptr, m_container[&p[i]]);
+  }
 }
 
 // -----------------------------------------------------------------------------

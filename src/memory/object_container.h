@@ -239,6 +239,8 @@ public:
 
   pointer create();
 
+  pointer create(size_t);
+
   pointer create(const_reference);
 
   pointer operator[](pointer);
@@ -360,6 +362,29 @@ corevm::memory::object_container<T, AllocatorType>::create()
   m_allocator.construct(p);
 
   m_addrs.insert(p);
+
+  return p;
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename AllocatorType>
+typename corevm::memory::object_container<T, AllocatorType>::pointer
+corevm::memory::object_container<T, AllocatorType>::create(size_t n)
+{
+  pointer p = m_allocator.allocate(n, 0);
+
+  if (!p)
+  {
+    return nullptr;
+  }
+
+  for (size_t i = 0; i < n; ++i)
+  {
+    m_allocator.construct(&p[i]);
+
+    m_addrs.insert(&p[i]);
+  }
 
   return p;
 }

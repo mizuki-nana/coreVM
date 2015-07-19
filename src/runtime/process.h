@@ -86,6 +86,8 @@ public:
 
   corevm::dyobj::dyobj_id create_dyobj();
 
+  dynamic_object_type* create_dyobjs(size_t n);
+
   dynamic_object_type& get_dyobj(corevm::dyobj::dyobj_id id);
 
   uint64_t call_stack_size() const;
