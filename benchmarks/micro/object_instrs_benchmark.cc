@@ -33,10 +33,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-#define STATE_RUN_LOOP()                            \
-  while (state.KeepRunning())                       \
-  {                                                 \
-      handler.execute(instr, fixture.process());    \
+#define STATE_RUN_LOOP()                                               \
+  while (state.KeepRunning())                                          \
+  {                                                                    \
+      handler.execute(instr, fixture.process(), &frame, &invk_ctx);    \
   }
 
 // -----------------------------------------------------------------------------
@@ -70,6 +70,9 @@ void BenchmarkObjectInstrs(benchmark::State& state)
 
   instr_benchmarks_fixture fixture;
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   STATE_RUN_LOOP();
 }
 
@@ -92,6 +95,9 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope(benchmark::State& sta
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_visible_var(var_key, id);
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   STATE_RUN_LOOP();
 }
@@ -116,6 +122,9 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope(benchmark::State& s
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_invisible_var(var_key, id);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   STATE_RUN_LOOP();
 }
 
@@ -139,6 +148,9 @@ void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
   {
     fixture.process().push_stack(id);
   }
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   STATE_RUN_LOOP();
 }
@@ -172,11 +184,14 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
   auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
   obj.putattr(attr_key, id2);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().push_stack(id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -206,12 +221,15 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::St
   auto id2 = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().push_stack(id);
     obj.putattr(attr_key, id2);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -229,12 +247,15 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(benchmark::State& stat
   auto id = fixture.process().create_dyobj();
   corevm::types::native_type_handle hndl = corevm::types::uint32(1);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().push_stack(id);
     fixture.process().top_frame().push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -253,12 +274,15 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
   auto& obj = fixture.process().get_dyobj(id);
   corevm::types::native_type_handle hndl = corevm::types::uint32(1);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().push_stack(id);
     obj.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -286,6 +310,9 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
     fixture.process().push_stack(id2);
   }
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   STATE_RUN_LOOP();
 }
 
@@ -308,11 +335,14 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration(benchmark
 
   auto id = fixture.process().create_dyobj();
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().top_frame().set_visible_var(var_key, id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -336,11 +366,14 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration(benchma
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_invisible_var(var_key, id);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
     fixture.process().top_frame().set_visible_var(var_key, id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -374,6 +407,9 @@ void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& st
   {
     fixture.process().top_frame().push_eval_stack(hndl);
   }
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   STATE_RUN_LOOP();
 }
@@ -414,6 +450,9 @@ BenchmarkSETATTRSInstr(benchmark::State& state)
     fixture.process().push_stack(id);
   }
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   STATE_RUN_LOOP();
 }
 
@@ -453,6 +492,9 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
   {
     fixture.process().top_frame().push_eval_stack(hndl);
   }
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   STATE_RUN_LOOP();
 }
@@ -518,6 +560,9 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
   {
     fixture.process().push_stack(id);
   }
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   STATE_RUN_LOOP();
 }

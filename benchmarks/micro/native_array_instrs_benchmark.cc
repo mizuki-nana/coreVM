@@ -46,11 +46,14 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
   corevm::runtime::instr_handler_arylen handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -67,11 +70,14 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
   corevm::runtime::instr_handler_aryemp handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -91,12 +97,15 @@ void BenchmarkInstrARYAT(benchmark::State& state)
   corevm::runtime::instr_handler_aryat handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
-    fixture.process().top_frame().push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -113,11 +122,14 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
   corevm::runtime::instr_handler_aryfrt handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -134,11 +146,14 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
   corevm::runtime::instr_handler_arybak handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -161,13 +176,16 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
   corevm::runtime::instr_handler_aryput handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
-    fixture.process().top_frame().push_eval_stack(hndl2);
-    fixture.process().top_frame().push_eval_stack(hndl3);
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl3);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -187,12 +205,15 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
   corevm::runtime::instr_handler_aryapnd handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
-    fixture.process().top_frame().push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -209,11 +230,14 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
   corevm::runtime::instr_handler_arypop handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -233,12 +257,15 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
   corevm::runtime::instr_handler_aryswp handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
-    fixture.process().top_frame().push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -255,11 +282,14 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
   corevm::runtime::instr_handler_aryclr handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
+    frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -279,12 +309,15 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
   corevm::runtime::instr_handler_arymrg handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().push_eval_stack(hndl);
-    fixture.process().top_frame().push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

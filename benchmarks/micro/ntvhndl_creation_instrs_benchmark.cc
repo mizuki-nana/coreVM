@@ -39,9 +39,12 @@ static void BenchmarkNtvhndlCreationInstrs(benchmark::State& state)
 
   instr_benchmarks_fixture fixture;
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-      handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

@@ -97,6 +97,12 @@ public:
   corevm::runtime::frame& top_frame()
     throw(corevm::runtime::frame_not_found_error);
 
+  /**
+   * Gets the top frame, only when the call stack is not empty.
+   * Will result in undefined behavior otherwise.
+   */
+  void top_frame(corevm::runtime::frame**);
+
   void push_frame(corevm::runtime::frame&);
 
   void emplace_frame(
@@ -114,6 +120,13 @@ public:
 
   corevm::runtime::invocation_ctx& top_invocation_ctx()
     throw(corevm::runtime::invocation_ctx_not_found_error);
+
+  /**
+   * Gets the top invocation context, only when the invocation stack
+   * is not empty.
+   * Will result in undefined behavior otherwise.
+   */
+  void top_invocation_ctx(corevm::runtime::invocation_ctx**);
 
   void push_invocation_ctx(const invocation_ctx&);
 

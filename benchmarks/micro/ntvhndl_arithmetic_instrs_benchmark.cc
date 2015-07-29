@@ -44,9 +44,12 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
   instr_benchmarks_fixture fixture;
   fixture.process().top_frame().push_eval_stack(oprd);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -66,9 +69,12 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
   fixture.process().top_frame().push_eval_stack(oprd1);
   fixture.process().top_frame().push_eval_stack(oprd2);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

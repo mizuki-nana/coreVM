@@ -51,9 +51,12 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
   corevm::runtime::instr_handler_putarg handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -74,9 +77,12 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
   corevm::runtime::instr_handler_putkwarg handler;
   corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -103,9 +109,12 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
   corevm::runtime::instr_handler_putargs handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -136,9 +145,12 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
   corevm::runtime::instr_handler_putkwargs handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -151,7 +163,7 @@ void BenchmarkInstrGETARG(benchmark::State& state)
 
   corevm::dyobj::dyobj_id id = 1;
 
-  for (size_t i = 0; i < 10000000; ++i)
+  for (size_t i = 0; i < 20000000; ++i)
   {
     fixture.process().top_invocation_ctx().put_param(id);
   }
@@ -159,9 +171,12 @@ void BenchmarkInstrGETARG(benchmark::State& state)
   corevm::runtime::instr_handler_getarg handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -182,11 +197,14 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
     .oprd2=0
   };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_invocation_ctx().put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -202,13 +220,16 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
   corevm::runtime::instr_handler_getargs handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_invocation_ctx().put_param(id);
-    fixture.process().top_invocation_ctx().put_param(id);
-    fixture.process().top_invocation_ctx().put_param(id);
+    invk_ctx->put_param(id);
+    invk_ctx->put_param(id);
+    invk_ctx->put_param(id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -225,13 +246,16 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
   corevm::runtime::instr_handler_getkwargs handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    fixture.process().top_invocation_ctx().put_param_value_pair(key, id);
-    fixture.process().top_invocation_ctx().put_param_value_pair(key, id);
-    fixture.process().top_invocation_ctx().put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, id);
 
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

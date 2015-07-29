@@ -233,6 +233,14 @@ corevm::runtime::process::top_frame()
 // -----------------------------------------------------------------------------
 
 void
+corevm::runtime::process::top_frame(corevm::runtime::frame** frame_ptr)
+{
+  *frame_ptr = &m_call_stack.back();
+}
+
+// -----------------------------------------------------------------------------
+
+void
 corevm::runtime::process::pop_frame()
   throw(corevm::runtime::frame_not_found_error)
 {
@@ -346,6 +354,15 @@ corevm::runtime::process::top_invocation_ctx()
   }
 
   return m_invocation_ctx_stack.back();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::top_invocation_ctx(
+  corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  *invk_ctx_ptr = &m_invocation_ctx_stack.back();
 }
 
 // -----------------------------------------------------------------------------
@@ -641,6 +658,17 @@ corevm::runtime::process::start()
     return;
   }
 
+#if __DEBUG__
+  ASSERT(!m_call_stack.empty());
+  ASSERT(!m_invocation_ctx_stack.empty());
+#endif
+
+  corevm::runtime::frame* frame = &m_call_stack.back();
+  corevm::runtime::invocation_ctx* invk_ctx = &m_invocation_ctx_stack.back();
+
+  corevm::runtime::frame** frame_ptr = &frame;
+  corevm::runtime::invocation_ctx** invk_ctx_ptr = &invk_ctx;
+
   while (can_execute())
   {
     while (m_pause_exec) {}
@@ -650,7 +678,7 @@ corevm::runtime::process::start()
     auto& handler =
       corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
 
-    handler->execute(instr, *this);
+    handler->execute(instr, *this, frame_ptr, invk_ctx_ptr);
 
     /**
      * TODO: [COREVM-246] Enable support for signal handling mechanism

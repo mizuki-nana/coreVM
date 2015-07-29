@@ -57,9 +57,12 @@ void BenchmarkInstrPINVK(benchmark::State& state)
   corevm::runtime::instr_handler_pinvk handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -73,9 +76,12 @@ void BenchmarkInstrINVK(benchmark::State& state)
   corevm::runtime::instr_handler_invk handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -138,9 +144,12 @@ void BenchmarkInstrJMP(benchmark::State& state)
   corevm::runtime::instr_handler_jmp handler;
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -157,9 +166,12 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
   corevm::types::native_type_handle hndl = corevm::types::boolean(true);
   fixture.process().top_frame().push_eval_stack(hndl);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -173,9 +185,12 @@ void BenchmarkInstrJMPR(benchmark::State& state)
   corevm::runtime::instr_handler_jmpr handler;
   corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -224,9 +239,12 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_exc_obj(id);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -242,9 +260,12 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
 
   fixture.process().top_frame().set_exc_obj(1);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -261,9 +282,12 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_exc_obj(id);
 
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
