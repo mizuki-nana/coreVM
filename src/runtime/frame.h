@@ -90,6 +90,14 @@ public:
   corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)
     const throw(corevm::runtime::name_not_found_error);
 
+  /**
+   * Gets the object id associated with the visible variable key in the frame,
+   * assuming the key already exists.
+   * Otherwise behavior is undefined.
+   */
+  corevm::dyobj::dyobj_id get_visible_var_fast(
+    const corevm::runtime::variable_key) const;
+
   corevm::dyobj::dyobj_id pop_visible_var(const corevm::runtime::variable_key)
     throw(corevm::runtime::name_not_found_error);
 
@@ -99,6 +107,14 @@ public:
 
   corevm::dyobj::dyobj_id get_invisible_var(const corevm::runtime::variable_key)
     const throw(corevm::runtime::name_not_found_error);
+
+  /**
+   * Gets the object id associated with the invisible variable key in the frame,
+   * assuming the key already exists.
+   * Otherwise behavior is undefined.
+   */
+  corevm::dyobj::dyobj_id get_invisible_var_fast(
+    const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id pop_invisible_var(const corevm::runtime::variable_key)
     throw(corevm::runtime::name_not_found_error);
@@ -115,6 +131,13 @@ public:
 
   corevm::runtime::closure* closure_ptr() const;
 
+  corevm::runtime::frame* parent() const;
+
+  /**
+   * Sets the optional parent of the frame in the process.
+   */
+  void set_parent(corevm::runtime::frame*);
+
   corevm::dyobj::dyobj_id exc_obj() const;
 
   void set_exc_obj(corevm::dyobj::dyobj_id exc_obj);
@@ -125,6 +148,7 @@ protected:
   const corevm::runtime::closure_ctx m_closure_ctx;
   corevm::runtime::compartment* m_compartment_ptr;
   corevm::runtime::closure* m_closure_ptr;
+  corevm::runtime::frame* m_parent;
   corevm::runtime::instr_addr m_return_addr;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;

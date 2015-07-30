@@ -90,7 +90,7 @@ protected:
   };
 
   corevm::runtime::compartment* m_compartment = new corevm::runtime::compartment("");
-  corevm::runtime::closure m_closure;
+  corevm::runtime::closure m_closure { .id = corevm::runtime::NONESET_CLOSURE_ID, .parent_id = corevm::runtime::NONESET_CLOSURE_ID };
   corevm::runtime::process m_process;
   corevm::runtime::frame* m_frame = new corevm::runtime::frame(m_ctx, m_compartment, &m_closure);
   corevm::runtime::invocation_ctx* m_invk_ctx = new corevm::runtime::invocation_ctx(m_ctx, m_compartment, &m_closure);

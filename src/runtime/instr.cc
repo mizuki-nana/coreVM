@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr.h"
 
 #include "process.h"
+#include "utils.h"
 #include "corevm/macros.h"
-#include "dyobj/util.h"
 #include "types/interfaces.h"
 #include "types/types.h"
 
@@ -66,31 +66,6 @@ std::ostream& operator<<(
   return ost;
 }
 
-// -----------------------------------------------------------------------------
-
-static corevm::dyobj::attr_key
-get_attr_key(
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key str_key)
-{
-  std::string attr_str;
-  compartment->get_encoding_string(str_key, &attr_str);
-
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
-
-  return attr_key;
-}
-
-// -----------------------------------------------------------------------------
-
-static corevm::dyobj::attr_key
-get_attr_key_from_current_compartment(
-  corevm::runtime::frame* frame,
-  corevm::runtime::encoding_key str_key)
-{
-  return get_attr_key(
-    frame->compartment_ptr(), str_key);
-}
 
 // -----------------------------------------------------------------------------
 
@@ -486,8 +461,7 @@ corevm::runtime::instr_handler_ldobj::execute(
 
   while (!frame->has_visible_var(key))
   {
-    frame = corevm::runtime::process::find_parent_frame_in_process(
-      frame, process);
+    frame = frame->parent();
 
     if (!frame)
     {
@@ -495,7 +469,7 @@ corevm::runtime::instr_handler_ldobj::execute(
     }
   }
 
-  auto id = frame->get_visible_var(key);
+  auto id = frame->get_visible_var_fast(key);
 
   process.push_stack(id);
 }
@@ -524,8 +498,9 @@ corevm::runtime::instr_handler_getattr::execute(
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
-  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
-    *frame_ptr, str_key);
+  auto frame = *frame_ptr;
+  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
+    frame->compartment_ptr(), str_key);
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
@@ -542,8 +517,9 @@ corevm::runtime::instr_handler_setattr::execute(
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
-  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
-    *frame_ptr, str_key);
+  auto frame = *frame_ptr;
+  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
+    frame->compartment_ptr(), str_key);
 
   corevm::dyobj::dyobj_id attr_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_id = process.pop_stack();
@@ -612,8 +588,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
   while (!frame->has_invisible_var(key))
   {
-    frame = corevm::runtime::process::find_parent_frame_in_process(
-      frame, process);
+    frame = frame->parent();
 
     if (!frame)
     {
@@ -621,7 +596,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
     }
   }
 
-  auto id = frame->get_invisible_var(key);
+  auto id = frame->get_invisible_var_fast(key);
 
   process.push_stack(id);
 }
@@ -1016,8 +991,7 @@ corevm::runtime::instr_handler_cldobj::execute(
 
   while (!frame->has_visible_var(key))
   {
-    frame = corevm::runtime::process::find_parent_frame_in_process(
-      frame, process);
+    frame = frame->parent();
 
     if (!frame)
     {
@@ -1025,7 +999,7 @@ corevm::runtime::instr_handler_cldobj::execute(
     }
   }
 
-  auto id = frame->get_visible_var(key);
+  auto id = frame->get_visible_var_fast(key);
 
   process.push_stack(id);
 }
@@ -1069,7 +1043,7 @@ corevm::runtime::instr_handler_setattrs::execute(
   {
     uint64_t str_key = static_cast<uint64_t>(itr->first);
 
-    corevm::dyobj::attr_key attr_key = get_attr_key(compartment, str_key);
+    corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(compartment, str_key);
 
     corevm::dyobj::dyobj_id attr_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
@@ -1111,8 +1085,8 @@ corevm::runtime::instr_handler_rsetattrs::execute(
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
 
   corevm::runtime::frame* frame = *frame_ptr;
-  corevm::dyobj::attr_key attr_key = get_attr_key_from_current_compartment(
-    frame, str_key);
+  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
+    frame->compartment_ptr(), str_key);
 
   corevm::dyobj::dyobj_id attr_id = process.top_stack();
   auto& attr_obj = process.get_dyobj(attr_id);
@@ -1140,8 +1114,9 @@ corevm::runtime::instr_handler_setattrs2::execute(
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   auto self_str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
-  corevm::dyobj::attr_key self_attr_key = get_attr_key_from_current_compartment(
-    *frame_ptr, self_str_key);
+  auto frame = *frame_ptr;
+  corevm::dyobj::attr_key self_attr_key = get_attr_key(
+    frame->compartment_ptr(), self_str_key);
 
   corevm::dyobj::dyobj_id src_id = process.pop_stack();
   auto& src_obj = process.get_dyobj(src_id);

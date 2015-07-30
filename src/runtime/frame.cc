@@ -39,6 +39,7 @@ corevm::runtime::frame::frame(
   m_closure_ctx(closure_ctx),
   m_compartment_ptr(compartment_ptr),
   m_closure_ptr(closure_ptr),
+  m_parent(nullptr),
   m_return_addr(corevm::runtime::NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
@@ -60,6 +61,7 @@ corevm::runtime::frame::frame(
   m_closure_ctx(closure_ctx),
   m_compartment_ptr(compartment_ptr),
   m_closure_ptr(closure_ptr),
+  m_parent(nullptr),
   m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
@@ -182,11 +184,21 @@ corevm::runtime::frame::get_visible_var(
   const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::name_not_found_error)
 {
-  if (!has_visible_var(var_key))
+  auto itr = m_visible_vars.find(var_key);
+  if (itr == m_visible_vars.end())
   {
     THROW(corevm::runtime::name_not_found_error());
   }
 
+  return itr->second;
+};
+
+// -----------------------------------------------------------------------------
+
+corevm::dyobj::dyobj_id
+corevm::runtime::frame::get_visible_var_fast(
+  const corevm::runtime::variable_key var_key) const
+{
   return m_visible_vars.at(var_key);
 };
 
@@ -227,11 +239,21 @@ corevm::runtime::frame::get_invisible_var(
   const corevm::runtime::variable_key var_key) const
   throw(corevm::runtime::name_not_found_error)
 {
-  if (!has_invisible_var(var_key))
+  auto itr = m_invisible_vars.find(var_key);
+  if (itr == m_invisible_vars.end())
   {
     THROW(corevm::runtime::name_not_found_error());
   }
 
+  return itr->second;
+};
+
+// -----------------------------------------------------------------------------
+
+corevm::dyobj::dyobj_id
+corevm::runtime::frame::get_invisible_var_fast(
+  const corevm::runtime::variable_key var_key) const
+{
   return m_invisible_vars.at(var_key);
 };
 
@@ -310,6 +332,22 @@ corevm::runtime::closure*
 corevm::runtime::frame::closure_ptr() const
 {
   return m_closure_ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::frame*
+corevm::runtime::frame::parent() const
+{
+  return m_parent;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::frame::set_parent(corevm::runtime::frame* parent)
+{
+  m_parent = parent;
 }
 
 // -----------------------------------------------------------------------------

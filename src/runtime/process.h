@@ -247,6 +247,8 @@ private:
 
   void check_invk_ctx_stack_capacity();
 
+  void set_parent_for_top_frame();
+
   bool m_pause_exec;
   uint8_t m_gc_flag;
   corevm::runtime::instr_addr m_pc;

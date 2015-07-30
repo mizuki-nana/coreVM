@@ -298,8 +298,8 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   };
 
   corevm::runtime::closure closure {
-    .id=1,
-    .parent_id=0,
+    .id=0,
+    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
     .vector=vector
   };
 
@@ -456,9 +456,9 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
 
   corevm::runtime::compartment_id compartment_id = 0;
 
-  corevm::runtime::closure_id closure_id1 = 100;
-  corevm::runtime::closure_id closure_id2 = 200;
-  corevm::runtime::closure_id closure_id3 = 300;
+  corevm::runtime::closure_id closure_id1 = 0;
+  corevm::runtime::closure_id closure_id2 = 1;
+  corevm::runtime::closure_id closure_id3 = 2;
 
   corevm::runtime::closure_ctx ctx1 {
     .compartment_id = compartment_id,
@@ -475,8 +475,30 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
     .closure_id = closure_id3
   };
 
-  corevm::runtime::frame frame1(ctx3, nullptr, nullptr);
-  corevm::runtime::frame frame2(ctx2, nullptr, nullptr);
+  corevm::runtime::closure closure1 {
+    .id = closure_id1,
+    .parent_id = closure_id2
+  };
+
+  corevm::runtime::closure closure2 {
+    .id = closure_id2,
+    .parent_id = closure_id3
+  };
+
+  corevm::runtime::closure closure3 {
+    .id = closure_id3,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure_table closure_table {
+    closure1, closure2, closure3 };
+
+  corevm::runtime::compartment compartment("");
+  compartment.set_closure_table(std::move(closure_table));
+  process.insert_compartment(compartment);
+
+  corevm::runtime::frame frame1(ctx3, &compartment, &closure1);
+  corevm::runtime::frame frame2(ctx2, &compartment, &closure2);
 
   corevm::runtime::frame* ptr = nullptr;
 

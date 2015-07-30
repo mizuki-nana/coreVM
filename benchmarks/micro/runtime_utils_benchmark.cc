@@ -20,55 +20,32 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_RUNTIME_UTILS_H_
-#define COREVM_RUNTIME_UTILS_H_
+#include <benchmark/benchmark.h>
 
-#include "dyobj/common.h"
-#include "common.h"
+#include "runtime/common.h"
+#include "runtime/compartment.h"
+#include "runtime/utils.h"
 
-#include <cstdint>
-
-
-namespace corevm {
-
-
-namespace runtime {
-
-
-/** Forward declaration of `corevm::runtime::compartment`. */
-class compartment;
-
-
-using corevm::dyobj::ntvhndl_key;
 
 // -----------------------------------------------------------------------------
 
-inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
+static
+void BenchmarkGetAttrKey(benchmark::State& state)
 {
-  return static_cast<ntvhndl_key>( (uint8_t*)(ptr) - (uint8_t*)(NULL) );
+  corevm::runtime::encoding_key key = 0;
+  corevm::runtime::encoding_map encoding_table { "hello_world" };
+
+  corevm::runtime::compartment compartment("");
+  compartment.set_encoding_map(encoding_table);
+
+  while (state.KeepRunning())
+  {
+    corevm::runtime::get_attr_key(&compartment, key);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
-{
-  return reinterpret_cast<void*>(key);
-}
+BENCHMARK(BenchmarkGetAttrKey);
 
 // -----------------------------------------------------------------------------
-
-corevm::dyobj::attr_key
-get_attr_key(
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key str_key);
-
-// -----------------------------------------------------------------------------
-
-
-}; /* end namespace runtime */
-
-
-}; /* end namespace corevm */
-
-
-#endif /* COREVM_RUNTIME_UTILS_H_ */

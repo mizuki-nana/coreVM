@@ -286,6 +286,9 @@ corevm::runtime::process::pop_frame()
 void
 corevm::runtime::process::check_call_stack_capacity()
 {
+  // NOTE: Pointers of frames on the call stack are used to set as parents
+  // on frames. If memories for frames are ever relocated here, we need to
+  // reset the pointers.
   size_t current_size = m_call_stack.size();
   if (current_size == m_call_stack.capacity())
   {
@@ -304,6 +307,8 @@ corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 {
   check_call_stack_capacity();
   m_call_stack.push_back(frame);
+
+  set_parent_for_top_frame();
 }
 
 // -----------------------------------------------------------------------------
@@ -318,6 +323,8 @@ corevm::runtime::process::emplace_frame(
   ASSERT(closure_ptr);
   check_call_stack_capacity();
   m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
+
+  set_parent_for_top_frame();
 }
 
 // -----------------------------------------------------------------------------
@@ -332,6 +339,20 @@ corevm::runtime::process::emplace_frame(
   ASSERT(closure_ptr);
   check_call_stack_capacity();
   m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr, return_addr);
+
+  set_parent_for_top_frame();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::set_parent_for_top_frame()
+{
+  corevm::runtime::frame* frame = &m_call_stack.back();
+  corevm::runtime::frame* parent =
+    corevm::runtime::process::find_parent_frame_in_process(frame, *this);
+
+  frame->set_parent(parent);
 }
 
 // -----------------------------------------------------------------------------
