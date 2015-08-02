@@ -28,6 +28,7 @@ FRONTEND=frontend
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(MEMORY)/allocation_policy_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(MEMORY)/allocator_unittest.cc
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(MEMORY)/block_allocator_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(MEMORY)/object_container_unittest.cc
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(DYOBJ)/dynamic_object_heap_unittest.cc

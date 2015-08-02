@@ -62,4 +62,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 
+// Can remove this macro once the following is done:
+// TODO: [COREVM-286] Consolidate usage of sequential and block allocators
+#define USE_BLOCK_ALLOCATOR 1
+
+
 #endif /* COREVM_MACROS_H_ */

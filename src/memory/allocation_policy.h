@@ -24,7 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_ALLOCATION_POLICY_H_
 
 #include "corevm/macros.h"
-#include "memory/allocator.h"
+
+#if USE_BLOCK_ALLOCATOR
+  #include "memory/block_allocator.h"
+#else
+  #include "memory/allocator.h"
+#endif
 
 #include <sneaker/allocator/alloc_policy.h>
 
@@ -72,7 +77,12 @@ public:
   inline uint64_t max_size() const;
 
 protected:
+
+#if USE_BLOCK_ALLOCATOR
+  corevm::memory::block_allocator<T> m_allocator;
+#else
   corevm::memory::allocator<AllocationScheme> m_allocator;
+#endif
 };
 
 
@@ -126,6 +136,10 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocate(
   typename std::allocator<void>::const_pointer
 )
 {
+#if USE_BLOCK_ALLOCATOR
+  return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
+      m_allocator.allocate_n(n));
+#else
   if (n == 1)
   {
     return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
@@ -136,6 +150,7 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocate(
     return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
       m_allocator.allocate_n(n, sizeof(T)));
   }
+#endif
 }
 
 // -----------------------------------------------------------------------------

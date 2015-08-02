@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "memory/allocator.h"
+#include "memory/block_allocator.h"
 #include "memory/sequential_allocation_scheme.h"
 
 #include <boost/pool/object_pool.hpp>
@@ -72,10 +73,10 @@ const size_t N = 10;
 // -----------------------------------------------------------------------------
 
 template <class allocation_scheme>
-class coreVMAllocatorRunner
+class coreVM_SequentialAllocatorRunner
 {
 public:
-  coreVMAllocatorRunner()
+  coreVM_SequentialAllocatorRunner()
     :
     m_allocator(CHUNK_SIZE * LOOP_COUNT)
   {
@@ -112,6 +113,50 @@ public:
 
 private:
   corevm::memory::allocator<allocation_scheme> m_allocator;
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorRunner()
+    :
+    m_allocator(CHUNK_SIZE * LOOP_COUNT)
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT];
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+  }
+
+  void run_bulk()
+  {
+    void* mem[LOOP_COUNT * N];
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate_n(N);
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT * N; ++i)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+  }
+
+private:
+  corevm::memory::block_allocator<T> m_allocator;
 };
 
 // -----------------------------------------------------------------------------
@@ -395,18 +440,20 @@ BENCHMARK_TEMPLATE(BenchmarkAllocator, BoostObjectPoolRunner<boost::default_user
 BENCHMARK_TEMPLATE(BenchmarkAllocator, BoostSingletonPoolRunner<boost::default_user_allocator_malloc_free>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, BoostSingletonPoolRunner<boost::default_user_allocator_new_delete>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, BoostSimpleSegregatedStorageRunner);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::first_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVMAllocatorRunner<corevm::memory::buddy_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::first_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::buddy_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorRunner);
 
 // -----------------------------------------------------------------------------
 
 BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, MallocRunner);
-BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::first_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVMAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::first_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_BlockAllocatorRunner);
 
 // -----------------------------------------------------------------------------
