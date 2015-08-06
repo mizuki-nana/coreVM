@@ -87,8 +87,72 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkGetVisibleVariable1(benchmark::State& state)
+{
+  corevm::runtime::closure_ctx ctx;
+
+  corevm::runtime::frame frame(ctx, NULL, NULL);
+
+  corevm::runtime::variable_key key = 1;
+  corevm::dyobj::dyobj_id id = 2;
+
+  frame.set_visible_var(key, id);
+
+  while (state.KeepRunning())
+  {
+    frame.get_visible_var(key);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkGetVisibleVariable2(benchmark::State& state)
+{
+  /**
+   * Similar to `BenchmarkGetVisibleVariable1` above,
+   * this benchmark demonstrates the speed of fetching a variable
+   * when traversing the frames hierarchy.
+   *
+   * NOTE: based on the results observed, it shows that the run time
+   * grows linearly as the number of frames have to traverse grows.
+   */
+  corevm::runtime::closure_ctx ctx;
+
+  corevm::runtime::frame frame1(ctx, NULL, NULL);
+  corevm::runtime::frame frame2(ctx, NULL, NULL);
+  corevm::runtime::frame frame3(ctx, NULL, NULL);
+
+  frame1.set_parent(&frame2);
+  frame2.set_parent(&frame3);
+
+  corevm::runtime::variable_key key = 1;
+  corevm::dyobj::dyobj_id id = 2;
+
+  frame1.set_visible_var(key + 1, id);
+  frame2.set_visible_var(key + 2, id);
+  frame3.set_visible_var(key, id);
+
+  while (state.KeepRunning())
+  {
+    corevm::runtime::frame* frame = &frame1;
+
+    while (!frame->has_visible_var(key))
+    {
+      frame = frame->parent();
+    }
+
+    frame->get_visible_var(key);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkPushEvalStack);
 BENCHMARK(BenchmarkPushEvalStack2);
 BENCHMARK(BenchmarkPopEvalStack);
+BENCHMARK(BenchmarkGetVisibleVariable1);
+BENCHMARK(BenchmarkGetVisibleVariable2);
 
 // -----------------------------------------------------------------------------
