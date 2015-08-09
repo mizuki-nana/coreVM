@@ -195,12 +195,21 @@ corevm::runtime::frame::get_visible_var(
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
+bool
 corevm::runtime::frame::get_visible_var_fast(
-  const corevm::runtime::variable_key var_key) const
+  const corevm::runtime::variable_key var_key,
+  corevm::dyobj::dyobj_id* id) const
 {
-  return m_visible_vars.at(var_key);
-};
+  auto itr = m_visible_vars.find(var_key);
+  if (itr == m_visible_vars.end())
+  {
+    return false;
+  }
+
+  *id = itr->second;
+
+  return true;
+}
 
 // -----------------------------------------------------------------------------
 
@@ -250,12 +259,21 @@ corevm::runtime::frame::get_invisible_var(
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
+bool
 corevm::runtime::frame::get_invisible_var_fast(
-  const corevm::runtime::variable_key var_key) const
+  const corevm::runtime::variable_key var_key,
+  corevm::dyobj::dyobj_id* id) const
 {
-  return m_invisible_vars.at(var_key);
-};
+  auto itr = m_invisible_vars.find(var_key);
+  if (itr == m_invisible_vars.end())
+  {
+    return false;
+  }
+
+  *id = itr->second;
+
+  return true;
+}
 
 // -----------------------------------------------------------------------------
 

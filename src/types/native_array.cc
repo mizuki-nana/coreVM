@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <stdexcept>
+#include <utility>
 
 
 corevm::types::native_array::native_array()
@@ -47,7 +48,7 @@ corevm::types::native_array::native_array(const native_array_base& other)
 
 corevm::types::native_array::native_array(native_array_base&& other)
   :
-  native_array_base(other)
+  native_array_base(std::forward<native_array_base>(other))
 {
 }
 

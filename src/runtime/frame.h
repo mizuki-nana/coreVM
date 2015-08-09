@@ -90,13 +90,8 @@ public:
   corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)
     const throw(corevm::runtime::name_not_found_error);
 
-  /**
-   * Gets the object id associated with the visible variable key in the frame,
-   * assuming the key already exists.
-   * Otherwise behavior is undefined.
-   */
-  corevm::dyobj::dyobj_id get_visible_var_fast(
-    const corevm::runtime::variable_key) const;
+  bool get_visible_var_fast(
+    const corevm::runtime::variable_key, corevm::dyobj::dyobj_id*) const;
 
   corevm::dyobj::dyobj_id pop_visible_var(const corevm::runtime::variable_key)
     throw(corevm::runtime::name_not_found_error);
@@ -108,13 +103,8 @@ public:
   corevm::dyobj::dyobj_id get_invisible_var(const corevm::runtime::variable_key)
     const throw(corevm::runtime::name_not_found_error);
 
-  /**
-   * Gets the object id associated with the invisible variable key in the frame,
-   * assuming the key already exists.
-   * Otherwise behavior is undefined.
-   */
-  corevm::dyobj::dyobj_id get_invisible_var_fast(
-    const corevm::runtime::variable_key) const;
+  bool get_invisible_var_fast(
+    const corevm::runtime::variable_key, corevm::dyobj::dyobj_id*) const;
 
   corevm::dyobj::dyobj_id pop_invisible_var(const corevm::runtime::variable_key)
     throw(corevm::runtime::name_not_found_error);

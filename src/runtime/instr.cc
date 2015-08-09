@@ -311,7 +311,7 @@ void
 corevm::runtime::instr_handler::execute_native_integer_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
 {
-  corevm::types::native_type_handle hndl = NativeType(instr.oprd1);
+  corevm::types::native_type_handle hndl(NativeType(instr.oprd1));
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -332,7 +332,7 @@ corevm::runtime::instr_handler::execute_native_floating_type_creation_instr(
   std::stringstream ss;
   ss << instr.oprd1 << "." << oprd2_str;
 
-  corevm::types::native_type_handle hndl = NativeType(stod(ss.str()));
+  corevm::types::native_type_handle hndl(NativeType(stod(ss.str())));
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -344,7 +344,8 @@ void
 corevm::runtime::instr_handler::execute_native_complex_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
 {
-  corevm::types::native_type_handle hndl = NativeType();
+  NativeType value;
+  corevm::types::native_type_handle hndl(value);
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -459,7 +460,9 @@ corevm::runtime::instr_handler_ldobj::execute(
 
   corevm::runtime::frame* frame = *frame_ptr;
 
-  while (!frame->has_visible_var(key))
+  corevm::dyobj::dyobj_id id = 0;
+
+  while (!frame->get_visible_var_fast(key, &id))
   {
     frame = frame->parent();
 
@@ -469,7 +472,9 @@ corevm::runtime::instr_handler_ldobj::execute(
     }
   }
 
-  auto id = frame->get_visible_var_fast(key);
+#if __DEBUG__
+  ASSERT(id);
+#endif
 
   process.push_stack(id);
 }
@@ -522,7 +527,7 @@ corevm::runtime::instr_handler_setattr::execute(
     frame->compartment_ptr(), str_key);
 
   corevm::dyobj::dyobj_id attr_id= process.pop_stack();
-  corevm::dyobj::dyobj_id target_id = process.pop_stack();
+  corevm::dyobj::dyobj_id target_id = process.top_stack();
 
   auto &obj = process.get_dyobj(target_id);
 
@@ -535,8 +540,6 @@ corevm::runtime::instr_handler_setattr::execute(
   auto &attr_obj = process.get_dyobj(attr_id);
   obj.putattr(attr_key, attr_id);
   attr_obj.manager().on_setattr();
-
-  process.push_stack(target_id);
 }
 
 // -----------------------------------------------------------------------------
@@ -586,7 +589,9 @@ corevm::runtime::instr_handler_ldobj2::execute(
 
   corevm::runtime::frame* frame = *frame_ptr;
 
-  while (!frame->has_invisible_var(key))
+  corevm::dyobj::dyobj_id id = 0;
+
+  while (!frame->get_invisible_var_fast(key, &id))
   {
     frame = frame->parent();
 
@@ -596,7 +601,9 @@ corevm::runtime::instr_handler_ldobj2::execute(
     }
   }
 
-  auto id = frame->get_invisible_var_fast(key);
+#if __DEBUG__
+  ASSERT(id);
+#endif
 
   process.push_stack(id);
 }
@@ -690,7 +697,7 @@ corevm::runtime::instr_handler_sethndl::execute(
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
-  corevm::types::native_type_handle hndl = std::move(frame->pop_eval_stack());
+  corevm::types::native_type_handle hndl(std::move(frame->pop_eval_stack()));
 
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -776,7 +783,7 @@ corevm::runtime::instr_handler_cpyhndl::execute(
   }
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
-  corevm::types::native_type_handle res = hndl;
+  corevm::types::native_type_handle res(hndl);
 
   uint32_t type = static_cast<uint32_t>(instr.oprd1);
 
@@ -881,7 +888,7 @@ corevm::runtime::instr_handler_cpyrepr::execute(
     THROW(corevm::runtime::native_type_handle_deletion_error());
   }
 
-  corevm::types::native_type_handle hndl = process.get_ntvhndl(ntvhndl_key);
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
   corevm::types::native_type_handle res;
 
   corevm::types::interface_compute_repr_value(hndl, res);
@@ -928,7 +935,7 @@ corevm::runtime::instr_handler_objeq::execute(
   corevm::dyobj::dyobj_id id1 = process.pop_stack();
   corevm::dyobj::dyobj_id id2 = process.pop_stack();
 
-  corevm::types::native_type_handle hndl = corevm::types::boolean(id1 == id2);
+  corevm::types::native_type_handle hndl(corevm::types::boolean(id1 == id2));
 
   corevm::runtime::frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
@@ -944,7 +951,7 @@ corevm::runtime::instr_handler_objneq::execute(
   corevm::dyobj::dyobj_id id1 = process.pop_stack();
   corevm::dyobj::dyobj_id id2 = process.pop_stack();
 
-  corevm::types::native_type_handle hndl = corevm::types::boolean(id1 != id2);
+  corevm::types::native_type_handle hndl(corevm::types::boolean(id1 != id2));
 
   corevm::runtime::frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
@@ -989,7 +996,9 @@ corevm::runtime::instr_handler_cldobj::execute(
 
   corevm::runtime::variable_key key = value ? key1 : key2;
 
-  while (!frame->has_visible_var(key))
+  corevm::dyobj::dyobj_id id = 0;
+
+  while (!frame->get_visible_var_fast(key, &id))
   {
     frame = frame->parent();
 
@@ -999,7 +1008,9 @@ corevm::runtime::instr_handler_cldobj::execute(
     }
   }
 
-  auto id = frame->get_visible_var_fast(key);
+#if __DEBUG__
+  ASSERT(id);
+#endif
 
   process.push_stack(id);
 }
@@ -1019,7 +1030,7 @@ corevm::runtime::instr_handler_setattrs::execute(
 
   corevm::runtime::frame* frame = *frame_ptr;
 
-  corevm::types::native_type_handle hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
+  corevm::types::native_type_handle& hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
   corevm::types::native_type_handle res = hndl;
 
   corevm::types::native_map map = corevm::types::get_value_from_handle<
@@ -1155,7 +1166,8 @@ corevm::runtime::instr_handler_putobj::execute(
   corevm::dyobj::dyobj_id id = process.top_stack();
   corevm::runtime::frame* frame = *frame_ptr;
 
-  corevm::types::native_type_handle hndl = corevm::types::uint64(id);
+  corevm::types::uint64 value(id);
+  corevm::types::native_type_handle hndl(value);
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -1732,7 +1744,7 @@ corevm::runtime::instr_handler_getargs::execute(
     array.push_back(id);
   }
 
-  corevm::types::native_type_handle hndl = std::move(array);
+  corevm::types::native_type_handle hndl(std::move(array));
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -1759,7 +1771,7 @@ corevm::runtime::instr_handler_getkwargs::execute(
     map[key] = id;
   }
 
-  corevm::types::native_type_handle hndl = std::move(map);
+  corevm::types::native_type_handle hndl(std::move(map));
 
   frame->push_eval_stack(std::move(hndl));
 }

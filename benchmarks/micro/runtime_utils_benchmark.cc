@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
+#include "dyobj/util.h"
 #include "runtime/common.h"
 #include "runtime/compartment.h"
 #include "runtime/utils.h"
@@ -46,6 +47,20 @@ void BenchmarkGetAttrKey(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkHashAttrStr(benchmark::State& state)
+{
+  const std::string attr_str("hello_world");
+
+  while (state.KeepRunning())
+  {
+    corevm::dyobj::hash_attr_str(attr_str);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkGetAttrKey);
+BENCHMARK(BenchmarkHashAttrStr);
 
 // -----------------------------------------------------------------------------

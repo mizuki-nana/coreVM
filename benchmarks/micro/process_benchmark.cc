@@ -87,6 +87,22 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
+void BenchmarkProcessGetNtvHndl(benchmark::State& state)
+{
+  corevm::runtime::process process;
+
+  corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
+  auto key = process.insert_ntvhndl(hndl);
+
+  while (state.KeepRunning())
+  {
+    process.get_ntvhndl(key);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
 void BenchmarkProcessInsertVector(benchmark::State& state)
 {
   corevm::runtime::process process;
@@ -207,6 +223,7 @@ BENCHMARK(BenchmarkProcessCreateDyobj);
 BENCHMARK(BenchmarkProcessGetDyobj);
 BENCHMARK(BenchmarkProcessPushStack);
 BENCHMARK(BenchmarkProcessInsertNtvHndl);
+BENCHMARK(BenchmarkProcessGetNtvHndl);
 BENCHMARK(BenchmarkProcessInsertVector);
 
 // -----------------------------------------------------------------------------

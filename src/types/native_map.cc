@@ -27,15 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <stdexcept>
+#include <utility>
 
-
-const size_t DEFAULT_NATIVE_MAP_INITIAL_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
 corevm::types::native_map::native_map()
   :
-  native_map_base(DEFAULT_NATIVE_MAP_INITIAL_CAPACITY)
+  native_map_base()
 {
 }
 
@@ -51,7 +50,7 @@ corevm::types::native_map::native_map(const native_map_base& other)
 
 corevm::types::native_map::native_map(native_map_base&& other)
   :
-  native_map_base(other)
+  native_map_base(std::forward<native_map_base>(other))
 {
 }
 

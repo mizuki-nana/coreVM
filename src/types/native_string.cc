@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <stdexcept>
+#include <utility>
 
 
 corevm::types::native_string::native_string()
@@ -55,7 +56,7 @@ corevm::types::native_string::native_string(const native_string_base& str)
 
 corevm::types::native_string::native_string(native_string_base&& str)
   :
-  native_string_base(str)
+  native_string_base(std::forward<native_string_base>(str))
 {
 }
 
