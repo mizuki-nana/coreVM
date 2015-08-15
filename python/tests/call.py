@@ -20,58 +20,58 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+## -----------------------------------------------------------------------------
+
 def do_math(arg):
     print 'Time to have fun!'
     return int(5)
 
+## -----------------------------------------------------------------------------
+
 def hello_world_again(arg):
     print 'Hello world again!'
+
+## -----------------------------------------------------------------------------
 
 def introduction(arg):
     print 'My name is Will :-)'
     # test explicit return should work.
     return
 
+## -----------------------------------------------------------------------------
+
 def hello_world(arg):
     print 'Hello world!'
     introduction(arg)
 
-def main(arg):
+## -----------------------------------------------------------------------------
+
+def test_simple_call(arg):
     print 'Hi'
     hello_world(arg)
     hello_world_again(do_math(arg))
     hello_world(arg)
     print 'Bye'
 
-print 'Starting...'
-main(int(1))
-print 'Done!'
-
 ## -----------------------------------------------------------------------------
 
-func = lambda x: x * 2
-
-print func(1)
+square = lambda x: x * x
 
 ## -----------------------------------------------------------------------------
 
 def lambda_caller(arg):
     def inner(arg):
         func = lambda arg: arg * arg
-        return func(arg)
+        return square(arg)
     return inner(arg)
-
-print lambda_caller(3)
 
 ## -----------------------------------------------------------------------------
 
 def lambda_caller2():
     def inner2(arg):
         func = lambda arg: arg ** arg
-        return func(arg)
+        return square(arg)
     return inner2
-
-print lambda_caller2()(5)
 
 ## -----------------------------------------------------------------------------
 
@@ -79,11 +79,29 @@ def lambda_caller3():
     def inner3(arg):
         def inner4(arg):
             func = lambda arg: arg ** arg
-            return func(arg)
+            return square(arg)
         return inner4(arg) * arg
     return inner3
 
-print lambda_caller3()(5)
+## -----------------------------------------------------------------------------
+
+def test_simple_lambda_call():
+    print square(1)
+
+## -----------------------------------------------------------------------------
+
+def test_inner_function_call():
+    print lambda_caller(3)
+
+## -----------------------------------------------------------------------------
+
+def test_inner_function_call2():
+    print lambda_caller2()(5)
+
+## -----------------------------------------------------------------------------
+
+def test_inner_function_call3():
+    print lambda_caller3()(5)
 
 ## -----------------------------------------------------------------------------
 
@@ -103,6 +121,52 @@ def test_Fibonacci():
 
 ## -----------------------------------------------------------------------------
 
+def accept_letters_and_numbers(a, b, c, r=1, s=2, t=3, *letters, **numbers):
+    print a
+    print b
+    print c
+    print r
+    print s
+    print t
+    print numbers
+
+## -----------------------------------------------------------------------------
+
+def test_args_and_kwargs():
+    accept_letters_and_numbers('a', 'b', 'c')
+    accept_letters_and_numbers('a', 'b', 'c', r=7)
+    accept_letters_and_numbers('a', 'b', 'c', s=8)
+    accept_letters_and_numbers('a', 'b', 'c', t=9)
+    accept_letters_and_numbers('a', 'b', 'c', r=7, s=8)
+    accept_letters_and_numbers('a', 'b', 'c', s=8, t=9)
+    accept_letters_and_numbers('a', 'b', 'c', r=7, t=9)
+    accept_letters_and_numbers('a', 'b', 'c', r=7, s=8, t=9)
+    accept_letters_and_numbers('a', 'b', 'c', **{})
+    accept_letters_and_numbers('a', 'b', 'c', r=7, s=8, t=9, **{'x': 10})
+
+## -----------------------------------------------------------------------------
+
+def args_and_kwargs(*args, **kwargs):
+    print kwargs
+
+## -----------------------------------------------------------------------------
+
+def test_all_or_nothing():
+    args_and_kwargs()
+    args_and_kwargs('Hello')
+    args_and_kwargs(**{'a': 1})
+    args_and_kwargs(*['Hello', 'World'], **{'a': 1})
+    # TODO: [COREVM-291] Support Python keyword arguments packing
+    #args_and_kwargs(a=1)
+
+## -----------------------------------------------------------------------------
+
+test_simple_call(int(1))
+test_simple_lambda_call()
+test_inner_function_call()
+test_inner_function_call2()
+test_inner_function_call3()
 test_Fibonacci()
+test_all_or_nothing()
 
 ## -----------------------------------------------------------------------------

@@ -1717,10 +1717,10 @@ corevm::runtime::instr_handler_getkwarg::execute(
   if (invk_ctx->has_param_value_pair_with_key(key))
   {
     corevm::dyobj::dyobj_id id = invk_ctx->pop_param_value_pair(key);
-    process.push_stack(id);
-  }
-  else
-  {
+
+    corevm::runtime::frame* frame = *frame_ptr;
+    frame->set_visible_var(key, id);
+
     instr_addr relative_addr = static_cast<instr_addr>(instr.oprd2);
     process.set_pc(process.pc() + relative_addr);
   }

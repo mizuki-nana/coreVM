@@ -47,22 +47,22 @@ class object:
 
 ## -----------------------------------------------------------------------------
 
-def __call(caller, *arg):
+def __call(caller, *args, **kwargs):
     # Need to support *args and **kwargs.
     if caller.__class__ is type:
-        obj = object.__new__(caller, *arg)
-        caller.__init__(obj, *arg)
+        obj = object.__new__(caller, *args, **kwargs)
+        caller.__init__(obj, *args, **kwargs)
         return obj
     elif caller.__class__ is MethodType:
-        return caller(caller.im_self, *arg)
+        return caller(caller.im_self, *args, **kwargs)
     else:
-        return caller(*arg)
+        return caller(*args, **kwargs)
 
 ## -----------------------------------------------------------------------------
 
-def __call_cls(caller, *arg):
-    obj = object.__new__(caller, *arg)
-    caller.__init__(obj, *arg)
+def __call_cls(caller, *args, **kwargs):
+    obj = object.__new__(caller, *args, **kwargs)
+    caller.__init__(obj, *args, **kwargs)
     return obj
 
 ## -----------------------------------------------------------------------------

@@ -79,7 +79,14 @@ class CodeTransformer(ast.NodeVisitor):
         self.__indent()
 
         if node.args.vararg:
-            base_str += '{vararg} = __call_cls_1(list, {vararg})\n'.format(vararg=node.args.vararg)
+            base_str += '{indentation}{vararg} = __call_cls_1(tuple, {vararg})\n'.format(
+                indentation=self.__indentation(),
+                vararg=node.args.vararg)
+
+        if node.args.kwarg:
+            base_str += '{indentation}{kwarg} = __call_cls_1(dict, {kwarg})\n'.format(
+                indentation=self.__indentation(),
+                kwarg=node.args.kwarg)
 
         base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
         base_str += '\n'

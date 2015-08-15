@@ -383,6 +383,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             'setattr',
             'getattr',
             'putkwarg',
+            'getkwarg',
             'rsetattrs',
             'setattrs2',
             'str'
@@ -1023,10 +1024,20 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(arg)
             self.__add_instr('putarg', 0, 0)
 
+        # keyword args
+        for keyword in node.keywords:
+            self.visit(keyword.value)
+            self.__add_instr('putkwarg', self.__get_encoding_id(keyword.arg), 0)
+
         # implicit args
         if node.starargs:
             self.visit(node.starargs)
             self.__add_instr('putargs', 0, 0)
+
+        # implicit kwargs
+        if node.kwargs:
+            self.visit(node.kwargs)
+            self.__add_instr('putkwargs', 0, 0)
 
         self.__add_instr('invk', 0, 0)
 
@@ -1285,26 +1296,14 @@ class BytecodeGenerator(ast.NodeVisitor):
         for arg in node.args:
             default = closest_args_to_defaults.get(arg.col_offset)
             if default:
-                # This is a kwarg. It needs special handling here.
-                #
-                # TODO|HACK: This is a hack here to get around of the problem of
-                # evaluating a stmt if the kwarg cannot be found on the frame.
-                # The condition is that if it's not found, jump over two instrs
-                # to execute that stmt, otherwise, jump to skip over that block
-                # of code.
-                #
-                # The problem here is that we don't know the number of instrs to
-                # jump over before hand, so we will need to calculate the
-                # difference in the size of the vector, and reset the `jmp`
-                # instr afterward.
-                self.__add_instr('getkwarg', self.__get_encoding_id(arg.id), 2, loc=Loc.from_node(node))
-                self.__add_instr('jmp', 0, 0) # offset addr to be set
+                # This is a kwarg.
+                self.__add_instr('getkwarg', self.__get_encoding_id(arg.id), 0)
                 vector_length1 = len(self.__current_vector())
                 self.visit(default)
+                self.__add_instr('stobj', self.__get_encoding_id(arg.id), 0)
                 vector_length2 = len(self.__current_vector())
                 length_diff = vector_length2 - vector_length1
-                self.__current_vector()[vector_length1 - 1] = Instr(
-                    self.instr_str_to_code_map['jmp'], length_diff + 1, 0, loc=Loc.from_node(node))
+                self.__current_vector()[vector_length1 - 1].oprd2 = length_diff
             else:
                 # This is an arg. It's handled in `visit_Name()`.
                 self.visit(arg)
@@ -1318,8 +1317,10 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # Pull out rest of the kwargs (**kwarg).
         if node.kwarg:
-            self.__add_instr('getkwargs', 0, 0, loc=Loc.from_node(node))
-            # TODO: retrieve kwargs stored as a map on top of eval stack.
+            self.__add_instr('getkwargs', 0, 0)
+            self.__add_instr('new', 0, 0)
+            self.__add_instr('sethndl', 0, 0)
+            self.__add_instr('stobj', self.__get_encoding_id(node.kwarg), 0)
 
 ## -----------------------------------------------------------------------------
 

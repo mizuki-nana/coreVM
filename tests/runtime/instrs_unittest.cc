@@ -1428,17 +1428,36 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARG)
   invk_ctx.put_param_value_pair(key, id);
   m_process.push_invocation_ctx(invk_ctx);
 
+  corevm::runtime::vector vector {
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+    { .code=0, .oprd1=0, .oprd2=0 },
+  };
+  m_process.append_vector(vector);
+
+  m_process.set_pc(0);
+
+  uint32_t relative_addr = 2;
+
   corevm::runtime::instr instr {
     .code=0,
     .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
+    .oprd2=relative_addr
   };
 
   execute_instr<corevm::runtime::instr_handler_getkwarg>(instr);
 
-  corevm::dyobj::dyobj_id actual_id = m_process.pop_stack();
+  const corevm::runtime::frame& frame = m_process.top_frame();
+
+  ASSERT_EQ(true, frame.has_visible_var(key));
+
+  corevm::dyobj::dyobj_id actual_id = frame.get_visible_var(key);
 
   ASSERT_EQ(id, actual_id);
+
+  ASSERT_EQ(relative_addr, m_process.pc());
 }
 
 // -----------------------------------------------------------------------------
