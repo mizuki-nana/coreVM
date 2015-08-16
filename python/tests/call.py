@@ -161,6 +161,26 @@ def test_all_or_nothing():
 
 ## -----------------------------------------------------------------------------
 
+def test_closure_elision():
+    def test():
+        def inner():
+            print 'Hi'
+        inner()
+
+    def inner():
+        print 'Bye'
+
+    def test2():
+        inner = lambda: 'Hi again'
+        print inner()
+
+    test()
+    inner()
+    test2()
+    inner()
+
+## -----------------------------------------------------------------------------
+
 test_simple_call(int(1))
 test_simple_lambda_call()
 test_inner_function_call()
@@ -168,5 +188,6 @@ test_inner_function_call2()
 test_inner_function_call3()
 test_Fibonacci()
 test_all_or_nothing()
+test_closure_elision()
 
 ## -----------------------------------------------------------------------------
