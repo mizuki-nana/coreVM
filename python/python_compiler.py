@@ -1399,6 +1399,7 @@ def main():
         generator.read_from_source('python/src/none.py')
         generator.read_from_source('python/src/int.py')
         generator.read_from_source('python/src/float.py')
+        generator.read_from_source('python/src/complex.py')
         generator.read_from_source('python/src/str.py')
         generator.read_from_source('python/src/list.py')
         generator.read_from_source('python/src/tuple.py')
