@@ -22,44 +22,60 @@
 
 ## -----------------------------------------------------------------------------
 
-class Exception(object):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class TypeError(Exception):
-
-    def __init__(self):
-        pass
+def test_assert_true():
+    try:
+        assert True
+        assert True, 'I want to believe.'
+    except AssertionError:
+        print 'This should not happen'
 
 ## -----------------------------------------------------------------------------
 
-class IndexError(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class KeyError(Exception):
-
-    def __init__(self):
-        pass
+def test_assert_false():
+    try:
+        assert False
+    except AssertionError:
+        print 'I cannot believe'
 
 ## -----------------------------------------------------------------------------
 
-class StopIteration(Exception):
-
-    def __init__(self):
-        pass
+def test_assert_on_truthy_exprs():
+    try:
+        assert 1
+        assert 1 + 1
+        assert 3.14 - 3.12
+        assert not False
+    except AssertionError:
+        print 'This should not happen'
 
 ## -----------------------------------------------------------------------------
 
-class AssertionError(Exception):
+def test_assert_on_falsy_exprs():
+    try:
+        assert 0
+    except AssertionError:
+        print 'I cannot believe'
 
-    def __init__(self):
-        pass
+    try:
+        assert 0 - 1
+    except AssertionError:
+        print 'I cannot believe'
+
+    try:
+        assert not True
+    except AssertionError:
+        print 'I cannot believe'
+
+    try:
+        assert 3.12 - 3.14
+    except AssertionError:
+        print 'I cannot believe'
+
+## -----------------------------------------------------------------------------
+
+test_assert_true()
+test_assert_false()
+test_assert_on_truthy_exprs()
+test_assert_on_falsy_exprs()
 
 ## -----------------------------------------------------------------------------

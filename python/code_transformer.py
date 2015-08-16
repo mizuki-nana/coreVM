@@ -313,6 +313,25 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_Assert(self, node):
+        base_str = '{indentation}if __call(__call_cls_1(bool, {test}).__not__):\n'.format(
+            indentation=self.__indentation(),
+            test=self.visit(node.test))
+
+        self.__indent()
+
+        if node.msg:
+            base_str += '{indentation}raise __call_cls_1(AssertionError, {msg})'.format(
+                indentation=self.__indentation(),
+                msg=self.visit(node.msg))
+        else:
+            base_str += '{indentation}raise __call_cls_0(AssertionError)'.format(
+                indentation=self.__indentation())
+
+        self.__dedent()
+
+        return base_str
+
     def visit_Expr(self, node):
         return self.visit(node.value)
 
