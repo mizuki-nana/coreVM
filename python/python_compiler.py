@@ -637,25 +637,49 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.continue_stmt_vector_lengths.pop()
 
     def visit_If(self, node):
+        """
+        if condition:
+            (1)
+            .
+            .
+            .
+            (3)
+        else:
+            (2)
+            .
+            .
+            .
+            (4)
+        """
         self.visit(node.test)
         self.__add_instr('istruthy', 0, 0, loc=Loc.from_node(node))
         self.__add_instr('lnot', 0, 0, loc=Loc.from_node(node))
 
         # Add `jmpif` here.
+        # `vector_length1` matches with `vector_length2` below.
         self.__add_instr('jmpif', 0, 0, loc=Loc.from_node(node))
         vector_length1 = len(self.__current_vector())
 
         for stmt in node.body:
             self.visit(stmt)
 
+        if node.orelse:
+            # `vector_length3` matches with `vector_length4` below.
+            self.__add_instr('jmp', 0, 0, loc=Loc.from_node(node))
+            vector_length3 = len(self.__current_vector())
+
         # Add `jmpif` here.
         vector_length2 = len(self.__current_vector())
         length_diff = vector_length2 - vector_length1
-        self.__current_vector()[vector_length1 - 1] = Instr(
-            self.instr_str_to_code_map['jmpif'], length_diff, 0)
+        self.__current_vector()[vector_length1 - 1].oprd1 = length_diff
 
         for stmt in node.orelse:
             self.visit(stmt)
+
+        if node.orelse:
+            vector_length4 = len(self.__current_vector())
+            length_diff2 = vector_length4 - vector_length3
+            self.__current_vector()[vector_length3 - 1].oprd1 = length_diff2
 
     def visit_With(self, node):
         pass

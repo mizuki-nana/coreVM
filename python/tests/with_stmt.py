@@ -87,7 +87,7 @@ class DivisionContextManager(object):
         # TODO: [COREVM-297]_Python if-stmt-else-stmt construct executes both conditions
         if exc_val is None:
             print 'Division successful'
-        elif exc_val is not None:
+        else:
             print 'Error in division'
 
         return self.raise_exception
