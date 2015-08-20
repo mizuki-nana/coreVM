@@ -131,6 +131,11 @@ def __call_method_2(caller, arg1, arg2):
 
 ## -----------------------------------------------------------------------------
 
+def __call_method_3(caller, arg1, arg2, arg3):
+    return caller(caller.im_self, arg1, arg2, arg3)
+
+## -----------------------------------------------------------------------------
+
 class sequence_generator(object):
 
     def __init__(self, iterable, elt, res, synthesizer, predicate):
@@ -236,5 +241,41 @@ class dict_item_generator(object):
             pass
 
         return self.res
+
+## -----------------------------------------------------------------------------
+
+class with_stmt_runner(object):
+
+    def __init__(self, manager, body):
+        self.manager = manager
+        self.body = body
+
+    def run(self):
+        """Executes a context managed block of code.
+
+        Reference:
+            https://docs.python.org/2.7/reference/datamodel.html#with-statement-context-managers
+        """
+        # Currently passing `exc_type` and `exc_tb` as `None`.
+        # TODO: [COREVM-298] Capture Python exception type and stack trace for context managers
+        exc_type = None
+        exc_val = None
+        exc_tb = None
+
+        val = __call_method_0(self.manager.__enter__)
+
+        try:
+            __call(self.body, val)
+        except Exception as ex:
+            exc_val = ex
+
+        suppress_exception = __call_method_3(
+            self.manager.__exit__, exc_type, exc_val, exc_tb)
+
+        if exc_val is not None:
+            suppress = __call_cls_1(bool, suppress_exception)
+
+            if __call_method_0(suppress.__not__):
+                raise exc_val
 
 ## -----------------------------------------------------------------------------

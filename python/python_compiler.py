@@ -657,6 +657,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         for stmt in node.orelse:
             self.visit(stmt)
 
+    def visit_With(self, node):
+        pass
+
     def visit_Raise(self, node):
         self.visit(node.type)
 

@@ -275,6 +275,35 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_With(self, node):
+        body_name = self.__get_random_name()
+        base_str = '{indentation}def {func_name}({args}):\n'.format(
+            indentation=self.__indentation(),
+            func_name=body_name,
+            args=self.visit(node.optional_vars) if node.optional_vars else '')
+
+        self.__indent()
+
+        for stmt in node.body:
+            base_str += self.visit(stmt)
+
+        self.__dedent()
+
+        base_str += '\n'
+
+        base_str += """{indentation}__call_method_0(
+                        __call_cls_2(
+                            with_stmt_runner,
+                            {manager},
+                            {body}
+                        ).run
+                    )""".format(
+                            indentation=self.__indentation(),
+                            manager=self.visit(node.context_expr),
+                            body=body_name)
+
+        return base_str
+
     def visit_Raise(self, node):
         base_str = '{indentation}raise'.format(indentation=self.__indentation())
 
