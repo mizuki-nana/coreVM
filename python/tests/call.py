@@ -181,6 +181,34 @@ def test_closure_elision():
 
 ## -----------------------------------------------------------------------------
 
+def test_closure_elision_2():
+    def test():
+        print 'This should NOT be printed'
+
+        try:
+            raise Exception()
+        except Exception:
+            print 'Caught exception'
+
+    def test():
+        print 'This should be printed'
+
+        try:
+            print 'Doing something...'
+            raise Exception()
+        except Exception:
+            print 'Caught another exception'
+
+    test()
+
+    test = lambda: True
+    print test()
+
+    test = lambda: False
+    print test()
+
+## -----------------------------------------------------------------------------
+
 test_simple_call(int(1))
 test_simple_lambda_call()
 test_inner_function_call()
@@ -189,5 +217,6 @@ test_inner_function_call3()
 test_Fibonacci()
 test_all_or_nothing()
 test_closure_elision()
+test_closure_elision_2()
 
 ## -----------------------------------------------------------------------------

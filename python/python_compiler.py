@@ -423,12 +423,22 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_function_name = self.current_function_name + '::' + node.name
         closure_name = self.current_class_name + '.' + self.current_function_name
 
-        self.closure_map[closure_name] = Closure(
-            node.name,
-            closure_name,
-            self.current_closure_name,
-            self.closure_map[self.current_closure_name].closure_id
-        )
+        # Check if a function with the same name already exists under the same
+        # scope. We don't want to create another closure if it already exists.
+        if closure_name not in self.closure_map:
+            self.closure_map[closure_name] = Closure(
+                node.name,
+                closure_name,
+                self.current_closure_name,
+                self.closure_map[self.current_closure_name].closure_id
+            )
+        else:
+            # If a function with the same name already exists under the same scope,
+            # use the existing closure, but clears some of its members before
+            # adding instructions.
+            self.closure_map[closure_name].vector = []
+            self.closure_map[closure_name].locs = {}
+            self.closure_map[closure_name].catch_sites = []
 
         self.current_closure_name = closure_name
 
@@ -911,6 +921,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # step in
         name = 'lambda_' + self.__get_random_name()
+
+        assert name not in self.closure_map, 'Lambda closure names should be globally unique'
 
         self.closure_map[name] = Closure(
             name,
