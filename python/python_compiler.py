@@ -123,8 +123,10 @@ class CatchSite(object):
 
 class TryExceptState(object):
 
-    def __init__(self):
+    def __init__(self, closure_name, has_finally_block=False):
         self.in_except_block = False
+        self.closure_name = closure_name
+        self.has_finally_block = has_finally_block
 
 ## -----------------------------------------------------------------------------
 
@@ -239,7 +241,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         # states
         self.current_class_name = ''
         self.current_function_name = ''
-        self.try_except_state = TryExceptState()
+        self.try_except_states = []
+        self.current_try_except_lvl = 0
         self.continue_stmt_vector_lengths = []
         self.break_stmt_vector_lengths = []
 
@@ -339,6 +342,29 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def __current_vector(self):
         return self.__current_closure().vector
+
+    def __add_try_except_state(self, try_except_state):
+        self.try_except_states.append(try_except_state)
+
+    def __pop_try_except_state(self):
+        assert self.current_try_except_lvl > 0, \
+            'Current try-except level should not be zero'
+
+        assert len(self.try_except_states) > 0, \
+            'Try-except states should not be empty'
+
+        assert self.current_try_except_lvl <= len(self.try_except_states), \
+            'Invalid try-except states'
+
+        self.current_try_except_lvl -= 1
+        self.try_except_states.pop()
+
+    def __current_try_except_state(self):
+        assert len(self.try_except_states), 'No try-except states found'
+        return self.try_except_states[-1]
+
+    def __total_try_except_lvl(self):
+        return len(self.try_except_states)
 
     def __add_instr(self, code, oprd1, oprd2, loc=None):
         self.__current_vector().append(
@@ -697,31 +723,48 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Raise(self, node):
         self.visit(node.type)
 
-        # Do NOT turn on catch site searching in except blocks.
-        search_catch_sites = int(not self.try_except_state.in_except_block)
+        search_catch_sites = 1
+
+        if not self.try_except_states:
+            search_catch_sites = 0
+        elif (
+            self.try_except_states and
+            self.__current_try_except_state().in_except_block
+        ):
+            # Do NOT turn on catch site searching in except blocks,
+            # when there's no "finally" block under the same closure.
+            has_finally_block_in_closure = False
+            for try_except_state in self.try_except_states:
+                if (
+                    try_except_state.closure_name == self.current_closure_name and
+                    try_except_state.has_finally_block
+                ):
+                    has_finally_block_in_closure = True
+                    break
+
+            search_catch_sites = int(has_finally_block_in_closure)
 
         self.__add_instr('exc', search_catch_sites, 0)
 
     def visit_TryExcept(self, node):
-        self.try_except_state.in_except_block = False
+        if self.current_try_except_lvl == self.__total_try_except_lvl():
+            self.__add_try_except_state(TryExceptState(self.current_closure_name))
 
-        # Step in (for try-block stmts).
-        vector_length1 = len(self.__current_vector())
+        self.current_try_except_lvl += 1
+
+        vector_length_try_block_before = len(self.__current_vector())
 
         for stmt in node.body:
             self.visit(stmt)
 
-        vector_length2 = len(self.__current_vector())
-
-        # Step out (for try-block stmts).
-        self.try_except_state.in_except_block = False
+        vector_length_try_block_after = len(self.__current_vector())
 
         if node.handlers:
             self.__add_catch_site(
                 CatchSite(
-                    from_value=vector_length1,
-                    to_value=vector_length2 - 1,
-                    dst_value=vector_length2
+                    from_value=vector_length_try_block_before,
+                    to_value=vector_length_try_block_after - 1,
+                    dst_value=vector_length_try_block_after
                 )
             )
 
@@ -733,7 +776,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         for i in xrange(len(node.handlers)):
             handler = node.handlers[i]
 
-            vector_length3 = len(self.__current_vector())
+            vector_length_except_block_before = len(self.__current_vector())
 
             self.visit(handler.type)
             self.__add_instr('excobj', 0, 0)
@@ -755,7 +798,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.instr_str_to_code_map['jmpif'], length_diff, 0)
 
             # Step in (for except-block stmts).
-            self.try_except_state.in_except_block = True
+            self.__current_try_except_state().in_except_block = True
 
             if handler.name:
                 self.__add_instr('excobj', 0, 0)
@@ -765,17 +808,15 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.visit(stmt)
 
             # Step out (for except-block stmts).
-            self.try_except_state.in_except_block = False
+            self.__current_try_except_state().in_except_block = False
 
-            vector_length4 = len(self.__current_vector())
-
-            dst_value = vector_length4 if i + 1 < len(node.handlers) else 0
+            vector_length_except_block_after = len(self.__current_vector())
 
             self.__add_catch_site(
                 CatchSite(
-                  from_value=vector_length3,
-                  to_value=vector_length4 - 1,
-                  dst_value=dst_value
+                  from_value=vector_length_except_block_before,
+                  to_value=vector_length_except_block_after - 1,
+                  dst_value=vector_length_except_block_after
                 )
             )
 
@@ -784,8 +825,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         vector_length_handlers_diff = \
             vector_length_handlers_after - vector_length_handlers_before
 
-        self.__current_vector()[vector_length_handlers_before - 1] = Instr(
-            self.instr_str_to_code_map['jmpexc'], vector_length_handlers_diff, 0)
+        self.__current_vector()[vector_length_handlers_before - 1].oprd1 = \
+            vector_length_handlers_diff
 
         self.__add_instr('jmpexc', 0, 1)
 
@@ -800,10 +841,38 @@ class BytecodeGenerator(ast.NodeVisitor):
         vector_length_orelse_diff = \
             vector_length_after_orelse - vector_length_before_orelse
 
-        self.__current_vector()[vector_length_before_orelse - 1] = Instr(
-            self.instr_str_to_code_map['jmpexc'], vector_length_orelse_diff, 1)
+        self.__current_vector()[vector_length_before_orelse - 1].oprd1 = \
+            vector_length_orelse_diff
 
         self.__add_instr('clrexc', 0, 0)
+
+        if not self.__current_try_except_state().has_finally_block:
+            self.__pop_try_except_state()
+
+    def visit_TryFinally(self, node):
+        """
+        Reference:
+            https://docs.python.org/2/tutorial/errors.html#defining-clean-up-actions
+        """
+        self.__add_try_except_state(
+            TryExceptState(self.current_closure_name, has_finally_block=True))
+
+        for stmt in node.body:
+            self.visit(stmt)
+
+        vector_length = len(self.__current_vector())
+
+        if self.__current_closure().catch_sites:
+            self.__current_closure().catch_sites[-1].dst_value = vector_length
+
+        for stmt in node.finalbody:
+            self.visit(stmt)
+
+        self.__add_instr('jmpexc', 2, 0)
+        self.__add_instr('excobj', 0, 0)
+        self.__add_instr('exc', 1, 0)
+
+        self.__pop_try_except_state()
 
     def visit_Expr(self, node):
         self.visit(node.value)

@@ -20,11 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
+## -----------------------------------------------------------------------------
+
 class AnotherException(Exception):
 
     def __init__(self):
         pass
 
+## -----------------------------------------------------------------------------
 
 class YetAnotherException(Exception):
 
@@ -214,5 +218,308 @@ else:
 #    raise YetAnotherException()
 #except AnotherException():
 #    print 'This should have not be printed'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_else_with_no_exception():
+    # Tests that statements under the 'else' block get executed when no
+    # exceptions are raised.
+
+    try:
+        print 'Hi'
+    except Exception:
+        print 'Error'
+    else:
+        print 'Bye'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_else_with_exception():
+    # Tests that an exception gets raised in the 'try' block can be
+    # caught in the associated 'except' block, and that statements under the
+    # 'else' block are skipped.
+
+    try:
+        raise Exception()
+    except Exception:
+        print 'Error'
+    else:
+        print 'Bye'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_no_exception():
+    # Tests that statements under the 'finally' block get executed when no
+    # exception are thrown.
+
+    try:
+        print 'Hi'
+    except Exception:
+        print 'Go away!'
+    else:
+        print 'Hello'
+    finally:
+        print 'Bye'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_caught_exception():
+    # Tests that statements under the 'finally' block get executed when an
+    # exception gets caught by the 'except' block.
+
+    try:
+        raise AnotherException()
+    except AnotherException:
+        print 'Caught exception'
+    else:
+        print 'This should not happen'
+    finally:
+        print 'Bye'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_uncaught_exception():
+    # Tests that an uncaught exception raised in a function
+    # can be caught by the 'except' block on the outer level that has a
+    # 'finally' block.
+
+    def inner():
+        try:
+            raise YetAnotherException()
+        except AnotherException:
+            print 'Should have not caught exception'
+        finally:
+            print 'Having an error that cannot handle here'
+
+    try:
+        inner()
+    except YetAnotherException:
+        print 'Caught inner level error'
+    finally:
+        print 'Done work. Doing clean up'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_uncaught_inner_exception():
+    # Tests that an exception raised in a nested function can be propagated
+    # through two levels of 'finally' blocks on the outer levels.
+
+    def inner2():
+        try:
+            raise TypeError()
+        except AnotherException:
+            print 'Should have not caught exception'
+        finally:
+            print 'Having an error that cannot handle here'
+
+    def inner():
+        try:
+            inner2()
+        except YetAnotherException:
+            print 'Only accept more granular errors here'
+        finally:
+            print 'Let it go'
+
+    try:
+        inner()
+    except TypeError:
+        print 'Accept type errors here'
+    finally:
+        print 'Done. Happy Friday'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_exception_from_inner_finally():
+    # Tests that an exception raised in a nested 'finally' block can be
+    # caught by an 'except' block in the outer level.
+
+    try:
+        try:
+            raise YetAnotherException()
+        except TypeError:
+            print 'Accepting type error'
+        finally:
+            raise AnotherException()
+    except AnotherException:
+        print 'Accepting another exception here'
+    else:
+        print 'EMERGENCY ONLY'
+    finally:
+        print 'We are good'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_exception_from_inner_except():
+    # Tests that an exception raised in a nested 'except' block can be caught
+    # in the associated 'finally' block and propagated to the outer level.
+
+    try:
+        try:
+            raise AnotherException()
+        except AnotherException:
+            print 'Accepting another error'
+            raise YetAnotherException()
+        finally:
+            print 'Something could be wrong here'
+    except YetAnotherException:
+        print 'Accepting yet another exception here'
+    else:
+        print 'EMERGENCY ONLY'
+    finally:
+        print 'We are good'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_nested_exceptions_raised_at_different_places():
+    # Tests that an exception raised in a nested 'except' block can be
+    # caught through the outer 'finally' block.
+
+    try:
+        try:
+            try:
+                raise Exception()
+            except Exception:
+                raise AnotherException()
+        except TypeError:
+            print 'Only accept TypeError here'
+        finally:
+            print 'Things could go wrong here'
+            raise YetAnotherException()
+    except YetAnotherException:
+        print 'Handling yet another exception'
+    finally:
+        print 'Handled yet another exception'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_finally_with_nested_exceptions_raised_at_different_places_2():
+    # Tests that an exception raised in a nested 'finally' block can be
+    # caught by the outer 'except' block.
+
+    try:
+        try:
+            try:
+                raise Exception()
+            except Exception:
+                raise AnotherException()
+            else:
+                print 'Hello'
+            finally:
+                print 'Finally'
+        except AnotherException:
+            print 'Accepting another exception here'
+        finally:
+            raise YetAnotherException()
+    except YetAnotherException:
+        print 'Accepting yet another exception here'
+    else:
+        print 'Bonjour'
+    finally:
+        print 'Ja ma ta'
+
+## -----------------------------------------------------------------------------
+
+def test_adjacent_try_except_blocks():
+    # Tests that adjacent 'try-except' blocks do not interfere with each other.
+
+    try:
+        raise TypeError()
+    except TypeError:
+        print 'TypeError handled'
+    finally:
+        print 'Everyone is happy'
+
+    try:
+        print 'Nothing happens here'
+    except Exception:
+        print 'We dont expect anything to happen'
+    else:
+        print 'Cuz its Boring Town'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_in_locally_defined_function():
+    # Tests that an exception raised in a nested function that
+    # has no 'finally' block can be caught in the outer try-except block.
+
+    try:
+        def inner():
+            try:
+                raise AnotherException()
+            except AnotherException:
+                raise YetAnotherException()
+
+        inner()
+    except YetAnotherException:
+        print 'Accepting yet another exception'
+    else:
+        print 'Nothing to do here'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_in_locally_defined_function_2():
+    # Tests that an exception raised in a nested function that
+    # has a 'finally' block can be caught in the outer try-except block.
+
+    try:
+        def inner():
+            try:
+                raise AnotherException()
+            except AnotherException:
+                raise YetAnotherException()
+            finally:
+                print 'Clean up'
+
+        inner()
+    except YetAnotherException:
+        print 'Accepting yet another exception'
+    else:
+        print 'Nothing to do here'
+    finally:
+        print 'More clean up'
+
+## -----------------------------------------------------------------------------
+
+def test_try_except_in_locally_defined_function_3():
+    # Tests that an exception raised in a nested function that
+    # has no 'finally' block, but has a neighboring 'try-except-finally' block,
+    # can be caught in the outer try-except block.
+
+    try:
+        def inner():
+            try:
+                print 'Hello'
+            except Exception:
+                print 'This shouldn not happen'
+            finally:
+                print 'This is a peaceful world'
+
+            try:
+                raise AnotherException()
+            except AnotherException:
+                raise YetAnotherException()
+
+        inner()
+    except YetAnotherException:
+        print 'Accepting yet another exception'
+    else:
+        print 'Nothing to do here'
+
+## -----------------------------------------------------------------------------
+
+test_try_except_else_with_exception()
+test_try_except_else_with_no_exception()
+test_try_except_finally_with_no_exception()
+test_try_except_finally_with_caught_exception()
+test_try_except_finally_with_uncaught_exception()
+test_try_except_finally_with_uncaught_inner_exception()
+test_try_except_finally_with_exception_from_inner_finally()
+test_try_except_finally_with_exception_from_inner_except()
+test_try_except_finally_with_nested_exceptions_raised_at_different_places()
+test_try_except_finally_with_nested_exceptions_raised_at_different_places_2()
+test_adjacent_try_except_blocks()
+test_try_except_in_locally_defined_function()
+test_try_except_in_locally_defined_function_2()
+test_try_except_in_locally_defined_function_3()
 
 ## -----------------------------------------------------------------------------

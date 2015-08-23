@@ -342,6 +342,24 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_TryFinally(self, node):
+        base_str = ''
+
+        for stmt in node.body:
+            base_str += self.visit(stmt)
+
+        base_str += '{indentation}finally:\n'.format(
+            indentation=self.__indentation())
+
+        self.__indent()
+
+        for stmt in node.finalbody:
+            base_str += self.visit(stmt)
+
+        self.__dedent()
+
+        return base_str
+
     def visit_Assert(self, node):
         base_str = '{indentation}if __call(__call_cls_1(bool, {test}).__not__):\n'.format(
             indentation=self.__indentation(),

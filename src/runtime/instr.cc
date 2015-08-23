@@ -1583,7 +1583,7 @@ corevm::runtime::instr_handler_jmpexc::execute(
 
   bool jump_on_exc = static_cast<bool>(instr.oprd2);
 
-  bool jump = jump_on_exc ? exc_obj_id : !exc_obj_id;
+  bool jump = jump_on_exc ? static_cast<bool>(exc_obj_id) : exc_obj_id == 0;
 
   if (jump)
   {
