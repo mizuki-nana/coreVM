@@ -59,7 +59,9 @@ def python_cmdl_args(path):
 ## -----------------------------------------------------------------------------
 
 def run(options):
-    inputs = glob.glob(PYTHON_TESTS_DIR + '*.py')
+    inputs = glob.glob(PYTHON_TESTS_DIR + '*.py') \
+        if not options.tests else options.tests
+
     real_inputs = [
         path for path in inputs if not path.endswith(INTERMEDIATE_EXTENSION)
     ]
@@ -91,10 +93,10 @@ def run(options):
 def main():
     parser = optparse.OptionParser(
         usage='usage: %prog [options]',
-        version='%prog v0.1')
+        version='%prog v0.1.1')
 
     parser.add_option(
-        '-t',
+        '-f',
         '--format',
         action='store',
         dest='format',
@@ -109,6 +111,15 @@ def main():
         dest='python_only',
         default=False,
         help='Run Python only'
+    )
+
+    parser.add_option(
+        '-t',
+        '--test',
+        action='append',
+        dest='tests',
+        default=[],
+        help='One or more file(s) to test'
     )
 
     options, _ = parser.parse_args()
