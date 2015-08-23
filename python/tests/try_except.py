@@ -40,40 +40,61 @@ class YetAnotherException(Exception):
 
 ## -----------------------------------------------------------------------------
 
-try:
-    raise Exception()
-except Exception as exc:
-    print 'Everything is going to be okay'
+def test_simple_try_except():
+    try:
+        raise Exception()
+    except Exception as exc:
+        print 'Everything is going to be okay'
 
 ## -----------------------------------------------------------------------------
 
-try:
-    raise YetAnotherException()
-except AnotherException:
-    print 'This is not it either'
-except YetAnotherException as exc:
-    print 'Found it'
-    print exc
+def test_multiple_except_blocks():
+    try:
+        raise YetAnotherException()
+    except AnotherException:
+        print 'This is not it either'
+    except YetAnotherException as exc:
+        print 'Found it'
+        print exc
 
 ## -----------------------------------------------------------------------------
 
 def hello_world():
     raise Exception()
 
-try:
-    hello_world()
-except Exception:
-    print 'Catching exception from another function'
+## -----------------------------------------------------------------------------
+
+def test_catch_exception_from_function_call():
+    try:
+        hello_world()
+    except Exception:
+        print 'Catching exception from another function'
 
 ## -----------------------------------------------------------------------------
 
 def greetings():
     hello_world()
 
-try:
+## -----------------------------------------------------------------------------
+
+def test_catch_exception_from_function_call_2():
+    try:
+        greetings()
+    except Exception:
+        print 'Catching exception from nested function'
+
+## -----------------------------------------------------------------------------
+
+def welcome():
     greetings()
-except Exception:
-    print 'Catching exception from nested function'
+
+## -----------------------------------------------------------------------------
+
+def test_catch_exception_from_function_call_3():
+    try:
+        welcome()
+    except Exception:
+        print 'Catching exception through triple calls'
 
 ## -----------------------------------------------------------------------------
 
@@ -85,25 +106,20 @@ def catch_exception_from_same_level_of_except_block():
     except YetAnotherException:
         print 'Catching exception from same level of except blocks is not supported in Python'
 
-try:
-    catch_exception_from_same_level_of_except_block()
-except YetAnotherException:
-    print 'Catching exception from exception raised in except block'
-
 ## -----------------------------------------------------------------------------
 
-def welcome():
-    greetings()
-
-try:
-    welcome()
-except Exception:
-    print 'Catching exception through triple calls'
+def test_catch_exception_from_same_level_of_except_block():
+    try:
+        catch_exception_from_same_level_of_except_block()
+    except YetAnotherException:
+        print 'Catching exception from exception raised in except block'
 
 ## -----------------------------------------------------------------------------
 
 def explode():
     raise Exception()
+
+## -----------------------------------------------------------------------------
 
 def handle_explosion():
     try:
@@ -111,13 +127,17 @@ def handle_explosion():
     except Exception:
         raise AnotherException()
 
+## -----------------------------------------------------------------------------
+
 def do_something():
     try:
         handle_explosion()
     except AnotherException:
         raise YetAnotherException()
 
-def run():
+## -----------------------------------------------------------------------------
+
+def test_complex_try_except():
     try:
         do_something()
     except YetAnotherException:
@@ -136,24 +156,13 @@ def handle_explosion2():
 
     explode()
 
-def do_something_again():
+## -----------------------------------------------------------------------------
+
+def test_complex_try_except_2():
     try:
         handle_explosion2()
     except Exception:
         print 'Explosion handled again'
-
-## -----------------------------------------------------------------------------
-
-def exception_in_lambda():
-    def inner():
-        raise AnotherException()
-
-    inner()
-
-try:
-    exception_in_lambda()
-except AnotherException:
-    print 'Catching exception from lambda'
 
 ## -----------------------------------------------------------------------------
 
@@ -163,40 +172,13 @@ def parent():
 
     return inner2
 
-try:
-    parent()()
-except Exception:
-    print 'Exception from nested function caught.'
-
 ## -----------------------------------------------------------------------------
 
-try:
-    print 'Do something here...'
-except YetAnotherException:
-    print 'This is not the right exception'
-else:
-    print 'This should be printed'
-
-## -----------------------------------------------------------------------------
-
-try:
-    raise AnotherException()
-except AnotherException:
-    print 'This should be printed'
-else:
-    print 'This should not be printed'
-
-## -----------------------------------------------------------------------------
-
-def raise_another_exception():
-    raise AnotherException()
-
-try:
-    raise_another_exception()
-except AnotherException:
-    print 'AnotherException caught'
-else:
-    print 'This should not be printed'
+def test_exception_from_inner_function():
+    try:
+        parent()()
+    except Exception:
+        print 'Exception from nested function caught.'
 
 ## -----------------------------------------------------------------------------
 
@@ -204,12 +186,15 @@ else:
 def run2():
     parent()()
 
-try:
-    run2()
-except:
-    print 'Exception caught'
-else:
-    print 'This should not be printed'
+## -----------------------------------------------------------------------------
+
+def test_exception_from_inner_function_2():
+    try:
+        run2()
+    except:
+        print 'Exception caught'
+    else:
+        print 'This should not be printed'
 
 ## -----------------------------------------------------------------------------
 
@@ -506,6 +491,17 @@ def test_try_except_in_locally_defined_function_3():
         print 'Nothing to do here'
 
 ## -----------------------------------------------------------------------------
+
+test_simple_try_except()
+test_multiple_except_blocks()
+test_catch_exception_from_function_call()
+test_catch_exception_from_function_call_2()
+test_catch_exception_from_function_call_3()
+test_catch_exception_from_same_level_of_except_block()
+test_complex_try_except()
+test_complex_try_except_2()
+test_exception_from_inner_function()
+test_exception_from_inner_function_2()
 
 test_try_except_else_with_exception()
 test_try_except_else_with_no_exception()

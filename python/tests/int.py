@@ -20,104 +20,120 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## -------------------------- Representation Tests -----------------------------
 
-print 1234567890
-print int(987654321)
+## -----------------------------------------------------------------------------
 
-## -------------------------- Unary operator Tests -----------------------------
+def test_int_representations():
+    print 1234567890
+    print int(987654321)
 
-print not 1
-print not 0
+## -----------------------------------------------------------------------------
 
-print -1
-print +0
-print -(+123)
-print +(-(+321))
+def test_int_unary_operations():
+    print not 1
+    print not 0
 
-## ------------------------- Binary operator Tests -----------------------------
+    print -1
+    print +0
+    print -(+123)
+    print +(-(+321))
 
-print 1 + 2
-print 987654321 - 123456789
-print 567 * 654
-print 101 / 11
-print 110 % 33
-print 2**3
-print 1 << 3
-print 99 >> 2
-print 123 | 321
-print 12345 ^ 67890
-print 10101 & 8563732
-print 5 // 2
-print ~1
-print ~0
+## -----------------------------------------------------------------------------
 
-## --------------------------- Aug-assignment Tests ----------------------------
+def test_int_binary_operations():
+    print 1 + 2
+    print 987654321 - 123456789
+    print 567 * 654
+    print 101 / 11
+    print 110 % 33
+    print 2**3
+    print 1 << 3
+    print 99 >> 2
+    print 123 | 321
+    print 12345 ^ 67890
+    print 10101 & 8563732
+    print 5 // 2
+    print ~1
+    print ~0
 
-i = 1
-i += 3
-print i
+## -----------------------------------------------------------------------------
 
-j = 111
-j -= 110
-print j
+def test_int_aug_assignments():
+    i = 1
+    i += 3
+    print i
 
-k = 123
-k *= 321
-print k
+    j = 111
+    j -= 110
+    print j
 
-u = 777
-u /= 7
-print u
+    k = 123
+    k *= 321
+    print k
 
-v = 639
-v %= 5
-print v
+    u = 777
+    u /= 7
+    print u
 
-w = 23
-w **= 3
-print w
+    v = 639
+    v %= 5
+    print v
 
-x = 5000
-x <<= 2
-print x
+    w = 23
+    w **= 3
+    print w
 
-y = 9999999
-y >>= 3
-print y
+    x = 5000
+    x <<= 2
+    print x
 
-z = 12345
-z |= 54321
-print z
+    y = 9999999
+    y >>= 3
+    print y
 
-zeta = 85638
-zeta ^= 00001
-print zeta
+    z = 12345
+    z |= 54321
+    print z
 
-zelda = 55555
-zelda &= 7654321
-print zelda
+    zeta = 85638
+    zeta ^= 00001
+    print zeta
 
-fd = 368
-fd //= 5
-print fd
+    zelda = 55555
+    zelda &= 7654321
+    print zelda
 
-## ----------------------------- Comparison Tests ------------------------------
+    fd = 368
+    fd //= 5
+    print fd
 
-if 1 == 1:
-    print 'You cannot argue with that'
+## -----------------------------------------------------------------------------
 
-if 1 != 2:
-    print 'Affirmative'
+def test_int_comparisons():
+    if 1 == 1:
+        print 'You cannot argue with that'
 
-if 1 < 2:
-    print '1 < 2 is correct'
+    if 1 != 2:
+        print 'Affirmative'
 
-if 1 + 1 >= 2:
-    print '1 + 1 >= 2 is also true'
+    if 1 < 2:
+        print '1 < 2 is correct'
 
-if 100 / 10 <= 100 / 9:
-    print 'We can do division :-)'
+    if 1 + 1 >= 2:
+        print '1 + 1 >= 2 is also true'
 
-if 123 * 321 >= 321 * 123:
-    print 'Multiplication is commutative'
+    if 100 / 10 <= 100 / 9:
+        print 'We can do division :-)'
+
+    if 123 * 321 >= 321 * 123:
+        print 'Multiplication is commutative'
+
+## -----------------------------------------------------------------------------
+
+test_int_representations()
+test_int_unary_operations()
+test_int_binary_operations()
+test_int_aug_assignments()
+test_int_comparisons()
+
+## -----------------------------------------------------------------------------

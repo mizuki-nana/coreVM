@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
+## -----------------------------------------------------------------------------
+
 def test_dict_repr_with_integer_keys():
     d = {
       123: 321,
