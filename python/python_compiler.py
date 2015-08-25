@@ -282,7 +282,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 flipped_encoding_map[key]
                 for key in sorted(flipped_encoding_map)
             ],
-            '__MAIN__': self.__finalize_closure_table(binary=True)
+            '__MAIN__': self.__finalize_closure_table(binary=False)
         }
 
         if self.debug_mode:
