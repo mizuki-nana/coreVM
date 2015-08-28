@@ -406,8 +406,8 @@ class CodeTransformer(ast.NodeVisitor):
         return self.visit(node.value)
 
     def visit_BoolOp(self, node):
-        return (' %s ' % self.visit(node.op)).join(
-            [self.visit(value) for value in node.values])
+        return '(' + (' %s ' % self.visit(node.op)).join(
+            [self.visit(value) for value in node.values]) + ')'
 
     def visit_BinOp(self, node):
         base_str = '__call_method_1({lhs}.{func}, {rhs})'
@@ -621,10 +621,7 @@ class CodeTransformer(ast.NodeVisitor):
                         synthesizer=synthesizer,
                         predicate=predicate)
 
-    def visit_Compare(self, node):
-        # Note: Only supports one comparison now.
-        op = node.ops[0]
-
+    def __generate_compare_with_str(self, left, op, right):
         if any(
             (
                 isinstance(op, ast.Eq),
@@ -635,30 +632,107 @@ class CodeTransformer(ast.NodeVisitor):
                 isinstance(op, ast.GtE),
             )
         ):
-            base_str='{indentation}__call_method_1({left}.{op_func}, {right})'.format(
-                indentation=self.__indentation(),
-                left=self.visit(node.left),
+            return '__call_method_1({left}.{op_func}, {right})'.format(
+                left=left,
                 op_func=self.visit(op),
-                right=self.visit(node.comparators[0])
+                right=self.visit(right)
             )
         elif isinstance(op, ast.In):
-            base_str='{indentation}__call_method_1({left}.{op_func}, {right})'.format(
-                indentation=self.__indentation(),
-                left=self.visit(node.comparators[0]),
+            base_str='__call_method_1({left}.{op_func}, {right})'.format(
+                left=self.visit(right),
                 op_func=self.visit(op),
-                right=self.visit(node.left),
+                right=left,
             )
         else:
             # TODO: special support for `is` and `is not` can be removed once
             # dynamic dispatching is supported.
-            base_str = '{indentation}({left} {op} {comparator})'.format(
-              indentation=self.__indentation(),
-              left=self.visit(node.left),
+            return '({left} {op} {right})'.format(
+              left=left,
               op=self.visit(op),
-              comparator=self.visit(node.comparators[0])
+              right=self.visit(right)
             )
 
-        return base_str
+    def __generate_compare(self, left, op, right):
+        if any(
+            (
+                isinstance(op, ast.Eq),
+                isinstance(op, ast.NotEq),
+                isinstance(op, ast.Lt),
+                isinstance(op, ast.LtE),
+                isinstance(op, ast.Gt),
+                isinstance(op, ast.GtE),
+            )
+        ):
+            return '__call_method_1({left}.{op_func}, {right})'.format(
+                indentation=self.__indentation(),
+                left=self.visit(left),
+                op_func=self.visit(op),
+                right=self.visit(right)
+            )
+        elif isinstance(op, ast.In):
+            return '__call_method_1({left}.{op_func}, {right})'.format(
+                indentation=self.__indentation(),
+                left=self.visit(right),
+                op_func=self.visit(op),
+                right=self.visit(left),
+            )
+        else:
+            # TODO: special support for `is` and `is not` can be removed once
+            # dynamic dispatching is supported.
+            return '({left} {op} {right})'.format(
+              indentation=self.__indentation(),
+              left=self.visit(left),
+              op=self.visit(op),
+              right=self.visit(right)
+            )
+
+    def visit_Compare(self, node):
+        """Comparison expressions.
+
+        Need to be able to distinguish between single and chained comparisons.
+
+        Reference:
+          https://docs.python.org/3/reference/expressions.html#comparisons
+        """
+        assert len(node.ops) == len(node.comparators)
+
+        if len(node.ops) == 1:
+            # Single comparison.
+            # In this case, the two operands in the expression are denoted by
+            # `node.left` and `node.comparators[0]`.
+            return self.__generate_compare(node.left, node.ops[0], node.comparators[0])
+
+        # Chained comparisons.
+        #
+        # In this case, all the operands in the expression are encapsulated in
+        # `node.comparators`.
+
+        comparators = [node.left]
+        comparators.extend(node.comparators)
+        res = ''
+        counter = 0
+
+        for i in xrange(len(node.ops)):
+            if counter != 1:
+                counter += 1
+                continue
+
+            assert i % 2 == 1
+            assert counter == 1
+
+            if not res:
+                left = self.__generate_compare(comparators[i-1], node.ops[i-1], comparators[i])
+            else:
+                left = self.__generate_compare_with_str(res, node.ops[i-1], comparators[i])
+
+            right = self.__generate_compare(comparators[i], node.ops[i], comparators[i+1])
+
+            res = '(({left}) and ({right}))'.format(
+                left=left, right=right)
+
+            counter = 0
+
+        return res
 
     def visit_Call(self, node):
         base_str = '{indentation}__call({caller}'

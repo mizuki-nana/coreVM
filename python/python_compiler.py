@@ -903,6 +903,52 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Index(self, node):
         self.visit(node.value)
 
+    def __process_logical_and_recursive(self, exprs):
+        assert exprs
+        expr = exprs[0]
+
+        left_name = self.__get_random_name()
+        right_name = self.__get_random_name()
+
+        assert left_name != right_name
+
+        left_name_id = self.__get_encoding_id(left_name)
+        right_name_id = self.__get_encoding_id(right_name)
+
+        self.visit(expr)
+
+        jmp_lengths = []
+
+        if len(exprs) - 1 > 0:
+            self.__add_instr('stobj2', left_name_id, 0)
+
+            jmp_lengths.extend(self.__process_logical_and_recursive(exprs[1:]))
+            self.__add_instr('stobj2', right_name_id, 0)
+
+            self.__add_instr('ldobj2', left_name_id, 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('ldobj2', right_name_id, 0)
+            self.__add_instr('gethndl', 0, 0)
+            self.__add_instr('land', 0, 0)
+            self.__add_instr('jmpif', 0, 0)
+            jmp_lengths.append(len(self.__current_vector()))
+
+            self.__add_instr('cldobj',
+                self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+
+        return jmp_lengths
+
+    def __process_logical_and(self, exprs):
+        # TODO: [COREVM-308] Add support for logical AND expressions short circuiting in Python
+        jmp_lengths = self.__process_logical_and_recursive(exprs)
+
+        current_length = len(self.__current_vector())
+
+        for jmp_length in jmp_lengths:
+            length_diff = current_length - jmp_length
+
+            self.__current_vector()[jmp_length - 1].oprd1 = length_diff
+
     def visit_BoolOp(self, node):
         assert len(node.values) >= 2
 
@@ -954,31 +1000,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.__current_vector()[jmp_length - 1] = Instr(
                     self.instr_str_to_code_map['jmpif'], length_diff, 0)
         elif isinstance(node.op, ast.And):
-            self.visit(node.values[0])
-            self.__add_instr('stobj2', left_name_id, 0)
-
-            self.visit(node.values[1])
-            self.__add_instr('stobj2', right_name_id, 0)
-
-            self.__add_instr('ldobj2', left_name_id, 0)
-            self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('ldobj2', right_name_id, 0)
-            self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('land', 0, 0)
-            self.__add_instr('sethndl', 0, 0) # store in right
-
-            for i in xrange(2, len(node.values)):
-                self.visit(node.values[i])
-                self.__add_instr('gethndl', 0, 0)
-                self.__add_instr('ldobj2', right_name_id, 0)
-                self.__add_instr('gethndl', 0, 0)
-                self.__add_instr('land', 0, 0)
-                self.__add_instr('sethndl', 0, 0) # store in right
-
-            self.__add_instr('ldobj2', right_name_id, 0)
-            self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('cldobj',
-                self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+            self.__process_logical_and(node.values)
 
     def visit_BinOp(self, node):
         self.visit(node.right)
@@ -1118,7 +1140,11 @@ class BytecodeGenerator(ast.NodeVisitor):
         pass
 
     def visit_Compare(self, node):
-        # Note: Only supports one comparison now.
+        # Do nothing here.
+        # Comparison expressions get unwrapped in code_transformer.py,
+        # except for `is` and `is not`.
+        assert len(node.ops) == len(node.comparators) == 1
+        assert isinstance(node.ops[0], ast.Is) or isinstance(node.ops[0], ast.IsNot)
         self.visit(node.comparators[0])
         self.visit(node.left)
         self.visit(node.ops[0])

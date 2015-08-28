@@ -54,6 +54,15 @@ def test_boolop_expr():
     if (0 and 1) and (3 and 4):
         print 'Skip this round'
 
+    if True is False and False or not False:
+        print 'This is confusing...'
+
+    if (True or False) and (1 or 2):
+        print 'This is true'
+
+    if (False or 0) and (1 and 0):
+        print 'This is False'
+
     if 0 or 0.0 or False:
         print 'Too much negativity is bad'
     elif 0 or 0.0 or False or True:
@@ -61,7 +70,33 @@ def test_boolop_expr():
 
 ## -----------------------------------------------------------------------------
 
+def test_comparison_exprs():
+    print 1 < 2
+    print True is True
+    print True is False
+    print False is not True
+    print False is not 1
+    print False is True is False
+
+    print True is not False is not True
+    print True is not False is not False
+    print False is not False is not True
+    print False is not False is not False
+
+    print False is True is not False is not True
+    print False is True is not False is not True is False
+    print False is not True is True is not True is not True is not False
+    print True is not True is True is not True is not True is not False is True
+
+    print 1 <= 3 > 2
+    print 2 <= 5 > 6
+    print 3 > 4 < 5
+    print 1 > 2 > 3
+
+## -----------------------------------------------------------------------------
+
 test_ifelse_expr()
 test_boolop_expr()
+test_comparison_exprs()
 
 ## -----------------------------------------------------------------------------
