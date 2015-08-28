@@ -165,12 +165,27 @@ class CodeTransformer(ast.NodeVisitor):
             value=self.visit(node.value))
 
     def visit_Print(self, node):
-        base_str = '{indentation}print'.format(indentation=self.__indentation())
+        base_str = ''
 
         if node.values:
-            base_str += (' ' + '__call_method_0(' + self.visit(node.values[0]) + '.__str__' + ')')
+            num = len(node.values)
+            for i, value in enumerate(node.values):
+                base_str += '{indentation}print {value}\n'.format(
+                    indentation=self.__indentation(),
+                    value='__call_method_0(' + self.visit(value) + '.__str__' + ')')
 
-        base_str += '\n'
+                if i + 1 < num:
+                    base_str += '{indentation}print {value}\n'.format(
+                        indentation=self.__indentation(),
+                        value='__call_method_0(__call_cls_builtin(str, " ").__str__)')
+
+            base_str += '{indentation}print {value}\n'.format(
+                indentation=self.__indentation(),
+                value='__call_method_0(__call_cls_builtin(str, "\\n").__str__)')
+        else:
+            base_str += '{indentation}print {value}\n'.format(
+                indentation=self.__indentation(),
+                value='__call_method_0(__call_cls_builtin(str, "\\n").__str__)')
 
         return base_str
 
@@ -795,7 +810,19 @@ class CodeTransformer(ast.NodeVisitor):
         return node.id
 
     def visit_Str(self, node):
-        return '__call_cls_builtin(str, \"%s\")' % str(node.s)
+        """
+        Python escape characters:
+        http://www.codecodex.com/wiki/Escape_sequences_and_escape_characters#Python
+        """
+        s = str(node.s)
+        s = s.replace('\n', '\\n')
+        s = s.replace('\t', '\\t')
+        s = s.replace('\r', '\\r')
+        s = s.replace('\b', '\\b')
+        s = s.replace('\"', '\\"')
+        s = s.replace("\'", "\\'")
+        s = s.replace('\?', '\\?')
+        return '__call_cls_builtin(str, \"%s\")' % s
 
     """ ---------------------------- boolop -------------------------------- """
 

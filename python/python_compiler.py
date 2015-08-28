@@ -546,10 +546,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         pass
 
     def visit_Print(self, node):
-        # TODO: [COREVM-178] Support for printing multiple values in Python
-        if node.values:
-            self.visit(node.values[0])
-
+        assert len(node.values) == 1
+        self.visit(node.values[0])
         self.__add_instr('print', 0, 0, loc=Loc.from_node(node))
 
     def visit_For(self, node):

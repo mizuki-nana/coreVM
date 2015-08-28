@@ -30,6 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <csignal>
+#include <cstdio>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -1820,7 +1821,12 @@ corevm::runtime::instr_handler_print::execute(
 
   const std::string& str = static_cast<std::string>(native_str);
 
-  puts(str.c_str());
+  static const char* PRINT_FORMATS[2] = { "%s", "%s\n" };
+
+  bool trailing_new_line = static_cast<bool>(instr.oprd1);
+  size_t index = static_cast<size_t>(trailing_new_line) % 2;
+
+  printf(PRINT_FORMATS[index], str.c_str());
 }
 
 // -----------------------------------------------------------------------------

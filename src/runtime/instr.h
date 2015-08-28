@@ -473,9 +473,11 @@ enum instr_enum : uint32_t
   DEBUG,
 
   /**
-   * <print, _, _>
+   * <print, <trailing_new_line>, _>
    * Converts the native type handle associated with the object on top of the
-   * stack into a native string, and prints it to std output.
+   * stack into a native string, and prints it to std output. The second operand
+   * is a boolean value specifying whether a trailing new line character should
+   * be printed. Defaults to `false`.
    */
   PRINT,
 
