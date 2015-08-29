@@ -67,3 +67,23 @@ class str(object):
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
+
+    def __eq__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
+        [eq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
+
+    def __ne__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
+        [neq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """

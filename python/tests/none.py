@@ -34,6 +34,7 @@ def test_none_type_representation():
 
     c = not not None
     print c
+
 ## -----------------------------------------------------------------------------
 
 def test_none_type_logic():
@@ -50,8 +51,17 @@ def test_none_type_hash():
 
 ## -----------------------------------------------------------------------------
 
+def test_none_equality():
+    print None == None
+    print None != None
+    print None == True
+    print None == False
+
+## -----------------------------------------------------------------------------
+
 test_none_type_representation()
 test_none_type_logic()
 test_none_type_hash()
+test_none_equality()
 
 ## -----------------------------------------------------------------------------

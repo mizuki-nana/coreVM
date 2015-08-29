@@ -118,6 +118,43 @@ def test_nested_for_loops_iterate_lists_2():
 
 ## -----------------------------------------------------------------------------
 
+def test_for_loop_with_else_and_normal_termination():
+    for i in [1, 2, 3, 4, 5]:
+        print i
+    else:
+        print 'Should have hit all 5'
+
+## -----------------------------------------------------------------------------
+
+def test_for_loop_with_else_and_abrupt_termination():
+    for i in [1, 2, 3, 4, 5]:
+        print i
+        if i > 3:
+            break
+    else:
+        print 'Should have hit until 3'
+
+## -----------------------------------------------------------------------------
+
+def test_for_nested_for_loops_with_else_and_abrupt_terminations():
+    for i in ['a', 'b', 'c']:
+        xyz = None
+
+        for j in ['x', 'y', 'z']:
+            if j == 'z':
+                break
+            print j
+        else:
+            break
+
+        print i
+        if xyz == 'z':
+            break
+    else:
+        print 'Alphabet...abc.xyz...G is for Google'
+
+## -----------------------------------------------------------------------------
+
 test_for_loop_iterate_list()
 test_for_loop_iterate_list_and_break_once()
 test_for_loop_iterate_list_and_break_immediately()
@@ -128,5 +165,8 @@ test_nested_for_loops_with_mixed_continue_and_break()
 test_triple_nested_for_loops_with_mixed_continues_and_breaks()
 test_nested_for_loops_iterate_lists()
 test_nested_for_loops_iterate_lists_2()
+test_for_loop_with_else_and_normal_termination()
+test_for_loop_with_else_and_abrupt_termination()
+test_for_nested_for_loops_with_else_and_abrupt_terminations()
 
 ## -----------------------------------------------------------------------------

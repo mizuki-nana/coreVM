@@ -208,6 +208,32 @@ def test_while_else_loop_with_exception():
 
 ## -----------------------------------------------------------------------------
 
+def test_while_loop_nested_with_else_statements():
+    i = 0
+    while i < 5:
+        j = 5
+
+        while j < 10:
+            print j
+
+            if j % 3 == 0:
+                break
+            else:
+                j += 1
+        else:
+            print j
+
+        print i, j
+
+        if i + j == 10:
+            break
+        else:
+            i += 1
+    else:
+        print 'Aha'
+
+## -----------------------------------------------------------------------------
+
 test_while_loop()
 test_while_loop_with_continue()
 test_while_loop_with_continue_2()
@@ -221,5 +247,6 @@ test_while_else_loop_with_break()
 test_while_else_loop_with_continue()
 test_while_loop_with_exception()
 test_while_else_loop_with_exception()
+test_while_loop_nested_with_else_statements()
 
 ## -----------------------------------------------------------------------------

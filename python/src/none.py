@@ -44,6 +44,26 @@ class NoneType(object):
     def __not__(self):
         return True
 
+    def __eq__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, other, 0]
+        [ldobj, self, 0]
+        [objeq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
+
+    def __ne__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, other, 0]
+        [ldobj, self, 0]
+        [objeq, 0, 0]
+        [cldobj, False, True]
+        ### END VECTOR ###
+        """
+
 ## -----------------------------------------------------------------------------
 
 ## Global `None` object.

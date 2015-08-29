@@ -230,8 +230,23 @@ class CodeTransformer(ast.NodeVisitor):
         # Indent lvl 1.
         self.__indent()
 
-        base_str += '{indentation}pass\n'.format(
-            indentation=self.__indentation())
+        # NOTE: Statements under the `else` part of the syntax get executed only
+        # when the for-loop terminates normally (i.e. not abruptly by
+        # `break` statements).
+        #
+        # Reference:
+        #   http://psung.blogspot.com/2007/12/for-else-in-python.html
+        #
+        # Therefore, since normal termination of for-loops raise instances
+        # of `StopIteration`'s, which get caught here, and `break` statements
+        # cause jumps to outside the entire loop, we can execute the `else`
+        # statements here.
+        if node.orelse:
+            for stmt in node.orelse:
+                base_str += (self.visit(stmt) + '\n')
+        else:
+            base_str += '{indentation}pass\n'.format(
+                indentation=self.__indentation())
 
         # Dedent lvl 1.
         self.__dedent()

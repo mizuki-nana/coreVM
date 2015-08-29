@@ -33,9 +33,19 @@ def test_str_representation():
 def test_str_hash():
     print 'Hello world'.__hash__() > 0
     print 'Me'.__hash__() != 'You'.__hash__()
+
+## -----------------------------------------------------------------------------
+
+def test_str_equality():
+    print 'Hello' == 'Hello'
+    print 'Hello' != 'Hello'
+    print 'Hello' != 'World'
+    print 'Hello' == 'World'
+
 ## -----------------------------------------------------------------------------
 
 test_str_representation()
 test_str_hash()
+test_str_equality()
 
 ## -----------------------------------------------------------------------------
