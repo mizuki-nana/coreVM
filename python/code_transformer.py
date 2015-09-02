@@ -93,6 +93,17 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__dedent()
 
+        # Decorators.
+        if node.decorator_list:
+            decorated = node.name
+            for expr in reversed(node.decorator_list):
+                decorated = (self.visit(expr) + '(' + decorated + ')')
+
+            base_str += '{indentation}{name} = {decorated}\n'.format(
+                indentation=self.__indentation(),
+                name=node.name,
+                decorated=decorated)
+
         return base_str
 
     def visit_ClassDef(self, node):
@@ -100,15 +111,26 @@ class CodeTransformer(ast.NodeVisitor):
 
         base_str = base_str.format(
             indentation=self.__indentation(),
-            class_name=node.name,
-            body=''.join([self.visit(stmt) for stmt in node.body])
+            class_name=node.name
         )
 
         self.__indent()
 
-        base_str += ''.join([self.visit(stmt) for stmt in node.body])
+        base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
+        base_str += '\n'
 
         self.__dedent()
+
+        # Decorators.
+        if node.decorator_list:
+            decorated = node.name
+            for expr in reversed(node.decorator_list):
+                decorated = (self.visit(expr) + '(' + decorated + ')')
+
+            base_str += '\n{indentation}{name} = {decorated}\n'.format(
+                indentation=self.__indentation(),
+                name=node.name,
+                decorated=decorated)
 
         return base_str
 
