@@ -29,6 +29,12 @@ def test_ifelse_expr():
 
 ## -----------------------------------------------------------------------------
 
+def false():
+    print 'false'
+    return False
+
+## -----------------------------------------------------------------------------
+
 def test_boolop_expr():
     if 1 or 0:
         print '1 or 0 == True'
@@ -57,14 +63,35 @@ def test_boolop_expr():
     if True is False and False or not False:
         print 'This is confusing...'
 
-    if (True or False) and (1 or 2):
-        print 'This is true'
+    if True and false():
+        print 'This is False (THIS SHOULD NOT BE PRINTED)'
+
+    if false() and True and True:
+        print 'This is False (THIS SHOULD NOT BE PRINTED)'
+
+    if (True or True) and false():
+        print 'This is False (THIS SHOULD NOT BE PRINTED)'
+
+    if (True or False) and false():
+        print 'This is still False (THIS SHOULD NOT BE PRINTED)'
+
+    if (True or True) and False and false():
+        print 'This is still False (THIS SHOULD NOT BE PRINTED)'
+
+    if (True or False) and False and false():
+        print 'This is still False (THIS SHOULD NOT BE PRINTED)'
 
     if (False or 0) and (1 and 0):
-        print 'This is False'
+        print 'This is False (THIS SHOULD NOT BE PRINTED)'
+
+    if True and True and 0:
+        print 'This is False (THIS SHOULD NOT BE PRINTED)'
+
+    print True and false()
+    print True and false() and True
 
     if 0 or 0.0 or False:
-        print 'Too much negativity is bad'
+        print 'Too much negativity is bad (THIS SHOULD NOT BE PRINTED)'
     elif 0 or 0.0 or False or True:
         print 'Gotta have something positive'
 

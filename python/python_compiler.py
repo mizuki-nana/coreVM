@@ -920,7 +920,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         if len(exprs) - 1 > 0:
             self.__add_instr('stobj2', left_name_id, 0)
 
-            jmp_lengths.extend(self.__process_logical_and_recursive(exprs[1:]))
+            self.visit(exprs[1])
             self.__add_instr('stobj2', right_name_id, 0)
 
             self.__add_instr('ldobj2', left_name_id, 0)
@@ -928,16 +928,21 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('ldobj2', right_name_id, 0)
             self.__add_instr('gethndl', 0, 0)
             self.__add_instr('land', 0, 0)
-            self.__add_instr('jmpif', 0, 0)
-            jmp_lengths.append(len(self.__current_vector()))
+            self.__add_instr('truthy', 0, 0)
 
             self.__add_instr('cldobj',
                 self.__get_encoding_id('True'), self.__get_encoding_id('False'))
 
+            self.__add_instr('lnot', 0, 0)
+            self.__add_instr('jmpif', 0, 0)
+            jmp_lengths.append(len(self.__current_vector()))
+
+            if len(exprs[1:]) > 0:
+                jmp_lengths.extend(self.__process_logical_and_recursive(exprs[1:]))
+
         return jmp_lengths
 
     def __process_logical_and(self, exprs):
-        # TODO: [COREVM-308] Add support for logical AND expressions short circuiting in Python
         jmp_lengths = self.__process_logical_and_recursive(exprs)
 
         current_length = len(self.__current_vector())
@@ -945,7 +950,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         for jmp_length in jmp_lengths:
             length_diff = current_length - jmp_length
 
-            self.__current_vector()[jmp_length - 1].oprd1 = length_diff
+            i = jmp_length - 1
+            assert self.__current_vector()[i].code == self.instr_str_to_code_map['jmpif']
+            self.__current_vector()[i].oprd1 = length_diff
 
     def visit_BoolOp(self, node):
         assert len(node.values) >= 2
