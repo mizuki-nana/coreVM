@@ -492,6 +492,409 @@ def test_try_except_in_locally_defined_function_3():
 
 ## -----------------------------------------------------------------------------
 
+def test_break_in_try_finally_block_under_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                break
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_try_finally_block_under_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                continue
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_try_finally_block_under_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                return
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_break_in_try_finally_block_under_for_loop_and_another_try_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    break
+                except Exception:
+                    pass
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_try_finally_block_under_for_loop_and_another_try_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    continue
+                except Exception:
+                    pass
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_try_finally_block_under_for_loop_and_another_try_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    return
+                except Exception:
+                    pass
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_break_in_try_finally_block_under_for_loop_and_another_try_finally_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    break
+                except Exception:
+                    pass
+                finally:
+                    print 'Hello'
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_try_finally_block_under_for_loop_and_another_try_finally_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    continue
+                except Exception:
+                    pass
+                finally:
+                    print 'Hello'
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_try_finally_block_under_for_loop_and_another_try_finally_block():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            if i == 3:
+                try:
+                    return
+                except Exception:
+                    pass
+                finally:
+                    print 'Hello'
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_break_in_try_finally_block_under_nested_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    break
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ha', j
+        print i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_try_finally_block_under_nested_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    continue
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ha', j
+        print i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_try_finally_block_under_nested_for_loop():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    return
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ha', j
+        print i
+
+## -----------------------------------------------------------------------------
+
+def test_break_in_nested_try_finally_blocks_and_for_loops():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            for j in ls:
+                try:
+                    if j == 3:
+                        break
+                    print j
+                except Exception:
+                    pass
+                finally:
+                    print 'Ja', j
+
+            if i == 3:
+                break
+
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_nested_try_finally_blocks_and_for_loops():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            for j in ls:
+                try:
+                    if j == 3:
+                        continue
+                    print j
+                except Exception:
+                    pass
+                finally:
+                    print 'Ja', j
+
+            if i == 3:
+                break
+
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_nested_try_finally_blocks_and_for_loops():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            for j in ls:
+                try:
+                    if j == 3:
+                        return
+                    print j
+                except Exception:
+                    pass
+                finally:
+                    print 'Ja', j
+
+            if i == 3:
+                break
+
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_triple_nested_finally_blocks_and_for_loops():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            for j in ls:
+                try:
+                    for k in ls:
+                        try:
+                            if k % 2 == 0:
+                                return
+                        except Exception:
+                            pass
+                        finally:
+                            print 'Ka', k
+
+                    if j == 4:
+                        break
+
+                    print j
+                except Exception:
+                    pass
+                finally:
+                    print 'Ja', j
+
+            if i == 3:
+                break
+
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_triple_nested_finally_blocks_and_for_loops_2():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        try:
+            for j in ls:
+                try:
+                    for k in ls:
+                        try:
+                            if k % 2 == 0:
+                                return
+                        except Exception:
+                            pass
+                        finally:
+                            print 'Ka', k
+
+                    if j == 4:
+                        return
+
+                    print j
+                except Exception:
+                    pass
+                finally:
+                    print 'Ja', j
+
+            if i == 3:
+                return
+
+            print i
+        except Exception:
+            pass
+        finally:
+            print 'Ha', i
+
+## -----------------------------------------------------------------------------
+
+def test_break_in_try_finally_block_in_nested_for_loops_with_outer_branch():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    break
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ja', j
+
+        if i == 3:
+            break
+
+        print i
+
+## -----------------------------------------------------------------------------
+
+def test_continue_in_try_finally_block_in_nested_for_loops_with_outer_branch():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    continue
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ja', j
+
+        if i == 3:
+            break
+
+        print i
+
+## -----------------------------------------------------------------------------
+
+def test_return_in_try_finally_block_in_nested_for_loops_with_outer_branch():
+    ls = [1, 2, 3, 4, 5]
+    for i in ls:
+        for j in ls:
+            try:
+                if j == 3:
+                    return
+                print j
+            except Exception:
+                pass
+            finally:
+                print 'Ja', j
+
+        if i == 3:
+            break
+
+        print i
+
+## -----------------------------------------------------------------------------
+
 test_simple_try_except()
 test_multiple_except_blocks()
 test_catch_exception_from_function_call()
@@ -517,5 +920,30 @@ test_adjacent_try_except_blocks()
 test_try_except_in_locally_defined_function()
 test_try_except_in_locally_defined_function_2()
 test_try_except_in_locally_defined_function_3()
+
+test_break_in_try_finally_block_under_for_loop()
+test_continue_in_try_finally_block_under_for_loop()
+test_return_in_try_finally_block_under_for_loop()
+test_break_in_try_finally_block_under_for_loop_and_another_try_block()
+test_continue_in_try_finally_block_under_for_loop_and_another_try_block()
+test_return_in_try_finally_block_under_for_loop_and_another_try_block()
+test_break_in_try_finally_block_under_for_loop_and_another_try_finally_block()
+test_continue_in_try_finally_block_under_for_loop_and_another_try_finally_block()
+test_return_in_try_finally_block_under_for_loop_and_another_try_finally_block()
+
+test_break_in_try_finally_block_under_nested_for_loop()
+test_continue_in_try_finally_block_under_nested_for_loop()
+test_return_in_try_finally_block_under_nested_for_loop()
+
+test_break_in_nested_try_finally_blocks_and_for_loops()
+test_continue_in_nested_try_finally_blocks_and_for_loops()
+test_return_in_nested_try_finally_blocks_and_for_loops()
+
+test_return_in_triple_nested_finally_blocks_and_for_loops()
+test_return_in_triple_nested_finally_blocks_and_for_loops_2()
+
+test_break_in_try_finally_block_in_nested_for_loops_with_outer_branch()
+test_continue_in_try_finally_block_in_nested_for_loops_with_outer_branch()
+test_return_in_try_finally_block_in_nested_for_loops_with_outer_branch()
 
 ## -----------------------------------------------------------------------------

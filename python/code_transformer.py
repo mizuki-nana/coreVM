@@ -28,11 +28,33 @@ import sys
 import traceback
 
 
+## -----------------------------------------------------------------------------
+
+class LoopState(object):
+
+    def __init__(self, scope_lvl):
+        self.scope_lvl = scope_lvl
+
+## -----------------------------------------------------------------------------
+
+class TryExceptState(object):
+
+    def __init__(self, scope_lvl, loop_lvl, finally_block=None):
+        self.scope_lvl = scope_lvl
+        self.loop_lvl = loop_lvl
+        self.finally_block = finally_block
+
+## -----------------------------------------------------------------------------
+
 class CodeTransformer(ast.NodeVisitor):
 
     def __init__(self, options):
         self.options = options
         self.indent_level = 0
+        self.scope_lvl = 0
+        self.current_try_except_lvl = 0
+        self.loop_states = []
+        self.try_except_states = []
 
     def __indent(self):
         self.indent_level += 1
@@ -46,6 +68,84 @@ class CodeTransformer(ast.NodeVisitor):
 
     def __get_random_name(self):
         return ''.join(random.choice(string.ascii_letters) for _ in xrange(5))
+
+    def __push_try_except_state(self, try_except_state):
+        self.try_except_states.append(try_except_state)
+
+    def __pop_try_except_state(self):
+        assert self.current_try_except_lvl > 0, \
+            'Current try-except level should not be zero'
+
+        assert len(self.try_except_states) > 0, \
+            'Try-except states should not be empty'
+
+        assert self.current_try_except_lvl <= len(self.try_except_states), \
+            'Invalid try-except states'
+
+        self.current_try_except_lvl -= 1
+        self.try_except_states.pop()
+
+    def __current_try_except_state(self):
+        assert len(self.try_except_states), 'No try-except states found'
+        return self.try_except_states[-1]
+
+    def __total_try_except_lvl(self):
+        return len(self.try_except_states)
+
+    def __current_loop_state(self):
+        assert len(self.loop_states), 'No loop states found'
+        return self.loop_states[-1]
+
+    def __push_loop_state(self, state):
+        self.loop_states.append(state)
+
+    def __pop_loop_state(self):
+        self.loop_states.pop()
+
+    def __get_finally_blocks_for_branch_stmts(self, is_return=False):
+        """Returns a set of "finally" blocks for branch statements, namely
+        'break', 'continue', and 'return' statements.
+
+        See:
+        [COREVM-307] Make break, continue and return statements respect try-finally block
+
+        TODO:
+        [COREVM-310] Design and implement new mechanism to make branch statements in Python respect try-finally blocks
+        """
+
+        if not self.try_except_states:
+            return None
+
+        if not self.loop_states:
+            return None
+
+        assert self.scope_lvl == self.__current_try_except_state().scope_lvl, \
+            'Branch statement must be under the same scope level as the try-except block'
+
+        assert self.__current_try_except_state().scope_lvl == self.__current_loop_state().scope_lvl, \
+            'Try-except block and loop should be under the same scope level'
+
+        finally_blocks = []
+
+        if self.try_except_states:
+            target_loop_lvl = self.try_except_states[-1].loop_lvl
+            for state in reversed(self.try_except_states):
+                # If it's a `return` statement, then catch all the finally blocks.
+                if state.finally_block and (is_return or state.loop_lvl == target_loop_lvl):
+                    finally_blocks.append(state.finally_block)
+
+        return finally_blocks
+
+    def __add_finally_block_stmts_for_branch_stmt(self, is_return=False):
+        base_str = ''
+
+        finally_blocks = self.__get_finally_blocks_for_branch_stmts(is_return=is_return)
+        if finally_blocks:
+            for finally_block in finally_blocks:
+                base_str += ('\n'.join([self.visit(stmt) for stmt in finally_block]))
+                base_str += '\n'
+
+        return base_str
 
     def transform(self):
         with open(self.options.input_file, 'r') as fd:
@@ -68,6 +168,9 @@ class CodeTransformer(ast.NodeVisitor):
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
+        # Step in.
+        self.scope_lvl += 1
+
         base_str = '{indentation}def {func_name}({arguments}):\n'
 
         base_str = base_str.format(
@@ -104,9 +207,15 @@ class CodeTransformer(ast.NodeVisitor):
                 name=node.name,
                 decorated=decorated)
 
+        # Step out.
+        self.scope_lvl -= 1
+
         return base_str
 
     def visit_ClassDef(self, node):
+        # Step in.
+        self.scope_lvl += 1
+
         base_str = '{indentation}class {class_name}:\n'
 
         base_str = base_str.format(
@@ -132,10 +241,18 @@ class CodeTransformer(ast.NodeVisitor):
                 name=node.name,
                 decorated=decorated)
 
+        # Step out.
+        self.scope_lvl -= 1
+
         return base_str
 
     def visit_Return(self, node):
-        base_str = '{indentation}return'.format(indentation=self.__indentation())
+        base_str = ''
+
+        # Finally block code.
+        base_str += self.__add_finally_block_stmts_for_branch_stmt(is_return=True)
+
+        base_str += '{indentation}return'.format(indentation=self.__indentation())
 
         if node.value:
             base_str += (' ' + self.visit(node.value))
@@ -212,6 +329,8 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_For(self, node):
+        self.__push_loop_state(LoopState(self.scope_lvl))
+
         base_str = "{indentation}try:\n".format(indentation=self.__indentation())
 
         # Indent lvl 1.
@@ -273,9 +392,13 @@ class CodeTransformer(ast.NodeVisitor):
         # Dedent lvl 1.
         self.__dedent()
 
+        self.__pop_loop_state()
+
         return base_str
 
     def visit_While(self, node):
+        self.__push_loop_state(LoopState(self.scope_lvl))
+
         base_str = '{indentation}while {test}:\n'.format(
             indentation=self.__indentation(),
             test=self.visit(node.test)
@@ -298,6 +421,8 @@ class CodeTransformer(ast.NodeVisitor):
                 base_str += (self.visit(stmt) + '\n')
 
             self.__dedent()
+
+        self.__pop_loop_state()
 
         return base_str
 
@@ -368,6 +493,12 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_TryExcept(self, node):
+        # Step in.
+        if self.current_try_except_lvl == self.__total_try_except_lvl():
+            self.__push_try_except_state(TryExceptState(self.scope_lvl, len(self.loop_states)))
+
+        self.current_try_except_lvl += 1
+
         base_str = '{indentation}try:\n'.format(
             indentation=self.__indentation())
 
@@ -392,9 +523,16 @@ class CodeTransformer(ast.NodeVisitor):
 
             self.__dedent()
 
+        # Step out.
+        if not self.__current_try_except_state().finally_block:
+            self.__pop_try_except_state()
+
         return base_str
 
     def visit_TryFinally(self, node):
+        self.__push_try_except_state(
+            TryExceptState(self.scope_lvl, len(self.loop_states), node.finalbody))
+
         base_str = ''
 
         for stmt in node.body:
@@ -409,6 +547,8 @@ class CodeTransformer(ast.NodeVisitor):
             base_str += self.visit(stmt)
 
         self.__dedent()
+
+        self.__pop_try_except_state()
 
         return base_str
 
@@ -438,10 +578,20 @@ class CodeTransformer(ast.NodeVisitor):
         return '{indentation}pass'.format(indentation=self.__indentation())
 
     def visit_Break(self, node):
-        return '{indentation}break'.format(indentation=self.__indentation())
+        base_str = ''
+
+        base_str += self.__add_finally_block_stmts_for_branch_stmt()
+        base_str += '{indentation}break'.format(indentation=self.__indentation())
+
+        return base_str
 
     def visit_Continue(self, node):
-        return '{indentation}continue'.format(indentation=self.__indentation())
+        base_str = ''
+
+        base_str += self.__add_finally_block_stmts_for_branch_stmt()
+        base_str += '{indentation}continue'.format(indentation=self.__indentation())
+
+        return base_str
 
     """ ----------------------------- expr --------------------------------- """
 
