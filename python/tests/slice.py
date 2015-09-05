@@ -20,53 +20,42 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## -----------------------------------------------------------------------------
-
-class Exception(object):
-
-    def __init__(self):
-        pass
 
 ## -----------------------------------------------------------------------------
 
-class TypeError(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class ValueError(Exception):
-
-    def __init__(self):
-        pass
+def test_slice_representation():
+    print slice(1, None, None)
+    print slice(1, 2, None)
+    print slice(1, 2, 3)
 
 ## -----------------------------------------------------------------------------
 
-class IndexError(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class KeyError(Exception):
-
-    def __init__(self):
-        pass
+def test_hash():
+    s = slice(1, 2, 3)
+    try:
+        s.__hash__()
+    except TypeError:
+        print 'slice is unhashable type'
 
 ## -----------------------------------------------------------------------------
 
-class StopIteration(Exception):
+def test_indices():
+    print slice(1, 10, 2).indices(1)
+    print slice(1, 10, 2).indices(10)
+    print slice(1, 10, 2).indices(0)
+    print slice(1, 10, 2).indices(-1)
+    print slice(10, 100, 20).indices(5)
+    print slice(10, 8, 5).indices(5)
 
-    def __init__(self):
-        pass
+    try:
+        slice(10, 8, 0).indices(5)
+    except ValueError:
+        print 'slice step cannot be zero'
 
 ## -----------------------------------------------------------------------------
 
-class AssertionError(Exception):
-
-    def __init__(self):
-        pass
+test_slice_representation()
+test_hash()
+test_indices()
 
 ## -----------------------------------------------------------------------------

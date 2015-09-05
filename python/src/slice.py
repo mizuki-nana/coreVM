@@ -20,53 +20,52 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## -----------------------------------------------------------------------------
-
-class Exception(object):
-
-    def __init__(self):
-        pass
 
 ## -----------------------------------------------------------------------------
 
-class TypeError(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class ValueError(Exception):
-
-    def __init__(self):
-        pass
+CONST_STR_SLICE = __call_cls_builtin(str, 'slice(')
+CONST_STR_COMMA = __call_cls_builtin(str, ', ')
+CONST_STR_CLOSE_PAREN  = __call_cls_builtin(str, ')')
+CONST_INT_ZERO = __call_cls_builtin(int, 0)
 
 ## -----------------------------------------------------------------------------
 
-class IndexError(Exception):
+class slice(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, start, stop, step):
+        self.start = start
+        self.stop = stop
+        self.step = step
 
-## -----------------------------------------------------------------------------
+    def __str__(self):
+        res = __call_cls_builtin(str, '')
 
-class KeyError(Exception):
+        __call_method_1(res.__add__, CONST_STR_SLICE)
+        __call_method_1(res.__add__, __call_method_0(self.start.__repr__))
+        __call_method_1(res.__add__, CONST_STR_COMMA)
+        __call_method_1(res.__add__, __call_method_0(self.stop.__repr__))
+        __call_method_1(res.__add__, CONST_STR_COMMA)
+        __call_method_1(res.__add__, __call_method_0(self.step.__repr__))
+        __call_method_1(res.__add__, CONST_STR_CLOSE_PAREN)
 
-    def __init__(self):
-        pass
+        return res
 
-## -----------------------------------------------------------------------------
+    def __repr__(self):
+        return __call_method_0(self.__str__)
 
-class StopIteration(Exception):
+    def __hash__(self):
+        raise __call_cls_0(TypeError)
 
-    def __init__(self):
-        pass
+    def indices(self, num):
+        start = min(self.start, num)
+        stop = min(self.stop, num)
+        step = __call_cls_1(int, self.step)
 
-## -----------------------------------------------------------------------------
+        if __call_method_1(step.__eq__, CONST_INT_ZERO):
+            raise __call_cls_0(ValueError)
 
-class AssertionError(Exception):
+        res = __call_cls_builtin(tuple, (start, stop, step))
 
-    def __init__(self):
-        pass
+        return res
 
 ## -----------------------------------------------------------------------------
