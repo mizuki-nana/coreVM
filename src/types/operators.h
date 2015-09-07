@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/lexical_cast.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <functional>
@@ -376,6 +377,178 @@ corevm::types::hash::operator()<corevm::types::map>(
   }
 
   return static_cast<corevm::types::int64::value_type>(res);
+}
+
+// -----------------------------------------------------------------------------
+
+class slice : public unary_op
+{
+public:
+  slice(uint32_t start, uint32_t stop)
+    :
+    unary_op(),
+    m_start(start),
+    m_stop(stop)
+  {
+  }
+
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle) const
+  {
+    THROW(corevm::types::runtime_error("Calling 'slice' operator on invalid type"));
+  }
+
+  uint32_t m_start;
+  uint32_t m_stop;
+
+private:
+  template<typename T>
+  T slice_impl(const T& val) const
+  {
+    if (m_start < m_stop)
+    {
+        auto begin = m_start >= val.size() ? val.end() : val.begin() + m_start;
+        auto end = m_stop >= val.size() ? val.end() : val.begin() + m_stop;
+        T res(begin, end);
+        return res;
+    }
+
+    return T();
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::slice::operator()<corevm::types::string>(
+  const corevm::types::string& handle) const
+{
+  return slice_impl(handle.value);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::slice::operator()<corevm::types::array>(
+  const corevm::types::array& handle) const
+{
+  return slice_impl(handle.value);
+}
+
+// -----------------------------------------------------------------------------
+
+class stride : public unary_op
+{
+public:
+  explicit stride(int32_t stride)
+    :
+    unary_op(),
+    m_stride(stride)
+  {
+  }
+
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle) const
+  {
+    THROW(corevm::types::runtime_error("Calling 'stride' operator on invalid type"));
+  }
+
+  int32_t m_stride;
+
+private:
+  template<typename T>
+  T stride_impl(const T& val) const
+  {
+    T res;
+
+    if (m_stride > 0)
+    {
+      res.reserve(val.size());
+
+      auto begin = val.begin();
+      size_t size = 0;
+      while (size < val.size())
+      {
+        auto itr = begin + size;
+        res.push_back(*itr);
+        size += m_stride;
+      }
+    }
+
+    return res;
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::stride::operator()<corevm::types::string>(
+  const corevm::types::string& handle) const
+{
+  return stride_impl(handle.value);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::stride::operator()<corevm::types::array>(
+  const corevm::types::array& handle) const
+{
+  return stride_impl(handle.value);
+}
+
+// -----------------------------------------------------------------------------
+
+class reverse : public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle) const
+  {
+    THROW(corevm::types::runtime_error("Calling 'reverse' operator on invalid type"));
+  }
+
+private:
+  template<typename T>
+  T reverse_impl(const T& val) const
+  {
+    T res;
+    res.resize(val.size());
+
+    std::reverse_copy(val.begin(), val.end(), res.begin());
+
+    return res;
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::reverse::operator()<corevm::types::string>(
+  const corevm::types::string& handle) const
+{
+  return reverse_impl(handle.value);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::reverse::operator()<corevm::types::array>(
+  const corevm::types::array& handle) const
+{
+  return reverse_impl(handle.value);
 }
 
 // -----------------------------------------------------------------------------

@@ -43,8 +43,51 @@ def test_tuple_hash():
 
 ## -----------------------------------------------------------------------------
 
+def test_tuple_slicing():
+    t = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    t2 = ()
+
+    print t
+
+    print t[1]
+    print t[1:1]
+    print t[1:5]
+    print t[:9]
+    print t[5:]
+    print t[0:0]
+    print t[8:2]
+    print t[9:9]
+    print t[1:8:2]
+    print t[::8]
+    #print t[::10] # Python prints trailing coma.
+    print t[1:8:-1]
+    print t[1:8:-5]
+    print t[::]
+    print t[::-1]
+    print t[::-8]
+    print t[1:1:-1]
+    print t[9:9:-1]
+    print t[-1:-1:-1]
+
+    print t2[1:1]
+    print t2[::1]
+    print t2[::-1]
+    print t2[1:8:-2]
+    print t2[-1:-1:-1]
+
+    try:
+        t[::0]
+    except ValueError:
+        print 'Slice step cannot be zero'
+
+    print t
+    print t2
+
+## -----------------------------------------------------------------------------
+
 test_tuple_representation()
 test_iterate_tuples()
 test_tuple_hash()
+test_tuple_slicing()
 
 ## -----------------------------------------------------------------------------

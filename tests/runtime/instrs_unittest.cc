@@ -2887,6 +2887,21 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRLEN)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRAT)
+{
+  corevm::types::native_string hello_world = "Hello world!";
+  corevm::types::native_string expected_result("w");
+  corevm::types::native_type_handle oprd1 = corevm::types::string(hello_world);
+  corevm::types::native_type_handle oprd2 = corevm::types::uint32(6);
+
+  push_eval_stack(eval_oprds_list{oprd1, oprd2});
+
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_strat,
+    corevm::types::native_string>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRCLR)
 {
   corevm::types::native_string hello_world = "Hello world!";

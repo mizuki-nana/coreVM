@@ -88,6 +88,20 @@ def __call_cls_2(caller, arg1, arg2):
 
 ## -----------------------------------------------------------------------------
 
+def __call_cls_3(caller, arg1, arg2, arg3):
+    obj = object.__new__(caller, arg1, arg2, arg3)
+    caller.__init__(obj, arg1, arg2, arg3)
+    return obj
+
+## -----------------------------------------------------------------------------
+
+def __call_cls_4(caller, arg1, arg2, arg3, arg4):
+    obj = object.__new__(caller, arg1, arg2, arg3, arg4)
+    caller.__init__(obj, arg1, arg2, arg3, arg4)
+    return obj
+
+## -----------------------------------------------------------------------------
+
 def __call_cls_5(caller, arg1, arg2, arg3, arg4, arg5):
     obj = object.__new__(caller, arg1, arg2, arg3, arg4, arg5)
     caller.__init__(obj, arg1, arg2, arg3, arg4, arg5)

@@ -214,10 +214,14 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* TRUTHY   */     { .num_oprd=0, .str="truthy",    .handler=std::make_shared<corevm::runtime::instr_handler_truthy>()    },
   /* REPR     */     { .num_oprd=0, .str="repr",      .handler=std::make_shared<corevm::runtime::instr_handler_repr>()      },
   /* HASH     */     { .num_oprd=0, .str="hash",      .handler=std::make_shared<corevm::runtime::instr_handler_hash>()      },
+  /* SLICE    */     { .num_oprd=0, .str="slice",     .handler=std::make_shared<corevm::runtime::instr_handler_slice>()     },
+  /* STRIDE   */     { .num_oprd=0, .str="stride",    .handler=std::make_shared<corevm::runtime::instr_handler_stride>()    },
+  /* REVERSE  */     { .num_oprd=0, .str="reverse",   .handler=std::make_shared<corevm::runtime::instr_handler_reverse>()   },
 
   /* --------------------- String type instructions ------------------------- */
 
   /* STRLEN   */     { .num_oprd=0, .str="strlen",    .handler=std::make_shared<corevm::runtime::instr_handler_strlen>()    },
+  /* STRAT    */     { .num_oprd=0, .str="strat",     .handler=std::make_shared<corevm::runtime::instr_handler_strat>()     },
   /* STRCLR   */     { .num_oprd=0, .str="strclr",    .handler=std::make_shared<corevm::runtime::instr_handler_strclr>()    },
   /* STRAPD   */     { .num_oprd=0, .str="strapd",    .handler=std::make_shared<corevm::runtime::instr_handler_strapd>()    },
   /* STRPSH   */     { .num_oprd=0, .str="strpsh",    .handler=std::make_shared<corevm::runtime::instr_handler_strpsh>()    },
@@ -2585,6 +2589,45 @@ corevm::runtime::instr_handler_hash::execute(
 // -----------------------------------------------------------------------------
 
 void
+corevm::runtime::instr_handler_slice::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
+    *frame_ptr,
+    corevm::types::interface_compute_slice
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_stride::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    *frame_ptr,
+    corevm::types::interface_compute_stride
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_reverse::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
+    *frame_ptr,
+    corevm::types::interface_compute_reverse
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
 corevm::runtime::instr_handler_strlen::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
@@ -2592,6 +2635,19 @@ corevm::runtime::instr_handler_strlen::execute(
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
     corevm::types::interface_string_get_size
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_strat::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    *frame_ptr,
+    corevm::types::interface_string_at_2
   );
 }
 

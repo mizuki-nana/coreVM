@@ -44,8 +44,51 @@ def test_str_equality():
 
 ## -----------------------------------------------------------------------------
 
+def test_str_slicing():
+    s = 'Hello world'
+    s2 = ''
+
+    print s
+
+    print s[1]
+    print s[1:1]
+    print s[1:5]
+    print s[:10]
+    print s[5:]
+    print s[0:0]
+    print s[8:2]
+    print s[10:10]
+    print s[1:8:2]
+    print s[::8]
+    print s[::11]
+    print s[1:8:-1]
+    print s[1:8:-5]
+    print s[::]
+    print s[::-1]
+    print s[::-8]
+    print s[1:1:-1]
+    print s[10:10:-1]
+    print s[-1:-1:-1]
+
+    print s2[::1]
+    print s2[::1]
+    print s2[::-1]
+    print s2[1:8:-2]
+    print s2[-1:-1:-1]
+
+    try:
+        s[::0]
+    except ValueError:
+        print 'Slice step cannot be zero'
+
+    print s
+    print s2
+
+## -----------------------------------------------------------------------------
+
 test_str_representation()
 test_str_hash()
 test_str_equality()
+test_str_slicing()
 
 ## -----------------------------------------------------------------------------

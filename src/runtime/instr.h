@@ -854,6 +854,27 @@ enum instr_enum : uint32_t
    */
   HASH,
 
+  /**
+   * <slice, _, _>
+   * Computes the portion of the element on the top 3rd element of the eval stack
+   * as a sequence, using the 2nd and 1st top elements as the `start` and `stop`
+   * values as the indices range [start, stop).
+   */
+  SLICE,
+
+  /**
+   * <stride, _. _>
+   * Computes a new sequence of the element on the 2nd top eval stack as a
+   * sequence, using the top element as the `stride` interval.
+   */
+  STRIDE,
+
+  /**
+   * <reverse, _, _>
+   * Computes the reverse of the element on top of the eval stack as a sequence.
+   */
+  REVERSE,
+
   /* ---------------------- String type instructions ------------------------ */
 
   /**
@@ -862,6 +883,13 @@ enum instr_enum : uint32_t
    * operation.
    */
   STRLEN,
+
+  /**
+   * <strat, _, _>
+   * Pops the top two elements on the eval stack, and performs the "string at"
+   * operation.
+   */
+  STRAT,
 
   /**
    * <strclr, _, _>
@@ -2360,6 +2388,36 @@ public:
 
 // -----------------------------------------------------------------------------
 
+class instr_handler_slice : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_stride : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_reverse : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
 
 /* ---------------------- String type instructions -------------------------- */
 
@@ -2367,6 +2425,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_strlen : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_strat : public instr_handler
 {
 public:
   virtual void execute(

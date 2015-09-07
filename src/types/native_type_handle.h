@@ -70,6 +70,29 @@ public:
 
 // -----------------------------------------------------------------------------
 
+template<class op>
+class native_type_parameterized_intrinsic_unary_visitor : public variant::static_visitor<native_type_handle>
+{
+public:
+  template<typename... Arguments>
+  explicit native_type_parameterized_intrinsic_unary_visitor(Arguments... args)
+    :
+    m_op(args...)
+  {
+  }
+
+  template<typename T>
+  native_type_handle operator()(const T& operand) const
+  {
+    return m_op.template operator()<T>(operand);
+  }
+
+private:
+  op m_op;
+};
+
+// -----------------------------------------------------------------------------
+
 template<class op, class R>
 class native_type_cast_unary_visitor : public variant::static_visitor<R>
 {
@@ -196,6 +219,11 @@ class native_type_truthy_visitor : public native_type_cast_unary_visitor<truthy,
 class native_type_repr_visitor : public native_type_intrinsic_unary_visitor<repr> {};
 class native_type_hash_visitor : public native_type_cast_unary_visitor<hash, corevm::types::int64> {};
 
+typedef native_type_parameterized_intrinsic_unary_visitor<slice> native_type_slice_visitor;
+typedef native_type_parameterized_intrinsic_unary_visitor<stride> native_type_stride_visitor;
+
+class native_type_reverse_visitor : public native_type_unary_visitor<reverse> {};
+
 // -----------------------------------------------------------------------------
 
 /* Binary operator visitors */
@@ -237,6 +265,15 @@ corevm::types::native_type_handle
 apply_unary_visitor(corevm::types::native_type_handle& handle)
 {
   return variant::apply_visitor(operator_visitor(), handle);
+}
+
+// -----------------------------------------------------------------------------
+
+template<class operator_visitor, typename... Arguments>
+corevm::types::native_type_handle
+apply_unary_visitor_parameterized(corevm::types::native_type_handle& handle, Arguments... args)
+{
+  return variant::apply_visitor(operator_visitor(args...), handle);
 }
 
 // -----------------------------------------------------------------------------

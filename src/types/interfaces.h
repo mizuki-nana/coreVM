@@ -243,6 +243,26 @@ void interface_compute_hash_value(
 
 // -----------------------------------------------------------------------------
 
+void interface_compute_slice(
+  native_type_handle& operand,
+  native_type_handle& start,
+  native_type_handle& stop,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
+void interface_compute_stride(
+  native_type_handle& operand,
+  native_type_handle& stride,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
+void interface_compute_reverse(
+  native_type_handle& operand, native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 
@@ -260,6 +280,12 @@ void interface_string_clear(
 // -----------------------------------------------------------------------------
 
 void interface_string_at(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
+void interface_string_at_2(
   native_type_handle& operand, native_type_handle& index,
   native_type_handle& result);
 

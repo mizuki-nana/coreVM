@@ -62,6 +62,14 @@ corevm::types::native_string::native_string(native_string_base&& str)
 
 // -----------------------------------------------------------------------------
 
+corevm::types::native_string::native_string(size_t n, char c)
+  :
+  native_string_base(n, c)
+{
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::types::native_string::native_string(int8_t)
 {
   THROW(corevm::types::conversion_error("int8", "string"));

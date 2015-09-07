@@ -69,8 +69,74 @@ void BenchmarkNtvhndlBinaryOperatorInterface(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand(benchmark::State& state)
+{
+  corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::native_type_handle start = corevm::types::uint32(1);
+  corevm::types::native_type_handle stop = corevm::types::uint32(3);
+  corevm::types::native_type_handle result;
+
+  while (state.KeepRunning())
+  {
+    corevm::types::interface_compute_slice(oprd, start, stop, result);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand(benchmark::State& state)
+{
+  corevm::types::native_type_handle oprd = corevm::types::string("Hello");
+  corevm::types::native_type_handle start = corevm::types::uint32(1);
+  corevm::types::native_type_handle stop = corevm::types::uint32(3);
+  corevm::types::native_type_handle result;
+
+  while (state.KeepRunning())
+  {
+    corevm::types::interface_compute_slice(oprd, start, stop, result);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand(benchmark::State& state)
+{
+  corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::native_type_handle stride = corevm::types::uint32(2);
+  corevm::types::native_type_handle result;
+
+  while (state.KeepRunning())
+  {
+    corevm::types::interface_compute_stride(oprd, stride, result);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand(benchmark::State& state)
+{
+  corevm::types::native_type_handle oprd = corevm::types::string("Hello");
+  corevm::types::native_type_handle stride = corevm::types::uint32(2);
+  corevm::types::native_type_handle result;
+
+  while (state.KeepRunning())
+  {
+    corevm::types::interface_compute_stride(oprd, stride, result);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkNtvhndlAssginment);
 BENCHMARK(BenchmarkNtvhndlBinaryOperator);
 BENCHMARK(BenchmarkNtvhndlBinaryOperatorInterface);
+BENCHMARK(BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand);
+BENCHMARK(BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand);
+BENCHMARK(BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand);
+BENCHMARK(BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand);
 
 // -----------------------------------------------------------------------------

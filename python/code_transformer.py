@@ -599,7 +599,10 @@ class CodeTransformer(ast.NodeVisitor):
         raise NotImplementedError
 
     def visit_Slice(self, node):
-        raise NotImplementedError
+        return '__call_cls_3(slice, {start}, {stop}, {step})'.format(
+            start=self.visit(node.lower) if node.lower else 'None',
+            stop=self.visit(node.upper) if node.upper else 'None',
+            step=self.visit(node.step) if node.step else 'None')
 
     def visit_ExtSlice(self, node):
         raise NotImplementedError
@@ -980,7 +983,8 @@ class CodeTransformer(ast.NodeVisitor):
         )
 
     def visit_Subscript(self, node):
-        return '__call_method_1({value}.__getitem__, {slice})'.format(
+        return '{indentation}__call_method_1({value}.__getitem__, {slice})'.format(
+            indentation=self.__indentation(),
             value=self.visit(node.value),
             slice=self.visit(node.slice)
         )

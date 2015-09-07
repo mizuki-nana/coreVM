@@ -86,10 +86,58 @@ def test_list_comprehension():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_slicing():
+    l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    l2 = []
+
+    print l
+
+    print l[1]
+    print l[1:1]
+    print l[1:5]
+    print l[:9]
+    print l[5:]
+    print l[0:0]
+    print l[8:2]
+    print l[9:9]
+    print l[1:8:2]
+    print l[::8]
+    print l[::10]
+    print l[1:8:-1]
+    print l[1:8:-5]
+    print l[::]
+    print l[::-1]
+    print l[::-8]
+    print l[1:1:-1]
+    print l[9:9:-1]
+    print l[-1:-1:-1]
+    # TODO: [COREVM-313] Incorrect sequence slicing with negative stride value
+    #print l[2::-1]
+    #print l[:1:-2]
+    #print l[:1:-4]
+    print l[:4:-4]
+    print l[:10:-4]
+    print l2[::1]
+    print l2[::1]
+    print l2[::-1]
+    print l2[1:8:-2]
+    print l2[-1:-1:-1]
+
+    try:
+        l[::0]
+    except ValueError:
+        print 'Slice step cannot be zero'
+
+    print l
+    print l2
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
 test_list_getitem()
 test_list_setitem()
 test_list_comprehension()
+test_list_slicing()
 
 ## -----------------------------------------------------------------------------

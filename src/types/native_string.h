@@ -49,7 +49,16 @@ public:
 
   native_string(native_string_base&& str);
 
+  native_string(size_t n, char c);
+
   native_string(int8_t);
+
+  template <class InputIterator>
+  native_string(InputIterator first, InputIterator last)
+    :
+    native_string_base(first, last)
+  {
+  }
 
   operator int8_t() const;
 

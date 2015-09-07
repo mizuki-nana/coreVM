@@ -25,6 +25,7 @@
 CONST_STR_COMMA = __call_cls_builtin(str, ', ')
 CONST_STR_OPEN_PAREN  = __call_cls_builtin(str, '(')
 CONST_STR_CLOSE_PAREN  = __call_cls_builtin(str, ')')
+CONST_INT_0 = __call_cls_builtin(int, 0)
 CONST_INT_1 = __call_cls_builtin(int, 1)
 
 ## -----------------------------------------------------------------------------
@@ -107,7 +108,7 @@ class tuple(object):
     def __iter__(self):
         return __call_cls_1(tupleiterator, self)
 
-    def __getitem__(self, i):
+    def __get_item_by_index(self, i):
         if __call_method_1(i.__gte__, __call_method_0(self.__len__)):
             raise __call_cls_0(IndexError)
 
@@ -117,10 +118,72 @@ class tuple(object):
         [gethndl2, i, 0]
         [aryat, 0, 0]
         [getobj, 0, 0]
-        [stobj, res, 0]
         ### END VECTOR ###
         """
-        return res
+
+    def __getitem__(self, i):
+        # TODO;[COREVM-312] Consolidate sequence slicing logic in Python
+        if i.__class__ is int:
+            return __call_method_1(self.__get_item_by_index, i)
+
+        # slicing...
+        size = __call_method_0(self.__len__)
+        start = i.start
+        stop = i.stop
+        step = i.step
+
+        res_ = __call_cls_1(tuple, self)
+
+        if step is not None:
+            if __call_method_1(step.__eq__, CONST_INT_0):
+                raise __call_cls_0(ValueError)
+
+            if __call_method_1(step.__lt__, CONST_INT_0):
+                """
+                ### BEGIN VECTOR ###
+                [ldobj, res_, 0]
+                [gethndl, 0, 0]
+                [reverse, 0, 0]
+                [sethndl, 0, 0]
+                ### END VECTOR ###
+                """
+                if start is not None:
+                    start = __call_method_1(size.__sub__, start)
+
+                if stop is not None:
+                    stop = __call_method_1(size.__sub__, stop)
+
+                step = __call_method_0(step.__neg__)
+
+        if start is None:
+            start = __call_cls_builtin(int, CONST_INT_0)
+
+        if stop is None:
+            stop = size
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res_, 0]
+        [gethndl, 0, 0]
+        [gethndl2, start, 0]
+        [gethndl2, stop, 0]
+        [slice, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+        if step is not None:
+            """
+            ### BEGIN VECTOR ###
+            [ldobj, res_, 0]
+            [gethndl, 0, 0]
+            [gethndl2, step, 0]
+            [stride, 0, 0]
+            [sethndl, 0, 0]
+            ### END VECTOR ###
+            """
+
+        return res_
 
 ## -----------------------------------------------------------------------------
 

@@ -421,6 +421,46 @@ void corevm::types::interface_compute_hash_value(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_compute_slice(
+  native_type_handle& operand,
+  native_type_handle& start,
+  native_type_handle& stop,
+  native_type_handle& result)
+{
+  uint32_t start_value = corevm::types::get_value_from_handle<uint32_t>(start);
+  uint32_t stop_value = corevm::types::get_value_from_handle<uint32_t>(stop);
+
+  result = std::move(
+    corevm::types::apply_unary_visitor_parameterized<corevm::types::native_type_slice_visitor>(
+      operand, start_value, stop_value));
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_compute_stride(
+  native_type_handle& operand,
+  native_type_handle& stride,
+  native_type_handle& result)
+{
+  int32_t stride_value = corevm::types::get_value_from_handle<uint32_t>(stride);
+
+  result = std::move(
+    corevm::types::apply_unary_visitor_parameterized<corevm::types::native_type_stride_visitor>(
+      operand, stride_value));;
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_compute_reverse(
+  native_type_handle& operand, native_type_handle& result)
+{
+  result = std::move(
+    corevm::types::apply_unary_visitor<corevm::types::native_type_reverse_visitor>(
+      operand));
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 
@@ -463,6 +503,21 @@ void corevm::types::interface_string_at(
   char char_value = string_value.at(index_value);
   corevm::types::uint32 result_value = char_value;
   result = result_value;
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_string_at_2(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result)
+{
+  corevm::types::native_string string_value =
+    corevm::types::get_value_from_handle<corevm::types::native_string>(operand);
+  int32_t index_value = corevm::types::get_value_from_handle<int32_t>(index);
+
+  char char_value = string_value.at(index_value);
+  corevm::types::string::value_type result_value(1, char_value);
+  result = std::move(result_value);
 }
 
 // -----------------------------------------------------------------------------

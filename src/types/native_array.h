@@ -55,6 +55,13 @@ public:
 
   native_array(int8_t);
 
+  template <class InputIterator>
+  native_array(InputIterator first, InputIterator last)
+    :
+    native_array_base(first, last)
+  {
+  }
+
   operator int8_t() const;
 
   native_array& operator+() const;
