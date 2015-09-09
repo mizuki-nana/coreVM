@@ -2852,6 +2852,48 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrHASH)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrSLICE)
+{
+  corevm::types::native_type_handle hndl1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::native_type_handle hndl2 = corevm::types::uint32(1);
+  corevm::types::native_type_handle hndl3 = corevm::types::uint32(4);
+
+  push_eval_stack({ hndl1, hndl2, hndl3 });
+
+  corevm::types::array::value_type expected_result({2, 3, 4});
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_slice, corevm::types::array::value_type>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrSTRIDE)
+{
+  corevm::types::native_type_handle hndl1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::native_type_handle hndl2 = corevm::types::uint32(2);
+
+  push_eval_stack({ hndl1, hndl2 });
+
+  corevm::types::array::value_type expected_result({1, 3, 5});
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_stride, corevm::types::array::value_type>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREVERSE)
+{
+  corevm::types::native_type_handle hndl = corevm::types::array({1, 2, 3, 4, 5});
+
+  push_eval_stack({ hndl });
+
+  corevm::types::array::value_type expected_result({5, 4, 3, 2, 1});
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_reverse, corevm::types::array::value_type>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_type_complex_instrs_test : public instrs_native_types_instrs_test {};
 
 // -----------------------------------------------------------------------------
