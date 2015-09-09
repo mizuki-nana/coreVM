@@ -45,8 +45,8 @@ def test_float_binary_operations():
     print 99.838301 - 99.000123
     print 123.456 * 987.654
     print 999.666333 / 3.00
-    # TODO: [COREVM-196] Modulus operator for float type inaccurate
-    #print 100.000001 % 33.000000
+    print 100.000001 % 33.000000
+    print 180.0000 % 3.141593
     print 9.234 ** 4.76
     print int(9.99 // 3.31) # printing precision issue
 

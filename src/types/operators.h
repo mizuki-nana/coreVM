@@ -631,9 +631,9 @@ public:
   template<typename R, typename T, typename U>
   typename R::value_type operator()(const T& lhs, const U& rhs)
   {
-    return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) %
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+    return fmod(
+      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
+      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
     );
   }
 };
