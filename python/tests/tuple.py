@@ -59,7 +59,13 @@ def test_tuple_slicing():
     print t[9:9]
     print t[1:8:2]
     print t[::8]
-    #print t[::10] # Python prints trailing coma.
+    #print t[::10] # CPython prints trailing coma.
+    print t[3::2]
+    print t[:3:2]
+    print t[10::2]
+    print t[:10:2]
+    #print t[2::10] # CPython prints trailing comma.
+    #print t[:2:10] # CPython prints trailing comma.
     print t[1:8:-1]
     print t[1:8:-5]
     print t[::]
@@ -85,9 +91,31 @@ def test_tuple_slicing():
 
 ## -----------------------------------------------------------------------------
 
+def test_tuple_slicing_special_case():
+    # Special case in slicing when the stride is negative and only one value of
+    # start and end is specified.
+    #
+    # Reference:
+    #   http://pythoncentral.io/cutting-and-slicing-strings-in-python/
+    t = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+    print t[2::-1]
+    print t[:1:-2]
+    print t[:1:-4]
+    print t[:4:-4]
+    print t[:10:-4]
+    print t[:9:-4]
+    print t[10::-4]
+    print t[9::-4]
+    #print t[0::-2] # CPython prints trailing comma.
+    print t[:0:-2]
+
+## -----------------------------------------------------------------------------
+
 test_tuple_representation()
 test_iterate_tuples()
 test_tuple_hash()
 test_tuple_slicing()
+test_tuple_slicing_special_case()
 
 ## -----------------------------------------------------------------------------

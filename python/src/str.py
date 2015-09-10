@@ -149,8 +149,18 @@ class str(object):
                 if start is not None:
                     start = __call_method_1(size.__sub__, start)
 
+                    # Special case in slicing when `step` is negative and
+                    # only one value of `start` and `stop` is specified.
+                    if stop is None and __call_method_1(start.__gt__, CONST_INT_0):
+                        start = __call_method_1(start.__sub__, CONST_INT_1)
+
                 if stop is not None:
                     stop = __call_method_1(size.__sub__, stop)
+
+                    # Special case in slicing when `step` is negative and
+                    # only one value of `start` and `stop` is specified.
+                    if start is None and __call_method_1(stop.__gt__, CONST_INT_0):
+                        stop = __call_method_1(stop.__sub__, CONST_INT_1)
 
                 step = __call_method_0(step.__neg__)
 

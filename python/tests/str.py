@@ -61,6 +61,12 @@ def test_str_slicing():
     print s[1:8:2]
     print s[::8]
     print s[::11]
+    print s[3::2]
+    print s[:3:2]
+    print s[11::2]
+    print s[:11:2]
+    print s[2::11]
+    print s[:2:11]
     print s[1:8:-1]
     print s[1:8:-5]
     print s[::]
@@ -86,9 +92,31 @@ def test_str_slicing():
 
 ## -----------------------------------------------------------------------------
 
+def test_str_slicing_special_case():
+    # Special case in slicing when the stride is negative and only one value of
+    # start and end is specified.
+    #
+    # Reference:
+    #   http://pythoncentral.io/cutting-and-slicing-strings-in-python/
+    s = 'Hello world'
+
+    print s[2::-1]
+    print s[:1:-2]
+    print s[:1:-4]
+    print s[:4:-4]
+    print s[:11:-4]
+    print s[:10:-4]
+    print s[11::-4]
+    print s[10::-4]
+    print s[0::-2]
+    print s[:0:-2]
+
+## -----------------------------------------------------------------------------
+
 test_str_representation()
 test_str_hash()
 test_str_equality()
 test_str_slicing()
+test_str_slicing_special_case()
 
 ## -----------------------------------------------------------------------------

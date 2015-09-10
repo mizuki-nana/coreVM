@@ -103,6 +103,12 @@ def test_list_slicing():
     print l[1:8:2]
     print l[::8]
     print l[::10]
+    print l[3::2]
+    print l[:3:2]
+    print l[10::2]
+    print l[:10:2]
+    print l[2::10]
+    print l[:2:10]
     print l[1:8:-1]
     print l[1:8:-5]
     print l[::]
@@ -111,12 +117,6 @@ def test_list_slicing():
     print l[1:1:-1]
     print l[9:9:-1]
     print l[-1:-1:-1]
-    # TODO: [COREVM-313] Incorrect sequence slicing with negative stride value
-    #print l[2::-1]
-    #print l[:1:-2]
-    #print l[:1:-4]
-    print l[:4:-4]
-    print l[:10:-4]
     print l2[::1]
     print l2[::1]
     print l2[::-1]
@@ -133,11 +133,33 @@ def test_list_slicing():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_slicing_special_case():
+    # Special case in slicing when the stride is negative and only one value of
+    # start and end is specified.
+    #
+    # Reference:
+    #   http://pythoncentral.io/cutting-and-slicing-strings-in-python/
+    l = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    print l[2::-1]
+    print l[:1:-2]
+    print l[:1:-4]
+    print l[:4:-4]
+    print l[:10:-4]
+    print l[:9:-4]
+    print l[10::-4]
+    print l[9::-4]
+    print l[0::-2]
+    print l[:0:-2]
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
 test_list_getitem()
 test_list_setitem()
 test_list_comprehension()
 test_list_slicing()
+test_list_slicing_special_case()
 
 ## -----------------------------------------------------------------------------
