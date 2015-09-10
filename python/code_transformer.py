@@ -676,88 +676,69 @@ class CodeTransformer(ast.NodeVisitor):
                 for expr in node.elts
             ]) + '})'
 
+    def __visit_generator(self, generator, callee):
+        if generator.ifs:
+            return '__call_cls(comprehension, {callee}, predicate={predicate})'.format(
+                callee=callee,
+                predicate='lambda {target}: {expr}'.format(
+                    target=self.visit(generator.target),
+                    expr=' and '.join([self.visit(if_expr) for if_expr in generator.ifs]))
+                )
+        else:
+            return '__call_cls_1(comprehension, {callee})'.format(callee=callee)
+
     def visit_ListComp(self, node):
-        # TODO: support multiple generators.
         generator = node.generators[0]
 
-        iterable = self.visit(generator.iter)
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
         res = '__call_cls_builtin(list, [])'
         synthesizer='lambda res, item: __call_method_1(res.append, item)'
 
-        predicate='None'
-
-        if generator.ifs:
-            # TODO: handle multiple `if`s.
-            predicate='lambda {target} : {expr}'.format(
-                target=self.visit(generator.target),
-                expr=self.visit(generator.ifs[0]))
-
-        return """
-               __call_method_0(
-                   __call_cls_5(
-                       sequence_generator,
-                       {iterable},
-                       {elt},
-                       {res},
-                       {synthesizer},
-                       {predicate}
-                   ).eval
-               )
-               """.format(
-                        iterable=iterable,
+        base_str = '__call_cls_3(generator, {elt}, {res}, {synthesizer})'.format(
                         elt=elt,
                         res=res,
-                        synthesizer=synthesizer,
-                        predicate=predicate)
+                        synthesizer=synthesizer)
+
+        for generator in node.generators:
+            base_str = self.__visit_generator(generator, base_str)
+
+        iterable = self.visit(node.generators[-1].iter)
+
+        base_str = '__call_method_1({base_str}.eval, {iterable})'.format(
+            base_str=base_str,
+            iterable=iterable)
+
+        return base_str
 
     def visit_SetComp(self, node):
-        # TODO: support multiple generators.
         generator = node.generators[0]
 
-        iterable = self.visit(generator.iter)
         elt = 'lambda {target}: {elt}'.format(
             target=self.visit(generator.target),
             elt=self.visit(node.elt))
         res = '__call_cls_builtin(set, {})'
         synthesizer='lambda res, item: __call_method_1(res.add, item)'
 
-        predicate='None'
-
-        if generator.ifs:
-            # TODO: handle multiple `if`s.
-            predicate='lambda {target} : {expr}'.format(
-                target=self.visit(generator.target),
-                expr=self.visit(generator.ifs[0]))
-
-        return """
-               __call_method_0(
-                   __call_cls_5(
-                       sequence_generator,
-                       {iterable},
-                       {elt},
-                       {res},
-                       {synthesizer},
-                       {predicate}
-                   ).eval
-               )
-               """.format(
-                        iterable=iterable,
+        base_str = '__call_cls_3(generator, {elt}, {res}, {synthesizer})'.format(
                         elt=elt,
                         res=res,
-                        synthesizer=synthesizer,
-                        predicate=predicate)
+                        synthesizer=synthesizer)
+
+        for generator in node.generators:
+            base_str = self.__visit_generator(generator, base_str)
+
+        iterable = self.visit(node.generators[-1].iter)
+
+        base_str = '__call_method_1({base_str}.eval, {iterable})'.format(
+            base_str=base_str,
+            iterable=iterable)
+
+        return base_str
 
     def visit_DictComp(self, node):
-        # TODO: support multiple generators.
         generator = node.generators[0]
-
-        iterable = self.visit(generator.iter)
-        res = '__call_cls_builtin(dict, {})'
-        synthesizer='lambda res, key, value: __call_method_2(res.__setitem__, key, value)'
-        predicate='None'
 
         if isinstance(generator.target, ast.Tuple):
             # Dict comprehension where the target is a tuple
@@ -767,64 +748,39 @@ class CodeTransformer(ast.NodeVisitor):
             assert len(generator.target.elts) >= 2
             targets = ', '.join([
                 self.visit(target) for target in generator.target.elts])
-            generator_type = 'dict_pair_generator'
-            elt = """
-                  lambda {targets}:
-                      __call_cls_2(
-                          dict.__dict_KeyValuePair,
-                          {key},
-                          {value})
-                  """.format(
-                            targets=targets,
-                            key=self.visit(node.key),
-                            value=self.visit(node.value))
-
-            if generator.ifs:
-                # TODO: handle multiple `if`s.
-                predicate='lambda {targets} : {expr}'.format(
-                    targets=targets,
-                    expr=self.visit(generator.ifs[0]))
+            elt = 'lambda {targets}: __call_cls_2(dict.__dict_KeyValuePair, {key}, {value})'.format(
+                        targets=targets,
+                        key=self.visit(node.key),
+                        value=self.visit(node.value))
         else:
             # Dict comprehension where the target is a single item
             # (i.e. key or value).
             # E.g.
             # new_dict = {k: k * 2 for k in old_dict.keys()}
             generator_type = 'dict_item_generator'
-            elt = """
-                  lambda {target}:
-                      __call_cls_2(
-                          dict.__dict_KeyValuePair,
-                          {key},
-                          {value})
-                  """.format(
-                            target=self.visit(generator.target),
-                            key=self.visit(node.key),
-                            value=self.visit(node.value))
+            elt = 'lambda {target}: __call_cls_2(dict.__dict_KeyValuePair, {key}, {value})'.format(
+                        target=self.visit(generator.target),
+                        key=self.visit(node.key),
+                        value=self.visit(node.value))
 
-            if generator.ifs:
-                # TODO: handle multiple `if`s.
-                predicate='lambda {target} : {expr}'.format(
-                    target=self.visit(generator.target),
-                    expr=self.visit(generator.ifs[0]))
+        res = '__call_cls_builtin(dict, {})'
+        synthesizer='lambda res, pair: __call_method_2(res.__setitem__, pair.key, pair.value)'
 
-        return """
-               __call_method_0(
-                   __call_cls_5(
-                       {generator_type},
-                       {iterable},
-                       {elt},
-                       {res},
-                       {synthesizer},
-                       {predicate}
-                   ).eval
-               )
-               """.format(
-                        generator_type=generator_type,
-                        iterable=iterable,
+        base_str = '__call_cls_3(generator, {elt}, {res}, {synthesizer})'.format(
                         elt=elt,
                         res=res,
-                        synthesizer=synthesizer,
-                        predicate=predicate)
+                        synthesizer=synthesizer)
+
+        for generator in node.generators:
+            base_str = self.__visit_generator(generator, base_str)
+
+        iterable = self.visit(node.generators[-1].iter)
+
+        base_str = '__call_method_1({base_str}.eval, {iterable})'.format(
+            base_str=base_str,
+            iterable=iterable)
+
+        return base_str
 
     def __generate_compare_with_str(self, left, op, right):
         if any(

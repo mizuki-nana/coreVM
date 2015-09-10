@@ -84,6 +84,8 @@ def test_list_comprehension():
 
     print [i for i in l if i <= 3]
 
+    print [i for i in l if i >= 3 if i % 2 == 0]
+
 ## -----------------------------------------------------------------------------
 
 def test_list_slicing():

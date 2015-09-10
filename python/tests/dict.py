@@ -125,17 +125,18 @@ def test_dict_comprehension():
 
     c = 2
 
-    print {k: v for k, v in d.items()}
-
-    print {k: v ** c for k, v in d.items()}
-
-    print {k: v ** c for k, v in d.items() if k % 2 == 0}
-
     print {k: k * c for k in d.keys()}
 
     print {v * c: v for v in d.values()}
 
     print {v * c: v for v in d.values() if v % 2 == 0}
+
+    # TODO: [COREVM-315] Add support for variable unpacking
+    #print {k: v for k, v in d.items()}
+
+    #print {k: v ** c for k, v in d.items()}
+
+    #print {k: v ** c for k, v in d.items() if k % 2 == 0}
 
 ## -----------------------------------------------------------------------------
 

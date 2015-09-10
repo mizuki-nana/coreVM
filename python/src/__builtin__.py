@@ -150,110 +150,47 @@ def __call_method_3(caller, arg1, arg2, arg3):
 
 ## -----------------------------------------------------------------------------
 
-class sequence_generator(object):
+class comprehension(object):
 
-    def __init__(self, iterable, elt, res, synthesizer, predicate):
-        # TODO: make `predicate` a keyword argument once support for **kwargs
-        # is added.
-        self.iterable = iterable
-        self.elt = elt
-        self.res = res
-        self.synthesizer = synthesizer
+    def __init__(self, callee, predicate=None):
+        self.callee = callee
         self.predicate = predicate
 
-    def eval(self):
-        iterator = __call_method_0(self.iterable.__iter__)
+    def eval(self, iterable):
+        iterator = __call_method_0(iterable.__iter__)
 
         try:
             while True:
-                next_item = __call_method_0(iterator.next)
+                item = __call_method_0(iterator.next)
 
-                # TODO: associate types with lambdas, so that we can do
-                # None check on them.
                 okay = True
                 if self.predicate is not None:
-                    okay = self.predicate(next_item)
+                    okay = self.predicate(item)
 
                 if okay:
-                    item = self.elt(next_item)
-
-                    self.synthesizer(self.res, item)
+                    __call_method_1(self.callee.eval, item)
         except StopIteration:
             pass
 
-        return self.res
+        return __call_method_0(self.result)
+
+    def result(self):
+        return __call_method_0(self.callee.result)
 
 ## -----------------------------------------------------------------------------
 
-class dict_pair_generator(object):
+class generator(object):
 
-    def __init__(self, iterable, elt, res, synthesizer, predicate):
-        # TODO: make `predicate` a keyword argument once support for **kwargs
-        # is added.
-        self.iterable = iterable
+    def __init__(self, elt, res, synthesizer):
         self.elt = elt
         self.res = res
         self.synthesizer = synthesizer
-        self.predicate = predicate
 
-    def eval(self):
-        iterator = __call(self.iterable.__iter__)
+    def eval(self, item):
+        item_ = self.elt(item)
+        self.synthesizer(self.res, item_)
 
-        try:
-            while True:
-                key_value_pair = __call_method_0(iterator.next)
-
-                key = key_value_pair.key
-                value = key_value_pair.value
-
-                # TODO: associate types with lambdas, so that we can do
-                # None check on them.
-                okay = True
-                if self.predicate is not None:
-                    okay = self.predicate(key, value)
-
-                if okay:
-                    item = self.elt(key, value)
-
-                    self.synthesizer(self.res, item.key, item.value)
-        except StopIteration:
-            pass
-
-        return self.res
-
-## -----------------------------------------------------------------------------
-
-class dict_item_generator(object):
-
-    def __init__(self, iterable, elt, res, synthesizer, predicate):
-        # TODO: make `predicate` a keyword argument once support for **kwargs
-        # is added.
-        self.iterable = iterable
-        self.elt = elt
-        self.res = res
-        self.synthesizer = synthesizer
-        self.predicate = predicate
-
-    def eval(self):
-        iterator = __call_method_0(self.iterable.__iter__)
-
-        try:
-            while True:
-                next_item = __call_method_0(iterator.next)
-
-                # TODO: associate types with lambdas, so that we can do
-                # None check on them.
-                okay = True
-                if self.predicate is not None:
-                    okay = self.predicate(next_item)
-
-                if okay:
-                    item = self.elt(next_item)
-
-                    self.synthesizer(self.res, item.key, item.value)
-        except StopIteration:
-            pass
-
+    def result(self):
         return self.res
 
 ## -----------------------------------------------------------------------------
