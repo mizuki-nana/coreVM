@@ -103,6 +103,13 @@ public:
    */
   void top_frame(corevm::runtime::frame**);
 
+  /**
+   * Gets the `n`th frame from the top of the call stack.
+   * A value of 0 means the top frame.
+   */
+  corevm::runtime::frame& top_nth_frame(size_t n)
+    throw(corevm::runtime::frame_not_found_error);
+
   void push_frame(corevm::runtime::frame&);
 
   void emplace_frame(

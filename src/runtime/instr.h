@@ -78,6 +78,14 @@ enum instr_enum : uint32_t
   STOBJ,
 
   /**
+   * <stobjn, key, n>
+   * Pops the object on top of the stack and stores it with a key into
+   * the `n`th frame on the call stack from the top.
+   * A value of 0 means the top frame.
+   */
+  STOBJN,
+
+  /**
    * <getattr, attr, _>
    * Pop the object at the top of the stack, get its attribute and push it
    * onto the stack.
@@ -1267,6 +1275,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_stobj : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_stobjn : public instr_handler
 {
 public:
   virtual void execute(

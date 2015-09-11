@@ -571,6 +571,12 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_Global(self, node):
+        assert node.names
+
+        return '{indentation}global {identifiers}\n'.format(
+            indentation=self.__indentation(), identifiers=', '.join([name for name in node.names]))
+
     def visit_Expr(self, node):
         return self.visit(node.value)
 

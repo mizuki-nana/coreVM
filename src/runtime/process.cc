@@ -240,6 +240,20 @@ corevm::runtime::process::top_frame(corevm::runtime::frame** frame_ptr)
 
 // -----------------------------------------------------------------------------
 
+corevm::runtime::frame&
+corevm::runtime::process::top_nth_frame(size_t n)
+  throw(corevm::runtime::frame_not_found_error)
+{
+  if (n >= m_call_stack.size())
+  {
+    THROW(corevm::runtime::frame_not_found_error());
+  }
+
+  return m_call_stack[m_call_stack.size() - n - 1];
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::runtime::process::pop_frame()
   throw(corevm::runtime::frame_not_found_error)

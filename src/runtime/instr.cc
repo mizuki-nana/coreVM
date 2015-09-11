@@ -86,6 +86,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* NEW       */    { .num_oprd=0, .str="new",       .handler=std::make_shared<corevm::runtime::instr_handler_new>()       },
   /* LDOBJ     */    { .num_oprd=1, .str="ldobj",     .handler=std::make_shared<corevm::runtime::instr_handler_ldobj>()     },
   /* STOBJ     */    { .num_oprd=1, .str="stobj",     .handler=std::make_shared<corevm::runtime::instr_handler_stobj>()     },
+  /* STOBJN    */    { .num_oprd=2, .str="stobjn",    .handler=std::make_shared<corevm::runtime::instr_handler_stobjn>()    },
   /* GETATTR   */    { .num_oprd=1, .str="getattr",   .handler=std::make_shared<corevm::runtime::instr_handler_getattr>()   },
   /* SETATTR   */    { .num_oprd=1, .str="setattr",   .handler=std::make_shared<corevm::runtime::instr_handler_setattr>()   },
   /* DELATTR   */    { .num_oprd=1, .str="delattr",   .handler=std::make_shared<corevm::runtime::instr_handler_delattr>()   },
@@ -498,6 +499,23 @@ corevm::runtime::instr_handler_stobj::execute(
   corevm::dyobj::dyobj_id id = process.pop_stack();
 
   frame->set_visible_var(key, id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_stobjn::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
+  size_t n = static_cast<size_t>(instr.oprd2);
+
+  corevm::runtime::frame& frame = process.top_nth_frame(n);
+
+  corevm::dyobj::dyobj_id id = process.pop_stack();
+
+  frame.set_visible_var(key, id);
 }
 
 // -----------------------------------------------------------------------------

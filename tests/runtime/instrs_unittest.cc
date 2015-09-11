@@ -228,6 +228,38 @@ TEST_F(instrs_obj_unittest, TestInstrSTOBJ)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrSTOBJN)
+{
+  corevm::runtime::variable_key key = 1;
+  size_t n = 1;
+
+  corevm::runtime::instr instr {
+    .code=0,
+    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
+    .oprd2=static_cast<corevm::runtime::instr_oprd>(n)
+  };
+
+  corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::frame frame2(m_ctx, m_compartment, &m_closure);
+  m_process.push_frame(frame);
+  m_process.push_frame(frame2);
+
+  corevm::dyobj::dyobj_id id = 1;
+  m_process.push_stack(id);
+
+  execute_instr<corevm::runtime::instr_handler_stobjn>(instr, 0);
+
+  corevm::runtime::frame& actual_frame = m_process.top_nth_frame(n);
+
+  ASSERT_TRUE(actual_frame.has_visible_var(key));
+
+  corevm::dyobj::dyobj_id actual_id = actual_frame.get_visible_var(key);
+
+  ASSERT_EQ(id, actual_id);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_obj_unittest, TestInstrGETATTR)
 {
   corevm::runtime::compartment_id compartment_id = 0;

@@ -144,6 +144,7 @@ class Closure(object):
         self.catch_sites = []
         self.closure_id = Closure.__closure_id
         self.parent_id = parent_id
+        self.globals = []
         Closure.__closure_id += 1
 
     def add_loc(self, index, loc):
@@ -243,6 +244,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_function_name = ''
         self.try_except_states = []
         self.current_try_except_lvl = 0
+        self.scope_lvl = 0
         self.continue_stmt_vector_lengths = []
         self.break_stmt_vector_lengths = []
 
@@ -336,6 +338,17 @@ class BytecodeGenerator(ast.NodeVisitor):
                 closure_table[-1].closure_id == len(closure_table) - 1)
 
         return [closure.to_json(binary=binary) for closure in closure_table]
+
+    def __enter_scope(self):
+        self.scope_lvl += 1
+
+    def __exit_scope(self):
+        self.scope_lvl -= 1
+
+    def __module_frame_lvl(self):
+        """Returns the `n`th top frame lvl of the module lvl frame."""
+        # times scope by 2 because there's a wrapper call for every call.
+        return self.scope_lvl * 2
 
     def __current_closure(self):
         return self.closure_map[self.current_closure_name]
@@ -446,6 +459,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_FunctionDef(self, node):
         # Step in.
+        self.__enter_scope()
         self.current_function_name = self.current_function_name + '::' + node.name
         closure_name = self.current_class_name + '.' + self.current_function_name
 
@@ -479,6 +493,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('rtrn', 0, 0)
 
         # Step out.
+        self.__exit_scope()
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
         self.current_function_name = '::'.join(self.current_function_name.split('::')[:-1])
 
@@ -490,14 +505,22 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
 
         if not self.current_class_name:
-            self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+            if node.name in self.__current_closure().globals:
+                n = self.__module_frame_lvl()
+                self.__add_instr('stobjn', self.__get_encoding_id(node.name), n)
+            else:
+                self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
 
     def visit_ClassDef(self, node):
         # Step in.
         self.current_class_name = self.current_class_name + '::' + node.name
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
-        self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+        if node.name in self.__current_closure().globals:
+            n = self.__module_frame_lvl()
+            self.__add_instr('stobjn', self.__get_encoding_id(node.name), n)
+        else:
+            self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
         self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
@@ -871,6 +894,10 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('exc', 1, 0)
 
         self.__pop_try_except_state()
+
+    def visit_Global(self, node):
+        for name in node.names:
+            self.__current_closure().globals.append(name)
 
     def visit_Expr(self, node):
         self.visit(node.value)
@@ -1254,7 +1281,11 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('getarg', 0, 0, loc=Loc.from_node(node))
             self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Store):
-            self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+            if name in self.__current_closure().globals:
+                n = self.__module_frame_lvl()
+                self.__add_instr('stobjn', self.__get_encoding_id(name), n, loc=Loc.from_node(node))
+            else:
+                self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass

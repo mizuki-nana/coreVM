@@ -392,6 +392,70 @@ TEST_F(process_unittest, TestEmplaceFrame)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(process_unittest, TestTopNthFrame)
+{
+  corevm::runtime::process process;
+
+  corevm::runtime::closure_ctx ctx1 {
+    .compartment_id = 0,
+    .closure_id = 1,
+  };
+
+  corevm::runtime::closure_ctx ctx2 {
+    .compartment_id = 0,
+    .closure_id = 2,
+  };
+
+  corevm::runtime::closure_ctx ctx3 {
+    .compartment_id = 0,
+    .closure_id = 3,
+  };
+
+  corevm::runtime::closure closure {
+    .id = ctx1.closure_id,
+    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
+  };
+
+  corevm::runtime::closure_table closure_table { closure };
+
+  corevm::runtime::compartment compartment("");
+
+  compartment.set_closure_table(std::move(closure_table));
+  process.insert_compartment(compartment);
+
+  corevm::runtime::frame frame1(ctx1, &compartment, &closure_table[0]);
+  corevm::runtime::frame frame2(ctx2, &compartment, &closure_table[0]);
+  corevm::runtime::frame frame3(ctx3, &compartment, &closure_table[0]);
+
+  process.push_frame(frame1);
+  process.push_frame(frame2);
+  process.push_frame(frame3);
+
+  ASSERT_EQ(3, process.call_stack_size());
+
+  // Top frame.
+  auto& frame_1st = process.top_nth_frame(0);
+  ASSERT_EQ(frame3.closure_ctx().closure_id, frame_1st.closure_ctx().closure_id);
+
+  // 2nd top frame.
+  auto& frame_2nd = process.top_nth_frame(1);
+  ASSERT_EQ(frame2.closure_ctx().closure_id, frame_2nd.closure_ctx().closure_id);
+
+  // 3rd top frame.
+  auto& frame_3rd = process.top_nth_frame(2);
+  ASSERT_EQ(frame1.closure_ctx().closure_id, frame_3rd.closure_ctx().closure_id);
+
+  // Invalid `n`.
+  ASSERT_THROW(
+    {
+      process.top_nth_frame(3);
+    },
+    corevm::runtime::frame_not_found_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(process_unittest, TestInsertAndAccessNativeTypeHandle)
 {
   corevm::runtime::process process;
