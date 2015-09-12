@@ -26,6 +26,8 @@
 def test_float_representations():
     print 5824.674626
     print float(3.141592)
+    print -8.315381
+    print float(-3.141592)
 
 ## -----------------------------------------------------------------------------
 
@@ -37,6 +39,9 @@ def test_float_unary_operations():
     print -(9.999999)
     print +10.123456
     print +(-(-(123.725197)))
+    print -(-9.999999)
+    print +(-3.141592)
+    print -(-(123.123456))
 
 ## -----------------------------------------------------------------------------
 
@@ -49,6 +54,8 @@ def test_float_binary_operations():
     print 180.0000 % 3.141593
     print 9.234 ** 4.76
     print int(9.99 // 3.31) # printing precision issue
+    print 99.912312 - (-123.333333)
+    print -8.888888 / -4.000000
 
 ## -----------------------------------------------------------------------------
 
@@ -59,6 +66,7 @@ def test_float_aug_assignments():
 
     j = 111.555555
     j -= 110.444444
+    j -= -1.111212
     print j
 
     k = 123.554
@@ -67,6 +75,7 @@ def test_float_aug_assignments():
 
     u = 777.777777
     u /= 7
+    u /= -1.0
     print u
 
     v = 639.0
@@ -101,6 +110,15 @@ def test_float_comparisons():
 
     if float(0.992) >= float(0.991):
         print 'You know the story'
+
+    if 1.01 != -1.01:
+        print 'True'
+
+    if (float(-912.11)) < float(-3.1111):
+        print 'Also true'
+
+    if 3.1415 + 6.12741 > 3.1315 * -6.12741:
+        print 'This should be true'
 
 ## -----------------------------------------------------------------------------
 

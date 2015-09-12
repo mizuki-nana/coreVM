@@ -26,17 +26,21 @@
 def test_int_representations():
     print 1234567890
     print int(987654321)
+    print -1234567890
+    print int(-987654321)
 
 ## -----------------------------------------------------------------------------
 
 def test_int_unary_operations():
     print not 1
     print not 0
+    print not -3
 
     print -1
     print +0
     print -(+123)
     print +(-(+321))
+    print -(-(-5))
 
 ## -----------------------------------------------------------------------------
 
@@ -46,8 +50,10 @@ def test_int_binary_operations():
     print 567 * 654
     print 101 / 11
     print 110 % 33
-    print 2**3
+    print 2 ** 3
+    print 100 % -20
     print 1 << 3
+    print 10 % -5
     print 99 >> 2
     print 123 | 321
     print 12345 ^ 67890
@@ -61,10 +67,12 @@ def test_int_binary_operations():
 def test_int_aug_assignments():
     i = 1
     i += 3
+    i -= -5
     print i
 
     j = 111
     j -= 110
+    j -= -10
     print j
 
     k = 123
@@ -73,6 +81,7 @@ def test_int_aug_assignments():
 
     u = 777
     u /= 7
+    u /= -1
     print u
 
     v = 639
@@ -97,6 +106,7 @@ def test_int_aug_assignments():
 
     zeta = 85638
     zeta ^= 00001
+    zeta *= -1
     print zeta
 
     zelda = 55555
@@ -127,6 +137,12 @@ def test_int_comparisons():
 
     if 123 * 321 >= 321 * 123:
         print 'Multiplication is commutative'
+
+    if 1 + -1 == -1 + 1:
+        print 'Aha'
+
+    if -5 + 3 <= 10 + -8:
+        print '???'
 
 ## -----------------------------------------------------------------------------
 
