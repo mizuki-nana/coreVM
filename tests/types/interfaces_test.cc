@@ -255,6 +255,22 @@ TEST_F(native_type_binary_operator_interfaces_test, TestModulusOperatorWithFloat
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_type_binary_operator_interfaces_test, TestModulusOperatorWithFloatingPointOperandsWithOppositeSigns)
+{
+  corevm::types::native_type_handle lhs = corevm::types::decimal2(-180.0);
+  corevm::types::native_type_handle rhs = corevm::types::decimal2(3.141592);
+
+  this->apply_binary_operator_and_assert_result<double>(
+    lhs,
+    rhs,
+    corevm::types::interface_apply_modulus_operator,
+    /* -180.0 % 3.141592 */ 2.2123361,
+    /* is_decimal */ true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_binary_operator_interfaces_test, TestPowOperator)
 {
   corevm::types::native_type_handle lhs = corevm::types::decimal(2.3);

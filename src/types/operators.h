@@ -631,10 +631,35 @@ public:
   template<typename R, typename T, typename U>
   typename R::value_type operator()(const T& lhs, const U& rhs)
   {
-    return fmod(
+    return modulus_impl<R>(
       static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
       static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
     );
+  }
+
+private:
+  template<typename R>
+  typename R::value_type modulus_impl(
+      const corevm::types::decimal2::value_type& lhs,
+      const corevm::types::decimal2::value_type& rhs)
+  {
+    double res = fmod(lhs, rhs);
+
+    const int lhs_int = static_cast<int>(lhs);
+    const int rhs_int = static_cast<int>(rhs);
+
+    /**
+     * If the remainder is non-zero and the two operands are off different
+     * signs, we want to add the denominator to the remainder.
+     *
+     * [COREVM-318] Modulo expressions do not match CPython results
+     */
+    if (res != 0.0 && (lhs_int ^ rhs_int) < 0)
+    {
+        res = res + rhs;
+    }
+
+    return res;
   }
 };
 

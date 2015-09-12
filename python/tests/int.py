@@ -64,6 +64,19 @@ def test_int_binary_operations():
 
 ## -----------------------------------------------------------------------------
 
+def test_int_modulo_operations():
+    print 180 % 7
+    print -180 % 7
+    print 180 % -7
+    print -180 % -7
+
+    print 180 % 30
+    print -180 % 30
+    print 180 % -30
+    print -180 % -30
+
+## -----------------------------------------------------------------------------
+
 def test_int_aug_assignments():
     i = 1
     i += 3
@@ -149,6 +162,7 @@ def test_int_comparisons():
 test_int_representations()
 test_int_unary_operations()
 test_int_binary_operations()
+test_int_modulo_operations()
 test_int_aug_assignments()
 test_int_comparisons()
 

@@ -59,6 +59,19 @@ def test_float_binary_operations():
 
 ## -----------------------------------------------------------------------------
 
+def test_float_modulo_operations():
+    print 180.000 % 3.141592
+    print -180.000 % 3.141592
+    print 180.00 % -3.141592
+    print -180.000 % -3.141592
+
+    print 180.300003 % 3.0
+    print -180.300003 % 3.0
+    print 180.300003 % -3.0
+    print -180.300003 % -3.0
+
+## -----------------------------------------------------------------------------
+
 def test_float_aug_assignments():
     i = 1.34
     i += 3.585739
@@ -125,6 +138,7 @@ def test_float_comparisons():
 test_float_representations()
 test_float_unary_operations()
 test_float_binary_operations()
+test_float_modulo_operations()
 test_float_aug_assignments()
 test_float_comparisons()
 
