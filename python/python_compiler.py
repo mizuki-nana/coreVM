@@ -1085,13 +1085,19 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.visit(node.orelse)
 
+        self.__add_instr('jmp', 0, 0)
+
         vector_length2 = len(self.__current_vector())
-        length_diff = vector_length2 - vector_length1
 
         self.visit(node.body)
 
-        self.__current_vector()[vector_length1 - 1] = Instr(
-            self.instr_str_to_code_map['jmpif'], length_diff, 0)
+        vector_length3 = len(self.__current_vector())
+
+        assert self.__current_vector()[vector_length1 - 1].code == self.instr_str_to_code_map['jmpif']
+        self.__current_vector()[vector_length1 - 1].oprd1 = vector_length2 - vector_length1
+
+        assert self.__current_vector()[vector_length2 - 1].code == self.instr_str_to_code_map['jmp']
+        self.__current_vector()[vector_length2 - 1].oprd1 = vector_length3 - vector_length2
 
     def visit_Dict(self, node):
         assert len(node.keys) == len(node.values)

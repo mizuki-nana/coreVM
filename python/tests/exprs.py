@@ -122,8 +122,24 @@ def test_comparison_exprs():
 
 ## -----------------------------------------------------------------------------
 
+def test_if_expr():
+    a = 2 if 1 == 2 else 3
+    print a
+
+    print True if 1 > 2 else False
+    print 1 if 1 <= 3 else 2
+    print 2 if 1 > 3 else 5
+
+    print 1 if 1 > 5 else 3 if not False else 5
+    print 1 if 1 > 5 else 3 if not True else 5
+
+    print False if not True else not True if not True else 3 - 5
+
+## -----------------------------------------------------------------------------
+
 test_ifelse_expr()
 test_boolop_expr()
 test_comparison_exprs()
+test_if_expr()
 
 ## -----------------------------------------------------------------------------
