@@ -194,6 +194,10 @@ class CodeTransformer(ast.NodeVisitor):
         base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
         base_str += '\n'
 
+        # Functions return `None` by default.
+        base_str += '{indentation}return None\n'.format(
+            indentation=self.__indentation())
+
         self.__dedent()
 
         # Decorators.

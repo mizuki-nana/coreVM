@@ -23,6 +23,19 @@
 
 ## -----------------------------------------------------------------------------
 
+def test_do_nothing():
+    pass
+
+## -----------------------------------------------------------------------------
+
+def test_do_nothing_2():
+    def inner():
+        pass
+
+    print inner()
+
+## -----------------------------------------------------------------------------
+
 def do_math(arg):
     print 'Time to have fun!'
     return int(5)
@@ -210,6 +223,8 @@ def test_closure_elision_2():
 
 ## -----------------------------------------------------------------------------
 
+test_do_nothing()
+test_do_nothing_2()
 test_simple_call(int(1))
 test_simple_lambda_call()
 test_inner_function_call()
