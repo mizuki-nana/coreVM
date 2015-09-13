@@ -42,26 +42,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 
-// -----------------------------------------------------------------------------
-
-static void
-try_get_attr_name(
-  corevm::runtime::process& process,
-  corevm::dyobj::attr_key attr_key,
-  corevm::dyobj::dyobj_id id,
-  std::string* attr_name)
-{
-  auto& obj = process.get_dyobj(id);
-
-  corevm::runtime::compartment* compartment = nullptr;
-  process.get_compartment(obj.closure_ctx().compartment_id, &compartment);
-
-  if (compartment)
-  {
-    compartment->get_encoding_string(
-      static_cast<corevm::runtime::encoding_key>(attr_key), attr_name);
-  }
-}
 
 // -----------------------------------------------------------------------------
 
@@ -143,23 +123,6 @@ corevm::frontend::runner::run() const noexcept
       corevm::runtime::process::unwind_stack(process);
 
       return -1;
-    }
-  }
-  catch (const corevm::dyobj::object_attribute_not_found_error& ex)
-  {
-    // Try to find the attribute name.
-    std::string attr_name;
-    try_get_attr_name(process, ex.attr_key, ex.id, &attr_name);
-
-    if (!attr_name.empty())
-    {
-      THROW(corevm::dyobj::object_attribute_not_found_error(
-        str(
-          boost::format(
-            "Attribute %s not found in object %#x"
-          ) % attr_name.c_str() % ex.id
-        )
-      ));
     }
   }
   catch (const corevm::runtime_error& ex)
