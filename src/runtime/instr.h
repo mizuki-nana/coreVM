@@ -1056,6 +1056,13 @@ enum instr_enum : uint32_t
   ARYAPND,
 
   /**
+   * <aryers, _, _>
+   * Pop the top two elements on the eval stack, and performs the "array erase"
+   * operation.
+   */
+  ARYERS,
+
+  /**
    * <arypop,, >
    * Pops the top element on the eval stack, and performs the "array pop"
    * operation.
@@ -2679,6 +2686,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_aryapnd : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_aryers : public instr_handler
 {
 public:
   virtual void execute(

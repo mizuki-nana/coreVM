@@ -248,6 +248,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* ARYBAK   */     { .num_oprd=0, .str="arybak",    .handler=std::make_shared<corevm::runtime::instr_handler_arybak>()    },
   /* ARYPUT   */     { .num_oprd=0, .str="aryput",    .handler=std::make_shared<corevm::runtime::instr_handler_aryput>()    },
   /* ARYAPND  */     { .num_oprd=0, .str="aryapnd",   .handler=std::make_shared<corevm::runtime::instr_handler_aryapnd>()   },
+  /* ARYERS   */     { .num_oprd=0, .str="aryers",    .handler=std::make_shared<corevm::runtime::instr_handler_aryers>()    },
   /* ARYPOP   */     { .num_oprd=0, .str="arypop",    .handler=std::make_shared<corevm::runtime::instr_handler_arypop>()    },
   /* ARYSWP   */     { .num_oprd=0, .str="aryswp",    .handler=std::make_shared<corevm::runtime::instr_handler_aryswp>()    },
   /* ARYCLR   */     { .num_oprd=0, .str="aryclr",    .handler=std::make_shared<corevm::runtime::instr_handler_aryclr>()    },
@@ -2952,6 +2953,19 @@ corevm::runtime::instr_handler_aryapnd::execute(
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
     corevm::types::interface_array_append
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_aryers::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    *frame_ptr,
+    corevm::types::interface_array_erase
   );
 }
 

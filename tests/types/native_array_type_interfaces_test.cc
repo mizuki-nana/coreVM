@@ -129,6 +129,41 @@ TEST_F(native_array_type_interfaces_test, TestAppend)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_array_type_interfaces_test, TestErase)
+{
+  corevm::types::native_array array {1, 2, 3};
+  corevm::types::native_type_handle operand = array;
+  corevm::types::native_type_handle index = corevm::types::uint64(1);
+
+  corevm::types::native_array expected_result {1, 3};
+
+  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_array>(
+    operand,
+    index,
+    corevm::types::interface_array_erase,
+    expected_result
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_array_type_interfaces_test, TestEraseOnInvalidIndex)
+{
+  corevm::types::native_array array {1, 2, 3};
+  corevm::types::native_type_handle operand = array;
+  corevm::types::native_type_handle index = corevm::types::uint64(3);
+  corevm::types::native_type_handle result;
+
+  ASSERT_THROW(
+    {
+      corevm::types::interface_array_erase(operand, index, result);
+    },
+    corevm::types::out_of_range_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(native_array_type_interfaces_test, TestPop)
 {
   corevm::types::native_array array {1, 2, 3};

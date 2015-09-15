@@ -202,6 +202,24 @@ class list(object):
         """
         return None
 
+    def __del_item_by_index(self, i):
+        if __call_method_1(i.__gte__, __call_method_0(self.__len__)):
+            raise __call_cls_0(IndexError)
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [gethndl2, i, 0]
+        [aryers, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+    def __delitem__(self, i):
+        if i.__class__ is int:
+            return __call_method_1(self.__del_item_by_index, i)
+
 ## -----------------------------------------------------------------------------
 
 class listiterator(object):

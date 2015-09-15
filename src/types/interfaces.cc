@@ -892,6 +892,23 @@ void corevm::types::interface_array_append(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_array_erase(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result)
+{
+  corevm::types::native_array array_value =
+    corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
+
+  corevm::types::uint32::value_type index_value =
+    corevm::types::get_value_from_handle<corevm::types::uint32::value_type>(index);
+
+  array_value.erase(index_value);
+
+  result = std::move(array_value);
+}
+
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_array_pop(
   native_type_handle& operand, native_type_handle& result)
 {

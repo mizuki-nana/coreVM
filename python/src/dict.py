@@ -168,6 +168,22 @@ class dict(object):
 
         return None
 
+    def __delitem__(self, key):
+        if __call_method_1(self.__contains__, key):
+            key_hash = __call_method_0(key.__hash__)
+
+            """
+            ### BEGIN VECTOR ###
+            [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [gethndl2, key_hash, 0]
+            [mapers, 0, 0]
+            [sethndl, 0, 0]
+            ### END VECTOR ###
+            """
+        else:
+            raise __call_cls_0(KeyError)
+
     def __str__(self):
         res = __call_cls_builtin(str, '')
         __call_method_1(res.__add__, CONST_STR_OPEN_BRACE)

@@ -223,6 +223,37 @@ TEST_F(native_array_functionality_unittest, TestAtFailure)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_array_functionality_unittest, TestEraseSuccessful)
+{
+  corevm::types::native_array array {1, 2, 3, 4, 5};
+
+  corevm::types::native_array expected_result = {1, 2, 3, 5};
+
+  array.erase(3);
+
+  ASSERT_EQ(expected_result.size(), array.size());
+  ASSERT_EQ(expected_result[0], array[0]);
+  ASSERT_EQ(expected_result[1], array[1]);
+  ASSERT_EQ(expected_result[2], array[2]);
+  ASSERT_EQ(expected_result[3], array[3]);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_array_functionality_unittest, TestEraseFailure)
+{
+  corevm::types::native_array array {1, 2, 3, 4, 5};
+
+  ASSERT_THROW(
+    {
+      array.erase(5);
+    },
+    corevm::types::out_of_range_error
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 class native_array_operator_unittest : public native_array_unittest {};
 
 // -----------------------------------------------------------------------------

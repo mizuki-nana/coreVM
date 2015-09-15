@@ -251,3 +251,18 @@ corevm::types::native_array::at(size_type n) const
 }
 
 // -----------------------------------------------------------------------------
+
+void
+corevm::types::native_array::erase(size_t n)
+  throw (corevm::types::out_of_range_error)
+{
+  if (n >= this->size())
+  {
+    THROW(corevm::types::out_of_range_error("Array index out of range"));
+  }
+
+  auto itr = this->begin() + n;
+  native_array_base::erase(itr);
+}
+
+// -----------------------------------------------------------------------------

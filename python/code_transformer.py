@@ -265,6 +265,83 @@ class CodeTransformer(ast.NodeVisitor):
 
         return base_str
 
+    def visit_Delete(self, node):
+        """There are 5 types of targets for the `del` keyword in Python, namely:
+
+            1. Names
+            2. Attributes
+            3. Subscripts
+            4. Name lists
+            5. Name tuples
+
+        Those are the 5 types of expressions in the language that depends on
+        `expr_context`, which supports the `del` context.
+
+        For more info please refer to the Python AST documentation.
+        """
+        name_targets = []
+        attribute_targets = []
+        subscript_targets = []
+        list_targets = []
+        tuple_targets = []
+
+        for target in node.targets:
+            if isinstance(target, ast.Name):
+                name_targets.append(target)
+            elif isinstance(target, ast.Attribute):
+                attribute_targets.append(target)
+            elif isinstance(target, ast.Subscript):
+                subscript_targets.append(target)
+            elif isinstance(target, ast.List):
+                list_targets.append(target)
+            elif isinstance(target, ast.Tuple):
+                tuple_targets.append(target)
+            else:
+                raise Exception('Unexpected type for delete target: %s' % str(type(target)))
+
+        base_str = ''
+
+        if name_targets:
+            base_str += '{indentation}del {targets}'.format(
+                indentation=self.__indentation(),
+                targets=', '.join([self.visit(target) for target in name_targets]))
+
+        if attribute_targets:
+            for target in attribute_targets:
+                base_str += '{indentation}__call(delattr, {target}, \"{attr}\")\n'.format(
+                    indentation=self.__indentation(),
+                    target=self.visit(target.value),
+                    attr=target.attr)
+
+        if subscript_targets:
+            for target in subscript_targets:
+                base_str += '{indentation}__call_method_1({target}.__delitem__, {slice})\n'.format(
+                    indentation=self.__indentation(),
+                    target=self.visit(target.value),
+                    slice=self.visit(target.slice))
+
+        if list_targets:
+            for list_target in list_targets:
+                for target in list_target.elts:
+                    if not isinstance(target, ast.Name):
+                        raise Exception('Cannot delete expression of type %s' % str(type(target)))
+
+                base_str += '{indentation}del {targets}\n'.format(
+                    indentation=self.__indentation(),
+                    targets=', '.join([self.visit(target) for target in list_target.elts]))
+
+        if tuple_targets:
+            for tuple_target in tuple_targets:
+                for target in tuple_target.elts:
+                    if not isinstance(target, ast.Name):
+                        raise Exception('Cannot delete expression of type %s' % str(type(target)))
+
+                base_str += '{indentation}del {targets}\n'.format(
+                    indentation=self.__indentation(),
+                    targets=', '.join([self.visit(target) for target in tuple_target.elts]))
+
+        return base_str
+
     def visit_Assign(self, node):
         if isinstance(node.targets[0], ast.Subscript):
             # Special case for assignments on subscripts.

@@ -556,6 +556,14 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(node.value)
         self.__add_instr('rtrn', 0, 0)
 
+    def visit_Delete(self, node):
+        for target in node.targets:
+            # `del` statements on non-name targets have been transformed into
+            # function calls.
+            assert isinstance(target, ast.Name)
+
+            self.__add_instr('delobj', self.__get_encoding_id(target.id), 0)
+
     def visit_Assign(self, node):
         res = self.visit(node.value)
 

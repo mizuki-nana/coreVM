@@ -220,6 +220,34 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
+void BenchmarkInstrARYERS(benchmark::State& state)
+{
+  instr_benchmarks_fixture fixture;
+
+  corevm::types::native_type_handle hndl =
+    corevm::types::native_array { 1, 2, 3 };
+
+  corevm::types::native_type_handle hndl2 =
+    corevm::types::uint32(2);
+
+  corevm::runtime::instr_handler_aryers handler;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  while (state.KeepRunning())
+  {
+    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(hndl2);
+
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
 void BenchmarkInstrARYPOP(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
@@ -330,6 +358,7 @@ BENCHMARK(BenchmarkInstrARYFRT);
 BENCHMARK(BenchmarkInstrARYBAK);
 BENCHMARK(BenchmarkInstrARYPUT);
 BENCHMARK(BenchmarkInstrARYAPND);
+BENCHMARK(BenchmarkInstrARYERS);
 BENCHMARK(BenchmarkInstrARYPOP);
 BENCHMARK(BenchmarkInstrARYSWP);
 BENCHMARK(BenchmarkInstrARYCLR);

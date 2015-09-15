@@ -415,6 +415,12 @@ void interface_array_append(
 
 // -----------------------------------------------------------------------------
 
+void interface_array_erase(
+  native_type_handle& operand, native_type_handle& index,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 void interface_array_pop(
   native_type_handle& operand, native_type_handle& result);
 
