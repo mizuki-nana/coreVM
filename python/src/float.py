@@ -57,6 +57,16 @@ class float(object):
         """
         return __call_cls_builtin(int, res_)
 
+    def __nonzero__(self):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, self, 0]
+        [dec2, 0, 0]
+        [neq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
+
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###

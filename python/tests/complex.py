@@ -100,6 +100,24 @@ def test_negatives():
 
 ## -----------------------------------------------------------------------------
 
+def test_nonzero():
+    c = complex(0, 0)
+    print c.__nonzero__()
+
+    c = complex(-1, 0)
+    print c.__nonzero__()
+
+    c = complex(0, 3.14)
+    print c.__nonzero__()
+
+    c = complex(-99, -3.141526)
+    print c.__nonzero__()
+
+    c = complex(-99, -999)
+    print c.__nonzero__()
+
+## -----------------------------------------------------------------------------
+
 test_repr()
 test_additions()
 test_subtractions()
@@ -109,5 +127,6 @@ test_powers()
 test_equalities()
 test_positives()
 test_negatives()
+test_nonzero()
 
 ## -----------------------------------------------------------------------------

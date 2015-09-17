@@ -151,11 +151,27 @@ def test_boolean_hash():
 
 ## -----------------------------------------------------------------------------
 
+def test_boolean_nonzero():
+    print True.__nonzero__()
+    print False.__nonzero__()
+
+    i = bool(-1)
+    print i.__nonzero__()
+
+    i = bool(0)
+    print i.__nonzero__()
+
+    i = bool(1)
+    print i.__nonzero__()
+
+## -----------------------------------------------------------------------------
+
 test_boolean_representations()
 test_boolean_unary_operators()
 test_boolean_binary_operators()
 test_boolean_aug_assignments()
 test_boolean_comparisons()
 test_boolean_hash()
+test_boolean_nonzero()
 
 ## -----------------------------------------------------------------------------

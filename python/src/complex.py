@@ -51,6 +51,12 @@ class complex(object):
 
         return res
 
+    def __nonzero__(self):
+        res_real = __call_method_0(self.real.__nonzero__)
+        res_imag = __call_method_0(self.imag.__nonzero__)
+
+        return res_real or res_imag
+
     def __pos__(self):
         res_real = __call_cls_1(int, self.real)
         res_imag = __call_cls_1(int, self.imag)

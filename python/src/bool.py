@@ -25,9 +25,10 @@ class bool(object):
     def __init__(self, value):
         """
         ### BEGIN VECTOR ###
+        [gethndl2, value, 0]
+        [truthy, 0, 0]
         [ldobj, self, 0]
-        [ldobj, value, 0]
-        [cpyhndl, 9, 0]
+        [sethndl, 0, 0]
         ### END VECTOR ###
         """
 
@@ -42,6 +43,16 @@ class bool(object):
 
     def __repr__(self):
         return __call_method_0(self.__str__)
+
+    def __nonzero__(self):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, self, 0]
+        [bool, 0, 0]
+        [neq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
 
     def __add__(self, value):
         """

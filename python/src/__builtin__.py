@@ -252,3 +252,25 @@ def delattr(obj, attr):
     pass
 
 ## -----------------------------------------------------------------------------
+
+def any(iterable):
+    iterator = __call_method_0(iterable.__iter__)
+
+    try:
+        while True:
+            element = __call_method_0(iterator.next)
+
+            # TODO: convert `element` to an instance of `bool` is the most
+            # accurate form of implementation here, since not objects of all
+            # types support `__nonzero__`, e.g., `None`.
+            #
+            # [COREVM-328] Add support for universal type conversion to `bool` type
+            if __call_method_0(element.__nonzero__):
+                return True
+
+    except StopIteration:
+        pass
+
+    return False
+
+## -----------------------------------------------------------------------------

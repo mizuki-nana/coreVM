@@ -48,6 +48,16 @@ class int(object):
     def __repr__(self):
         return __call_method_0(self.__str__)
 
+    def __nonzero__(self):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, self, 0]
+        [int64, 0, 0]
+        [neq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
+
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###

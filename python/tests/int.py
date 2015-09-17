@@ -159,11 +159,24 @@ def test_int_comparisons():
 
 ## -----------------------------------------------------------------------------
 
+def test_int_nonzero():
+    i = 0
+    print i.__nonzero__()
+
+    i = 1
+    print i.__nonzero__()
+
+    i = -1
+    print i.__nonzero__()
+
+## -----------------------------------------------------------------------------
+
 test_int_representations()
 test_int_unary_operations()
 test_int_binary_operations()
 test_int_modulo_operations()
 test_int_aug_assignments()
 test_int_comparisons()
+test_int_nonzero()
 
 ## -----------------------------------------------------------------------------

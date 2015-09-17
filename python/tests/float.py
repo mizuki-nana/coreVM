@@ -135,11 +135,36 @@ def test_float_comparisons():
 
 ## -----------------------------------------------------------------------------
 
+def test_float_nonzero():
+    i = 0.0
+    print i.__nonzero__()
+
+    i = -0.0
+    print i.__nonzero__()
+
+    i = -0.0000000
+    print i.__nonzero__()
+
+    i = 1.01
+    print i.__nonzero__()
+
+    i = -1.000001
+    print i.__nonzero__()
+
+    i = 9.0 / 100000
+    print i.__nonzero__()
+
+    i = 9.0 / -100000
+    print i.__nonzero__()
+
+## -----------------------------------------------------------------------------
+
 test_float_representations()
 test_float_unary_operations()
 test_float_binary_operations()
 test_float_modulo_operations()
 test_float_aug_assignments()
 test_float_comparisons()
+test_float_nonzero()
 
 ## -----------------------------------------------------------------------------
