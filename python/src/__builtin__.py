@@ -32,6 +32,11 @@ class MethodType:
 
 ## -----------------------------------------------------------------------------
 
+class function:
+    pass
+
+## -----------------------------------------------------------------------------
+
 class object:
 
     def __new__(cls):
@@ -307,6 +312,35 @@ def any(iterable):
 
 ## -----------------------------------------------------------------------------
 
+def getattr(obj, name):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#getattr
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [gethndl2, name, 0]
+    [hasattr2, 0, 0]
+    [lnot, 0, 0]
+    [jmpif, 3, 0]
+    ### END VECTOR ###
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [gethndl2, name, 0]
+    [getattr2, 0, 0]
+    [rtrn, 0, 0]
+    ### END VECTOR ###
+    """
+
+    raise __call_cls_0(AttributeError)
+
+## -----------------------------------------------------------------------------
+
 def hasattr(obj, name):
     """Built-in function.
 
@@ -314,19 +348,35 @@ def hasattr(obj, name):
         https://docs.python.org/2/library/functions.html#hasattr
     """
 
-    # Per the Python spec, `hasattr` is implemented by calling `getattr()`
-    # and seeing whether it raises an exception or not.
-    # However, `getattr` is yet to be implemented.
-    #
-    # TODO: [COREVM-323] Implement `getattr` and `setattr` built-in functions in Python
+    try:
+        getattr(obj, name)
+        return True
+    except AttributeError:
+        return False
+
+## -----------------------------------------------------------------------------
+
+def setattr(obj, name, value):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#setattr
+    """
+
+    # If target object is a class and attribute value is a function.
+    # Turn the function into an instance of `MethodType`.
+    if obj.__class__ is type and value.__class__ is function:
+        value.__class__ = MethodType
 
     """
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
+    [ldobj, value, 0]
     [gethndl2, name, 0]
-    [hasattr2, 0, 0]
-    [cldobj, True, False]
+    [setattr2, 0, 0]
     ### END VECTOR ###
     """
+
+    return None
 
 ## -----------------------------------------------------------------------------

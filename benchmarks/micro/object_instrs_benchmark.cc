@@ -452,6 +452,73 @@ BenchmarkHASATTR2Instr(benchmark::State& state)
 
 static
 void
+BenchmarkGETATTR2Instr(benchmark::State& state)
+{
+  instr_benchmarks_fixture fixture;
+
+  const std::string attr_str = "hello_world";
+  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  corevm::types::native_type_handle hndl( (corevm::types::native_string(attr_str)) );
+
+  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
+  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+
+  auto &obj = fixture.process().get_dyobj(id1);
+  obj.putattr(attr_key, id2);
+  fixture.process().push_stack(id1);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr_handler_getattr2 handler;
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  frame->push_eval_stack(hndl);
+
+  while (state.KeepRunning())
+  {
+    fixture.process().push_stack(id1);
+
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void
+BenchmarkSETATTR2Instr(benchmark::State& state)
+{
+  instr_benchmarks_fixture fixture;
+
+  const std::string attr_str = "hello_world";
+  corevm::types::native_type_handle hndl( (corevm::types::native_string(attr_str)) );
+
+  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
+  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr_handler_setattr2 handler;
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  frame->push_eval_stack(hndl);
+
+  while (state.KeepRunning())
+  {
+    fixture.process().push_stack(id1);
+    fixture.process().push_stack(id2);
+
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void
 BenchmarkSETATTRSInstr(benchmark::State& state)
 {
   corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=1 };
@@ -625,6 +692,8 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setctx);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope, corevm::runtime::instr_handler_cldobj);
 BENCHMARK(BenchmarkHASATTR2Instr);
+BENCHMARK(BenchmarkGETATTR2Instr);
+BENCHMARK(BenchmarkSETATTR2Instr);
 BENCHMARK(BenchmarkSETATTRSInstr);
 BENCHMARK(BenchmarkRSETATTRSInstr);
 BENCHMARK(BenchmarkSETATTRS2Instr);

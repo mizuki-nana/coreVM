@@ -114,6 +114,22 @@ enum instr_enum : uint32_t
    */
   HASATTR2,
 
+  /**
+   * <getattr2, _, _>
+   * Gets an attribute from the object on top of the stack, with the attribute
+   * name being the string value of the element on top of the eval stack.
+   * Pops the object off the stack and places the result on top of the stack.
+   */
+  GETATTR2,
+
+  /**
+   * <setattr2, _, _>/
+   * Pop the object at the top of the stack as the attribtue value, and set it
+   * as an attribute value on the next object on top of the stack, using the
+   * attribute name that is the string value of the element on top of the
+   * eval stack.
+   */
+  SETATTR2,
 
   /**
    * <pop, _, _>
@@ -1341,6 +1357,26 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_hasattr2 : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_getattr2 : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_setattr2 : public instr_handler
 {
 public:
   virtual void execute(

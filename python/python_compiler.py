@@ -501,7 +501,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[closure_name].closure_id, 0)
-        self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
+        self.__add_instr('ldobj', self.__get_encoding_id('function'), 0)
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
 
         if not self.current_class_name:

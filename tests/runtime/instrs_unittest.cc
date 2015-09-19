@@ -425,6 +425,65 @@ TEST_F(instrs_obj_unittest, TestInstrHASATTR2)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrGETATTR2)
+{
+  const std::string attr_str = "hello_world";
+  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  corevm::types::native_type_handle hndl( (corevm::types::native_string(attr_str)) );
+
+  corevm::runtime::frame& frame = m_process.top_frame();
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+
+  auto &obj = m_process.get_dyobj(id1);
+  obj.putattr(attr_key, id2);
+  m_process.push_stack(id1);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_getattr2>(instr, 1);
+
+  corevm::dyobj::dyobj_id attr_id = m_process.top_stack();
+
+  ASSERT_EQ(id2, attr_id);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_obj_unittest, TestInstrSETATTR2)
+{
+  const std::string attr_str = "hello_world";
+  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  corevm::types::native_type_handle hndl( (corevm::types::native_string(attr_str)) );
+
+  corevm::runtime::frame& frame = m_process.top_frame();
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+
+  m_process.push_stack(id1);
+  m_process.push_stack(id2);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_setattr2>(instr, 1);
+
+  corevm::dyobj::dyobj_id expected_id = id1;
+  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+
+  ASSERT_EQ(expected_id, actual_id);
+
+  auto& target_obj = m_process.get_dyobj(actual_id);
+
+  ASSERT_EQ(true, target_obj.hasattr(attr_key));
+  ASSERT_EQ(id2, target_obj.getattr(attr_key));
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_obj_unittest, TestInstrPOP)
 {
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();

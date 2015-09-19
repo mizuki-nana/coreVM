@@ -3,7 +3,7 @@
 # Copyright (c) 2015 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
+# of this software and associated documentation files (the 'Software'), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -20,60 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-## -----------------------------------------------------------------------------
-
-class Exception(object):
-
-    def __init__(self):
-        pass
 
 ## -----------------------------------------------------------------------------
 
-class TypeError(Exception):
+def test_setattr_on_custom_type():
+    class MyObject(object):
 
-    def __init__(self):
-        pass
+        def __init__(self):
+            self.value = 5
 
-## -----------------------------------------------------------------------------
+    setattr(MyObject, 'value', 2)
+    print MyObject.value
 
-class ValueError(Exception):
+    def run(self):
+        print 'I am running...'
 
-    def __init__(self):
-        pass
+    setattr(MyObject, 'run', run)
 
-## -----------------------------------------------------------------------------
+    o = MyObject()
 
-class IndexError(Exception):
+    print o.value
+    o.run()
 
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class KeyError(Exception):
-
-    def __init__(self):
-        pass
+    setattr(o, 'hello_world', 'Hello world!!!')
+    print o.hello_world
 
 ## -----------------------------------------------------------------------------
 
-class StopIteration(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class AssertionError(Exception):
-
-    def __init__(self):
-        pass
-
-## -----------------------------------------------------------------------------
-
-class AttributeError(Exception):
-
-    def __init__(self):
-        pass
+test_setattr_on_custom_type()
 
 ## -----------------------------------------------------------------------------
