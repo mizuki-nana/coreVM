@@ -34,8 +34,7 @@ def test_del_on_attribtues():
     o = MyObject()
     o.do_something_stupid()
 
-    # TODO: [COREVM-327] Implement `delattr` built-in function in Python
-    #del MyObject.do_something_stupid
+    del MyObject.do_something_stupid
 
 ## -----------------------------------------------------------------------------
 

@@ -252,12 +252,6 @@ def min(a, b):
 
 ## -----------------------------------------------------------------------------
 
-def delattr(obj, attr):
-    # TODO: [COREVM-327] Implement `delattr` built-in function in Python
-    pass
-
-## -----------------------------------------------------------------------------
-
 def all(iterable):
     """Built-in function.
 
@@ -309,6 +303,37 @@ def any(iterable):
         pass
 
     return False
+
+## -----------------------------------------------------------------------------
+
+def delattr(obj, name):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#delattr
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [gethndl2, name, 0]
+    [hasattr2, 0, 0]
+    [lnot, 0, 0]
+    [jmpif, 5, 0]
+    ### END VECTOR ###
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [gethndl2, name, 0]
+    [delattr2, 0, 0]
+    [ldobj, None, 0]
+    [rtrn, 0, 0]
+    ### END VECTOR ###
+    """
+
+    raise __call_cls_0(AttributeError)
 
 ## -----------------------------------------------------------------------------
 

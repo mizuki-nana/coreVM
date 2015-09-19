@@ -132,6 +132,14 @@ enum instr_enum : uint32_t
   SETATTR2,
 
   /**
+   * <delattr2, _, _>
+   * Deletes an attribute from the object on top of the stack, with the
+   * attribute name being the string value of the element on top of the
+   * eval stack.
+   */
+  DELATTR2,
+
+  /**
    * <pop, _, _>
    * Pops the object on top of the stack.
    */
@@ -1377,6 +1385,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_setattr2 : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_delattr2 : public instr_handler
 {
 public:
   virtual void execute(
