@@ -107,6 +107,15 @@ enum instr_enum : uint32_t
   DELATTR,
 
   /**
+   * <hasattr2, _, _>
+   * Determines if the object on top of the stack has an attribute, with the
+   * attribute name being the string value of the element on top of the
+   * eval stack. Places the result on top of the eval stack.
+   */
+  HASATTR2,
+
+
+  /**
    * <pop, _, _>
    * Pops the object on top of the stack.
    */
@@ -1322,6 +1331,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_delattr : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_hasattr2 : public instr_handler
 {
 public:
   virtual void execute(

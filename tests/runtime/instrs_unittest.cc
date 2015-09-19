@@ -394,6 +394,37 @@ TEST_F(instrs_obj_unittest, TestInstrDELATTR)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_obj_unittest, TestInstrHASATTR2)
+{
+  const std::string attr_str = "hello_world";
+  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  corevm::types::native_type_handle hndl( (corevm::types::native_string(attr_str)) );
+
+  corevm::runtime::frame& frame = m_process.top_frame();
+  frame.push_eval_stack(hndl);
+
+  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
+  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+
+  auto &obj = m_process.get_dyobj(id1);
+  obj.putattr(attr_key, id2);
+  m_process.push_stack(id1);
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_hasattr2>(instr, 1);
+
+  corevm::runtime::frame& top_frame = m_process.top_frame();
+
+  corevm::types::native_type_handle res_hndl = top_frame.top_eval_stack();
+
+  const bool actual_res = corevm::types::get_value_from_handle<bool>(res_hndl);
+
+  ASSERT_EQ(true, actual_res);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(instrs_obj_unittest, TestInstrPOP)
 {
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();

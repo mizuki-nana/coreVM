@@ -306,3 +306,27 @@ def any(iterable):
     return False
 
 ## -----------------------------------------------------------------------------
+
+def hasattr(obj, name):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#hasattr
+    """
+
+    # Per the Python spec, `hasattr` is implemented by calling `getattr()`
+    # and seeing whether it raises an exception or not.
+    # However, `getattr` is yet to be implemented.
+    #
+    # TODO: [COREVM-323] Implement `getattr` and `setattr` built-in functions in Python
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [gethndl2, name, 0]
+    [hasattr2, 0, 0]
+    [cldobj, True, False]
+    ### END VECTOR ###
+    """
+
+## -----------------------------------------------------------------------------

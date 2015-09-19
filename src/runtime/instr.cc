@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "process.h"
 #include "utils.h"
 #include "corevm/macros.h"
+#include "dyobj/util.h"
 #include "types/interfaces.h"
 #include "types/types.h"
 
@@ -90,6 +91,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* GETATTR   */    { .num_oprd=1, .str="getattr",   .handler=std::make_shared<corevm::runtime::instr_handler_getattr>()   },
   /* SETATTR   */    { .num_oprd=1, .str="setattr",   .handler=std::make_shared<corevm::runtime::instr_handler_setattr>()   },
   /* DELATTR   */    { .num_oprd=1, .str="delattr",   .handler=std::make_shared<corevm::runtime::instr_handler_delattr>()   },
+  /* HASATTR2  */    { .num_oprd=0, .str="hasattr2",  .handler=std::make_shared<corevm::runtime::instr_handler_hasattr2>()  },
   /* POP       */    { .num_oprd=0, .str="pop",       .handler=std::make_shared<corevm::runtime::instr_handler_pop>()       },
   /* LDOBJ2    */    { .num_oprd=1, .str="ldobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_ldobj2>()    },
   /* STOBJ2    */    { .num_oprd=1, .str="stobj2",    .handler=std::make_shared<corevm::runtime::instr_handler_stobj2>()    },
@@ -590,6 +592,31 @@ corevm::runtime::instr_handler_delattr::execute(
   obj.delattr(attr_key);
 
   process.push_stack(id);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_hasattr2::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::dyobj::dyobj_id id = process.top_stack();
+  auto &obj = process.get_dyobj(id);
+
+  const auto frame = *frame_ptr;
+  corevm::types::native_type_handle hndl = frame->top_eval_stack();
+
+  auto attr_str = corevm::types::get_value_from_handle<corevm::types::native_string>(hndl);
+  std::string attr_str_value = static_cast<std::string>(attr_str);
+
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+
+  const bool res_value = obj.hasattr(attr_key);
+
+  corevm::types::native_type_handle res( (corevm::types::boolean(res_value)) );
+
+  frame->push_eval_stack(std::move(res));
 }
 
 // -----------------------------------------------------------------------------
