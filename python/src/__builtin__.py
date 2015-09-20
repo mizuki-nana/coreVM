@@ -383,6 +383,217 @@ def bin(x):
 
 ## -----------------------------------------------------------------------------
 
+def chr(i):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#chr
+    """
+    LOWER_BOUND_I = __call_cls_builtin(int, 0)
+    UPPER_BOUND_I = __call_cls_builtin(int, 255)
+
+    # Valid input range is [0, 255].
+    if __call_method_1(i.__lt__, LOWER_BOUND_I) or __call_method_1(i.__gt__, UPPER_BOUND_I):
+        raise __call_cls_0(ValueError)
+
+    # Special cases
+    if __call_method_1(i.__eq__, __call_cls_builtin(int, 9)):
+        return __call_cls_builtin(str, '\t')
+
+    if __call_method_1(i.__eq__, __call_cls_builtin(int, 10)):
+        return __call_cls_builtin(str, '\n')
+
+    if __call_method_1(i.__eq__, __call_cls_builtin(int, 13)):
+        return __call_cls_builtin(str, '\r')
+
+    # 32 to 126, inclusive.
+    def __chr_for_32_to_126(i):
+        CONST_ASCII_ARRAY = __call_cls_builtin(list,
+            [
+                __call_cls_builtin(str, ' '), # 32
+                __call_cls_builtin(str, '!'), # 33
+                __call_cls_builtin(str, '"'), # 34
+                __call_cls_builtin(str, '#'), # 35
+                __call_cls_builtin(str, '$'), # 36
+                __call_cls_builtin(str, '%'), # 36
+                __call_cls_builtin(str, '&'), # 38
+                __call_cls_builtin(str, '\''), # 39
+                __call_cls_builtin(str, '('), # 40
+                __call_cls_builtin(str, ')'), # 41
+                __call_cls_builtin(str, '*'), # 42
+                __call_cls_builtin(str, '+'), # 43
+                __call_cls_builtin(str, ','), # 44
+                __call_cls_builtin(str, '-'), # 45
+                __call_cls_builtin(str, '.'), # 46
+                __call_cls_builtin(str, '/'), # 47
+                __call_cls_builtin(str, '0'), # 48
+                __call_cls_builtin(str, '1'), # 49
+                __call_cls_builtin(str, '2'), # 50
+                __call_cls_builtin(str, '3'), # 51
+                __call_cls_builtin(str, '4'), # 52
+                __call_cls_builtin(str, '5'), # 53
+                __call_cls_builtin(str, '6'), # 54
+                __call_cls_builtin(str, '7'), # 55
+                __call_cls_builtin(str, '8'), # 56
+                __call_cls_builtin(str, '9'), # 57
+                __call_cls_builtin(str, ':'), # 58
+                __call_cls_builtin(str, ';'), # 59
+                __call_cls_builtin(str, '<'), # 60
+                __call_cls_builtin(str, '='), # 61
+                __call_cls_builtin(str, '>'), # 62
+                __call_cls_builtin(str, '?'), # 63
+                __call_cls_builtin(str, '@'), # 64
+                __call_cls_builtin(str, 'A'), # 65
+                __call_cls_builtin(str, 'B'), # 66
+                __call_cls_builtin(str, 'C'), # 67
+                __call_cls_builtin(str, 'D'), # 68
+                __call_cls_builtin(str, 'E'), # 69
+                __call_cls_builtin(str, 'F'), # 70
+                __call_cls_builtin(str, 'G'), # 71
+                __call_cls_builtin(str, 'H'), # 72
+                __call_cls_builtin(str, 'I'), # 73
+                __call_cls_builtin(str, 'J'), # 74
+                __call_cls_builtin(str, 'K'), # 75
+                __call_cls_builtin(str, 'L'), # 76
+                __call_cls_builtin(str, 'M'), # 77
+                __call_cls_builtin(str, 'N'), # 78
+                __call_cls_builtin(str, 'O'), # 79
+                __call_cls_builtin(str, 'P'), # 80
+                __call_cls_builtin(str, 'Q'), # 81
+                __call_cls_builtin(str, 'R'), # 82
+                __call_cls_builtin(str, 'S'), # 83
+                __call_cls_builtin(str, 'T'), # 84
+                __call_cls_builtin(str, 'U'), # 85
+                __call_cls_builtin(str, 'V'), # 86
+                __call_cls_builtin(str, 'W'), # 87
+                __call_cls_builtin(str, 'X'), # 88
+                __call_cls_builtin(str, 'Y'), # 89
+                __call_cls_builtin(str, 'Z'), # 90
+                __call_cls_builtin(str, '['), # 91
+                __call_cls_builtin(str, '\\'), # 92
+                __call_cls_builtin(str, ']'), # 93
+                __call_cls_builtin(str, '^'), # 94
+                __call_cls_builtin(str, '_'), # 95
+                __call_cls_builtin(str, '`'), # 96
+                __call_cls_builtin(str, 'a'), # 97
+                __call_cls_builtin(str, 'b'), # 98
+                __call_cls_builtin(str, 'c'), # 99
+                __call_cls_builtin(str, 'd'), # 100
+                __call_cls_builtin(str, 'e'), # 101
+                __call_cls_builtin(str, 'f'), # 102
+                __call_cls_builtin(str, 'g'), # 103
+                __call_cls_builtin(str, 'h'), # 104
+                __call_cls_builtin(str, 'i'), # 105
+                __call_cls_builtin(str, 'j'), # 106
+                __call_cls_builtin(str, 'k'), # 107
+                __call_cls_builtin(str, 'l'), # 108
+                __call_cls_builtin(str, 'm'), # 109
+                __call_cls_builtin(str, 'n'), # 110
+                __call_cls_builtin(str, 'o'), # 111
+                __call_cls_builtin(str, 'p'), # 112
+                __call_cls_builtin(str, 'q'), # 113
+                __call_cls_builtin(str, 'r'), # 114
+                __call_cls_builtin(str, 's'), # 115
+                __call_cls_builtin(str, 't'), # 116
+                __call_cls_builtin(str, 'u'), # 117
+                __call_cls_builtin(str, 'v'), # 118
+                __call_cls_builtin(str, 'w'), # 119
+                __call_cls_builtin(str, 'x'), # 120
+                __call_cls_builtin(str, 'y'), # 121
+                __call_cls_builtin(str, 'z'), # 122
+                __call_cls_builtin(str, '{'), # 123
+                __call_cls_builtin(str, '|'), # 124
+                __call_cls_builtin(str, '}'), # 125
+                __call_cls_builtin(str, '~'), # 126
+            ]
+        )
+
+        CONST_INT_32 = __call_cls_builtin(int, 32)
+        i_normalized = __call_method_1(i.__sub__, CONST_INT_32)
+        return __call_method_1(CONST_ASCII_ARRAY.__getitem__, i_normalized)
+
+        # END OF `def __chr_for_32_to_126(i):`
+
+
+    NORMAL_CASE_LOWER_BOUND_I = __call_cls_builtin(int, 32)
+    NORMAL_CASE_UPPER_BOUND_I = __call_cls_builtin(int, 126)
+
+    # Cases where 32 <= i <= 126.
+    if __call_method_1(i.__gte__, NORMAL_CASE_LOWER_BOUND_I) and __call_method_1(i.__lte__, NORMAL_CASE_UPPER_BOUND_I):
+        return __chr_for_32_to_126(i)
+
+    def __dec_to_hex(x):
+        CONST_INT_0 = __call_cls_builtin(int, 0)
+        CONST_INT_16 = __call_cls_builtin(int, 16)
+        CONST_STR_0 = __call_cls_builtin(str, '0')
+
+        res = __call_cls_1(str, '')
+
+        divident = abs(__call_cls_1(int, x))
+        divisor = CONST_INT_16
+
+        # Special case if `x` is 0.
+        if __call_method_1(divident.__eq__, CONST_INT_0):
+            __call_method_1(res.__add__, CONST_STR_0)
+
+        CONST_REMAINDER_STR_LIST = __call_cls_builtin(list,
+            [
+                __call_cls_builtin(str, '0'),
+                __call_cls_builtin(str, '1'),
+                __call_cls_builtin(str, '2'),
+                __call_cls_builtin(str, '3'),
+                __call_cls_builtin(str, '4'),
+                __call_cls_builtin(str, '5'),
+                __call_cls_builtin(str, '6'),
+                __call_cls_builtin(str, '7'),
+                __call_cls_builtin(str, '8'),
+                __call_cls_builtin(str, '9'),
+                __call_cls_builtin(str, 'a'),
+                __call_cls_builtin(str, 'b'),
+                __call_cls_builtin(str, 'c'),
+                __call_cls_builtin(str, 'd'),
+                __call_cls_builtin(str, 'e'),
+                __call_cls_builtin(str, 'f'),
+            ]
+        )
+
+        # Loop until divident is no greater than 0.
+        #
+        # Use the "decimal-to-hex" algorithm taught in middle school
+        while __call_method_1(divident.__gt__, CONST_INT_0):
+            remainder = __call_method_1(divident.__mod__, divisor)
+
+            remainder_str = __call_method_1(CONST_REMAINDER_STR_LIST.__getitem__, remainder)
+            __call_method_1(res.__add__, remainder_str)
+
+            divident = __call_method_1(divident.__div__, divisor)
+
+        # If length less than 2, pad with 0.
+        res_len = __call_method_0(res.__len__)
+        if __call_method_1(res_len.__lt__, CONST_INT_2):
+            __call_method_1(res.__add__, __call_cls_builtin(str, '0'))
+
+        # Add reversed binary prefix to end of result, and reverse
+        # the entire result character sequence.
+        __call_method_1(res.__add__, 'x\\')
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res, 0]
+        [gethndl, 0, 0]
+        [reverse, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+        return res
+
+        # END OF `def __dec_to_hex(x):`
+
+    # The rest of the cases (where dec -> hex conversion is needed).
+    return __dec_to_hex(i)
+
+## -----------------------------------------------------------------------------
+
 def delattr(obj, name):
     """Built-in function.
 
