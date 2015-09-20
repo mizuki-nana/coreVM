@@ -176,6 +176,108 @@ corevm::types::bitwise_not::operator()<corevm::types::map>(
 
 // -----------------------------------------------------------------------------
 
+class absolute : public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle)
+  {
+    typename corevm::types::decimal2::value_type value =
+      static_cast<typename corevm::types::decimal2::value_type>(handle.value);
+
+    return std::abs(value);
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::absolute::operator()<corevm::types::string>(
+  const corevm::types::string& handle)
+{
+  return corevm::types::string::value_type(
+    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::absolute::operator()<corevm::types::array>(
+  const corevm::types::array& handle)
+{
+  return corevm::types::array::value_type(
+    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::absolute::operator()<corevm::types::map>(
+  const corevm::types::map& handle)
+{
+  return corevm::types::map::value_type(
+    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
+class sqrt : public unary_op
+{
+public:
+  template<typename R, typename T>
+  typename R::value_type operator()(const T& handle)
+  {
+    typename corevm::types::decimal2::value_type value =
+      static_cast<typename corevm::types::decimal2::value_type>(handle.value);
+
+    return std::sqrt(value);
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::string::value_type
+corevm::types::sqrt::operator()<corevm::types::string>(
+  const corevm::types::string& handle)
+{
+  return corevm::types::string::value_type(
+    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::array::value_type
+corevm::types::sqrt::operator()<corevm::types::array>(
+  const corevm::types::array& handle)
+{
+  return corevm::types::array::value_type(
+    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::map::value_type
+corevm::types::sqrt::operator()<corevm::types::map>(
+  const corevm::types::map& handle)
+{
+  return corevm::types::map::value_type(
+    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+}
+
+// -----------------------------------------------------------------------------
+
 class truthy : public unary_op
 {
 public:

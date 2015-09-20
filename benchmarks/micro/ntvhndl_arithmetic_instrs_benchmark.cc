@@ -84,6 +84,8 @@ BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_neg);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_inc);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_dec);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_abs);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_sqrt);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_add);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_sub);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mul);

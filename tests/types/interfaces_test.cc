@@ -32,11 +32,20 @@ class native_type_unary_operator_interfaces_test : public native_type_interfaces
 public:
   template<typename T, typename F>
   void apply_unary_operator_and_assert_result(
-    corevm::types::native_type_handle& operand, F func, T expected_value)
+    corevm::types::native_type_handle& operand, F func, T expected_value,
+    bool is_decimal=false)
   {
     func(operand);
     T actual_result = corevm::types::get_value_from_handle<T>(operand);
-    ASSERT_EQ(expected_value, actual_result);
+
+    if (is_decimal)
+    {
+      ASSERT_FLOAT_EQ(expected_value, actual_result);
+    }
+    else
+    {
+      ASSERT_EQ(expected_value, actual_result);
+    }
   }
 };
 
@@ -114,6 +123,34 @@ TEST_F(native_type_unary_operator_interfaces_test, TestBitwiseNotOperator)
     operand,
     corevm::types::interface_apply_bitwise_not_operator,
     ~5
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_unary_operator_interfaces_test, TestAbsOperator)
+{
+  corevm::types::native_type_handle operand = corevm::types::decimal(-912.54689);
+
+  apply_unary_operator_and_assert_result<float>(
+    operand,
+    corevm::types::interface_apply_abs_operator,
+    912.54689,
+    /* is_decimal */ true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_unary_operator_interfaces_test, TestSqrtOperator)
+{
+  corevm::types::native_type_handle operand = corevm::types::decimal(9.869600);
+
+  apply_unary_operator_and_assert_result<float>(
+    operand,
+    corevm::types::interface_apply_sqrt_operator,
+    3.141592,
+    /* is_decimal */ true
   );
 }
 

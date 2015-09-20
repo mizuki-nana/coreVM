@@ -91,6 +91,24 @@ void corevm::types::interface_apply_bitwise_not_operator(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_apply_abs_operator(
+  native_type_handle& operand)
+{
+  __interface_apply_unary_operator<
+    corevm::types::native_type_abs_visitor>(operand);
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_apply_sqrt_operator(
+  native_type_handle& operand)
+{
+  __interface_apply_unary_operator<
+    corevm::types::native_type_sqrt_visitor>(operand);
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* ------------------------- BINARY OPERATIONS ------------------------------ */
 

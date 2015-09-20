@@ -548,6 +548,18 @@ enum instr_enum : uint32_t
    */
   DEC,
 
+  /***
+   * <abs, _, _>
+   * Apply the `abs` operation on the top element on the evaluation stack.
+   */
+  ABS,
+
+  /*
+   * <sqrt, _, _>
+   * Apply the `sqrt` operation on the top element on the evaluation stack.
+   */
+  SQRT,
+
   /**
    * <add, _, _>
    * Pops the top two elements on the eval stack, applies the addition
@@ -1939,6 +1951,26 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_dec : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_abs : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_sqrt : public instr_handler
 {
 public:
   virtual void execute(

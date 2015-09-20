@@ -21,6 +21,12 @@
 # SOFTWARE.
 
 
+## -----------------------------------------------------------------------------
+
+CONST_INT_2 = __call_cls_builtin(int, 2)
+
+## -----------------------------------------------------------------------------
+
 class complex(object):
 
     def __init__(self, real, imag):
@@ -56,6 +62,27 @@ class complex(object):
         res_imag = __call_method_0(self.imag.__nonzero__)
 
         return res_real or res_imag
+
+    def __abs__(self):
+        res_real = __call_cls_1(float, self.real)
+        res_imag = __call_cls_1(float, self.imag)
+
+        res_real_sqr = __call_method_1(res_real.__pow__, CONST_INT_2)
+        res_imag_sqr = __call_method_1(res_imag.__pow__, CONST_INT_2)
+
+        res_sum = __call_method_1(res_real_sqr.__add__, res_imag_sqr)
+        res_sqrt = __call_cls_builtin(float, 0)
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res_sqrt, 0]
+        [gethndl2, res_sum, 0]
+        [sqrt, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+        return res_sqrt
 
     def __pos__(self):
         res_real = __call_cls_1(int, self.real)
@@ -144,3 +171,5 @@ class complex(object):
         res_imag = __call_method_0(self.imag.__neg__)
 
         return __call_cls_2(complex, res_real, res_imag)
+
+## -----------------------------------------------------------------------------

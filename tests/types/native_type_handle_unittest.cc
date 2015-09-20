@@ -626,6 +626,160 @@ TEST_F(native_type_handle_bitwise_not_unittest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
+class native_type_handle_abs_unittest : public native_type_handle_unary_operator_unittest {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnIntegerType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::int8(-9);
+
+  int8_t expected_value = 9;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_abs_visitor>(
+    h1,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnDecimalType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::decimal(-3.1415926);
+
+  double expected_value = 3.1415926;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_abs_visitor>(
+    h1,
+    expected_value,
+    true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnBooleanType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
+
+  const bool expected_value = true;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_abs_visitor>(
+    h1,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_abs_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_abs_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_abs_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_abs_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
+class native_type_handle_sqrt_unittest : public native_type_handle_unary_operator_unittest {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnIntegerType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::int8(9);
+
+  int8_t expected_value = 3;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_sqrt_visitor>(
+    h1,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnDecimalType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::decimal(9.869600);
+
+  double expected_value = 3.1415926;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_sqrt_visitor>(
+    h1,
+    expected_value,
+    true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnBooleanType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
+
+  const bool expected_value = true;
+
+  apply_unary_visitor_and_check_result<corevm::types::native_type_sqrt_visitor>(
+    h1,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnStringType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_sqrt_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnArrayType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_sqrt_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_sqrt_unittest, TestOnMapType)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+
+  apply_unary_visitor_and_check_exception<
+    corevm::types::native_type_sqrt_visitor, corevm::types::conversion_error>(h1);
+}
+
+// -----------------------------------------------------------------------------
+
 class native_type_handle_binary_operator_unittest : public native_type_handle_unittest {};
 
 // -----------------------------------------------------------------------------

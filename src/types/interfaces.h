@@ -59,6 +59,14 @@ void interface_apply_bitwise_not_operator(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
+void interface_apply_abs_operator(native_type_handle& operand);
+
+// -----------------------------------------------------------------------------
+
+void interface_apply_sqrt_operator(native_type_handle& operand);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- BINARY OPERATIONS ----------------------------- */
 

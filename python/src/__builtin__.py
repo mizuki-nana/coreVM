@@ -252,6 +252,20 @@ def min(a, b):
 
 ## -----------------------------------------------------------------------------
 
+def abs(x):
+    """Built-in functions.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#abs
+    """
+
+    if hasattr(x, '__abs__'):
+        return __call_method_0(x.__abs__)
+
+    raise __call_cls_0(TypeError)
+
+## -----------------------------------------------------------------------------
+
 def all(iterable):
     """Built-in function.
 

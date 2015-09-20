@@ -58,6 +58,18 @@ class int(object):
         ### END VECTOR ###
         """
 
+    def __abs__(self):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, self, 0]
+        [abs, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call_cls_builtin(int, res_)
+
     def __add__(self, value):
         """
         ### BEGIN VECTOR ###

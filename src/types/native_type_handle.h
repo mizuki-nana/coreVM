@@ -215,6 +215,8 @@ class native_type_increment_visitor : public native_type_unary_visitor<increment
 class native_type_decrement_visitor : public native_type_unary_visitor<decrement> {};
 class native_type_logical_not_visitor : public native_type_cast_unary_visitor<logical_not, corevm::types::boolean> {};
 class native_type_bitwise_not_visitor : public native_type_unary_visitor<bitwise_not> {};
+class native_type_abs_visitor : public native_type_unary_visitor<absolute> {};
+class native_type_sqrt_visitor : public native_type_unary_visitor<sqrt> {};
 class native_type_truthy_visitor : public native_type_cast_unary_visitor<truthy, corevm::types::boolean> {};
 class native_type_repr_visitor : public native_type_intrinsic_unary_visitor<repr> {};
 class native_type_hash_visitor : public native_type_cast_unary_visitor<hash, corevm::types::int64> {};

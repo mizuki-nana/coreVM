@@ -2323,6 +2323,20 @@ TEST_F(instrs_unary_arithmetic_instrs_test, TestInstrLNOT)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_unary_arithmetic_instrs_test, TestInstrABS)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_abs>(std::abs(m_oprd));
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_unary_arithmetic_instrs_test, TestInstrSQRT)
+{
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_sqrt>(static_cast<uint32_t>(std::sqrt(m_oprd)));
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_binary_arithmetic_instrs_test : public instrs_arithmetic_instrs_test
 {
 public:

@@ -159,6 +159,8 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* NEG      */     { .num_oprd=0, .str="neg",       .handler=std::make_shared<corevm::runtime::instr_handler_neg>()       },
   /* INC      */     { .num_oprd=0, .str="inc",       .handler=std::make_shared<corevm::runtime::instr_handler_inc>()       },
   /* DEC      */     { .num_oprd=0, .str="dec",       .handler=std::make_shared<corevm::runtime::instr_handler_dec>()       },
+  /* ABS      */     { .num_oprd=0, .str="abs",       .handler=std::make_shared<corevm::runtime::instr_handler_abs>()       },
+  /* SQRT     */     { .num_oprd=0, .str="sqrt",      .handler=std::make_shared<corevm::runtime::instr_handler_sqrt>()      },
   /* ADD      */     { .num_oprd=0, .str="add",       .handler=std::make_shared<corevm::runtime::instr_handler_add>()       },
   /* SUB      */     { .num_oprd=0, .str="sub",       .handler=std::make_shared<corevm::runtime::instr_handler_sub>()       },
   /* MUL      */     { .num_oprd=0, .str="mul",       .handler=std::make_shared<corevm::runtime::instr_handler_mul>()       },
@@ -1998,6 +2000,32 @@ corevm::runtime::instr_handler_dec::execute(
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
     corevm::types::interface_apply_decrement_operator
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_abs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_unary_operator_instr(
+    *frame_ptr,
+    corevm::types::interface_apply_abs_operator
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_sqrt::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_unary_operator_instr(
+    *frame_ptr,
+    corevm::types::interface_apply_sqrt_operator
   );
 }
 
