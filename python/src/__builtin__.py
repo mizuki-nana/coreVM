@@ -320,6 +320,69 @@ def any(iterable):
 
 ## -----------------------------------------------------------------------------
 
+def bin(x):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#bin
+    """
+
+    def __bin_on_int(x):
+        CONST_INT_0 = __call_cls_builtin(int, 0)
+        CONST_INT_2 = __call_cls_builtin(int, 2)
+        CONST_STR_0 = __call_cls_builtin(str, '0')
+
+        res = __call_cls_1(str, '')
+
+        divident = abs(__call_cls_1(int, x))
+        divisor = CONST_INT_2
+
+        # Special case if `x` is 0.
+        if __call_method_1(divident.__eq__, CONST_INT_0):
+            __call_method_1(res.__add__, CONST_STR_0)
+
+        # Loop until divident is no greater than 0.
+        #
+        # Use the "decimal-to-binary" algorithm taught in middle school
+        # http://www.wikihow.com/Convert-from-Decimal-to-Binary
+        while __call_method_1(divident.__gt__, CONST_INT_0):
+            remainder = __call_method_1(divident.__mod__, divisor)
+
+            __call_method_1(res.__add__, __call_method_0(remainder.__repr__))
+
+            divident = __call_method_1(divident.__div__, divisor)
+
+        # Add reversed binary prefix to end of result, and reverse
+        # the entire result character sequence.
+        __call_method_1(res.__add__, 'b0')
+
+        # Negative sign if the original input is negative.
+        if __call_method_1(x.__lt__, CONST_INT_0):
+            __call_method_1(res.__add__, '-')
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res, 0]
+        [gethndl, 0, 0]
+        [reverse, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+        return res
+
+    if x.__class__ is int or x.__class__ is bool:
+        return __bin_on_int(x)
+
+    # Non-integer types.
+    # If object has the `__index__` attribute, use its value
+    # as the input, otherwise raise an instance of `TypeError`.
+    if hasattr(x, '__index__'):
+        return __bin_on_int(__call_method_0(x.__index__))
+
+    raise __call_cls_0(TypeError)
+
+## -----------------------------------------------------------------------------
+
 def delattr(obj, name):
     """Built-in function.
 
