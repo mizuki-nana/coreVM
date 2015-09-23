@@ -348,3 +348,15 @@ class float(object):
         [cldobj, True, False]
         ### END VECTOR ###
         """
+
+    def __divmod__(self, other):
+        quotient = __call_method_1(self.__div__, other)
+        remainder = __call_method_1(self.__mod__, other)
+
+        # Floor the quotient as per the spec:
+        #
+        # "For floating point numbers the result is (q, a % b),
+        # where q is usually math.floor(a / b) but may be 1 less than that."
+        quotient_floored = __call_cls_1(float, __call_cls_1(int, quotient))
+
+        return __call_cls_1(tuple, [quotient_floored, remainder])

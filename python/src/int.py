@@ -478,3 +478,9 @@ class int(object):
         [cldobj, True, False]
         ### END VECTOR ###
         """
+
+    def __divmod__(self, other):
+        quotient = __call_method_1(self.__div__, other)
+        remainder = __call_method_1(self.__mod__, other)
+
+        return __call_cls_1(tuple, [quotient, remainder])

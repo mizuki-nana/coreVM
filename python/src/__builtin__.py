@@ -633,6 +633,27 @@ def cmp(x, y):
 
 ## -----------------------------------------------------------------------------
 
+def divmod(a, b):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#divmod
+    """
+    # TODO: Add support for `complex` type.
+    # [COREVM-363] Add support for other attributes for Python `complex` type
+    if a.__class__ is float and b.__class__ is int:
+        b = __call_cls_1(float, b)
+
+    if a.__class__ is int and b.__class__ is float:
+        a = __call_cls_1(float, a)
+
+    if hasattr(a, '__divmod__'):
+        return __call_method_1(a.__divmod__, b)
+
+    raise __call_cls_0(TypeError)
+
+## -----------------------------------------------------------------------------
+
 def delattr(obj, name):
     """Built-in function.
 
