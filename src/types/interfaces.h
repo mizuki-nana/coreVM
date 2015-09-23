@@ -168,6 +168,11 @@ void interface_apply_gte_operator(
 
 // -----------------------------------------------------------------------------
 
+void interface_apply_cmp_operator(
+  native_type_handle& lhs, native_type_handle& rhs);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- CONVERSION OPERATIONS ------------------------- */
 

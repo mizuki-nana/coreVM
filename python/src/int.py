@@ -359,6 +359,19 @@ class int(object):
         ### END VECTOR ###
         """
 
+    def __cmp__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
+        [cmp, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call_cls_builtin(int, res_)
+
     def __invert__(self):
         """
         ### BEGIN VECTOR ###

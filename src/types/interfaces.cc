@@ -284,11 +284,22 @@ void corevm::types::interface_apply_lte_operator(
     corevm::types::native_type_lte_visitor>(lhs, rhs);
 }
 
+// -----------------------------------------------------------------------------
+
 void corevm::types::interface_apply_gte_operator(
   native_type_handle& lhs, native_type_handle& rhs)
 {
   __interface_apply_binary_operator<
     corevm::types::native_type_gte_visitor>(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------
+
+void corevm::types::interface_apply_cmp_operator(
+  native_type_handle& lhs, native_type_handle& rhs)
+{
+  __interface_apply_binary_operator<
+    corevm::types::native_type_cmp_visitor>(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------

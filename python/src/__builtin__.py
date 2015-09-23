@@ -594,6 +594,45 @@ def chr(i):
 
 ## -----------------------------------------------------------------------------
 
+def cmp(x, y):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#cmp
+    """
+    def inner(x, y):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, y, 0]
+        [gethndl2, x, 0]
+        [cmp, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call_cls_builtin(int, res_)
+
+    # Unsupported types.
+    if x.__class__ is set or x.__class__ is complex:
+        raise __call_cls_0(TypeError)
+
+    # Regular case if object has `__cmp__` defined.
+    if hasattr(x, '__cmp__'):
+        return __call_method_1(x.__cmp__, y)
+
+    # Special cases.
+    # TODO: [COREVM-362] Make `cmp` work for `list` and `dict` types.
+    #
+    # Reference:
+    #   http://www.tutorialspoint.com/python/list_cmp.htm
+    if x.__class__ is str or x.__class__ is list or x.__class__ is tuple or x.__class__ is dict:
+        return inner(x, y)
+
+    return __call_cls_builtin(int, -1)
+
+## -----------------------------------------------------------------------------
+
 def delattr(obj, name):
     """Built-in function.
 

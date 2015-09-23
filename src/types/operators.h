@@ -1121,6 +1121,7 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
 
 // -----------------------------------------------------------------------------
 
+// TODO: [COREVM-361] Native type value comparison operators use incorrect type casting on operands
 class eq : public binary_op
 {
 public:
@@ -1208,6 +1209,77 @@ public:
     );
   }
 };
+
+// -----------------------------------------------------------------------------
+
+class cmp : public binary_op
+{
+public:
+  template<typename R, typename T, typename U>
+  typename R::value_type operator()(const T& lhs, const U& rhs)
+  {
+    const auto& lhs_val = lhs.value;
+    const auto rhs_val = static_cast<typename T::value_type>(rhs.value);
+
+    if (lhs_val < rhs_val)
+    {
+      return -1;
+    }
+    else if (lhs_val == rhs_val)
+    {
+      return 0;
+    }
+    else
+    {
+      return 1;
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+// TODO: Move this to sneaker or somewhere else.
+template<typename T>
+T clamp(T val, T lower, T upper)
+{
+  return std::max(lower, std::min(val, upper));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int32::value_type
+corevm::types::cmp::operator()<corevm::types::int32>(
+  const corevm::types::string& lhs, const corevm::types::string& rhs)
+{
+  const corevm::types::string::value_type& lhs_val = lhs.value;
+  const corevm::types::string::value_type& rhs_val = rhs.value;
+
+  return clamp<int32_t>(lhs_val.compare(rhs_val), -1, 1);
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int32::value_type
+corevm::types::cmp::operator()<corevm::types::int32>(
+  const corevm::types::array& lhs, const corevm::types::array& rhs)
+{
+  THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
+}
+
+// -----------------------------------------------------------------------------
+
+template<>
+inline
+typename corevm::types::int32::value_type
+corevm::types::cmp::operator()<corevm::types::int32>(
+  const corevm::types::map& lhs, const corevm::types::map& rhs)
+{
+  THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
+}
 
 // -----------------------------------------------------------------------------
 

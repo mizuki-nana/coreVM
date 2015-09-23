@@ -2516,6 +2516,29 @@ TEST_F(instrs_binary_arithmetic_instrs_test, TestInstrLOR)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_binary_arithmetic_instrs_test, TestInstrCMP)
+{
+  int32_t expected_result = 0;
+
+  if (m_oprd1 < m_oprd2)
+  {
+    expected_result = -1;
+  }
+  else if (m_oprd1 == m_oprd2)
+  {
+    expected_result = 0;
+  }
+  else
+  {
+    expected_result = 1;
+  }
+
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_cmp, int32_t>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_types_instrs_test : public instrs_eval_stack_instrs_test {};
 
 // -----------------------------------------------------------------------------

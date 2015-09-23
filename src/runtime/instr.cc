@@ -182,6 +182,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* LNOT     */     { .num_oprd=0, .str="lnot",      .handler=std::make_shared<corevm::runtime::instr_handler_lnot>()      },
   /* LAND     */     { .num_oprd=0, .str="land",      .handler=std::make_shared<corevm::runtime::instr_handler_land>()      },
   /* LOR      */     { .num_oprd=0, .str="lor",       .handler=std::make_shared<corevm::runtime::instr_handler_lor>()       },
+  /* CMP      */     { .num_oprd=0, .str="cmp",       .handler=std::make_shared<corevm::runtime::instr_handler_cmp>()       },
 
   /* ----------------- Native type creation instructions -------------------- */
 
@@ -2299,6 +2300,19 @@ corevm::runtime::instr_handler_lor::execute(
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
     corevm::types::interface_apply_logical_or_operator
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_cmp::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_binary_operator_instr(
+    *frame_ptr,
+    corevm::types::interface_apply_cmp_operator
   );
 }
 

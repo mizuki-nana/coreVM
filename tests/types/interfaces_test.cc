@@ -518,6 +518,21 @@ TEST_F(native_type_binary_operator_interfaces_test, TestGteOperator)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_type_binary_operator_interfaces_test, TestCmpOperator)
+{
+  corevm::types::native_type_handle lhs = corevm::types::int32(10);
+  corevm::types::native_type_handle rhs = corevm::types::int32(5);
+
+  this->apply_binary_operator_and_assert_result<int32_t>(
+    lhs,
+    rhs,
+    corevm::types::interface_apply_cmp_operator,
+    1
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 class native_type_invalid_binary_operator_interfaces_test : public native_type_binary_operator_interfaces_test
 {
 public:

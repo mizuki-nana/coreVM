@@ -2381,6 +2381,211 @@ TEST_F(native_type_handle_bitwise_right_shift_unittest, TestBetweenIncompatibleT
 
 // -----------------------------------------------------------------------------
 
+class native_type_handle_cmp_unittest : public native_type_handle_binary_operator_unittest {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestBetweenIntegerTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::uint16(100);
+  typename corevm::types::native_type_handle h2 = corevm::types::int32(2);
+
+  int32_t expected_value = 1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+
+  expected_value = -1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h2,
+    h1,
+    expected_value,
+    true
+  );
+
+  h2 = corevm::types::int32(100);
+
+  expected_value = 0;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestBetweenDecimalTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::decimal(6.12);
+  typename corevm::types::native_type_handle h2 = corevm::types::decimal2(16.12);
+
+  int32_t expected_value = -1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+
+  expected_value = 1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h2,
+    h1,
+    expected_value,
+    true
+  );
+
+  h1 = corevm::types::decimal(16.12);
+
+  expected_value = 0;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestBetweenBooleanTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::boolean(false);
+  typename corevm::types::native_type_handle h2 = corevm::types::boolean(true);
+
+  int32_t expected_value = -1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value
+  );
+
+  expected_value = 1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h2,
+    h1,
+    expected_value
+  );
+
+  h1 = h2;
+
+  expected_value = 0;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestWithStringTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello world!!!");
+
+  int32_t expected_value = 0;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value
+  );
+
+  h1 = corevm::types::string("Hello");
+
+  expected_value = -1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value
+  );
+
+  expected_value = 1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h2,
+    h1,
+    expected_value
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestWithArrayTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::array();
+  typename corevm::types::native_type_handle h2 = corevm::types::array();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_cmp_visitor, corevm::types::runtime_error>(h1, h2);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestWithMapTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::map();
+  typename corevm::types::native_type_handle h2 = corevm::types::map();
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_cmp_visitor, corevm::types::runtime_error>(h1, h2);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestBetweenTypesOfDifferentSizes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::native_type_handle h2 = corevm::types::int8(2);
+
+  int32_t expected_value = 1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+
+  int32_t expected_value2 = -1;
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_cmp_visitor>(
+    h2,
+    h1,
+    expected_value2,
+    true
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_handle_cmp_unittest, TestBetweenIncompatibleTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::int8(1);
+  typename corevm::types::native_type_handle h2 = corevm::types::string("Hello World!");
+
+  apply_binary_visitor_and_check_exception<
+    corevm::types::native_type_cmp_visitor, corevm::types::conversion_error>(h1, h2);
+}
+
+// -----------------------------------------------------------------------------
+
 class native_type_handle_eq_unittest : public native_type_handle_binary_operator_unittest {};
 
 // -----------------------------------------------------------------------------

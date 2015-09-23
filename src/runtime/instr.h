@@ -706,6 +706,13 @@ enum instr_enum : uint32_t
    */
   LOR,
 
+  /**
+   * <cmp, _, _>
+   * Pops the top two elements on the eval stack, applies the "cmp"
+   * operation and push result onto eval stack.
+   */
+  CMP,
+
   /* ------------------ Native type creation instructions ------------------- */
 
   /**
@@ -2181,6 +2188,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_lor : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_cmp : public instr_handler
 {
 public:
   virtual void execute(

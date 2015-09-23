@@ -248,6 +248,19 @@ class float(object):
         ### END VECTOR ###
         """
 
+    def __cmp__(self, other):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, other, 0]
+        [gethndl2, self, 0]
+        [cmp, 0, 0]
+        [new, 0, 0]
+        [sethndl, 0, 0]
+        [stobj, res_, 0]
+        ### END VECTOR ###
+        """
+        return __call_cls_builtin(int, res_)
+
     # NOTE: `float` type does not support `__invert__` and `__not__`.
 
     def __pos__(self):
