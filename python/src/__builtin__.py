@@ -762,6 +762,30 @@ def hasattr(obj, name):
 
 ## -----------------------------------------------------------------------------
 
+def hash(obj):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#hash
+    """
+
+    if hasattr(obj, '__hash__'):
+        return __call_method_0(obj.__hash__)
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [putobj, 0, 0]
+    [hash, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, res_, 0]
+    ### END VECTOR ###
+    """
+    return __call_cls_builtin(int, res_)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
