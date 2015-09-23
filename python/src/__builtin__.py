@@ -370,6 +370,7 @@ def bin(x):
         """
         return res
 
+    # TODO: Add support for Python long integer type.
     if x.__class__ is int or x.__class__ is bool:
         return __bin_on_int(x)
 
@@ -573,7 +574,7 @@ def chr(i):
         if __call_method_1(res_len.__lt__, CONST_INT_2):
             __call_method_1(res.__add__, __call_cls_builtin(str, '0'))
 
-        # Add reversed binary prefix to end of result, and reverse
+        # Add reversed hexadecimal prefix to end of result, and reverse
         # the entire result character sequence.
         __call_method_1(res.__add__, 'x\\')
 
@@ -783,6 +784,98 @@ def hash(obj):
     ### END VECTOR ###
     """
     return __call_cls_builtin(int, res_)
+
+## -----------------------------------------------------------------------------
+
+def hex(x):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#hex
+    """
+    def __dec_to_hex(x):
+        CONST_INT_0 = __call_cls_builtin(int, 0)
+        CONST_INT_16 = __call_cls_builtin(int, 16)
+        CONST_STR_0 = __call_cls_builtin(str, '0')
+
+        res = __call_cls_1(str, '')
+
+        divident = abs(__call_cls_1(int, x))
+        divisor = CONST_INT_16
+
+        # Special case if `x` is 0.
+        if __call_method_1(divident.__eq__, CONST_INT_0):
+            __call_method_1(res.__add__, CONST_STR_0)
+
+        CONST_REMAINDER_STR_LIST = __call_cls_builtin(list,
+            [
+                __call_cls_builtin(str, '0'),
+                __call_cls_builtin(str, '1'),
+                __call_cls_builtin(str, '2'),
+                __call_cls_builtin(str, '3'),
+                __call_cls_builtin(str, '4'),
+                __call_cls_builtin(str, '5'),
+                __call_cls_builtin(str, '6'),
+                __call_cls_builtin(str, '7'),
+                __call_cls_builtin(str, '8'),
+                __call_cls_builtin(str, '9'),
+                __call_cls_builtin(str, 'a'),
+                __call_cls_builtin(str, 'b'),
+                __call_cls_builtin(str, 'c'),
+                __call_cls_builtin(str, 'd'),
+                __call_cls_builtin(str, 'e'),
+                __call_cls_builtin(str, 'f'),
+            ]
+        )
+
+        # Loop until divident is no greater than 0.
+        #
+        # Use the "decimal-to-hex" algorithm taught in middle school
+        while __call_method_1(divident.__gt__, CONST_INT_0):
+            remainder = __call_method_1(divident.__mod__, divisor)
+
+            remainder_str = __call_method_1(CONST_REMAINDER_STR_LIST.__getitem__, remainder)
+            __call_method_1(res.__add__, remainder_str)
+
+            divident = __call_method_1(divident.__div__, divisor)
+
+        # Add reversed hexadecimal prefix to end of result.
+        __call_method_1(res.__add__, 'x0')
+
+        # Add negative sign if original parameter is negative.
+        if __call_method_1(x.__lt__, CONST_INT_0):
+            __call_method_1(res.__add__, '-')
+
+        # Reverse entire result character sequence.
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res, 0]
+        [gethndl, 0, 0]
+        [reverse, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+        return res
+
+        # END OF `def __dec_to_hex(x):`
+
+    # TODO: Add support for Python long integer type.
+    if x.__class__ is int or x.__class__ is bool:
+        return __dec_to_hex(x)
+
+    # The spec specifies that if the object is not of integer type,
+    # it has to define the `__index__` method in order for `hex` to work.
+    # However, this contradicts with the behavior from running Python v2.7.6.
+    # It seems like Python's behavior is still supporting the old rule
+    # for overloading `hex` with defining the `__hex__` method on an object,
+    # but not supporting the `__index__` overloading rule in the spec.
+    #if hasattr(x, '__index__'):
+    #   return __dec_to_hex(__call_method_0(x.__index__))
+
+    if hasattr(x, '__hex__'):
+        return __call_method_0(x.__hex__)
+
+    raise __call_cls_0(TypeError)
 
 ## -----------------------------------------------------------------------------
 
