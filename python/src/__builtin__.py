@@ -685,6 +685,39 @@ def delattr(obj, name):
 
 ## -----------------------------------------------------------------------------
 
+def filter(function_, iterable):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#filter
+    """
+    iterator_ = __call_method_0(iterable.__iter__)
+
+    if iterable.__class__ is str:
+        res = __call_cls_builtin(str, '')
+        modifier = res.__add__
+    else:
+        res = __call_cls_builtin(list, [])
+        modifier = res.append
+
+    func = function_ if function_ is not None else lambda x: x
+
+    try:
+        while True:
+            item = __call_method_0(iterator_.next)
+
+            if __call_method_0(func(item).__nonzero__):
+                __call_method_1(modifier, item)
+    except StopIteration:
+        pass
+
+    if iterable.__class__ is tuple:
+        res = __call_cls_builtin(tuple, res)
+
+    return res
+
+## -----------------------------------------------------------------------------
+
 def getattr(obj, name):
     """Built-in function.
 

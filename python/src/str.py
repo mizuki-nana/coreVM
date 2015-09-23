@@ -24,6 +24,7 @@
 ## -----------------------------------------------------------------------------
 
 CONST_INT_0 = __call_cls_builtin(int, 0)
+CONST_INT_1 = __call_cls_builtin(int, 1)
 
 ## -----------------------------------------------------------------------------
 
@@ -60,6 +61,17 @@ class str(object):
         ### END VECTOR ###
         """
         return __call_cls_builtin(int, res_)
+
+    def __nonzero__(self):
+        """
+        ### BEGIN VECTOR ###
+        [gethndl2, self, 0]
+        [strlen, 0, 0]
+        [uint8, 0, 0]
+        [neq, 0, 0]
+        [cldobj, True, False]
+        ### END VECTOR ###
+        """
 
     def __add__(self, other):
         """
@@ -193,5 +205,25 @@ class str(object):
             """
 
         return res_
+
+    def __iter__(self):
+        return __call_cls_1(striterator, self)
+
+## -----------------------------------------------------------------------------
+
+class striterator(object):
+
+    def __init__(self, iterable_):
+        self.iterable = iterable_
+        self.i = __call_cls_builtin(int, 0)
+        self.n = __call_method_0(iterable_.__len__)
+
+    def next(self):
+        if __call_method_1(self.i.__lt__, self.n):
+            res = __call_method_1(self.iterable.__getitem__, self.i)
+            __call_method_1(self.i.__iadd__, CONST_INT_1)
+            return res
+        else:
+            raise __call_cls_0(StopIteration)
 
 ## -----------------------------------------------------------------------------

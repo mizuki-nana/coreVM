@@ -47,6 +47,9 @@ class NoneType(object):
     def __not__(self):
         return True
 
+    def __nonzero__(self):
+        return False
+
     def __eq__(self, other):
         """
         ### BEGIN VECTOR ###
