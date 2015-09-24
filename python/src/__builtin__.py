@@ -1056,6 +1056,47 @@ def map(function, iterable, *iterables):
 
 ## -----------------------------------------------------------------------------
 
+def next(iterator):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#next
+    """
+
+    # Capture non-keyword optional argument `default`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [truthy, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, has_default, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, default, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, default, 0]
+    ### END VECTOR ###
+    """
+
+    has_default = __call_cls_builtin(bool, has_default)
+
+    if __call_method_0(hasattr(iterator, 'next').__not__):
+        raise __call_cls_0(TypeError)
+
+    try:
+        return __call_method_0(iterator.next)
+    except StopIteration as ex:
+        if has_default:
+            return default
+        else:
+            raise ex
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
