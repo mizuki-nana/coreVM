@@ -879,6 +879,26 @@ def hex(x):
 
 ## -----------------------------------------------------------------------------
 
+def id(obj):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#id
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [putobj, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, res_, 0]
+    ### END VECTOR ###
+    """
+    return __call_cls_1(int, res_)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
