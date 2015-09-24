@@ -973,6 +973,19 @@ def iter(o):
 
 ## -----------------------------------------------------------------------------
 
+def len(s):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#len
+    """
+    if hasattr(s, '__len__'):
+        return __call_method_0(s.__len__)
+
+    raise __call_cls_0(TypeError)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
