@@ -986,6 +986,76 @@ def len(s):
 
 ## -----------------------------------------------------------------------------
 
+def map(function, iterable, *iterables):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#map
+    """
+
+    # TODO: handle the case where `function` is None and fall back to
+    # use the identity function. Need support for variable unpacking.
+    #
+    # [COREVM-315] Add support for variable unpacking
+
+    iterables = __call_cls_builtin(list, iterables)
+
+    CONST_INT_1 = __call_cls_builtin(int, 1)
+
+    num_iterables = __call_method_0(iterables.__len__)
+    __call_method_1(num_iterables.__iadd__, CONST_INT_1)
+
+    max_len = len(iterable)
+
+    iterables_iter = __call_method_0(iterables.__iter__)
+
+    try:
+        while True:
+            iterable_ = __call_method_0(iterables_iter.next)
+
+            if hasattr(iterable_, '__getitem__') or hasattr(iterable_, '__iter__'):
+                max_len = max(max_len, len(iterable_))
+            else:
+                raise __call_cls_0(TypeError)
+    except StopIteration:
+        pass
+    finally:
+        # Let the inner `TypeError` bubble up.
+        pass
+
+    def getitem(iterable, i):
+        if __call_method_1(i.__lt__, __call_method_0(iterable.__len__)):
+            return __call_method_1(iterable.__getitem__, i)
+        return None
+
+    i = __call_cls_builtin(int, 0)
+    res = __call_cls_builtin(list, [])
+
+    while __call_method_1(i.__lt__, max_len):
+        args = __call_cls_1(list, [])
+
+        __call_method_1(args.append, getitem(iterable, i))
+
+        iterables_iter = __call_method_0(iterables.__iter__)
+
+        # Get args from iterables.
+        try:
+            while True:
+                iterable_ = __call_method_0(iterables_iter.next)
+                __call_method_1(args.append, getitem(iterable_, i))
+        except StopIteration:
+            pass
+
+        res_val = __call(function, *args)
+
+        __call_method_1(res.append, res_val)
+
+        __call_method_1(i.__iadd__, CONST_INT_1)
+
+    return res
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
