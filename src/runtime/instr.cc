@@ -146,6 +146,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* GETKWARG  */    { .num_oprd=1, .str="getkwarg",  .handler=std::make_shared<corevm::runtime::instr_handler_getkwarg>()  },
   /* GETARGS   */    { .num_oprd=0, .str="getargs",   .handler=std::make_shared<corevm::runtime::instr_handler_getargs>()   },
   /* GETKWARGS */    { .num_oprd=0, .str="getkwargs", .handler=std::make_shared<corevm::runtime::instr_handler_getkwargs>() },
+  /* HASARGS   */    { .num_oprd=0, .str="hasargs",   .handler=std::make_shared<corevm::runtime::instr_handler_hasargs>()   },
 
   /* ------------------------- Runtime instructions ------------------------- */
 
@@ -1896,6 +1897,23 @@ corevm::runtime::instr_handler_getkwargs::execute(
   }
 
   corevm::types::native_type_handle hndl(std::move(map));
+
+  frame->push_eval_stack(std::move(hndl));
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_hasargs::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::frame* frame = *frame_ptr;
+  corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
+
+  const bool result = invk_ctx->has_params();
+
+  corevm::types::native_type_handle hndl( (corevm::types::boolean(result)) );
 
   frame->push_eval_stack(std::move(hndl));
 }

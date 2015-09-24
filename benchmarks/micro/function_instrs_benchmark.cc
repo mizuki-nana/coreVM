@@ -261,6 +261,29 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkInstrHASARGS(benchmark::State& state)
+{
+  instr_benchmarks_fixture fixture;
+
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  corevm::dyobj::dyobj_id id = 1;
+  invk_ctx->put_param(id);
+
+  corevm::runtime::instr_handler_hasargs handler;
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+
+  auto frame = &fixture.process().top_frame();
+
+  while (state.KeepRunning())
+  {
+    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkInstrPUTARG);
 BENCHMARK(BenchmarkInstrPUTKWARG);
 BENCHMARK(BenchmarkInstrPUTARGS);
@@ -269,5 +292,6 @@ BENCHMARK(BenchmarkInstrGETARG);
 BENCHMARK(BenchmarkInstrGETKWARG);
 BENCHMARK(BenchmarkInstrGETARGS);
 BENCHMARK(BenchmarkInstrGETKWARGS);
+BENCHMARK(BenchmarkInstrHASARGS);
 
 // -----------------------------------------------------------------------------

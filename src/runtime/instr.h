@@ -499,6 +499,12 @@ enum instr_enum : uint32_t
    */
   GETKWARGS,
 
+  /** <hasargs, _, _>
+   * Determines if there are any arguments remaining on the current frame, and
+   * pushes the result onto the top of the eval stack.
+   */
+  HASARGS,
+
   /* ------------------------- Runtime instructions ------------------------- */
 
   /**
@@ -1876,6 +1882,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_getkwargs : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_hasargs : public instr_handler
 {
 public:
   virtual void execute(

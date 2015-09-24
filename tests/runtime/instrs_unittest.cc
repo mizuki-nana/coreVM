@@ -1727,6 +1727,30 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_functions_instrs_test, TestInstrHASARGS)
+{
+  corevm::dyobj::dyobj_id id = 100;
+
+  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
+  invk_ctx.put_param(id);
+  m_process.push_invocation_ctx(invk_ctx);
+  m_process.emplace_frame(m_ctx, m_compartment, &m_closure);
+
+  ASSERT_EQ(true, invk_ctx.has_params());
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  execute_instr<corevm::runtime::instr_handler_hasargs>(instr);
+
+  corevm::runtime::frame& actual_frame = m_process.top_frame();
+  corevm::types::native_type_handle& hndl = actual_frame.top_eval_stack();
+
+  const bool actual_result = corevm::types::get_value_from_handle<bool>(hndl);
+
+  ASSERT_EQ(true, actual_result);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_runtime_instrs_test : public instrs_unittest {};
 
 // -----------------------------------------------------------------------------

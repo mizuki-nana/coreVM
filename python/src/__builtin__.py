@@ -60,6 +60,8 @@ def __call(caller, *args, **kwargs):
         return obj
     elif caller.__class__ is MethodType:
         return caller(caller.im_self, *args, **kwargs)
+    elif hasattr(caller, '__call__'):
+        return caller.__call__(caller, *args, **kwargs)
     else:
         return caller(*args, **kwargs)
 
@@ -896,6 +898,78 @@ def id(obj):
     ### END VECTOR ###
     """
     return __call_cls_1(int, res_)
+
+## -----------------------------------------------------------------------------
+
+def iter(o):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#iter
+    """
+
+    # Capture non-keyword optional argument `sentinel`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, sentinel, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, sentinel, 0]
+    ### END VECTOR ###
+    """
+
+    class defaultiterator(object):
+
+        def __init__(self, iterable):
+            self.iterable_iter = __call_method_0(iterable.__iter__)
+
+        def next(self):
+            return __call_method_0(self.iterable_iter.next)
+
+    class sequenceiterator(object):
+
+        def __init__(self, iterable):
+            self.iterable = iterable
+            self.i = __call_cls_builtin(int, 0)
+            self.n = __call_method_0(iterable.__len__)
+            self.CONST_INT_1 = __call_cls_builtin(int, 1)
+
+        def next(self):
+            if __call_method_1(self.i.__lt__, self.n):
+                res = __call_method_1(self.iterable.__getitem__, self.i)
+                __call_method_1(self.i.__iadd__, self.CONST_INT_1)
+                return res
+            else:
+                raise __call_cls_0(StopIteration)
+
+    class callableiterator(object):
+
+        def __init__(self, iterable, sentinel):
+            self.iterable = iterable
+            self.sentinel = sentinel
+
+        def next(self):
+            res = __call(self.iterable)
+
+            if __call_method_1(res.__eq__, self.sentinel):
+                raise __call_cls_0(StopIteration)
+
+            return res
+
+    if sentinel is None:
+        if hasattr(o, '__iter__'):
+            return __call_cls_1(defaultiterator, o)
+        elif hasattr(o, '__getitem__'):
+            return __call_cls_1(sequenceiterator, o)
+        else:
+            raise __call_cls_0(TypeError)
+    else:
+        return __call_cls_2(callableiterator, o, sentinel)
 
 ## -----------------------------------------------------------------------------
 
