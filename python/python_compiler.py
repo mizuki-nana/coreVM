@@ -1275,6 +1275,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         else:
             # If the number if a float, split the number into its integer
             # and decimal parts, and express the decimal part in reverse order.
+            #
+            # TODO: [COREVM-366] Make Python compiler handle floating point numbers in scientific form
+
             integer_part = int(node.n)
             decimal_part = int(str(node.n).split('.')[1][::-1])
             self.__add_instr(num_type, integer_part, decimal_part, loc=Loc.from_node(node))

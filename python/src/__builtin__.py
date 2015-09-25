@@ -1156,6 +1156,68 @@ def oct(x):
 
 ## -----------------------------------------------------------------------------
 
+def pow(x, y):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#pow
+    """
+
+    # Capture non-keyword optional argument `z`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, z, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, z, 0]
+    ### END VECTOR ###
+    """
+
+    CONST_INT_0 = __call_cls_builtin(int, 0)
+
+    if z is not None:
+        # If `z` is present, `x` and `y` must be of integer types,
+        # and `y` must be non-negative.
+        if x.__class__ is not int and x.__class__ is not bool:
+            raise __call_cls_0(TypeError)
+
+        if y.__class__ is not int and y.__class__ is not bool:
+            raise __call_cls_0(TypeError)
+
+        # Apparently `z` has to be integer as well.
+        if z.__class__ is not int and z.__class__ is not bool:
+            raise __call_cls_0(TypeError)
+
+        if __call_method_1(y.__lt__, CONST_INT_0):
+            raise __call_cls_0(TypeError)
+
+        if __call_method_1(z.__eq__, CONST_INT_0):
+            raise __call_cls_0(ValueError)
+    else:
+        # If `z` is not present, `y` could be negative, and if that's the case,
+        # then both operands must be converted into floats.
+        if __call_method_1(y.__lt__, CONST_INT_0):
+            x = __call_cls_1(float, x)
+            y = __call_cls_1(float, y)
+
+            # 0.0 cannot be raised to a negative power
+            if __call_method_1(x.__eq__, CONST_INT_0):
+                raise __call_cls_0(ZeroDivisionError)
+
+    res = __call_method_1(x.__pow__, y)
+
+    if z is not None:
+        res = __call_method_1(res.__mod__, z)
+
+    return res
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
