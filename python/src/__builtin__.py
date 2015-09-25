@@ -1097,6 +1097,65 @@ def next(iterator):
 
 ## -----------------------------------------------------------------------------
 
+def oct(x):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#oct
+    """
+
+    def __dec_to_oct(x):
+        CONST_INT_0 = __call_cls_builtin(int, 0)
+        CONST_INT_8 = __call_cls_builtin(int, 8)
+        CONST_STR_0 = __call_cls_builtin(str, '0')
+
+        res = __call_cls_1(str, '')
+
+        divident = abs(__call_cls_1(int, x))
+        divisor = CONST_INT_8
+
+        # Loop until divident is no greater than 0.
+        #
+        # Use the "decimal-to-binary" algorithm taught in middle school
+        # http://www.wikihow.com/Convert-from-Decimal-to-Binary
+        while __call_method_1(divident.__gt__, CONST_INT_0):
+            remainder = __call_method_1(divident.__mod__, divisor)
+
+            __call_method_1(res.__add__, __call_method_0(remainder.__repr__))
+
+            divident = __call_method_1(divident.__div__, divisor)
+
+        # Leading zero.
+        # (CPython always have leading zero in front of all oct numbers).
+        __call_method_1(res.__add__, CONST_STR_0)
+
+        # Negative sign if the original input is negative.
+        if __call_method_1(x.__lt__, CONST_INT_0):
+            __call_method_1(res.__add__, '-')
+
+        """
+        ### BEGIN VECTOR ###
+        [ldobj, res, 0]
+        [gethndl, 0, 0]
+        [reverse, 0, 0]
+        [sethndl, 0, 0]
+        ### END VECTOR ###
+        """
+
+        return res
+
+        # END of `__dec_to_oct(x)`
+
+    if x.__class__ is int or x.__class__ is bool:
+        return __dec_to_oct(x)
+
+    if hasattr(x, '__oct__'):
+        return __call_method_0(x.__oct__)
+
+    raise __call_cls_0(TypeError)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
