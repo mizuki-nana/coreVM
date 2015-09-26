@@ -1218,6 +1218,100 @@ def pow(x, y):
 
 ## -----------------------------------------------------------------------------
 
+def range(arg):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#range
+    """
+
+    # Capture non-keyword optional argument `arg2`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [truthy, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, has_arg2, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, arg2, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, arg2, 0]
+    ### END VECTOR ###
+    """
+
+    # Capture non-keyword optional argument `step`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [truthy, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, has_step, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, step, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, step, 0]
+    ### END VECTOR ###
+    """
+
+    has_arg2 = __call_cls_builtin(bool, has_arg2)
+    has_step = __call_cls_builtin(bool, has_step)
+
+    if arg.__class__ is not int and arg.__class__ is not bool:
+        raise __call_cls_0(TypeError)
+
+    CONST_INT_0 = __call_cls_1(int, 0)
+
+    if has_arg2:
+        # Both argument are specified.
+        if arg2.__class__ is not int and arg2.__class__ is not bool:
+            raise __call_cls_0(TypeError)
+
+        start = arg
+        stop = arg2
+    else:
+        # If only one argument is specified.
+        stop = __call_cls_1(int, arg)
+        start = __call_cls_1(int, 0)
+
+    res = __call_cls_builtin(list, [])
+
+    ascending = __call_cls_1(bool, True)
+
+    # `step`.
+    if __call_method_0(has_step.__not__):
+        step = __call_cls_1(int, 1)
+    elif step.__class__ is not int and step.__class__ is not bool:
+        raise __call_cls_0(TypeError)
+    elif __call_method_1(step.__eq__, CONST_INT_0):
+        raise __call_cls_0(ValueError)
+    else:
+        ascending = __call_method_1(__call_method_1(stop.__sub__, start).__gt__, CONST_INT_0)
+        positive_step = __call_method_1(step.__gt__, CONST_INT_0)
+        if __call_method_1(ascending.__ne__, positive_step):
+            return res
+
+    cumulated = __call_cls_builtin(int, start)
+
+    comparer = cumulated.__lt__ if ascending else cumulated.__gt__
+
+    while comparer(cumulated, stop):
+        __call_method_1(res.append, __call_cls_1(int, cumulated))
+        __call_method_1(cumulated.__iadd__, step)
+
+    return res
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
