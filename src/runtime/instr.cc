@@ -227,6 +227,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
   /* SLICE    */     { .num_oprd=0, .str="slice",     .handler=std::make_shared<corevm::runtime::instr_handler_slice>()     },
   /* STRIDE   */     { .num_oprd=0, .str="stride",    .handler=std::make_shared<corevm::runtime::instr_handler_stride>()    },
   /* REVERSE  */     { .num_oprd=0, .str="reverse",   .handler=std::make_shared<corevm::runtime::instr_handler_reverse>()   },
+  /* ROUND    */     { .num_oprd=0, .str="round",     .handler=std::make_shared<corevm::runtime::instr_handler_round>()     },
 
   /* --------------------- String type instructions ------------------------- */
 
@@ -2798,6 +2799,19 @@ corevm::runtime::instr_handler_reverse::execute(
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
     corevm::types::interface_compute_reverse
+  );
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_round::execute(
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+{
+  corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
+    *frame_ptr,
+    corevm::types::interface_apply_rounding
   );
 }
 

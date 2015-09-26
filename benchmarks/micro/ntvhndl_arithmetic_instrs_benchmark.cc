@@ -55,13 +55,13 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
+template <class instr_handler_cls, class FirstOperandType=corevm::types::int64>
 static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
 {
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle oprd1 = corevm::types::int64(1);
+  corevm::types::native_type_handle oprd1 = FirstOperandType(1);
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
 
   instr_benchmarks_fixture fixture;
@@ -109,5 +109,6 @@ BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::inst
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_lnot);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_land);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_lor);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_round, corevm::types::decimal2);
 
 // -----------------------------------------------------------------------------

@@ -941,6 +941,13 @@ enum instr_enum : uint32_t
    */
   REVERSE,
 
+  /**
+   * <round, _, _>
+   * Rounds the second element on top of the eval stack using the number
+   * converted from the element on top of the eval stack.
+   */
+  ROUND,
+
   /* ---------------------- String type instructions ------------------------ */
 
   /**
@@ -2572,6 +2579,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_reverse : public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_round : public instr_handler
 {
 public:
   virtual void execute(

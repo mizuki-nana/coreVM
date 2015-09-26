@@ -1238,3 +1238,103 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithInvalidTypeOperand)
 }
 
 // -----------------------------------------------------------------------------
+
+class native_type_interface_apply_rounding_test : public native_type_generic_interfaces_test {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithFloatingOperand)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
+
+  const corevm::types::decimal2::value_type expected_result = 103.14159;
+
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+    oprd,
+    oprd2,
+    corevm::types::interface_apply_rounding,
+    expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithSecondOperandEqualsToZero)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(0));
+
+  const corevm::types::decimal2::value_type expected_result = 103.0;
+
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+    oprd,
+    oprd2,
+    corevm::types::interface_apply_rounding,
+    expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithLargeSecondOperand)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(10));
+
+  const corevm::types::decimal2::value_type expected_result = 103.141592;
+
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+    oprd,
+    oprd2,
+    corevm::types::interface_apply_rounding,
+    expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithNegativeFloatingOperand)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(-103.141592));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
+
+  const corevm::types::decimal2::value_type expected_result = -103.14159;
+
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+    oprd,
+    oprd2,
+    corevm::types::interface_apply_rounding,
+    expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithFirstOperandEqualsToZero)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(0.0));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
+
+  const corevm::types::decimal2::value_type expected_result = 0.0;
+
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+    oprd,
+    oprd2,
+    corevm::types::interface_apply_rounding,
+    expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(native_type_interface_apply_rounding_test, TestWithInvalidFirstOperand)
+{
+  corevm::types::native_type_handle oprd(corevm::types::string::value_type("hello"));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
+  corevm::types::native_type_handle result;
+
+  ASSERT_THROW(
+    {
+      corevm::types::interface_apply_rounding(oprd, oprd2, result);
+    },
+    corevm::types::conversion_error
+  );
+}
+
+// -----------------------------------------------------------------------------

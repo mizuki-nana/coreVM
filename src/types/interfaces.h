@@ -276,6 +276,13 @@ void interface_compute_reverse(
 
 // -----------------------------------------------------------------------------
 
+void interface_apply_rounding(
+  native_type_handle& operand,
+  native_type_handle& ndigits,
+  native_type_handle& result);
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 

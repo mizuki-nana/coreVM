@@ -1392,6 +1392,58 @@ def reversed(seq):
 
 ## -----------------------------------------------------------------------------
 
+def round(number):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#round
+    """
+
+    if number.__class__ is not float and number.__class__ is not int and number.__class__ is not bool:
+        raise __call_cls_0(TypeError)
+
+    # Capture non-keyword optional argument `ndigits`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, ndigits, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, ndigits, 0]
+    ### END VECTOR ###
+    """
+
+    CONST_INT_0 = __call_cls_builtin(int, 0)
+
+    if ndigits is None:
+        ndigits = __call_cls_builtin(int, CONST_INT_0)
+    elif ndigits.__class__ is not int and ndigits.__class__ is not bool:
+        raise __call_cls_0(TypeError)
+
+    if __call_method_1(ndigits.__lt__, CONST_INT_0):
+        return __call_cls_1(float, CONST_INT_0)
+
+    number_ = __call_cls_1(float, number)
+
+    """
+    ### BEGIN VECTOR ###
+    [gethndl2, number_, 0]
+    [gethndl2, ndigits, 0]
+    [round, 0, 0]
+    [new, 0, 0]
+    [sethndl, 0, 0]
+    [stobj, res_, 0]
+    ### END VECTOR ###
+    """
+
+    return __call_cls_1(float, res_)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 

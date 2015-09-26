@@ -490,6 +490,28 @@ void corevm::types::interface_compute_reverse(
 
 // -----------------------------------------------------------------------------
 
+void corevm::types::interface_apply_rounding(
+  native_type_handle& operand,
+  native_type_handle& ndigits,
+  native_type_handle& result)
+{
+  const auto operand_val =
+    corevm::types::get_value_from_handle<corevm::types::decimal2::value_type>(operand);
+  const auto ndigits_val =
+    corevm::types::get_value_from_handle<corevm::types::uint32::value_type>(ndigits);
+
+  corevm::types::decimal2::value_type result_val = 0.0;
+
+  char buff[32] = {0};
+  sprintf(buff, "%.*f", ndigits_val, operand_val);
+
+  result_val = atof(buff);
+
+  result = corevm::types::decimal2(result_val);
+}
+
+// -----------------------------------------------------------------------------
+
 
 /* -------------------------- STRING OPERATIONS ----------------------------- */
 

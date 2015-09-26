@@ -3109,6 +3109,20 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREVERSE)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrROUND)
+{
+  corevm::types::native_type_handle oprd(corevm::types::decimal2(3.1415));
+  corevm::types::native_type_handle oprd2(corevm::types::uint32(2));
+
+  push_eval_stack({ oprd, oprd2 });
+
+  corevm::types::decimal2::value_type expected_result(3.14);
+  execute_instr_and_assert_result<
+    corevm::runtime::instr_handler_round, corevm::types::decimal2::value_type>(expected_result);
+}
+
+// -----------------------------------------------------------------------------
+
 class instrs_native_type_complex_instrs_test : public instrs_native_types_instrs_test {};
 
 // -----------------------------------------------------------------------------
