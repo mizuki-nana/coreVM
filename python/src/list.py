@@ -98,6 +98,9 @@ class list(object):
     def __iter__(self):
         return __call_cls_1(listiterator, self)
 
+    def __reversed__(self):
+        return __call_cls_1(listreverseiterator, self)
+
     def __get_item_by_index(self, i):
         if __call_method_1(i.__gte__, __call_method_0(self.__len__)):
             raise __call_cls_0(IndexError)
@@ -238,3 +241,18 @@ class listiterator(object):
             raise __call_cls_0(StopIteration)
 
 ## -----------------------------------------------------------------------------
+
+class listreverseiterator(object):
+
+    def __init__(self, iterable_):
+        self.iterable = iterable_
+        self.n = __call_method_0(iterable_.__len__)
+        self.i = __call_method_1(self.n.__sub__, CONST_INT_1)
+
+    def next(self):
+        if __call_method_1(self.i.__gte__, CONST_INT_0):
+            res = __call_method_1(self.iterable.__getitem__, self.i)
+            __call_method_1(self.i.__isub__, CONST_INT_1)
+            return res
+        else:
+            raise __call_cls_0(StopIteration)

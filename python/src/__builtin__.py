@@ -1354,6 +1354,44 @@ def reduce(function, iterable):
 
 ## -----------------------------------------------------------------------------
 
+def reversed(seq):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#reversed
+    """
+
+    if hasattr(seq, '__reversed__'):
+        return __call_method_0(seq.__reversed__)
+
+    has_len = hasattr(seq, '__len__')
+    has_getitem = hasattr(seq, '__getitem__')
+
+    if __call_method_0(has_len.__not__) or __call_method_0(has_getitem.__not__):
+        raise __call_cls_0(TypeError)
+
+    CONST_INT_0 = __call_cls_builtin(int, 0)
+    CONST_INT_1 = __call_cls_builtin(int, 1)
+
+    class reversed(object):
+
+        def __init__(self, iterable_):
+            self.iterable = iterable_
+            self.n = __call_method_0(iterable_.__len__)
+            self.i = __call_method_1(self.n.__sub__, CONST_INT_1)
+
+        def next(self):
+            if __call_method_1(self.i.__gte__, CONST_INT_0):
+                res = __call_method_1(self.iterable.__getitem__, self.i)
+                __call_method_1(self.i.__isub__, CONST_INT_1)
+                return res
+            else:
+                raise __call_cls_0(StopIteration)
+
+    return __call_cls_1(reversed, seq)
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
