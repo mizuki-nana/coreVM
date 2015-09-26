@@ -1312,6 +1312,48 @@ def range(arg):
 
 ## -----------------------------------------------------------------------------
 
+def reduce(function, iterable):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#reduce
+    """
+
+    # Capture non-keyword optional argument `initializer`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, initializer, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, initializer, 0]
+    ### END VECTOR ###
+    """
+
+    it = iter(iterable)
+    if initializer is None:
+        try:
+            initializer = next(it)
+        except StopIteration:
+            raise __call_cls_0(TypeError)
+
+    accum_value = initializer
+
+    try:
+        while True:
+            x = next(it)
+            accum_value = function(accum_value, x)
+    except StopIteration:
+        pass
+
+    return accum_value
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
