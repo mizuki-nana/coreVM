@@ -1444,6 +1444,83 @@ def round(number):
 
 ## -----------------------------------------------------------------------------
 
+def sorted(iterable, key=None, reverse=False):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#sorted
+    """
+
+    has_len = hasattr(iterable, '__len__')
+    has_getitem = hasattr(iterable, '__getitem__')
+    if __call_method_0(has_len.__not__) or __call_method_0(has_getitem.__not__):
+        raise __call_cls_0(TypeError)
+
+    # Capture non-keyword optional argument `cmp`.
+    """
+    ### BEGIN VECTOR ###
+    [hasargs, 0, 0]
+    [jmpif, 1, 0]
+
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, cmp, 0]
+    ### END VECTOR ###
+    """
+
+    # Sorting algorithm:
+    #
+    # for i = 1 to length(A) - 1
+    #   x = A[i]
+    #   j = i
+    #   while j > 0 and A[j-1] > x
+    #     A[j] = A[j-1]
+    #     j = j - 1
+    #   end while
+    #
+    #   A[j] = x
+    # end for
+
+    if key is None:
+        key = lambda x: x
+
+    if reverse:
+        cmp_ = cmp
+        cmp = lambda x, y: cmp_(y, x)
+
+    iterable = __call_cls_1(iterable.__class__, iterable)
+    iterable_by_key = map(key, iterable)
+
+    i = __call_cls_1(int, 1)
+    len_ = __call_method_0(iterable.__len__)
+
+    while __call_method_1(i.__lt__, len_):
+        x = __call_method_1(iterable.__getitem__, i)
+        x_by_key = __call_method_1(iterable_by_key.__getitem__, i)
+        j = __call_cls_1(int, i)
+
+        while __call_method_1(j.__gt__, 0):
+            j_1 = __call_method_1(j.__sub__, 1)
+            if __call_method_1(__call(cmp, __call_method_1(iterable_by_key.__getitem__, j_1), x_by_key).__eq__, 1):
+                tmp = __call_method_1(iterable_by_key.__getitem__, j_1)
+                __call_method_2(iterable_by_key.__setitem__, j, tmp)
+
+                tmp = __call_method_1(iterable.__getitem__, j_1)
+                __call_method_2(iterable.__setitem__, j, tmp)
+                j = __call_method_1(j.__sub__, 1)
+            else:
+                break
+
+        __call_method_2(iterable.__setitem__, j, x)
+        __call_method_2(iterable_by_key.__setitem__, j, x_by_key)
+
+        i = __call_method_1(i.__add__, 1)
+
+    return iterable
+
+## -----------------------------------------------------------------------------
+
 def setattr(obj, name, value):
     """Built-in function.
 
