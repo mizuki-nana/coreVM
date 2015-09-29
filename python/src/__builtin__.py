@@ -1444,6 +1444,31 @@ def round(number):
 
 ## -----------------------------------------------------------------------------
 
+def setattr(obj, name, value):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#setattr
+    """
+
+    # If target object is a class and attribute value is a function.
+    # Turn the function into an instance of `MethodType`.
+    if obj.__class__ is type and value.__class__ is function:
+        value.__class__ = MethodType
+
+    """
+    ### BEGIN VECTOR ###
+    [ldobj, obj, 0]
+    [ldobj, value, 0]
+    [gethndl2, name, 0]
+    [setattr2, 0, 0]
+    ### END VECTOR ###
+    """
+
+    return None
+
+## -----------------------------------------------------------------------------
+
 def sorted(iterable, key=None, reverse=False):
     """Built-in function.
 
@@ -1521,27 +1546,45 @@ def sorted(iterable, key=None, reverse=False):
 
 ## -----------------------------------------------------------------------------
 
-def setattr(obj, name, value):
+def sum(iterable):
     """Built-in function.
 
     Reference:
-        https://docs.python.org/2/library/functions.html#setattr
+        https://docs.python.org/2/library/functions.html#sum
     """
 
-    # If target object is a class and attribute value is a function.
-    # Turn the function into an instance of `MethodType`.
-    if obj.__class__ is type and value.__class__ is function:
-        value.__class__ = MethodType
-
+    # Capture non-keyword optional argument `start`.
     """
     ### BEGIN VECTOR ###
-    [ldobj, obj, 0]
-    [ldobj, value, 0]
-    [gethndl2, name, 0]
-    [setattr2, 0, 0]
+    [hasargs, 0, 0]
+    [jmpif, 3, 0]
+
+    [ldobj, None, 0]
+    [stobj, start, 0]
+    [jmp, 2, 0]
+
+    [getarg, 0, 0]
+    [stobj, start, 0]
     ### END VECTOR ###
     """
 
-    return None
+    if start is None:
+        start = __call_cls_1(int, 0)
+    elif start.__class__ is str:
+        raise __call_cls_0(TypeError)
+
+    iterator_ = iter(iterable)
+
+    res = __call_cls_1(start.__class__, start)
+
+    try:
+        while True:
+            item = next(iterator_)
+
+            res = __call_method_1(res.__add__, item)
+    except StopIteration:
+        pass
+
+    return res
 
 ## -----------------------------------------------------------------------------
