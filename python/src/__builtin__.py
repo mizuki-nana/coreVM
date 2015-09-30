@@ -1588,3 +1588,73 @@ def sum(iterable):
     return res
 
 ## -----------------------------------------------------------------------------
+
+def zip(*iterables):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#zip
+    """
+
+    # NOTE: According to the Python reference above,
+    # `zip()` is similar to `map()` with an initial argument of `None`.
+    # However, we cannot use `map()` here because `map()` expands iterables
+    # in the arguments to match the longest iterable, whereas the behavior
+    # of `zip()` returns a list with the size that matches with the length
+    # of the shortest iterable in the arguments.
+
+    iterables = __call_cls_builtin(list, iterables)
+    num_iterables = __call_method_0(iterables.__len__)
+
+    if __call_method_1(num_iterables.__eq__, 0):
+        return __call_cls_1(list, [])
+
+    CONST_INT_1 = __call_cls_builtin(int, 1)
+
+    min_len = __call_cls_1(int, 4294967295)
+
+    iterables_iter = __call_method_0(iterables.__iter__)
+
+    try:
+        while True:
+            iterable_ = __call_method_0(iterables_iter.next)
+
+            if hasattr(iterable_, '__getitem__') or hasattr(iterable_, '__iter__'):
+                min_len = min(min_len, len(iterable_))
+            else:
+                raise __call_cls_0(TypeError)
+    except StopIteration:
+        pass
+    finally:
+        # Let the inner `TypeError` bubble up.
+        pass
+
+    def getitem(iterable, i):
+        if __call_method_1(i.__lt__, __call_method_0(iterable.__len__)):
+            return __call_method_1(iterable.__getitem__, i)
+        return None
+
+    i = __call_cls_builtin(int, 0)
+    res = __call_cls_builtin(list, [])
+
+    while __call_method_1(i.__lt__, min_len):
+        res_element = __call_cls_1(list, [])
+
+        iterables_iter = __call_method_0(iterables.__iter__)
+
+        try:
+            while True:
+                iterable_ = __call_method_0(iterables_iter.next)
+                __call_method_1(res_element.append, getitem(iterable_, i))
+        except StopIteration:
+            pass
+
+        res_element = __call_cls_1(tuple, res_element)
+
+        __call_method_1(res.append, res_element)
+
+        __call_method_1(i.__iadd__, CONST_INT_1)
+
+    return res
+
+## -----------------------------------------------------------------------------

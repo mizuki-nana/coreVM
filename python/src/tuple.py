@@ -80,7 +80,9 @@ class tuple(object):
 
                 __call_method_1(res.__add__, __call_method_0(item.__repr__)) # res += str(item)
 
-                if __call_method_1(index.__lt__, top_index):
+                if __call_method_1(top_index.__eq__, CONST_INT_0):
+                    __call_method_1(res.__add__, ',')
+                elif __call_method_1(index.__lt__, top_index):
                     __call_method_1(res.__add__, CONST_STR_COMMA)
 
                 __call_method_1(index.__iadd__, CONST_INT_1)
