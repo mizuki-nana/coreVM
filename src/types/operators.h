@@ -1125,12 +1125,12 @@ corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
 class eq : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) ==
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) ==
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1140,12 +1140,12 @@ public:
 class neq : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) !=
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) !=
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1155,12 +1155,12 @@ public:
 class gt : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) >
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) >
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1170,12 +1170,12 @@ public:
 class lt : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) <
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) <
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1185,12 +1185,12 @@ public:
 class gte : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) >=
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) >=
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1200,12 +1200,12 @@ public:
 class lte : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
+  template<typename DominantType, typename T, typename U>
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) <=
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<typename DominantType::value_type>(lhs.value) <=
+      static_cast<typename DominantType::value_type>(rhs.value)
     );
   }
 };
@@ -1215,11 +1215,11 @@ public:
 class cmp : public binary_op
 {
 public:
-  template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  template<typename DominantType, typename T, typename U>
+  int32_t operator()(const T& lhs, const U& rhs)
   {
-    const auto& lhs_val = lhs.value;
-    const auto rhs_val = static_cast<typename T::value_type>(rhs.value);
+    const auto& lhs_val = static_cast<typename DominantType::value_type>(lhs.value);
+    const auto& rhs_val = static_cast<typename DominantType::value_type>(rhs.value);
 
     if (lhs_val < rhs_val)
     {
@@ -1250,7 +1250,7 @@ T clamp(T val, T lower, T upper)
 template<>
 inline
 typename corevm::types::int32::value_type
-corevm::types::cmp::operator()<corevm::types::int32>(
+corevm::types::cmp::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
   const corevm::types::string::value_type& lhs_val = lhs.value;
@@ -1264,7 +1264,7 @@ corevm::types::cmp::operator()<corevm::types::int32>(
 template<>
 inline
 typename corevm::types::int32::value_type
-corevm::types::cmp::operator()<corevm::types::int32>(
+corevm::types::cmp::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
   THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
@@ -1275,7 +1275,7 @@ corevm::types::cmp::operator()<corevm::types::int32>(
 template<>
 inline
 typename corevm::types::int32::value_type
-corevm::types::cmp::operator()<corevm::types::int32>(
+corevm::types::cmp::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
   THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));

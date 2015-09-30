@@ -2445,7 +2445,7 @@ TEST_F(native_type_handle_cmp_unittest, TestBetweenDecimalTypes)
     true
   );
 
-  h1 = corevm::types::decimal(16.12);
+  h1 = corevm::types::decimal2(16.12);
 
   expected_value = 0;
 

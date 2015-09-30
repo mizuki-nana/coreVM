@@ -157,7 +157,6 @@ public:
 
 // -----------------------------------------------------------------------------
 
-// TODO: [COREVM-360] Consolidate two versions of native type value typed binary visitor
 template<class op, typename R>
 class native_type_typed_binary_visitor : public variant::static_visitor<R>
 {
@@ -191,45 +190,6 @@ public:
     const corevm::types::map& lhs, const corevm::types::map& rhs) const
   {
     return R(op().template operator()<corevm::types::map>(lhs, rhs));
-  }
-};
-
-// -----------------------------------------------------------------------------
-
-// TODO: [COREVM-360] Consolidate two versions of native type value typed binary visitor
-template<class op, typename R>
-class native_type_typed_binary_visitor_2 : public variant::static_visitor<R>
-{
-public:
-  template<typename T, typename U>
-  R operator()(const T& lhs, const U& rhs) const
-  {
-    if (sizeof(lhs) >= sizeof(rhs))
-    {
-      return R(op().template operator()<R>(lhs, rhs));
-    }
-    else
-    {
-      return R(op().template operator()<R>(lhs, rhs));
-    }
-  }
-
-  R operator()(
-    const corevm::types::string& lhs, const corevm::types::string& rhs) const
-  {
-    return R(op().template operator()<R>(lhs, rhs));
-  }
-
-  R operator()(
-    const corevm::types::array& lhs, const corevm::types::array& rhs) const
-  {
-    return R(op().template operator()<R>(lhs, rhs));
-  }
-
-  R operator()(
-    const corevm::types::map& lhs, const corevm::types::map& rhs) const
-  {
-    return R(op().template operator()<R>(lhs, rhs));
   }
 };
 
@@ -288,7 +248,7 @@ class native_type_gt_visitor : public native_type_typed_binary_visitor<gt, corev
 class native_type_lt_visitor : public native_type_typed_binary_visitor<lt, corevm::types::boolean> {};
 class native_type_gte_visitor : public native_type_typed_binary_visitor<gte, corevm::types::boolean> {};
 class native_type_lte_visitor : public native_type_typed_binary_visitor<lte, corevm::types::boolean> {};
-class native_type_cmp_visitor : public native_type_typed_binary_visitor_2<cmp, corevm::types::int32> {};
+class native_type_cmp_visitor : public native_type_typed_binary_visitor<cmp, corevm::types::int32> {};
 
 // -----------------------------------------------------------------------------
 
