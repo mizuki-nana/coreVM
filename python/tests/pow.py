@@ -43,8 +43,8 @@ def test_pow_without_z():
     print pow(3.142, 2)
     print pow(4.0, -2) == 0.25
 
-    # TODO: [COREVM-367] Make `pow` instruction handle floating-number operands
-    # print pow(2, 3.14)
+    print abs(pow(2, 3.14) - 8.815241) < 0.001
+    print abs(pow(-9, -2.0) - 0.012346) < 0.001
 
     try:
         print pow(0, -2)

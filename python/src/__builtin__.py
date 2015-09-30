@@ -1178,6 +1178,9 @@ def pow(x, y):
     ### END VECTOR ###
     """
 
+    x = __call_cls_1(x.__class__, x)
+    y = __call_cls_1(y.__class__, y)
+
     CONST_INT_0 = __call_cls_builtin(int, 0)
 
     if z is not None:
@@ -1208,6 +1211,13 @@ def pow(x, y):
             # 0.0 cannot be raised to a negative power
             if __call_method_1(x.__eq__, CONST_INT_0):
                 raise __call_cls_0(ZeroDivisionError)
+
+    # If either operand is of type `float`, the other one has to be as well
+    # in order for the result to be of type `float`.
+    if x.__class__ is float and y.__class__ is not float:
+        y = __call_cls_1(float, y)
+    elif y.__class__ is float and x.__class__ is not float:
+        x = __call_cls_1(float, x)
 
     res = __call_method_1(x.__pow__, y)
 

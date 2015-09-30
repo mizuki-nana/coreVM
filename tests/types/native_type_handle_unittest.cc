@@ -1435,6 +1435,22 @@ TEST_F(native_type_handle_pow_unittest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_type_handle_pow_unittest, TestBetweenIntegerAndDecimalTypes)
+{
+  typename corevm::types::native_type_handle h1 = corevm::types::uint32(6);
+  typename corevm::types::native_type_handle h2 = corevm::types::decimal2(-1.2);
+
+  const double expected_value = pow(6u, -1.2);
+
+  apply_binary_visitor_and_check_result<corevm::types::native_type_pow_visitor>(
+    h1,
+    h2,
+    expected_value,
+    true
+  );
+}
+// -----------------------------------------------------------------------------
+
 TEST_F(native_type_handle_pow_unittest, TestBetweenBooleanTypes)
 {
   typename corevm::types::native_type_handle h1 = corevm::types::boolean(true);
