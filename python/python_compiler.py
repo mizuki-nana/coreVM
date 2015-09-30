@@ -455,6 +455,29 @@ class BytecodeGenerator(ast.NodeVisitor):
     def __get_random_name(self):
         return ''.join(random.choice(string.ascii_letters) for _ in xrange(5))
 
+    def __parse_floating_point_number(self, n):
+        """Returns a tuple of two elements that contains the integer part and
+        the decimal part of a floating point number, both in integers.
+
+        The floating point part is the reverse of how it's represented in the
+        original number, lexigraphically.
+
+        For example, given the floating point input 3.141526, this function
+        returns a tuple of:
+                            (3, 625141)
+        """
+
+        assert isinstance(n, float)
+
+        n_s = str(n)
+
+        if 'e' in n_s:
+            n_s = '%.16f' % n
+
+        integer_part = int(n)
+        decimal_part = int(str(n_s).split('.')[1][::-1])
+        return integer_part, decimal_part
+
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
@@ -1273,13 +1296,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         if isinstance(node.n, int):
             self.__add_instr(num_type, node.n, 0, loc=Loc.from_node(node))
         else:
-            # If the number if a float, split the number into its integer
-            # and decimal parts, and express the decimal part in reverse order.
-            #
-            # TODO: [COREVM-366] Make Python compiler handle floating point numbers in scientific form
-
-            integer_part = int(node.n)
-            decimal_part = int(str(node.n).split('.')[1][::-1])
+            integer_part, decimal_part = self.__parse_floating_point_number(node.n)
             self.__add_instr(num_type, integer_part, decimal_part, loc=Loc.from_node(node))
 
         self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
