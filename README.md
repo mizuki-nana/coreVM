@@ -210,12 +210,12 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Bytecode loading and validation (done)      |            Feb, 2015
   Frontend and runtime integration (done)     |            Feb, 2015
   Bug fixes and regression tests (done)       |            Mar, 2015
-  Support basic features in Python (cont'd)   |            Mar, 2015
-  Python features convergence (cont'd)        |            Apr, 2015
-  Optimizations (cont'd)                      |            May, 2015
+  Support basic features in Python (done)     |            Mar, 2015
+  Python features convergence (done)          |            Apr, 2015
+  Optimizations (done)                        |            May, 2015
   Benchmark infrastructure                    |            Jun, 2015
-  Optimizations (cont'd)                      |            Jul, 2015
-  Python features convergence (cont'd)        |            Jul, 2015
+  Python features convergence (cont'd)        |            Oct, 2015
+  Optimizations (cont'd)                      |            Oct, 2015
   Multi-threaded runtime                      |            TBD
   JIT optimizations                           |            TBD
   Debugging and Profiling APIs                |            TBD
