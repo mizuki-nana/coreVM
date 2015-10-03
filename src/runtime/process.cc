@@ -37,7 +37,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gc/garbage_collector.h"
 #include "gc/garbage_collection_scheme.h"
 
+#if __MEASURE_INSTRS__
+  #include "measurement.h"
+#endif
+
 #include <algorithm>
+#include <array>
 #include <cstdint>
 #include <iterator>
 #include <list>
@@ -704,6 +709,11 @@ corevm::runtime::process::start()
   corevm::runtime::frame** frame_ptr = &frame;
   corevm::runtime::invocation_ctx** invk_ctx_ptr = &invk_ctx;
 
+#if __MEASURE_INSTRS__
+  std::array<corevm::runtime::instr_measurement, corevm::runtime::INSTR_CODE_MAX> measurements;
+  boost::timer::cpu_timer t;
+#endif
+
   while (can_execute())
   {
     while (m_pause_exec) {}
@@ -713,7 +723,19 @@ corevm::runtime::process::start()
     auto& handler =
       corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
 
+#if __MEASURE_INSTRS__
+    t.start();
+#endif
+
     handler->execute(instr, *this, frame_ptr, invk_ctx_ptr);
+
+#if __MEASURE_INSTRS__
+    t.stop();
+
+    const boost::timer::cpu_times res = t.elapsed();
+    measurements[instr.code].cumulative_wall_time += res.wall;
+    ++measurements[instr.code].invocation_count;
+#endif
 
     /**
      * TODO: [COREVM-246] Enable support for signal handling mechanism
@@ -739,6 +761,10 @@ corevm::runtime::process::start()
     ++m_pc;
 
   } /* end `while (can_execute())` */
+
+#if __MEASURE_INSTRS__
+  corevm::runtime::pretty_print_measurements(measurements);
+#endif
 }
 
 // -----------------------------------------------------------------------------

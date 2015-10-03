@@ -43,7 +43,7 @@ EXTRA_LFLAGS=-O3
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	CXXFLAGS += -D LINUX
-	LFLAGS += -lboost_system -lboost_regex -lboost_program_options -lboost_iostreams
+	LFLAGS += -lboost_system -lboost_regex -lboost_program_options -lboost_iostreams -lboost_timer
 endif
 ifeq ($(UNAME_S), Darwin)
 	CXXFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0

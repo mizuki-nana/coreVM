@@ -62,6 +62,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 
+/**
+ * Measure cumulative and average runtime of each instruction handler.
+ */
+#ifndef __MEASURE_INSTRS__
+  #define __MEASURE_INSTRS__ 0
+#endif
+
 // Can remove this macro once the following is done:
 // TODO: [COREVM-286] Consolidate usage of sequential and block allocators
 #define USE_BLOCK_ALLOCATOR 1
