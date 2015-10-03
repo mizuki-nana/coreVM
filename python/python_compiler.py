@@ -23,6 +23,7 @@
 import ast
 import itertools
 import optparse
+import os
 import pprint
 import random
 import simplejson
@@ -40,9 +41,11 @@ import avro.schema
 
 ## -----------------------------------------------------------------------------
 
+SCHEMAS_DIR = 'schemas/'
+COREVM_BYTECODE_SCHEMA_FILE = 'corevm_bytecode_schema.json'
 INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
 DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
-COREVM_BYTECODE_SCHEMA = 'corevm_bytecode_schema.json'
+COREVM_BYTECODE_SCHEMA = os.path.join(SCHEMAS_DIR, COREVM_BYTECODE_SCHEMA_FILE)
 BYTECODE_BINARY_FORMAT = 'binary'
 BYTECODE_TEXT_FORMAT = 'text'
 BYTECODE_FORMATS = (BYTECODE_BINARY_FORMAT, BYTECODE_TEXT_FORMAT)

@@ -22,5 +22,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-avrogencpp -i corevm_bytecode_schema.json -o corevm_bytecode_schema.h -n corevm \
+avrogencpp -i schemas/corevm_bytecode_schema.json -o corevm_bytecode_schema.h -n corevm \
   && mv corevm_bytecode_schema.h src/corevm/
