@@ -28,6 +28,7 @@ SRC=src
 TESTS=tests
 BENCHMARKS=benchmarks
 TOOLS=tools
+ARTIFACTS=artifacts
 PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 MAIN_CC=$(SRC)/corevm/main.cc
@@ -55,12 +56,13 @@ ARFLAGS=rvs
 
 LIBCOREVM=libcorevm.a
 COREVM=coreVM
-
+EXTRACT_METADATA=$(BIN)/extract_metadata.cc.out
 BOOTSTRAP_TESTS=bootstrap_tests.py
 PYTHON_TESTS=python_tests
 RUN_TESTS=run_tests
 RUN_BENCHMARKS=run_benchmarks
 
+COREVM_METADATA=$(ARTIFACTS)/corevm_metadata.json
 COMPILE_BYTECODE_SCHEMA=scripts/compile_bytecode_schema.sh
 
 
@@ -78,7 +80,7 @@ BENCHMARK_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(BUILD_DIR)/%.o,$(BENCHMARK_SOUR
 
 
 .PHONY: all
-all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(TESTS) $(PYTHON_TESTS) $(BENCHMARKS)
+all: $(LIBCOREVM) $(COREVM) $(TOOLS) $(ARTIFACTS) $(TESTS) $(PYTHON_TESTS) $(BENCHMARKS)
 
 
 $(BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
@@ -110,8 +112,14 @@ $(TOOLS): $(LIBCOREVM)
 	-for f in $(TOOLS)/*.cc; do ($(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $$f -o $$f.out $^ $(LFLAGS); mv $$f.out $(BIN)/); done
 
 
+.PHONY: $(ARTIFACTS)
+$(ARTIFACTS): $(TOOLS)
+	mkdir -p $(ARTIFACTS)
+	$(EXTRACT_METADATA) $(COREVM_METADATA)
+
+
 .PHONY: $(PYTHON_TESTS)
-$(PYTHON_TESTS): $(COREVM)
+$(PYTHON_TESTS): $(COREVM) $(ARTIFACTS)
 	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
 
 
@@ -137,6 +145,7 @@ $(BENCHMARKS): $(LIBCOREVM) $(BENCHMARK_OBJECTS)
 clean:
 	@-rm -rf $(BUILD_DIR)
 	@-rm -rf $(BIN)
+	@-rm -rf $(ARTIFACTS)
 	@-rm -f $(COMPILED_BYTECODE_SCHEMA_HEADER)
 	@-rm -f $(LIBCOREVM)
 	@-rm -f $(COREVM)

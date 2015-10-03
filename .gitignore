@@ -18,8 +18,8 @@
 # Outputs
 build/
 bin/
+artifacts/
 coreVM
-corevm_metadata.json
 src/corevm/corevm_bytecode_schema.h
 *.tmp.py
 *.out
