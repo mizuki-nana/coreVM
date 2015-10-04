@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sneaker/libc/utils.h>
 
 #include <algorithm>
-#include <unordered_map>
+#include <vector>
 
 
 namespace corevm {
@@ -50,8 +50,8 @@ public:
   typedef corevm::dyobj::attr_key attr_key_type;
   typedef corevm::dyobj::dyobj_id dyobj_id_type;
 
-  typedef std::unordered_map<attr_key_type, dyobj_id_type> attr_map_type;
-  typedef attr_map_type::value_type pair;
+  typedef std::pair<attr_key_type, dyobj_id_type> attr_key_value_pair;
+  typedef std::vector<attr_key_value_pair> attr_map_type;
 
   typedef attr_map_type::iterator iterator;
   typedef attr_map_type::const_iterator const_iterator;
@@ -117,6 +117,40 @@ public:
 private:
   void check_flag_bit(char) const throw(corevm::dyobj::invalid_flag_bit_error);
 
+  struct attr_key_pred
+  {
+    explicit attr_key_pred(corevm::dyobj::attr_key key)
+      :
+      m_key(key)
+    {
+    }
+
+    bool operator()(const attr_key_value_pair& pair) const
+    {
+      return m_key == pair.first;
+    }
+
+  private:
+    corevm::dyobj::attr_key m_key;
+  };
+
+  struct attr_value_pred
+  {
+    explicit attr_value_pred(corevm::dyobj::dyobj_id value)
+      :
+      m_value(value)
+    {
+    }
+
+    bool operator()(const attr_key_value_pair& pair) const
+    {
+      return m_value == pair.second;
+    }
+
+  private:
+    corevm::dyobj::dyobj_id m_value;
+  };
+
   dyobj_id_type m_id;
   corevm::dyobj::flag m_flags;
   attr_map_type m_attrs;
@@ -131,6 +165,10 @@ const int COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE = 0;
 
 // -----------------------------------------------------------------------------
 
+static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
+
+// -----------------------------------------------------------------------------
+
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
@@ -142,7 +180,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
     .closure_id = runtime::NONESET_CLOSURE_ID
   })
 {
-  // Do nothing here.
+  m_attrs.reserve(COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT);
 }
 
 // -----------------------------------------------------------------------------
@@ -345,7 +383,8 @@ bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::hasattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key) const noexcept
 {
-  return m_attrs.find(attr_key) != m_attrs.end();
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  return itr != m_attrs.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -356,10 +395,12 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::delattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key)
   throw(corevm::dyobj::object_attribute_not_found_error)
 {
-  if (m_attrs.erase(attr_key) != 1)
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  if (itr == m_attrs.end())
   {
     THROW(corevm::dyobj::object_attribute_not_found_error(attr_key, id()));
   }
+  m_attrs.erase(itr);
 }
 
 // -----------------------------------------------------------------------------
@@ -370,14 +411,13 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key) const
   throw(corevm::dyobj::object_attribute_not_found_error)
 {
-  corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_map_type::const_iterator itr = m_attrs.find(attr_key);
-
-  if (itr == m_attrs.cend())
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  if (itr == m_attrs.end())
   {
     THROW(corevm::dyobj::object_attribute_not_found_error(attr_key, id()));
   }
 
-  return static_cast<corevm::dyobj::dyobj_id>(itr->second);
+  return (*itr).second;
 }
 
 // -----------------------------------------------------------------------------
@@ -388,7 +428,15 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::putattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key,
   corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type obj_id) noexcept
 {
-  m_attrs[attr_key] = obj_id;
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  if (itr == m_attrs.end())
+  {
+    m_attrs.emplace_back(attr_key, obj_id);
+  }
+  else
+  {
+    (*itr).second = obj_id;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -416,13 +464,7 @@ template<class dynamic_object_manager>
 bool
 corevm::dyobj::dynamic_object<dynamic_object_manager>::has_ref(dyobj_id_type id) const noexcept
 {
-  return std::find_if(
-    cbegin(),
-    cend(),
-    [&id](const corevm::dyobj::dynamic_object<dynamic_object_manager>::pair& pair) -> bool {
-      return id == static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type>(pair.second);
-    }
-  ) != cend();
+  return std::find_if(cbegin(), cend(), attr_value_pred(id)) != cend();
 }
 
 // -----------------------------------------------------------------------------
@@ -435,7 +477,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::iterate(Function func) no
   std::for_each(
     begin(),
     end(),
-    [&func](corevm::dyobj::dynamic_object<dynamic_object_manager>::pair& pair) {
+    [&func](corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_value_pair& pair) {
       func(
         static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type>(pair.first),
         static_cast<corevm::dyobj::dynamic_object<dynamic_object_manager>::dyobj_id_type>(pair.second)
