@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TYPES_INTERFACES_H_
 #define COREVM_TYPES_INTERFACES_H_
 
-#include "native_type_handle.h"
+#include "fwd.h"
 
 
 namespace corevm {
@@ -33,7 +33,6 @@ namespace types {
 
 
 /* --------------------------- UNARY OPERATIONS ----------------------------- */
-
 
 void interface_apply_positive_operator(native_type_handle& operand);
 

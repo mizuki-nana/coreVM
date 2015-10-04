@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "process.h"
 
 #include "closure.h"
+#include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
 #include "frame.h"
@@ -35,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/garbage_collector.h"
-#include "gc/garbage_collection_scheme.h"
+#include "types/native_type_handle.h"
 
 #if __MEASURE_INSTRS__
   #include "measurement.h"
@@ -48,7 +49,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <list>
 #include <limits>
 #include <ostream>
-#include <stack>
+#include <sstream>
 #include <stdexcept>
 #include <utility>
 #include <unordered_map>

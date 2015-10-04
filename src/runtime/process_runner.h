@@ -23,8 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_RUNNER_H_
 #define COREVM_PROCESS_RUNNER_H_
 
-#include "process.h"
-
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <cstdint>
@@ -34,6 +32,10 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+/** Forward declaration of `corevm::runtime::process` */
+class process;
 
 
 class process_runner : public sneaker::threading::fixed_time_interval_daemon_service

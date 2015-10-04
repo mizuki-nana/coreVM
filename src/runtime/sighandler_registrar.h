@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_SIGHANDLER_REGISTRAR_H_
 #define COREVM_SIGHANDLER_REGISTRAR_H_
 
-#include "process.h"
 #include "sighandler.h"
 
 #include <csignal>
@@ -39,6 +38,11 @@ namespace corevm {
 
 namespace runtime {
 
+
+/** Forward declaration of `corevm::runtime::process` */
+class process;
+
+// -----------------------------------------------------------------------------
 
 typedef struct sighandler_wrapper
 {

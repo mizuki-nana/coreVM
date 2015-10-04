@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <memory>
-#include <ostream>
+#include <iosfwd>
 #include <string>
 
 

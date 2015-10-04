@@ -22,9 +22,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "frame.h"
 
+#include "closure.h"
 #include "common.h"
+#include "compartment.h"
 #include "errors.h"
 #include "corevm/macros.h"
+#include "types/native_type_handle.h"
 
 #include <cstdint>
 

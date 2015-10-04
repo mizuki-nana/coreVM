@@ -27,9 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/version.h"
 
 #include <boost/format.hpp>
-#include <sneaker/utility/cmdline_program.h>
-
-#include <cstdint>
 
 
 // -----------------------------------------------------------------------------

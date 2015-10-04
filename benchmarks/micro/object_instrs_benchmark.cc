@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/util.h"
 #include "runtime/instr.h"
 #include "runtime/process.h"
+#include "types/native_type_handle.h"
 
 #include "instr_benchmarks_fixture.h"
 

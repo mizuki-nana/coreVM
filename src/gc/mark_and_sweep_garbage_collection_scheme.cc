@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 
 
+// -----------------------------------------------------------------------------
+
 void
 corevm::gc::mark_and_sweep_garbage_collection_scheme::gc(
   corevm::gc::mark_and_sweep_garbage_collection_scheme::dynamic_object_heap_type& heap) const

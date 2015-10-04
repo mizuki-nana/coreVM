@@ -22,11 +22,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "sighandler_registrar.h"
 
+#include "process.h"
 #include "sighandler.h"
 
 #include <memory>
 #include <string>
 
+
+// -----------------------------------------------------------------------------
 
 corevm::runtime::process* corevm::runtime::sighandler_registrar::process = nullptr;
 

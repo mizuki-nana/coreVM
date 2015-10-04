@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_SIGNAL_VECTOR_LOADER_H_
 
 #include "errors.h"
-#include "runtime/process.h"
+#include "runtime/fwd.h"
 
 #include <sneaker/json/json.h>
 

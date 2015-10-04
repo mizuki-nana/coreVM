@@ -22,10 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "invocation_ctx.h"
 
-#include "common.h"
-#include "errors.h"
+#include "closure.h"
+#include "compartment.h"
 #include "corevm/macros.h"
-#include "dyobj/dyobj_id.h"
 
 
 // -----------------------------------------------------------------------------

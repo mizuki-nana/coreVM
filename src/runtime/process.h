@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_PROCESS_H_
 
 #include "compartment.h"
-#include "closure.h"
-#include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
 #include "frame.h"
@@ -36,11 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "vector.h"
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
-#include "gc/garbage_collector.h"
 #include "gc/reference_count_garbage_collection_scheme.h"
 
 #include <cstdint>
-#include <ostream>
+#include <iosfwd>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -50,6 +47,14 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+/** Forward declaration of `corevm::runtime::closure` */
+struct closure;
+
+
+/** Forward declaration of `corevm::runtime::closure_ctx` */
+struct closure_ctx;
 
 
 /**

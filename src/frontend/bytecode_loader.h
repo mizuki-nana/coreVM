@@ -23,8 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_BYTECODE_LOADER_H_
 #define COREVM_BYTECODE_LOADER_H_
 
-#include "errors.h"
-#include "runtime/process.h"
+#include "runtime/fwd.h"
 
 #include <string>
 

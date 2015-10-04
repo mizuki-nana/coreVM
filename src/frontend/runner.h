@@ -23,8 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNNER_H_
 #define COREVM_RUNNER_H_
 
-#include "configuration.h"
-
 #include <string>
 
 
@@ -32,6 +30,10 @@ namespace corevm {
 
 
 namespace frontend {
+
+
+/** Forward declaration of `corevm::frontend::configuration` */
+class configuration;
 
 
 class runner

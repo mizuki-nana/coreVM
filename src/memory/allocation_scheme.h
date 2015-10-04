@@ -35,11 +35,12 @@ namespace memory {
 class allocation_scheme
 {
 public:
-  virtual ~allocation_scheme();
-
   virtual ssize_t malloc(size_t) noexcept = 0;
   virtual ssize_t calloc(size_t, size_t) noexcept = 0;
   virtual ssize_t free(size_t) noexcept = 0;
+
+protected:
+  virtual ~allocation_scheme() = default;
 };
 
 

@@ -23,9 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_INVOCATION_CTX_H_
 #define COREVM_INVOCATION_CTX_H_
 
-#include "closure.h"
 #include "closure_ctx.h"
-#include "compartment.h"
 #include "common.h"
 #include "errors.h"
 #include "dyobj/dyobj_id.h"
@@ -38,6 +36,13 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+/** Forward declaration of `corevm::runtime::closure` */
+struct closure;
+
+/** Forward declaration of `corevm::runtime::compartment` */
+class compartment;
 
 
 typedef std::vector<corevm::dyobj::dyobj_id> param_list_type;

@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 #include "dyobj/util.h"
 #include "types/interfaces.h"
-#include "types/types.h"
+#include "types/native_type_handle.h"
 
 #include <algorithm>
 #include <csignal>

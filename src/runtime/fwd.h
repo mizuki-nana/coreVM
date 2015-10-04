@@ -20,10 +20,25 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "allocation_scheme.h"
+#ifndef COREVM_RUNTIME_FWD_H_
+#define COREVM_RUNTIME_FWD_H_
 
 
-corevm::memory::allocation_scheme::~allocation_scheme()
-{
-  // Do nothing here.
-}
+namespace corevm {
+
+
+namespace runtime {
+
+
+
+class process;
+
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
+
+
+#endif /* COREVM_RUNTIME_FWD_H_ */

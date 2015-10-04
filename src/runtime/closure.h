@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "loc_info.h"
 #include "vector.h"
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 

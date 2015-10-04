@@ -30,12 +30,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "memory/allocation_policy.h"
 #include "memory/object_container.h"
 #include "memory/sequential_allocation_scheme.h"
-#include "types/native_type_handle.h"
+#include "types/fwd.h"
 
 #include <sneaker/allocator/object_traits.h>
 
 #include <cstdint>
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <type_traits>
 

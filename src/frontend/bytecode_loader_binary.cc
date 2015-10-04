@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "bytecode_loader_binary.h"
+
 #include "errors.h"
 #include "corevm/corevm_bytecode_schema.h" // Compiled.
 #include "runtime/catch_site.h"
@@ -28,11 +29,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/compartment.h"
 #include "runtime/instr.h"
 #include "runtime/loc_info.h"
+#include "runtime/process.h"
 #include "runtime/vector.h"
 
 #include <avro/DataFile.hh>
-
-#include <string>
 
 
 // -----------------------------------------------------------------------------

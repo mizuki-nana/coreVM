@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "bytecode_loader.h"
 
-#include "runtime/process.h"
+#include "runtime/fwd.h"
 
 #include <sneaker/json/json.h>
-
-#include <string>
 
 
 namespace corevm {

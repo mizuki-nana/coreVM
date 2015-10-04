@@ -21,9 +21,11 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "native_types_pool.h"
+
 #include "common.h"
 #include "utils.h"
 #include "corevm/macros.h"
+#include "types/native_type_handle.h"
 
 #include <limits>
 #include <ostream>

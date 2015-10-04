@@ -35,7 +35,7 @@ namespace gc {
 class garbage_collection_scheme
 {
 public:
-  virtual ~garbage_collection_scheme();
+  virtual ~garbage_collection_scheme() = default;
 };
 
 

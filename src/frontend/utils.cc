@@ -24,14 +24,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 #include "runtime/instr.h"
-#include "runtime/vector.h"
 
 #include <boost/format.hpp>
-#include <sneaker/json/json.h>
 
 #include <limits>
 #include <sstream>
-#include <string>
 #include <utility>
 
 

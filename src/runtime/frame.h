@@ -23,16 +23,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRAME_H_
 #define COREVM_FRAME_H_
 
-#include "closure.h"
 #include "closure_ctx.h"
-#include "compartment.h"
 #include "common.h"
 #include "errors.h"
 #include "dyobj/dyobj_id.h"
-#include "types/native_type_handle.h"
+#include "types/fwd.h"
 
 #include <cstdint>
 #include <list>
+#include <unordered_map>
 #include <vector>
 
 
@@ -40,6 +39,14 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+/** Forward declaration of `corevm::runtime::closure` */
+struct closure;
+
+
+/** Forward declaration of `corevm::runtime::compartment` */
+class compartment;
 
 
 /**

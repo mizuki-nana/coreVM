@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "signal_vector_loader.h"
 
-#include "errors.h"
 #include "utils.h"
 #include "corevm/macros.h"
 #include "runtime/process.h"
@@ -30,7 +29,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/vector.h"
 
 #include <boost/format.hpp>
-#include <sneaker/json/json.h>
 #include <sneaker/json/json_schema.h>
 
 #include <csignal>
@@ -38,7 +36,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ios>
 #include <sstream>
 #include <stdexcept>
-#include <string>
 
 
 using namespace sneaker::json;

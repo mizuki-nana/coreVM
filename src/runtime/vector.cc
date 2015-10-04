@@ -31,6 +31,8 @@ namespace corevm {
 namespace runtime {
 
 
+// -----------------------------------------------------------------------------
+
 std::ostream& operator<<(
   std::ostream& ost, const corevm::runtime::vector& vector)
 {
@@ -42,6 +44,8 @@ std::ostream& operator<<(
 
   return ost;
 }
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */

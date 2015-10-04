@@ -23,14 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_BYTECODE_LOADER_BINARY_H_
 #define COREVM_BYTECODE_LOADER_BINARY_H_
 
-#include "errors.h"
 #include "bytecode_loader.h"
 
-#include "runtime/process.h"
-
-#include <string>
-
-// -----------------------------------------------------------------------------
 
 namespace corevm {
 

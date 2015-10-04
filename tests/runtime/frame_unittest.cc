@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "runtime/frame.h"
 #include "runtime/common.h"
+#include "runtime/closure.h"
+#include "runtime/compartment.h"
 #include "types/native_type_handle.h"
 
 #include <sneaker/testing/_unittest.h>
