@@ -171,6 +171,7 @@ static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
 
 template<class dynamic_object_manager>
 corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
+  m_id(0u),
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
   m_manager(),

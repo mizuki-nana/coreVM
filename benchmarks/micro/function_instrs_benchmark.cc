@@ -44,7 +44,7 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
 
   corevm::dyobj::dyobj_id id = 1;
 
-  for (size_t i = 0; i < 10000000; ++i)
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
     fixture.process().push_stack(id);
   }
@@ -70,7 +70,7 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
 
   corevm::dyobj::dyobj_id id = 1;
 
-  for (size_t i = 0; i < 10000000; ++i)
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
     fixture.process().push_stack(id);
   }
@@ -97,7 +97,7 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
 
-  for (size_t i = 0; i < 10000000; ++i)
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
     fixture.process().push_stack(id);
   }
@@ -129,7 +129,7 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
 
-  for (size_t i = 0; i < 10000000; ++i)
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
     fixture.process().push_stack(id);
   }
@@ -164,7 +164,7 @@ void BenchmarkInstrGETARG(benchmark::State& state)
 
   corevm::dyobj::dyobj_id id = 1;
 
-  for (size_t i = 0; i < 20000000; ++i)
+  for (size_t i = 0; i < state.max_iterations; ++i)
   {
     fixture.process().top_invocation_ctx().put_param(id);
   }

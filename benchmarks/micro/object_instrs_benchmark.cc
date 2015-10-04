@@ -418,6 +418,32 @@ void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& st
 // -----------------------------------------------------------------------------
 
 static
+void BenchmarkSWAPInstr(benchmark::State& state)
+{
+  instr_benchmarks_fixture fixture;
+
+  auto id = fixture.process().create_dyobj();
+  auto id2 = fixture.process().create_dyobj();
+
+  auto& obj2 = fixture.process().get_dyobj(id2);
+  corevm::types::native_type_handle hndl = corevm::types::uint32(1);
+  obj2.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+
+  fixture.process().push_stack(id);
+  fixture.process().push_stack(id2);
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr_handler_swap handler;
+
+  STATE_RUN_LOOP();
+}
+
+// -----------------------------------------------------------------------------
+
+static
 void
 BenchmarkHASATTR2Instr(benchmark::State& state)
 {
@@ -727,6 +753,7 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_objneq);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setctx);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope, corevm::runtime::instr_handler_cldobj);
+BENCHMARK(BenchmarkSWAPInstr);
 BENCHMARK(BenchmarkHASATTR2Instr);
 BENCHMARK(BenchmarkGETATTR2Instr);
 BENCHMARK(BenchmarkSETATTR2Instr);
@@ -736,7 +763,6 @@ BENCHMARK(BenchmarkRSETATTRSInstr);
 BENCHMARK(BenchmarkSETATTRS2Instr);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_putobj);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_getobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_swap);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflgc);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setfldel);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflcall);

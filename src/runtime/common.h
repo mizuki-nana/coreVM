@@ -73,8 +73,8 @@ const closure_id NONESET_CLOSURE_ID = -1;
 const instr_addr NONESET_INSTR_ADDR = -1;
 
 
-// Default size of native types pool: 128 MB.
-const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 128;
+// Default size of native types pool: 256 MB.
+const uint64_t COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE = 1024 * 1024 * 256;
 
 
 // Default number of stacks to unwind on failures.

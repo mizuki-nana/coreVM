@@ -37,10 +37,9 @@ COMPILED_BYTECODE_SCHEMA_HEADER=$(SRC)/corevm/corevm_bytecode_schema.h
 PYTHON=`which python`
 CXX=`which clang++`
 CXXFLAGS=-Wall -std=c++11 -D__DEBUG__=1 -I$(TOP_DIR)/$(SRC)
-EXTRA_CXXFLAGS=-Wno-deprecated
+EXTRA_CXXFLAGS=-Wno-deprecated -O3
 
 LFLAGS=-lsneaker -lpthread -lavrocpp_s
-EXTRA_LFLAGS=-O3
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	CXXFLAGS += -D LINUX
@@ -102,7 +101,7 @@ $(LIBCOREVM): $(COMPILED_BYTECODE_SCHEMA_HEADER) $(OBJECTS)
 .PHONY: $(COREVM)
 $(COREVM): $(LIBCOREVM)
 	mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(MAIN_CC) -o $(COREVM) $^ $(LFLAGS) $(EXTRA_LFLAGS)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(MAIN_CC) -o $(COREVM) $^ $(LFLAGS)
 	@echo "\033[35mGenerated $(COREVM)\033[0m"
 
 

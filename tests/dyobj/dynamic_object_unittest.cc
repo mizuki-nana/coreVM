@@ -293,6 +293,12 @@ TEST_F(dynamic_object_unittest, TestInequality)
   dynamic_object_type obj1;
   dynamic_object_type obj2;
 
+  // True before setting their IDs.
+  ASSERT_TRUE(obj1 == obj2);
+
+  obj1.set_id(1u);
+  obj2.set_id(2u);
+
   ASSERT_TRUE(obj1 != obj2);
   ASSERT_FALSE(obj1 == obj2);
 }
