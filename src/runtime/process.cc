@@ -140,6 +140,15 @@ static_assert(
 
 // -----------------------------------------------------------------------------
 
+corevm::runtime::process::options::options()
+  :
+  heap_alloc_size(corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE),
+  pool_alloc_size(corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
+{
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::dyobj::dyobj_id
 corevm::runtime::process::create_dyobj()
 {
@@ -197,6 +206,23 @@ corevm::runtime::process::process(
   m_compartments()
 {
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::runtime::process::process(const process::options& options)
+  :
+  m_pause_exec(false),
+  m_gc_flag(0),
+  m_pc(NONESET_INSTR_ADDR),
+  m_dynamic_object_heap(options.heap_alloc_size),
+  m_dyobj_stack(),
+  m_call_stack(),
+  m_invocation_ctx_stack(),
+  m_ntvhndl_pool(options.pool_alloc_size),
+  m_sig_instr_map(),
+  m_compartments()
+{
 }
 
 // -----------------------------------------------------------------------------

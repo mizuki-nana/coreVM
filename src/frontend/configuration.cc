@@ -68,9 +68,9 @@ const std::string corevm::frontend::configuration::schema =
 
 corevm::frontend::configuration::configuration()
   :
-  m_heap_alloc_size(0),
-  m_pool_alloc_size(0),
-  m_gc_interval(0),
+  m_heap_alloc_size(0u),
+  m_pool_alloc_size(0u),
+  m_gc_interval(0u),
   m_format()
 {
 }

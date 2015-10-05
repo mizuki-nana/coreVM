@@ -27,19 +27,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bytecode_loader_text.h"
 #include "configuration.h"
 #include "corevm/macros.h"
-#include "dyobj/common.h"
 #include "dyobj/errors.h"
-#include "runtime/common.h"
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
 
 #include <boost/format.hpp>
-#include <boost/scoped_ptr.hpp>
 #include <sneaker/utility/stack_trace.h>
 
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <memory>
 
 
 // -----------------------------------------------------------------------------
@@ -71,23 +69,26 @@ corevm::frontend::runner::runner(
 int
 corevm::frontend::runner::run() const noexcept
 {
-  // TODO: [COREVM-163] Refactor configuration default values ingestion
-
-  uint64_t heap_alloc_size = m_configuration.heap_alloc_size() ? \
-    m_configuration.heap_alloc_size() : corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE;
-
-  uint64_t pool_alloc_size = m_configuration.pool_alloc_size() ? \
-    m_configuration.pool_alloc_size() : corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE;
-
   // [COREVM-247] Enable garbage collection mechanism
   //uint32_t gc_interval = m_configuration.gc_interval() ? \
   // m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
+  corevm::runtime::process::options options;
+
+  if (m_configuration.heap_alloc_size())
+  {
+    options.heap_alloc_size = m_configuration.heap_alloc_size();
+  }
+
+  if (m_configuration.pool_alloc_size())
+  {
+    options.pool_alloc_size = m_configuration.pool_alloc_size();
+  }
+
+  corevm::runtime::process process(options);
+
+  std::unique_ptr<corevm::frontend::bytecode_loader> loader;
   const std::string& format = m_configuration.format();
-
-  corevm::runtime::process process(heap_alloc_size, pool_alloc_size);
-
-  boost::scoped_ptr<corevm::frontend::bytecode_loader> loader;
 
   if (format == "text")
   {

@@ -81,8 +81,17 @@ public:
   typedef corevm::runtime::native_types_pool native_types_pool_type;
 
 public:
+  struct options
+  {
+    options();
+
+    uint64_t heap_alloc_size;
+    uint64_t pool_alloc_size;
+  };
+
   process();
-  explicit process(uint64_t, uint64_t);
+  process(uint64_t, uint64_t);
+  explicit process(const process::options&);
   ~process();
 
   /* Processes should not be copyable. */
