@@ -25,16 +25,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+// -----------------------------------------------------------------------------
+
 class native_string_type_interfaces_test : public native_type_interfaces_test_base
 {
 public:
   template<typename F>
   void apply_interface_and_assert_string_result(
-    corevm::types::native_type_handle& operand, F func, corevm::types::native_string& expected_result)
+    corevm::types::native_type_handle& operand,
+    F func,
+    corevm::types::native_string& expected_result)
   {
-    corevm::types::native_type_handle result;
-    func(operand, result);
-    corevm::types::native_string actual_result = corevm::types::get_value_from_handle<corevm::types::native_string>(result);
+    corevm::types::native_type_handle result = func(operand);
+    corevm::types::native_string actual_result =
+      corevm::types::get_value_from_handle<corevm::types::native_string>(result);
 
     // Calling .c_str() to get raw C-string is only permitted in tests.
     const char* expected_string = expected_result.c_str();

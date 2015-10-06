@@ -75,11 +75,10 @@ void BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand(benchmark::State& st
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle start = corevm::types::uint32(1);
   corevm::types::native_type_handle stop = corevm::types::uint32(3);
-  corevm::types::native_type_handle result;
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_compute_slice(oprd, start, stop, result);
+    auto result = corevm::types::interface_compute_slice(oprd, start, stop);
   }
 }
 
@@ -91,11 +90,10 @@ void BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand(benchmark::State& s
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle start = corevm::types::uint32(1);
   corevm::types::native_type_handle stop = corevm::types::uint32(3);
-  corevm::types::native_type_handle result;
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_compute_slice(oprd, start, stop, result);
+    auto result = corevm::types::interface_compute_slice(oprd, start, stop);
   }
 }
 
@@ -106,11 +104,10 @@ void BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand(benchmark::State& s
 {
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle stride = corevm::types::uint32(2);
-  corevm::types::native_type_handle result;
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_compute_stride(oprd, stride, result);
+    auto result = corevm::types::interface_compute_stride(oprd, stride);
   }
 }
 
@@ -121,11 +118,10 @@ void BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand(benchmark::State& 
 {
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle stride = corevm::types::uint32(2);
-  corevm::types::native_type_handle result;
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_compute_stride(oprd, stride, result);
+    auto result = corevm::types::interface_compute_stride(oprd, stride);
   }
 }
 

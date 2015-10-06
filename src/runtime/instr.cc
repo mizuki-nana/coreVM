@@ -316,9 +316,7 @@ corevm::runtime::instr_handler::execute_binary_operator_instr(
   corevm::types::native_type_handle& lhs = frame->eval_stack_element(eval_stack_size - 1);
   corevm::types::native_type_handle& rhs = frame->eval_stack_element(eval_stack_size - 2);
 
-  interface_func(lhs, rhs);
-
-  std::swap(lhs, rhs);
+  lhs = interface_func(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -388,7 +386,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_op
 {
   corevm::types::native_type_handle& oprd = frame->top_eval_stack();
 
-  interface_func(oprd, oprd);
+  oprd = interface_func(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -408,7 +406,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
   corevm::types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
   corevm::types::native_type_handle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
 
-  interface_func(oprd2, oprd1, oprd1);
+  oprd1 = interface_func(oprd2, oprd1);
 }
 
 // -----------------------------------------------------------------------------
@@ -429,7 +427,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
   corevm::types::native_type_handle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
   corevm::types::native_type_handle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
 
-  interface_func(oprd3, oprd2, oprd1, oprd1);
+  oprd1 = interface_func(oprd3, oprd2, oprd1);
 }
 
 // -----------------------------------------------------------------------------
@@ -451,7 +449,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
   corevm::types::native_type_handle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
   corevm::types::native_type_handle& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
 
-  interface_func(oprd4, oprd3, oprd2, oprd1, oprd1);
+  oprd1 = interface_func(oprd4, oprd3, oprd2, oprd1);
 }
 
 // -----------------------------------------------------------------------------
@@ -1015,9 +1013,8 @@ corevm::runtime::instr_handler_cpyrepr::execute(
   }
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
-  corevm::types::native_type_handle res;
-
-  corevm::types::interface_compute_repr_value(hndl, res);
+  corevm::types::native_type_handle res =
+    corevm::types::interface_compute_repr_value(hndl);
 
   auto new_key = process.insert_ntvhndl(res);
   target_obj.set_ntvhndl_key(new_key);
@@ -1044,9 +1041,8 @@ corevm::runtime::instr_handler_istruthy::execute(
 
   corevm::types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
 
-  corevm::types::native_type_handle res;
-
-  corevm::types::interface_compute_truthy_value(hndl ,res);
+  corevm::types::native_type_handle res =
+    corevm::types::interface_compute_truthy_value(hndl);
 
   frame->push_eval_stack(std::move(res));
 }
@@ -2722,9 +2718,8 @@ corevm::runtime::instr_handler_truthy::execute(
   corevm::runtime::frame* frame = *frame_ptr;
 
   corevm::types::native_type_handle& oprd = frame->top_eval_stack();
-  corevm::types::native_type_handle result;
-
-  corevm::types::interface_compute_truthy_value(oprd, result);
+  corevm::types::native_type_handle result =
+    corevm::types::interface_compute_truthy_value(oprd);
 
   frame->push_eval_stack(std::move(result));
 }
@@ -2739,9 +2734,8 @@ corevm::runtime::instr_handler_repr::execute(
   corevm::runtime::frame* frame = *frame_ptr;
 
   corevm::types::native_type_handle& oprd = frame->top_eval_stack();
-  corevm::types::native_type_handle result;
-
-  corevm::types::interface_compute_repr_value(oprd, result);
+  corevm::types::native_type_handle result =
+    corevm::types::interface_compute_repr_value(oprd);
 
   frame->push_eval_stack(std::move(result));
 }
@@ -2756,9 +2750,8 @@ corevm::runtime::instr_handler_hash::execute(
   corevm::runtime::frame* frame = *frame_ptr;
 
   corevm::types::native_type_handle& oprd = frame->top_eval_stack();
-  corevm::types::native_type_handle result;
-
-  corevm::types::interface_compute_hash_value(oprd, result);
+  corevm::types::native_type_handle result =
+    corevm::types::interface_compute_hash_value(oprd);
 
   frame->push_eval_stack(std::move(result));
 }

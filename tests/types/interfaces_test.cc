@@ -185,8 +185,8 @@ public:
     T expected_value,
     bool is_decimal=false)
   {
-    func(lhs, rhs);
-    T actual_result = corevm::types::get_value_from_handle<T>(rhs);
+    auto res = func(lhs, rhs);
+    T actual_result = corevm::types::get_value_from_handle<T>(res);
 
     if (!is_decimal)
     {
@@ -956,11 +956,10 @@ TEST_F(native_type_interface_compute_slice_test, TestWithInvalidType)
   corevm::types::native_type_handle oprd1 = corevm::types::uint32(100);
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(10);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(20);
-  corevm::types::native_type_handle result;
 
   ASSERT_THROW(
     {
-      corevm::types::interface_compute_slice(oprd1, oprd2, oprd3, result);
+      auto result = corevm::types::interface_compute_slice(oprd1, oprd2, oprd3);
     },
     corevm::types::runtime_error
   );
@@ -1227,11 +1226,10 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithStringOperand)
 TEST_F(native_type_interface_compute_reverse_test, TestWithInvalidTypeOperand)
 {
   corevm::types::native_type_handle oprd = corevm::types::decimal(3.1415);
-  corevm::types::native_type_handle result;
 
   ASSERT_THROW(
     {
-      corevm::types::interface_compute_reverse(oprd, result);
+      auto result = corevm::types::interface_compute_reverse(oprd);
     },
     corevm::types::runtime_error
   );
@@ -1327,11 +1325,10 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithInvalidFirstOperand)
 {
   corevm::types::native_type_handle oprd(corevm::types::string::value_type("hello"));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
-  corevm::types::native_type_handle result;
 
   ASSERT_THROW(
     {
-      corevm::types::interface_apply_rounding(oprd, oprd2, result);
+      auto result = corevm::types::interface_apply_rounding(oprd, oprd2);
     },
     corevm::types::conversion_error
   );

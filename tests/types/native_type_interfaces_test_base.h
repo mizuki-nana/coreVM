@@ -33,8 +33,7 @@ public:
   void apply_interface_on_single_operand_and_assert_result(
     corevm::types::native_type_handle& operand, F func, T expected_value)
   {
-    corevm::types::native_type_handle result;
-    func(operand, result);
+    corevm::types::native_type_handle result = func(operand);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_value, actual_result);
   }
@@ -46,8 +45,7 @@ public:
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result;
-    func(operand, other_operand, result);
+    corevm::types::native_type_handle result = func(operand, other_operand);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
   }
@@ -60,8 +58,8 @@ public:
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result;
-    func(operand, operand2, operand3, result);
+    corevm::types::native_type_handle result =
+      func(operand, operand2, operand3);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
   }
@@ -75,8 +73,8 @@ public:
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result;
-    func(operand, operand2, operand3, operand4, result);
+    corevm::types::native_type_handle result =
+      func(operand, operand2, operand3, operand4);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
   }

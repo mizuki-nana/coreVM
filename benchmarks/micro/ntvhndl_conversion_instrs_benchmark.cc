@@ -33,13 +33,13 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
+template <class instr_handler_cls, class IntrinsicType=corevm::types::int64>
 static void BenchmarkNtvhndlConversionInstrs(benchmark::State& state)
 {
   corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle hndl = corevm::types::int64(64);
+  corevm::types::native_type_handle hndl((IntrinsicType()));
 
   instr_benchmarks_fixture fixture;
   fixture.process().top_frame().push_eval_stack(hndl);
@@ -64,5 +64,8 @@ BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_hand
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2int64);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2uint64);
 BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2bool);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2str, corevm::types::string);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2ary, corevm::types::array);
+BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2map, corevm::types::map);
 
 // -----------------------------------------------------------------------------

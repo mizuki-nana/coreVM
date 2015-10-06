@@ -152,11 +152,10 @@ TEST_F(native_array_type_interfaces_test, TestEraseOnInvalidIndex)
   corevm::types::native_array array {1, 2, 3};
   corevm::types::native_type_handle operand = array;
   corevm::types::native_type_handle index = corevm::types::uint64(3);
-  corevm::types::native_type_handle result;
 
   ASSERT_THROW(
     {
-      corevm::types::interface_array_erase(operand, index, result);
+      auto result = corevm::types::interface_array_erase(operand, index);
     },
     corevm::types::out_of_range_error
   );

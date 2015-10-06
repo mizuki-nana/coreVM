@@ -1652,22 +1652,18 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARGS)
   corevm::runtime::frame& actual_frame = m_process.top_frame();
   corevm::types::native_type_handle hndl = actual_frame.pop_eval_stack();
 
-  corevm::types::native_type_handle result_handle1;
-  corevm::types::native_type_handle result_handle2;
-  corevm::types::native_type_handle result_handle3;
+  auto result_handle3 = corevm::types::interface_array_back(hndl);
+  hndl = corevm::types::interface_array_pop(hndl);
 
-  corevm::types::interface_array_back(hndl, result_handle3);
-  corevm::types::interface_array_pop(hndl, hndl);
+  auto result_handle2 = corevm::types::interface_array_back(hndl);
+  hndl = corevm::types::interface_array_pop(hndl);
 
-  corevm::types::interface_array_back(hndl, result_handle2);
-  corevm::types::interface_array_pop(hndl, hndl);
+  auto result_handle1 = corevm::types::interface_array_back(hndl);
+  hndl = corevm::types::interface_array_pop(hndl);
 
-  corevm::types::interface_array_back(hndl, result_handle1);
-  corevm::types::interface_array_pop(hndl, hndl);
-
-  corevm::dyobj::dyobj_id actual_id1 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle1);
-  corevm::dyobj::dyobj_id actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
-  corevm::dyobj::dyobj_id actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
+  auto actual_id1 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle1);
+  auto actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
+  auto actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
 
   ASSERT_EQ(id1, actual_id1);
   ASSERT_EQ(id2, actual_id2);
@@ -1708,13 +1704,10 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
   corevm::types::native_type_handle key_handle1 = corevm::types::uint64(key1);
   corevm::types::native_type_handle key_handle2 = corevm::types::uint64(key2);
   corevm::types::native_type_handle key_handle3 = corevm::types::uint64(key3);
-  corevm::types::native_type_handle result_handle1;
-  corevm::types::native_type_handle result_handle2;
-  corevm::types::native_type_handle result_handle3;
 
-  corevm::types::interface_map_at(hndl, key_handle1, result_handle1);
-  corevm::types::interface_map_at(hndl, key_handle2, result_handle2);
-  corevm::types::interface_map_at(hndl, key_handle3, result_handle3);
+  auto result_handle1 = corevm::types::interface_map_at(hndl, key_handle1);
+  auto result_handle2 = corevm::types::interface_map_at(hndl, key_handle2);
+  auto result_handle3 = corevm::types::interface_map_at(hndl, key_handle3);
 
   corevm::dyobj::dyobj_id actual_id1 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle1);
   corevm::dyobj::dyobj_id actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
