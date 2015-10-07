@@ -101,7 +101,7 @@ TEST_F(native_string_type_interfaces_test, TestAt2)
   corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
   corevm::types::native_type_handle other_operand = corevm::types::uint32(6);
 
-  corevm::types::string::value_type expected_value("w");
+  corevm::types::string expected_value("w");
 
   this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_string>(
     operand,

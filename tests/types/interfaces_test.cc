@@ -582,9 +582,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithEmptyArrayOperandAndEmp
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(0);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -603,9 +603,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithEmptyArrayOperandAndInv
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(10);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -624,9 +624,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndValidRan
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(3);
 
-  corevm::types::array::value_type expected_result({2, 3});
+  corevm::types::array expected_result { 2, 3 };
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -645,9 +645,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndValidRan
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(3);
 
-  corevm::types::array::value_type expected_result({1, 2, 3});
+  corevm::types::array expected_result { 1, 2, 3 };
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -666,9 +666,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndValidRan
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(1);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -687,9 +687,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndInValidR
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(5);
 
-  corevm::types::array::value_type expected_result({1, 2, 3, 4, 5});
+  corevm::types::array expected_result { 1, 2, 3, 4, 5 };
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -708,9 +708,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndInValidR
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(5);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(10);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -729,9 +729,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndInValidR
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(4);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(0);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -750,9 +750,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithArrayOperandAndInValidR
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(10);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(5);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::array>(
     oprd1,
     oprd2,
     oprd3,
@@ -771,9 +771,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithEmptyStringOperandAndEm
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(0);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -792,9 +792,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithEmptyStringOperandAndIn
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(10);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -813,9 +813,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndValidRa
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(3);
 
-  corevm::types::string::value_type expected_result("el");
+  corevm::types::string expected_result("el");
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -834,9 +834,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndValidRa
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(3);
 
-  corevm::types::string::value_type expected_result("Hel");
+  corevm::types::string expected_result("Hel");
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -855,9 +855,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndValidRa
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(1);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -876,9 +876,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndInValid
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(0);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(5);
 
-  corevm::types::string::value_type expected_result("Hello");
+  corevm::types::string expected_result("Hello");
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -897,9 +897,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndInValid
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(5);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(10);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -918,9 +918,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndInValid
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(4);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(0);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -939,9 +939,9 @@ TEST_F(native_type_interface_compute_slice_test, TestWithStringOperandAndInValid
   corevm::types::native_type_handle oprd2 = corevm::types::uint32(10);
   corevm::types::native_type_handle oprd3 = corevm::types::uint32(5);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_three_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_three_operands_and_assert_result<corevm::types::string>(
     oprd1,
     oprd2,
     oprd3,
@@ -976,9 +976,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithEmptyArrayOperandAndZe
   corevm::types::native_type_handle oprd = corevm::types::array();
   corevm::types::native_type_handle stride = corevm::types::int32(0);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -992,9 +992,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithEmptyArrayOperandAndPo
   corevm::types::native_type_handle oprd = corevm::types::array();
   corevm::types::native_type_handle stride = corevm::types::int32(2);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1008,9 +1008,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithArrayOperandAndZeroStr
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle stride = corevm::types::int32(0);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1024,9 +1024,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithArrayOperandAndValidSt
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle stride = corevm::types::int32(2);
 
-  corevm::types::array::value_type expected_result({1, 3, 5});
+  corevm::types::array expected_result { 1, 3, 5 };
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1040,9 +1040,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithArrayOperandAndInvalid
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle stride = corevm::types::int32(5);
 
-  corevm::types::array::value_type expected_result({1});
+  corevm::types::array expected_result { 1 };
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1056,9 +1056,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithArrayOperandAndNegativ
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
   corevm::types::native_type_handle stride = corevm::types::int32(-1);
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::array>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1072,9 +1072,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithEmptyStringOperandAndZ
   corevm::types::native_type_handle oprd = corevm::types::string();
   corevm::types::native_type_handle stride = corevm::types::int32(0);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1088,9 +1088,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithEmptyStringOperandAndP
   corevm::types::native_type_handle oprd = corevm::types::string();
   corevm::types::native_type_handle stride = corevm::types::int32(2);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1104,9 +1104,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithStringOperandAndZeroSt
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle stride = corevm::types::int32(0);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1120,9 +1120,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithStringOperandAndValidS
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle stride = corevm::types::int32(2);
 
-  corevm::types::string::value_type expected_result("Hlo");
+  corevm::types::string expected_result("Hlo");
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1136,9 +1136,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithStringOperandAndInvali
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle stride = corevm::types::int32(5);
 
-  corevm::types::string::value_type expected_result("H");
+  corevm::types::string expected_result("H");
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1152,9 +1152,9 @@ TEST_F(native_type_interface_compute_stride_test, TestWithStringOperandAndNegati
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
   corevm::types::native_type_handle stride = corevm::types::int32(-1);
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::string>(
     oprd,
     stride,
     corevm::types::interface_compute_stride,
@@ -1171,9 +1171,9 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithEmptyArrayOperand)
 {
   corevm::types::native_type_handle oprd = corevm::types::array();
 
-  corevm::types::array::value_type expected_result;
+  corevm::types::array expected_result;
 
-  apply_interface_on_single_operand_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::array>(
     oprd,
     corevm::types::interface_compute_reverse,
     expected_result);
@@ -1185,9 +1185,9 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithArrayOperand)
 {
   corevm::types::native_type_handle oprd = corevm::types::array({1, 2, 3, 4, 5});
 
-  corevm::types::array::value_type expected_result({5, 4, 3, 2, 1});
+  corevm::types::array expected_result { 5, 4, 3, 2, 1 };
 
-  apply_interface_on_single_operand_and_assert_result<corevm::types::array::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::array>(
     oprd,
     corevm::types::interface_compute_reverse,
     expected_result);
@@ -1199,9 +1199,9 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithEmptyStringOperand)
 {
   corevm::types::native_type_handle oprd = corevm::types::string();
 
-  corevm::types::string::value_type expected_result;
+  corevm::types::string expected_result;
 
-  apply_interface_on_single_operand_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::string>(
     oprd,
     corevm::types::interface_compute_reverse,
     expected_result);
@@ -1213,9 +1213,9 @@ TEST_F(native_type_interface_compute_reverse_test, TestWithStringOperand)
 {
   corevm::types::native_type_handle oprd = corevm::types::string("Hello");
 
-  corevm::types::string::value_type expected_result("olleH");
+  corevm::types::string expected_result("olleH");
 
-  apply_interface_on_single_operand_and_assert_result<corevm::types::string::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::string>(
     oprd,
     corevm::types::interface_compute_reverse,
     expected_result);
@@ -1246,9 +1246,9 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithFloatingOperand)
   corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
 
-  const corevm::types::decimal2::value_type expected_result = 103.14159;
+  const corevm::types::decimal2 expected_result = 103.14159;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2>(
     oprd,
     oprd2,
     corevm::types::interface_apply_rounding,
@@ -1262,9 +1262,9 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithSecondOperandEqualsToZ
   corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(0));
 
-  const corevm::types::decimal2::value_type expected_result = 103.0;
+  const corevm::types::decimal2 expected_result = 103.0;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2>(
     oprd,
     oprd2,
     corevm::types::interface_apply_rounding,
@@ -1278,9 +1278,9 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithLargeSecondOperand)
   corevm::types::native_type_handle oprd(corevm::types::decimal2(103.141592));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(10));
 
-  const corevm::types::decimal2::value_type expected_result = 103.141592;
+  const corevm::types::decimal2 expected_result = 103.141592;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2>(
     oprd,
     oprd2,
     corevm::types::interface_apply_rounding,
@@ -1294,9 +1294,9 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithNegativeFloatingOperan
   corevm::types::native_type_handle oprd(corevm::types::decimal2(-103.141592));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
 
-  const corevm::types::decimal2::value_type expected_result = -103.14159;
+  const corevm::types::decimal2 expected_result = -103.14159;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2>(
     oprd,
     oprd2,
     corevm::types::interface_apply_rounding,
@@ -1310,9 +1310,9 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithFirstOperandEqualsToZe
   corevm::types::native_type_handle oprd(corevm::types::decimal2(0.0));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
 
-  const corevm::types::decimal2::value_type expected_result = 0.0;
+  const corevm::types::decimal2 expected_result = 0.0;
 
-  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::decimal2>(
     oprd,
     oprd2,
     corevm::types::interface_apply_rounding,
@@ -1323,7 +1323,7 @@ TEST_F(native_type_interface_apply_rounding_test, TestWithFirstOperandEqualsToZe
 
 TEST_F(native_type_interface_apply_rounding_test, TestWithInvalidFirstOperand)
 {
-  corevm::types::native_type_handle oprd(corevm::types::string::value_type("hello"));
+  corevm::types::native_type_handle oprd(corevm::types::string("hello"));
   corevm::types::native_type_handle oprd2(corevm::types::uint32(5));
 
   ASSERT_THROW(

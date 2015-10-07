@@ -144,7 +144,7 @@ TEST_F(native_type_handle_unittest, TestGetValueFromHandleWithCompatibleType)
 
   bool actual_value = corevm::types::get_value_from_handle<bool>(hndl);
 
-  ASSERT_EQ(static_cast<bool>(value.value), actual_value);
+  ASSERT_EQ(static_cast<bool>(value), actual_value);
 }
 
 // -----------------------------------------------------------------------------

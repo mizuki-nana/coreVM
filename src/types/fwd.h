@@ -23,27 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_TYPES_FWD_H_
 #define COREVM_TYPES_FWD_H_
 
+#include "types.h"
+
 
 namespace corevm {
 
 
 namespace types {
 
-
-class int8;
-class uint8;
-class int16;
-class uint16;
-class int32;
-class uint32;
-class int64;
-class uint64;
-class boolean;
-class decimal;
-class decimal2;
-class string;
-class array;
-class map;
 
 
 namespace variant {

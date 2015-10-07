@@ -335,8 +335,8 @@ corevm::types::interface_apply_cmp_operator(native_type_handle& lhs,
 template<typename DstType>
 void __interface_apply_conversion(native_type_handle& operand)
 {
-  typename DstType::value_type original_value =
-    corevm::types::get_value_from_handle<typename DstType::value_type>(operand);
+  DstType original_value =
+    corevm::types::get_value_from_handle<DstType>(operand);
 
   operand = std::move(DstType(original_value));
 }
@@ -510,11 +510,11 @@ native_type_handle corevm::types::interface_apply_rounding(
   native_type_handle& operand, native_type_handle& ndigits)
 {
   const auto operand_val =
-    corevm::types::get_value_from_handle<corevm::types::decimal2::value_type>(operand);
+    corevm::types::get_value_from_handle<corevm::types::decimal2>(operand);
   const auto ndigits_val =
-    corevm::types::get_value_from_handle<corevm::types::uint32::value_type>(ndigits);
+    corevm::types::get_value_from_handle<corevm::types::uint32>(ndigits);
 
-  corevm::types::decimal2::value_type result_val = 0.0;
+  corevm::types::decimal2 result_val = 0.0;
 
   char buff[32] = {0};
   sprintf(buff, "%.*f", ndigits_val, operand_val);
@@ -584,7 +584,7 @@ corevm::types::interface_string_at_2(native_type_handle& operand,
   int32_t index_value = corevm::types::get_value_from_handle<int32_t>(index);
 
   char char_value = string_value.at(index_value);
-  corevm::types::string::value_type result_value(1, char_value);
+  corevm::types::string result_value(1, char_value);
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -960,8 +960,8 @@ corevm::types::interface_array_erase(native_type_handle& operand,
   corevm::types::native_array array_value =
     corevm::types::get_value_from_handle<corevm::types::native_array>(operand);
 
-  corevm::types::uint32::value_type index_value =
-    corevm::types::get_value_from_handle<corevm::types::uint32::value_type>(index);
+  corevm::types::uint32 index_value =
+    corevm::types::get_value_from_handle<corevm::types::uint32>(index);
 
   array_value.erase(index_value);
 

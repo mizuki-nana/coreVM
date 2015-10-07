@@ -32,9 +32,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class native_array_unittest : public ::testing::Test
 {
 protected:
-  const corevm::types::uint64::value_type fixture_element1 = static_cast<corevm::types::uint64::value_type>(1);
-  const corevm::types::uint64::value_type fixture_element2 = static_cast<corevm::types::uint64::value_type>(2);
-  const corevm::types::uint64::value_type fixture_element3 = static_cast<corevm::types::uint64::value_type>(3);
+  const corevm::types::uint64 fixture_element1 = static_cast<corevm::types::uint64>(1);
+  const corevm::types::uint64 fixture_element2 = static_cast<corevm::types::uint64>(2);
+  const corevm::types::uint64 fixture_element3 = static_cast<corevm::types::uint64>(3);
 };
 
 // -----------------------------------------------------------------------------

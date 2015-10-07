@@ -58,9 +58,9 @@ class positive : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    return static_cast<typename R::value_type>(+handle.value);
+    return static_cast<R>(+handle);
   }
 };
 
@@ -70,9 +70,9 @@ class negation : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    return static_cast<typename R::value_type>(-handle.value);
+    return static_cast<R>(-handle);
   }
 };
 
@@ -82,10 +82,10 @@ class increment : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
     T& handle_ = const_cast<T&>(handle);
-    return static_cast<typename R::value_type>(++handle_.value);
+    return static_cast<R>(++handle_);
   }
 };
 
@@ -95,11 +95,11 @@ class decrement : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
     T& handle_ = const_cast<T&>(handle);
-    --handle_.value;
-    return handle.value;
+    --handle_;
+    return handle;
   }
 };
 
@@ -107,7 +107,7 @@ public:
 
 template<>
 inline
-typename corevm::types::boolean::value_type
+corevm::types::boolean
 corevm::types::decrement::operator()<corevm::types::boolean>(
   const corevm::types::boolean& handle)
 {
@@ -120,9 +120,9 @@ class logical_not : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    return static_cast<typename R::value_type>(!handle.value);
+    return static_cast<R>(!handle);
   }
 };
 
@@ -132,11 +132,9 @@ class bitwise_not : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    typename corevm::types::int64::value_type value =
-      static_cast<typename corevm::types::int64::value_type>(handle.value);
-
+    corevm::types::int64 value = static_cast<corevm::types::int64>(handle);
     return ~value;
   }
 };
@@ -145,33 +143,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_not::operator()<corevm::types::string>(
   const corevm::types::string& handle)
 {
-  return static_cast<typename corevm::types::string::value_type>(~handle.value);
+  return static_cast<corevm::types::string>(~handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_not::operator()<corevm::types::array>(
   const corevm::types::array& handle)
 {
-  return static_cast<typename corevm::types::array::value_type>(~handle.value);
+  return static_cast<corevm::types::array>(~handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_not::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
-  return static_cast<typename corevm::types::map::value_type>(~handle.value);
+  return static_cast<corevm::types::map>(~handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -180,11 +178,9 @@ class absolute : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    typename corevm::types::decimal2::value_type value =
-      static_cast<typename corevm::types::decimal2::value_type>(handle.value);
-
+    corevm::types::decimal2 value = static_cast<corevm::types::decimal2>(handle);
     return std::abs(value);
   }
 };
@@ -193,36 +189,36 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::absolute::operator()<corevm::types::string>(
   const corevm::types::string& handle)
 {
-  return corevm::types::string::value_type(
-    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::string(
+    std::abs(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::absolute::operator()<corevm::types::array>(
   const corevm::types::array& handle)
 {
-  return corevm::types::array::value_type(
-    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::array(
+    std::abs(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::absolute::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
-  return corevm::types::map::value_type(
-    std::abs(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::map(
+    std::abs(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
@@ -231,11 +227,9 @@ class sqrt : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    typename corevm::types::decimal2::value_type value =
-      static_cast<typename corevm::types::decimal2::value_type>(handle.value);
-
+    corevm::types::decimal2 value = static_cast<corevm::types::decimal2>(handle);
     return std::sqrt(value);
   }
 };
@@ -244,36 +238,36 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::sqrt::operator()<corevm::types::string>(
   const corevm::types::string& handle)
 {
-  return corevm::types::string::value_type(
-    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::string(
+    std::sqrt(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::sqrt::operator()<corevm::types::array>(
   const corevm::types::array& handle)
 {
-  return corevm::types::array::value_type(
-    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::array(
+    std::sqrt(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::sqrt::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
-  return corevm::types::map::value_type(
-    std::sqrt(static_cast<typename corevm::types::int64::value_type>(handle.value)));
+  return corevm::types::map(
+    std::sqrt(static_cast<corevm::types::int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
@@ -282,11 +276,9 @@ class truthy : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle)
+  R operator()(const T& handle)
   {
-    typename corevm::types::boolean::value_type value =
-      static_cast<typename corevm::types::boolean::value_type>(handle.value);
-
+    corevm::types::boolean value = static_cast<corevm::types::boolean>(handle);
     return value;
   }
 };
@@ -295,33 +287,33 @@ public:
 
 template<>
 inline
-typename corevm::types::boolean::value_type
+corevm::types::boolean
 corevm::types::truthy::operator()<corevm::types::boolean>(
   const corevm::types::string& handle)
 {
-  return !handle.value.empty();
+  return !handle.empty();
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::boolean::value_type
+corevm::types::boolean
 corevm::types::truthy::operator()<corevm::types::boolean>(
   const corevm::types::array& handle)
 {
-  return !handle.value.empty();
+  return !handle.empty();
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::boolean::value_type
+corevm::types::boolean
 corevm::types::truthy::operator()<corevm::types::boolean>(
   const corevm::types::map& handle)
 {
-  return !handle.value.empty();
+  return !handle.empty();
 }
 
 // -----------------------------------------------------------------------------
@@ -330,7 +322,7 @@ class repr: public unary_op
 {
 public:
   template<typename R, typename T>
-  typename corevm::types::string::value_type operator()(const T& handle)
+  corevm::types::string operator()(const T& handle)
   {
     // NOTES:
     //  (1) The curent approach has precision and accuracy issues.
@@ -341,7 +333,7 @@ public:
     // http://www.boost.org/doc/libs/1_58_0/doc/html/boost_lexical_cast/performance.html
     //
     // TODO: consider using `sprintf` here.
-    return boost::lexical_cast<corevm::types::string::value_type>(handle.value);
+    return boost::lexical_cast<corevm::types::string>(handle);
   }
 };
 
@@ -349,59 +341,59 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::repr::operator()<corevm::types::decimal>(
   const corevm::types::decimal& handle)
 {
   char buf[20];
-  snprintf(buf, sizeof(buf), "%0.6f", handle.value);
-  return std::move(corevm::types::string::value_type(buf));
+  snprintf(buf, sizeof(buf), "%0.6f", handle);
+  return std::move(corevm::types::string(buf));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::repr::operator()<corevm::types::decimal2>(
   const corevm::types::decimal2& handle)
 {
   char buf[20];
-  snprintf(buf, sizeof(buf), "%0.6f", handle.value);
-  return std::move(corevm::types::string::value_type(buf));
+  snprintf(buf, sizeof(buf), "%0.6f", handle);
+  return std::move(corevm::types::string(buf));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::repr::operator()<corevm::types::string>(
   const corevm::types::string& handle)
 {
-  return handle.value;
+  return handle;
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::repr::operator()<corevm::types::array>(
   const corevm::types::array& handle)
 {
-  return static_cast<corevm::types::string::value_type>("<array>");
+  return static_cast<corevm::types::string>("<array>");
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::repr::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
-  return static_cast<corevm::types::string::value_type>("<map>");
+  return static_cast<corevm::types::string>("<map>");
 }
 
 // -----------------------------------------------------------------------------
@@ -410,10 +402,10 @@ class hash: public unary_op
 {
 public:
   template<typename R, typename T>
-  typename corevm::types::int64::value_type operator()(const T& handle)
+  corevm::types::int64 operator()(const T& handle)
   {
-    std::hash<typename T::value_type> hash_func;
-    typename corevm::types::int64::value_type value = hash_func(handle.value);
+    std::hash<T> hash_func;
+    corevm::types::int64 value = hash_func(handle);
     return value;
   }
 };
@@ -422,7 +414,7 @@ public:
 
 template<>
 inline
-typename corevm::types::int64::value_type
+corevm::types::int64
 corevm::types::hash::operator()<corevm::types::string>(
   const corevm::types::string& handle)
 {
@@ -430,16 +422,16 @@ corevm::types::hash::operator()<corevm::types::string>(
 
   std::hash<corevm::types::native_string_base> hash_func;
 
-  res = hash_func(handle.value);
+  res = hash_func(handle);
 
-  return static_cast<corevm::types::int64::value_type>(res);
+  return static_cast<corevm::types::int64>(res);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::int64::value_type
+corevm::types::int64
 corevm::types::hash::operator()<corevm::types::array>(
   const corevm::types::array& handle)
 {
@@ -447,20 +439,20 @@ corevm::types::hash::operator()<corevm::types::array>(
 
   std::hash<corevm::types::native_array_element_type> element_hash;
 
-  for (auto itr = handle.value.cbegin(); itr != handle.value.cend(); ++itr)
+  for (auto itr = handle.cbegin(); itr != handle.cend(); ++itr)
   {
     const auto& value = *itr;
     res += element_hash(value);
   }
 
-  return static_cast<corevm::types::int64::value_type>(res);
+  return static_cast<corevm::types::int64>(res);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::int64::value_type
+corevm::types::int64
 corevm::types::hash::operator()<corevm::types::map>(
   const corevm::types::map& handle)
 {
@@ -469,7 +461,7 @@ corevm::types::hash::operator()<corevm::types::map>(
   std::hash<corevm::types::native_map_key_type> key_hash;
   std::hash<corevm::types::native_map_mapped_type> value_hash;
 
-  for (auto itr = handle.value.begin(); itr != handle.value.end(); ++itr)
+  for (auto itr = handle.begin(); itr != handle.end(); ++itr)
   {
     const auto& key = itr->first;
     const auto& value = itr->second;
@@ -478,7 +470,7 @@ corevm::types::hash::operator()<corevm::types::map>(
     res += value_hash(value);
   }
 
-  return static_cast<corevm::types::int64::value_type>(res);
+  return static_cast<corevm::types::int64>(res);
 }
 
 // -----------------------------------------------------------------------------
@@ -495,7 +487,7 @@ public:
   }
 
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) const
+  R operator()(const T& handle) const
   {
     THROW(corevm::types::runtime_error("Calling 'slice' operator on invalid type"));
   }
@@ -523,22 +515,22 @@ private:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::slice::operator()<corevm::types::string>(
   const corevm::types::string& handle) const
 {
-  return slice_impl(handle.value);
+  return slice_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::slice::operator()<corevm::types::array>(
   const corevm::types::array& handle) const
 {
-  return slice_impl(handle.value);
+  return slice_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -554,7 +546,7 @@ public:
   }
 
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) const
+  R operator()(const T& handle) const
   {
     THROW(corevm::types::runtime_error("Calling 'stride' operator on invalid type"));
   }
@@ -589,22 +581,22 @@ private:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::stride::operator()<corevm::types::string>(
   const corevm::types::string& handle) const
 {
-  return stride_impl(handle.value);
+  return stride_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::stride::operator()<corevm::types::array>(
   const corevm::types::array& handle) const
 {
-  return stride_impl(handle.value);
+  return stride_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -613,7 +605,7 @@ class reverse : public unary_op
 {
 public:
   template<typename R, typename T>
-  typename R::value_type operator()(const T& handle) const
+  R operator()(const T& handle) const
   {
     THROW(corevm::types::runtime_error("Calling 'reverse' operator on invalid type"));
   }
@@ -635,22 +627,22 @@ private:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::reverse::operator()<corevm::types::string>(
   const corevm::types::string& handle) const
 {
-  return reverse_impl(handle.value);
+  return reverse_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::reverse::operator()<corevm::types::array>(
   const corevm::types::array& handle) const
 {
-  return reverse_impl(handle.value);
+  return reverse_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
@@ -659,11 +651,11 @@ class addition : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) +
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) +
+      static_cast<R>(rhs)
     );
   }
 };
@@ -672,12 +664,11 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::addition::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value + rhs.value);
+  return static_cast<corevm::types::string>(lhs + rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -686,11 +677,11 @@ class subtraction : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) -
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) -
+      static_cast<R>(rhs)
     );
   }
 };
@@ -701,11 +692,11 @@ class multiplication : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) *
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) *
+      static_cast<R>(rhs)
     );
   }
 };
@@ -716,11 +707,11 @@ class division : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) /
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) /
+      static_cast<R>(rhs)
     );
   }
 };
@@ -731,19 +722,19 @@ class modulus : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return modulus_impl<R>(
-      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
-      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
+      static_cast<corevm::types::decimal2>(lhs),
+      static_cast<corevm::types::decimal2>(rhs)
     );
   }
 
 private:
   template<typename R>
-  typename R::value_type modulus_impl(
-      const corevm::types::decimal2::value_type& lhs,
-      const corevm::types::decimal2::value_type& rhs)
+  R modulus_impl(
+      const corevm::types::decimal2& lhs,
+      const corevm::types::decimal2& rhs)
   {
     double res = fmod(lhs, rhs);
 
@@ -769,36 +760,33 @@ private:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::modulus::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value % rhs.value);
+  return static_cast<corevm::types::string>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::modulus::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value % rhs.value);
+  return static_cast<corevm::types::array>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::modulus::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value % rhs.value);
+  return static_cast<corevm::types::map>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -806,30 +794,30 @@ corevm::types::modulus::operator()<corevm::types::map>(
 class pow_op : public binary_op
 {
 public:
-  typename corevm::types::decimal::value_type operator()(
+  corevm::types::decimal operator()(
     const corevm::types::decimal& lhs, const corevm::types::decimal& rhs)
   {
     return pow(
-      static_cast<typename corevm::types::decimal::value_type>(lhs.value),
-      static_cast<typename corevm::types::decimal::value_type>(rhs.value)
+      static_cast<corevm::types::decimal>(lhs),
+      static_cast<corevm::types::decimal>(rhs)
     );
   }
 
-  typename corevm::types::decimal2::value_type operator()(
+  corevm::types::decimal2 operator()(
     const corevm::types::decimal2& lhs, const corevm::types::decimal2& rhs)
   {
     return pow(
-      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
-      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
+      static_cast<corevm::types::decimal2>(lhs),
+      static_cast<corevm::types::decimal2>(rhs)
     );
   }
 
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return pow(
-      static_cast<typename corevm::types::decimal2::value_type>(lhs.value),
-      static_cast<typename corevm::types::decimal2::value_type>(rhs.value)
+      static_cast<corevm::types::decimal2>(lhs),
+      static_cast<corevm::types::decimal2>(rhs)
     );
   }
 };
@@ -840,11 +828,11 @@ class logical_and : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) &&
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) &&
+      static_cast<R>(rhs)
     );
   }
 };
@@ -855,11 +843,11 @@ class logical_or : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename R::value_type>(lhs.value) ||
-      static_cast<typename R::value_type>(rhs.value)
+      static_cast<R>(lhs) ||
+      static_cast<R>(rhs)
     );
   }
 };
@@ -870,11 +858,11 @@ class bitwise_and : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) &
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+      static_cast<corevm::types::int64>(lhs) &
+      static_cast<corevm::types::int64>(rhs)
     );
   }
 };
@@ -883,36 +871,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_and::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value & rhs.value);
+  return static_cast<corevm::types::string>(lhs & rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_and::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value & rhs.value);
+  return static_cast<corevm::types::array>(lhs & rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_and::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value & rhs.value);
+  return static_cast<corevm::types::map>(lhs & rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -921,11 +906,11 @@ class bitwise_or : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) |
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+      static_cast<corevm::types::int64>(lhs) |
+      static_cast<corevm::types::int64>(rhs)
     );
   }
 };
@@ -934,36 +919,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_or::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value | rhs.value);
+  return static_cast<corevm::types::string>(lhs | rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_or::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value | rhs.value);
+  return static_cast<corevm::types::array>(lhs | rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_or::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value | rhs.value);
+  return static_cast<corevm::types::map>(lhs | rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -972,11 +954,11 @@ class bitwise_xor : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) ^
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+      static_cast<corevm::types::int64>(lhs) ^
+      static_cast<corevm::types::int64>(rhs)
     );
   }
 };
@@ -985,36 +967,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_xor::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value ^ rhs.value);
+  return static_cast<corevm::types::string>(lhs ^ rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_xor::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value ^ rhs.value);
+  return static_cast<corevm::types::array>(lhs ^ rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_xor::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value ^ rhs.value);
+  return static_cast<corevm::types::map>(lhs ^ rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -1023,11 +1002,11 @@ class bitwise_left_shift : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) <<
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+      static_cast<corevm::types::int64>(lhs) <<
+      static_cast<corevm::types::int64>(rhs)
     );
   }
 };
@@ -1036,36 +1015,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_left_shift::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value << rhs.value);
+  return static_cast<corevm::types::string>(lhs << rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_left_shift::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value << rhs.value);
+  return static_cast<corevm::types::array>(lhs << rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_left_shift::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value << rhs.value);
+  return static_cast<corevm::types::map>(lhs << rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -1074,11 +1050,11 @@ class bitwise_right_shift : public binary_op
 {
 public:
   template<typename R, typename T, typename U>
-  typename R::value_type operator()(const T& lhs, const U& rhs)
+  R operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename corevm::types::int64::value_type>(lhs.value) >>
-      static_cast<typename corevm::types::int64::value_type>(rhs.value)
+      static_cast<corevm::types::int64>(lhs) >>
+      static_cast<corevm::types::int64>(rhs)
     );
   }
 };
@@ -1087,36 +1063,33 @@ public:
 
 template<>
 inline
-typename corevm::types::string::value_type
+corevm::types::string
 corevm::types::bitwise_right_shift::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  return static_cast<typename corevm::types::string::value_type>(
-    lhs.value >> rhs.value);
+  return static_cast<corevm::types::string>(lhs >> rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::array::value_type
+corevm::types::array
 corevm::types::bitwise_right_shift::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
-  return static_cast<typename corevm::types::array::value_type>(
-    lhs.value >> rhs.value);
+  return static_cast<corevm::types::array>(lhs >> rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::map::value_type
+corevm::types::map
 corevm::types::bitwise_right_shift::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {
-  return static_cast<typename corevm::types::map::value_type>(
-    lhs.value >> rhs.value);
+  return static_cast<corevm::types::map>(lhs >> rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -1129,8 +1102,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) ==
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) ==
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1144,8 +1117,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) !=
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) !=
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1159,8 +1132,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) >
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) >
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1174,8 +1147,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) <
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) <
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1189,8 +1162,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) >=
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) >=
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1204,8 +1177,8 @@ public:
   bool operator()(const T& lhs, const U& rhs)
   {
     return (
-      static_cast<typename DominantType::value_type>(lhs.value) <=
-      static_cast<typename DominantType::value_type>(rhs.value)
+      static_cast<DominantType>(lhs) <=
+      static_cast<DominantType>(rhs)
     );
   }
 };
@@ -1218,8 +1191,8 @@ public:
   template<typename DominantType, typename T, typename U>
   int32_t operator()(const T& lhs, const U& rhs)
   {
-    const auto& lhs_val = static_cast<typename DominantType::value_type>(lhs.value);
-    const auto& rhs_val = static_cast<typename DominantType::value_type>(rhs.value);
+    const auto& lhs_val = static_cast<DominantType>(lhs);
+    const auto& rhs_val = static_cast<DominantType>(rhs);
 
     if (lhs_val < rhs_val)
     {
@@ -1249,21 +1222,18 @@ T clamp(T val, T lower, T upper)
 
 template<>
 inline
-typename corevm::types::int32::value_type
+corevm::types::int32
 corevm::types::cmp::operator()<corevm::types::string>(
   const corevm::types::string& lhs, const corevm::types::string& rhs)
 {
-  const corevm::types::string::value_type& lhs_val = lhs.value;
-  const corevm::types::string::value_type& rhs_val = rhs.value;
-
-  return clamp<int32_t>(lhs_val.compare(rhs_val), -1, 1);
+  return clamp<int32_t>(lhs.compare(rhs), -1, 1);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-typename corevm::types::int32::value_type
+corevm::types::int32
 corevm::types::cmp::operator()<corevm::types::array>(
   const corevm::types::array& lhs, const corevm::types::array& rhs)
 {
@@ -1274,7 +1244,7 @@ corevm::types::cmp::operator()<corevm::types::array>(
 
 template<>
 inline
-typename corevm::types::int32::value_type
+corevm::types::int32
 corevm::types::cmp::operator()<corevm::types::map>(
   const corevm::types::map& lhs, const corevm::types::map& rhs)
 {

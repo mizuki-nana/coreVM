@@ -202,7 +202,7 @@ public:
   template<typename H>
   T operator()(const H& handle) const
   {
-    return static_cast<T>(handle.value);
+    return static_cast<T>(handle);
   }
 };
 

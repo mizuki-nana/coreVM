@@ -2755,7 +2755,7 @@ public:
   instrs_native_type_conversion_instrs_test()
     :
     instrs_native_types_instrs_test(),
-    m_oprd(std::numeric_limits<corevm::types::uint8::value_type>::max())
+    m_oprd(std::numeric_limits<corevm::types::uint8>::max())
   {
   }
 
@@ -2782,13 +2782,13 @@ public:
 
     corevm::types::native_type_handle hndl = m_oprd;
 
-    auto expected_value = corevm::types::get_value_from_handle<
-      typename TargetNativeType::value_type>(hndl);
+    auto expected_value =
+      corevm::types::get_value_from_handle<TargetNativeType>(hndl);
 
     corevm::types::native_type_handle result_handle = frame.pop_eval_stack();
 
-    auto actual_value = corevm::types::get_value_from_handle<
-      typename TargetNativeType::value_type>(result_handle);
+    auto actual_value =
+      corevm::types::get_value_from_handle<TargetNativeType>(result_handle);
 
     ASSERT_EQ(expected_value, actual_value);
   }
@@ -2949,7 +2949,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_01)
   corevm::types::native_string expected_value("5");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -2965,7 +2965,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_02)
   corevm::types::native_string expected_value("3.141592");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -2981,7 +2981,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_03)
   corevm::types::native_string expected_value("0");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -2997,7 +2997,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_04)
   corevm::types::native_string expected_value("Hello world!");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -3013,7 +3013,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_05)
   corevm::types::native_string expected_value("<array>");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -3029,7 +3029,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREPR_06)
   corevm::types::native_string expected_value("<map>");
 
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_repr, corevm::types::string::value_type>(expected_value);
+    corevm::runtime::instr_handler_repr, corevm::types::string>(expected_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -3068,9 +3068,9 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrSLICE)
 
   push_eval_stack({ hndl1, hndl2, hndl3 });
 
-  corevm::types::array::value_type expected_result({2, 3, 4});
+  corevm::types::array expected_result { 2, 3, 4 };
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_slice, corevm::types::array::value_type>(expected_result);
+    corevm::runtime::instr_handler_slice, corevm::types::array>(expected_result);
 }
 
 // -----------------------------------------------------------------------------
@@ -3082,9 +3082,9 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrSTRIDE)
 
   push_eval_stack({ hndl1, hndl2 });
 
-  corevm::types::array::value_type expected_result({1, 3, 5});
+  corevm::types::array expected_result { 1, 3, 5 };
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_stride, corevm::types::array::value_type>(expected_result);
+    corevm::runtime::instr_handler_stride, corevm::types::array>(expected_result);
 }
 
 // -----------------------------------------------------------------------------
@@ -3095,9 +3095,9 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrREVERSE)
 
   push_eval_stack({ hndl });
 
-  corevm::types::array::value_type expected_result({5, 4, 3, 2, 1});
+  corevm::types::array expected_result { 5, 4, 3, 2, 1 };
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_reverse, corevm::types::array::value_type>(expected_result);
+    corevm::runtime::instr_handler_reverse, corevm::types::array>(expected_result);
 }
 
 // -----------------------------------------------------------------------------
@@ -3109,9 +3109,9 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrROUND)
 
   push_eval_stack({ oprd, oprd2 });
 
-  corevm::types::decimal2::value_type expected_result(3.14);
+  corevm::types::decimal2 expected_result(3.14);
   execute_instr_and_assert_result<
-    corevm::runtime::instr_handler_round, corevm::types::decimal2::value_type>(expected_result);
+    corevm::runtime::instr_handler_round, corevm::types::decimal2>(expected_result);
 }
 
 // -----------------------------------------------------------------------------
@@ -3186,7 +3186,7 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRAPD)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRPSH)
 {
   corevm::types::native_string hello_world = "Hello world";
-  corevm::types::int8 exclamation = static_cast<corevm::types::int8::value_type>('!');
+  corevm::types::int8 exclamation = static_cast<corevm::types::int8>('!');
   corevm::types::native_string expected_result = "Hello world!";
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = exclamation;
@@ -3202,7 +3202,7 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRPSH)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRIST)
 {
   corevm::types::native_string hello_world = "Helloworld";
-  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::int8 pos = static_cast<corevm::types::int8>(5);
   corevm::types::native_string space = " ";
   corevm::types::native_string expected_result = "Hello world";
   corevm::types::native_type_handle oprd1 = hello_world;
@@ -3220,8 +3220,8 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRIST)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRIST2)
 {
   corevm::types::native_string hello_world = "Helloworld";
-  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
-  corevm::types::int8 space = static_cast<corevm::types::int8::value_type>(' ');
+  corevm::types::int8 pos = static_cast<corevm::types::int8>(5);
+  corevm::types::int8 space = static_cast<corevm::types::int8>(' ');
   corevm::types::native_string expected_result = "Hello world";
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = pos;
@@ -3238,7 +3238,7 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRIST2)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRERS)
 {
   corevm::types::native_string hello_world = "Hello world";
-  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
+  corevm::types::int8 pos = static_cast<corevm::types::int8>(5);
   corevm::types::native_string expected_result = "Hello";
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = pos;
@@ -3254,8 +3254,8 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRERS)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRERS2)
 {
   corevm::types::native_string hello_world = "Hello  world";
-  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
-  corevm::types::int8 len = static_cast<corevm::types::int8::value_type>(1);
+  corevm::types::int8 pos = static_cast<corevm::types::int8>(5);
+  corevm::types::int8 len = static_cast<corevm::types::int8>(1);
   corevm::types::native_string expected_result = "Hello world";
   corevm::types::native_type_handle oprd1 = hello_world;
   corevm::types::native_type_handle oprd2 = pos;
@@ -3272,8 +3272,8 @@ TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRERS2)
 TEST_F(instrs_native_string_type_complex_instrs_test, TestInstrSTRRPLC)
 {
   corevm::types::native_string hello_world = "Hello world";
-  corevm::types::int8 pos = static_cast<corevm::types::int8::value_type>(5);
-  corevm::types::int8 len = static_cast<corevm::types::int8::value_type>(6);
+  corevm::types::int8 pos = static_cast<corevm::types::int8>(5);
+  corevm::types::int8 len = static_cast<corevm::types::int8>(6);
   corevm::types::native_string exclamation = "!!!!!!";
   corevm::types::native_string expected_result = "Hello!!!!!!";
   corevm::types::native_type_handle oprd1 = hello_world;
