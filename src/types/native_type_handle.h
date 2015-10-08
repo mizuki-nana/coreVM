@@ -263,6 +263,15 @@ get_value_from_handle(corevm::types::native_type_handle& handle)
 
 // -----------------------------------------------------------------------------
 
+template<typename T>
+T&
+get_value_ref_from_handle(corevm::types::native_type_handle& handle)
+{
+  return handle.get<T>();
+}
+
+// -----------------------------------------------------------------------------
+
 template<class operator_visitor>
 corevm::types::native_type_handle
 apply_unary_visitor(corevm::types::native_type_handle& handle)

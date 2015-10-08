@@ -258,14 +258,24 @@ corevm::types::native_map::mapped_type&
 corevm::types::native_map::at(const key_type& k)
   throw(corevm::types::out_of_range_error)
 {
-  try
-  {
-    return native_map_base::at(k);
-  }
-  catch (const std::out_of_range&)
+  return const_cast<mapped_type&>(
+    static_cast<const native_map&>(*this).at(k));
+}
+
+// -----------------------------------------------------------------------------
+
+const corevm::types::native_map::mapped_type&
+corevm::types::native_map::at(const key_type& k) const
+  throw(corevm::types::out_of_range_error)
+{
+  auto itr = find(k);
+
+  if (itr == end())
   {
     THROW(corevm::types::out_of_range_error("Map key out of range"));
   }
+
+  return itr->second;
 }
 
 // -----------------------------------------------------------------------------

@@ -42,4 +42,7 @@ BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/ntvhndl_manipulation_inst
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_string_instrs_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_array_instrs_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_map_instrs_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_string_interfaces_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_array_interfaces_benchmark.cc
+BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/native_map_interfaces_benchmark.cc
 BENCHMARK_SOURCES += $(TOP_DIR)/$(BENCHMARKS)/$(MICRO)/runtime_utils_benchmark.cc
