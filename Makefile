@@ -30,6 +30,8 @@ BENCHMARKS=benchmarks
 TOOLS=tools
 ARTIFACTS=artifacts
 PYTHON_DIR=python
+ARCHIVES=$(TOP_DIR)/archives
+MICRO_BENCHMARKS_ARCHIVES_DIR=$(ARCHIVES)/benchmarks/micro
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 MAIN_CC=$(SRC)/corevm/main.cc
 COMPILED_BYTECODE_SCHEMA_HEADER=$(SRC)/corevm/corevm_bytecode_schema.h
@@ -136,7 +138,8 @@ $(BENCHMARKS): $(LIBCOREVM) $(BENCHMARK_OBJECTS)
 	mkdir -p $(@D)
 	mkdir -p $(BIN)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(BENCHMARK_OBJECTS) -o $(BIN)/$(RUN_BENCHMARKS) libcorevm.a $(LFLAGS) -lbenchmark
-	exec $(BIN)/$(RUN_BENCHMARKS)
+	mkdir -p $(MICRO_BENCHMARKS_ARCHIVES_DIR)
+	exec $(BIN)/$(RUN_BENCHMARKS) 2>&1 | tee $(MICRO_BENCHMARKS_ARCHIVES_DIR)/benchmark.micro.corevm.$(shell date +"%Y.%m.%d.%H.%M.%S").txt
 	@echo "\033[32mBenchmarks run completed...\033[0m";
 
 
