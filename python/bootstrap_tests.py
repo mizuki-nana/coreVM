@@ -28,6 +28,7 @@ python python/bootstrap_tests.py
 """
 
 import glob
+import time
 import optparse
 import os
 
@@ -72,6 +73,13 @@ def run(options):
     # Bring blank line.
     print
 
+    cumulated_time = 0.0
+    passed_tests_count = 0
+    total_tests_count = len(real_inputs)
+
+    SUCCESS = 'SUCCESS'
+    FAILED = 'FAILED'
+
     for path in real_inputs:
         info = path
 
@@ -79,14 +87,41 @@ def run(options):
             if options.python_only else pyta_cmdl_args(path, options)
         rhs_args = python_cmdl_args(path)
 
+        begin_time = time.time()
+
         retcode = StdoutComparator(lhs_args, rhs_args).run()
 
-        if retcode == 0:
-            info += (colors.OKGREEN + ' [SUCCESS]' + colors.ENDC)
-        else:
-            info += (colors.FAIL + ' [FAILED]' + colors.ENDC)
+        end_time = time.time()
 
-        print info
+        elapsed_time = end_time - begin_time
+
+        cumulated_time += elapsed_time
+
+        success = retcode == 0
+
+        if success:
+            passed_tests_count += 1
+
+        status_str = SUCCESS if success else FAILED
+        color = colors.OKGREEN if success else colors.FAIL
+
+        print '{path:<30}{begin_color} [{status_str:<7}] {elapsed_time:3.3f} s{end_color}'.format(
+            path=path,
+            begin_color=color,
+            status_str=status_str,
+            elapsed_time=elapsed_time,
+            end_color=colors.ENDC)
+
+    # Print overall status.
+    success = passed_tests_count == total_tests_count
+    print
+    print '{begin_color}{success}{end_color}'.format(
+        begin_color=colors.OKGREEN if success else colors.FAIL,
+        success=SUCCESS if success else FAILED,
+        end_color=colors.ENDC)
+    print '%d / %d tests passed' % (passed_tests_count, total_tests_count)
+    print 'Cumulated execution time: {cumulated_time:3.3f} s'.format(
+        cumulated_time=cumulated_time)
 
 ## -----------------------------------------------------------------------------
 
