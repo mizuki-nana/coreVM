@@ -76,9 +76,9 @@ class str(object):
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###
+        [gethndl2, other, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
-        [gethndl2, other, 0]
         [strapd, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###

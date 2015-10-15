@@ -73,10 +73,10 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -100,11 +100,11 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -128,11 +128,11 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -159,12 +159,12 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl3);
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl3);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -191,12 +191,12 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl3);
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl3);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -220,11 +220,11 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -253,9 +253,9 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl3);
+    frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -286,13 +286,13 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl4);
+  frame->push_eval_stack(hndl3);
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl3);
-    frame->push_eval_stack(hndl4);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -316,11 +316,11 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }

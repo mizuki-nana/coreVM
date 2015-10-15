@@ -103,7 +103,7 @@ void Benchmark_InterfaceArrayPut(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_array_put(hndl, oprd2, oprd3);
+    corevm::types::interface_array_put(hndl, oprd2, oprd3);
   }
 }
 
@@ -117,7 +117,7 @@ void Benchmark_InterfaceArrayAppend(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_array_append(hndl, oprd2);
+    corevm::types::interface_array_append(hndl, oprd2);
   }
 }
 
@@ -131,7 +131,8 @@ void Benchmark_InterfaceArrayErase(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_array_erase(hndl, oprd2);
+    corevm::types::interface_array_erase(hndl, oprd2);
+    corevm::types::interface_array_append(hndl, oprd2);
   }
 }
 
@@ -158,7 +159,7 @@ void Benchmark_InterfaceArraySwap(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_array_swap(hndl, oprd2);
+    corevm::types::interface_array_swap(hndl, oprd2);
   }
 }
 
@@ -171,7 +172,7 @@ void Benchmark_InterfaceArrayClear(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_array_clear(hndl);
+    corevm::types::interface_array_clear(hndl);
   }
 }
 

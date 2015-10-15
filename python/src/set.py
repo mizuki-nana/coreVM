@@ -138,14 +138,14 @@ class set(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [ldobj, value, 0]
+        [putobj, 0, 0]
         [ldobj, item, 0]
         [getattr, hash, 0]
         [gethndl, 0, 0]
-        [ldobj, value, 0]
-        [putobj, 0, 0]
-        [mapput, 0, 0]
         [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mapput, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
@@ -153,9 +153,9 @@ class set(object):
     def clear(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
-        [mapclr, 0, 0]
         [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [mapclr, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
@@ -165,10 +165,10 @@ class set(object):
             value_hash = __call_method_0(value.__hash__)
             """
             ### BEGIN VECTOR ###
-            [gethndl2, self, 0]
             [gethndl2, value_hash, 0]
-            [mapers, 0, 0]
             [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [mapers, 0, 0]
             [sethndl, 0, 0]
             ### END VECTOR ###
             """

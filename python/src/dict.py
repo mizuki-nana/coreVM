@@ -156,12 +156,12 @@ class dict(object):
             key_val_pair = __call_cls_2(__dict_KeyValuePair, key, value)
             """
             ### BEGIN VECTOR ###
-            [gethndl2, self, 0]
-            [gethndl2, key_hash, 0]
             [ldobj, key_val_pair, 0]
             [putobj, 0, 0]
-            [mapput, 0, 0]
+            [gethndl2, key_hash, 0]
             [ldobj, self, 0]
+            [gethndl, 0, 0]
+            [mapput, 0, 0]
             [sethndl, 0, 0]
             ### END VECTOR ###
             """
@@ -174,9 +174,9 @@ class dict(object):
 
             """
             ### BEGIN VECTOR ###
+            [gethndl2, key_hash, 0]
             [ldobj, self, 0]
             [gethndl, 0, 0]
-            [gethndl2, key_hash, 0]
             [mapers, 0, 0]
             [sethndl, 0, 0]
             ### END VECTOR ###

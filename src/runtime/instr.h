@@ -528,6 +528,12 @@ enum instr_enum : uint32_t
    */
   PRINT,
 
+  /**
+   * <swap2, _, _>
+   * Swaps the top two elements on the evaluation stack.
+   */
+  SWAP2,
+
   /* ------------------ Arithmetic and logic instructions ------------------- */
 
   /**
@@ -1306,7 +1312,15 @@ protected:
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
+  void execute_native_type_complex_instr_with_single_operand_in_place(
+    corevm::runtime::frame*, InterfaceFunc);
+
+  template<typename InterfaceFunc>
   void execute_native_type_complex_instr_with_two_operands(
+    corevm::runtime::frame*, InterfaceFunc);
+
+  template<typename InterfaceFunc>
+  void execute_native_type_complex_instr_with_two_operands_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
@@ -1314,7 +1328,15 @@ protected:
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
+  void execute_native_type_complex_instr_with_three_operands_in_place(
+    corevm::runtime::frame*, InterfaceFunc);
+
+  template<typename InterfaceFunc>
   void execute_native_type_complex_instr_with_four_operands(
+    corevm::runtime::frame*, InterfaceFunc);
+
+  template<typename InterfaceFunc>
+  void execute_native_type_complex_instr_with_four_operands_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 };
 
@@ -1935,6 +1957,16 @@ public:
 // -----------------------------------------------------------------------------
 
 class instr_handler_print: public instr_handler
+{
+public:
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
+class instr_handler_swap2: public instr_handler
 {
 public:
   virtual void execute(

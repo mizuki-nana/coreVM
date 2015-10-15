@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+// -----------------------------------------------------------------------------
+
 class native_array_type_interfaces_test : public native_type_interfaces_test_base {};
 
 // -----------------------------------------------------------------------------
@@ -111,6 +113,26 @@ TEST_F(native_array_type_interfaces_test, TestBack)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(native_array_type_interfaces_test, TestPut)
+{
+  corevm::types::native_array array {1, 2, 3};
+  corevm::types::native_type_handle operand = array;
+  corevm::types::native_type_handle index = corevm::types::uint32(2);
+  corevm::types::native_type_handle value = corevm::types::uint32(5);
+
+  corevm::types::native_array expected_result { 1, 2, 5 };
+
+  apply_interface_on_three_operands_in_place_and_assert_result<corevm::types::native_array>(
+    operand,
+    index,
+    value,
+    corevm::types::interface_array_put,
+    expected_result
+  );
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(native_array_type_interfaces_test, TestAppend)
 {
   corevm::types::native_array array {1, 2, 3};
@@ -119,7 +141,7 @@ TEST_F(native_array_type_interfaces_test, TestAppend)
 
   corevm::types::native_array expected_result {1, 2, 3, 4};
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_array>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_array>(
     operand,
     data,
     corevm::types::interface_array_append,
@@ -137,7 +159,7 @@ TEST_F(native_array_type_interfaces_test, TestErase)
 
   corevm::types::native_array expected_result {1, 3};
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_array>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_array>(
     operand,
     index,
     corevm::types::interface_array_erase,
@@ -155,7 +177,7 @@ TEST_F(native_array_type_interfaces_test, TestEraseOnInvalidIndex)
 
   ASSERT_THROW(
     {
-      auto result = corevm::types::interface_array_erase(operand, index);
+      corevm::types::interface_array_erase(operand, index);
     },
     corevm::types::out_of_range_error
   );
@@ -188,7 +210,7 @@ TEST_F(native_array_type_interfaces_test, TestSwap)
 
   corevm::types::native_array expected_result {4, 5, 6};
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_array>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_array>(
     operand,
     other_operand,
     corevm::types::interface_array_swap,
@@ -205,7 +227,7 @@ TEST_F(native_array_type_interfaces_test, TestClear)
 
   corevm::types::native_array expected_result;
 
-  this->apply_interface_on_single_operand_and_assert_result<corevm::types::native_array>(
+  apply_interface_on_single_operand_in_place_and_assert_result<corevm::types::native_array>(
     operand,
     corevm::types::interface_array_clear,
     expected_result

@@ -157,6 +157,24 @@ corevm::runtime::frame::top_eval_stack()
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::frame::swap_eval_stack()
+{
+  const size_t eval_stack_size = m_eval_stack.size();
+
+  if (eval_stack_size < 2u)
+  {
+    THROW(corevm::runtime::invalid_operation_error(
+      "Cannot swap eval stack"));
+  }
+
+  auto& a = m_eval_stack[eval_stack_size - 1];
+  auto& b = m_eval_stack[eval_stack_size - 2];
+  std::swap(a, b);
+}
+
+// -----------------------------------------------------------------------------
+
 const std::vector<corevm::types::native_type_handle>&
 corevm::runtime::frame::eval_stack() const
 {

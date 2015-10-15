@@ -48,7 +48,7 @@ void Benchmark_InterfaceStringClear(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_clear(hndl);
+    corevm::types::interface_string_clear(hndl);
   }
 }
 
@@ -90,7 +90,7 @@ void Benchmark_InterfaceStringAppend(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_append(hndl, oprd2);
+    corevm::types::interface_string_append(hndl, oprd2);
   }
 }
 
@@ -104,7 +104,7 @@ void Benchmark_InterfaceStringPushback(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_pushback(hndl, oprd2);
+    corevm::types::interface_string_pushback(hndl, oprd2);
   }
 }
 
@@ -119,7 +119,7 @@ void Benchmark_InterfaceStringInsertStr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_insert_str(hndl, oprd2, oprd3);
+    corevm::types::interface_string_insert_str(hndl, oprd2, oprd3);
   }
 }
 
@@ -134,7 +134,7 @@ void Benchmark_InterfaceStringInsertChar(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_insert_char(hndl, oprd2, oprd3);
+    corevm::types::interface_string_insert_char(hndl, oprd2, oprd3);
   }
 }
 
@@ -143,12 +143,12 @@ void Benchmark_InterfaceStringInsertChar(benchmark::State& state)
 static
 void Benchmark_InterfaceStringErase(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
   corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_erase(hndl, oprd2);
+    corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+    corevm::types::interface_string_erase(hndl, oprd2);
   }
 }
 
@@ -157,13 +157,13 @@ void Benchmark_InterfaceStringErase(benchmark::State& state)
 static
 void Benchmark_InterfaceStringErase2(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
   corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
   corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_erase2(hndl, oprd2, oprd3);
+    corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+    corevm::types::interface_string_erase2(hndl, oprd2, oprd3);
   }
 }
 
@@ -179,8 +179,7 @@ void Benchmark_InterfaceStringReplaceStr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res =
-      corevm::types::interface_string_replace_str(hndl, oprd2, oprd3, oprd4);
+    corevm::types::interface_string_replace_str(hndl, oprd2, oprd3, oprd4);
   }
 }
 
@@ -194,7 +193,7 @@ void Benchmark_InterfaceStringSwap(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_string_swap(hndl, oprd2);
+    corevm::types::interface_string_swap(hndl, oprd2);
   }
 }
 

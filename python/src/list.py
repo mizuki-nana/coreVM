@@ -44,9 +44,9 @@ class list(object):
     def append(self, arg):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [ldobj, arg, 0]
         [putobj, 0, 0]
+        [gethndl2, self, 0]
         [aryapnd, 0, 0]
         [ldobj, self, 0]
         [sethndl, 0, 0]
@@ -194,12 +194,12 @@ class list(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
-        [gethndl2, i, 0]
         [ldobj, value, 0]
         [putobj, 0, 0]
-        [aryput, 0, 0]
+        [gethndl2, i, 0]
         [ldobj, self, 0]
+        [gethndl, 0, 0]
+        [aryput, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
         """
@@ -211,9 +211,9 @@ class list(object):
 
         """
         ### BEGIN VECTOR ###
+        [gethndl2, i, 0]
         [ldobj, self, 0]
         [gethndl, 0, 0]
-        [gethndl2, i, 0]
         [aryers, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###

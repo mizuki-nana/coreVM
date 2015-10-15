@@ -149,10 +149,43 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+static
+void BenchmarkSwapEvalStack(benchmark::State& state)
+{
+  corevm::runtime::closure_ctx ctx;
+
+  corevm::runtime::frame frame(ctx, NULL, NULL);
+
+  corevm::types::native_type_handle hndl1((corevm::types::native_string("Hello world I'm FAT")));
+  corevm::types::native_type_handle hndl2((corevm::types::native_map({
+    { 1, 10 },
+    { 2, 20 },
+    { 3, 30 },
+    { 4, 40 },
+    { 5, 50 },
+    { 6, 60 },
+    { 7, 70 },
+    { 8, 80 },
+    { 9, 90 },
+    { 10, 100 }
+  })));
+
+  frame.push_eval_stack(hndl1);
+  frame.push_eval_stack(hndl2);
+
+  while (state.KeepRunning())
+  {
+      frame.swap_eval_stack();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 BENCHMARK(BenchmarkPushEvalStack);
 BENCHMARK(BenchmarkPushEvalStack2);
 BENCHMARK(BenchmarkPopEvalStack);
 BENCHMARK(BenchmarkGetVisibleVariable1);
 BENCHMARK(BenchmarkGetVisibleVariable2);
+BENCHMARK(BenchmarkSwapEvalStack);
 
 // -----------------------------------------------------------------------------

@@ -111,7 +111,7 @@ void Benchmark_InterfaceMapPut(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_put(hndl, oprd2, oprd3);
+    corevm::types::interface_map_put(hndl, oprd2, oprd3);
   }
 }
 
@@ -129,7 +129,7 @@ void Benchmark_InterfaceMapErase(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_erase(hndl, oprd2);
+    corevm::types::interface_map_erase(hndl, oprd2);
   }
 }
 
@@ -146,7 +146,7 @@ void Benchmark_InterfaceMapClear(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_clear(hndl);
+    corevm::types::interface_map_clear(hndl);
   }
 }
 
@@ -169,7 +169,7 @@ void Benchmark_InterfaceMapSwap(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_swap(hndl, oprd2);
+    corevm::types::interface_map_swap(hndl, oprd2);
   }
 }
 

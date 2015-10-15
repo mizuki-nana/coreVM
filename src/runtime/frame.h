@@ -88,6 +88,8 @@ public:
   corevm::types::native_type_handle& top_eval_stack()
     throw(corevm::runtime::evaluation_stack_empty_error);
 
+  void swap_eval_stack();
+
   const std::vector<corevm::types::native_type_handle>& eval_stack() const;
 
   corevm::types::native_type_handle& eval_stack_element(size_t i);

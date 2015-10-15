@@ -179,12 +179,12 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl3);
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl3);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -208,11 +208,11 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -238,8 +238,8 @@ void BenchmarkInstrARYERS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
     frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -288,11 +288,11 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(hndl2);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-    frame->push_eval_stack(hndl2);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -313,10 +313,10 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
+  frame->push_eval_stack(hndl);
+
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
-
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }

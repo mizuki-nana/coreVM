@@ -156,6 +156,15 @@ def test_list_slicing_special_case():
 
 ## -----------------------------------------------------------------------------
 
+def test_list_append_stress():
+    l = []
+    v = 5
+    for i in range(30000):
+        l.append(v)
+    print len(l)
+
+## -----------------------------------------------------------------------------
+
 test_list_repr()
 test_hash_list()
 test_list_getitem()
@@ -163,5 +172,6 @@ test_list_setitem()
 test_list_comprehension()
 test_list_slicing()
 test_list_slicing_special_case()
+test_list_append_stress()
 
 ## -----------------------------------------------------------------------------

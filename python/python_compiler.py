@@ -1152,16 +1152,20 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(value)
             self.__add_instr('stobj2', self.__get_encoding_id(value_name), 0)
 
-            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
-            self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(key_name), 0)
-            self.__add_instr('gethndl', 0, 0)
+            # Value.
             self.__add_instr('ldobj2', self.__get_encoding_id(value_name), 0)
             self.__add_instr('putobj', 0, 0)
 
+            # Key.
+            self.__add_instr('ldobj2', self.__get_encoding_id(key_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+
+            # Dict.
+            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+
             self.__add_instr('mapput', 0, 0)
 
-            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
             self.__add_instr('sethndl', 0, 0)
 
         self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
@@ -1180,18 +1184,22 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.visit(elt)
             self.__add_instr('stobj2', self.__get_encoding_id(item_name), 0)
 
-            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
-            self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
-            self.__add_instr('getattr', self.__get_encoding_id('hash'), 0)
-            self.__add_instr('gethndl', 0, 0)
+            # Value.
             self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
             self.__add_instr('getattr', self.__get_encoding_id('value'), 0)
             self.__add_instr('putobj', 0, 0)
 
+            # Key.
+            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
+            self.__add_instr('getattr', self.__get_encoding_id('hash'), 0)
+            self.__add_instr('gethndl', 0, 0)
+
+            # Set.
+            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+            self.__add_instr('gethndl', 0, 0)
+
             self.__add_instr('mapput', 0, 0)
 
-            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
             self.__add_instr('sethndl', 0, 0)
 
         self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
@@ -1263,6 +1271,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('gethndl', 0, 0)
             self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
             self.__add_instr('putobj', 0, 0)
+            self.__add_instr('swap2', 0, 0)
             self.__add_instr('aryapnd', 0, 0)
             self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
             self.__add_instr('sethndl', 0, 0)
@@ -1285,6 +1294,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('gethndl', 0, 0)
             self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
             self.__add_instr('putobj', 0, 0)
+            self.__add_instr('swap2', 0, 0)
             self.__add_instr('aryapnd', 0, 0)
             self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
             self.__add_instr('sethndl', 0, 0)

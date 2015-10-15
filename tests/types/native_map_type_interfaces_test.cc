@@ -101,7 +101,7 @@ TEST_F(native_map_type_interfaces_test, TestPut)
     { 1, 101 }
   };
 
-  this->apply_interface_on_three_operands_and_assert_result<corevm::types::native_map>(
+  this->apply_interface_on_three_operands_in_place_and_assert_result<corevm::types::native_map>(
     operand,
     key,
     value,
@@ -125,7 +125,7 @@ TEST_F(native_map_type_interfaces_test, TestErase)
     { 2, 2002 }
   };
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_map>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_map>(
     operand,
     key,
     corevm::types::interface_map_erase,
@@ -145,7 +145,7 @@ TEST_F(native_map_type_interfaces_test, TestClear)
   corevm::types::native_type_handle operand = map;
   corevm::types::native_map expected_result;
 
-  this->apply_interface_on_single_operand_and_assert_result<corevm::types::native_map>(
+  apply_interface_on_single_operand_in_place_and_assert_result<corevm::types::native_map>(
     operand,
     corevm::types::interface_map_clear,
     expected_result
@@ -165,7 +165,7 @@ TEST_F(native_map_type_interfaces_test, TestSwap)
   corevm::types::native_type_handle other_operand = other_map;
   corevm::types::native_map expected_result = other_map;
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_map>(
+  this->apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_map>(
     operand,
     other_operand,
     corevm::types::interface_map_swap,

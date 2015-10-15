@@ -70,7 +70,7 @@ TEST_F(native_string_type_interfaces_test, TestClear)
 
   corevm::types::native_string expected_result = "";
 
-  this->apply_interface_on_single_operand_and_assert_result(
+  apply_interface_on_single_operand_in_place_and_assert_result(
     operand,
     corevm::types::interface_string_clear,
     expected_result
@@ -120,7 +120,7 @@ TEST_F(native_string_type_interfaces_test, TestAppend)
 
   corevm::types::native_string expected_result = "Hello world!";
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     str,
     corevm::types::interface_string_append,
@@ -137,7 +137,7 @@ TEST_F(native_string_type_interfaces_test, TestPushBack)
 
   corevm::types::native_string expected_result = "Hello world!";
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     c,
     corevm::types::interface_string_pushback,
@@ -155,7 +155,7 @@ TEST_F(native_string_type_interfaces_test, TestInsertStr)
 
   corevm::types::native_string expected_result = "Hello world!";
 
-  this->apply_interface_on_three_operands_and_assert_result<corevm::types::native_string>(
+  this->apply_interface_on_three_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     pos,
     str,
@@ -174,7 +174,7 @@ TEST_F(native_string_type_interfaces_test, TestInsertChar)
 
   corevm::types::native_string expected_result = "Hello world!";
 
-  this->apply_interface_on_three_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_three_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     pos,
     c,
@@ -192,7 +192,7 @@ TEST_F(native_string_type_interfaces_test, TestErase)
 
   corevm::types::native_string expected_result = "Hello";
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     pos,
     corevm::types::interface_string_erase,
@@ -210,7 +210,7 @@ TEST_F(native_string_type_interfaces_test, TestErase2)
 
   corevm::types::native_string expected_result = "Hello world!";
 
-  this->apply_interface_on_three_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_three_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     pos,
     len,
@@ -230,7 +230,7 @@ TEST_F(native_string_type_interfaces_test, TestReplaceStr)
 
   corevm::types::native_string expected_result = "Hello-world!";
 
-  this->apply_interface_on_four_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_four_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     pos,
     len,
@@ -249,7 +249,7 @@ TEST_F(native_string_type_interfaces_test, TestSwap)
 
   corevm::types::native_string expected_result = "Nice to meet you!";
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_string>(
+  apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_string>(
     operand,
     str,
     corevm::types::interface_string_swap,

@@ -293,7 +293,7 @@ native_type_handle interface_string_get_size(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_string_clear(native_type_handle& operand);
+void interface_string_clear(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
@@ -307,47 +307,47 @@ interface_string_at_2(native_type_handle& operand, native_type_handle& index);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_append(native_type_handle& operand, native_type_handle& str);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_pushback(native_type_handle& operand, native_type_handle& c);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_insert_str(native_type_handle& operand,
   native_type_handle& pos, native_type_handle& str);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_insert_char(native_type_handle& operand,
   native_type_handle& pos, native_type_handle& c);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_erase(native_type_handle& operand,
   native_type_handle& pos);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_erase2(native_type_handle& operand,
   native_type_handle& pos, native_type_handle& len);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_replace_str(native_type_handle& operand,
   native_type_handle& pos, native_type_handle& len, native_type_handle& str);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_string_swap(native_type_handle& operand, native_type_handle& str);
 
 // -----------------------------------------------------------------------------
@@ -414,18 +414,18 @@ native_type_handle interface_array_back(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_array_put(native_type_handle& operand, native_type_handle& index,
   native_type_handle& value);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_array_append(native_type_handle& operand, native_type_handle& data);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_array_erase(native_type_handle& operand, native_type_handle& index);
 
 // -----------------------------------------------------------------------------
@@ -434,13 +434,13 @@ native_type_handle interface_array_pop(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_array_swap(native_type_handle& operand,
   native_type_handle& other_operand);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_array_clear(native_type_handle& operand);
+void interface_array_clear(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
@@ -474,22 +474,22 @@ interface_map_at(native_type_handle& operand, native_type_handle& key);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_map_put(native_type_handle& operand, native_type_handle& key,
   native_type_handle& data);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_map_erase(native_type_handle& operand, native_type_handle& key);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_map_clear(native_type_handle& operand);
+void interface_map_clear(native_type_handle& operand);
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+void
 interface_map_swap(native_type_handle& operand,
   native_type_handle& other_operand);
 
