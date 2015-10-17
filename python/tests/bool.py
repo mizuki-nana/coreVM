@@ -74,15 +74,15 @@ def test_boolean_aug_assignments():
     # NOTE: In Python (tested in v2.7.6), aug-assignments on instances of `bool`
     # type makes the instance itself turn into type `int`. This behavior, however,
     # it not currently supported.
-    i = True
-    i += False
+    i = bool(1)
+    i += bool(0)
     print i == (True + False)
 
-    j = True
-    j -= False
+    j = bool(1)
+    j -= bool(0)
     print j == (True - False)
 
-    k = False
+    k = bool(0)
     k *= bool(1)
     print k == (False * bool(1))
 
@@ -98,15 +98,15 @@ def test_boolean_aug_assignments():
     w **= bool(0)
     print w == (bool(1) ** bool(0))
 
-    x = True
+    x = bool(1)
     x <<= True
     print x == (True << True)
 
-    y = False
+    y = bool(0)
     y >>= True
     print y == (False >> True)
 
-    z = True
+    z = bool(1)
     z |= False
     print z == (True | False)
 
@@ -118,7 +118,7 @@ def test_boolean_aug_assignments():
     zelda &= bool(1)
     print zelda == (bool(0) & bool(1))
 
-    fd = True
+    fd = bool(0)
     fd //= bool(1)
     print fd == (True // bool(1))
 

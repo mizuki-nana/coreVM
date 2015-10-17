@@ -37,6 +37,8 @@ TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(DYOBJ)/heap_allocator_unittest.cc
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(GC)/garbage_collection_unittest.cc
 
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/unary_operators_unittest.cc
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/binary_operators_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/interfaces_test.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_array_type_interfaces_test.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/native_array_unittest.cc
