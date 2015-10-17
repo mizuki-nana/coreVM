@@ -56,8 +56,8 @@ class tuple(object):
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [arymrg, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -116,8 +116,8 @@ class tuple(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, i, 0]
+        [gethndl2, self, 0]
         [aryat, 0, 0]
         [getobj, 0, 0]
         ### END VECTOR ###
@@ -175,10 +175,10 @@ class tuple(object):
 
         """
         ### BEGIN VECTOR ###
+        [gethndl2, stop, 0]
+        [gethndl2, start, 0]
         [ldobj, res_, 0]
         [gethndl, 0, 0]
-        [gethndl2, start, 0]
-        [gethndl2, stop, 0]
         [slice, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
@@ -187,9 +187,9 @@ class tuple(object):
         if step is not None:
             """
             ### BEGIN VECTOR ###
+            [gethndl2, step, 0]
             [ldobj, res_, 0]
             [gethndl, 0, 0]
-            [gethndl2, step, 0]
             [stride, 0, 0]
             [sethndl, 0, 0]
             ### END VECTOR ###

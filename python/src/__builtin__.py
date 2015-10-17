@@ -1441,8 +1441,8 @@ def round(number):
 
     """
     ### BEGIN VECTOR ###
-    [gethndl2, number_, 0]
     [gethndl2, ndigits, 0]
+    [gethndl2, number_, 0]
     [round, 0, 0]
     [new, 0, 0]
     [sethndl, 0, 0]

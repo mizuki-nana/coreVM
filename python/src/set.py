@@ -72,8 +72,8 @@ class set(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, value_hash, 0]
+        [gethndl2, self, 0]
         [mapfind, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -185,8 +185,8 @@ class set(object):
     def update(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, other, 0]
+        [gethndl2, self, 0]
         [mapmrg, 0, 0]
         [ldobj, self, 0]
         [sethndl, 0, 0]

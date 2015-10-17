@@ -122,8 +122,8 @@ class str(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, i, 0]
+        [gethndl2, self, 0]
         [strat, 0, 0]
         [new, 0, 0]
         [sethndl, 0, 0]
@@ -184,10 +184,10 @@ class str(object):
 
         """
         ### BEGIN VECTOR ###
+        [gethndl2, stop, 0]
+        [gethndl2, start, 0]
         [ldobj, res_, 0]
         [gethndl, 0, 0]
-        [gethndl2, start, 0]
-        [gethndl2, stop, 0]
         [slice, 0, 0]
         [sethndl, 0, 0]
         ### END VECTOR ###
@@ -196,9 +196,9 @@ class str(object):
         if step is not None:
             """
             ### BEGIN VECTOR ###
+            [gethndl2, step, 0]
             [ldobj, res_, 0]
             [gethndl, 0, 0]
-            [gethndl2, step, 0]
             [stride, 0, 0]
             [sethndl, 0, 0]
             ### END VECTOR ###

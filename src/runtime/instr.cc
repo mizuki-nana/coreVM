@@ -419,7 +419,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
   corevm::types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
   corevm::types::native_type_handle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
 
-  oprd1 = interface_func(oprd2, oprd1);
+  oprd1 = interface_func(oprd1, oprd2);
 }
 
 // -----------------------------------------------------------------------------
@@ -460,7 +460,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
   corevm::types::native_type_handle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
   corevm::types::native_type_handle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
 
-  oprd1 = interface_func(oprd3, oprd2, oprd1);
+  oprd1 = interface_func(oprd1, oprd2, oprd3);
 }
 
 // -----------------------------------------------------------------------------
@@ -503,7 +503,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
   corevm::types::native_type_handle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
   corevm::types::native_type_handle& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
 
-  oprd1 = interface_func(oprd4, oprd3, oprd2, oprd1);
+  oprd1 = interface_func(oprd1, oprd2, oprd3, oprd4);
 }
 
 // -----------------------------------------------------------------------------

@@ -114,8 +114,8 @@ class dict(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
         [gethndl2, key_hash, 0]
+        [gethndl2, self, 0]
         [mapfind, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -127,8 +127,8 @@ class dict(object):
 
             """
             ### BEGIN VECTOR ###
-            [gethndl2, self, 0]
             [gethndl2, key_hash, 0]
+            [gethndl2, self, 0]
             [mapat, 0, 0]
             [getobj, 0, 0]
             [stobj, key_val_pair, 0]
@@ -144,8 +144,8 @@ class dict(object):
         if __call_method_1(self.__contains__, key):
             """
             ### BEGIN VECTOR ###
-            [gethndl2, self, 0]
             [gethndl2, key_hash, 0]
+            [gethndl2, self, 0]
             [mapat, 0, 0]
             [getobj, 0, 0]
             [stobj, key_val_pair, 0]

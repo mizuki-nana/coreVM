@@ -111,8 +111,8 @@ void BenchmarkInstrMAPFIND(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
     frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -142,8 +142,8 @@ void BenchmarkInstrMAPAT(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
     frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -393,8 +393,8 @@ void BenchmarkInstrMAPMRG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
     frame->push_eval_stack(hndl2);
+    frame->push_eval_stack(hndl);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
