@@ -32,6 +32,7 @@ ARTIFACTS=artifacts
 PYTHON_DIR=python
 ARCHIVES=$(TOP_DIR)/archives
 MICRO_BENCHMARKS_ARCHIVES_DIR=$(ARCHIVES)/benchmarks/micro
+BUILD_INFO_ARCHIVES_DIR=$(ARCHIVES)/build_info
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 MAIN_CC=$(SRC)/corevm/main.cc
 COMPILED_BYTECODE_SCHEMA_HEADER=$(SRC)/corevm/corevm_bytecode_schema.h
@@ -105,6 +106,8 @@ $(COREVM): $(LIBCOREVM)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(MAIN_CC) -o $(COREVM) $^ $(LFLAGS)
 	@echo "\033[35mGenerated $(COREVM)\033[0m"
+	mkdir -p $(BUILD_INFO_ARCHIVES_DIR)
+	exec stat --format="File: %n - Size: %s bytes - Date modified: %z" ./$(COREVM) 2>&1 | tee $(BUILD_INFO_ARCHIVES_DIR)/info.build.corevm.$(shell date +"%Y-%m-%dT%H:%M:%S").txt
 
 
 .PHONY: $(TOOLS)
@@ -139,7 +142,7 @@ $(BENCHMARKS): $(LIBCOREVM) $(BENCHMARK_OBJECTS)
 	mkdir -p $(BIN)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(BENCHMARK_OBJECTS) -o $(BIN)/$(RUN_BENCHMARKS) libcorevm.a $(LFLAGS) -lbenchmark
 	mkdir -p $(MICRO_BENCHMARKS_ARCHIVES_DIR)
-	exec $(BIN)/$(RUN_BENCHMARKS) 2>&1 | tee $(MICRO_BENCHMARKS_ARCHIVES_DIR)/benchmark.micro.corevm.$(shell date +"%Y.%m.%d.%H.%M.%S").txt
+	exec $(BIN)/$(RUN_BENCHMARKS) 2>&1 | tee $(MICRO_BENCHMARKS_ARCHIVES_DIR)/micro.benchmark.corevm.$(shell date +"%Y-%m-%dT%H:%M:%S").txt
 	@echo "\033[32mBenchmarks run completed...\033[0m";
 
 
