@@ -21,7 +21,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dyobj/flags.h"
-#include "runtime/instr.h"
+#include "runtime/common.h"
+#include "runtime/instr_info.h"
 
 #include <sneaker/utility/cmdline_program.h>
 
@@ -119,9 +120,9 @@ extract_metadata::extract_instr_info() const
   for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
-    const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::instr_set[code];
+    const corevm::runtime::instr_info& info = corevm::runtime::instr_set_info::instr_infos[code];
 
-    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.str
+    ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
       << DOUBLE_QUOTE << ": " << code;
 
     if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)

@@ -748,7 +748,7 @@ corevm::runtime::process::start()
     const corevm::runtime::instr& instr = m_instrs[m_pc];
 
     auto& handler =
-      corevm::runtime::instr_handler_meta::instr_set[instr.code].handler;
+      corevm::runtime::instr_handler_meta::instr_handlers[instr.code].handler;
 
 #if __MEASURE_INSTRS__
     t.start();

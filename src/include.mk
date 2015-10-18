@@ -45,6 +45,7 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/frame.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/gc_rule.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/instr.cc
+SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/instr_info.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/invocation_ctx.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/native_types_pool.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/process.cc

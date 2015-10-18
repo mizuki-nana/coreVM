@@ -51,6 +51,7 @@ TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(TYPES)/variant_unittest.cc
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/compartment_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/frame_unittest.cc
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/instr_info_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/instrs_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/invocation_ctx_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/native_types_pool_unittest.cc

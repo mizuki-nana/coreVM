@@ -46,20 +46,6 @@ using corevm::runtime::process;
 
 // -----------------------------------------------------------------------------
 
-class instr_handler_meta_unittest : public ::testing::Test {};
-
-// -----------------------------------------------------------------------------
-
-TEST_F(instr_handler_meta_unittest, TestGetSuccessful)
-{
-  corevm::runtime::instr_code code = corevm::runtime::instr_enum::LDOBJ;
-  const corevm::runtime::instr_info& info = corevm::runtime::instr_handler_meta::instr_set[code];
-
-  ASSERT_STREQ("ldobj", info.str.c_str());
-}
-
-// -----------------------------------------------------------------------------
-
 class instrs_unittest : public ::testing::Test
 {
 public:
