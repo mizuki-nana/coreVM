@@ -291,6 +291,7 @@ corevm::runtime::instr_handler_meta::instr_set[INSTR_CODE_MAX] {
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_unary_operator_instr(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -303,6 +304,7 @@ corevm::runtime::instr_handler::execute_unary_operator_instr(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_binary_operator_instr(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -323,6 +325,7 @@ corevm::runtime::instr_handler::execute_binary_operator_instr(
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_integer_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
@@ -335,6 +338,7 @@ corevm::runtime::instr_handler::execute_native_integer_type_creation_instr(
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_floating_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
@@ -356,6 +360,7 @@ corevm::runtime::instr_handler::execute_native_floating_type_creation_instr(
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_complex_type_creation_instr(
   const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
@@ -369,6 +374,7 @@ corevm::runtime::instr_handler::execute_native_complex_type_creation_instr(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_conversion_instr(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -381,6 +387,7 @@ corevm::runtime::instr_handler::execute_native_type_conversion_instr(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -393,6 +400,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_op
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -405,6 +413,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_op
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -425,6 +434,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -445,6 +455,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_opera
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -466,6 +477,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -487,6 +499,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_ope
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_operands(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)
@@ -509,6 +522,7 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
+/* static */
 void
 corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
   corevm::runtime::frame* frame, InterfaceFunc interface_func)

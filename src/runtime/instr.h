@@ -1284,59 +1284,59 @@ public:
 
 protected:
   template<typename InterfaceFunc>
-  void execute_unary_operator_instr(
+  static void execute_unary_operator_instr(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_binary_operator_instr(
+  static void execute_binary_operator_instr(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename NativeType>
-  void execute_native_integer_type_creation_instr(
+  static void execute_native_integer_type_creation_instr(
     const corevm::runtime::instr&, corevm::runtime::frame*);
 
   template<typename NativeType>
-  void execute_native_floating_type_creation_instr(
+  static void execute_native_floating_type_creation_instr(
     const corevm::runtime::instr&, corevm::runtime::frame*);
 
   template<typename NativeType>
-  void execute_native_complex_type_creation_instr(
+  static void execute_native_complex_type_creation_instr(
     const corevm::runtime::instr&, corevm::runtime::frame*);
 
   template<typename InterfaceFunc>
-  void execute_native_type_conversion_instr(
+  static void execute_native_type_conversion_instr(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_single_operand(
+  static void execute_native_type_complex_instr_with_single_operand(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_single_operand_in_place(
+  static void execute_native_type_complex_instr_with_single_operand_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_two_operands(
+  static void execute_native_type_complex_instr_with_two_operands(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_two_operands_in_place(
+  static void execute_native_type_complex_instr_with_two_operands_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_three_operands(
+  static void execute_native_type_complex_instr_with_three_operands(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_three_operands_in_place(
+  static void execute_native_type_complex_instr_with_three_operands_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_four_operands(
+  static void execute_native_type_complex_instr_with_four_operands(
     corevm::runtime::frame*, InterfaceFunc);
 
   template<typename InterfaceFunc>
-  void execute_native_type_complex_instr_with_four_operands_in_place(
+  static void execute_native_type_complex_instr_with_four_operands_in_place(
     corevm::runtime::frame*, InterfaceFunc);
 };
 
