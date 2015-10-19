@@ -77,11 +77,6 @@ corevm::frontend::program::do_run()
     configuration.set_heap_alloc_size(m_heap_alloc_size);
   }
 
-  if (option_provided("format"))
-  {
-    configuration.set_format(m_format);
-  }
-
   if (option_provided("pool-alloc-size"))
   {
     configuration.set_pool_alloc_size(m_pool_alloc_size);

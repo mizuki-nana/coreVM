@@ -46,10 +46,6 @@ INTERMEDIATE_EXTENSION = '.tmp.py'
 
 def pyta_cmdl_args(path, options):
     args = [PYTHON, PYTA_PATH, path]
-
-    if options.format:
-        args.extend(['--format', options.format])
-
     return args
 
 ## -----------------------------------------------------------------------------
@@ -129,15 +125,6 @@ def main():
     parser = optparse.OptionParser(
         usage='usage: %prog [options]',
         version='%prog v0.1.1')
-
-    parser.add_option(
-        '-f',
-        '--format',
-        action='store',
-        dest='format',
-        default='binary',
-        help='Bytecode format (binary or text)'
-    )
 
     parser.add_option(
         '-p',

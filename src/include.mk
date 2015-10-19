@@ -55,7 +55,6 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/sighandler_registrar.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/vector.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/utils.cc
 
-SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/bytecode_loader_text.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/bytecode_loader_binary.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/configuration.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/program.cc

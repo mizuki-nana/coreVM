@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "bytecode_loader_binary.h"
-#include "bytecode_loader_text.h"
 #include "configuration.h"
 #include "corevm/macros.h"
 #include "dyobj/errors.h"
@@ -37,7 +36,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cerrno>
 #include <cstring>
 #include <iostream>
-#include <memory>
 
 
 // -----------------------------------------------------------------------------
@@ -87,25 +85,11 @@ corevm::frontend::runner::run() const noexcept
 
   corevm::runtime::process process(options);
 
-  std::unique_ptr<corevm::frontend::bytecode_loader> loader;
-  const std::string& format = m_configuration.format();
-
-  if (format == "text")
-  {
-    loader.reset(new corevm::frontend::bytecode_loader_text());
-  }
-  else
-  {
-    loader.reset(new corevm::frontend::bytecode_loader_binary());
-  }
-
-#if __DEBUG__
-  ASSERT(loader);
-#endif
+  corevm::frontend::bytecode_loader_binary loader;
 
   try
   {
-    loader->load(m_path, process);
+    loader.load(m_path, process);
 
     // TODO: [COREVM-247] Enable garbage collection mechanism
     // bool res = corevm::runtime::process_runner(process, gc_interval).start();

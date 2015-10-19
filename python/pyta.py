@@ -64,9 +64,8 @@ class PytaStep(object):
 
 class Pyta(object):
 
-    def __init__(self, input_path, format=None, debug_mode=False):
+    def __init__(self, input_path, debug_mode=False):
         self.input_path = input_path
-        self.format = format
         self.debug_mode = debug_mode
 
         self.init_steps()
@@ -109,10 +108,6 @@ class Pyta(object):
             ),
         )
 
-        if self.format:
-            self.steps[1].cmdl_args.extend(['--format', self.format])
-            self.steps[2].cmdl_args.extend(['--format', self.format])
-
     def code_transformer_input_to_output_path(self, path):
         return os.path.splitext(path)[0] + INTERMEDIATE_EXTENSION
 
@@ -147,21 +142,13 @@ def main():
         help='Debug mode'
     )
 
-    parser.add_option(
-        '-t',
-        '--format',
-        action='store',
-        dest='format',
-        help='Bytecode format'
-    )
-
     options, args = parser.parse_args()
 
     if not args:
         sys.stderr.write('Input file not specified\n')
         sys.exit(-1)
 
-    pyta = Pyta(args[0], format=options.format, debug_mode=options.debug_mode)
+    pyta = Pyta(args[0], debug_mode=options.debug_mode)
     pyta.run()
 
 ## -----------------------------------------------------------------------------

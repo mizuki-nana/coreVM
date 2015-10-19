@@ -92,25 +92,3 @@ TEST_F(utils_unittest, TestValidateInvalidVectorFails)
 }
 
 // -----------------------------------------------------------------------------
-
-TEST_F(utils_unittest, TestValidateLocs)
-{
-  const std::string locs_str = "["
-    "{"
-      "\"index\": 0,"
-      "\"loc\": {"
-        "\"lineno\": 200,"
-        "\"col_offset\": 10"
-      "}"
-    "}"
-  "]";
-
-  const JSON locs_json = sneaker::json::parse(locs_str);
-  const JSON schema_json = sneaker::json::parse(
-    corevm::frontend::get_v0_1_locs_schema_definition()
-  );
-
-  sneaker::json::json_schema::validate(locs_json, schema_json);
-}
-
-// -----------------------------------------------------------------------------
