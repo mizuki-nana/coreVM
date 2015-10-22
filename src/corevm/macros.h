@@ -27,19 +27,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
+// -----------------------------------------------------------------------------
+
 // Debug mode is off by default.
 // Use compiler option to turn on debug mode.
 #ifndef __DEBUG__
   #define __DEBUG__ 0
 #endif
 
-
-// Special exception throw mode. Off by default.
-// To be turned on by compiler option when needed.
-#ifndef __THROW__
-  #define __THROW__ 0
-#endif
-
+// -----------------------------------------------------------------------------
 
 #define ASSERT(expr)                                    \
   if (! (expr) )                                        \
@@ -50,6 +46,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     abort();                                            \
   }
 
+// -----------------------------------------------------------------------------
+
+// Special exception throw mode. Off by default.
+// To be turned on by compiler option when needed.
+#ifndef __THROW__
+  #define __THROW__ 0
+#endif
+
+// -----------------------------------------------------------------------------
 
 #if __DEBUG__ && __THROW__
   #define THROW(expr)                                   \
@@ -61,17 +66,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   #define THROW(expr) throw (expr)
 #endif
 
+// -----------------------------------------------------------------------------
 
 /**
  * Measure cumulative and average runtime of each instruction handler.
  */
-#ifndef __MEASURE_INSTRS__
-  #define __MEASURE_INSTRS__ 0
+#ifndef INSTRUMENTAL_MEASUREMENT
+  #define INSTRUMENTAL_MEASUREMENT 0
 #endif
+
+#if __DEBUG__ && INSTRUMENTAL_MEASUREMENT
+  #define __MEASURE_INSTRS__ 1
+#endif
+
+// -----------------------------------------------------------------------------
 
 // Can remove this macro once the following is done:
 // TODO: [COREVM-286] Consolidate usage of sequential and block allocators
 #define USE_BLOCK_ALLOCATOR 1
 
+// -----------------------------------------------------------------------------
 
 #endif /* COREVM_MACROS_H_ */
