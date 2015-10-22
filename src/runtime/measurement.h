@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "instr.h"
+#include "instr_info.h"
 
 #include <iomanip>
 
@@ -125,7 +125,7 @@ void pretty_print_measurements(const ContainerType& measurements)
     const auto invocation_count = measurement.invocation_count;
     const auto avg_wall_time = _avg<boost::timer::nanosecond_type>(measurement);
 
-    std::cout << std::setw(INSTR_NAME_WIDTH) << corevm::runtime::instr_handler_meta::instr_set[i].str << BAR;
+    std::cout << std::setw(INSTR_NAME_WIDTH) << corevm::runtime::instr_set_info::instr_infos[i].name << BAR;
     std::cout << std::setw(PERCENTAGE_WIDTH) << std::setprecision(2) << cumulative_wall_time_percentage << std::fixed << BAR;
     std::cout << std::setw(INVOCATION_COUNT_WIDTH) << invocation_count << BAR;
     std::cout << std::setw(CUMULATIVE_WALL_TIME_WIDTH) << cumulative_wall_time << BAR;
