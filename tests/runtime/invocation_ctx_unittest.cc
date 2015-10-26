@@ -39,12 +39,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class invocation_ctx_unittest: public ::testing::Test
 {
 protected:
-  corevm::runtime::closure_ctx m_ctx {
-    .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
-    .closure_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  invocation_ctx_unittest()
+    :
+    m_compartment(new corevm::runtime::compartment("")),
+    m_ctx(corevm::runtime::NONESET_COMPARTMENT_ID, corevm::runtime::NONESET_CLOSURE_ID),
+    m_closure()
+  {
+  }
 
-  corevm::runtime::compartment* m_compartment = new corevm::runtime::compartment("");
+  ~invocation_ctx_unittest()
+  {
+    delete m_compartment;
+  }
+
+  corevm::runtime::compartment* m_compartment;
+  corevm::runtime::closure_ctx m_ctx;
   corevm::runtime::closure m_closure;
 };
 

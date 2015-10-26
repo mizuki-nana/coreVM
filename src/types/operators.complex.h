@@ -36,6 +36,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <functional>
 #include <ios>
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wconversion"
+  #pragma clang diagnostic ignored "-Wsign-conversion"
+#endif
+
 
 namespace corevm {
 
@@ -238,7 +244,7 @@ corevm::types::repr::operator()(const corevm::types::string& handle)
 template<>
 inline
 corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::array& handle)
+corevm::types::repr::operator()(const corevm::types::array& /* handle */)
 {
   return static_cast<corevm::types::string>("<array>");
 }
@@ -248,7 +254,7 @@ corevm::types::repr::operator()(const corevm::types::array& handle)
 template<>
 inline
 corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::map& handle)
+corevm::types::repr::operator()(const corevm::types::map& /* handle */)
 {
   return static_cast<corevm::types::string>("<map>");
 }
@@ -262,8 +268,8 @@ public:
   result_type operator()(const T& handle)
   {
     std::hash<T> hash_func;
-    corevm::types::int64 value = hash_func(handle);
-    return value;
+    corevm::types::uint64 value = hash_func(handle);
+    return static_cast<result_type>(value);
   }
 };
 
@@ -340,7 +346,7 @@ public:
   }
 
   template<typename T>
-  T operator()(const T& handle) const
+  T operator()(const T& /* handle */) const
   {
     THROW(corevm::types::runtime_error("Calling 'slice' operator on invalid type"));
   }
@@ -396,12 +402,10 @@ public:
   }
 
   template<typename T>
-  T operator()(const T& handle) const
+  T operator()(const T& /* handle */) const
   {
     THROW(corevm::types::runtime_error("Calling 'stride' operator on invalid type"));
   }
-
-  int32_t m_stride;
 
 private:
   template<typename T>
@@ -413,18 +417,23 @@ private:
     {
       res.reserve(val.size());
 
+      size_t stride_val = static_cast<size_t>(m_stride);
+
       auto begin = val.begin();
-      size_t size = 0;
-      while (size < val.size())
+      size_t stepped_index = 0;
+      while (stepped_index < val.size())
       {
-        auto itr = begin + size;
+        auto itr = begin;
+        std::advance(itr, stepped_index);
         res.push_back(*itr);
-        size += m_stride;
+        stepped_index += stride_val;
       }
     }
 
     return res;
   }
+
+  int32_t m_stride;
 };
 
 // -----------------------------------------------------------------------------
@@ -453,7 +462,7 @@ class reverse : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle) const
+  T operator()(const T& /* handle */) const
   {
     THROW(corevm::types::runtime_error("Calling 'reverse' operator on invalid type"));
   }
@@ -543,7 +552,7 @@ template<>
 inline
 corevm::types::cmp::result_type
 corevm::types::cmp::operator()<corevm::types::array>(
-  const corevm::types::array& lhs, const corevm::types::array& rhs)
+  const corevm::types::array& /* lhs */, const corevm::types::array& /* rhs */)
 {
   THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
 }
@@ -554,7 +563,7 @@ template<>
 inline
 corevm::types::cmp::result_type
 corevm::types::cmp::operator()<corevm::types::map>(
-  const corevm::types::map& lhs, const corevm::types::map& rhs)
+  const corevm::types::map& /* lhs */, const corevm::types::map& /* rhs */)
 {
   THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
 }
@@ -566,6 +575,11 @@ corevm::types::cmp::operator()<corevm::types::map>(
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_OPERATORS_COMPLEX_H_ */

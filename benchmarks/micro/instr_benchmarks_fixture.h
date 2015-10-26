@@ -42,7 +42,7 @@ public:
   corevm::runtime::process& process();
 
 protected:
-  virtual void init();
+  void init();
 
   corevm::runtime::process m_process;
 };

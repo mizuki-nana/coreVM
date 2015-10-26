@@ -51,7 +51,7 @@ class tuple(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls_builtin(int, res_)
+        return __call_cls_1(int, res_)
 
     def __add__(self, other):
         """

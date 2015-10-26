@@ -260,7 +260,7 @@ struct equality_visitor : public VisitorType
   }
 
   template <typename T, typename T2>
-  bool operator() (const T& lhs, const T2& rhs) const
+  bool operator() (const T& /* lhs */, const T2& /* rhs */) const
   {
     return false;
   }

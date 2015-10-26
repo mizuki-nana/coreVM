@@ -47,6 +47,8 @@ public:
   {
     public:
       virtual void operator()(const dynamic_object_type& obj) = 0;
+
+    virtual ~callback() {}
   };
 
   explicit garbage_collector(dynamic_object_heap_type&);

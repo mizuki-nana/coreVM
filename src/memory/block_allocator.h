@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <iterator>
 #include <vector>
 
 #include "corevm/macros.h"
@@ -41,14 +42,36 @@ namespace memory {
 
 namespace {
 
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wunneeded-member-function"
+#endif
+
 typedef struct free_list_descriptor
 {
+  free_list_descriptor(
+    uint32_t start_index_,
+    uint32_t end_index_,
+    uint32_t current_index_)
+    :
+    start_index(start_index_),
+    end_index(end_index_),
+    current_index(current_index_)
+  {
+  }
+
   uint32_t start_index;
   uint32_t end_index;
   uint32_t current_index; // index points to the first free block in the list.
 } free_list_descriptor;
 
-}; /* end anonymous namespace */
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
+
+
+} /* end anonymous namespace */
 
 // -----------------------------------------------------------------------------
 
@@ -141,15 +164,11 @@ block_allocator<T>::block_allocator(
   {
     m_free_lists.reserve(10);
 
-    int32_t total_blocks = m_total_size / sizeof(T);
+    uint64_t total_blocks = m_total_size / sizeof(T);
 
     if (total_blocks)
     {
-      free_list_descriptor descriptor {
-        .start_index = 0,
-        .end_index = static_cast<uint32_t>(std::max(0, total_blocks - 1)),
-        .current_index = 0,
-      };
+      free_list_descriptor descriptor(0u, static_cast<uint32_t>(total_blocks - 1), 0u);
 
       m_free_lists.push_back(descriptor);
     }
@@ -243,13 +262,9 @@ block_allocator<T>::deallocate(void* ptr)
     return res;
   }
 
-  int64_t range = ptr_ - heap_;
+  uint64_t range = ptr_ - heap_;
 
-#if __DEBUG__
-  ASSERT(range >= 0);
-#endif
-
-  uint32_t index = (uint32_t)( (uint64_t)range / sizeof(T) );
+  uint32_t index = (uint32_t)( range / sizeof(T) );
 
   for (size_t i = 0; i < m_free_lists.size(); ++i)
   {
@@ -284,16 +299,17 @@ block_allocator<T>::deallocate(void* ptr)
          * a new list after it.
          */
 
-        free_list_descriptor new_descriptor {
-          .start_index = index + 1,
-          .end_index = descriptor.end_index,
-          .current_index = descriptor.current_index
-        };
+        free_list_descriptor new_descriptor(
+          /* start_index */ index + 1,
+          /* end_index */ descriptor.end_index,
+          /* current_index */ descriptor.current_index);
 
         descriptor.end_index = index;
         descriptor.current_index = index;
 
-        m_free_lists.insert(m_free_lists.begin() + i + 1, new_descriptor);
+        auto insert_itr = m_free_lists.begin();
+        std::advance(insert_itr, i + 1);
+        m_free_lists.insert(insert_itr, new_descriptor);
       }
 
       res = 1;

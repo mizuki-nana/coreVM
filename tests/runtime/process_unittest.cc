@@ -95,106 +95,6 @@ TEST_F(process_unittest, TestInstantiateWithParameters)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(process_unittest, TestAppendVector)
-{
-  // The process's vector is inaccessible to the outside world, so we need to
-  // simulate its implementation here.
-  corevm::runtime::vector target {
-    { .code=6, .oprd1=421, .oprd2=52 },
-    { .code=5, .oprd1=532, .oprd2=0  },
-    { .code=2, .oprd1=72,  .oprd2=0  },
-  };
-
-  corevm::runtime::vector src {
-    { .code=36, .oprd1=41, .oprd2=81 },
-    { .code=37, .oprd1=27, .oprd2=0  },
-    { .code=83, .oprd1=93, .oprd2=0  },
-  };
-
-  std::copy(src.begin(), src.end(), std::back_inserter(target));
-
-  corevm::runtime::vector expected {
-    { .code=6, .oprd1=421, .oprd2=52 },
-    { .code=5, .oprd1=532, .oprd2=0  },
-    { .code=2, .oprd1=72,  .oprd2=0  },
-    { .code=36, .oprd1=41, .oprd2=81 },
-    { .code=37, .oprd1=27, .oprd2=0  },
-    { .code=83, .oprd1=93, .oprd2=0  },
-  };
-
-  ASSERT_EQ(expected.size(), target.size());
-
-  for (size_t i = 0; i < expected.size(); ++i)
-  {
-    const auto& expected_instr = expected[i];
-    const auto& actual_instr = target[i];
-
-    ASSERT_EQ(expected_instr.code, actual_instr.code);
-    ASSERT_EQ(expected_instr.oprd1, actual_instr.oprd1);
-    ASSERT_EQ(expected_instr.oprd2, actual_instr.oprd2);
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(process_unittest, TestInsertVector)
-{
-  // The process's vector is inaccessible to the outside world, so we need to
-  // simulate its implementation here.
-  corevm::runtime::vector target {
-    { .code=6,  .oprd1=421, .oprd2=52 },
-    { .code=5,  .oprd1=532, .oprd2=0  },
-    { .code=2,  .oprd1=72,  .oprd2=0  },
-    { .code=71, .oprd1=25,  .oprd2=0  },
-    { .code=18, .oprd1=51,  .oprd2=43 },
-    { .code=17, .oprd1=11,  .oprd2=99 },
-    { .code=33, .oprd1=88,  .oprd2=55 },
-    { .code=88, .oprd1=11,  .oprd2=91 },
-    { .code=17, .oprd1=71,  .oprd2=23 },
-    { .code=91, .oprd1=64,  .oprd2=67 },
-  };
-
-  corevm::runtime::vector src {
-    { .code=36, .oprd1=41,  .oprd2=81 },
-    { .code=37, .oprd1=27,  .oprd2=0  },
-    { .code=83, .oprd1=93,  .oprd2=0  },
-  };
-
-  int64_t fake_pc = 5;
-
-  target.insert(target.begin() + fake_pc + 1, src.begin(), src.end());
-
-  corevm::runtime::vector expected {
-    { .code=6,  .oprd1=421, .oprd2=52 },
-    { .code=5,  .oprd1=532, .oprd2=0  },
-    { .code=2,  .oprd1=72,  .oprd2=0  },
-    { .code=71, .oprd1=25,  .oprd2=0  },
-    { .code=18, .oprd1=51,  .oprd2=43 },
-    { .code=17, .oprd1=11,  .oprd2=99 },
-    { .code=36, .oprd1=41,  .oprd2=81 },
-    { .code=37, .oprd1=27,  .oprd2=0  },
-    { .code=83, .oprd1=93,  .oprd2=0  },
-    { .code=33, .oprd1=88,  .oprd2=55 },
-    { .code=88, .oprd1=11,  .oprd2=91 },
-    { .code=17, .oprd1=71,  .oprd2=23 },
-    { .code=91, .oprd1=64,  .oprd2=67 },
-  };
-
-  ASSERT_EQ(expected.size(), target.size());
-
-  for (size_t i = 0; i < expected.size(); ++i)
-  {
-    const auto& expected_instr = expected[i];
-    const auto& actual_instr = target[i];
-
-    ASSERT_EQ(expected_instr.code, actual_instr.code);
-    ASSERT_EQ(expected_instr.oprd1, actual_instr.oprd1);
-    ASSERT_EQ(expected_instr.oprd2, actual_instr.oprd2);
-  }
-}
-
-// -----------------------------------------------------------------------------
-
 TEST_F(process_unittest, TestPushAndPopStack)
 {
   corevm::runtime::process process;
@@ -292,16 +192,21 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   corevm::runtime::compartment compartment("./example.core");
 
   corevm::runtime::vector vector {
-    { .code=6, .oprd1=421, .oprd2=523 },
-    { .code=5, .oprd1=532, .oprd2=0   },
-    { .code=2, .oprd1=72,  .oprd2=0   },
+    corevm::runtime::instr(100, 100, 100),
+    corevm::runtime::instr(100, 100, 100),
+    corevm::runtime::instr(100, 100, 100),
   };
 
-  corevm::runtime::closure closure {
-    .id=0,
-    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
-    .vector=vector
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure
@@ -314,10 +219,7 @@ TEST_F(process_unittest, TestPushAndPopFrames)
   process.append_vector(vector);
   process.set_pc(0);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure.id,
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure.id);
 
   process.emplace_invocation_ctx(ctx, &compartment, &closure_table[0]);
 
@@ -359,15 +261,19 @@ TEST_F(process_unittest, TestEmplaceFrame)
   ASSERT_EQ(false, process.has_frame());
   ASSERT_EQ(0, process.call_stack_size());
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = 0,
-    .closure_id = 0,
-  };
+  corevm::runtime::closure_ctx ctx(0, 0);
 
-  corevm::runtime::closure closure {
-    .id = ctx.closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    ctx.closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -396,25 +302,21 @@ TEST_F(process_unittest, TestTopNthFrame)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = 0,
-    .closure_id = 1,
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = 0,
-    .closure_id = 2,
-  };
+  corevm::runtime::closure_ctx ctx1(0, 1);
+  corevm::runtime::closure_ctx ctx2(0, 2);
+  corevm::runtime::closure_ctx ctx3(0, 3);
 
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = 3,
-  };
-
-  corevm::runtime::closure closure {
-    .id = ctx1.closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::closure closure(
+    "",
+    ctx1.closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -518,41 +420,43 @@ TEST_F(process_unittest, TestGetFrameByClosureCtx)
 {
   corevm::runtime::process process;
 
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
   corevm::runtime::compartment_id compartment_id = 0;
 
   corevm::runtime::closure_id closure_id1 = 0;
   corevm::runtime::closure_id closure_id2 = 1;
   corevm::runtime::closure_id closure_id3 = 2;
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id1
-  };
+  corevm::runtime::closure_ctx ctx1(compartment_id, closure_id1);
+  corevm::runtime::closure_ctx ctx2(compartment_id, closure_id2);
+  corevm::runtime::closure_ctx ctx3(compartment_id, closure_id3);
 
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id2
-  };
+  corevm::runtime::closure closure1(
+    "",
+    closure_id1,
+    closure_id2,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id3
-  };
+  corevm::runtime::closure closure2(
+    "",
+    closure_id2,
+    closure_id3,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure1 {
-    .id = closure_id1,
-    .parent_id = closure_id2
-  };
-
-  corevm::runtime::closure closure2 {
-    .id = closure_id2,
-    .parent_id = closure_id3
-  };
-
-  corevm::runtime::closure closure3 {
-    .id = closure_id3,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::closure closure3(
+    "",
+    closure_id3,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure1, closure2, closure3 };
@@ -602,16 +506,21 @@ TEST_F(process_unittest, TestOutputStream)
   corevm::runtime::compartment compartment1("./example.core");
 
   corevm::runtime::vector vector1 {
-    { .code=6, .oprd1=421, .oprd2=523 },
-    { .code=5, .oprd1=532, .oprd2=0   },
-    { .code=2, .oprd1=72,  .oprd2=0   },
+    corevm::runtime::instr(6, 421, 523),
+    corevm::runtime::instr(5, 532, 0),
+    corevm::runtime::instr(2, 72, 0),
   };
 
-  corevm::runtime::closure closure1 {
-    .id=2,
-    .parent_id=1,
-    .vector=vector1
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure1(
+    "__main__",
+    2,
+    1,
+    vector1,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table1 {
     closure1
@@ -626,16 +535,18 @@ TEST_F(process_unittest, TestOutputStream)
   corevm::runtime::compartment compartment2("./tests/sample01.core");
 
   corevm::runtime::vector vector2 {
-    { .code=17, .oprd1=957, .oprd2=0  },
-    { .code=59, .oprd1=0,   .oprd2=0  },
-    { .code=22, .oprd1=5,   .oprd2=0  },
+    corevm::runtime::instr(17, 957, 0),
+    corevm::runtime::instr(59, 0, 0),
+    corevm::runtime::instr(22, 5, 0),
   };
 
-  corevm::runtime::closure closure2 {
-    .id=1,
-    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
-    .vector=vector2
-  };
+  corevm::runtime::closure closure2(
+    "run",
+    1,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector2,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table2 {
     closure2
@@ -648,12 +559,7 @@ TEST_F(process_unittest, TestOutputStream)
   auto id = process.create_dyobj();
   auto &obj = (process).get_dyobj(id);
   obj.set_ntvhndl_key(1);
-  obj.set_closure_ctx(
-    corevm::runtime::closure_ctx {
-      .compartment_id=1,
-      .closure_id=2
-    }
-  );
+  obj.set_closure_ctx(corevm::runtime::closure_ctx(1, 2));
 
   corevm::types::native_type_handle hndl = corevm::types::uint32(32);
   process.insert_ntvhndl(hndl);
@@ -706,9 +612,17 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameWithAssociatedCtx)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure {
-    .id = 0
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -716,10 +630,7 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameWithAssociatedCtx)
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = 0,
-    .closure_id = closure.id
-  };
+  corevm::runtime::closure_ctx ctx(0, closure.id);
 
   process.insert_compartment(compartment);
 
@@ -738,20 +649,33 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameByTraverseClosureTree)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure1 {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure2 {
-    .id = 1,
-    .parent_id = 0,
-  };
+  corevm::runtime::closure closure1(
+    "__main__",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure3 {
-    .id = 2,
-    .parent_id = 1,
-  };
+  corevm::runtime::closure closure2(
+    "run",
+    1,
+    0,
+    vector,
+    locs,
+    catch_sites);
+
+  corevm::runtime::closure closure3(
+    "",
+    2,
+    1,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
 
@@ -759,15 +683,9 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindFrameByTraverseClosureTree)
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = 0,
-    .closure_id = closure1.id
-  };
+  corevm::runtime::closure_ctx ctx1(0, closure1.id);
 
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = closure3.id
-  };
+  corevm::runtime::closure_ctx ctx3(0, closure3.id);
 
   process.insert_compartment(compartment);
 
@@ -786,20 +704,33 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindMissingFrame)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure1 {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure2 {
-    .id = 1,
-    .parent_id = 0,
-  };
+  corevm::runtime::closure closure1(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure3 {
-    .id = 2,
-    .parent_id = 1,
-  };
+  corevm::runtime::closure closure2(
+    "",
+    1,
+    0,
+    vector,
+    locs,
+    catch_sites);
+
+  corevm::runtime::closure closure3(
+    "",
+    2,
+    1,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
 
@@ -807,20 +738,9 @@ TEST_F(process_find_frame_by_ctx_unittest, TestFindMissingFrame)
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = 0,
-    .closure_id = closure1.id
-  };
-
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = 0,
-    .closure_id = closure2.id
-  };
-
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = closure3.id
-  };
+  corevm::runtime::closure_ctx ctx1(0, closure1.id);
+  corevm::runtime::closure_ctx ctx2(0, closure2.id);
+  corevm::runtime::closure_ctx ctx3(0, closure3.id);
 
   process.insert_compartment(compartment);
 
@@ -843,20 +763,33 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameSuccess
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure1 {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure2 {
-    .id = 1,
-    .parent_id = 0,
-  };
+  corevm::runtime::closure closure1(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure3 {
-    .id = 2,
-    .parent_id = 1,
-  };
+  corevm::runtime::closure closure2(
+    "",
+    1,
+    0,
+    vector,
+    locs,
+    catch_sites);
+
+  corevm::runtime::closure closure3(
+    "",
+    2,
+    1,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
 
@@ -864,20 +797,9 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameSuccess
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = 0,
-    .closure_id = closure1.id
-  };
-
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = 0,
-    .closure_id = closure2.id
-  };
-
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = closure3.id
-  };
+  corevm::runtime::closure_ctx ctx1(0, closure1.id);
+  corevm::runtime::closure_ctx ctx2(0, closure2.id);
+  corevm::runtime::closure_ctx ctx3(0, closure3.id);
 
   process.insert_compartment(compartment);
 
@@ -900,20 +822,33 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameWithMis
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure1 {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure2 {
-    .id = 1,
-    .parent_id = 0,
-  };
+  corevm::runtime::closure closure1(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure3 {
-    .id = 2,
-    .parent_id = 1,
-  };
+  corevm::runtime::closure closure2(
+    "",
+    1,
+    0,
+    vector,
+    locs,
+    catch_sites);
+
+  corevm::runtime::closure closure3(
+    "",
+    2,
+    1,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
 
@@ -921,15 +856,9 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameWithMis
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = 0,
-    .closure_id = closure1.id
-  };
+  corevm::runtime::closure_ctx ctx1(0, closure1.id);
 
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = closure3.id
-  };
+  corevm::runtime::closure_ctx ctx3(0, closure3.id);
 
   process.insert_compartment(compartment);
 
@@ -951,20 +880,33 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameFails)
 {
   corevm::runtime::process process;
 
-  corevm::runtime::closure closure1 {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure2 {
-    .id = 1,
-    .parent_id = 0,
-  };
+  corevm::runtime::closure closure1(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure3 {
-    .id = 2,
-    .parent_id = 1,
-  };
+  corevm::runtime::closure closure2(
+    "",
+    1,
+    0,
+    vector,
+    locs,
+    catch_sites);
+
+  corevm::runtime::closure closure3(
+    "",
+    2,
+    1,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure1, closure2, closure3 };
 
@@ -972,10 +914,7 @@ TEST_F(process_find_parent_frame_in_process_unittest, TestFindParentFrameFails)
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure_ctx ctx3 {
-    .compartment_id = 0,
-    .closure_id = closure3.id
-  };
+  corevm::runtime::closure_ctx ctx3(0, closure3.id);
 
   process.insert_compartment(compartment);
 

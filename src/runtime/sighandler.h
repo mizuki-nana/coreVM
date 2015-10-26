@@ -41,6 +41,8 @@ class sighandler
 {
 public:
   virtual void handle_signal(sig_atomic_t, corevm::runtime::process&) = 0;
+
+  virtual ~sighandler();
 };
 
 // -----------------------------------------------------------------------------
@@ -212,10 +214,10 @@ public:
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_SIGHANDLER_H_ */

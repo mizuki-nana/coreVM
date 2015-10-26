@@ -67,11 +67,11 @@ public:
   {
   }
 
-  explicit object_not_found_error(corevm::dyobj::dyobj_id id):
+  explicit object_not_found_error(corevm::dyobj::dyobj_id id_):
     corevm::dyobj::runtime_error(
-      str(boost::format("Object %#x not found") % id)
+      str(boost::format("Object %#x not found") % id_)
     ),
-    id(id)
+    id(id_)
   {
   }
 
@@ -94,14 +94,14 @@ public:
   }
 
   object_attribute_not_found_error(
-    corevm::dyobj::attr_key attr_key, corevm::dyobj::dyobj_id id
+    corevm::dyobj::attr_key attr_key_, corevm::dyobj::dyobj_id id_
   ):
     corevm::dyobj::runtime_error(
       str(boost::format(
-        "Attribute %#x in object %#x not found") % attr_key % id)
+        "Attribute %#x in object %#x not found") % attr_key_ % id_)
     ),
-    attr_key(attr_key),
-    id(id)
+    attr_key(attr_key_),
+    id(id_)
   {
   }
 

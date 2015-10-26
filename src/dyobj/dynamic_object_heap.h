@@ -177,13 +177,12 @@ template<class dynamic_object_manager>
 typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type
 corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::active_size() const noexcept
 {
-  return std::count_if(
-    cbegin(),
-    cend(),
+  typedef typename corevm::dyobj::dynamic_object_heap<dynamic_object_manager>::size_type active_size_type;
+
+  return static_cast<active_size_type>(std::count_if(cbegin(), cend(),
     [](const dynamic_object_type& obj) {
       return !obj.is_garbage_collectible();
-    }
-  );
+    }));
 }
 
 // -----------------------------------------------------------------------------

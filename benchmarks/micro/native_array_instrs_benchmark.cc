@@ -44,7 +44,7 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arylen handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -68,7 +68,7 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryemp handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -95,7 +95,7 @@ void BenchmarkInstrARYAT(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryat handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -120,7 +120,7 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryfrt handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -144,7 +144,7 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arybak handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -174,7 +174,7 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
     corevm::types::uint32(10);
 
   corevm::runtime::instr_handler_aryput handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -203,7 +203,7 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryapnd handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -231,7 +231,7 @@ void BenchmarkInstrARYERS(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryers handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -256,7 +256,7 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arypop handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -283,7 +283,7 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
     corevm::types::native_array { 3, 2, 1 };
 
   corevm::runtime::instr_handler_aryswp handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -308,7 +308,7 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryclr handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -335,7 +335,7 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
     corevm::types::native_array { 4, 5, 6 };
 
   corevm::runtime::instr_handler_arymrg handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();

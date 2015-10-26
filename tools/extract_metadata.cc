@@ -38,6 +38,8 @@ class extract_metadata : public sneaker::utility::cmdline_program
 public:
   extract_metadata();
 
+  virtual ~extract_metadata();
+
 protected:
   virtual int do_run();
 
@@ -67,6 +69,14 @@ extract_metadata::extract_metadata()
 {
   add_positional_parameter("output", 1);
   add_string_parameter("output", "Output file", &m_output);
+}
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+extract_metadata::~extract_metadata()
+{
+  // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
@@ -117,7 +127,7 @@ extract_metadata::extract_instr_info() const
 
   ss << "{" << std::endl;
 
-  for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
     const corevm::runtime::instr_info& info = corevm::runtime::instr_set_info::instr_infos[code];
@@ -150,9 +160,9 @@ extract_metadata::extract_flags_info() const
 
   ss << "{" << std::endl;
 
-  for (auto i = 0; i < array_size; ++i)
+  for (size_t i = 0; i < array_size; ++i)
   {
-    uint32_t flag_value = i;
+    size_t flag_value = i;
     const char* flag_str = corevm::dyobj::DYOBJ_FLAG_VALUES_ARRAY[i];
 
     ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << std::string(flag_str)

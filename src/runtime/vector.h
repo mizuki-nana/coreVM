@@ -46,10 +46,10 @@ std::ostream& operator<<(std::ostream&, const corevm::runtime::vector&);
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_VECTOR_H_ */

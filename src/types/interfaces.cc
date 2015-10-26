@@ -489,7 +489,7 @@ native_type_handle corevm::types::interface_compute_slice(
 native_type_handle corevm::types::interface_compute_stride(
   native_type_handle& operand, native_type_handle& stride)
 {
-  int32_t stride_value = corevm::types::get_value_from_handle<uint32_t>(stride);
+  int32_t stride_value = corevm::types::get_value_from_handle<int32_t>(stride);
 
   return corevm::types::apply_unary_visitor_parameterized<
     corevm::types::native_type_stride_visitor>(operand, stride_value);;
@@ -538,7 +538,7 @@ corevm::types::interface_string_get_size(native_type_handle& operand)
   const auto& string_value =
     corevm::types::get_value_ref_from_handle<corevm::types::native_string>(operand);
 
-  corevm::types::int32 result_value = string_value.size();
+  corevm::types::uint64 result_value = string_value.size();
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -566,8 +566,8 @@ corevm::types::interface_string_at(native_type_handle& operand,
   const int32_t index_value =
     corevm::types::get_value_from_handle<int32_t>(index);
 
-  char char_value = string_value.at(index_value);
-  corevm::types::uint32 result_value = char_value;
+  char char_value = string_value.at(static_cast<size_t>(index_value));
+  corevm::types::int8 result_value = char_value;
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -583,7 +583,7 @@ corevm::types::interface_string_at_2(native_type_handle& operand,
 
   const int32_t index_value = corevm::types::get_value_from_handle<int32_t>(index);
 
-  char char_value = string_value.at(index_value);
+  char char_value = string_value.at(static_cast<size_t>(index_value));
   corevm::types::string result_value(1, char_value);
 
   return corevm::types::native_type_handle(result_value);
@@ -758,7 +758,7 @@ corevm::types::interface_string_find(
   const auto& other_string_value =
     corevm::types::get_value_ref_from_handle<corevm::types::native_string>(str);
 
-  corevm::types::uint32 result_value = string_value.find(other_string_value);
+  corevm::types::uint64 result_value = string_value.find(other_string_value);
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -777,7 +777,7 @@ corevm::types::interface_string_find2(native_type_handle& operand,
 
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
 
-  corevm::types::uint32 result_value =
+  corevm::types::uint64 result_value =
     string_value.find(other_string_value, pos_value);
 
   return corevm::types::native_type_handle(result_value);
@@ -795,7 +795,7 @@ corevm::types::interface_string_rfind(native_type_handle& operand,
   const auto& other_string_value =
     corevm::types::get_value_ref_from_handle<corevm::types::native_string>(str);
 
-  corevm::types::uint32 result_value = string_value.rfind(other_string_value);
+  corevm::types::uint64 result_value = string_value.rfind(other_string_value);
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -814,7 +814,7 @@ corevm::types::interface_string_rfind2(native_type_handle& operand,
 
   size_t pos_value = corevm::types::get_value_from_handle<size_t>(pos);
 
-  corevm::types::uint32 result_value =
+  corevm::types::uint64 result_value =
     string_value.rfind(other_string_value, pos_value);
 
   return corevm::types::native_type_handle(result_value);
@@ -834,7 +834,7 @@ corevm::types::interface_array_size(native_type_handle& operand)
   const auto& array_value =
     corevm::types::get_value_ref_from_handle<corevm::types::native_array>(operand);
 
-  corevm::types::int32 result_value = array_value.size();
+  corevm::types::uint64 result_value = array_value.size();
 
   return corevm::types::native_type_handle(result_value);
 }
@@ -1013,7 +1013,7 @@ corevm::types::interface_map_size(native_type_handle& operand)
   const auto& map_value =
     corevm::types::get_value_ref_from_handle<corevm::types::native_map>(operand);
 
-  corevm::types::uint32 result_value = map_value.size();
+  corevm::types::uint64 result_value = map_value.size();
 
   return corevm::types::native_type_handle(result_value);
 }

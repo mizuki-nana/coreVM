@@ -43,6 +43,34 @@ namespace runtime {
 
 typedef struct closure
 {
+  closure()
+    :
+    name(),
+    id(corevm::runtime::NONESET_CLOSURE_ID),
+    parent_id(corevm::runtime::NONESET_CLOSURE_ID),
+    vector(),
+    locs(),
+    catch_sites()
+  {
+  }
+
+  closure(
+    std::string name_,
+    corevm::runtime::closure_id id_,
+    corevm::runtime::closure_id parent_id_,
+    corevm::runtime::vector vector_,
+    corevm::runtime::loc_table locs_,
+    corevm::runtime::catch_site_list catch_sites_)
+    :
+    name(name_),
+    id(id_),
+    parent_id(parent_id_),
+    vector(vector_),
+    locs(locs_),
+    catch_sites(catch_sites_)
+  {
+  }
+
   std::string name;
   corevm::runtime::closure_id id;
   corevm::runtime::closure_id parent_id;

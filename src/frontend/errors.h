@@ -85,7 +85,7 @@ public:
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace frontend */
+} /* end namespace frontend */
 
 
 } /* end namespace corevm */

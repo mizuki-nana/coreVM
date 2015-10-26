@@ -23,6 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_RUNNER_H_
 #define COREVM_PROCESS_RUNNER_H_
 
+#include "corevm/macros.h"
+
+#if COREVM_247_COMPLETED
+
+
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <cstdint>
@@ -59,6 +64,9 @@ protected:
 
 
 }; /* end namespace corevm */
+
+
+#endif /* COREVM_247_COMPLETED */
 
 
 #endif /* COREVM_PROCESS_RUNNER_H_ */

@@ -179,10 +179,10 @@ bool operator!=(heap_allocator<T, AllocationScheme> const& lhs, other_allocator_
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace dyobj */
+} /* end namespace dyobj */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_HEAP_ALLOCATOR_H_ */

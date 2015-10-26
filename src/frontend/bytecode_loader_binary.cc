@@ -92,13 +92,7 @@ corevm::frontend::bytecode_loader_binary::load(
       const auto oprd1 = static_cast<corevm::runtime::instr_oprd>(instr.oprd1);
       const auto oprd2 = static_cast<corevm::runtime::instr_oprd>(instr.oprd2);
 
-      vector.push_back(
-        corevm::runtime::instr {
-          .code = code,
-          .oprd1 = oprd1,
-          .oprd2 = oprd2
-        }
-      );
+      vector.emplace_back(code, oprd1, oprd2);
     }
 
     // Locs
@@ -116,10 +110,7 @@ corevm::frontend::bytecode_loader_binary::load(
         const auto lineno = static_cast<int32_t>(loc_record.lineno);
         const auto col_offset = static_cast<int32_t>(loc_record.col_offset);
 
-        corevm::runtime::loc_info loc {
-          .lineno = lineno,
-          .col_offset = col_offset
-        };
+        corevm::runtime::loc_info loc(lineno, col_offset);
 
         locs_table[index] = loc;
       }
@@ -140,26 +131,17 @@ corevm::frontend::bytecode_loader_binary::load(
         const auto to = static_cast<uint32_t>(catch_site_record.to);
         const auto dst = static_cast<uint32_t>(catch_site_record.dst);
 
-        corevm::runtime::catch_site catch_site {
-          .from = from,
-          .to = to,
-          .dst = dst
-        };
-
-        catch_sites.push_back(catch_site);
+        catch_sites.emplace_back(from, to, dst);
       }
     }
 
-    closure_table.push_back(
-      corevm::runtime::closure {
-        .name = std::move(name),
-        .id = id,
-        .parent_id = parent_id,
-        .vector = std::move(vector),
-        .locs = std::move(locs_table),
-        .catch_sites = std::move(catch_sites)
-      }
-    );
+    closure_table.emplace_back(
+      std::move(name),
+      id,
+      parent_id,
+      std::move(vector),
+      std::move(locs_table),
+      std::move(catch_sites));
 
   } /* end for-loop */
 

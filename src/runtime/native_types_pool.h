@@ -119,10 +119,10 @@ private:
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_NATIVE_TYPES_POOL_H_ */

@@ -22,11 +22,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "instr_benchmarks_fixture.h"
 
+#include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/common.h"
 #include "runtime/compartment.h"
 #include "runtime/frame.h"
 #include "runtime/invocation_ctx.h"
+#include "runtime/loc_info.h"
 #include "runtime/process.h"
 #include "runtime/vector.h"
 
@@ -35,7 +37,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-const char* DUMMY_PATH = "./example.core";
+static const char* DUMMY_PATH = "./example.core";
 
 // -----------------------------------------------------------------------------
 
@@ -56,17 +58,22 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
   // Please note that setting this vector too long can cause runtime errors
   // in certain benchmarks.
   corevm::runtime::vector vector {
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
   };
 
-  corevm::runtime::closure closure {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "__main__",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
   compartment.set_closure_table(std::move(closure_table));
@@ -74,10 +81,7 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
   auto compartment_id = m_process.insert_compartment(compartment);
 
   // TODO: consolidate this code with `process::pre_start()`.
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure.id
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure.id);
 
   corevm::runtime::compartment* compartment_ptr = nullptr;
   m_process.get_compartment(compartment_id, &compartment_ptr);

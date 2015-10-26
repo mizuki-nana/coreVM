@@ -40,7 +40,7 @@ public:
   virtual ssize_t free(size_t) noexcept = 0;
 
 protected:
-  virtual ~allocation_scheme() = default;
+  virtual ~allocation_scheme();
 };
 
 

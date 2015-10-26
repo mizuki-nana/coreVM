@@ -65,8 +65,8 @@ T _sum(const ContainerType& measurements)
 
 // -----------------------------------------------------------------------------
 
-template<typename T>
-T _avg(const instr_measurement& measurement)
+boost::timer::nanosecond_type
+_avg(const instr_measurement& measurement)
 {
   const auto invocation_count = measurement.invocation_count;
 
@@ -75,7 +75,8 @@ T _avg(const instr_measurement& measurement)
     return 0;
   }
 
-  return measurement.cumulative_wall_time / invocation_count;
+  return static_cast<boost::timer::nanosecond_type>(
+    static_cast<size_t>(measurement.cumulative_wall_time) / invocation_count);
 }
 
 // -----------------------------------------------------------------------------
@@ -123,7 +124,7 @@ void pretty_print_measurements(const ContainerType& measurements)
     const auto cumulative_wall_time = measurement.cumulative_wall_time;
     const auto cumulative_wall_time_percentage = _percantage(cumulative_wall_time, total_wall_time);
     const auto invocation_count = measurement.invocation_count;
-    const auto avg_wall_time = _avg<boost::timer::nanosecond_type>(measurement);
+    const auto avg_wall_time = _avg(measurement);
 
     std::cout << std::setw(INSTR_NAME_WIDTH) << corevm::runtime::instr_set_info::instr_infos[i].name << BAR;
     std::cout << std::setw(PERCENTAGE_WIDTH) << std::setprecision(2) << cumulative_wall_time_percentage << std::fixed << BAR;

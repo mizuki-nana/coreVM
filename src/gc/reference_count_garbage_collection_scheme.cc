@@ -29,6 +29,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unordered_map>
 
 
+// -----------------------------------------------------------------------------
+
+corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
+  :
+  m_count(0u)
+{
+}
+
+/* virtual */
+void
+corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_manager::on_delete() noexcept
+{
+  dec_ref_count();
+}
+
+// -----------------------------------------------------------------------------
+
 using sneaker::algorithm::tarjan;
 
 // -----------------------------------------------------------------------------
@@ -78,7 +95,7 @@ public:
   }
 
   void operator()(
-    const typename dynamic_object_type::attr_key_type& attr_key,
+    const typename dynamic_object_type::attr_key_type& /* attr_key */,
     const typename dynamic_object_type::dyobj_id_type& dyobj_id)
   {
     dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
@@ -127,7 +144,7 @@ public:
   }
 
   void operator()(
-    const typename dynamic_object_type::attr_key_type& attr_key,
+    const typename dynamic_object_type::attr_key_type& /* attr_key */,
     const typename dynamic_object_type::dyobj_id_type& dyobj_id)
   {
     dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
@@ -190,7 +207,7 @@ public:
     {
       object.iterate(
         [&](
-          const typename dynamic_object_type::attr_key_type& attr_key,
+          const typename dynamic_object_type::attr_key_type& /* attr_key */,
           const typename dynamic_object_type::dyobj_id_type& neighbor_id)
         {
           m_non_garbage_collectible_neighbors.insert(neighbor_id);
@@ -204,7 +221,7 @@ public:
 
     object.iterate(
       [&](
-        const typename dynamic_object_type::attr_key_type& attr_key,
+        const typename dynamic_object_type::attr_key_type& /* attr_key */,
         const typename dynamic_object_type::dyobj_id_type& neighbor_id)
       {
         vertex_type& neighbor_vertex = get_vertex(neighbor_id);
@@ -225,7 +242,7 @@ private:
     }
 
     return m_vertices_map.at(id);
-  };
+  }
 
   neighbor_set_type& m_non_garbage_collectible_neighbors;
   vertices_map_type& m_vertices_map;

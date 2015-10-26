@@ -134,7 +134,7 @@ TEST_F(object_container_unittest, TestBulkCreateAndUpdate)
 
   for (size_t i = 0; i < N; ++i)
   {
-    p[i].data = i;
+    p[i].data = static_cast<int>(i);
   }
 
   for (size_t i = 0; i < N; ++i)
@@ -496,7 +496,7 @@ TEST_F(object_container_unittest, TestAllocationOverMaxSize)
 
   std::vector<T*> ptrs(max_size);
 
-  for (auto i = 0; i < max_size; ++i)
+  for (size_t i = 0; i < max_size; ++i)
   {
     T* ptr = m_container.create();
     ASSERT_NE(nullptr, ptr);
@@ -507,10 +507,10 @@ TEST_F(object_container_unittest, TestAllocationOverMaxSize)
   ASSERT_EQ(nullptr, ptr);
 
   // Clean up.
-  for (auto i = 0; i < ptrs.size(); ++i)
+  for (size_t i = 0; i < ptrs.size(); ++i)
   {
-    T* ptr = ptrs[i];
-    m_container.destroy(ptr);
+    T* ptr_ = ptrs[i];
+    m_container.destroy(ptr_);
   }
 }
 

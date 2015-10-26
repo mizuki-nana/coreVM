@@ -39,6 +39,28 @@ namespace memory {
 
 typedef struct __sequential_block_descriptor
 {
+  __sequential_block_descriptor()
+    :
+    size(0u),
+    actual_size(0u),
+    offset(0u),
+    flags(0u)
+  {
+  }
+
+  __sequential_block_descriptor(
+    uint64_t size_,
+    uint64_t actual_size_,
+    uint64_t offset_,
+    uint8_t flags_)
+    :
+    size(size_),
+    actual_size(actual_size_),
+    offset(offset_),
+    flags(flags_)
+  {
+  }
+
   uint64_t size;
   uint64_t actual_size;
   uint64_t offset;

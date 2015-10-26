@@ -59,10 +59,10 @@ private:
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace frontend */
+} /* end namespace frontend */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_SIGNAL_VECTOR_LOADER_H_ */

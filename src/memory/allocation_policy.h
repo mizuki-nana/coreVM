@@ -57,7 +57,7 @@ public:
 
   inline explicit allocation_policy(uint64_t);
   inline explicit allocation_policy(allocation_policy const&);
-  inline ~allocation_policy();
+  inline virtual ~allocation_policy();
 
   inline virtual pointer allocate(
     size_type, typename std::allocator<void>::const_pointer=0);
@@ -121,6 +121,7 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
 template<typename T, typename AllocationScheme>
 corevm::memory::allocation_policy<T, AllocationScheme>::~allocation_policy()
 {
@@ -162,10 +163,11 @@ corevm::memory::allocation_policy<T, AllocationScheme>::deallocate(
   typename allocation_policy<T, AllocationScheme>::size_type
 )
 {
-  int res = m_allocator.deallocate(p);
-
 #if __DEBUG__
+  int res = m_allocator.deallocate(p);
   ASSERT(res == 1);
+#else
+  m_allocator.deallocate(p);
 #endif
 }
 
@@ -217,8 +219,8 @@ template<
 >
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme> const& lhs,
-  allocation_policy<U, OtherAllocationScheme> const& rhs)
+  allocation_policy<T, AllocationScheme> const& /* lhs */,
+  allocation_policy<U, OtherAllocationScheme> const& /* rhs */)
 {
   return false;
 }
@@ -232,8 +234,8 @@ template<
 >
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme> const& lhs,
-  other_allocation_policy_type const& rhs)
+  allocation_policy<T, AllocationScheme> const& /* lhs */,
+  other_allocation_policy_type const& /* rhs */)
 {
   return false;
 }

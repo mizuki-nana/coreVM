@@ -28,6 +28,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types.h"
 #include "corevm/macros.h"
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wconversion"
+#endif
+
 
 namespace corevm {
 
@@ -74,6 +79,20 @@ public:
 
 // -----------------------------------------------------------------------------
 
+// Special handling of boolean type is required since the increment operator
+// on bool is deprecated.
+template<>
+inline
+corevm::types::boolean
+corevm::types::increment::operator()(const corevm::types::boolean& handle)
+{
+  uint64_t int_val = static_cast<uint64_t>(handle);
+  ++int_val;
+  return int_val;
+}
+
+// -----------------------------------------------------------------------------
+
 class decrement : public op<unary_op_tag>
 {
 public:
@@ -91,7 +110,7 @@ public:
 template<>
 inline
 corevm::types::boolean
-corevm::types::decrement::operator()(const corevm::types::boolean& handle)
+corevm::types::decrement::operator()(const corevm::types::boolean& /* handle */)
 {
   THROW(corevm::types::invalid_operator_error("--", "boolean"));
 }
@@ -125,7 +144,7 @@ public:
 template<>
 inline
 corevm::types::decimal
-corevm::types::bitwise_not::operator()(const corevm::types::decimal& handle)
+corevm::types::bitwise_not::operator()(const corevm::types::decimal& /* handle */)
 {
   THROW(corevm::types::invalid_operator_error("~", "decimal"));
 }
@@ -135,7 +154,7 @@ corevm::types::bitwise_not::operator()(const corevm::types::decimal& handle)
 template<>
 inline
 corevm::types::decimal2
-corevm::types::bitwise_not::operator()(const corevm::types::decimal2& handle)
+corevm::types::bitwise_not::operator()(const corevm::types::decimal2& /* handle */)
 {
   THROW(corevm::types::invalid_operator_error("~", "decimal2"));
 }
@@ -177,6 +196,11 @@ corevm::types::bitwise_not::operator()(const corevm::types::map& handle)
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_OPERATORS_UNARY_H_ */

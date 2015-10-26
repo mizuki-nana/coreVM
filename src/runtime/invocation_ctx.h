@@ -69,7 +69,7 @@ public:
 
   void put_param(const corevm::dyobj::dyobj_id&);
 
-  const corevm::dyobj::dyobj_id pop_param()
+  corevm::dyobj::dyobj_id pop_param()
     throw(corevm::runtime::missing_parameter_error);
 
   bool has_param_value_pairs() const;
@@ -79,7 +79,7 @@ public:
   void put_param_value_pair(
     const corevm::runtime::variable_key&, const corevm::dyobj::dyobj_id&);
 
-  const corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key&)
+  corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key&)
     throw(corevm::runtime::missing_parameter_error);
 
   std::vector<corevm::runtime::variable_key> param_value_pair_keys() const;

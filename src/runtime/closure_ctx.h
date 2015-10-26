@@ -34,6 +34,13 @@ namespace runtime {
 
 typedef struct closure_ctx
 {
+  closure_ctx(compartment_id compartment_id_, closure_id closure_id_)
+    :
+    compartment_id(compartment_id_),
+    closure_id(closure_id_)
+  {
+  }
+
   bool operator==(const closure_ctx& rhs)
   {
     return (

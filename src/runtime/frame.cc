@@ -84,7 +84,7 @@ corevm::runtime::frame::~frame()
 
 // -----------------------------------------------------------------------------
 
-uint32_t
+size_t
 corevm::runtime::frame::eval_stack_size() const
 {
   return m_eval_stack.size();
@@ -212,7 +212,7 @@ corevm::runtime::frame::get_visible_var(
   }
 
   return itr->second;
-};
+}
 
 // -----------------------------------------------------------------------------
 
@@ -276,7 +276,7 @@ corevm::runtime::frame::get_invisible_var(
   }
 
   return itr->second;
-};
+}
 
 // -----------------------------------------------------------------------------
 

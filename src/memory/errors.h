@@ -49,10 +49,10 @@ public:
 };
 
 
-}; /* end namespace memory */
+} /* end namespace memory */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_MEMORY_ERRORS_H_ */

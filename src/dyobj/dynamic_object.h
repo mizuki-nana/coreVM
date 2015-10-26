@@ -91,7 +91,7 @@ public:
 
   bool is_garbage_collectible() const noexcept;
 
-  uint32_t attr_count() const;
+  size_t attr_count() const;
 
   bool hasattr(attr_key_type) const noexcept;
 
@@ -176,10 +176,8 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::dynamic_object():
   m_attrs(),
   m_manager(),
   m_ntvhndl_key(corevm::dyobj::NONESET_NTVHNDL_KEY),
-  m_closure_ctx(runtime::closure_ctx {
-    .compartment_id = runtime::NONESET_COMPARTMENT_ID,
-    .closure_id = runtime::NONESET_CLOSURE_ID
-  })
+  m_closure_ctx(runtime::closure_ctx(
+    runtime::NONESET_COMPARTMENT_ID, runtime::NONESET_CLOSURE_ID))
 {
   m_attrs.reserve(COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT);
 }
@@ -371,7 +369,7 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::is_garbage_collectible() 
 // -----------------------------------------------------------------------------
 
 template<typename dynamic_object_manager>
-uint32_t
+size_t
 corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_count() const
 {
   return m_attrs.size();

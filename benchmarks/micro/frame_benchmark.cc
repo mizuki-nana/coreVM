@@ -31,7 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void BenchmarkPushEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, NULL, NULL);
 
@@ -49,7 +50,8 @@ void BenchmarkPushEvalStack(benchmark::State& state)
 static
 void BenchmarkPushEvalStack2(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, NULL, NULL);
 
@@ -67,7 +69,8 @@ void BenchmarkPushEvalStack2(benchmark::State& state)
 static
 void BenchmarkPopEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, NULL, NULL);
 
@@ -90,7 +93,8 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 static
 void BenchmarkGetVisibleVariable1(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, NULL, NULL);
 
@@ -118,7 +122,8 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
    * NOTE: based on the results observed, it shows that the run time
    * grows linearly as the number of frames have to traverse grows.
    */
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame1(ctx, NULL, NULL);
   corevm::runtime::frame frame2(ctx, NULL, NULL);
@@ -152,7 +157,8 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
 static
 void BenchmarkSwapEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx;
+  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+    corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, NULL, NULL);
 

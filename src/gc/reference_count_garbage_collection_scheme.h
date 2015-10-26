@@ -45,11 +45,7 @@ public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
   {
     public:
-      dynamic_object_manager()
-        :
-        m_count(0)
-      {
-      }
+      dynamic_object_manager();
 
       virtual inline bool garbage_collectible() const noexcept
       {
@@ -63,22 +59,20 @@ public:
 
       virtual inline void on_setattr() noexcept
       {
-        this->inc_ref_count();
+        inc_ref_count();
       }
 
       virtual inline void on_delattr() noexcept
       {
-        this->dec_ref_count();
+        dec_ref_count();
       }
 
-      virtual inline void on_delete() noexcept
-      {
-        this->dec_ref_count();
-      }
+      // Define at least one virtula method out-of-line.
+      virtual void on_delete() noexcept;
 
       virtual inline void on_exit() noexcept
       {
-        this->dec_ref_count();
+        dec_ref_count();
       }
 
       virtual inline uint64_t ref_count() const noexcept
@@ -122,7 +116,7 @@ public:
       }
 
       void operator()(
-        typename dynamic_object_heap_type::dynamic_object_id_type id,
+        typename dynamic_object_heap_type::dynamic_object_id_type /* id */,
         typename dynamic_object_heap_type::dynamic_object_type& object)
       {
         m_scheme.check_and_dec_ref_count(m_heap, object);

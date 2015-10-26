@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <array>
 #include <iostream>
 
 
@@ -35,16 +36,14 @@ TEST_F(program_unittest, TestRun)
   corevm::frontend::program program;
 
   int argc = 2;
-  char** argv = nullptr;
-  argv = (char* [])
-  {
-    (char*)"coreVM",
-    (char*)"./sample.core",
-    (char*)"--config",
-    (char*)"./sample.config"
-  };
+  std::array<char*, 4> argv {{
+     (char*)"coreVM",
+     (char*)"./sample.core",
+     (char*)"--config",
+     (char*)"./sample.config"
+  }};
 
-  int res = program.run(argc, argv);
+  int res = program.run(argc, argv.data());
 
   ASSERT_EQ(-1, res);
 

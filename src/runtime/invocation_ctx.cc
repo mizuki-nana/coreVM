@@ -106,7 +106,7 @@ corevm::runtime::invocation_ctx::put_param(const corevm::dyobj::dyobj_id& id)
 
 // -----------------------------------------------------------------------------
 
-const corevm::dyobj::dyobj_id
+corevm::dyobj::dyobj_id
 corevm::runtime::invocation_ctx::pop_param()
   throw(corevm::runtime::missing_parameter_error)
 {
@@ -146,7 +146,7 @@ corevm::runtime::invocation_ctx::put_param_value_pair(
 
 // -----------------------------------------------------------------------------
 
-const corevm::dyobj::dyobj_id
+corevm::dyobj::dyobj_id
 corevm::runtime::invocation_ctx::pop_param_value_pair(
   const corevm::runtime::variable_key& key)
   throw(corevm::runtime::missing_parameter_error)

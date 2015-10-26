@@ -65,6 +65,8 @@ corevm::types::native_map::native_map(std::initializer_list<value_type> il)
 // -----------------------------------------------------------------------------
 
 corevm::types::native_map::native_map(int8_t)
+  :
+  native_map_base()
 {
   THROW(corevm::types::conversion_error("int8", "map"));
 }

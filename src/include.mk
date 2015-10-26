@@ -27,11 +27,16 @@ RUNTIME=runtime
 FRONTEND=frontend
 COREVM_DIR=corevm
 
+SOURCES += $(TOP_DIR)/$(SRC)/$(COREVM_DIR)/errors.cc
+
+SOURCES += $(TOP_DIR)/$(SRC)/$(MEMORY)/allocation_scheme.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(MEMORY)/sequential_allocation_scheme.cc
 
+SOURCES += $(TOP_DIR)/$(SRC)/$(DYOBJ)/dynamic_object_manager.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(DYOBJ)/flags.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(DYOBJ)/util.cc
 
+SOURCES += $(TOP_DIR)/$(SRC)/$(GC)/garbage_collection_scheme.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(GC)/mark_and_sweep_garbage_collection_scheme.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(GC)/reference_count_garbage_collection_scheme.cc
 
@@ -55,6 +60,7 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/sighandler_registrar.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/vector.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/utils.cc
 
+SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/bytecode_loader.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/bytecode_loader_binary.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/configuration.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/program.cc

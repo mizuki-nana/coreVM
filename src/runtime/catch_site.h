@@ -37,9 +37,17 @@ namespace runtime {
 
 struct catch_site
 {
-  const uint32_t from;
-  const uint32_t to;
-  const uint32_t dst;
+  catch_site(uint32_t from_, uint32_t to_, uint32_t dst_)
+    :
+    from(from_),
+    to(to_),
+    dst(dst_)
+  {
+  }
+
+  uint32_t from;
+  uint32_t to;
+  uint32_t dst;
 };
 
 // -----------------------------------------------------------------------------
@@ -49,10 +57,10 @@ typedef std::vector<corevm::runtime::catch_site> catch_site_list;
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_CATCH_SITE_H_ */

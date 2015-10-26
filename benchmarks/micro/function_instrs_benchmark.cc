@@ -50,7 +50,7 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
   }
 
   corevm::runtime::instr_handler_putarg handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -76,7 +76,7 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
   }
 
   corevm::runtime::instr_handler_putkwarg handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
+  corevm::runtime::instr instr(0, 1, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -108,7 +108,7 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr_handler_putargs handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -144,7 +144,7 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
   obj.set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::instr_handler_putkwargs handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -170,7 +170,7 @@ void BenchmarkInstrGETARG(benchmark::State& state)
   }
 
   corevm::runtime::instr_handler_getarg handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -192,11 +192,8 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
   corevm::dyobj::dyobj_id id = 1;
 
   corevm::runtime::instr_handler_getkwarg handler;
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -219,7 +216,7 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
   corevm::dyobj::dyobj_id id = 1;
 
   corevm::runtime::instr_handler_getargs handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -245,7 +242,7 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
   corevm::dyobj::dyobj_id id = 1;
 
   corevm::runtime::instr_handler_getkwargs handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -273,7 +270,7 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
   invk_ctx->put_param(id);
 
   corevm::runtime::instr_handler_hasargs handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
 

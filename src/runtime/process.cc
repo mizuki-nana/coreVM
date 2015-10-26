@@ -77,10 +77,7 @@ private:
   using dynamic_object_type = typename _GarbageCollectorType::dynamic_object_type;
 
 public:
-  virtual void operator()(const dynamic_object_type& obj)
-  {
-    this->m_ntvhndl_keys.push_back(obj.ntvhndl_key());
-  }
+  virtual void operator()(const dynamic_object_type& obj);
 
   const std::vector<corevm::dyobj::ntvhndl_key>& list() const
   {
@@ -90,6 +87,15 @@ public:
 private:
   std::vector<corevm::dyobj::ntvhndl_key> m_ntvhndl_keys;
 };
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+ntvhndl_collector_gc_callback::operator()(const dynamic_object_type& obj)
+{
+  m_ntvhndl_keys.push_back(obj.ntvhndl_key());
+}
 
 // -----------------------------------------------------------------------------
 
@@ -318,7 +324,8 @@ corevm::runtime::process::pop_frame()
   const corevm::runtime::closure* closure_ptr = frame.closure_ptr();
 
   auto begin_itr = m_instrs.begin() + pc() + 1;
-  auto end_itr = begin_itr + closure_ptr->vector.size();
+  auto end_itr = begin_itr;
+  std::advance(end_itr, closure_ptr->vector.size());
 
   m_instrs.erase(begin_itr, end_itr);
 
@@ -518,7 +525,7 @@ corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 
 // -----------------------------------------------------------------------------
 
-const corevm::dyobj::dyobj_id
+corevm::dyobj::dyobj_id
 corevm::runtime::process::pop_stack()
   throw(corevm::runtime::object_stack_empty_error)
 {
@@ -698,10 +705,7 @@ corevm::runtime::process::pre_start()
 
     m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
 
-    corevm::runtime::closure_ctx ctx {
-      .compartment_id = 0,
-      .closure_id = closure->id
-    };
+    corevm::runtime::closure_ctx ctx(0, closure->id);
 
     append_vector(closure->vector);
 
@@ -745,7 +749,7 @@ corevm::runtime::process::start()
   {
     while (m_pause_exec) {}
 
-    const corevm::runtime::instr& instr = m_instrs[m_pc];
+    const corevm::runtime::instr& instr = m_instrs[static_cast<size_t>(m_pc)];
 
     auto& handler =
       corevm::runtime::instr_handler_meta::instr_handlers[instr.code].handler;
@@ -803,7 +807,7 @@ corevm::runtime::process::maybe_gc()
   {
     do_gc();
   }
-};
+}
 
 // -----------------------------------------------------------------------------
 
@@ -831,7 +835,7 @@ corevm::runtime::process::do_gc()
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::instr_addr
+corevm::runtime::instr_addr
 corevm::runtime::process::pc() const
 {
   return m_pc;
@@ -911,9 +915,9 @@ corevm::runtime::process::should_gc() const
 
   size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
-  for (int i = 0; i < flag_size; ++i)
+  for (size_t i = 0; i < flag_size; ++i)
   {
-    bool bit_set = is_bit_set(m_gc_flag, i);
+    bool bit_set = is_bit_set(m_gc_flag, static_cast<char>(i));
 
     if (!bit_set)
     {
@@ -994,9 +998,9 @@ void
 corevm::runtime::process::get_compartment(
   corevm::runtime::compartment_id id, corevm::runtime::compartment** ptr)
 {
-  if (id < m_compartments.size())
+  if (id < static_cast<corevm::runtime::compartment_id>(m_compartments.size()))
   {
-    *ptr = &m_compartments[id];
+    *ptr = &m_compartments[static_cast<size_t>(id)];
   }
 }
 
@@ -1084,10 +1088,7 @@ corevm::runtime::process::find_parent_frame_in_process(
     return nullptr;
   }
 
-  closure_ctx ctx {
-    .compartment_id = frame_ptr->closure_ctx().compartment_id,
-    .closure_id = parent_closure_id
-  };
+  closure_ctx ctx(frame_ptr->closure_ctx().compartment_id, parent_closure_id);
 
   corevm::runtime::compartment* compartment = frame_ptr->compartment_ptr();
 

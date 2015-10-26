@@ -95,12 +95,7 @@ corevm::memory::sequential_allocation_scheme::debug_print(uint32_t base) const n
 block_descriptor_type
 corevm::memory::sequential_allocation_scheme::default_block() const noexcept
 {
-  return block_descriptor_type {
-    .size = m_total_size,
-    .actual_size = 0,
-    .offset = 0,
-    .flags = 0,
-  };
+  return block_descriptor_type(m_total_size, 0u, 0u, 0u);
 }
 
 // -----------------------------------------------------------------------------
@@ -109,12 +104,7 @@ void
 corevm::memory::sequential_allocation_scheme::split(
   iterator_type itr, size_t size, uint64_t offset) noexcept
 {
-  block_descriptor_type descriptor {
-    .size = size,
-    .actual_size = 0,
-    .offset = offset,
-    .flags = 0
-  };
+  block_descriptor_type descriptor(size, 0u, offset, 0u);
   this->m_blocks.insert(++itr, descriptor);
 }
 
@@ -554,11 +544,11 @@ corevm::memory::buddy_allocation_scheme::buddy_allocation_scheme(
 block_descriptor_type
 corevm::memory::buddy_allocation_scheme::default_block() const noexcept
 {
-  return block_descriptor_type {
-    .size = m_total_size,
-    .offset = 0,
-    .flags = ( 0x01 << (FLAG_PARENT_SPLIT - 1) )
-  };
+  return block_descriptor_type(
+    m_total_size,
+    0u,
+    0u,
+    0x01 << (FLAG_PARENT_SPLIT - 1));
 }
 
 // -----------------------------------------------------------------------------
@@ -588,7 +578,7 @@ corevm::memory::buddy_allocation_scheme::malloc(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-corevm::memory::buddy_allocation_scheme::calloc(size_t num, size_t size) noexcept
+corevm::memory::buddy_allocation_scheme::calloc(size_t /* num */, size_t /* size */) noexcept
 {
   // Buddy allocation scheme does not currently support `calloc`.
   return -1;
@@ -599,7 +589,8 @@ corevm::memory::buddy_allocation_scheme::calloc(size_t num, size_t size) noexcep
 iterator_type
 corevm::memory::buddy_allocation_scheme::find_fit(size_t size) noexcept
 {
-  size_t nearest_power_of_2 = static_cast<size_t>(nearest_exp2_ceil(size));
+  size_t nearest_power_of_2 = static_cast<size_t>(
+    nearest_exp2_ceil(static_cast<uint32_t>(size)));
 
   iterator_type itr = m_blocks.end();
 
@@ -690,12 +681,8 @@ corevm::memory::buddy_allocation_scheme::combine_free_blocks() noexcept
             set_nth_bit_uint8(&flags, FLAG_SPLIT);
           }
 
-          block_descriptor_type combined_block {
-            .size = current_block.size + next_block.size,
-            .actual_size = 0,
-            .offset = current_block.offset,
-            .flags = flags
-          };
+          block_descriptor_type combined_block(
+            current_block.size + next_block.size, 0u, current_block.offset, flags);
 
           *itr = combined_block;
 

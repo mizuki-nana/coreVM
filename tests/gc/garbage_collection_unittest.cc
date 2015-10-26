@@ -67,7 +67,7 @@ protected:
   {
     auto& src_obj = m_heap.at(src_id);
     auto& dst_obj = m_heap.at(dst_id);
-    src_obj.putattr(dst_id, dst_id);
+    src_obj.putattr(static_cast<corevm::dyobj::attr_key>(dst_id), dst_id);
     dst_obj.manager().on_setattr();
   }
 

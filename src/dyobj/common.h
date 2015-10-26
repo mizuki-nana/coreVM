@@ -23,6 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYOBJ_COMMON_H_
 #define COREVM_DYOBJ_COMMON_H_
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif
+
+
 #include <climits>
 #include <cstdint>
 
@@ -56,6 +62,11 @@ const int64_t NTVHNDL_LIMIT = LLONG_MAX;
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_DYOBJ_COMMON_H_ */

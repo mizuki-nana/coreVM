@@ -135,7 +135,7 @@ TEST_F(native_type_unary_operator_interfaces_test, TestAbsOperator)
   apply_unary_operator_and_assert_result<float>(
     operand,
     corevm::types::interface_apply_abs_operator,
-    912.54689,
+    912.54689f,
     /* is_decimal */ true
   );
 }
@@ -149,7 +149,7 @@ TEST_F(native_type_unary_operator_interfaces_test, TestSqrtOperator)
   apply_unary_operator_and_assert_result<float>(
     operand,
     corevm::types::interface_apply_sqrt_operator,
-    3.141592,
+    3.141592f,
     /* is_decimal */ true
   );
 }

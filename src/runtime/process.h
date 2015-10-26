@@ -161,7 +161,7 @@ public:
   const corevm::dyobj::dyobj_id& top_stack()
     throw(corevm::runtime::object_stack_empty_error);
 
-  const corevm::dyobj::dyobj_id pop_stack()
+  corevm::dyobj::dyobj_id pop_stack()
     throw(corevm::runtime::object_stack_empty_error);
 
   void swap_stack();
@@ -179,7 +179,7 @@ public:
   void erase_ntvhndl(corevm::dyobj::ntvhndl_key)
     throw(corevm::runtime::native_type_handle_deletion_error);
 
-  const corevm::runtime::instr_addr pc() const;
+  corevm::runtime::instr_addr pc() const;
 
   void set_pc(const corevm::runtime::instr_addr)
     throw(corevm::runtime::invalid_instr_addr_error);

@@ -114,10 +114,11 @@ class str(object):
         [stobj, res_, 0]
         ### END VECTOR ###
         """
-        return __call_cls_builtin(int, res_)
+        return __call_cls_1(int, res_)
 
     def __get_item_by_index(self, i):
         if __call_method_1(i.__gte__, __call_method_0(self.__len__)):
+            print 'BOOO'
             raise __call_cls_0(IndexError)
 
         """

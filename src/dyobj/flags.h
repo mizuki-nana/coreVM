@@ -55,7 +55,7 @@ enum flags : uint32_t
 
   /* ------------------------ Max value allowed ----------------------------- */
 
-  DYOBJ_MAX_VALUE = 32,
+  DYOBJ_MAX_VALUE = 32
 
 };
 
@@ -76,10 +76,10 @@ DYOBJ_FLAG_VALUES_ARRAY {
 // -----------------------------------------------------------------------------
 
 
-}; /* end namespace dyobj */
+} /* end namespace dyobj */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_DYOBJ_FLAGS_H_ */

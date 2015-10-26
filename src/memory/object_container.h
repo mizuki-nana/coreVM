@@ -455,7 +455,7 @@ corevm::memory::object_container<T, AllocatorType>::at(pointer p)
 {
   if (!check_ptr(p))
   {
-    THROW(invalid_address_error(PTR_TO_INT(p)));
+    THROW(invalid_address_error(static_cast<uint64_t>(PTR_TO_INT(p))));
   }
 
   return static_cast<pointer>((void*)p);
@@ -484,7 +484,7 @@ corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
 {
   if (!check_ptr(p))
   {
-    THROW(invalid_address_error(PTR_TO_INT(p)));
+    THROW(invalid_address_error(static_cast<uint64_t>(PTR_TO_INT(p))));
   }
 
   m_allocator.destroy(p);

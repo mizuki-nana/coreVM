@@ -20,6 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 #include "instr_info.h"
 
 
@@ -229,3 +234,7 @@ corevm::runtime::instr_set_info::instr_infos[INSTR_CODE_MAX] {
 };
 
 // -----------------------------------------------------------------------------
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif  /* #if defined(__clang__) and __clang__ */

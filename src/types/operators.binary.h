@@ -26,6 +26,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "operators.base.h"
 #include "types.h"
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wconversion"
+  #pragma clang diagnostic ignored "-Wsign-conversion"
+#endif
+
 
 namespace corevm {
 
@@ -362,6 +368,11 @@ public:
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_OPERATORS_BINARY_H_ */

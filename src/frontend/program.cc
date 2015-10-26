@@ -53,6 +53,14 @@ corevm::frontend::program::program()
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
+corevm::frontend::program::~program()
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 corevm::frontend::program::check_parameters() const
 {

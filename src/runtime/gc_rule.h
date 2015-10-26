@@ -45,6 +45,8 @@ class gc_rule
 {
 public:
   virtual bool should_gc(const corevm::runtime::process& process) const = 0;
+
+  virtual ~gc_rule();
 };
 
 // -----------------------------------------------------------------------------
@@ -90,7 +92,7 @@ public:
   enum gc_bitfields : uint8_t {
     GC_ALWAYS = 1,
     GC_BY_HEAP_SIZE = 2,
-    GC_BY_NTV_POOLSIZE = 3,
+    GC_BY_NTV_POOLSIZE = 3
   };
 
   static const corevm::runtime::gc_rule* get_gc_rule(gc_bitfields bit);

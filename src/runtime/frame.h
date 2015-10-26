@@ -72,7 +72,7 @@ public:
 
   ~frame();
 
-  uint32_t eval_stack_size() const;
+  size_t eval_stack_size() const;
 
   corevm::runtime::instr_addr return_addr() const;
 
@@ -156,10 +156,10 @@ protected:
 };
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_FRAME_H_ */

@@ -64,7 +64,7 @@ public:
   virtual void on_exit() noexcept = 0;
 
 protected:
-  virtual ~dynamic_object_manager() = default;
+  virtual ~dynamic_object_manager();
 };
 
 

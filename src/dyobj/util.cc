@@ -31,7 +31,7 @@ corevm::dyobj::attr_key
 corevm::dyobj::hash_attr_str(const std::string& attr_str)
 {
   static std::hash<std::string> hasher;
-  return hasher(attr_str);
+  return static_cast<corevm::dyobj::attr_key>(hasher(attr_str));
 }
 
 // -----------------------------------------------------------------------------

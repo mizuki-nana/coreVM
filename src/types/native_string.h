@@ -51,6 +51,7 @@ public:
 
   native_string(size_t n, char c);
 
+  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
   native_string(int8_t);
 
   template <class InputIterator>

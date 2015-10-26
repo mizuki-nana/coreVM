@@ -135,7 +135,7 @@ TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
   const int CYCLES = 3;
 
-  for (int i = 0; i < CYCLES; ++i)
+  for (size_t i = 0; i < CYCLES; ++i)
   {
     void* p = nullptr;
     p = this->allocate(HEAP_STORAGE_FOR_TEST);
@@ -227,7 +227,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
         "a", "b", "c", "d", "e", "f", "g", "h"
       };
 
-      for (int i = 0; i < N; ++i)
+      for (size_t i = 0; i < N; ++i)
       {
         void* p = this->allocate(chunk_size);
         assert(p);
@@ -239,12 +239,12 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
       void* failed_ptr = this->allocate(1);
       ASSERT_EQ(nullptr, failed_ptr);
 
-      for (int i = 0; i < N; ++i)
+      for (size_t i = 0; i < N; ++i)
       {
         ASSERT_STREQ(letters[i], static_cast<char*>(ptrs[i]));
       }
 
-      for (int i = 0; i < N; ++i)
+      for (size_t i = 0; i < N; ++i)
       {
         int res = this->deallocate(ptrs[i]);
         ASSERT_EQ(1, res);
@@ -309,7 +309,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
 
       std::vector<T*> ptrs(max_size);
 
-      for (auto i = 0; i < max_size; ++i)
+      for (size_t i = 0; i < max_size; ++i)
       {
         void* ptr = this->allocate(sizeof(T));
         ASSERT_NE(nullptr, ptr);
@@ -319,7 +319,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
       void* ptr = this->allocate(sizeof(T));
       ASSERT_EQ(nullptr, ptr);
 
-      for (auto i = 0; i < ptrs.size(); ++i)
+      for (size_t i = 0; i < ptrs.size(); ++i)
       {
         int res = this->deallocate(static_cast<void*>(ptrs[i]));
         ASSERT_EQ(1, res);
@@ -450,7 +450,7 @@ protected:
   template<typename F>
   void run_twice(F func)
   {
-    for (int i = 0; i < 2; ++i)
+    for (size_t i = 0; i < 2; ++i)
     {
       func();
     }
@@ -503,7 +503,7 @@ TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
 
       void* ptrs[N] = { nullptr };
 
-      for (int i = 0; i < N; ++i)
+      for (size_t i = 0; i < N; ++i)
       {
         ptrs[i] = m_allocator.allocate(size);
         ASSERT_NE(nullptr, ptrs[i]);

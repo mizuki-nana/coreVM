@@ -55,18 +55,8 @@ public:
     :
     ::testing::Test(),
     m_compartment(new corevm::runtime::compartment("")),
-    m_ctx(
-      corevm::runtime::closure_ctx {
-        .compartment_id = corevm::runtime::NONESET_COMPARTMENT_ID,
-        .closure_id = corevm::runtime::NONESET_CLOSURE_ID
-      }
-    ),
-    m_closure(
-      corevm::runtime::closure {
-        .id = corevm::runtime::NONESET_CLOSURE_ID,
-        .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-      }
-    ),
+    m_ctx(corevm::runtime::closure_ctx(corevm::runtime::NONESET_COMPARTMENT_ID, corevm::runtime::NONESET_CLOSURE_ID)),
+    m_closure(),
     m_frame(new corevm::runtime::frame(m_ctx, m_compartment, &m_closure)),
     m_invk_ctx(new corevm::runtime::invocation_ctx(m_ctx, m_compartment, &m_closure)),
     m_process()
@@ -123,7 +113,7 @@ protected:
 
 TEST_F(instrs_obj_unittest, TestInstrNEW)
 {
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_new>(instr);
 }
 
@@ -137,27 +127,28 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
   corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::vector vector;
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx1(compartment_id, closure_id);
+  corevm::runtime::closure_ctx ctx2(compartment_id, parent_closure_id);
 
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = compartment_id,
-    .closure_id = parent_closure_id
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = parent_closure_id,
-    .vector = vector
-  };
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    parent_closure_id,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure parent_closure {
-    .id = parent_closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
-  };
+
+  corevm::runtime::closure parent_closure(
+    "",
+    parent_closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure,
@@ -178,11 +169,8 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
   m_process.push_frame(parent_frame);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   execute_instr<corevm::runtime::instr_handler_ldobj>(instr, 1);
 
@@ -193,7 +181,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ)
 
 TEST_F(instrs_obj_unittest, TestInstrSTOBJ)
 {
-  corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
+  corevm::runtime::instr instr(0, 1, 0);
 
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -219,11 +207,10 @@ TEST_F(instrs_obj_unittest, TestInstrSTOBJN)
   corevm::runtime::variable_key key = 1;
   size_t n = 1;
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=static_cast<corevm::runtime::instr_oprd>(n)
-  };
+  corevm::runtime::instr instr(
+    0,
+    static_cast<corevm::runtime::instr_oprd>(key),
+    static_cast<corevm::runtime::instr_oprd>(n));
 
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   corevm::runtime::frame frame2(m_ctx, m_compartment, &m_closure);
@@ -258,10 +245,17 @@ TEST_F(instrs_obj_unittest, TestInstrGETATTR)
 
   compartment.set_encoding_map(encoding_table);
 
-  corevm::runtime::closure closure {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -269,13 +263,11 @@ TEST_F(instrs_obj_unittest, TestInstrGETATTR)
 
   m_process.insert_compartment(compartment);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure.id,
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure.id);
+
   m_process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_str_key, .oprd2=0 };
+  corevm::runtime::instr instr(0, attr_str_key, 0);
 
   corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
   corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
@@ -308,10 +300,17 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR)
   compartment.set_encoding_map(encoding_table);
   m_process.insert_compartment(compartment);
 
-  corevm::runtime::closure closure {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -319,13 +318,11 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR)
 
   m_process.insert_compartment(compartment);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure.id,
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure.id);
+
   m_process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_str_key, .oprd2=0 };
+  corevm::runtime::instr instr(0, attr_str_key, 0);
 
   corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
   corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
@@ -354,7 +351,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR)
 TEST_F(instrs_obj_unittest, TestInstrDELATTR)
 {
   corevm::dyobj::attr_key attr_key = 777;
-  corevm::runtime::instr instr { .code=0, .oprd1=attr_key, .oprd2=0 };
+  corevm::runtime::instr instr(0, attr_key, 0);
 
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   corevm::dyobj::dyobj_id attr_id = m_process.create_dyobj();
@@ -397,7 +394,7 @@ TEST_F(instrs_obj_unittest, TestInstrHASATTR2)
   obj.putattr(attr_key, id2);
   m_process.push_stack(id1);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_hasattr2>(instr, 1);
 
   corevm::runtime::frame& top_frame = m_process.top_frame();
@@ -428,7 +425,7 @@ TEST_F(instrs_obj_unittest, TestInstrGETATTR2)
   obj.putattr(attr_key, id2);
   m_process.push_stack(id1);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getattr2>(instr, 1);
 
   corevm::dyobj::dyobj_id attr_id = m_process.top_stack();
@@ -454,7 +451,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTR2)
   m_process.push_stack(id1);
   m_process.push_stack(id2);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_setattr2>(instr, 1);
 
   corevm::dyobj::dyobj_id expected_id = id1;
@@ -487,7 +484,7 @@ TEST_F(instrs_obj_unittest, TestInstrDELATTR2)
   obj.putattr(attr_key, id2);
   m_process.push_stack(id1);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_delattr2>(instr, 1);
 
   corevm::dyobj::dyobj_id expected_id = id1;
@@ -507,7 +504,7 @@ TEST_F(instrs_obj_unittest, TestInstrPOP)
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   m_process.push_stack(id);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
 
   ASSERT_THROW(
@@ -527,28 +524,27 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
   corevm::runtime::closure_id parent_closure_id = 100;
   corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx1(compartment_id, closure_id);
+  corevm::runtime::closure_ctx ctx2(compartment_id, parent_closure_id);
 
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = compartment_id,
-    .closure_id = parent_closure_id
-  };
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    parent_closure_id,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = parent_closure_id,
-    .vector = vector
-  };
-
-  corevm::runtime::closure parent_closure {
-    .id = parent_closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
-  };
+  corevm::runtime::closure parent_closure(
+    "",
+    parent_closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure,
@@ -570,11 +566,8 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
   m_process.push_frame(parent_frame);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   execute_instr<corevm::runtime::instr_handler_ldobj2>(instr, 1);
 
@@ -585,7 +578,7 @@ TEST_F(instrs_obj_unittest, TestInstrLDOBJ2)
 
 TEST_F(instrs_obj_unittest, TestInstrSTOBJ2)
 {
-  corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
+  corevm::runtime::instr instr(0, 1, 0);
 
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -611,11 +604,8 @@ TEST_F(instrs_obj_unittest, TestInstrDELOBJ)
   corevm::runtime::variable_key key = 1;
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   frame.set_visible_var(key, id);
@@ -635,11 +625,8 @@ TEST_F(instrs_obj_unittest, TestInstrDELOBJ2)
   corevm::runtime::variable_key key = 1;
   corevm::dyobj::dyobj_id id = m_process.create_dyobj();
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   frame.set_invisible_var(key, id);
@@ -670,7 +657,7 @@ TEST_F(instrs_obj_unittest, TestInstrGETHNDL)
   auto &obj = m_process.get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -697,7 +684,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETHNDL)
   frame.push_eval_stack(hndl);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
   auto &obj = m_process.get_dyobj(id);
@@ -724,11 +711,8 @@ TEST_F(instrs_obj_unittest, TestInstrGETHNDL2)
   auto &obj = m_process.get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   execute_instr<corevm::runtime::instr_handler_gethndl2>(instr, 0);
 
@@ -755,7 +739,7 @@ TEST_F(instrs_obj_unittest, TestInstrCLRHNDL)
   auto &obj = m_process.get_dyobj(id);
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
   auto &obj2 = m_process.get_dyobj(id);
@@ -780,7 +764,7 @@ TEST_F(instrs_obj_unittest, TestInstrCPYHNDL)
   auto &src_obj = m_process.get_dyobj(src_obj_id);
   src_obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=6, .oprd2=0 };
+  corevm::runtime::instr instr(0, 6, 0);
   execute_instr<corevm::runtime::instr_handler_cpyhndl>(instr, 0);
 
   auto &target_obj = m_process.get_dyobj(target_obj_id);
@@ -809,7 +793,7 @@ TEST_F(instrs_obj_unittest, TestInstrCPYREPR)
   auto &src_obj = m_process.get_dyobj(src_obj_id);
   src_obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_cpyrepr>(instr, 0);
 
   auto &target_obj = m_process.get_dyobj(target_obj_id);
@@ -836,7 +820,7 @@ TEST_F(instrs_obj_unittest, TestInstrISTRUTHY)
   auto &src_obj = m_process.get_dyobj(src_obj_id);
   src_obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_istruthy>(instr, 1);
 
   auto& frame = m_process.top_frame();
@@ -861,7 +845,7 @@ TEST_F(instrs_obj_unittest, TestInstrOBJEQ)
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_objeq>(instr, 0);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -888,7 +872,7 @@ TEST_F(instrs_obj_unittest, TestInstrOBJNEQ)
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_objneq>(instr, 0);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -913,11 +897,10 @@ TEST_F(instrs_obj_unittest, TestInstrSETCXT)
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::SETCTX,
-    .oprd1 = static_cast<corevm::runtime::instr_oprd>(m_ctx.closure_id),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::SETCTX,
+    static_cast<corevm::runtime::instr_oprd>(m_ctx.closure_id),
+    0);
 
   execute_instr<corevm::runtime::instr_handler_setctx>(instr);
 
@@ -942,28 +925,27 @@ TEST_F(instrs_obj_unittest, TestInstrCLDOBJ)
   corevm::runtime::closure_id parent_closure_id = 100;
   corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure_ctx ctx1 {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx1(compartment_id, closure_id);
+  corevm::runtime::closure_ctx ctx2(compartment_id, parent_closure_id);
 
-  corevm::runtime::closure_ctx ctx2 {
-    .compartment_id = compartment_id,
-    .closure_id = parent_closure_id
-  };
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    parent_closure_id,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = parent_closure_id,
-    .vector = vector
-  };
-
-  corevm::runtime::closure parent_closure {
-    .id = parent_closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
-  };
+  corevm::runtime::closure parent_closure(
+    "",
+    parent_closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure,
@@ -990,11 +972,9 @@ TEST_F(instrs_obj_unittest, TestInstrCLDOBJ)
   m_process.push_frame(parent_frame);
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key1),
-    .oprd2=static_cast<corevm::runtime::instr_oprd>(key2),
-  };
+  corevm::runtime::instr instr(0,
+    static_cast<corevm::runtime::instr_oprd>(key1),
+    static_cast<corevm::runtime::instr_oprd>(key2));
 
   execute_instr<corevm::runtime::instr_handler_cldobj>(instr, 1);
 
@@ -1039,10 +1019,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
   corevm::dyobj::attr_key attr_key2 = corevm::dyobj::hash_attr_str(attr_str2);
   corevm::dyobj::attr_key attr_key3 = corevm::dyobj::hash_attr_str(attr_str3);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure_id);
 
   corevm::dyobj::dyobj_id dst_id = m_process.create_dyobj();
   m_process.push_stack(dst_id);
@@ -1054,11 +1031,7 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS)
 
   m_process.push_stack(src_id);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1= 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_setattrs>(instr, 1);
 
@@ -1098,10 +1071,8 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
   compartment.set_encoding_map(encoding_table);
   m_process.insert_compartment(compartment);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = corevm::runtime::NONESET_CLOSURE_ID,
-  };
+  corevm::runtime::closure_ctx ctx(
+    compartment_id, corevm::runtime::NONESET_CLOSURE_ID);
 
   corevm::runtime::frame frame(ctx, &compartment, &m_closure);
   frame.push_eval_stack(hndl);
@@ -1113,11 +1084,8 @@ TEST_F(instrs_obj_unittest, TestInstrRSETATTRS)
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr_str_key),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(attr_str_key), 0);
 
   execute_instr<corevm::runtime::instr_handler_rsetattrs>(instr, 1);
 
@@ -1168,26 +1136,27 @@ TEST_F(instrs_obj_unittest, TestInstrSETATTRS2)
   compartment.set_encoding_map(encoding_table);
   m_process.insert_compartment(compartment);
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = 0
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, 0);
 
-  corevm::runtime::closure closure {
-    .id = 0,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    0,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   m_process.emplace_frame(ctx, &compartment, &closure);
 
   m_process.push_stack(dst_id);
   m_process.push_stack(src_id);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1= static_cast<corevm::runtime::instr_oprd>(attr_str_key),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(attr_str_key), 0);
 
   execute_instr<corevm::runtime::instr_handler_setattrs2>(instr, 2);
 
@@ -1225,15 +1194,19 @@ TEST_F(instrs_obj_unittest, TestInstrPUTOBJ)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 0;
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure_id);
 
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -1244,11 +1217,7 @@ TEST_F(instrs_obj_unittest, TestInstrPUTOBJ)
 
   m_process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_putobj>(instr, 1);
 
@@ -1269,10 +1238,7 @@ TEST_F(instrs_obj_unittest, TestInstrGETOBJ)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 10;
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure_id);
 
   corevm::runtime::frame frame(ctx, m_compartment, &m_closure);
 
@@ -1282,11 +1248,7 @@ TEST_F(instrs_obj_unittest, TestInstrGETOBJ)
 
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_getobj>(instr, 1);
 
@@ -1302,11 +1264,7 @@ TEST_F(instrs_obj_unittest, TestInstrSWAP)
   corevm::dyobj::dyobj_id id1 = 1;
   corevm::dyobj::dyobj_id id2 = 2;
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   ASSERT_THROW(
     {
@@ -1357,14 +1315,14 @@ private:
   template<class InstrHandlerCls>
   void execute_instr_with_toggle_on(const corevm::dyobj::flags flag)
   {
-    corevm::runtime::instr instr { .code=0, .oprd1=1, .oprd2=0 };
+    corevm::runtime::instr instr(0, 1, 0);
     _execute_and_assert_result<InstrHandlerCls>(instr, flag);
   }
 
   template<class InstrHandlerCls>
   void execute_instr_with_toggle_off(const corevm::dyobj::flags flag)
   {
-    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+    corevm::runtime::instr instr(0, 0, 0);
     _execute_and_assert_result<InstrHandlerCls>(instr, flag);
   }
 
@@ -1435,7 +1393,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
     corevm::runtime::missing_parameter_error
   );
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putarg>(instr);
 
   corevm::dyobj::dyobj_id actual_id = actual_invk_ctx.pop_param();
@@ -1460,11 +1418,8 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARG)
     corevm::runtime::missing_parameter_error
   );
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=2
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 2);
 
   execute_instr<corevm::runtime::instr_handler_putkwarg>(instr);
 
@@ -1497,7 +1452,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARGS)
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putargs>(instr);
 
   corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param();
@@ -1537,7 +1492,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARGS)
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putkwargs>(instr);
 
   corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param_value_pair(key1);
@@ -1560,7 +1515,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARG)
 
   m_process.push_invocation_ctx(invk_ctx);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getarg>(instr);
 
   corevm::dyobj::dyobj_id actual_id = m_process.pop_stack();
@@ -1580,11 +1535,11 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARG)
   m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::vector vector {
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
-    { .code=0, .oprd1=0, .oprd2=0 },
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
   };
   m_process.append_vector(vector);
 
@@ -1592,11 +1547,8 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARG)
 
   uint32_t relative_addr = 2;
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=relative_addr
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), relative_addr);
 
   execute_instr<corevm::runtime::instr_handler_getkwarg>(instr);
 
@@ -1628,7 +1580,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETARGS)
 
   ASSERT_EQ(true, invk_ctx.has_params());
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getargs>(instr);
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
@@ -1677,7 +1629,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrGETKWARGS)
 
   ASSERT_EQ(true, invk_ctx.has_param_value_pairs());
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getkwargs>(instr);
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
@@ -1717,7 +1669,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrHASARGS)
 
   ASSERT_EQ(true, invk_ctx.has_params());
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_hasargs>(instr);
 
   corevm::runtime::frame& actual_frame = m_process.top_frame();
@@ -1740,7 +1692,7 @@ TEST_F(instrs_runtime_instrs_test, TestInstrGC)
 
   ASSERT_EQ(1, m_process.heap_size());
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   corevm::runtime::instr_handler_gc handler;
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
 
@@ -1751,7 +1703,7 @@ TEST_F(instrs_runtime_instrs_test, TestInstrGC)
 
 TEST_F(instrs_runtime_instrs_test, TestInstrDEBUG)
 {
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
   corevm::runtime::instr_handler_debug handler;
 
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
@@ -1772,16 +1724,16 @@ protected:
     instrs_unittest::SetUp();
 
     corevm::runtime::vector vector {
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
-      { .code=0, .oprd1=0, .oprd2=0 },
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
+      corevm::runtime::instr(0, 0, 0),
     };
     m_process.append_vector(vector);
   }
@@ -1802,10 +1754,17 @@ TEST_F(instrs_control_instrs_test, TestInstrPINVK)
   m_ctx.closure_id = 0;
   obj.set_closure_ctx(m_ctx);
 
-  corevm::runtime::closure closure {
-    .id = m_ctx.closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID
-  };
+  corevm::runtime::vector vector;
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    m_ctx.closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
   corevm::runtime::closure_table closure_table { closure };
 
@@ -1816,11 +1775,7 @@ TEST_F(instrs_control_instrs_test, TestInstrPINVK)
 
   m_process.push_stack(id);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=0,
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_pinvk>(instr);
 
@@ -1842,11 +1797,17 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
   m_ctx.closure_id = closure_id;
 
   corevm::runtime::vector vector;
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
+
   corevm::runtime::compartment compartment(DUMMY_PATH);
   corevm::runtime::closure_table closure_table {
     closure
@@ -1858,11 +1819,7 @@ TEST_F(instrs_control_instrs_test, TestInstrINVK)
   m_process.emplace_frame(m_ctx, &compartment, &closure_table[0], 0);
   m_process.emplace_invocation_ctx(m_ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=0,
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   m_process.set_pc(8);
 
@@ -1890,11 +1847,8 @@ TEST_F(instrs_control_instrs_test, TestInstrJMP)
 
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(8), 0);
 
   execute_instr<corevm::runtime::instr_handler_jmp>(instr);
 
@@ -1913,11 +1867,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF)
 
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, static_cast<corevm::runtime::instr_oprd>(8), 0);
 
   execute_instr<corevm::runtime::instr_handler_jmpif>(instr);
 
@@ -1936,11 +1886,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPIF_OnFalseCondition)
 
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(8),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, static_cast<corevm::runtime::instr_oprd>(8), 0);
 
   execute_instr<corevm::runtime::instr_handler_jmpif>(instr);
 
@@ -1953,11 +1899,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPR)
 {
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, m_process.pc());
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(5),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, static_cast<corevm::runtime::instr_oprd>(5), 0);
 
   execute_instr<corevm::runtime::instr_handler_jmpr>(instr);
 
@@ -1972,34 +1914,29 @@ TEST_F(instrs_control_instrs_test, TestInstrEXC)
   const corevm::runtime::compartment_id compartment_id = 0;
 
   corevm::runtime::vector vector {
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
   };
 
-  corevm::runtime::catch_site catch_site {
-    .from = 0,
-    .to = 5,
-    .dst = 7,
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site catch_site(0, 5, 7);
 
   corevm::runtime::catch_site_list catch_sites { catch_site };
 
-  corevm::runtime::closure closure {
-    .id = closure_id,
-    .parent_id = corevm::runtime::NONESET_CLOSURE_ID,
-    .vector = vector,
-    .catch_sites = catch_sites,
-  };
+  corevm::runtime::closure closure(
+    "",
+    closure_id,
+    corevm::runtime::NONESET_CLOSURE_ID,
+    vector,
+    locs,
+    catch_sites);
 
-  corevm::runtime::closure_ctx ctx {
-    .closure_id = closure_id,
-    .compartment_id = compartment_id
-  };
+  corevm::runtime::closure_ctx ctx(closure_id, compartment_id);
 
   corevm::runtime::closure_table closure_table { closure };
   corevm::runtime::compartment compartment(DUMMY_PATH);
@@ -2016,11 +1953,7 @@ TEST_F(instrs_control_instrs_test, TestInstrEXC)
   m_process.insert_vector(vector);
   m_process.set_pc(0);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 1,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 1, 0);
 
   execute_instr<corevm::runtime::instr_handler_exc>(instr);
 
@@ -2033,10 +1966,7 @@ TEST_F(instrs_control_instrs_test, TestInstrEXC)
 
 TEST_F(instrs_obj_unittest, TestInstrEXCOBJ)
 {
-  corevm::runtime::closure_ctx ctx {
-    .closure_id = 0,
-    .compartment_id = 0
-  };
+  corevm::runtime::closure_ctx ctx(0, 0);
 
   corevm::runtime::frame frame(ctx, m_compartment, &m_closure);
 
@@ -2050,11 +1980,7 @@ TEST_F(instrs_obj_unittest, TestInstrEXCOBJ)
 
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_excobj>(instr);
 
@@ -2065,10 +1991,7 @@ TEST_F(instrs_obj_unittest, TestInstrEXCOBJ)
 
 TEST_F(instrs_control_instrs_test, TestInstrCLREXC)
 {
-  corevm::runtime::closure_ctx ctx {
-    .closure_id = 0,
-    .compartment_id = 0
-  };
+  corevm::runtime::closure_ctx ctx(0, 0);
 
   corevm::runtime::frame frame(ctx, m_compartment, &m_closure);
 
@@ -2082,11 +2005,7 @@ TEST_F(instrs_control_instrs_test, TestInstrCLREXC)
 
   m_process.push_frame(frame);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 0,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_clrexc>(instr);
 
@@ -2103,19 +2022,16 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPEXC)
   const corevm::runtime::compartment_id compartment_id = 0;
 
   corevm::runtime::vector vector {
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
-    { 0, 0, 0 },
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::instr(0, 0, 0),
   };
 
-  corevm::runtime::closure_ctx ctx {
-    .closure_id = closure_id,
-    .compartment_id = compartment_id
-  };
+  corevm::runtime::closure_ctx ctx(closure_id, compartment_id);
 
   corevm::dyobj::dyobj_id id = 1;
 
@@ -2127,11 +2043,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPEXC)
   m_process.insert_vector(vector);
   m_process.set_pc(0);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = 6,
-    .oprd2 = 1
-  };
+  corevm::runtime::instr instr(0, 6, 1);
 
   execute_instr<corevm::runtime::instr_handler_jmpexc>(instr);
 
@@ -2142,7 +2054,7 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPEXC)
 
 TEST_F(instrs_control_instrs_test, TestInstrEXIT)
 {
-  auto sig_handler = [](int signum) {
+  auto sig_handler = [](int /* signum */) {
     instrs_control_instrs_test::signal_fired = true;
     signal(SIGTERM, SIG_IGN);
   };
@@ -2151,11 +2063,7 @@ TEST_F(instrs_control_instrs_test, TestInstrEXIT)
 
   ASSERT_EQ(false, instrs_control_instrs_test::signal_fired);
 
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=EXIT_SUCCESS,
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(0, EXIT_SUCCESS, 0);
 
   corevm::runtime::instr_handler_exit handler;
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
@@ -2210,7 +2118,7 @@ protected:
   template<typename InstrHandlerCls, typename IntrinsicType=uint32_t>
   void execute_instr_and_assert_result(IntrinsicType expected_result)
   {
-    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+    corevm::runtime::instr instr(0, 0, 0);
     execute_instr_and_assert_result<InstrHandlerCls, IntrinsicType>(instr, expected_result);
   }
 
@@ -2552,11 +2460,8 @@ class instrs_native_integer_type_creation_instrs_test : public instrs_native_typ
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT8)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::INT8,
-    .oprd1 = std::numeric_limits<int8_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::INT8, std::numeric_limits<int8_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_int8, int8_t>(instr);
@@ -2566,11 +2471,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT8)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT8)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::UINT8,
-    .oprd1 = std::numeric_limits<uint8_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::UINT8, std::numeric_limits<uint8_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_uint8, uint8_t>(instr);
@@ -2580,11 +2482,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT8)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT16)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::INT16,
-    .oprd1 = std::numeric_limits<int16_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::INT16, std::numeric_limits<int16_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand
     <corevm::runtime::instr_handler_int16, int16_t>(instr);
@@ -2594,11 +2493,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT16)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT16)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::UINT16,
-    .oprd1 = std::numeric_limits<uint16_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::UINT16, std::numeric_limits<uint16_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_uint16, uint16_t>(instr);
@@ -2608,11 +2504,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT16)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT32)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::INT32,
-    .oprd1 = std::numeric_limits<int32_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::INT32, std::numeric_limits<int32_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_int32, int32_t>(instr);
@@ -2622,11 +2515,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT32)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT32)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::UINT32,
-    .oprd1 = std::numeric_limits<uint32_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::UINT32, std::numeric_limits<uint32_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_uint32, uint32_t>(instr);
@@ -2636,11 +2526,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT32)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT64)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::INT64,
-    .oprd1 = std::numeric_limits<int64_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::INT64, std::numeric_limits<int64_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_int64, int64_t>(instr);
@@ -2650,11 +2537,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrINT64)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT64)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::UINT64,
-    .oprd1 = std::numeric_limits<uint64_t>::max(),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::UINT64, std::numeric_limits<uint64_t>::max(), 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_uint64, uint64_t>(instr);
@@ -2664,11 +2548,8 @@ TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrUINT64)
 
 TEST_F(instrs_native_integer_type_creation_instrs_test, TestInstrBOOL)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::BOOL,
-    .oprd1 = 1,
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::BOOL, 1, 0);
 
   execute_instr_and_assert_result_equals_operand<
     corevm::runtime::instr_handler_bool, bool>(instr);
@@ -2682,25 +2563,19 @@ class instrs_native_type_creation_instrs_test : public instrs_native_types_instr
 
 TEST_F(instrs_native_type_creation_instrs_test, TestInstrDEC1)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::DEC1,
-    .oprd1 = 12345,
-    .oprd2 = 98760
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::DEC1, 12345, 98760);
 
   execute_native_floating_type_creation_instr_and_assert_result<
-    corevm::runtime::instr_handler_dec1, float>(instr, 12345.06789);
+    corevm::runtime::instr_handler_dec1, float>(instr, 12345.06789f);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(instrs_native_type_creation_instrs_test, TestInstrDEC2)
 {
-  corevm::runtime::instr instr {
-    .code = corevm::runtime::instr_enum::DEC2,
-    .oprd1 = 1234567890,
-    .oprd2 = 9876543210
-  };
+  corevm::runtime::instr instr(
+    corevm::runtime::instr_enum::DEC2, 1234567890, 9876543210);
 
   execute_native_floating_type_creation_instr_and_assert_result<
     corevm::runtime::instr_handler_dec2, double>(instr, 1234567890.0123456789);
@@ -2758,7 +2633,7 @@ public:
   {
     InstrHandlerCls instr_handler;
 
-    corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+    corevm::runtime::instr instr(0, 0, 0);
 
     execute_instr<InstrHandlerCls>(instr);
 
@@ -3028,7 +2903,7 @@ TEST_F(instrs_native_type_manipulation_instrs_test, TestInstrHASH)
 
   frame.push_eval_stack(hndl);
 
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_hash>(instr);
 
@@ -3699,10 +3574,7 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPSET)
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 10;
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = compartment_id,
-    .closure_id = closure_id
-  };
+  corevm::runtime::closure_ctx ctx(compartment_id, closure_id);
 
   corevm::runtime::frame frame(ctx, m_compartment, &m_closure);
   frame.push_eval_stack(hndl);
@@ -3716,11 +3588,8 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPSET)
   corevm::types::native_map_mapped_type value =
     static_cast<corevm::types::native_map_mapped_type>(id);
 
-  corevm::runtime::instr instr {
-    .code = 0,
-    .oprd1 = static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2 = 0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   corevm::types::native_map res {
     { 1, 100 },

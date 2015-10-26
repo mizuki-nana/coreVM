@@ -29,6 +29,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <type_traits>
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wconversion"
+  #pragma clang diagnostic ignored "-Wsign-conversion"
+#endif
+
 
 namespace corevm {
 
@@ -173,6 +179,11 @@ public:
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_NATIVE_TYPE_VISITORS_IMPL_H_ */

@@ -86,7 +86,7 @@ TEST_F(native_string_type_interfaces_test, TestAt)
 
   char expected_value = 'o';
 
-  this->apply_interface_on_two_operands_and_assert_result<size_t>(
+  this->apply_interface_on_two_operands_and_assert_result<char>(
     operand,
     other_operand,
     corevm::types::interface_string_at,

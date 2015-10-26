@@ -64,13 +64,7 @@ corevm::frontend::get_vector_from_json(const JSON& json)
     corevm::runtime::instr_oprd oprd2 =
       static_cast<corevm::runtime::instr_oprd>(oprd2_raw.int_value());
 
-    vector.push_back(
-      corevm::runtime::instr {
-        .code = code,
-        .oprd1 = oprd1,
-        .oprd2 = oprd2,
-      }
-    );
+    vector.emplace_back(code, oprd1, oprd2);
   }
 
   return std::move(vector);
@@ -91,7 +85,7 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
   std::stringstream ss;
   ss << "[";
 
-  for (auto i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
 

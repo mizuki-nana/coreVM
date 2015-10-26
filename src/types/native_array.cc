@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 #include <cstdint>
+#include <iterator>
 #include <stdexcept>
 #include <utility>
 
@@ -63,6 +64,8 @@ corevm::types::native_array::native_array(std::initializer_list<value_type> il)
 // -----------------------------------------------------------------------------
 
 corevm::types::native_array::native_array(int8_t)
+  :
+  native_array_base()
 {
   THROW(corevm::types::conversion_error("int8", "array"));
 }
@@ -261,7 +264,8 @@ corevm::types::native_array::erase(size_t n)
     THROW(corevm::types::out_of_range_error("Array index out of range"));
   }
 
-  auto itr = this->begin() + n;
+  auto itr = begin();
+  std::advance(itr, n);
   native_array_base::erase(itr);
 }
 

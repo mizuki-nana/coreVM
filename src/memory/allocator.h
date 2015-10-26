@@ -211,7 +211,7 @@ corevm::memory::allocator<allocation_scheme>::deallocate(void* ptr) noexcept
   uint8_t* ptr_ = static_cast<uint8_t*>(ptr);
   uint8_t* heap_ = static_cast<uint8_t*>(m_heap);
 
-  size_t offset = ptr_ - heap_;
+  size_t offset = static_cast<size_t>(ptr_ - heap_);
   ssize_t size = m_allocation_scheme.free(offset);
 
   if (size > 0)

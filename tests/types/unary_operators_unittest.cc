@@ -80,7 +80,7 @@ TEST_F(positive_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(positive_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415;
+  corevm::types::decimal oprd = 3.1415f;
 
   corevm::types::decimal expected_result = +oprd;
 
@@ -108,7 +108,7 @@ TEST_F(negation_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(negation_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415;
+  corevm::types::decimal oprd = 3.1415f;
 
   corevm::types::decimal expected_result = -oprd;
 
@@ -136,7 +136,7 @@ TEST_F(increment_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(increment_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415;
+  corevm::types::decimal oprd = 3.1415f;
 
   corevm::types::decimal expected_result = oprd + 1;
 
@@ -164,7 +164,7 @@ TEST_F(decrement_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(decrement_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415;
+  corevm::types::decimal oprd = 3.1415f;
 
   corevm::types::decimal expected_result = oprd - 1;
 
@@ -234,7 +234,7 @@ TEST_F(absolute_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(absolute_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = -3.1415;
+  corevm::types::decimal oprd = -3.1415f;
 
   corevm::types::decimal expected_result = std::abs(oprd);
 
@@ -252,7 +252,8 @@ TEST_F(sqrt_operator_unittest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
-  corevm::types::int64 expected_result = sqrt(oprd);
+  // TODO: investigate use version of `sqrt` that returns int64_t.
+  corevm::types::int64 expected_result = static_cast<corevm::types::int64>(sqrt(oprd));
 
   call_unary_op_and_assert_result<
     corevm::types::sqrt, corevm::types::int64>(oprd, expected_result);
@@ -262,9 +263,10 @@ TEST_F(sqrt_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(sqrt_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415;
+  corevm::types::decimal oprd = 3.1415f;
 
-  corevm::types::decimal expected_result = sqrt(oprd);
+  // TODO: investigate use version of `sqrt` that returns float.
+  corevm::types::decimal expected_result = static_cast<corevm::types::decimal>(sqrt(oprd));
 
   call_unary_op_and_assert_result<
     corevm::types::sqrt, corevm::types::decimal>(oprd, expected_result);
@@ -290,7 +292,7 @@ TEST_F(repr_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(repr_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.141593;
+  corevm::types::decimal oprd = 3.141593f;
 
   corevm::types::string expected_result("3.141593");
 
@@ -318,7 +320,7 @@ TEST_F(logical_not_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(logical_not_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 3.1415926;
+  corevm::types::decimal oprd = 3.1415926f;
 
   corevm::types::boolean expected_result = false;
 
@@ -346,7 +348,7 @@ TEST_F(truthy_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(truthy_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 0.1415926;
+  corevm::types::decimal oprd = 0.1415926f;
 
   corevm::types::boolean expected_result = true;
 
@@ -371,7 +373,7 @@ TEST_F(hash_operator_unittest, TestWithIntegeralOperand)
 
 TEST_F(hash_operator_unittest, TestWithFloatingPointOperand)
 {
-  corevm::types::decimal oprd = 0.1415926;
+  corevm::types::decimal oprd = 0.1415926f;
 
   ASSERT_NE(corevm::types::hash()(oprd), 0u);
 }

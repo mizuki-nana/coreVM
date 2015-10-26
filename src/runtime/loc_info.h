@@ -36,6 +36,20 @@ namespace runtime {
 
 struct loc_info
 {
+  loc_info(int32_t lineno_, int32_t col_offset_)
+    :
+    lineno(lineno_),
+    col_offset(col_offset_)
+  {
+  }
+
+  loc_info()
+    :
+    lineno(-1),
+    col_offset(-1)
+  {
+  }
+
   int32_t lineno;
   int32_t col_offset;
 };

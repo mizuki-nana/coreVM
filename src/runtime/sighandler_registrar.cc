@@ -39,7 +39,7 @@ bool corevm::runtime::sighandler_registrar::sig_raised = false;
 
 // -----------------------------------------------------------------------------
 
-sigjmp_buf _env;
+static sigjmp_buf _env;
 
 // -----------------------------------------------------------------------------
 
@@ -50,6 +50,11 @@ corevm::runtime::sighandler_registrar::get_sigjmp_env()
 }
 
 // -----------------------------------------------------------------------------
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
 
 const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
   corevm::runtime::sighandler_registrar::handler_map
@@ -87,6 +92,10 @@ const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
   { SIGURG,     { .handler=std::make_shared<sighandler_SIGURG>()    } },
 
 };
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif  /* #if defined(__clang__) and __clang__ */
 
 // -----------------------------------------------------------------------------
 
@@ -146,9 +155,9 @@ corevm::runtime::sighandler_registrar::clear_sig_raised()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process)
+corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process_)
 {
-  corevm::runtime::sighandler_registrar::process = process;
+  corevm::runtime::sighandler_registrar::process = process_;
 
   for (
     auto itr = corevm::runtime::sighandler_registrar::handler_map.begin();

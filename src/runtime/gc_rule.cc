@@ -36,6 +36,19 @@ const double corevm::runtime::gc_rule_by_ntvhndl_pool_size::DEFAULT_CUTOFF = 0.7
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
+corevm::runtime::gc_rule::~gc_rule()
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 const std::unordered_map<corevm::runtime::gc_bitfield_t, corevm::runtime::gc_rule_wrapper>
 corevm::runtime::gc_rule_meta::gc_rule_map {
   {
@@ -58,6 +71,10 @@ corevm::runtime::gc_rule_meta::gc_rule_map {
   }
 };
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif  /* #if defined(__clang__) and __clang__ */
+
 // -----------------------------------------------------------------------------
 
 const corevm::runtime::gc_rule*
@@ -71,7 +88,7 @@ corevm::runtime::gc_rule_meta::get_gc_rule(gc_bitfields bit)
 
 bool
 corevm::runtime::gc_rule_always::should_gc(
-  const corevm::runtime::process& process) const
+  const corevm::runtime::process& /* process */) const
 {
   return true;
 }

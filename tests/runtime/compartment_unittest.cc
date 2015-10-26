@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "runtime/catch_site.h"
 #include "runtime/compartment.h"
 #include "runtime/closure.h"
 #include "runtime/vector.h"
@@ -39,14 +40,15 @@ TEST_F(compartment_unittest, TestGetClosureByID)
 
   corevm::runtime::vector vector;
   corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure {
-    .name = "__main__",
-    .id=0,
-    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
-    .vector=vector,
-    .locs = locs
-  };
+  corevm::runtime::closure closure(
+    /* name */ "__main__",
+    /* id */ 0,
+    /* parent_id */ corevm::runtime::NONESET_CLOSURE_ID,
+    /* vector */ vector,
+    /* locs */ locs,
+    /* catch_sites */ catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure
@@ -79,14 +81,15 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
 
   corevm::runtime::vector vector;
   corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
 
-  corevm::runtime::closure closure {
-    .name = "__main__",
-    .id=0,
-    .parent_id=corevm::runtime::NONESET_CLOSURE_ID,
-    .vector=vector,
-    .locs = locs
-  };
+  corevm::runtime::closure closure(
+    /* name */ "__main__",
+    /* id */ 0,
+    /* parent_id */ corevm::runtime::NONESET_CLOSURE_ID,
+    /* vector */ vector,
+    /* locs */ locs,
+    /* catch_sites */ catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure
@@ -116,17 +119,21 @@ TEST_F(compartment_unittest, TestOutputStream)
   corevm::runtime::compartment compartment("./example.core");
 
   corevm::runtime::vector vector {
-    { .code=6, .oprd1=421, .oprd2=523 },
-    { .code=5, .oprd1=532, .oprd2=0   },
-    { .code=2, .oprd1=72,  .oprd2=0   },
+    corevm::runtime::instr(6, 421, 523),
+    corevm::runtime::instr(5, 532, 0),
+    corevm::runtime::instr(2, 72, 0),
   };
 
-  corevm::runtime::closure closure {
-    .name = "__main__",
-    .id=2,
-    .parent_id=1,
-    .vector=vector
-  };
+  corevm::runtime::loc_table locs;
+  corevm::runtime::catch_site_list catch_sites;
+
+  corevm::runtime::closure closure(
+    /* name */ "__main__",
+    /* id */ 2,
+    /* parent_id */ 1,
+    /* vector */ vector,
+    /* locs */ locs,
+    /* catch_sites */ catch_sites);
 
   corevm::runtime::closure_table closure_table {
     closure

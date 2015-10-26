@@ -56,10 +56,10 @@ const std::string get_v0_1_vector_schema_definition();
 
 // -----------------------------------------------------------------------------
 
-}; /* end namespace frontend */
+} /* end namespace frontend */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_FRONTEND_UTILS_H_ */

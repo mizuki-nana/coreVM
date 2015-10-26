@@ -26,5 +26,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 bool
 corevm::dyobj::is_valid_flag_bit(char bit)
 {
-  return (0 < bit) && (bit < corevm::dyobj::flags::DYOBJ_MAX_VALUE);
+  return (0 < bit) && (static_cast<corevm::dyobj::flags>(bit) < corevm::dyobj::flags::DYOBJ_MAX_VALUE);
 }

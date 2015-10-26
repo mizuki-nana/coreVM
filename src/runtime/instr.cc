@@ -79,6 +79,11 @@ std::ostream& operator<<(
 
 // -----------------------------------------------------------------------------
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc99-extensions"
+#endif
+
 const corevm::runtime::instr_handler_wrapper
 corevm::runtime::instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
 
@@ -282,11 +287,23 @@ corevm::runtime::instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
 
 };
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif  /* #if defined(__clang__) and __clang__ */
+
 // -----------------------------------------------------------------------------
 
 
 /* --------------------------- INSTRUCTION HANDLERS ------------------------- */
 
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+corevm::runtime::instr_handler::~instr_handler()
+{
+  // Do nothing here.
+}
 
 // -----------------------------------------------------------------------------
 
@@ -363,7 +380,7 @@ template<typename NativeType>
 /* static */
 void
 corevm::runtime::instr_handler::execute_native_complex_type_creation_instr(
-  const corevm::runtime::instr& instr, corevm::runtime::frame* frame)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::frame* frame)
 {
   NativeType value;
   corevm::types::native_type_handle hndl(value);
@@ -546,8 +563,8 @@ corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_oper
 
 void
 corevm::runtime::instr_handler_new::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto id = process.create_dyobj();
 
@@ -559,7 +576,7 @@ corevm::runtime::instr_handler_new::execute(
 void
 corevm::runtime::instr_handler_ldobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
 
@@ -589,7 +606,7 @@ corevm::runtime::instr_handler_ldobj::execute(
 void
 corevm::runtime::instr_handler_stobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
 
@@ -605,7 +622,7 @@ corevm::runtime::instr_handler_stobj::execute(
 void
 corevm::runtime::instr_handler_stobjn::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   size_t n = static_cast<size_t>(instr.oprd2);
@@ -622,7 +639,7 @@ corevm::runtime::instr_handler_stobjn::execute(
 void
 corevm::runtime::instr_handler_getattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -641,7 +658,7 @@ corevm::runtime::instr_handler_getattr::execute(
 void
 corevm::runtime::instr_handler_setattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -669,7 +686,7 @@ corevm::runtime::instr_handler_setattr::execute(
 void
 corevm::runtime::instr_handler_delattr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::attr_key attr_key = static_cast<corevm::dyobj::attr_key>(instr.oprd1);
 
@@ -694,8 +711,8 @@ corevm::runtime::instr_handler_delattr::execute(
 
 void
 corevm::runtime::instr_handler_hasattr2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -719,8 +736,8 @@ corevm::runtime::instr_handler_hasattr2::execute(
 
 void
 corevm::runtime::instr_handler_getattr2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
@@ -742,8 +759,8 @@ corevm::runtime::instr_handler_getattr2::execute(
 
 void
 corevm::runtime::instr_handler_setattr2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id attr_value = process.pop_stack();
 
@@ -765,8 +782,8 @@ corevm::runtime::instr_handler_setattr2::execute(
 
 void
 corevm::runtime::instr_handler_delattr2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -786,8 +803,8 @@ corevm::runtime::instr_handler_delattr2::execute(
 
 void
 corevm::runtime::instr_handler_pop::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   process.pop_stack();
 }
@@ -797,7 +814,7 @@ corevm::runtime::instr_handler_pop::execute(
 void
 corevm::runtime::instr_handler_ldobj2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
 
@@ -827,7 +844,7 @@ corevm::runtime::instr_handler_ldobj2::execute(
 void
 corevm::runtime::instr_handler_stobj2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
 
@@ -842,7 +859,7 @@ corevm::runtime::instr_handler_stobj2::execute(
 void
 corevm::runtime::instr_handler_delobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   corevm::runtime::frame* frame = *frame_ptr;
@@ -863,7 +880,7 @@ corevm::runtime::instr_handler_delobj::execute(
 void
 corevm::runtime::instr_handler_delobj2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   corevm::runtime::frame* frame = *frame_ptr;
@@ -883,8 +900,8 @@ corevm::runtime::instr_handler_delobj2::execute(
 
 void
 corevm::runtime::instr_handler_gethndl::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   corevm::dyobj::dyobj_id id = process.top_stack();
@@ -906,8 +923,8 @@ corevm::runtime::instr_handler_gethndl::execute(
 
 void
 corevm::runtime::instr_handler_sethndl::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -935,7 +952,7 @@ corevm::runtime::instr_handler_sethndl::execute(
 void
 corevm::runtime::instr_handler_gethndl2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
@@ -959,8 +976,8 @@ corevm::runtime::instr_handler_gethndl2::execute(
 
 void
 corevm::runtime::instr_handler_clrhndl::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -981,7 +998,7 @@ corevm::runtime::instr_handler_clrhndl::execute(
 void
 corevm::runtime::instr_handler_cpyhndl::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
@@ -1086,8 +1103,8 @@ corevm::runtime::instr_handler_cpyhndl::execute(
 
 void
 corevm::runtime::instr_handler_cpyrepr::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id src_obj_id= process.pop_stack();
   corevm::dyobj::dyobj_id target_obj_id = process.pop_stack();
@@ -1114,8 +1131,8 @@ corevm::runtime::instr_handler_cpyrepr::execute(
 
 void
 corevm::runtime::instr_handler_istruthy::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -1141,8 +1158,8 @@ corevm::runtime::instr_handler_istruthy::execute(
 
 void
 corevm::runtime::instr_handler_objeq::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id1 = process.pop_stack();
   corevm::dyobj::dyobj_id id2 = process.pop_stack();
@@ -1157,8 +1174,8 @@ corevm::runtime::instr_handler_objeq::execute(
 
 void
 corevm::runtime::instr_handler_objneq::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id1 = process.pop_stack();
   corevm::dyobj::dyobj_id id2 = process.pop_stack();
@@ -1174,7 +1191,7 @@ corevm::runtime::instr_handler_objneq::execute(
 void
 corevm::runtime::instr_handler_setctx::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1182,10 +1199,9 @@ corevm::runtime::instr_handler_setctx::execute(
   corevm::runtime::frame* frame = *frame_ptr;
   corevm::runtime::closure_ctx frame_cls = frame->closure_ctx();
 
-  corevm::runtime::closure_ctx ctx {
-    .compartment_id = frame_cls.compartment_id,
-    .closure_id = static_cast<corevm::runtime::closure_id>(instr.oprd1)
-  };
+  corevm::runtime::closure_ctx ctx(
+    frame_cls.compartment_id,
+    static_cast<corevm::runtime::closure_id>(instr.oprd1));
 
   obj.set_closure_ctx(ctx);
 }
@@ -1195,7 +1211,7 @@ corevm::runtime::instr_handler_setctx::execute(
 void
 corevm::runtime::instr_handler_cldobj::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -1232,7 +1248,7 @@ corevm::runtime::instr_handler_cldobj::execute(
 void
 corevm::runtime::instr_handler_setattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id src_id = process.pop_stack();
   auto& src_obj = process.get_dyobj(src_id);
@@ -1303,7 +1319,7 @@ corevm::runtime::instr_handler_setattrs::execute(
 void
 corevm::runtime::instr_handler_rsetattrs::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
 
@@ -1334,7 +1350,7 @@ corevm::runtime::instr_handler_rsetattrs::execute(
 void
 corevm::runtime::instr_handler_setattrs2::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto self_str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -1372,8 +1388,8 @@ corevm::runtime::instr_handler_setattrs2::execute(
 
 void
 corevm::runtime::instr_handler_putobj::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   corevm::runtime::frame* frame = *frame_ptr;
@@ -1388,8 +1404,8 @@ corevm::runtime::instr_handler_putobj::execute(
 
 void
 corevm::runtime::instr_handler_getobj::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   auto hndl = frame->pop_eval_stack();
@@ -1404,8 +1420,8 @@ corevm::runtime::instr_handler_getobj::execute(
 
 void
 corevm::runtime::instr_handler_swap::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   process.swap_stack();
 }
@@ -1415,7 +1431,7 @@ corevm::runtime::instr_handler_swap::execute(
 void
 corevm::runtime::instr_handler_setflgc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1437,7 +1453,7 @@ corevm::runtime::instr_handler_setflgc::execute(
 void
 corevm::runtime::instr_handler_setfldel::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1459,7 +1475,7 @@ corevm::runtime::instr_handler_setfldel::execute(
 void
 corevm::runtime::instr_handler_setflcall::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1481,7 +1497,7 @@ corevm::runtime::instr_handler_setflcall::execute(
 void
 corevm::runtime::instr_handler_setflmute::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1502,8 +1518,8 @@ corevm::runtime::instr_handler_setflmute::execute(
 
 void
 corevm::runtime::instr_handler_pinvk::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto& obj = process.get_dyobj(id);
@@ -1544,7 +1560,7 @@ corevm::runtime::instr_handler_pinvk::execute(
 
 void
 corevm::runtime::instr_handler_invk::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
@@ -1563,7 +1579,7 @@ corevm::runtime::instr_handler_invk::execute(
 
 void
 corevm::runtime::instr_handler_rtrn::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::frame* frame = *frame_ptr;
@@ -1589,7 +1605,7 @@ corevm::runtime::instr_handler_rtrn::execute(
 void
 corevm::runtime::instr_handler_jmp::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_addr starting_addr = process.pc();
   corevm::runtime::instr_addr relative_addr = static_cast<corevm::runtime::instr_addr>(instr.oprd1);
@@ -1613,7 +1629,7 @@ corevm::runtime::instr_handler_jmp::execute(
 void
 corevm::runtime::instr_handler_jmpif::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -1646,7 +1662,7 @@ corevm::runtime::instr_handler_jmpif::execute(
 void
 corevm::runtime::instr_handler_jmpr::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   corevm::runtime::instr_addr starting_addr = frame->return_addr() + 1;
@@ -1692,7 +1708,7 @@ corevm::runtime::instr_handler_exc::execute(
       ASSERT(closure);
 #endif
 
-      uint32_t index = process.pc() - starting_addr;
+      uint32_t index = static_cast<uint32_t>(process.pc() - starting_addr);
 
       if (search_catch_sites)
       {
@@ -1755,8 +1771,8 @@ corevm::runtime::instr_handler_exc::execute(
 
 void
 corevm::runtime::instr_handler_excobj::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   const corevm::runtime::frame* frame = *frame_ptr;
 
@@ -1776,8 +1792,8 @@ corevm::runtime::instr_handler_excobj::execute(
 
 void
 corevm::runtime::instr_handler_clrexc::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   frame->clear_exc_obj();
@@ -1788,7 +1804,7 @@ corevm::runtime::instr_handler_clrexc::execute(
 void
 corevm::runtime::instr_handler_jmpexc::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   const corevm::runtime::frame* frame = *frame_ptr;
   corevm::dyobj::dyobj_id exc_obj_id = frame->exc_obj();
@@ -1822,8 +1838,8 @@ corevm::runtime::instr_handler_jmpexc::execute(
 
 void
 corevm::runtime::instr_handler_exit::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   raise(SIGTERM);
 }
@@ -1832,8 +1848,8 @@ corevm::runtime::instr_handler_exit::execute(
 
 void
 corevm::runtime::instr_handler_putarg::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::dyobj::dyobj_id id = process.pop_stack();
   corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
@@ -1845,7 +1861,7 @@ corevm::runtime::instr_handler_putarg::execute(
 void
 corevm::runtime::instr_handler_putkwarg::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(instr.oprd1);
   corevm::dyobj::dyobj_id id = process.pop_stack();
@@ -1858,8 +1874,8 @@ corevm::runtime::instr_handler_putkwarg::execute(
 
 void
 corevm::runtime::instr_handler_putargs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
   corevm::dyobj::dyobj_id id = process.pop_stack();
@@ -1873,8 +1889,8 @@ corevm::runtime::instr_handler_putargs::execute(
 
   for (auto itr = array.begin(); itr != array.end(); ++itr)
   {
-    corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(*itr);
-    invk_ctx->put_param(id);
+    corevm::dyobj::dyobj_id arg_id = static_cast<corevm::dyobj::dyobj_id>(*itr);
+    invk_ctx->put_param(arg_id);
   }
 }
 
@@ -1882,8 +1898,8 @@ corevm::runtime::instr_handler_putargs::execute(
 
 void
 corevm::runtime::instr_handler_putkwargs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
   corevm::dyobj::dyobj_id id = process.pop_stack();
@@ -1897,10 +1913,10 @@ corevm::runtime::instr_handler_putkwargs::execute(
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
-    corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(itr->first);
-    corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
+    corevm::runtime::variable_key arg_key = static_cast<corevm::runtime::variable_key>(itr->first);
+    corevm::dyobj::dyobj_id arg_id = static_cast<corevm::dyobj::dyobj_id>(itr->second);
 
-    invk_ctx->put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(arg_key, arg_id);
   }
 }
 
@@ -1908,8 +1924,8 @@ corevm::runtime::instr_handler_putkwargs::execute(
 
 void
 corevm::runtime::instr_handler_getarg::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::invocation_ctx* invk_ctx = *invk_ctx_ptr;
   corevm::dyobj::dyobj_id id = invk_ctx->pop_param();
@@ -1942,7 +1958,7 @@ corevm::runtime::instr_handler_getkwarg::execute(
 
 void
 corevm::runtime::instr_handler_getargs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::frame* frame = *frame_ptr;
@@ -1965,7 +1981,7 @@ corevm::runtime::instr_handler_getargs::execute(
 
 void
 corevm::runtime::instr_handler_getkwargs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::frame* frame = *frame_ptr;
@@ -1980,7 +1996,8 @@ corevm::runtime::instr_handler_getkwargs::execute(
     corevm::runtime::variable_key key = static_cast<corevm::runtime::variable_key>(*itr);
     corevm::dyobj::dyobj_id id = invk_ctx->pop_param_value_pair(key);
 
-    map[key] = id;
+    auto key_val = static_cast<typename types::native_map::key_type>(key);
+    map[key_val] = id;
   }
 
   corevm::types::native_type_handle hndl(std::move(map));
@@ -1992,7 +2009,7 @@ corevm::runtime::instr_handler_getkwargs::execute(
 
 void
 corevm::runtime::instr_handler_hasargs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
 {
   corevm::runtime::frame* frame = *frame_ptr;
@@ -2009,8 +2026,8 @@ corevm::runtime::instr_handler_hasargs::execute(
 
 void
 corevm::runtime::instr_handler_gc::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   process.do_gc();
 }
@@ -2019,8 +2036,8 @@ corevm::runtime::instr_handler_gc::execute(
 
 void
 corevm::runtime::instr_handler_debug::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   std::cout << process << std::endl;
 }
@@ -2030,7 +2047,7 @@ corevm::runtime::instr_handler_debug::execute(
 void
 corevm::runtime::instr_handler_print::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -2061,8 +2078,8 @@ corevm::runtime::instr_handler_print::execute(
 
 void
 corevm::runtime::instr_handler_swap2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
   frame->swap_eval_stack();
@@ -2072,8 +2089,8 @@ corevm::runtime::instr_handler_swap2::execute(
 
 void
 corevm::runtime::instr_handler_pos::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2085,8 +2102,8 @@ corevm::runtime::instr_handler_pos::execute(
 
 void
 corevm::runtime::instr_handler_neg::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2098,8 +2115,8 @@ corevm::runtime::instr_handler_neg::execute(
 
 void
 corevm::runtime::instr_handler_inc::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2111,8 +2128,8 @@ corevm::runtime::instr_handler_inc::execute(
 
 void
 corevm::runtime::instr_handler_dec::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2124,8 +2141,8 @@ corevm::runtime::instr_handler_dec::execute(
 
 void
 corevm::runtime::instr_handler_abs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2137,8 +2154,8 @@ corevm::runtime::instr_handler_abs::execute(
 
 void
 corevm::runtime::instr_handler_sqrt::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2150,8 +2167,8 @@ corevm::runtime::instr_handler_sqrt::execute(
 
 void
 corevm::runtime::instr_handler_add::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2163,8 +2180,8 @@ corevm::runtime::instr_handler_add::execute(
 
 void
 corevm::runtime::instr_handler_sub::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2176,8 +2193,8 @@ corevm::runtime::instr_handler_sub::execute(
 
 void
 corevm::runtime::instr_handler_mul::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2189,8 +2206,8 @@ corevm::runtime::instr_handler_mul::execute(
 
 void
 corevm::runtime::instr_handler_div::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2202,8 +2219,8 @@ corevm::runtime::instr_handler_div::execute(
 
 void
 corevm::runtime::instr_handler_mod::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2215,8 +2232,8 @@ corevm::runtime::instr_handler_mod::execute(
 
 void
 corevm::runtime::instr_handler_pow::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2228,8 +2245,8 @@ corevm::runtime::instr_handler_pow::execute(
 
 void
 corevm::runtime::instr_handler_bnot::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2241,8 +2258,8 @@ corevm::runtime::instr_handler_bnot::execute(
 
 void
 corevm::runtime::instr_handler_band::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2254,8 +2271,8 @@ corevm::runtime::instr_handler_band::execute(
 
 void
 corevm::runtime::instr_handler_bor::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2267,8 +2284,8 @@ corevm::runtime::instr_handler_bor::execute(
 
 void
 corevm::runtime::instr_handler_bxor::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2280,8 +2297,8 @@ corevm::runtime::instr_handler_bxor::execute(
 
 void
 corevm::runtime::instr_handler_bls::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2293,8 +2310,8 @@ corevm::runtime::instr_handler_bls::execute(
 
 void
 corevm::runtime::instr_handler_brs::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2306,8 +2323,8 @@ corevm::runtime::instr_handler_brs::execute(
 
 void
 corevm::runtime::instr_handler_eq::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2319,8 +2336,8 @@ corevm::runtime::instr_handler_eq::execute(
 
 void
 corevm::runtime::instr_handler_neq::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2332,8 +2349,8 @@ corevm::runtime::instr_handler_neq::execute(
 
 void
 corevm::runtime::instr_handler_gt::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2345,8 +2362,8 @@ corevm::runtime::instr_handler_gt::execute(
 
 void
 corevm::runtime::instr_handler_lt::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2358,8 +2375,8 @@ corevm::runtime::instr_handler_lt::execute(
 
 void
 corevm::runtime::instr_handler_gte::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2371,8 +2388,8 @@ corevm::runtime::instr_handler_gte::execute(
 
 void
 corevm::runtime::instr_handler_lte::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2384,8 +2401,8 @@ corevm::runtime::instr_handler_lte::execute(
 
 void
 corevm::runtime::instr_handler_lnot::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2397,8 +2414,8 @@ corevm::runtime::instr_handler_lnot::execute(
 
 void
 corevm::runtime::instr_handler_land::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2410,8 +2427,8 @@ corevm::runtime::instr_handler_land::execute(
 
 void
 corevm::runtime::instr_handler_lor::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2423,8 +2440,8 @@ corevm::runtime::instr_handler_lor::execute(
 
 void
 corevm::runtime::instr_handler_cmp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2436,8 +2453,8 @@ corevm::runtime::instr_handler_cmp::execute(
 
 void
 corevm::runtime::instr_handler_int8::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int8>(
     instr,
@@ -2449,8 +2466,8 @@ corevm::runtime::instr_handler_int8::execute(
 
 void
 corevm::runtime::instr_handler_uint8::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint8>(
     instr,
@@ -2462,8 +2479,8 @@ corevm::runtime::instr_handler_uint8::execute(
 
 void
 corevm::runtime::instr_handler_int16::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int16>(
     instr,
@@ -2475,8 +2492,8 @@ corevm::runtime::instr_handler_int16::execute(
 
 void
 corevm::runtime::instr_handler_uint16::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint16>(
     instr,
@@ -2488,8 +2505,8 @@ corevm::runtime::instr_handler_uint16::execute(
 
 void
 corevm::runtime::instr_handler_int32::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int32>(
     instr,
@@ -2501,8 +2518,8 @@ corevm::runtime::instr_handler_int32::execute(
 
 void
 corevm::runtime::instr_handler_uint32::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint32>(
     instr,
@@ -2514,8 +2531,8 @@ corevm::runtime::instr_handler_uint32::execute(
 
 void
 corevm::runtime::instr_handler_int64::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::int64>(
     instr,
@@ -2527,8 +2544,8 @@ corevm::runtime::instr_handler_int64::execute(
 
 void
 corevm::runtime::instr_handler_uint64::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::uint64>(
     instr,
@@ -2540,8 +2557,8 @@ corevm::runtime::instr_handler_uint64::execute(
 
 void
 corevm::runtime::instr_handler_bool::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_integer_type_creation_instr<corevm::types::boolean>(
     instr,
@@ -2553,8 +2570,8 @@ corevm::runtime::instr_handler_bool::execute(
 
 void
 corevm::runtime::instr_handler_dec1::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_floating_type_creation_instr<corevm::types::decimal>(
     instr,
@@ -2566,8 +2583,8 @@ corevm::runtime::instr_handler_dec1::execute(
 
 void
 corevm::runtime::instr_handler_dec2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_floating_type_creation_instr<corevm::types::decimal2>(
     instr,
@@ -2579,8 +2596,8 @@ corevm::runtime::instr_handler_dec2::execute(
 
 void
 corevm::runtime::instr_handler_str::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   // String type is different than other complex types.
   corevm::runtime::frame* frame = *frame_ptr;
@@ -2605,8 +2622,8 @@ corevm::runtime::instr_handler_str::execute(
 
 void
 corevm::runtime::instr_handler_ary::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_complex_type_creation_instr<corevm::types::array>(
     instr,
@@ -2618,8 +2635,8 @@ corevm::runtime::instr_handler_ary::execute(
 
 void
 corevm::runtime::instr_handler_map::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_complex_type_creation_instr<corevm::types::map>(
     instr,
@@ -2631,8 +2648,8 @@ corevm::runtime::instr_handler_map::execute(
 
 void
 corevm::runtime::instr_handler_2int8::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2644,8 +2661,8 @@ corevm::runtime::instr_handler_2int8::execute(
 
 void
 corevm::runtime::instr_handler_2uint8::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2657,8 +2674,8 @@ corevm::runtime::instr_handler_2uint8::execute(
 
 void
 corevm::runtime::instr_handler_2int16::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2670,8 +2687,8 @@ corevm::runtime::instr_handler_2int16::execute(
 
 void
 corevm::runtime::instr_handler_2uint16::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2683,8 +2700,8 @@ corevm::runtime::instr_handler_2uint16::execute(
 
 void
 corevm::runtime::instr_handler_2int32::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2696,8 +2713,8 @@ corevm::runtime::instr_handler_2int32::execute(
 
 void
 corevm::runtime::instr_handler_2uint32::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2709,8 +2726,8 @@ corevm::runtime::instr_handler_2uint32::execute(
 
 void
 corevm::runtime::instr_handler_2int64::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2722,8 +2739,8 @@ corevm::runtime::instr_handler_2int64::execute(
 
 void
 corevm::runtime::instr_handler_2uint64::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2735,8 +2752,8 @@ corevm::runtime::instr_handler_2uint64::execute(
 
 void
 corevm::runtime::instr_handler_2bool::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2748,8 +2765,8 @@ corevm::runtime::instr_handler_2bool::execute(
 
 void
 corevm::runtime::instr_handler_2dec1::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2761,8 +2778,8 @@ corevm::runtime::instr_handler_2dec1::execute(
 
 void
 corevm::runtime::instr_handler_2dec2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2774,8 +2791,8 @@ corevm::runtime::instr_handler_2dec2::execute(
 
 void
 corevm::runtime::instr_handler_2str::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2787,8 +2804,8 @@ corevm::runtime::instr_handler_2str::execute(
 
 void
 corevm::runtime::instr_handler_2ary::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2800,8 +2817,8 @@ corevm::runtime::instr_handler_2ary::execute(
 
 void
 corevm::runtime::instr_handler_2map::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2813,8 +2830,8 @@ corevm::runtime::instr_handler_2map::execute(
 
 void
 corevm::runtime::instr_handler_truthy::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -2829,8 +2846,8 @@ corevm::runtime::instr_handler_truthy::execute(
 
 void
 corevm::runtime::instr_handler_repr::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -2845,8 +2862,8 @@ corevm::runtime::instr_handler_repr::execute(
 
 void
 corevm::runtime::instr_handler_hash::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::frame* frame = *frame_ptr;
 
@@ -2861,8 +2878,8 @@ corevm::runtime::instr_handler_hash::execute(
 
 void
 corevm::runtime::instr_handler_slice::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -2874,8 +2891,8 @@ corevm::runtime::instr_handler_slice::execute(
 
 void
 corevm::runtime::instr_handler_stride::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2887,8 +2904,8 @@ corevm::runtime::instr_handler_stride::execute(
 
 void
 corevm::runtime::instr_handler_reverse::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -2900,8 +2917,8 @@ corevm::runtime::instr_handler_reverse::execute(
 
 void
 corevm::runtime::instr_handler_round::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2913,8 +2930,8 @@ corevm::runtime::instr_handler_round::execute(
 
 void
 corevm::runtime::instr_handler_strlen::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -2926,8 +2943,8 @@ corevm::runtime::instr_handler_strlen::execute(
 
 void
 corevm::runtime::instr_handler_strat::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2939,8 +2956,8 @@ corevm::runtime::instr_handler_strat::execute(
 
 void
 corevm::runtime::instr_handler_strclr::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -2952,8 +2969,8 @@ corevm::runtime::instr_handler_strclr::execute(
 
 void
 corevm::runtime::instr_handler_strapd::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -2965,8 +2982,8 @@ corevm::runtime::instr_handler_strapd::execute(
 
 void
 corevm::runtime::instr_handler_strpsh::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -2978,8 +2995,8 @@ corevm::runtime::instr_handler_strpsh::execute(
 
 void
 corevm::runtime::instr_handler_strist::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -2991,8 +3008,8 @@ corevm::runtime::instr_handler_strist::execute(
 
 void
 corevm::runtime::instr_handler_strist2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3004,8 +3021,8 @@ corevm::runtime::instr_handler_strist2::execute(
 
 void
 corevm::runtime::instr_handler_strers::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3017,8 +3034,8 @@ corevm::runtime::instr_handler_strers::execute(
 
 void
 corevm::runtime::instr_handler_strers2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3030,8 +3047,8 @@ corevm::runtime::instr_handler_strers2::execute(
 
 void
 corevm::runtime::instr_handler_strrplc::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
     *frame_ptr,
@@ -3043,8 +3060,8 @@ corevm::runtime::instr_handler_strrplc::execute(
 
 void
 corevm::runtime::instr_handler_strswp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3056,8 +3073,8 @@ corevm::runtime::instr_handler_strswp::execute(
 
 void
 corevm::runtime::instr_handler_strsub::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3069,8 +3086,8 @@ corevm::runtime::instr_handler_strsub::execute(
 
 void
 corevm::runtime::instr_handler_strsub2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3082,8 +3099,8 @@ corevm::runtime::instr_handler_strsub2::execute(
 
 void
 corevm::runtime::instr_handler_strfnd::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3095,8 +3112,8 @@ corevm::runtime::instr_handler_strfnd::execute(
 
 void
 corevm::runtime::instr_handler_strfnd2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3108,8 +3125,8 @@ corevm::runtime::instr_handler_strfnd2::execute(
 
 void
 corevm::runtime::instr_handler_strrfnd::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3121,8 +3138,8 @@ corevm::runtime::instr_handler_strrfnd::execute(
 
 void
 corevm::runtime::instr_handler_strrfnd2::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3134,8 +3151,8 @@ corevm::runtime::instr_handler_strrfnd2::execute(
 
 void
 corevm::runtime::instr_handler_arylen::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3147,8 +3164,8 @@ corevm::runtime::instr_handler_arylen::execute(
 
 void
 corevm::runtime::instr_handler_aryemp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3160,8 +3177,8 @@ corevm::runtime::instr_handler_aryemp::execute(
 
 void
 corevm::runtime::instr_handler_aryat::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3173,8 +3190,8 @@ corevm::runtime::instr_handler_aryat::execute(
 
 void
 corevm::runtime::instr_handler_aryfrt::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3186,8 +3203,8 @@ corevm::runtime::instr_handler_aryfrt::execute(
 
 void
 corevm::runtime::instr_handler_arybak::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3199,8 +3216,8 @@ corevm::runtime::instr_handler_arybak::execute(
 
 void
 corevm::runtime::instr_handler_aryput::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3212,8 +3229,8 @@ corevm::runtime::instr_handler_aryput::execute(
 
 void
 corevm::runtime::instr_handler_aryapnd::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3225,8 +3242,8 @@ corevm::runtime::instr_handler_aryapnd::execute(
 
 void
 corevm::runtime::instr_handler_aryers::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3238,8 +3255,8 @@ corevm::runtime::instr_handler_aryers::execute(
 
 void
 corevm::runtime::instr_handler_arypop::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3251,8 +3268,8 @@ corevm::runtime::instr_handler_arypop::execute(
 
 void
 corevm::runtime::instr_handler_aryswp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3264,8 +3281,8 @@ corevm::runtime::instr_handler_aryswp::execute(
 
 void
 corevm::runtime::instr_handler_aryclr::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -3277,8 +3294,8 @@ corevm::runtime::instr_handler_aryclr::execute(
 
 void
 corevm::runtime::instr_handler_arymrg::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3290,8 +3307,8 @@ corevm::runtime::instr_handler_arymrg::execute(
 
 void
 corevm::runtime::instr_handler_maplen::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3303,8 +3320,8 @@ corevm::runtime::instr_handler_maplen::execute(
 
 void
 corevm::runtime::instr_handler_mapemp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3316,8 +3333,8 @@ corevm::runtime::instr_handler_mapemp::execute(
 
 void
 corevm::runtime::instr_handler_mapat::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3329,8 +3346,8 @@ corevm::runtime::instr_handler_mapat::execute(
 
 void
 corevm::runtime::instr_handler_mapfind::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3342,8 +3359,8 @@ corevm::runtime::instr_handler_mapfind::execute(
 
 void
 corevm::runtime::instr_handler_mapput::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3356,7 +3373,7 @@ corevm::runtime::instr_handler_mapput::execute(
 void
 corevm::runtime::instr_handler_mapset::execute(
   const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::types::native_map_key_type key = static_cast<
     corevm::types::native_map_key_type>(instr.oprd1);
@@ -3379,8 +3396,8 @@ corevm::runtime::instr_handler_mapset::execute(
 
 void
 corevm::runtime::instr_handler_mapers::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3392,8 +3409,8 @@ corevm::runtime::instr_handler_mapers::execute(
 
 void
 corevm::runtime::instr_handler_mapclr::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -3405,8 +3422,8 @@ corevm::runtime::instr_handler_mapclr::execute(
 
 void
 corevm::runtime::instr_handler_mapswp::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3418,8 +3435,8 @@ corevm::runtime::instr_handler_mapswp::execute(
 
 void
 corevm::runtime::instr_handler_mapkeys::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3431,8 +3448,8 @@ corevm::runtime::instr_handler_mapkeys::execute(
 
 void
 corevm::runtime::instr_handler_mapvals::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3444,8 +3461,8 @@ corevm::runtime::instr_handler_mapvals::execute(
 
 void
 corevm::runtime::instr_handler_mapmrg::execute(
-  const corevm::runtime::instr& instr, corevm::runtime::process& process,
-  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** invk_ctx_ptr)
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   corevm::runtime::instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,

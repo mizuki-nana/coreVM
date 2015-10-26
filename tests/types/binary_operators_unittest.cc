@@ -82,7 +82,7 @@ TEST_F(addition_operator_unittest, TestWithIntegeralOperands)
 TEST_F(addition_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
   corevm::types::decimal expected_result = oprd1 + oprd2;
 
@@ -112,7 +112,7 @@ TEST_F(subtraction_operator_unittest, TestWithIntegeralOperands)
 TEST_F(subtraction_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
   corevm::types::decimal expected_result = oprd1 - oprd2;
 
@@ -142,7 +142,7 @@ TEST_F(multiplication_operator_unittest, TestWithIntegeralOperands)
 TEST_F(multiplication_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
   corevm::types::decimal expected_result = oprd1 * oprd2;
 
@@ -172,7 +172,7 @@ TEST_F(division_operator_unittest, TestWithIntegeralOperands)
 TEST_F(division_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
   corevm::types::decimal expected_result = oprd1 / oprd2;
 
@@ -203,10 +203,10 @@ TEST_F(modulus_operator_unittest, TestWithIntegeralOperands)
 TEST_F(modulus_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
   corevm::types::decimal expected_result =
-    fmod(static_cast<corevm::types::int64>(oprd1), oprd2);
+    static_cast<corevm::types::decimal>(fmod(static_cast<corevm::types::int64>(oprd1), oprd2));
 
   call_binary_op_and_assert_result<
     corevm::types::modulus, corevm::types::decimal>(oprd1, oprd2, expected_result);
@@ -223,8 +223,8 @@ TEST_F(pow_operator_unittest, TestWithIntegeralOperands)
   corevm::types::uint32 oprd1 = 10000u;
   corevm::types::int64 oprd2 = 2;
 
-  corevm::types::int64 expected_result =
-    pow(static_cast<corevm::types::decimal2>(oprd1), static_cast<corevm::types::decimal2>(oprd2));
+  corevm::types::int64 expected_result = static_cast<corevm::types::int64>(
+    pow(static_cast<corevm::types::decimal2>(oprd1), static_cast<corevm::types::decimal2>(oprd2)));
 
   call_binary_op_and_assert_result<
     corevm::types::pow_op, corevm::types::int64>(oprd1, oprd2, expected_result);
@@ -235,9 +235,10 @@ TEST_F(pow_operator_unittest, TestWithIntegeralOperands)
 TEST_F(pow_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 0.64;
+  corevm::types::decimal oprd2 = 0.64f;
 
-  corevm::types::decimal expected_result = pow(oprd1, oprd2);
+  corevm::types::decimal expected_result =
+    static_cast<corevm::types::decimal>(pow(oprd1, oprd2));
 
   call_binary_op_and_assert_result<
     corevm::types::pow_op, corevm::types::decimal>(oprd1, oprd2, expected_result);
@@ -265,7 +266,7 @@ TEST_F(bitwise_and_operator_unittest, TestWithIntegeralOperands)
 TEST_F(bitwise_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::bitwise_and::result_type expected_result =
     oprd1 & static_cast<corevm::types::int64>(oprd2);
@@ -296,7 +297,7 @@ TEST_F(bitwise_or_operator_unittest, TestWithIntegeralOperands)
 TEST_F(bitwise_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::bitwise_or::result_type expected_result =
     oprd1 | static_cast<corevm::types::int64>(oprd2);
@@ -327,7 +328,7 @@ TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralOperands)
 TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::bitwise_xor::result_type expected_result =
     oprd1 ^ static_cast<corevm::types::int64>(oprd2);
@@ -359,7 +360,7 @@ TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralOperands)
 TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::bitwise_left_shift::result_type expected_result =
     oprd1 << static_cast<corevm::types::int64>(oprd2);
@@ -390,7 +391,7 @@ TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralOperands)
 TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::bitwise_right_shift::result_type expected_result =
     oprd1 >> static_cast<corevm::types::int64>(oprd2);
@@ -421,9 +422,9 @@ TEST_F(logical_and_operator_unittest, TestWithIntegeralOperands)
 TEST_F(logical_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
-  corevm::types::logical_and::result_type expected_result = oprd1 && oprd2;
+  corevm::types::logical_and::result_type expected_result = true;
 
   call_typed_binary_op_and_assert_result<corevm::types::logical_and>(
     oprd1, oprd2, expected_result);
@@ -451,9 +452,9 @@ TEST_F(logical_or_operator_unittest, TestWithIntegeralOperands)
 TEST_F(logical_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
-  corevm::types::logical_or::result_type expected_result = oprd1 && oprd2;
+  corevm::types::logical_or::result_type expected_result = true;
 
   call_typed_binary_op_and_assert_result<corevm::types::logical_or>(
     oprd1, oprd2, expected_result);
@@ -481,7 +482,7 @@ TEST_F(eq_operator_unittest, TestWithIntegeralOperands)
 TEST_F(eq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::eq::result_type expected_result =
     oprd1 == static_cast<corevm::types::int64>(oprd2);
@@ -512,7 +513,7 @@ TEST_F(neq_operator_unittest, TestWithIntegeralOperands)
 TEST_F(neq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::neq::result_type expected_result = oprd1 !=
     static_cast<corevm::types::int64>(oprd2);
@@ -543,7 +544,7 @@ TEST_F(gt_operator_unittest, TestWithIntegeralOperands)
 TEST_F(gt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::gt::result_type expected_result = oprd1 >
     static_cast<corevm::types::int64>(oprd2);
@@ -574,7 +575,7 @@ TEST_F(lt_operator_unittest, TestWithIntegeralOperands)
 TEST_F(lt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::lt::result_type expected_result = oprd1 <
     static_cast<corevm::types::int64>(oprd2);
@@ -605,7 +606,7 @@ TEST_F(gte_operator_unittest, TestWithIntegeralOperands)
 TEST_F(gte_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::gte::result_type expected_result = oprd1 >=
     static_cast<corevm::types::int64>(oprd2);
@@ -636,7 +637,7 @@ TEST_F(lte_operator_unittest, TestWithIntegeralOperands)
 TEST_F(lte_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
-  corevm::types::decimal oprd2 = 6.64;
+  corevm::types::decimal oprd2 = 6.64f;
 
   corevm::types::lte::result_type expected_result = oprd1 <=
     static_cast<corevm::types::int64>(oprd2);

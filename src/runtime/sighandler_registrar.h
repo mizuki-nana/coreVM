@@ -64,6 +64,7 @@ public:
    */
   static void ignore(sig_atomic_t);
 
+  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
   static void handle_signal(int);
 
   static bool is_sig_raised();

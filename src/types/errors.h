@@ -55,21 +55,21 @@ public:
 class conversion_error : public corevm::types::runtime_error
 {
 public:
-  explicit conversion_error(const std::string& src_type, const std::string& dst_type):
+  explicit conversion_error(const std::string& src_type_, const std::string& dst_type_):
     corevm::types::runtime_error(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type % dst_type)
+      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)
     ),
-    src_type(src_type),
-    dst_type(dst_type)
+    src_type(src_type_),
+    dst_type(dst_type_)
   {
   }
 
-  explicit conversion_error(const char* src_type, const char* dst_type):
+  explicit conversion_error(const char* src_type_, const char* dst_type_):
     corevm::types::runtime_error(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type % dst_type)
+      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)
     ),
-    src_type(src_type),
-    dst_type(dst_type)
+    src_type(src_type_),
+    dst_type(dst_type_)
   {
   }
 
@@ -82,21 +82,21 @@ public:
 class invalid_operator_error : public corevm::types::runtime_error
 {
 public:
-  explicit invalid_operator_error(const std::string& op, const std::string& type):
+  explicit invalid_operator_error(const std::string& op_, const std::string& type_):
     corevm::types::runtime_error(
-      str(boost::format("Cannot perform operator %s on native type %s") % op % type)
+      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)
     ),
-    op(op),
-    type(type)
+    op(op_),
+    type(type_)
   {
   }
 
-  explicit invalid_operator_error(const char* op, const char* type):
+  explicit invalid_operator_error(const char* op_, const char* type_):
     corevm::types::runtime_error(
-      str(boost::format("Cannot perform operator %s on native type %s") % op % type)
+      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)
     ),
-    op(op),
-    type(type)
+    op(op_),
+    type(type_)
   {
   }
 

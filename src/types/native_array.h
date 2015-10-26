@@ -53,6 +53,7 @@ public:
 
   native_array(std::initializer_list<value_type>);
 
+  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
   native_array(int8_t);
 
   template <class InputIterator>
@@ -108,10 +109,10 @@ public:
 };
 
 
-}; /* end namespace types */
+} /* end namespace types */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_NATIVE_ARRAY_H_ */

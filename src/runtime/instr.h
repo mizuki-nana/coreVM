@@ -56,9 +56,17 @@ class invocation_ctx;
 
 typedef struct instr
 {
-  const corevm::runtime::instr_code code;
-  const corevm::runtime::instr_oprd oprd1;
-  const corevm::runtime::instr_oprd oprd2;
+  instr(instr_code code_, instr_oprd oprd1_, instr_oprd oprd2_)
+    :
+    code(code_),
+    oprd1(oprd1_),
+    oprd2(oprd2_)
+  {
+  }
+
+  corevm::runtime::instr_code code;
+  corevm::runtime::instr_oprd oprd1;
+  corevm::runtime::instr_oprd oprd2;
 } instr;
 
 // -----------------------------------------------------------------------------
@@ -80,6 +88,8 @@ public:
     corevm::runtime::process&,
     corevm::runtime::frame**,
     corevm::runtime::invocation_ctx**) = 0;
+
+  virtual ~instr_handler();
 
 protected:
   template<typename InterfaceFunc>

@@ -53,6 +53,7 @@ public:
 
   native_map(std::initializer_list<value_type>);
 
+  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
   native_map(int8_t);
 
   operator int8_t() const;

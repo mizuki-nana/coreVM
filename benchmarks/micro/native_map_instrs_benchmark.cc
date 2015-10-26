@@ -47,7 +47,7 @@ void BenchmarkInstrMAPLEN(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_maplen handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -74,7 +74,7 @@ void BenchmarkInstrMAPEMP(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapemp handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -104,7 +104,7 @@ void BenchmarkInstrMAPFIND(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_mapfind handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -135,7 +135,7 @@ void BenchmarkInstrMAPAT(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_mapat handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -169,7 +169,7 @@ void BenchmarkInstrMAPPUT(benchmark::State& state)
     corevm::types::uint32(222);
 
   corevm::runtime::instr_handler_mapput handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -203,11 +203,8 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
   fixture.process().push_stack(id);
 
   corevm::runtime::instr_handler_mapset handler;
-  corevm::runtime::instr instr {
-    .code=0,
-    .oprd1=static_cast<corevm::runtime::instr_oprd>(key),
-    .oprd2=0
-  };
+  corevm::runtime::instr instr(
+    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -237,7 +234,7 @@ void BenchmarkInstrMAPERS(benchmark::State& state)
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_mapers handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -265,7 +262,7 @@ void BenchmarkInstrMAPCLR(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapclr handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -298,7 +295,7 @@ void BenchmarkInstrMAPSWP(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapswp handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -326,7 +323,7 @@ void BenchmarkInstrMAPKEYS(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapkeys handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -353,7 +350,7 @@ void BenchmarkInstrMAPVALS(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapvals handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -386,7 +383,7 @@ void BenchmarkInstrMAPMRG(benchmark::State& state)
   };
 
   corevm::runtime::instr_handler_mapmrg handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();

@@ -37,10 +37,10 @@ attr_key
 hash_attr_str(const std::string&);
 
 
-}; /* end namespace dyobj */
+} /* end namespace dyobj */
 
 
-}; /* end namespace corevm */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_DYOBJ_UTIL_H_ */

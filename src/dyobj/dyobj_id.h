@@ -23,6 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DYOBJ_ID_H_
 #define COREVM_DYOBJ_ID_H_
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
+#endif
+
 #include <climits>
 #include <cstdint>
 
@@ -55,10 +60,16 @@ inline void* obj_id_to_ptr(dyobj_id id)
 
 // -----------------------------------------------------------------------------
 
+
 } /* end namespace dyobj */
 
 
 } /* end namespace corevm */
+
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
 
 
 #endif /* COREVM_DYOBJ_ID_H_ */

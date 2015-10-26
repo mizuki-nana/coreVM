@@ -23,25 +23,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ERRORS_H_
 #define COREVM_ERRORS_H_
 
-#include <stdexcept>
 #include <string>
 
 
 namespace corevm {
 
 
-class runtime_error : public std::runtime_error
+class runtime_error
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
-    std::runtime_error(what_arg)
-  {
-  }
+  explicit runtime_error(const std::string& what_arg);
+  explicit runtime_error(const char* what_arg);
 
-  explicit runtime_error(const char* what_arg):
-    std::runtime_error(what_arg)
-  {
-  }
+  const char* what() const noexcept;
+
+private:
+  std::string m_what_arg;
 };
 
 

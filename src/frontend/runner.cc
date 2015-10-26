@@ -40,16 +40,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-const unsigned int DEFAULT_STACK_LEVEL = 5;
-
-// -----------------------------------------------------------------------------
-
+#if __DEBUG__
 static void
 print_stack_trace()
 {
   // TODO: [SNEAKER-86] Print stack trace not working well
+
+  static const unsigned int DEFAULT_STACK_LEVEL = 5;
   sneaker::utility::stack_trace::print_stack_trace(std::cerr, DEFAULT_STACK_LEVEL);
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -91,11 +91,14 @@ corevm::frontend::runner::run() const noexcept
   {
     loader.load(m_path, process);
 
+#if COREVM_247_COMPLETED
     // TODO: [COREVM-247] Enable garbage collection mechanism
-    // bool res = corevm::runtime::process_runner(process, gc_interval).start();
+    bool res = corevm::runtime::process_runner(process, gc_interval).start();
+#else
     process.start();
-
     bool res = true;
+#endif
+
     if (!res)
     {
       std::cerr << "Run failed: " << strerror(errno) << std::endl;

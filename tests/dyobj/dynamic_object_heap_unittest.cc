@@ -33,16 +33,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <vector>
 
 
+// -----------------------------------------------------------------------------
+
 class dummy_dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
 {
 public:
   virtual bool garbage_collectible() const noexcept { return true; }
-  virtual void on_create() noexcept {}
+  virtual void on_create() noexcept;
   virtual void on_setattr() noexcept {}
   virtual void on_delattr() noexcept {}
   virtual void on_delete() noexcept {}
   virtual void on_exit() noexcept {}
 };
+
+// -----------------------------------------------------------------------------
+
+/* virtual */
+void
+dummy_dynamic_object_manager::on_create() noexcept
+{
+  // Do nothing here.
+}
 
 // -----------------------------------------------------------------------------
 
@@ -129,7 +140,7 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
   auto max_size = m_heap.max_size();
   std::vector<corevm::dyobj::dyobj_id> ids;
 
-  for (auto i = 1; i <= max_size; ++i)
+  for (size_t i = 1; i <= max_size; ++i)
   {
     ids.push_back(m_heap.create_dyobj());
   }
@@ -142,7 +153,7 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
   );
 
   // Clean up.
-  for (auto i = 0; i < ids.size(); ++i)
+  for (size_t i = 0; i < ids.size(); ++i)
   {
     m_heap.erase(ids[i]);
   }

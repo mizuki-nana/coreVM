@@ -44,57 +44,17 @@ public:
   typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
   {
     public:
-      dynamic_object_manager()
-        :
-        m_marked(false)
-      {
-      }
+      dynamic_object_manager();
 
-      virtual inline bool garbage_collectible() const noexcept
-      {
-        return marked();
-      }
-
-      virtual inline void on_create() noexcept
-      {
-        // Do nothing here.
-      }
-
-      virtual inline void on_setattr() noexcept
-      {
-        // Do nothing here.
-      }
-
-      virtual inline void on_delattr() noexcept
-      {
-        // Do nothing here.
-      }
-
-      virtual inline void on_delete() noexcept
-      {
-        // Do nothing here.
-      }
-
-      virtual inline void on_exit() noexcept
-      {
-        // Do nothing here.
-      }
-
-      virtual inline bool marked() const noexcept
-      {
-        return m_marked;
-      }
-
-      virtual inline void mark() noexcept
-      {
-        m_marked = true;
-      }
-
-      virtual inline void unmark() noexcept
-      {
-        m_marked = false;
-      }
-
+      virtual inline bool garbage_collectible() const noexcept;
+      virtual inline void on_create() noexcept;
+      virtual inline void on_setattr() noexcept;
+      virtual inline void on_delattr() noexcept;
+      virtual void on_delete() noexcept;
+      virtual inline void on_exit() noexcept;
+      virtual inline bool marked() const noexcept;
+      virtual inline void mark() noexcept;
+      virtual inline void unmark() noexcept;
     protected:
       bool m_marked;
   } mark_and_sweep_dynamic_object_manager;

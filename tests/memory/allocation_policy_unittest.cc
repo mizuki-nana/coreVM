@@ -86,7 +86,7 @@ TEST_F(allocation_policy_unit_test, TestAllocationOverMaxSize)
 
   std::vector<int*> ptrs(max_size);
 
-  for (auto i = 0; i < max_size; ++i)
+  for (size_t i = 0; i < max_size; ++i)
   {
     int* ptr = allocation_policy.allocate(1);
     ASSERT_NE(nullptr, ptr);
@@ -96,7 +96,7 @@ TEST_F(allocation_policy_unit_test, TestAllocationOverMaxSize)
   ASSERT_EQ(nullptr, allocation_policy.allocate(1));
 
   // Clean up.
-  for (auto i = 0; i < max_size; ++i)
+  for (size_t i = 0; i < max_size; ++i)
   {
     allocation_policy.deallocate(ptrs[i], sizeof(int));
   }

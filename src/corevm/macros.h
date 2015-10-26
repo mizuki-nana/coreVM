@@ -77,6 +77,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if __DEBUG__ && INSTRUMENTAL_MEASUREMENT
   #define __MEASURE_INSTRS__ 1
+#else
+  #define __MEASURE_INSTRS__ 0
 #endif
 
 // -----------------------------------------------------------------------------
@@ -84,6 +86,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Can remove this macro once the following is done:
 // TODO: [COREVM-286] Consolidate usage of sequential and block allocators
 #define USE_BLOCK_ALLOCATOR 1
+
+// -----------------------------------------------------------------------------
+
+// TODO: [COREVM-247] Enable garbage collection mechanism
+#define COREVM_247_COMPLETED 0
 
 // -----------------------------------------------------------------------------
 

@@ -144,7 +144,7 @@ public:
   }
 
   template<typename... Types2>
-  bool operator==(variant<Types2...> const& rhs) const
+  bool operator==(variant<Types2...> const& /* rhs */) const
   {
     return false;
   }

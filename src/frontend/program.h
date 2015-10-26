@@ -40,6 +40,8 @@ class program : public sneaker::utility::cmdline_program
 public:
   program();
 
+  virtual ~program();
+
 protected:
   virtual int do_run();
 

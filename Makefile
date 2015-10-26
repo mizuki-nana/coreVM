@@ -28,6 +28,7 @@ TOP_DIR=$(CURDIR)
 BUILD_DIR=$(TOP_DIR)/build
 RLS_BUILD_DIR=$(BUILD_DIR)/release
 DBG_BUILD_DIR=$(BUILD_DIR)/debug
+TESTS_BUILD_DIR=$(BUILD_DIR)/tests
 BIN=$(TOP_DIR)/bin
 SRC=src
 TESTS=tests
@@ -44,9 +45,23 @@ COMPILED_BYTECODE_SCHEMA_HEADER=$(SRC)/corevm/corevm_bytecode_schema.h
 
 PYTHON=`which python`
 CXX=`which clang++`
-CXXFLAGS=-Wall -std=c++11 -I$(TOP_DIR)/$(SRC)
+CXXFLAGS=\
+	-std=c++11 \
+	-Weverything \
+	-Wno-deprecated \
+	-Wno-padded \
+	-Wno-float-equal \
+	-Wno-global-constructors \
+	-Wno-exit-time-destructors \
+	-Wno-c++98-compat \
+	-Wno-documentation \
+	-Wno-missing-prototypes \
+	-Wno-format-nonliteral \
+	-I$(TOP_DIR)/$(SRC)
+
 EXTRA_CXXFLAGS=-O3
 DBG_CXXFLAGS=-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1
+TEST_CXXFLAGS=-Wno-weak-vtables -Wno-missing-variable-declarations
 
 LFLAGS=-lsneaker -lpthread -lavrocpp_s
 DBG_LFLAGS=-lsneaker -lpthread -lavrocpp_s
@@ -93,7 +108,7 @@ include benchmarks/include.mk
 
 OBJECTS = $(patsubst $(TOP_DIR)/%.cc, $(RLS_BUILD_DIR)/%.o, $(SOURCES))
 DBG_OBJECTS = $(patsubst $(TOP_DIR)/%.cc, $(DBG_BUILD_DIR)/%.o, $(SOURCES))
-TEST_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(RLS_BUILD_DIR)/%.o,$(TEST_SOURCES))
+TEST_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(TESTS_BUILD_DIR)/%.o,$(TEST_SOURCES))
 BENCHMARK_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(RLS_BUILD_DIR)/%.o,$(BENCHMARK_SOURCES))
 
 ## -----------------------------------------------------------------------------
@@ -176,6 +191,12 @@ $(ARTIFACTS): $(TOOLS)
 .PHONY: $(PYTHON_TESTS)
 $(PYTHON_TESTS): $(COREVM) $(ARTIFACTS)
 	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
+
+## -----------------------------------------------------------------------------
+
+$(TESTS_BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_CXXFLAGS) -c $(TOP_DIR)/$*.cc -o $@
 
 ## -----------------------------------------------------------------------------
 
