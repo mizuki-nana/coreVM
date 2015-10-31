@@ -43,6 +43,13 @@ def test_additions():
     print c2 + c3
     print c3 + c4
     print c4 + c1
+    print c1 + 2
+    print c2 + 100
+
+    try:
+        print c1 + 'Hello'
+    except TypeError:
+        print "TypeError: unsupported operand type(s) for +: 'complex' and 'str'"
 
 ## -----------------------------------------------------------------------------
 
@@ -51,6 +58,13 @@ def test_subtractions():
     print c3 - c2
     print c1 - c4
     print c4 - c3
+    print c1 - 2
+    print c3 - -10
+
+    try:
+        print c1  - 'Hello'
+    except TypeError:
+        print "TypeError: unsupported operand type(s) for +: 'complex' and 'str'"
 
 ## -----------------------------------------------------------------------------
 
@@ -60,11 +74,26 @@ def test_multiplications():
     print c4 * c1
     print c1 * c1
     print c4 * c4
+    print c2 * 10
+    print c3 * -5
+
+    try:
+        print c1 * 'Hello'
+    except TypeError:
+        print "TypeError: unsupported operand type(s) for *: 'complex' and 'str'"
 
 ## -----------------------------------------------------------------------------
 
 def test_divisions():
+    # TODO: [COREVM-413] Incorrect division results on complex types
     print c4 / c1
+    print complex(10, -5) / complex(5, 0)
+    print c4 / -2
+
+    try:
+        print c1 / 'Hello'
+    except TypeError:
+        print "TypeError: unsupported operand type(s) for /: 'complex' and 'str'"
 
 ## -----------------------------------------------------------------------------
 
@@ -116,6 +145,31 @@ def test_nonzero():
     c = complex(-99, -999)
     print c.__nonzero__()
 
+## ----------------------------------------------------------------------------=
+
+def test_comparison_operators():
+    def __test_comparison_with_typerror(func):
+        try:
+            func()
+        except TypeError:
+            print 'no ordering relation is defined for complex numbers'
+
+    __test_comparison_with_typerror(lambda: c1 < c1)
+    __test_comparison_with_typerror(lambda: c1 < c2)
+    __test_comparison_with_typerror(lambda: c1 < 2)
+
+    __test_comparison_with_typerror(lambda: c1 <= c1)
+    __test_comparison_with_typerror(lambda: c1 <= c2)
+    __test_comparison_with_typerror(lambda: c1 <= 2)
+
+    __test_comparison_with_typerror(lambda: c1 > c1)
+    __test_comparison_with_typerror(lambda: c1 > c2)
+    __test_comparison_with_typerror(lambda: c1 > 2)
+
+    __test_comparison_with_typerror(lambda: c1 >= c1)
+    __test_comparison_with_typerror(lambda: c1 >= c2)
+    __test_comparison_with_typerror(lambda: c1 >= 2)
+
 ## -----------------------------------------------------------------------------
 
 test_repr()
@@ -128,5 +182,6 @@ test_equalities()
 test_positives()
 test_negatives()
 test_nonzero()
+test_comparison_operators()
 
 ## -----------------------------------------------------------------------------

@@ -96,7 +96,7 @@ class complex(object):
 
         return __call_cls_2(complex, res_real, res_imag)
 
-    def __add__(self, other):
+    def __add__complex(self, other):
         real = self.real
         imag = self.imag
 
@@ -105,7 +105,18 @@ class complex(object):
 
         return __call_cls_2(complex, res_real, res_imag)
 
-    def __sub__(self, other):
+    def __add__(self, other):
+        if other.__class__ is complex:
+            return __call_method_1(self.__add__complex, other)
+        elif other.__class__ is not int and other.__class__ is not float:
+            raise __call_cls_0(TypeError)
+
+        res_real = __call_method_1(self.real.__add__, other)
+        res_imag = __call_cls_1(int, self.imag)
+
+        return __call_cls_2(complex, res_real, res_imag)
+
+    def __sub__complex(self, other):
         real = self.real
         imag = self.imag
 
@@ -114,7 +125,18 @@ class complex(object):
 
         return __call_cls_2(complex, res_real, res_imag)
 
-    def __mul__(self, other):
+    def __sub__(self, other):
+        if other.__class__ is complex:
+            return __call_method_1(self.__sub__complex, other)
+        elif other.__class__ is not int and other.__class__ is not float:
+            raise __call_cls_0(TypeError)
+
+        res_real = __call_method_1(self.real.__sub__, other)
+        res_imag = __call_cls_1(int, self.imag)
+
+        return __call_cls_2(complex, res_real, res_imag)
+
+    def __mul__complex(self, other):
         real = self.real
         imag = self.imag
 
@@ -130,7 +152,19 @@ class complex(object):
 
         return __call_cls_2(complex, res_real, res_imag)
 
-    def __div__(self, other):
+    def __mul__(self, other):
+        if other.__class__ is complex:
+            return __call_method_1(self.__mul__complex, other)
+        elif other.__class__ is not int and other.__class__ is not float:
+            raise __call_cls_0(TypeError)
+
+        res_real = __call_method_1(self.real.__mul__, other)
+        res_imag = __call_method_1(self.imag.__mul__, other)
+
+        return __call_cls_2(complex, res_real, res_imag)
+
+    def __div__complex(self, other):
+        # TODO: [COREVM-413] Incorrect division results on complex types
         numerator = __call_method_1(self.__mul__, __call_method_0(other.conjugate))
         denominator_1 = __call_method_1(other.real.__mul__, other.real)
         denominator_2 = __call_method_1(other.imag.__mul__, other.imag)
@@ -141,7 +175,20 @@ class complex(object):
 
         return __call_cls_2(complex, res_real, res_imag)
 
+    def __div__(self, other):
+        if other.__class__ is complex:
+            return __call_method_1(self.__div__complex, other)
+        elif other.__class__ is not int and other.__class__ is not float:
+            raise __call_cls_0(TypeError)
+
+        res_real = __call_method_1(self.real.__div__, other)
+        res_imag = __call_method_1(self.imag.__div__, other)
+
+        return __call_cls_2(complex, res_real, res_imag)
+
     def __pow__(self, n):
+        # TODO: [COREVM-415] Add support for Python complex type exponentiation
+
         n_ = __call_cls(int, n)
         zero = __call_cls_builtin(int, 0)
         one = __call_cls_builtin(int, 1)
@@ -165,6 +212,18 @@ class complex(object):
 
     def __ne__(self, other):
         return __call_method_0(__call_method_1(self.__eq__, other).__not__)
+
+    def __lt__(self, other):
+        raise __call_cls_0(TypeError)
+
+    def __lte__(self, other):
+        raise __call_cls_0(TypeError)
+
+    def __gt__(self, other):
+        raise __call_cls_0(TypeError)
+
+    def __gte__(self, other):
+        raise __call_cls_0(TypeError)
 
     def conjugate(self):
         res_real = __call_cls(int, self.real)
