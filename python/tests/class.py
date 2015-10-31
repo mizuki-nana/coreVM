@@ -41,6 +41,33 @@ def test_object_creation_and_interaction():
 
 ## -----------------------------------------------------------------------------
 
+def test_stmts_in_class_definitions():
+    class MyObject(object):
+
+        try:
+            print 'Hello'
+
+            # Tests shadowing of class names do not affect scopes outside
+            # of class definition.
+            MyObject = 1
+            print MyObject
+
+            name = 'Hello'
+        except Exception:
+            pass
+
+        print MyObject + 1
+
+        def __init__(self):
+            print self.name
+
+        print MyObject + 2
+
+    o = MyObject()
+
+## -----------------------------------------------------------------------------
+
 test_object_creation_and_interaction()
+test_stmts_in_class_definitions()
 
 ## -----------------------------------------------------------------------------

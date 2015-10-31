@@ -133,6 +133,17 @@ class TryExceptState(object):
 
 ## -----------------------------------------------------------------------------
 
+class Scope(object):
+    """Represents lexical scopes in source code.
+    NOTE: top level modules do not have scopes, only classes and functions
+    have scopes."""
+
+    def __init__(self, in_cls=False, name=None):
+        self.in_cls = in_cls
+        self.name = name
+
+## -----------------------------------------------------------------------------
+
 class Closure(object):
 
     # Closure IDs are zero-based indices.
@@ -247,7 +258,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.current_function_name = ''
         self.try_except_states = []
         self.current_try_except_lvl = 0
-        self.scope_lvl = 0
+        self.scopes = []
         self.continue_stmt_vector_lengths = []
         self.break_stmt_vector_lengths = []
 
@@ -342,16 +353,21 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         return [closure.to_json(binary=binary) for closure in closure_table]
 
-    def __enter_scope(self):
-        self.scope_lvl += 1
+    def __enter_scope(self, in_cls=False, name=None):
+        self.scopes.append(Scope(in_cls=in_cls, name=name))
 
     def __exit_scope(self):
-        self.scope_lvl -= 1
+        self.scopes.pop()
+
+    def __current_scope(self):
+        return self.scopes[-1] if self.scopes else None
 
     def __module_frame_lvl(self):
-        """Returns the `n`th top frame lvl of the module lvl frame."""
-        # times scope by 2 because there's a wrapper call for every call.
-        return self.scope_lvl * 2
+        """Returns the `n`th top frame lvl of the module lvl frame.
+        Note that only scopes associated with functions introduce frames at
+        runtime. Each scope introduces 2 frames because of Python wrapper calls.
+        """
+        return sum([0 if scope.in_cls else 2 for scope in self.scopes])
 
     def __current_closure(self):
         return self.closure_map[self.current_closure_name]
@@ -540,6 +556,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_ClassDef(self, node):
         # Step in.
         self.current_class_name = self.current_class_name + '::' + node.name
+        self.__enter_scope(in_cls=True, name=self.current_class_name)
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         if node.name in self.__current_closure().globals:
@@ -551,6 +568,10 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
         self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
 
+        # Also store class object to an invisible variable.
+        self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+        self.__add_instr('stobj2', self.__get_encoding_id(self.current_class_name), 0)
+
         for stmt in node.body:
             # TODO|NOTE: currently only supports functions.
             if isinstance(stmt, ast.FunctionDef):
@@ -559,21 +580,24 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.__add_instr('ldobj', self.__get_encoding_id('MethodType'), 0)
                 self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
                 self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+                self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
                 self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
             elif isinstance(stmt, ast.ClassDef):
                 tmp_name = self.__get_random_name()
                 self.visit(stmt)
                 self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
+                self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
                 self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
                 self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
             else:
-                # TODO: handle other cases.
-                pass
+                self.visit(stmt)
 
         # Step out.
+        # Restore class object in scope with its original name.
+        self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
+        self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+        self.__exit_scope()
         self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
 
     def visit_Return(self, node):
@@ -1328,7 +1352,22 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('getarg', 0, 0, loc=Loc.from_node(node))
             self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Store):
-            if name in self.__current_closure().globals:
+            current_scope = self.__current_scope()
+            if current_scope and current_scope.in_cls:
+                # In a class definition scope.
+                self.__add_instr('stobj', self.__get_encoding_id(name), 0)
+
+                # Set the target name as the class's attribute as well.
+                #
+                # Steps:
+                #   1. Load class.
+                #   2. Load target name.
+                #   3. Set attribute.
+                assert current_scope.name, 'Expecting a class name'
+                self.__add_instr('ldobj2', self.__get_encoding_id(current_scope.name), 0, loc=Loc.from_node(node))
+                self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('setattr', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+            elif name in self.__current_closure().globals:
                 n = self.__module_frame_lvl()
                 self.__add_instr('stobjn', self.__get_encoding_id(name), n, loc=Loc.from_node(node))
             else:
