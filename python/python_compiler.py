@@ -208,6 +208,139 @@ class Closure(object):
 
 ## -----------------------------------------------------------------------------
 
+class BytecodeValidationException(Exception):
+    pass
+
+## -----------------------------------------------------------------------------
+
+class StructuredBytecodeValidator(object):
+
+    def __init__(self, field, required=False):
+        self.field = field
+        self.required = required
+
+    def validate(self, structured_bytecode):
+        field_value = structured_bytecode.get(self.field)
+
+        if field_value is None and self.required:
+            raise BytecodeValidationException(
+                'Missing expected field "%s" in bytecode' % self.field)
+
+        return field_value
+
+## -----------------------------------------------------------------------------
+
+class ClosureTableValidator(StructuredBytecodeValidator):
+
+    def validate(self, structured_bytecode):
+        field_value = super(ClosureTableValidator, self).validate(structured_bytecode)
+
+        for closure in field_value:
+            self.validate_required_fields(closure)
+
+        first_closure_id = field_value[0]['__id__']
+        if first_closure_id != 0:
+            raise BytecodeValidationException('Invalid value of field "__id__" in closure')
+
+        closures_count = len(field_value)
+
+        last_closure_id = field_value[-1]['__id__']
+        if last_closure_id != closures_count - 1:
+            raise BytecodeValidationException('Invalid value of field "__id__" in closure')
+
+        # Check closures are stored in increasing order by their IDs.
+        for i in xrange(1, closures_count):
+            previous_closure = field_value[i - 1]
+            next_closure = field_value[i]
+            if previous_closure['__id__'] + 1 != next_closure['__id__']:
+                raise BytecodeValidationException('Closures are not in order')
+
+        # Check parent IDs.
+        for closure in field_value:
+            self.validate_closure_parent(closure, closures_count)
+
+        # Check LOCs.
+        for closure in field_value:
+            self.validate_locs(closure)
+
+        # Check catch sites.
+        for closure in field_value:
+            self.validate_catch_sites(closure)
+
+    def validate_required_fields(self, closure):
+        if 'name' not in closure:
+            raise BytecodeValidationException('Missing required field "name" in closure')
+
+        if '__id__' not in closure:
+            raise BytecodeValidationException('Missing required field "__id__" in closure')
+
+        if '__vector__' not in closure:
+            raise BytecodeValidationException('Missing required field "__vector__" in closure')
+
+    def validate_closure_parent(self, closure, closures_count):
+        parent_id = closure.get('__parent__')
+
+        if parent_id:
+            if parent_id < 0 or parent_id >= closures_count:
+                raise BytecodeValidationException(
+                    'Invalid value of field "__parent__" in closure')
+
+    def validate_locs(self, closure):
+        locs = closure.get('locs')
+
+        if locs:
+            vector = closure['__vector__']
+            vector_len = len(vector)
+
+            for loc in locs:
+                loc_index = loc.get('index')
+                if loc_index is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "index" in loc')
+                else:
+                    if loc_index < 0 or loc_index >= vector_len:
+                        raise BytecodeValidationException(
+                            'Invalid value of field "index" in loc')
+
+                if loc.get('lineno') is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "lineno" in loc')
+
+                if loc.get('col_offset') is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "col_offset" in loc')
+
+            index_to_loc = dict((loc['index'], loc) for loc in locs)
+
+            if len(index_to_loc) != len(locs):
+                raise BytecodeValidationException('Duplicate LOC info in closure')
+
+    def validate_catch_sites(self, closure):
+        catch_sites = closure.get('catch_sites')
+
+        if catch_sites:
+            for catch_site in catch_sites:
+                catch_site_from = catch_site.get('from')
+                if catch_site_from is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "from" in catch site')
+
+                catch_site_to = catch_site.get('to')
+                if catch_site_to is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "to" in catch site')
+
+                catch_site_dst = catch_site.get('dst')
+                if catch_site_dst is None:
+                    raise BytecodeValidationException(
+                        'Missing required field "dst" in catch site')
+
+                if not (catch_site_from < catch_site_to < catch_site_dst):
+                    raise BytecodeValidationException(
+                        'Invalid catch site fields')
+
+## -----------------------------------------------------------------------------
+
 class BytecodeGenerator(ast.NodeVisitor):
     """Traverses through Python AST and generates version and format specific
     coreVM bytecode.
@@ -226,6 +359,10 @@ class BytecodeGenerator(ast.NodeVisitor):
     author = 'Yanzheng Li'
 
     default_closure_name = '__main__'
+
+    structured_bytecode_validators = (
+        ClosureTableValidator('__MAIN__', required=True),
+    )
 
     def __init__(self, options):
         self.input_file = options.input_file
@@ -336,11 +473,20 @@ class BytecodeGenerator(ast.NodeVisitor):
             '__MAIN__': self.__finalize_closure_table(binary=True)
         }
 
+        self.__validate(structured_bytecode)
+
         with open(self.output_file, 'w') as fd:
             writer = avro.datafile.DataFileWriter(
                 fd, avro.io.DatumWriter(), bytecode_schema)
             writer.append(structured_bytecode)
             writer.close()
+
+    def __validate(self, structured_bytecode):
+        """Performs validations on the structured bytecode before it gets
+        serialized to output.
+        """
+        for validator in self.structured_bytecode_validators:
+            validator.validate(structured_bytecode)
 
     def __finalize_closure_table(self, binary=False):
         closure_table = sorted(
@@ -350,6 +496,15 @@ class BytecodeGenerator(ast.NodeVisitor):
         if closure_table:
             assert (closure_table[0].closure_id == 0 and
                 closure_table[-1].closure_id == len(closure_table) - 1)
+
+        # Closures do not contain their parent names when emitted to bytecode.
+        # This is a sanity check to make sure that their relationships match
+        # by names.
+        for closure in closure_table:
+            if closure.parent_id is not None:
+                parent_closure = closure_table[closure.parent_id]
+                assert closure.parent_name == parent_closure.name, \
+                    'Invalid hierarchical relation between closures'
 
         return [closure.to_json(binary=binary) for closure in closure_table]
 
