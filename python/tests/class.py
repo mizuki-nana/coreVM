@@ -61,13 +61,40 @@ def test_stmts_in_class_definitions():
         def __init__(self):
             print self.name
 
+        def hello_world(self):
+            print 'hello world'
+
         print MyObject + 2
 
     o = MyObject()
+    o.hello_world()
+
+## -----------------------------------------------------------------------------
+
+def test_class_with_decorated_methods():
+    def change_name(func):
+        def inner(self):
+            return 'Admiral Alexei Stukov'
+        return inner
+
+    class MyObject(object):
+
+        def __init__(self):
+            self.name = 'Alexei'
+
+        MyObject = 1
+
+        @change_name
+        def show_name(self):
+            return self.name
+
+    o = MyObject()
+    print o.show_name()
 
 ## -----------------------------------------------------------------------------
 
 test_object_creation_and_interaction()
 test_stmts_in_class_definitions()
+test_class_with_decorated_methods()
 
 ## -----------------------------------------------------------------------------

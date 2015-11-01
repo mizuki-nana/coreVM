@@ -573,7 +573,6 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('stobj2', self.__get_encoding_id(self.current_class_name), 0)
 
         for stmt in node.body:
-            # TODO|NOTE: currently only supports functions.
             if isinstance(stmt, ast.FunctionDef):
                 tmp_name = self.__get_random_name()
                 self.visit(stmt)

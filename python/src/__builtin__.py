@@ -157,6 +157,12 @@ def __call_method_3(caller, arg1, arg2, arg3):
 
 ## -----------------------------------------------------------------------------
 
+def __cls_method_wrapper(func):
+    func.__class__ = MethodType
+    return func
+
+## -----------------------------------------------------------------------------
+
 class comprehension(object):
 
     def __init__(self, callee, predicate=None):

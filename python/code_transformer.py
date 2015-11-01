@@ -46,12 +46,24 @@ class TryExceptState(object):
 
 ## -----------------------------------------------------------------------------
 
+class Scope(object):
+    """Represents lexical scopes in source code.
+    NOTE: top level modules do not have scopes, only classes and functions
+    have scopes."""
+
+    def __init__(self, in_cls=False, cls_name=None):
+        self.in_cls = in_cls
+        self.cls_name = cls_name
+        self.class_method_decorations_buffer = []
+
+## -----------------------------------------------------------------------------
+
 class CodeTransformer(ast.NodeVisitor):
 
     def __init__(self, options):
         self.options = options
         self.indent_level = 0
-        self.scope_lvl = 0
+        self.scopes= []
         self.current_try_except_lvl = 0
         self.loop_states = []
         self.try_except_states = []
@@ -102,6 +114,21 @@ class CodeTransformer(ast.NodeVisitor):
     def __pop_loop_state(self):
         self.loop_states.pop()
 
+    def __enter_scope(self, *args, **kwargs):
+        self.scopes.append(Scope(*args, **kwargs))
+
+    def __exit_scope(self):
+        self.scopes.pop()
+
+    def __current_scope(self):
+        return self.scopes[-1] if self.scopes else None
+
+    def __outer_scope(self):
+        return self.scopes[-2] if len(self.scopes) > 1 else None
+
+    def __current_scope_lvl(self):
+        return len(self.scopes)
+
     def __get_finally_blocks_for_branch_stmts(self, is_return=False):
         """Returns a set of "finally" blocks for branch statements, namely
         'break', 'continue', and 'return' statements.
@@ -119,7 +146,7 @@ class CodeTransformer(ast.NodeVisitor):
         if not self.loop_states:
             return None
 
-        assert self.scope_lvl == self.__current_try_except_state().scope_lvl, \
+        assert self.__current_scope_lvl() == self.__current_try_except_state().scope_lvl, \
             'Branch statement must be under the same scope level as the try-except block'
 
         assert self.__current_try_except_state().scope_lvl == self.__current_loop_state().scope_lvl, \
@@ -169,7 +196,7 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_FunctionDef(self, node):
         # Step in.
-        self.scope_lvl += 1
+        self.__enter_scope()
 
         base_str = '{indentation}def {func_name}({arguments}):\n'
 
@@ -202,23 +229,41 @@ class CodeTransformer(ast.NodeVisitor):
 
         # Decorators.
         if node.decorator_list:
-            decorated = node.name
+            outer_scope = self.__outer_scope()
+            under_cls_def = outer_scope and outer_scope.in_cls
+            if under_cls_def:
+                decorated = '{cls_name}.{func_name}'.format(
+                    cls_name=outer_scope.cls_name,
+                    func_name=node.name)
+            else:
+                decorated = node.name
+
             for expr in reversed(node.decorator_list):
                 decorated = (self.visit(expr) + '(' + decorated + ')')
 
-            base_str += '{indentation}{name} = {decorated}\n'.format(
-                indentation=self.__indentation(),
-                name=node.name,
-                decorated=decorated)
+            if under_cls_def:
+                decorated_format = '{cls_name}.{name} = __cls_method_wrapper({decorated})\n'
+                outer_scope.class_method_decorations_buffer.append(
+                    decorated_format.format(
+                        cls_name=outer_scope.cls_name,
+                        name=node.name,
+                        decorated=decorated)
+                )
+            else:
+                decorated_format = '{indentation}{name}.__class__ = {decorated}\n'
+                base_str += decorated_format.format(
+                    indentation=self.__indentation(),
+                    name=node.name,
+                    decorated=decorated)
 
         # Step out.
-        self.scope_lvl -= 1
+        self.__exit_scope()
 
         return base_str
 
     def visit_ClassDef(self, node):
         # Step in.
-        self.scope_lvl += 1
+        self.__enter_scope(in_cls=True, cls_name=node.name)
 
         base_str = '{indentation}class {class_name}:\n'
 
@@ -234,6 +279,11 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__dedent()
 
+        for buf in self.__current_scope().class_method_decorations_buffer:
+            base_str += '{indentation}{buf}\n'.format(
+                indentation=self.__indentation(),
+                buf=buf)
+
         # Decorators.
         if node.decorator_list:
             decorated = node.name
@@ -246,7 +296,7 @@ class CodeTransformer(ast.NodeVisitor):
                 decorated=decorated)
 
         # Step out.
-        self.scope_lvl -= 1
+        self.__exit_scope()
 
         return base_str
 
@@ -410,7 +460,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_For(self, node):
-        self.__push_loop_state(LoopState(self.scope_lvl))
+        self.__push_loop_state(LoopState(self.__current_scope_lvl()))
 
         base_str = "{indentation}try:\n".format(indentation=self.__indentation())
 
@@ -478,7 +528,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_While(self, node):
-        self.__push_loop_state(LoopState(self.scope_lvl))
+        self.__push_loop_state(LoopState(self.__current_scope_lvl()))
 
         base_str = '{indentation}while {test}:\n'.format(
             indentation=self.__indentation(),
@@ -576,7 +626,7 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_TryExcept(self, node):
         # Step in.
         if self.current_try_except_lvl == self.__total_try_except_lvl():
-            self.__push_try_except_state(TryExceptState(self.scope_lvl, len(self.loop_states)))
+            self.__push_try_except_state(TryExceptState(self.__current_scope_lvl(), len(self.loop_states)))
 
         self.current_try_except_lvl += 1
 
@@ -612,7 +662,7 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_TryFinally(self, node):
         self.__push_try_except_state(
-            TryExceptState(self.scope_lvl, len(self.loop_states), node.finalbody))
+            TryExceptState(self.__current_scope_lvl(), len(self.loop_states), node.finalbody))
 
         base_str = ''
 
