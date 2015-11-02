@@ -60,6 +60,31 @@ std::ostream& operator<<(
 
 // -----------------------------------------------------------------------------
 
+corevm::runtime::closure_printer::closure_printer(
+  const corevm::runtime::closure& closure)
+  :
+  m_closure(closure)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+std::ostream&
+corevm::runtime::closure_printer::operator()(std::ostream& ost)
+{
+  ost << "Closure:" << std::endl;
+  ost << std::endl;
+  ost << "Name: " << m_closure.name << std::endl;
+  ost << "ID: " << m_closure.id << std::endl;
+  ost << "Parent ID: " << m_closure.parent_id << std::endl;
+  ost << "Vector:" << std::endl;
+  ost << m_closure.vector << std::endl;
+
+  return ost;
+}
+
+// -----------------------------------------------------------------------------
+
 
 } /* end namespace runtime */
 

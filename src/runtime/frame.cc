@@ -191,6 +191,14 @@ corevm::runtime::frame::eval_stack_element(size_t i)
 
 // -----------------------------------------------------------------------------
 
+size_t
+corevm::runtime::frame::visible_var_count() const
+{
+  return m_visible_vars.size();
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_visible_var(
   const corevm::runtime::variable_key var_key) const
@@ -255,6 +263,14 @@ corevm::runtime::frame::set_visible_var(
 
 // -----------------------------------------------------------------------------
 
+size_t
+corevm::runtime::frame::invisible_var_count() const
+{
+  return m_invisible_vars.size();
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 corevm::runtime::frame::has_invisible_var(
   const corevm::runtime::variable_key var_key) const
@@ -315,6 +331,38 @@ corevm::runtime::frame::set_invisible_var(
   corevm::runtime::variable_key var_key, corevm::dyobj::dyobj_id obj_id)
 {
   m_invisible_vars[var_key] = obj_id;
+}
+
+// -----------------------------------------------------------------------------
+
+std::vector<corevm::runtime::variable_key>
+corevm::runtime::frame::visible_var_keys() const
+{
+  std::vector<corevm::runtime::variable_key> keys;
+  keys.reserve(m_visible_vars.size());
+
+  for (const auto& pair : m_visible_vars)
+  {
+    keys.push_back(pair.first);
+  }
+
+  return keys;
+}
+
+// -----------------------------------------------------------------------------
+
+std::vector<corevm::runtime::variable_key>
+corevm::runtime::frame::invisible_var_keys() const
+{
+  std::vector<corevm::runtime::variable_key> keys;
+  keys.reserve(m_invisible_vars.size());
+
+  for (const auto& pair : m_invisible_vars)
+  {
+    keys.push_back(pair.first);
+  }
+
+  return keys;
 }
 
 // -----------------------------------------------------------------------------

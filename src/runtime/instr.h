@@ -765,6 +765,15 @@ public:
 
 // -----------------------------------------------------------------------------
 
+class instr_handler_dbgfrm : public instr_handler
+{
+  virtual void execute(
+    const corevm::runtime::instr&, corevm::runtime::process&,
+    corevm::runtime::frame**, corevm::runtime::invocation_ctx**);
+};
+
+// -----------------------------------------------------------------------------
+
 class instr_handler_print: public instr_handler
 {
 public:

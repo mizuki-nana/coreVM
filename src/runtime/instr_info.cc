@@ -103,6 +103,7 @@ corevm::runtime::instr_set_info::instr_infos[INSTR_CODE_MAX] {
 
   /* GC        */    { .name="gc"        },
   /* DEBUG     */    { .name="debug"     },
+  /* DBGFRM    */    { .name="dbgfrm"    },
   /* PRINT     */    { .name="print"     },
   /* SWAP2     */    { .name="swap2"     },
 

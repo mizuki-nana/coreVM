@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "instr.h"
 
+#include "frame_printer.h"
 #include "process.h"
 #include "utils.h"
 #include "corevm/macros.h"
@@ -157,6 +158,7 @@ corevm::runtime::instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
 
   /* GC        */    { .handler=std::make_shared<corevm::runtime::instr_handler_gc>()        },
   /* DEBUG     */    { .handler=std::make_shared<corevm::runtime::instr_handler_debug>()     },
+  /* DBGFRM    */    { .handler=std::make_shared<corevm::runtime::instr_handler_dbgfrm>()    },
   /* PRINT     */    { .handler=std::make_shared<corevm::runtime::instr_handler_print>()     },
   /* SWAP2     */    { .handler=std::make_shared<corevm::runtime::instr_handler_swap2>()     },
 
@@ -2040,6 +2042,19 @@ corevm::runtime::instr_handler_debug::execute(
   corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   std::cout << process << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::instr_handler_dbgfrm::execute(
+  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
+{
+  auto& frame = *frame_ptr;
+
+  corevm::runtime::frame_printer printer(*frame);
+  printer(std::cout) << std::endl;
 }
 
 // -----------------------------------------------------------------------------

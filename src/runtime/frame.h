@@ -94,6 +94,8 @@ public:
 
   corevm::types::native_type_handle& eval_stack_element(size_t i);
 
+  size_t visible_var_count() const;
+
   bool has_visible_var(const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)
@@ -107,6 +109,8 @@ public:
 
   void set_visible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
 
+  size_t invisible_var_count() const;
+
   bool has_invisible_var(const corevm::runtime::variable_key) const;
 
   corevm::dyobj::dyobj_id get_invisible_var(const corevm::runtime::variable_key)
@@ -119,6 +123,10 @@ public:
     throw(corevm::runtime::name_not_found_error);
 
   void set_invisible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
+
+  std::vector<corevm::runtime::variable_key> visible_var_keys() const;
+
+  std::vector<corevm::runtime::variable_key> invisible_var_keys() const;
 
   std::list<corevm::dyobj::dyobj_id> get_visible_objs() const;
 

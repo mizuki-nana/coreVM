@@ -89,6 +89,18 @@ std::ostream& operator<<(std::ostream&, const corevm::runtime::closure&);
 
 // -----------------------------------------------------------------------------
 
+struct closure_printer
+{
+  closure_printer(const corevm::runtime::closure&);
+
+  std::ostream& operator()(std::ostream&);
+
+private:
+  const corevm::runtime::closure& m_closure;
+};
+
+// -----------------------------------------------------------------------------
+
 
 } /* end namespace runtime */
 

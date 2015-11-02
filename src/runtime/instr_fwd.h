@@ -504,6 +504,12 @@ enum instr_enum : uint32_t
   DEBUG,
 
   /**
+   * <dbgfrm, _, _>
+   * Show debug information on the current frame.
+   */
+  DBGFRM,
+
+  /**
    * <print, <trailing_new_line>, _>
    * Converts the native type handle associated with the object on top of the
    * stack into a native string, and prints it to std output. The second operand
