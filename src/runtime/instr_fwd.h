@@ -498,14 +498,20 @@ enum instr_enum : uint32_t
   GC,
 
   /**
-   * <debug, _, _>
+   * <debug, #, _>
    * Show debug information.
+   * The first operand is the set of debug options:
+   *
+   *    1. Show instructions in canonical form.
    */
   DEBUG,
 
   /**
-   * <dbgfrm, _, _>
+   * <dbgfrm, #, _>
    * Show debug information on the current frame.
+   * The first operand is the set of debug options:
+   *
+   *    1. Show instructions in canonical form.
    */
   DBGFRM,
 

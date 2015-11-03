@@ -36,7 +36,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <cstdint>
 #include <iterator>
-#include <sstream>
 
 
 class process_unittest : public ::testing::Test {};
@@ -493,81 +492,6 @@ TEST_F(process_unittest, TestInsertCompartment)
   auto compartment_id = process.insert_compartment(compartment);
 
   ASSERT_NE(corevm::runtime::NONESET_COMPARTMENT_ID, compartment_id);
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(process_unittest, TestOutputStream)
-{
-  corevm::runtime::process process;
-
-  // Compartment 1
-
-  corevm::runtime::compartment compartment1("./example.core");
-
-  corevm::runtime::vector vector1 {
-    corevm::runtime::instr(6, 421, 523),
-    corevm::runtime::instr(5, 532, 0),
-    corevm::runtime::instr(2, 72, 0),
-  };
-
-  corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
-
-  corevm::runtime::closure closure1(
-    "__main__",
-    2,
-    1,
-    vector1,
-    locs,
-    catch_sites);
-
-  corevm::runtime::closure_table closure_table1 {
-    closure1
-  };
-
-  compartment1.set_closure_table(std::move(closure_table1));
-
-  process.insert_compartment(compartment1);
-
-  // Compartment 2
-
-  corevm::runtime::compartment compartment2("./tests/sample01.core");
-
-  corevm::runtime::vector vector2 {
-    corevm::runtime::instr(17, 957, 0),
-    corevm::runtime::instr(59, 0, 0),
-    corevm::runtime::instr(22, 5, 0),
-  };
-
-  corevm::runtime::closure closure2(
-    "run",
-    1,
-    corevm::runtime::NONESET_CLOSURE_ID,
-    vector2,
-    locs,
-    catch_sites);
-
-  corevm::runtime::closure_table closure_table2 {
-    closure2
-  };
-
-  compartment2.set_closure_table(std::move(closure_table2));
-
-  process.insert_compartment(compartment2);
-
-  auto id = process.create_dyobj();
-  auto &obj = (process).get_dyobj(id);
-  obj.set_ntvhndl_key(1);
-  obj.set_closure_ctx(corevm::runtime::closure_ctx(1, 2));
-
-  corevm::types::native_type_handle hndl = corevm::types::uint32(32);
-  process.insert_ntvhndl(hndl);
-
-  std::stringstream ss;
-  ss << process;
-
-  ASSERT_NE(0, ss.str().size());
 }
 
 // -----------------------------------------------------------------------------

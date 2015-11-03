@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 
-#include <iosfwd>
 #include <string>
 
 
@@ -35,6 +34,10 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+/** Forward declaration of `corevm::runtime::compartment_printer` */
+class compartment_printer;
 
 
 class compartment
@@ -66,8 +69,7 @@ public:
 
   bool get_starting_closure(corevm::runtime::closure**);
 
-  friend std::ostream& operator<<(
-    std::ostream&, const corevm::runtime::compartment&);
+  friend class compartment_printer;
 
 private:
   const std::string m_path;

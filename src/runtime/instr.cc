@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "frame_printer.h"
 #include "process.h"
+#include "process_printer.h"
 #include "utils.h"
 #include "corevm/macros.h"
 #include "dyobj/util.h"
@@ -34,8 +35,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
-#include <iomanip>
-#include <iostream>
 #include <memory>
 #include <ostream>
 #include <sstream>
@@ -43,39 +42,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 #include <utility>
 #include <vector>
-
-
-// -----------------------------------------------------------------------------
-
-
-namespace corevm {
-
-
-namespace runtime {
-
-
-// -----------------------------------------------------------------------------
-
-std::ostream& operator<<(
-  std::ostream& ost, const corevm::runtime::instr& instr)
-{
-  ost << std::hex << std::showbase;
-  ost << std::setiosflags(std::ios::left);
-  ost << std::setw(6) << instr.code << " ";
-  ost << std::setw(6) << instr.oprd1 << " ";
-  ost << std::setw(6) << instr.oprd2;
-  ost << std::resetiosflags(std::ios::adjustfield);
-  ost << std::noshowbase << std::dec;
-  return ost;
-}
-
-
-// -----------------------------------------------------------------------------
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
 
 
 // -----------------------------------------------------------------------------
@@ -2038,22 +2004,25 @@ corevm::runtime::instr_handler_gc::execute(
 
 void
 corevm::runtime::instr_handler_debug::execute(
-  const corevm::runtime::instr& /* instr */, corevm::runtime::process& process,
+  const corevm::runtime::instr& instr, corevm::runtime::process& process,
   corevm::runtime::frame** /* frame_ptr */, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
-  std::cout << process << std::endl;
+  const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
+  corevm::runtime::process_printer printer(process, opts);
+  printer(std::cout) << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
 void
 corevm::runtime::instr_handler_dbgfrm::execute(
-  const corevm::runtime::instr& /* instr */, corevm::runtime::process& /* process */,
+  const corevm::runtime::instr& instr, corevm::runtime::process& /* process */,
   corevm::runtime::frame** frame_ptr, corevm::runtime::invocation_ctx** /* invk_ctx_ptr */)
 {
   auto& frame = *frame_ptr;
 
-  corevm::runtime::frame_printer printer(*frame);
+  const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
+  corevm::runtime::frame_printer printer(*frame, opts);
   printer(std::cout) << std::endl;
 }
 

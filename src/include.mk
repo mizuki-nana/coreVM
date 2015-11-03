@@ -47,18 +47,20 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/native_string.cc
 
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/closure.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment.cc
+SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/frame.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/frame_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/gc_rule.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/instr.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/instr_info.cc
+SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/instr_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/invocation_ctx.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/native_types_pool.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/process.cc
+SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/process_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/process_runner.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/sighandler.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/sighandler_registrar.cc
-SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/vector.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/utils.cc
 
 SOURCES += $(TOP_DIR)/$(SRC)/$(FRONTEND)/bytecode_loader.cc

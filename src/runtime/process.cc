@@ -45,10 +45,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <cstdint>
-#include <iterator>
 #include <list>
 #include <limits>
-#include <ostream>
 #include <sstream>
 #include <stdexcept>
 #include <utility>
@@ -972,6 +970,14 @@ corevm::runtime::process::handle_signal(
 
 // -----------------------------------------------------------------------------
 
+size_t
+corevm::runtime::process::compartment_count() const
+{
+  return m_compartments.size();
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::runtime::compartment_id
 corevm::runtime::process::insert_compartment(
   const corevm::runtime::compartment& compartment)
@@ -1165,51 +1171,5 @@ corevm::runtime::process::unwind_stack(
 
   std::cerr << std::endl;
 }
-
-// -----------------------------------------------------------------------------
-
-namespace corevm {
-
-
-namespace runtime {
-
-
-std::ostream& operator<<(
-  std::ostream& ost, const corevm::runtime::process& process)
-{
-  ost << "Process" << std::endl;
-  ost << std::endl;
-  ost << "-- BEGIN --" << std::endl;
-  ost << "Heap size: " << process.heap_size() << std::endl;
-  ost << "Max heap size: " << process.max_heap_size() << std::endl;
-  ost << "Native types pool size: " << process.ntvhndl_pool_size() << std::endl;
-  ost << "Max native types pool size: " << process.max_ntvhndl_pool_size() << std::endl;
-  ost << "Compartments: " << process.m_compartments.size() << std::endl;
-  ost << std::endl;
-
-  for (auto itr = process.m_compartments.cbegin();
-       itr != process.m_compartments.cend();
-       ++itr)
-  {
-    const corevm::runtime::compartment& compartment = *itr;
-    ost << compartment << std::endl;
-  }
-
-  ost << "Total Instructions: " << process.m_instrs.size() << std::endl;
-  ost << "Program counter: " << process.pc() << std::endl;
-  ost << "-- END --" << std::endl;
-  ost << std::endl;
-
-  ost << process.m_dynamic_object_heap << std::endl;
-  ost << process.m_ntvhndl_pool << std::endl;
-
-  return ost;
-}
-
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
 
 // -----------------------------------------------------------------------------

@@ -85,18 +85,15 @@ typedef std::vector<corevm::runtime::closure> closure_table;
 
 // -----------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream&, const corevm::runtime::closure&);
-
-// -----------------------------------------------------------------------------
-
 struct closure_printer
 {
-  closure_printer(const corevm::runtime::closure&);
+  closure_printer(const corevm::runtime::closure&, uint32_t opts);
 
-  std::ostream& operator()(std::ostream&);
+  std::ostream& operator()(std::ostream&) const;
 
 private:
   const corevm::runtime::closure& m_closure;
+  const uint32_t m_opts;
 };
 
 // -----------------------------------------------------------------------------

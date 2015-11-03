@@ -37,7 +37,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gc/reference_count_garbage_collection_scheme.h"
 
 #include <cstdint>
-#include <iosfwd>
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
@@ -55,6 +54,10 @@ struct closure;
 
 /** Forward declaration of `corevm::runtime::closure_ctx` */
 struct closure_ctx;
+
+
+/** Forward declaration of `corevm::runtime::process_printer` */
+class process_printer;
 
 
 /**
@@ -215,6 +218,8 @@ public:
 
   native_types_pool_type::size_type max_ntvhndl_pool_size() const;
 
+  size_t compartment_count() const;
+
   corevm::runtime::compartment_id insert_compartment(
     const corevm::runtime::compartment&);
 
@@ -255,7 +260,7 @@ public:
   static void unwind_stack(
     corevm::runtime::process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
-  friend std::ostream& operator<<(std::ostream&, const corevm::runtime::process&);
+  friend class process_printer;
 
 private:
   bool is_valid_pc() const;

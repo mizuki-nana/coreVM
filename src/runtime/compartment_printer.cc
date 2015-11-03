@@ -20,41 +20,39 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRAME_PRINTER_H_
-#define COREVM_FRAME_PRINTER_H_
+#include "compartment_printer.h"
 
-#include "frame.h"
-
-#include <cstdint>
-#include <iosfwd>
+#include <ostream>
 
 
-namespace corevm {
+// -----------------------------------------------------------------------------
 
-
-namespace runtime {
-
-
-class frame_printer
+corevm::runtime::compartment_printer::compartment_printer(
+  const corevm::runtime::compartment& compartment,
+  uint32_t opts)
+  :
+  m_compartment(compartment),
+  m_opts(opts)
 {
-public:
-  frame_printer(const runtime::frame&, uint32_t opts);
+}
 
-  std::ostream& operator()(std::ostream&) const;
-private:
-  template<typename V>
-  void print_variables(std::ostream&,
-    const corevm::runtime::compartment*, const V& vars) const;
+// -----------------------------------------------------------------------------
 
-  const corevm::runtime::frame& m_frame;
-  const uint32_t m_opts;
-};
+std::ostream&
+corevm::runtime::compartment_printer::operator()(std::ostream& ost) const
+{
+  ost << "Compartment" << std::endl;
+  ost << std::endl;
+  ost << "Path: " << m_compartment.path() << std::endl;
+  ost << std::endl;
 
+  for (const auto& closure : m_compartment.m_closure_table)
+  {
+    corevm::runtime::closure_printer printer(closure, m_opts);
+    printer(ost) << std::endl;
+  }
 
-} /* end namespace runtime */
+  return ost;
+}
 
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_FRAME_PRINTER_H_ */
+// -----------------------------------------------------------------------------

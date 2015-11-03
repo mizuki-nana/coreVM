@@ -71,10 +71,6 @@ typedef struct instr
 
 // -----------------------------------------------------------------------------
 
-std::ostream& operator<<(std::ostream&, const corevm::runtime::instr&);
-
-// -----------------------------------------------------------------------------
-
 // Forward declaration of `corevm::runtime::process`.
 class process;
 

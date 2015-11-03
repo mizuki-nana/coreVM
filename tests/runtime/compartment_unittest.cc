@@ -27,8 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
-#include <sstream>
-
 
 class compartment_unittest : public ::testing::Test {};
 
@@ -110,41 +108,6 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
     },
     corevm::runtime::closure_not_found_error
   );
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(compartment_unittest, TestOutputStream)
-{
-  corevm::runtime::compartment compartment("./example.core");
-
-  corevm::runtime::vector vector {
-    corevm::runtime::instr(6, 421, 523),
-    corevm::runtime::instr(5, 532, 0),
-    corevm::runtime::instr(2, 72, 0),
-  };
-
-  corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
-
-  corevm::runtime::closure closure(
-    /* name */ "__main__",
-    /* id */ 2,
-    /* parent_id */ 1,
-    /* vector */ vector,
-    /* locs */ locs,
-    /* catch_sites */ catch_sites);
-
-  corevm::runtime::closure_table closure_table {
-    closure
-  };
-
-  compartment.set_closure_table(std::move(closure_table));
-
-  std::stringstream ss;
-  ss << compartment;
-
-  ASSERT_NE(0, ss.str().size());
 }
 
 // -----------------------------------------------------------------------------

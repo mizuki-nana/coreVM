@@ -20,33 +20,18 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "closure.h"
-#include "instr_printer.h"
+#include "process_printer.h"
 
-#include <limits>
-#include <ostream>
-
-
-namespace corevm {
-
-
-namespace runtime {
+#include "compartment_printer.h"
 
 
 // -----------------------------------------------------------------------------
 
-static_assert(
-  std::numeric_limits<closure_table::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::closure_id>::max(),
-  "Closure ID incompatibility");
-
-// -----------------------------------------------------------------------------
-
-corevm::runtime::closure_printer::closure_printer(
-  const corevm::runtime::closure& closure,
+corevm::runtime::process_printer::process_printer(
+  const corevm::runtime::process& process,
   uint32_t opts)
   :
-  m_closure(closure),
+  m_process(process),
   m_opts(opts)
 {
 }
@@ -54,28 +39,34 @@ corevm::runtime::closure_printer::closure_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-corevm::runtime::closure_printer::operator()(std::ostream& ost) const
+corevm::runtime::process_printer::operator()(std::ostream& ost) const
 {
-  ost << "Closure:" << std::endl;
+  ost << "Process" << std::endl;
   ost << std::endl;
-  ost << "Name: " << m_closure.name << std::endl;
-  ost << "ID: " << m_closure.id << std::endl;
-  ost << "Parent ID: " << m_closure.parent_id << std::endl;
-  ost << "Vector:" << std::endl;
+  ost << "-- BEGIN --" << std::endl;
 
-  for (const auto& instr : m_closure.vector)
+  ost << "Heap size: " << m_process.heap_size() << std::endl;
+  ost << "Max heap size: " << m_process.max_heap_size() << std::endl;
+  ost << "Native types pool size: " << m_process.ntvhndl_pool_size() << std::endl;
+  ost << "Max native types pool size: " << m_process.max_ntvhndl_pool_size() << std::endl;
+  ost << "Compartments: " << m_process.compartment_count() << std::endl;
+
+  for (const auto& compartment : m_process.m_compartments)
   {
-    corevm::runtime::instr_printer instr_printer(instr, m_opts);
-    instr_printer(ost) << std::endl;
+    corevm::runtime::compartment_printer printer(compartment, m_opts);
+    printer(ost) << std::endl;
   }
+
+  ost << "Total Instructions: " << m_process.m_instrs.size() << std::endl;
+  ost << "Program counter: " << m_process.pc() << std::endl;
+
+  ost << m_process.m_dynamic_object_heap << std::endl;
+  ost << m_process.m_ntvhndl_pool << std::endl;
+
+  ost << "-- END --" << std::endl;
+  ost << std::endl;
 
   return ost;
 }
 
 // -----------------------------------------------------------------------------
-
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */

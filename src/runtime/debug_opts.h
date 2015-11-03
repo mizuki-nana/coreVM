@@ -20,13 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRAME_PRINTER_H_
-#define COREVM_FRAME_PRINTER_H_
-
-#include "frame.h"
+#ifndef COREVM_DEBUG_OPTIONS_H_
+#define COREVM_DEBUG_OPTIONS_H_
 
 #include <cstdint>
-#include <iosfwd>
 
 
 namespace corevm {
@@ -35,19 +32,9 @@ namespace corevm {
 namespace runtime {
 
 
-class frame_printer
+enum debug_options : uint32_t
 {
-public:
-  frame_printer(const runtime::frame&, uint32_t opts);
-
-  std::ostream& operator()(std::ostream&) const;
-private:
-  template<typename V>
-  void print_variables(std::ostream&,
-    const corevm::runtime::compartment*, const V& vars) const;
-
-  const corevm::runtime::frame& m_frame;
-  const uint32_t m_opts;
+  OPT_SHOW_CANONICAL_FORM = (1 << 0)
 };
 
 
@@ -57,4 +44,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_FRAME_PRINTER_H_ */
+#endif /* COREVM_DEBUG_OPTIONS_H_ */

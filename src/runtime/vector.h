@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "instr.h"
 
-#include <iosfwd>
 #include <vector>
 
 
@@ -38,10 +37,6 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 typedef std::vector<corevm::runtime::instr> vector;
-
-// -----------------------------------------------------------------------------
-
-std::ostream& operator<<(std::ostream&, const corevm::runtime::vector&);
 
 // -----------------------------------------------------------------------------
 

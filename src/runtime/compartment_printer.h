@@ -20,12 +20,11 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRAME_PRINTER_H_
-#define COREVM_FRAME_PRINTER_H_
+#ifndef COREVM_COMPARTMENT_PRINTER_H_
+#define COREVM_COMPARTMENT_PRINTER_H_
 
-#include "frame.h"
+#include "compartment.h"
 
-#include <cstdint>
 #include <iosfwd>
 
 
@@ -35,18 +34,14 @@ namespace corevm {
 namespace runtime {
 
 
-class frame_printer
+class compartment_printer
 {
 public:
-  frame_printer(const runtime::frame&, uint32_t opts);
+  compartment_printer(const corevm::runtime::compartment&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  template<typename V>
-  void print_variables(std::ostream&,
-    const corevm::runtime::compartment*, const V& vars) const;
-
-  const corevm::runtime::frame& m_frame;
+  const corevm::runtime::compartment& m_compartment;
   const uint32_t m_opts;
 };
 
@@ -57,4 +52,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_FRAME_PRINTER_H_ */
+#endif /* COREVM_COMPARTMENT_PRINTER_H_ */

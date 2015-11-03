@@ -20,41 +20,55 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRAME_PRINTER_H_
-#define COREVM_FRAME_PRINTER_H_
+#include "instr_printer.h"
 
-#include "frame.h"
+#include "debug_opts.h"
+#include "instr_info.h"
 
-#include <cstdint>
-#include <iosfwd>
-
-
-namespace corevm {
+#include <iomanip>
+#include <iostream>
 
 
-namespace runtime {
+// -----------------------------------------------------------------------------
 
-
-class frame_printer
+corevm::runtime::instr_printer::instr_printer(
+  const corevm::runtime::instr& instr,
+  uint32_t opts)
+  :
+  m_instr(instr),
+  m_opts(opts)
 {
-public:
-  frame_printer(const runtime::frame&, uint32_t opts);
 
-  std::ostream& operator()(std::ostream&) const;
-private:
-  template<typename V>
-  void print_variables(std::ostream&,
-    const corevm::runtime::compartment*, const V& vars) const;
+}
 
-  const corevm::runtime::frame& m_frame;
-  const uint32_t m_opts;
-};
+// -----------------------------------------------------------------------------
 
+std::ostream&
+corevm::runtime::instr_printer::operator()(std::ostream& ost) const
+{
+  const bool show_canonical_form = m_opts & OPT_SHOW_CANONICAL_FORM;
 
-} /* end namespace runtime */
+  ost << std::hex << std::showbase;
+  ost << std::setiosflags(std::ios::left);
 
+  if (show_canonical_form)
+  {
+    ost << std::setw(10);
+    ost << instr_set_info::instr_infos[m_instr.code].name;
+  }
+  else
+  {
+    ost << std::setw(6);
+    ost << m_instr.code;
+  }
+  ost << " ";
 
-} /* end namespace corevm */
+  ost << std::setw(6) << m_instr.oprd1 << " ";
+  ost << std::setw(6) << m_instr.oprd2;
+  ost << std::resetiosflags(std::ios::adjustfield);
+  ost << std::noshowbase << std::dec;
 
+  return ost;
+}
 
-#endif /* COREVM_FRAME_PRINTER_H_ */
+// -----------------------------------------------------------------------------

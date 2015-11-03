@@ -31,9 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 corevm::runtime::frame_printer::frame_printer(
-  const corevm::runtime::frame& frame)
+  const corevm::runtime::frame& frame,
+  uint32_t opts)
   :
-  m_frame(frame)
+  m_frame(frame),
+  m_opts(opts)
 {
   // Do nothing here.
 }
@@ -71,7 +73,7 @@ corevm::runtime::frame_printer::operator()(std::ostream& ost) const
 
   // Closure info.
   {
-    corevm::runtime::closure_printer closure_printer(closure);
+    corevm::runtime::closure_printer closure_printer(closure, m_opts);
     closure_printer(ost) << std::endl;
   }
 
