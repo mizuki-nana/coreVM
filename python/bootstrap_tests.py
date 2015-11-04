@@ -31,6 +31,7 @@ import glob
 import time
 import optparse
 import os
+import subprocess
 
 from colors import colors
 from stdout_comparator import StdoutComparator
@@ -46,6 +47,10 @@ INTERMEDIATE_EXTENSION = '.tmp.py'
 
 def pyta_cmdl_args(path, options):
     args = [PYTHON, PYTA_PATH, path]
+
+    if options.sanity_test:
+        args.append('--sanity-test')
+
     return args
 
 ## -----------------------------------------------------------------------------
@@ -64,6 +69,10 @@ def run(options):
     ]
 
     print 'Bootstrapping Python tests...'
+    if options.python_only:
+        print '(Python only)'
+    elif options.sanity_test:
+        print '(Sanity test)'
     print 'Testing using the following %d input file(s):' % len(real_inputs)
 
     # Bring blank line.
@@ -85,7 +94,10 @@ def run(options):
 
         begin_time = time.time()
 
-        retcode = StdoutComparator(lhs_args, rhs_args).run()
+        if not options.sanity_test:
+            retcode = StdoutComparator(lhs_args, rhs_args).run()
+        else:
+            retcode = subprocess.call(lhs_args, stdout=subprocess.PIPE)
 
         end_time = time.time()
 
@@ -144,7 +156,20 @@ def main():
         help='One or more file(s) to test'
     )
 
+    parser.add_option(
+        '-s',
+        '--sanity-test',
+        action='store_true',
+        dest='sanity_test',
+        default=False,
+        help='Sanity test only'
+    )
+
     options, _ = parser.parse_args()
+
+    if options.python_only and options.sanity_test:
+        sys.stderr.write('Cannot specify --python-only and --sanity-test togeter.\n')
+        sys.exit(-1)
 
     run(options)
 

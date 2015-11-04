@@ -34,6 +34,7 @@ PYTHON_COMPILER = './python/python_compiler.py'
 PYTHON_CODE_TRANSFORMER = './python/code_transformer.py'
 METADATA_FILE = './artifacts/corevm_metadata.json'
 COREVM = './coreVM'
+COREVM_DBG = './coreVM_dbg'
 INTERMEDIATE_EXTENSION = '.tmp.py'
 BYTECODE_EXTENSION = '.core'
 
@@ -64,9 +65,9 @@ class PytaStep(object):
 
 class Pyta(object):
 
-    def __init__(self, input_path, debug_mode=False):
+    def __init__(self, input_path, options):
         self.input_path = input_path
-        self.debug_mode = debug_mode
+        self.options = options
 
         self.init_steps()
 
@@ -76,7 +77,7 @@ class Pyta(object):
         compiled_path = \
             self.compiler_input_to_output_path(code_transformed_path)
 
-        self.steps = (
+        self.steps = [
             PytaStep(
                 [
                     PYTHON,
@@ -99,14 +100,28 @@ class Pyta(object):
                     compiled_path
                 ]
             ),
-            PytaStep(
-                [
-                    COREVM,
-                    compiled_path
-                ],
-                is_severe=True
-            ),
-        )
+        ]
+
+        if self.options.sanity_test:
+            self.steps.append(
+                PytaStep(
+                    [
+                        COREVM_DBG,
+                        compiled_path
+                    ],
+                    is_severe=True
+                )
+            )
+        else:
+            self.steps.append(
+                PytaStep(
+                    [
+                        COREVM,
+                        compiled_path
+                    ],
+                    is_severe=True
+                )
+            )
 
     def code_transformer_input_to_output_path(self, path):
         return os.path.splitext(path)[0] + INTERMEDIATE_EXTENSION
@@ -116,12 +131,12 @@ class Pyta(object):
 
     def run(self):
         for step in self.steps:
-            if self.debug_mode:
+            if self.options.debug_mode:
                 print subprocess.list2cmdline(step.cmdl_args)
 
             retcode, status = step.run()
 
-            if self.debug_mode or retcode != 0:
+            if self.options.debug_mode or retcode != 0:
                 print status + '\n'
 
             if retcode != 0:
@@ -142,13 +157,22 @@ def main():
         help='Debug mode'
     )
 
+    parser.add_option(
+        '-s',
+        '--sanity-test',
+        action='store_true',
+        dest='sanity_test',
+        default=False,
+        help='Sanity test only'
+    )
+
     options, args = parser.parse_args()
 
     if not args:
         sys.stderr.write('Input file not specified\n')
         sys.exit(-1)
 
-    pyta = Pyta(args[0], debug_mode=options.debug_mode)
+    pyta = Pyta(args[0], options)
     pyta.run()
 
 ## -----------------------------------------------------------------------------

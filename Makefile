@@ -60,7 +60,13 @@ CXXFLAGS=\
 	-I$(TOP_DIR)/$(SRC)
 
 EXTRA_CXXFLAGS=-O3
-DBG_CXXFLAGS=-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1
+DBG_CXXFLAGS=\
+	-D__DEBUG__=1 \
+	-DINSTRUMENTAL_MEASUREMENT=1 \
+	-g \
+	-fsanitize=address \
+	-fno-omit-frame-pointer \
+	-fno-optimize-sibling-calls
 TEST_CXXFLAGS=-Wno-weak-vtables -Wno-missing-variable-declarations
 
 LFLAGS=-lsneaker -lpthread -lavrocpp_s
@@ -69,7 +75,15 @@ DBG_LFLAGS=-lsneaker -lpthread -lavrocpp_s
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
 	LFLAGS += -lboost_system -lboost_regex -lboost_program_options -lboost_iostreams
-	DBG_LFLAGS += -lboost_system -lboost_regex -lboost_program_options -lboost_iostreams -lboost_timer
+	DBG_LFLAGS += \
+		-lboost_system \
+		-lboost_regex \
+		-lboost_program_options \
+		-lboost_iostreams \
+		-lboost_timer \
+		-fsanitize=address \
+		-fno-omit-frame-pointer \
+		-fno-optimize-sibling-calls
 endif
 ifeq ($(UNAME_S), Darwin)
 	CXXFLAGS += -arch x86_64 -DGTEST_HAS_TR1_TUPLE=0
@@ -88,6 +102,8 @@ COREVM_DBG=coreVM_dbg
 EXTRACT_METADATA=$(BIN)/extract_metadata.cc.out
 BOOTSTRAP_TESTS=bootstrap_tests.py
 PYTHON_TESTS=python_tests
+SANITY_TESTS=sanity_tests
+SANITY_TESTS_ARGS=--sanity-test
 RUN_TESTS=run_tests
 RUN_BENCHMARKS=run_benchmarks
 
@@ -114,7 +130,7 @@ BENCHMARK_OBJECTS = $(patsubst $(TOP_DIR)/%.cc,$(RLS_BUILD_DIR)/%.o,$(BENCHMARK_
 ## -----------------------------------------------------------------------------
 
 .PHONY: all
-all: $(LIBCOREVM_DBG) $(COREVM_DBG) $(LIBCOREVM) $(COREVM) $(TOOLS) $(ARTIFACTS) $(TESTS) $(PYTHON_TESTS) $(BENCHMARKS)
+all: $(LIBCOREVM_DBG) $(COREVM_DBG) $(LIBCOREVM) $(COREVM) $(TOOLS) $(ARTIFACTS) $(TESTS) $(PYTHON_TESTS) $(SANITY_TESTS) $(BENCHMARKS)
 
 ## -----------------------------------------------------------------------------
 
@@ -191,6 +207,13 @@ $(ARTIFACTS): $(TOOLS)
 .PHONY: $(PYTHON_TESTS)
 $(PYTHON_TESTS): $(COREVM) $(ARTIFACTS)
 	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
+
+## -----------------------------------------------------------------------------
+
+.PHONY: $(SANITY_TESTS)
+$(SANITY_TESTS): $(COREVM_DBG) $(ARTIFACTS)
+	export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-3.4)
+	@$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(SANITY_TESTS_ARGS)
 
 ## -----------------------------------------------------------------------------
 

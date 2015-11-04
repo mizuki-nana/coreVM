@@ -125,6 +125,10 @@ const size_t DEFAULT_COMPARTMENTS_TABLE_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
+const size_t DEFAULT_VECTOR_CAPACITY = 1 << 14;
+
+// -----------------------------------------------------------------------------
+
 
 // -----------------------------------------------------------------------------
 
@@ -696,20 +700,18 @@ corevm::runtime::process::pre_start()
     ASSERT(closure);
 #endif
 
-    // Reserve initial storage.
-    m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
-
-    m_invocation_ctx_stack.reserve(DEFAULT_INVOCATION_STACK_CAPACITY);
-
-    m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
+    m_instrs.reserve(DEFAULT_VECTOR_CAPACITY);
+    append_vector(closure->vector);
 
     corevm::runtime::closure_ctx ctx(0, closure->id);
 
-    append_vector(closure->vector);
-
+    m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
     emplace_frame(ctx, compartment, closure, m_pc);
 
+    m_invocation_ctx_stack.reserve(DEFAULT_INVOCATION_STACK_CAPACITY);
     emplace_invocation_ctx(ctx, compartment, closure);
+
+    m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
 
     m_pc = 0;
   }
@@ -859,10 +861,6 @@ void
 corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 {
   // Inserts the vector at the very end of the instr array.
-  // (This is different than `process::insert_vector`.
-  //
-  // NOTE: Please update `process_unittest::TestAppendVector` if the
-  // behavior here changes.
   std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
 }
 
@@ -873,8 +871,8 @@ corevm::runtime::process::insert_vector(const corevm::runtime::vector& vector)
 {
   // We want to insert the vector right after the current pc().
   //
-  // NOTE: Please update `process_unittest::TestInsertVector` if the
-  // behavior here changes.
+  // NOTE: changes in the capacity of `m_instr` will result in AddressSanitizer
+  // report "heap-use-after-free".
   m_instrs.insert(m_instrs.begin() + pc() + 1, vector.begin(), vector.end());
 }
 
