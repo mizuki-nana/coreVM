@@ -58,7 +58,32 @@ class Scope(object):
 
 ## -----------------------------------------------------------------------------
 
+class NumType(object):
+    """Types of number literals in Python.
+
+    Reference:
+        https://docs.python.org/2.5/ref/numbers.html
+    """
+    INT = 1
+    LONG_INT = 2
+    FLOAT = 3
+    IMAG = 4
+
+    num_type_to_cls = {
+        INT: 'int',
+        LONG_INT: 'long',
+        FLOAT: 'float',
+        IMAG: 'complex'
+    }
+
+    @classmethod
+    def get_num_cls_from_type(cls, num_type):
+        return cls.num_type_to_cls[num_type]
+
+## -----------------------------------------------------------------------------
+
 class CodeTransformer(ast.NodeVisitor):
+
 
     def __init__(self, options):
         self.options = options
@@ -1065,11 +1090,23 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Num(self, node):
-        num_type = 'float' if isinstance(node.n, float) else 'int'
-        base_str = '__call_cls_builtin({num_type}, {n})'.format(
-            num_type=num_type, n=str(abs(node.n)))
+        if isinstance(node.n, float):
+            num_type = NumType.FLOAT
+        elif str(node.n)[-1] == 'j':
+            num_type = NumType.IMAG
+        else:
+            # TODO: handle `long` literals.
+            num_type = NumType.INT
 
-        if node.n < 0:
+        if num_type != NumType.IMAG:
+            num_cls = NumType.get_num_cls_from_type(num_type)
+            base_str = '__call_cls_builtin({num_cls}, {n})'.format(
+                num_cls=num_cls, n=str(abs(node.n)))
+        else:
+            n = str(node.n)[:-1]
+            base_str = '__call_cls_2(complex, __call_cls_builtin(int, 0), __call_cls_builtin(int, {n}))'.format(n=n)
+
+        if num_type != NumType.IMAG and node.n < 0:
             base_str = '__call_method_0({n}.__neg__)'.format(
                 n=base_str)
 

@@ -30,6 +30,14 @@ c4 = complex(-2, -4)
 
 ## -----------------------------------------------------------------------------
 
+def test_imaginary_number_literals():
+    print 5j
+    print -3j
+    print 0j
+    print 100j
+
+## -----------------------------------------------------------------------------
+
 def test_repr():
     print c1
     print c2
@@ -45,6 +53,7 @@ def test_additions():
     print c4 + c1
     print c1 + 2
     print c2 + 100
+    print c3 - 5j
 
     try:
         print c1 + 'Hello'
@@ -60,6 +69,7 @@ def test_subtractions():
     print c4 - c3
     print c1 - 2
     print c3 - -10
+    print 3j - c4
 
     try:
         print c1  - 'Hello'
@@ -76,6 +86,7 @@ def test_multiplications():
     print c4 * c4
     print c2 * 10
     print c3 * -5
+    print c3 * 3j
 
     try:
         print c1 * 'Hello'
@@ -89,6 +100,7 @@ def test_divisions():
     print c4 / c1
     print complex(10, -5) / complex(5, 0)
     print c4 / -2
+    print 5j / 1j
 
     try:
         print c1 / 'Hello'
@@ -102,6 +114,7 @@ def test_powers():
     print c2 ** 3
     print c3 ** 4
     print c4 ** 4
+    print 4j ** 4
 
 ## -----------------------------------------------------------------------------
 
@@ -110,6 +123,7 @@ def test_equalities():
     print c1 == c2
     print c3 != c3
     print c3 != c4
+    print 5j == 5j
 
 ## -----------------------------------------------------------------------------
 
@@ -126,6 +140,7 @@ def test_negatives():
     print -c2
     print -c3
     print -c4
+    print +5j
 
 ## -----------------------------------------------------------------------------
 
@@ -143,6 +158,9 @@ def test_nonzero():
     print c.__nonzero__()
 
     c = complex(-99, -999)
+    print c.__nonzero__()
+
+    c = -5j
     print c.__nonzero__()
 
 ## ----------------------------------------------------------------------------=
@@ -170,8 +188,12 @@ def test_comparison_operators():
     __test_comparison_with_typerror(lambda: c1 >= c2)
     __test_comparison_with_typerror(lambda: c1 >= 2)
 
+    __test_comparison_with_typerror(lambda: 5j < 6j)
+    __test_comparison_with_typerror(lambda: -5j > 6j)
+
 ## -----------------------------------------------------------------------------
 
+test_imaginary_number_literals()
 test_repr()
 test_additions()
 test_subtractions()

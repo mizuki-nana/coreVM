@@ -23,6 +23,7 @@
 
 ## -----------------------------------------------------------------------------
 
+CONST_INT_0 = __call_cls_builtin(int, 0)
 CONST_INT_2 = __call_cls_builtin(int, 2)
 
 ## -----------------------------------------------------------------------------
@@ -45,6 +46,13 @@ class complex(object):
         return __call_method_1(real_intermediate.__add__, imag_intermediate)
 
     def __str__(self):
+        # Special case if real part is 0, just print imaginary part.
+        if __call_method_1(self.real.__eq__, CONST_INT_0):
+            res = __call_cls_builtin(str, '')
+            __call_method_1(res.__add__, __call_method_0(self.imag.__str__))
+            __call_method_1(res.__add__, __call_cls_builtin(str, 'j'))
+            return res
+
         res = __call_cls_builtin(str, '(')
 
         __call_method_1(res.__add__, __call_method_0(self.real.__str__))
