@@ -98,10 +98,11 @@ public:
   uint64_t total_size() const noexcept;
 
 private:
-  void combine_empty_freelists();
+  void combine_empty_freelists(size_t i);
 
   void* m_heap;
-  uint64_t m_total_size;
+  const uint64_t m_total_size;
+  size_t m_empty_lists_count;
   std::vector<free_list_descriptor> m_free_lists;
 };
 
@@ -149,6 +150,7 @@ block_allocator<T>::block_allocator(
   :
   m_heap(nullptr),
   m_total_size(total_size),
+  m_empty_lists_count(0u),
   m_free_lists()
 {
   void* mem = malloc(m_total_size);
@@ -162,15 +164,13 @@ block_allocator<T>::block_allocator(
 
   if (m_total_size)
   {
-    m_free_lists.reserve(10);
-
     uint64_t total_blocks = m_total_size / sizeof(T);
 
     if (total_blocks)
     {
-      free_list_descriptor descriptor(0u, static_cast<uint32_t>(total_blocks - 1), 0u);
-
-      m_free_lists.push_back(descriptor);
+      m_free_lists.reserve(10u);
+      m_free_lists.emplace_back(0u, static_cast<uint32_t>(total_blocks - 1), 0u);
+      m_empty_lists_count = 1u;
     }
   }
 }
@@ -221,6 +221,11 @@ block_allocator<T>::allocate_n(size_t n)
       ASSERT(descriptor.current_index <= descriptor.end_index);
 #endif
 
+      if (is_empty_free_list(descriptor))
+      {
+        --m_empty_lists_count;
+      }
+
       T* mem = reinterpret_cast<T*>(m_heap);
       ptr = reinterpret_cast<void*>(&mem[descriptor.current_index]);
 
@@ -266,9 +271,10 @@ block_allocator<T>::deallocate(void* ptr)
 
   uint32_t index = (uint32_t)( range / sizeof(T) );
 
-  for (size_t i = 0; i < m_free_lists.size(); ++i)
+  size_t i = 0;
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
   {
-    free_list_descriptor& descriptor = m_free_lists[i];
+    free_list_descriptor& descriptor = *itr;
 
     if (is_allocated_in_free_list(descriptor, index))
     {
@@ -287,7 +293,11 @@ block_allocator<T>::deallocate(void* ptr)
 
         if (is_empty_free_list(descriptor))
         {
-          combine_empty_freelists();
+          ++m_empty_lists_count;
+          if (m_empty_lists_count > 1)
+          {
+            combine_empty_freelists(i);
+          }
         }
       }
       else
@@ -295,21 +305,48 @@ block_allocator<T>::deallocate(void* ptr)
         /**
          * Free at beginning or middle of the list.
          *
-         * Mark the current list as one element less than full, and insert
-         * a new list after it.
          */
 
-        free_list_descriptor new_descriptor(
-          /* start_index */ index + 1,
-          /* end_index */ descriptor.end_index,
-          /* current_index */ descriptor.current_index);
+        if (index == descriptor.start_index and i > 0 and is_empty_free_list(m_free_lists[i-1]))
+        {
+          /**
+           * Free at the beginning of a list and there is a previous empty list.
+           *
+           * Just expand the previous empty list.
+           */
+          auto& previous_descriptor = m_free_lists[i-1];
+          previous_descriptor.end_index = index;
 
-        descriptor.end_index = index;
-        descriptor.current_index = index;
+          descriptor.start_index = index + 1;
+        }
+        else
+        {
+          /**
+           * Mark the current list as one element less than full, and insert
+           * a new list after it.
+           */
 
-        auto insert_itr = m_free_lists.begin();
-        std::advance(insert_itr, i + 1);
-        m_free_lists.insert(insert_itr, new_descriptor);
+          free_list_descriptor new_descriptor(
+            /* start_index */ index + 1,
+            /* end_index */ descriptor.end_index,
+            /* current_index */ descriptor.current_index);
+
+          descriptor.end_index = index;
+          descriptor.current_index = index;
+
+          auto itr_ = itr;
+          ++itr_;
+          m_free_lists.insert(itr_, new_descriptor);
+
+          if (is_empty_free_list(descriptor))
+          {
+            ++m_empty_lists_count;
+            if (m_empty_lists_count > 1)
+            {
+              combine_empty_freelists(i);
+            }
+          }
+        }
       }
 
       res = 1;
@@ -324,36 +361,48 @@ block_allocator<T>::deallocate(void* ptr)
 
 template<class T>
 void
-block_allocator<T>::combine_empty_freelists()
+block_allocator<T>::combine_empty_freelists(size_t i)
 {
-  std::vector<free_list_descriptor> free_lists;
-  free_lists.reserve(m_free_lists.size());
+  const bool combine_with_previous = i > 0 and is_empty_free_list(m_free_lists[i - 1]);
 
-  bool previous_empty = false;
-  for (size_t i = 0; i < m_free_lists.size(); ++i)
+#if __DEBUG__
+  ASSERT(is_empty_free_list(m_free_lists[i]));
+#endif
+
+  if (combine_with_previous)
   {
-    const free_list_descriptor& descriptor = m_free_lists[i];
+    auto& previous_descriptor = m_free_lists[i - 1];
+    auto& descriptor = m_free_lists[i];
 
-    if (is_empty_free_list(descriptor))
-    {
-      if (previous_empty)
-      {
-        free_lists.back().end_index = descriptor.end_index;
-      }
-      else
-      {
-        free_lists.push_back(descriptor);
-        previous_empty = true;
-      }
-    }
-    else
-    {
-      free_lists.push_back(descriptor);
-      previous_empty = false;
-    }
+    previous_descriptor.end_index = descriptor.end_index;
+    auto itr = m_free_lists.begin();
+    std::advance(itr, i);
+    m_free_lists.erase(itr);
+    --i;
+    --m_empty_lists_count;
   }
 
-  std::swap(m_free_lists, free_lists);
+  const bool combine_with_next = i < (m_free_lists.size() - 1) and is_empty_free_list(m_free_lists[i + 1]);
+
+#if __DEBUG__
+  ASSERT(is_empty_free_list(m_free_lists[i]));
+#endif
+
+#if __DEBUG__
+  ASSERT(combine_with_previous or combine_with_next);
+#endif
+
+  if (combine_with_next)
+  {
+    auto& descriptor = m_free_lists[i];
+    auto& next_descriptor = m_free_lists[i + 1];
+
+    descriptor.end_index = next_descriptor.end_index;
+    auto itr = m_free_lists.begin();
+    std::advance(itr, i + 1);
+    m_free_lists.erase(itr);
+    --m_empty_lists_count;
+  }
 }
 
 // -----------------------------------------------------------------------------

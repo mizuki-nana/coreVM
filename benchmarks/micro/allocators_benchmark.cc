@@ -30,8 +30,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/pool/pool.hpp>
 #include <boost/pool/pool_alloc.hpp>
 
+#include <cstdlib>
 #include <memory>
+#include <unordered_set>
 #include <vector>
+
 
 /**
  * A benchmark for simple sequential allocations and deallocations of
@@ -64,6 +67,7 @@ const size_t CHUNK_SIZE = sizeof(T);
 
 // -----------------------------------------------------------------------------
 
+/** Many benchmarks below assume is an even number. */
 const size_t LOOP_COUNT = 80;
 
 // -----------------------------------------------------------------------------
@@ -119,16 +123,30 @@ private:
 
 class coreVM_BlockAllocatorRunner
 {
-public:
+protected:
   coreVM_BlockAllocatorRunner()
     :
     m_allocator(CHUNK_SIZE * LOOP_COUNT)
   {
   }
 
+  corevm::memory::block_allocator<T> m_allocator;
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorSequentialForwardDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorSequentialForwardDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
   void run()
   {
-    void* mem[LOOP_COUNT];
+    void* mem[LOOP_COUNT] = { 0 };
 
     for (size_t i = 0; i < LOOP_COUNT; ++i)
     {
@@ -140,23 +158,269 @@ public:
       m_allocator.deallocate(mem[i]);
     }
   }
+};
 
-  void run_bulk()
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorSequentialBackwardDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorSequentialBackwardDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
   {
-    void* mem[LOOP_COUNT * N];
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
     for (size_t i = 0; i < LOOP_COUNT; ++i)
     {
-      mem[i] = m_allocator.allocate_n(N);
+      mem[i] = m_allocator.allocate();
     }
 
-    for (size_t i = 0; i < LOOP_COUNT * N; ++i)
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
     {
-      m_allocator.deallocate(mem[i]);
+      m_allocator.deallocate(mem[LOOP_COUNT - i - 1]);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorRandomDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorRandomDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+    init();
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      m_allocator.deallocate(mem[m_indices[i]]);
     }
   }
 
 private:
-  corevm::memory::block_allocator<T> m_allocator;
+  void init()
+  {
+    std::unordered_set<size_t> unique_indices;
+    while (unique_indices.size() != LOOP_COUNT)
+    {
+      size_t index = static_cast<size_t>(rand()) % LOOP_COUNT;
+      unique_indices.insert(index);
+    }
+
+    m_indices.insert(m_indices.end(), unique_indices.begin(), unique_indices.end());
+  }
+
+  std::vector<size_t> m_indices;
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorBidirectionalOutwardDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorBidirectionalOutwardDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    size_t index_1 = LOOP_COUNT / 2 - 1;
+    size_t index_2 = index_1 + 1;
+    for (size_t i = 0; i < LOOP_COUNT / 2; ++i)
+    {
+      m_allocator.deallocate(mem[index_1--]);
+      m_allocator.deallocate(mem[index_2++]);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorBidirectionalInwardDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorBidirectionalInwardDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    size_t index_1 = 0;
+    size_t index_2 = LOOP_COUNT - 1;
+    for (size_t i = 0; i < LOOP_COUNT / 2; ++i)
+    {
+      m_allocator.deallocate(mem[index_1++]);
+      m_allocator.deallocate(mem[index_2--]);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorInterleavedDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorInterleavedDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    for (size_t i = 1; i < LOOP_COUNT; i += 2)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT; i += 2)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorBidirectionalInterleavedDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorBidirectionalInterleavedDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    for (size_t i = 1; i < LOOP_COUNT; i += 2)
+    {
+      m_allocator.deallocate(mem[i]);
+    }
+
+    const size_t upper_bound = LOOP_COUNT - 1;
+    for (size_t i = 0; i < LOOP_COUNT; i += 2)
+    {
+      m_allocator.deallocate(mem[upper_bound - i - 1]);
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorCircularInterleavedDeallocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorCircularInterleavedDeallocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run()
+  {
+    void* mem[LOOP_COUNT] = { 0 };
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      mem[i] = m_allocator.allocate();
+    }
+
+    size_t index_1 = 0;
+    size_t index_2 = 1;
+
+    bool odd = true;
+    while (index_1 < LOOP_COUNT or index_2 < LOOP_COUNT)
+    {
+      if (odd and index_1 < LOOP_COUNT)
+      {
+        m_allocator.deallocate(mem[index_1]);
+        index_1 += 2;
+      }
+      else if (!odd and index_2 < LOOP_COUNT)
+      {
+        m_allocator.deallocate(mem[LOOP_COUNT - index_2]);
+        index_2 += 2;
+      }
+      odd = !odd;
+    }
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class coreVM_BlockAllocatorBulkAllocationRunner : protected coreVM_BlockAllocatorRunner
+{
+public:
+  coreVM_BlockAllocatorBulkAllocationRunner()
+    :
+    coreVM_BlockAllocatorRunner()
+  {
+  }
+
+  void run_bulk()
+  {
+    void* mem[LOOP_COUNT / N] = { 0 };
+    for (size_t i = 0; i < LOOP_COUNT / N; ++i)
+    {
+      mem[i] = m_allocator.allocate_n(N);
+    }
+
+    for (size_t i = 0; i < LOOP_COUNT; ++i)
+    {
+      void* p = reinterpret_cast<void*>( reinterpret_cast<uint64_t>(mem[0]) + (i * sizeof(T)) );
+      m_allocator.deallocate(p);
+    }
+  }
 };
 
 // -----------------------------------------------------------------------------
@@ -445,7 +709,14 @@ BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_SequentialAllocatorRunner<corevm::memory::buddy_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorSequentialForwardDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorSequentialBackwardDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorRandomDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorBidirectionalOutwardDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorBidirectionalInwardDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorInterleavedDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorBidirectionalInterleavedDeallocationRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocator, coreVM_BlockAllocatorCircularInterleavedDeallocationRunner);
 
 // -----------------------------------------------------------------------------
 
@@ -454,6 +725,6 @@ BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorR
 BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::next_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::best_fit_allocation_scheme>);
 BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_SequentialAllocatorRunner<corevm::memory::worst_fit_allocation_scheme>);
-BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_BlockAllocatorRunner);
+BENCHMARK_TEMPLATE(BenchmarkAllocatorBulkAllocation, coreVM_BlockAllocatorBulkAllocationRunner);
 
 // -----------------------------------------------------------------------------
