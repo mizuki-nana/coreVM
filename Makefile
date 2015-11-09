@@ -105,6 +105,7 @@ PYTHON_TESTS=python_tests
 SANITY_TESTS=sanity_tests
 SANITY_TESTS_ARGS=--sanity-test
 RUN_TESTS=run_tests
+RUN_TESTS_ARGS=--gtest_shuffle --gtest_repeat=3
 RUN_BENCHMARKS=run_benchmarks
 
 COREVM_METADATA=$(ARTIFACTS)/corevm_metadata.json
@@ -228,7 +229,7 @@ $(TESTS): $(LIBCOREVM) $(TEST_OBJECTS)
 	mkdir -p $(@D)
 	mkdir -p $(BIN)
 	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_OBJECTS) -o $(BIN)/$(RUN_TESTS) libcorevm.a $(LFLAGS) -lgtest
-	exec $(BIN)/$(RUN_TESTS)
+	exec $(BIN)/$(RUN_TESTS) $(RUN_TESTS_ARGS)
 	@echo "\033[32mTests run completed...\033[0m";
 
 ## -----------------------------------------------------------------------------

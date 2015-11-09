@@ -1715,9 +1715,6 @@ TEST_F(instrs_runtime_instrs_test, TestInstrDEBUG)
 
 class instrs_control_instrs_test : public instrs_unittest
 {
-public:
-  static bool signal_fired;
-
 protected:
   virtual void SetUp()
   {
@@ -1738,10 +1735,6 @@ protected:
     m_process.append_vector(vector);
   }
 };
-
-// -----------------------------------------------------------------------------
-
-bool instrs_control_instrs_test::signal_fired = false;
 
 // -----------------------------------------------------------------------------
 
@@ -2052,23 +2045,52 @@ TEST_F(instrs_control_instrs_test, TestInstrJMPEXC)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(instrs_control_instrs_test, TestInstrEXIT)
+class instrs_control_instrs_with_signal_test : public instrs_control_instrs_test
+{
+public:
+  static bool signal_fired()
+  {
+    return m_signal_fired;
+  }
+
+  static void set_signal_fired()
+  {
+    m_signal_fired = true;
+  }
+
+protected:
+  virtual void TearDown()
+  {
+    instrs_control_instrs_with_signal_test::m_signal_fired = false;
+  }
+
+private:
+  static bool m_signal_fired;
+};
+
+// -----------------------------------------------------------------------------
+
+bool instrs_control_instrs_with_signal_test::m_signal_fired = false;
+
+// -----------------------------------------------------------------------------
+
+TEST_F(instrs_control_instrs_with_signal_test, TestInstrEXIT)
 {
   auto sig_handler = [](int /* signum */) {
-    instrs_control_instrs_test::signal_fired = true;
+    instrs_control_instrs_with_signal_test::set_signal_fired();
     signal(SIGTERM, SIG_IGN);
   };
 
   signal(SIGTERM, sig_handler);
 
-  ASSERT_EQ(false, instrs_control_instrs_test::signal_fired);
+  ASSERT_EQ(false, instrs_control_instrs_with_signal_test::signal_fired());
 
   corevm::runtime::instr instr(0, EXIT_SUCCESS, 0);
 
   corevm::runtime::instr_handler_exit handler;
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
 
-  ASSERT_EQ(true, instrs_control_instrs_test::signal_fired);
+  ASSERT_EQ(true, instrs_control_instrs_with_signal_test::signal_fired());
 }
 
 // -----------------------------------------------------------------------------
