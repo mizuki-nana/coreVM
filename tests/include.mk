@@ -57,6 +57,7 @@ TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/invocation_ctx_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/native_types_pool_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/process_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/sighandler_registrar_unittest.cc
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(RUNTIME)/utils_unittest.cc
 
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/configuration_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/program_unittest.cc

@@ -103,6 +103,8 @@ public:
   dyobj_id_type getattr(attr_key_type) const
     throw(corevm::dyobj::object_attribute_not_found_error);
 
+  bool getattr(attr_key_type, dyobj_id_type*) const;
+
   const runtime::closure_ctx& closure_ctx() const;
 
   void set_closure_ctx(const runtime::closure_ctx&);
@@ -410,13 +412,34 @@ corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
   corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key) const
   throw(corevm::dyobj::object_attribute_not_found_error)
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
-  if (itr == m_attrs.end())
+  corevm::dyobj::dyobj_id attr_id = 0;
+
+  bool res = getattr(attr_key, &attr_id);
+  if (!res)
   {
     THROW(corevm::dyobj::object_attribute_not_found_error(attr_key, id()));
   }
 
-  return (*itr).second;
+  return attr_id;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class dynamic_object_manager>
+bool
+corevm::dyobj::dynamic_object<dynamic_object_manager>::getattr(
+  corevm::dyobj::dynamic_object<dynamic_object_manager>::attr_key_type attr_key,
+  dyobj_id_type* attr_id) const
+{
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  bool res = itr != m_attrs.end();
+
+  if (res)
+  {
+    *attr_id = itr->second;
+  }
+
+  return res;
 }
 
 // -----------------------------------------------------------------------------

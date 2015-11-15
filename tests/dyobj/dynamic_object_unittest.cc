@@ -88,6 +88,36 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(dynamic_object_unittest, TestGetattr)
+{
+  dynamic_object_type obj;
+
+  corevm::dyobj::attr_key attr_key = 1;
+
+  corevm::dyobj::dyobj_id attr_id = 123;
+
+  ASSERT_FALSE(obj.hasattr(attr_key));
+
+  obj.putattr(attr_key, attr_id);
+
+  corevm::dyobj::dyobj_id actual_attr_id = 0;
+  bool res = obj.getattr(attr_key, &actual_attr_id);
+
+  ASSERT_EQ(true, res);
+  ASSERT_EQ(attr_id, actual_attr_id);
+
+  corevm::dyobj::attr_key invalid_attr_key = 2;
+  ASSERT_FALSE(obj.hasattr(invalid_attr_key));
+
+  corevm::dyobj::dyobj_id invalid_attr_id = 0;
+  res = obj.getattr(invalid_attr_key, &invalid_attr_id);
+
+  ASSERT_EQ(false, res);
+  ASSERT_EQ(0, invalid_attr_id);
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
 {
   dynamic_object_type obj;

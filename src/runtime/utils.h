@@ -23,10 +23,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNTIME_UTILS_H_
 #define COREVM_RUNTIME_UTILS_H_
 
+#include "corevm/macros.h"
 #include "dyobj/common.h"
+#include "dyobj/errors.h"
+#include "dyobj/util.h"
 #include "common.h"
 
 #include <cstdint>
+#include <string>
 
 
 namespace corevm {
@@ -60,7 +64,59 @@ inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
 corevm::dyobj::attr_key
 get_attr_key(
   corevm::runtime::compartment* compartment,
+  corevm::runtime::encoding_key str_key,
+  std::string* attr_str);
+
+// -----------------------------------------------------------------------------
+
+corevm::dyobj::attr_key
+get_attr_key(
+  corevm::runtime::compartment* compartment,
   corevm::runtime::encoding_key str_key);
+
+// -----------------------------------------------------------------------------
+
+template<typename ObjType>
+corevm::dyobj::dyobj_id
+getattr(const ObjType& obj, corevm::dyobj::attr_key attr_key,
+  const std::string& attr_name)
+{
+  corevm::dyobj::dyobj_id attr_id = 0;
+
+  if (!obj.getattr(attr_key, &attr_id))
+  {
+    THROW(corevm::dyobj::object_attribute_not_found_error(
+      attr_key, obj.id(), attr_name));
+  }
+
+  return attr_id;
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename ObjType>
+corevm::dyobj::dyobj_id
+getattr(const ObjType& obj, const std::string& attr_name)
+{
+  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+
+  return getattr(obj, attr_key, attr_name);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename ObjType>
+corevm::dyobj::dyobj_id
+getattr(const ObjType& obj,
+  corevm::runtime::compartment* compartment,
+  corevm::runtime::encoding_key attr_encoding_key)
+{
+  std::string attr_name;
+  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
+    compartment, attr_encoding_key, &attr_name);
+
+  return getattr(obj, attr_key, attr_name);
+}
 
 // -----------------------------------------------------------------------------
 

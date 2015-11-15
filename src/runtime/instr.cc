@@ -611,12 +611,12 @@ corevm::runtime::instr_handler_getattr::execute(
 {
   auto str_key = static_cast<corevm::runtime::encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
-  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
-    frame->compartment_ptr(), str_key);
 
   corevm::dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
-  corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
+
+  corevm::dyobj::dyobj_id attr_id = corevm::runtime::getattr(
+    obj, frame->compartment_ptr(), str_key);
 
   process.push_stack(attr_id);
 }
@@ -716,9 +716,7 @@ corevm::runtime::instr_handler_getattr2::execute(
   auto attr_str = corevm::types::get_value_from_handle<corevm::types::native_string>(hndl);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
-
-  corevm::dyobj::dyobj_id attr_id = obj.getattr(attr_key);
+  corevm::dyobj::dyobj_id attr_id = corevm::runtime::getattr(obj, attr_str_value);
 
   process.push_stack(attr_id);
 }

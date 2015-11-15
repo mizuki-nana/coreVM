@@ -94,12 +94,22 @@ public:
   }
 
   object_attribute_not_found_error(
-    corevm::dyobj::attr_key attr_key_, corevm::dyobj::dyobj_id id_
-  ):
+    corevm::dyobj::attr_key attr_key_, corevm::dyobj::dyobj_id id_)
+    :
     corevm::dyobj::runtime_error(
       str(boost::format(
-        "Attribute %#x in object %#x not found") % attr_key_ % id_)
-    ),
+        "Attribute %#x in object %#x not found") % attr_key_ % id_)),
+    attr_key(attr_key_),
+    id(id_)
+  {
+  }
+
+  object_attribute_not_found_error(corevm::dyobj::attr_key attr_key_,
+    corevm::dyobj::dyobj_id id_, const std::string& attr_name)
+    :
+    corevm::dyobj::runtime_error(
+      str(boost::format(
+        "Attribute '%s' in object %#x not found") % attr_name % id_)),
     attr_key(attr_key_),
     id(id_)
   {

@@ -20,59 +20,77 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include <benchmark/benchmark.h>
-
 #include "dyobj/dynamic_object.h"
-#include "dyobj/util.h"
-#include "runtime/common.h"
 #include "runtime/compartment.h"
 #include "runtime/utils.h"
 
+#include <sneaker/testing/_unittest.h>
+
 
 // -----------------------------------------------------------------------------
-
-namespace {
 
 class dummy_dynamic_object_manager {};
 
-using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+// -----------------------------------------------------------------------------
 
-} /* end anonymous namespace */
+class runtime_utils_unittest : public ::testing::Test
+{
+public:
+  using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+};
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkGetAttrKey(benchmark::State& state)
+static const std::string DUMMY_PATH("");
+
+// -----------------------------------------------------------------------------
+
+TEST_F(runtime_utils_unittest, TestGetAttrKey)
 {
-  corevm::runtime::encoding_key key = 0;
-  corevm::runtime::encoding_map encoding_table { "hello_world" };
+  corevm::runtime::compartment compartment(DUMMY_PATH);
 
-  corevm::runtime::compartment compartment("");
-  compartment.set_encoding_map(encoding_table);
+  const std::string attr_name("__str__");
 
-  while (state.KeepRunning())
-  {
-    corevm::runtime::get_attr_key(&compartment, key);
-  }
+  corevm::runtime::encoding_map encoding_map;
+  encoding_map.emplace_back(attr_name);
+
+  compartment.set_encoding_map(std::move(encoding_map));
+
+  corevm::runtime::encoding_key attr_key = 0;
+
+  attr_key = corevm::runtime::get_attr_key(
+    &compartment, attr_key);
+
+  ASSERT_NE(0, attr_key);
 }
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkHashAttrStr(benchmark::State& state)
+TEST_F(runtime_utils_unittest, TestGetAttrKey2)
 {
-  const std::string attr_str("hello_world");
+  corevm::runtime::compartment compartment(DUMMY_PATH);
 
-  while (state.KeepRunning())
-  {
-    corevm::dyobj::hash_attr_str(attr_str);
-  }
+  const std::string attr_name("__str__");
+
+  corevm::runtime::encoding_map encoding_map;
+  encoding_map.emplace_back(attr_name);
+
+  compartment.set_encoding_map(std::move(encoding_map));
+
+  corevm::runtime::encoding_key attr_key = 0;
+
+  std::string actual_attr_name;
+
+  attr_key = corevm::runtime::get_attr_key(
+    &compartment, attr_key, &actual_attr_name);
+
+  ASSERT_NE(0, attr_key);
+  ASSERT_EQ(attr_name, actual_attr_name);
 }
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkGetattr(benchmark::State& state)
+TEST_F(runtime_utils_unittest, TestGetattr)
 {
   const std::string attr_name("__str__");
 
@@ -82,18 +100,18 @@ void BenchmarkGetattr(benchmark::State& state)
   dynamic_object_type obj;
   obj.putattr(attr_key, attr_id);
 
-  while (state.KeepRunning())
-  {
-    corevm::runtime::getattr(obj, attr_name);
-  }
+  ASSERT_EQ(true, obj.hasattr(attr_key));
+
+  auto actual_attr_id = corevm::runtime::getattr(obj, attr_name);
+
+  ASSERT_EQ(attr_id, actual_attr_id);
 }
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkGetattr2(benchmark::State& state)
+TEST_F(runtime_utils_unittest, TestGetattr2)
 {
-  corevm::runtime::compartment compartment("");
+  corevm::runtime::compartment compartment(DUMMY_PATH);
 
   const std::string attr_name("__str__");
 
@@ -110,17 +128,12 @@ void BenchmarkGetattr2(benchmark::State& state)
   dynamic_object_type obj;
   obj.putattr(attr_key, attr_id);
 
-  while (state.KeepRunning())
-  {
-    corevm::runtime::getattr(obj, &compartment, attr_encoding_key);
-  }
+  ASSERT_EQ(true, obj.hasattr(attr_key));
+
+  auto actual_attr_id = corevm::runtime::getattr(
+    obj, &compartment, attr_encoding_key);
+
+  ASSERT_EQ(attr_id, actual_attr_id);
 }
-
-// -----------------------------------------------------------------------------
-
-BENCHMARK(BenchmarkGetAttrKey);
-BENCHMARK(BenchmarkHashAttrStr);
-BENCHMARK(BenchmarkGetattr);
-BENCHMARK(BenchmarkGetattr2);
 
 // -----------------------------------------------------------------------------
