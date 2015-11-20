@@ -157,8 +157,47 @@ def __call_method_3(caller, arg1, arg2, arg3):
 
 ## -----------------------------------------------------------------------------
 
+def staticmethod(func):
+    func.__class__ = function
+
+    # Remove attribute `im_self` if it has one.
+    try:
+        delattr(func, __call_cls_builtin(str, "im_self"))
+    except AttributeError:
+        pass
+
+    # HACK: tag the function object with the `__is_staticmethod__` attribute
+    # with the value being `True`.
+    #
+    # This is because the `__cls_method_wrapper` below converts all decorated
+    # class functions to class methods, but this is unwanted behavior for
+    # class functions decorated with `staticmethod`.
+    #
+    # TODO: [COREVM-424] Design and implement better handling of argument for `staticmethod` decorator
+    func.__is_staticmethod__ = True
+
+    return func
+
+## -----------------------------------------------------------------------------
+
 def __cls_method_wrapper(func):
-    func.__class__ = MethodType
+    # HACK: Special handling required to determine if the function object passed in
+    # is tagged with the `__is_staticmethod__` attribute. If so, do not convert
+    # it to an instance of method type.
+    #
+    # See implementation of `staticmethod` above.
+    #
+    # TODO: [COREVM-424] Design and implement better handling of argument for `staticmethod` decorator
+    is_staticmethod = False
+
+    try:
+        is_staticmethod = getattr(func, __call_cls_builtin(str, "__is_staticmethod__"))
+    except AttributeError:
+        pass
+
+    if is_staticmethod is False:
+        func.__class__ = MethodType
+
     return func
 
 ## -----------------------------------------------------------------------------
