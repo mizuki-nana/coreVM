@@ -84,7 +84,6 @@ class NumType(object):
 
 class CodeTransformer(ast.NodeVisitor):
 
-
     def __init__(self, options):
         self.options = options
         self.indent_level = 0
@@ -100,7 +99,7 @@ class CodeTransformer(ast.NodeVisitor):
         self.indent_level -= 1
 
     def __indentation(self):
-        INDENT = '  '
+        INDENT = '    '
         return ''.join([INDENT for _ in xrange(self.indent_level)])
 
     def __get_random_name(self):
@@ -188,14 +187,17 @@ class CodeTransformer(ast.NodeVisitor):
 
         return finally_blocks
 
-    def __add_finally_block_stmts_for_branch_stmt(self, is_return=False):
-        base_str = ''
+    def __print_stmts(self, stmts, trailing_break=True):
+        res = '\n'.join([self.__indentation() + self.visit(stmt) for stmt in stmts])
+        if trailing_break:
+            res += '\n'
 
-        finally_blocks = self.__get_finally_blocks_for_branch_stmts(is_return=is_return)
-        if finally_blocks:
-            for finally_block in finally_blocks:
-                base_str += ('\n'.join([self.visit(stmt) for stmt in finally_block]))
-                base_str += '\n'
+        return res
+
+    def __add_finally_block_stmts_for_branch_stmt(self, finally_blocks):
+        base_str = ''
+        for finally_block in finally_blocks:
+            base_str += self.__print_stmts(finally_block)
 
         return base_str
 
@@ -215,7 +217,7 @@ class CodeTransformer(ast.NodeVisitor):
     """ ------------------------------ mod --------------------------------- """
 
     def visit_Module(self, node):
-        return '\n'.join([self.visit(stmt) for stmt in node.body])
+        return self.__print_stmts(node.body, trailing_break=False)
 
     """ ----------------------------- stmt --------------------------------- """
 
@@ -223,7 +225,7 @@ class CodeTransformer(ast.NodeVisitor):
         # Step in.
         self.__enter_scope()
 
-        base_str = '{indentation}def {func_name}({arguments}):\n'
+        base_str = 'def {func_name}({arguments}):\n'
 
         base_str = base_str.format(
             indentation=self.__indentation(),
@@ -243,8 +245,7 @@ class CodeTransformer(ast.NodeVisitor):
                 indentation=self.__indentation(),
                 kwarg=node.args.kwarg)
 
-        base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
-        base_str += '\n'
+        base_str += self.__print_stmts(node.body)
 
         # Functions return `None` by default.
         base_str += '{indentation}return None\n'.format(
@@ -290,17 +291,15 @@ class CodeTransformer(ast.NodeVisitor):
         # Step in.
         self.__enter_scope(in_cls=True, cls_name=node.name)
 
-        base_str = '{indentation}class {class_name}:\n'
+        base_str = 'class {class_name}:\n'
 
         base_str = base_str.format(
-            indentation=self.__indentation(),
             class_name=node.name
         )
 
         self.__indent()
 
-        base_str += '\n'.join([self.visit(stmt) for stmt in node.body])
-        base_str += '\n'
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
@@ -329,9 +328,13 @@ class CodeTransformer(ast.NodeVisitor):
         base_str = ''
 
         # Finally block code.
-        base_str += self.__add_finally_block_stmts_for_branch_stmt(is_return=True)
-
-        base_str += '{indentation}return'.format(indentation=self.__indentation())
+        finally_blocks = self.__get_finally_blocks_for_branch_stmts(is_return=True)
+        if finally_blocks:
+            base_str += '\n'
+            base_str += self.__add_finally_block_stmts_for_branch_stmt(finally_blocks)
+            base_str += '{indentation}return'.format(indentation=self.__indentation())
+        else:
+            base_str += 'return'.format(indentation=self.__indentation())
 
         if node.value:
             base_str += (' ' + self.visit(node.value))
@@ -377,21 +380,18 @@ class CodeTransformer(ast.NodeVisitor):
         base_str = ''
 
         if name_targets:
-            base_str += '{indentation}del {targets}'.format(
-                indentation=self.__indentation(),
+            base_str += 'del {targets}'.format(
                 targets=', '.join([self.visit(target) for target in name_targets]))
 
         if attribute_targets:
             for target in attribute_targets:
-                base_str += '{indentation}__call(delattr, {target}, \"{attr}\")\n'.format(
-                    indentation=self.__indentation(),
+                base_str += '__call(delattr, {target}, \"{attr}\")\n'.format(
                     target=self.visit(target.value),
                     attr=target.attr)
 
         if subscript_targets:
             for target in subscript_targets:
-                base_str += '{indentation}__call_method_1({target}.__delitem__, {slice})\n'.format(
-                    indentation=self.__indentation(),
+                base_str += '__call_method_1({target}.__delitem__, {slice})\n'.format(
                     target=self.visit(target.value),
                     slice=self.visit(target.slice))
 
@@ -401,8 +401,7 @@ class CodeTransformer(ast.NodeVisitor):
                     if not isinstance(target, ast.Name):
                         raise Exception('Cannot delete expression of type %s' % str(type(target)))
 
-                base_str += '{indentation}del {targets}\n'.format(
-                    indentation=self.__indentation(),
+                base_str += 'del {targets}\n'.format(
                     targets=', '.join([self.visit(target) for target in list_target.elts]))
 
         if tuple_targets:
@@ -411,8 +410,7 @@ class CodeTransformer(ast.NodeVisitor):
                     if not isinstance(target, ast.Name):
                         raise Exception('Cannot delete expression of type %s' % str(type(target)))
 
-                base_str += '{indentation}del {targets}\n'.format(
-                    indentation=self.__indentation(),
+                base_str += 'del {targets}\n'.format(
                     targets=', '.join([self.visit(target) for target in tuple_target.elts]))
 
         return base_str
@@ -421,14 +419,12 @@ class CodeTransformer(ast.NodeVisitor):
         if isinstance(node.targets[0], ast.Subscript):
             # Special case for assignments on subscripts.
             # TODO: need to handle assignment on multiple targets.
-            return '{indentation}__call_method_2({target}.__setitem__, {slice}, {value})'.format(
-                indentation=self.__indentation(),
+            return '__call_method_2({target}.__setitem__, {slice}, {value})'.format(
                 target=self.visit(node.targets[0].value),
                 slice=self.visit(node.targets[0].slice),
                 value=self.visit(node.value))
 
-        base_str = '{indentation}{targets} = {value}\n'.format(
-            indentation=self.__indentation(),
+        base_str = '{targets} = {value}\n'.format(
             targets=', '.join([self.visit(target) for target in node.targets]),
             value=self.visit(node.value)
         )
@@ -453,8 +449,7 @@ class CodeTransformer(ast.NodeVisitor):
             ast.FloorDiv: '__ifloordiv__',
         }
 
-        return '{indentation}__call_method_1({target}.{func}, {value})\n'.format(
-            indentation=self.__indentation(),
+        return '__call_method_1({target}.{func}, {value})\n'.format(
             target=self.visit(node.target),
             func=OP_AST_TYPE_TO_METHOD_MAP[type(node.op)],
             value=self.visit(node.value))
@@ -465,21 +460,24 @@ class CodeTransformer(ast.NodeVisitor):
         if node.values:
             num = len(node.values)
             for i, value in enumerate(node.values):
-                base_str += '{indentation}print {value}\n'.format(
-                    indentation=self.__indentation(),
-                    value='__call_method_0(' + self.visit(value) + '.__str__' + ')')
+                if i == 0:
+                    base_str += 'print {value}\n'.format(
+                        value='__call_method_0(' + self.visit(value) + '.__str__' + ')')
+                else:
+                    base_str += '{indentation}print {value}\n'.format(
+                        indentation=self.__indentation(),
+                        value='__call_method_0(' + self.visit(value) + '.__str__' + ')')
 
                 if i + 1 < num:
                     base_str += '{indentation}print {value}\n'.format(
                         indentation=self.__indentation(),
                         value='__call_method_0(__call_cls_builtin(str, " ").__str__)')
 
-            base_str += '{indentation}print {value}\n'.format(
+            base_str += '{indentation}print {value}'.format(
                 indentation=self.__indentation(),
                 value='__call_method_0(__call_cls_builtin(str, "\\n").__str__)')
         else:
-            base_str += '{indentation}print {value}\n'.format(
-                indentation=self.__indentation(),
+            base_str += 'print {value}'.format(
                 value='__call_method_0(__call_cls_builtin(str, "\\n").__str__)')
 
         return base_str
@@ -487,7 +485,7 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_For(self, node):
         self.__push_loop_state(LoopState(self.__current_scope_lvl()))
 
-        base_str = "{indentation}try:\n".format(indentation=self.__indentation())
+        base_str = "try:\n"
 
         # Indent lvl 1.
         self.__indent()
@@ -512,8 +510,7 @@ class CodeTransformer(ast.NodeVisitor):
             iterator_var_name=iterator_var_name
         )
 
-        for stmt in node.body:
-            base_str += (self.visit(stmt) + '\n')
+        base_str += self.__print_stmts(node.body)
 
         # Dedent lvl 2.
         self.__dedent()
@@ -539,8 +536,7 @@ class CodeTransformer(ast.NodeVisitor):
         # cause jumps to outside the entire loop, we can execute the `else`
         # statements here.
         if node.orelse:
-            for stmt in node.orelse:
-                base_str += (self.visit(stmt) + '\n')
+            base_str += self.__print_stmts(node.orelse)
         else:
             base_str += '{indentation}pass\n'.format(
                 indentation=self.__indentation())
@@ -555,15 +551,13 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_While(self, node):
         self.__push_loop_state(LoopState(self.__current_scope_lvl()))
 
-        base_str = '{indentation}while {test}:\n'.format(
-            indentation=self.__indentation(),
+        base_str = 'while {test}:\n'.format(
             test=self.visit(node.test)
         )
 
         self.__indent()
 
-        for stmt in node.body:
-            base_str += (self.visit(stmt) + '\n')
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
@@ -573,8 +567,7 @@ class CodeTransformer(ast.NodeVisitor):
 
             self.__indent()
 
-            for stmt in node.orelse:
-                base_str += (self.visit(stmt) + '\n')
+            base_str += self.__print_stmts(node.orelse)
 
             self.__dedent()
 
@@ -583,15 +576,13 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_If(self, node):
-        base_str = '{indentation}if {expr}:\n'.format(
-            indentation=self.__indentation(),
+        base_str = 'if {expr}:\n'.format(
             expr=self.visit(node.test)
         )
 
         self.__indent()
 
-        for stmt in node.body:
-            base_str += (self.visit(stmt) + '\n')
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
@@ -601,8 +592,7 @@ class CodeTransformer(ast.NodeVisitor):
 
             self.__indent()
 
-            for stmt in node.orelse:
-                base_str += (self.visit(stmt) + '\n')
+            base_str += self.__print_stmts(node.orelse)
 
             self.__dedent()
 
@@ -610,15 +600,14 @@ class CodeTransformer(ast.NodeVisitor):
 
     def visit_With(self, node):
         body_name = self.__get_random_name()
-        base_str = '{indentation}def {func_name}({args}):\n'.format(
+        base_str = 'def {func_name}({args}):\n'.format(
             indentation=self.__indentation(),
             func_name=body_name,
             args=self.visit(node.optional_vars) if node.optional_vars else '')
 
         self.__indent()
 
-        for stmt in node.body:
-            base_str += self.visit(stmt)
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
@@ -638,7 +627,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Raise(self, node):
-        base_str = '{indentation}raise'.format(indentation=self.__indentation())
+        base_str = 'raise'
 
         if node.type:
             base_str += (' ' + self.visit(node.type))
@@ -655,13 +644,11 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.current_try_except_lvl += 1
 
-        base_str = '{indentation}try:\n'.format(
-            indentation=self.__indentation())
+        base_str = 'try:\n'
 
         self.__indent()
 
-        for stmt in node.body:
-            base_str += (self.visit(stmt) + '\n')
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
@@ -674,8 +661,7 @@ class CodeTransformer(ast.NodeVisitor):
 
             self.__indent()
 
-            for stmt in node.orelse:
-                base_str += self.visit(stmt)
+            base_str += self.__print_stmts(node.orelse)
 
             self.__dedent()
 
@@ -692,15 +678,17 @@ class CodeTransformer(ast.NodeVisitor):
         base_str = ''
 
         for stmt in node.body:
-            base_str += self.visit(stmt)
+            if isinstance(stmt, ast.TryExcept):
+                base_str += self.visit(stmt)
+            else:
+                base_str += (self.__indentation() + self.visit(stmt) + '\n')
 
         base_str += '{indentation}finally:\n'.format(
             indentation=self.__indentation())
 
         self.__indent()
 
-        for stmt in node.finalbody:
-            base_str += self.visit(stmt)
+        base_str += self.__print_stmts(node.finalbody)
 
         self.__dedent()
 
@@ -709,8 +697,7 @@ class CodeTransformer(ast.NodeVisitor):
         return base_str
 
     def visit_Assert(self, node):
-        base_str = '{indentation}if __call(__call_cls_1(bool, {test}).__not__):\n'.format(
-            indentation=self.__indentation(),
+        base_str = 'if __call(__call_cls_1(bool, {test}).__not__):\n'.format(
             test=self.visit(node.test))
 
         self.__indent()
@@ -730,28 +717,38 @@ class CodeTransformer(ast.NodeVisitor):
     def visit_Global(self, node):
         assert node.names
 
-        return '{indentation}global {identifiers}\n'.format(
-            indentation=self.__indentation(), identifiers=', '.join([name for name in node.names]))
+        return 'global {identifiers}\n'.format(
+            identifiers=', '.join([name for name in node.names]))
 
     def visit_Expr(self, node):
         return self.visit(node.value)
 
     def visit_Pass(self, node):
-        return '{indentation}pass'.format(indentation=self.__indentation())
+        return 'pass'
 
     def visit_Break(self, node):
         base_str = ''
 
-        base_str += self.__add_finally_block_stmts_for_branch_stmt()
-        base_str += '{indentation}break'.format(indentation=self.__indentation())
+        finally_blocks = self.__get_finally_blocks_for_branch_stmts()
+        if finally_blocks:
+            base_str += '\n'
+            base_str += self.__add_finally_block_stmts_for_branch_stmt(finally_blocks)
+            base_str += '{indentation}break'.format(indentation=self.__indentation())
+        else:
+            base_str += 'break'.format(indentation=self.__indentation())
 
         return base_str
 
     def visit_Continue(self, node):
         base_str = ''
 
-        base_str += self.__add_finally_block_stmts_for_branch_stmt()
-        base_str += '{indentation}continue'.format(indentation=self.__indentation())
+        finally_blocks = self.__get_finally_blocks_for_branch_stmts()
+        if finally_blocks:
+            base_str += '\n'
+            base_str += self.__add_finally_block_stmts_for_branch_stmt(finally_blocks)
+            base_str += '{indentation}continue'.format(indentation=self.__indentation())
+        else:
+            base_str += 'continue'.format(indentation=self.__indentation())
 
         return base_str
 
@@ -1058,10 +1055,9 @@ class CodeTransformer(ast.NodeVisitor):
         return res
 
     def visit_Call(self, node):
-        base_str = '{indentation}__call({caller}'
+        base_str = '__call({caller}'
 
         base_str = base_str.format(
-            indentation=self.__indentation(),
             caller=self.visit(node.func)
         )
 
@@ -1274,8 +1270,7 @@ class CodeTransformer(ast.NodeVisitor):
 
         self.__indent()
 
-        for stmt in node.body:
-            base_str += (self.visit(stmt) + '\n')
+        base_str += self.__print_stmts(node.body)
 
         self.__dedent()
 
