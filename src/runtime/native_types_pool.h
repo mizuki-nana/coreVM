@@ -28,8 +28,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/common.h"
 #include "memory/allocator.h"
 #include "memory/allocation_policy.h"
+#include "memory/block_allocator.h"
 #include "memory/object_container.h"
-#include "memory/sequential_allocation_scheme.h"
 #include "types/fwd.h"
 
 #include <sneaker/allocator/object_traits.h>
@@ -55,10 +55,10 @@ public:
   typedef corevm::types::native_type_handle value_type;
 
   template<typename T>
-  class allocator : public corevm::memory::allocation_policy<T, corevm::memory::next_fit_allocation_scheme>, public object_traits<T>
+  class allocator : public corevm::memory::allocation_policy<T, corevm::memory::block_allocator<value_type>>, public object_traits<T>
   {
     private:
-      using AllocationPolicyType = typename corevm::memory::allocation_policy<T, corevm::memory::next_fit_allocation_scheme>;
+      using AllocationPolicyType = typename corevm::memory::allocation_policy<T, corevm::memory::block_allocator<value_type>>;
 
     public:
       using value_type      = typename AllocationPolicyType::value_type;

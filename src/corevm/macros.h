@@ -83,12 +83,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-// Can remove this macro once the following is done:
-// TODO: [COREVM-286] Consolidate usage of sequential and block allocators
-#define USE_BLOCK_ALLOCATOR 1
-
-// -----------------------------------------------------------------------------
-
 // TODO: [COREVM-247] Enable garbage collection mechanism
 #define COREVM_247_COMPLETED 0
 

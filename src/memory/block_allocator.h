@@ -91,6 +91,13 @@ public:
 
   void* allocate_n(size_t);
 
+  /**
+   * Allocate `N` objects, each of `size` bytes.
+   * The `size` parameter is actually not needed here, but added in order to
+   * conform to the same interface as `corevm::memory::allocator`.
+   */
+  void* allocate_n(size_t N, size_t /* size */);
+
   int deallocate(void*);
 
   uint64_t base_addr() const noexcept;
@@ -244,6 +251,15 @@ block_allocator<T>::allocate_n(size_t n)
   }
 
   return ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+void*
+block_allocator<T>::allocate_n(size_t n, size_t)
+{
+  return allocate_n(n);
 }
 
 // -----------------------------------------------------------------------------

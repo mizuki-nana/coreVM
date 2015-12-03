@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "memory/allocator.h"
 #include "memory/allocation_policy.h"
 #include "memory/sequential_allocation_scheme.h"
 
@@ -35,7 +36,11 @@ public:
 
   typedef corevm::memory::first_fit_allocation_scheme AllocationScheme;
   typedef corevm::memory::best_fit_allocation_scheme OtherAllocationScheme;
-  typedef corevm::memory::allocation_policy<int, AllocationScheme> _AllocPolicyType;
+
+  typedef corevm::memory::allocator<AllocationScheme> CoreAllocatorType;
+  typedef corevm::memory::allocator<OtherAllocationScheme> OtherCoreAllocatorType;
+
+  typedef corevm::memory::allocation_policy<int, CoreAllocatorType> _AllocPolicyType;
 
   static const uint64_t ALLOCATION_SIZE;
 };
@@ -106,8 +111,8 @@ TEST_F(allocation_policy_unit_test, TestAllocationOverMaxSize)
 
 TEST_F(allocation_policy_unit_test, TestEquality)
 {
-  corevm::memory::allocation_policy<int, AllocationScheme> allocation_policy_1(ALLOCATION_SIZE);
-  corevm::memory::allocation_policy<int, AllocationScheme> allocation_policy_2(ALLOCATION_SIZE);
+  corevm::memory::allocation_policy<int, CoreAllocatorType> allocation_policy_1(ALLOCATION_SIZE);
+  corevm::memory::allocation_policy<int, CoreAllocatorType> allocation_policy_2(ALLOCATION_SIZE);
 
   ASSERT_TRUE(allocation_policy_1 == allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 != allocation_policy_2);
@@ -117,8 +122,8 @@ TEST_F(allocation_policy_unit_test, TestEquality)
 
 TEST_F(allocation_policy_unit_test, TestEquality2)
 {
-  corevm::memory::allocation_policy<int, AllocationScheme> allocation_policy_1(20);
-  corevm::memory::allocation_policy<int, AllocationScheme> allocation_policy_2(40);
+  corevm::memory::allocation_policy<int, CoreAllocatorType> allocation_policy_1(20);
+  corevm::memory::allocation_policy<int, CoreAllocatorType> allocation_policy_2(40);
 
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
@@ -128,8 +133,8 @@ TEST_F(allocation_policy_unit_test, TestEquality2)
 
 TEST_F(allocation_policy_unit_test, TestEquality3)
 {
-  corevm::memory::allocation_policy<int, AllocationScheme>  allocation_policy_1(20);
-  corevm::memory::allocation_policy<float, AllocationScheme> allocation_policy_2(40);
+  corevm::memory::allocation_policy<int, CoreAllocatorType>  allocation_policy_1(20);
+  corevm::memory::allocation_policy<float, CoreAllocatorType> allocation_policy_2(40);
 
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
@@ -139,8 +144,8 @@ TEST_F(allocation_policy_unit_test, TestEquality3)
 
 TEST_F(allocation_policy_unit_test, TestEquality4)
 {
-  corevm::memory::allocation_policy<int, AllocationScheme> allocation_policy_1(20);
-  corevm::memory::allocation_policy<int, OtherAllocationScheme> allocation_policy_2(20);
+  corevm::memory::allocation_policy<int, CoreAllocatorType> allocation_policy_1(20);
+  corevm::memory::allocation_policy<int, OtherCoreAllocatorType> allocation_policy_2(20);
 
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);
@@ -150,8 +155,8 @@ TEST_F(allocation_policy_unit_test, TestEquality4)
 
 TEST_F(allocation_policy_unit_test, TestEquality5)
 {
-  corevm::memory::allocation_policy<int, AllocationScheme>  allocation_policy_1(20);
-  corevm::memory::allocation_policy<float, OtherAllocationScheme> allocation_policy_2(40);
+  corevm::memory::allocation_policy<int, CoreAllocatorType>  allocation_policy_1(20);
+  corevm::memory::allocation_policy<float, OtherCoreAllocatorType> allocation_policy_2(40);
 
   ASSERT_TRUE(allocation_policy_1 != allocation_policy_2);
   ASSERT_FALSE(allocation_policy_1 == allocation_policy_2);

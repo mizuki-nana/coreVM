@@ -29,9 +29,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/dynamic_object.h"
 #include "dyobj/errors.h"
 #include "dyobj/heap_allocator.h"
+#include "memory/block_allocator.h"
 #include "memory/errors.h"
 #include "memory/object_container.h"
-#include "memory/sequential_allocation_scheme.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -55,7 +55,7 @@ public:
 
   typedef corevm::dyobj::dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename corevm::dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::next_fit_allocation_scheme>;
+  using allocator_type = typename corevm::dyobj::heap_allocator<dynamic_object_type, corevm::memory::block_allocator<dynamic_object_type>>;
   using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
 
   static_assert(

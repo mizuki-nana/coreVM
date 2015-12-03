@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "memory/allocator.h"
 #include "memory/allocation_policy.h"
 #include "memory/sequential_allocation_scheme.h"
 #include "memory/errors.h"
@@ -51,11 +52,11 @@ protected:
    * where as the meaning of `max_size()` in coreVM is defined as returning the
    * maximum number of elements can be allocated by an allocator.
    */
-  template<typename T, typename AllocationScheme>
-  class Allocator : public corevm::memory::allocation_policy<T, AllocationScheme>, public object_traits<T>
+  template<typename T, typename CoreAllocatorType>
+  class Allocator : public corevm::memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
   {
     public:
-      using AllocationPolicyType = corevm::memory::allocation_policy<T, AllocationScheme>;
+      using AllocationPolicyType = corevm::memory::allocation_policy<T, CoreAllocatorType>;
 
       explicit Allocator(uint64_t total_size)
         :
@@ -64,7 +65,7 @@ protected:
       }
   };
 
-  typedef Allocator<Dummy, corevm::memory::first_fit_allocation_scheme> MyAllocator;
+  typedef Allocator<Dummy, corevm::memory::allocator<corevm::memory::first_fit_allocation_scheme>> MyAllocator;
 
   object_container_unittest()
     :

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
+#include "memory/allocator.h"
 #include "memory/object_container.h"
 #include "memory/sequential_allocation_scheme.h"
 #include "dyobj/heap_allocator.h"
@@ -78,6 +79,7 @@ static void BenchmarkObjectContainer(benchmark::State& state)
 
 BENCHMARK(BenchmarkObjectContainerAllocateAndConstructObject);
 BENCHMARK(BenchmarkObjectContainerWithStdAllocator);
-BENCHMARK_TEMPLATE(BenchmarkObjectContainer, corevm::dyobj::heap_allocator<T, corevm::memory::next_fit_allocation_scheme>);
+BENCHMARK_TEMPLATE(BenchmarkObjectContainer,
+  corevm::dyobj::heap_allocator<T, corevm::memory::allocator<corevm::memory::next_fit_allocation_scheme>>);
 
 // -----------------------------------------------------------------------------

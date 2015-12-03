@@ -23,14 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ALLOCATION_POLICY_H_
 #define COREVM_ALLOCATION_POLICY_H_
 
-#include "corevm/macros.h"
-
-#if USE_BLOCK_ALLOCATOR
-  #include "memory/block_allocator.h"
-#else
-  #include "memory/allocator.h"
-#endif
-
 #include <sneaker/allocator/alloc_policy.h>
 
 #include <cstdint>
@@ -42,7 +34,7 @@ namespace corevm {
 namespace memory {
 
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 class allocation_policy : public sneaker::allocator::standard_alloc_policy<T>
 {
 public:
@@ -77,12 +69,7 @@ public:
   inline uint64_t max_size() const;
 
 protected:
-
-#if USE_BLOCK_ALLOCATOR
-  corevm::memory::block_allocator<T> m_allocator;
-#else
-  corevm::memory::allocator<AllocationScheme> m_allocator;
-#endif
+  CoreAllocatorType m_allocator;
 };
 
 
@@ -91,16 +78,16 @@ protected:
 namespace {
 
 
-template<typename T, typename AllocationScheme>
-using _MyType = typename corevm::memory::allocation_policy<T, AllocationScheme>;
+template<typename T, typename CoreAllocatorType>
+using _MyType = typename corevm::memory::allocation_policy<T, CoreAllocatorType>;
 
 
 } /* end namespace */
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
+template<typename T, typename CoreAllocatorType>
+corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
   uint64_t total_size)
   :
   m_allocator(total_size)
@@ -110,8 +97,8 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
+template<typename T, typename CoreAllocatorType>
+corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
   allocation_policy const& other)
   :
   m_allocator(other.total_size())
@@ -122,45 +109,32 @@ corevm::memory::allocation_policy<T, AllocationScheme>::allocation_policy(
 // -----------------------------------------------------------------------------
 
 /* virtual */
-template<typename T, typename AllocationScheme>
-corevm::memory::allocation_policy<T, AllocationScheme>::~allocation_policy()
+template<typename T, typename CoreAllocatorType>
+corevm::memory::allocation_policy<T, CoreAllocatorType>::~allocation_policy()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-typename _MyType<T, AllocationScheme>::pointer
-corevm::memory::allocation_policy<T, AllocationScheme>::allocate(
-  typename allocation_policy<T, AllocationScheme>::size_type n,
+template<typename T, typename CoreAllocatorType>
+typename _MyType<T, CoreAllocatorType>::pointer
+corevm::memory::allocation_policy<T, CoreAllocatorType>::allocate(
+  typename allocation_policy<T, CoreAllocatorType>::size_type n,
   typename std::allocator<void>::const_pointer
 )
 {
-#if USE_BLOCK_ALLOCATOR
-  return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
-      m_allocator.allocate_n(n));
-#else
-  if (n == 1)
-  {
-    return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
-      m_allocator.allocate(sizeof(T)));
-  }
-  else
-  {
-    return reinterpret_cast<typename _MyType<T, AllocationScheme>::pointer>(
-      m_allocator.allocate_n(n, sizeof(T)));
-  }
-#endif
+  return reinterpret_cast<typename _MyType<T, CoreAllocatorType>::pointer>(
+    m_allocator.allocate_n(n, sizeof(T)));
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 void
-corevm::memory::allocation_policy<T, AllocationScheme>::deallocate(
-  typename allocation_policy<T, AllocationScheme>::pointer p,
-  typename allocation_policy<T, AllocationScheme>::size_type
+corevm::memory::allocation_policy<T, CoreAllocatorType>::deallocate(
+  typename allocation_policy<T, CoreAllocatorType>::pointer p,
+  typename allocation_policy<T, CoreAllocatorType>::size_type
 )
 {
 #if __DEBUG__
@@ -173,38 +147,38 @@ corevm::memory::allocation_policy<T, AllocationScheme>::deallocate(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme>::base_addr() const
+corevm::memory::allocation_policy<T, CoreAllocatorType>::base_addr() const
 {
   return m_allocator.base_addr();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme>::total_size() const
+corevm::memory::allocation_policy<T, CoreAllocatorType>::total_size() const
 {
   return m_allocator.total_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, AllocationScheme>::max_size() const
+corevm::memory::allocation_policy<T, CoreAllocatorType>::max_size() const
 {
   return total_size() / sizeof(T);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme> const& lhs,
-  allocation_policy<T, AllocationScheme> const& rhs)
+  allocation_policy<T, CoreAllocatorType> const& lhs,
+  allocation_policy<T, CoreAllocatorType> const& rhs)
 {
   return lhs.total_size() == rhs.total_size();
 }
@@ -213,14 +187,14 @@ bool operator==(
 
 template<
   typename T,
-  typename AllocationScheme,
+  typename CoreAllocatorType,
   typename U,
-  typename OtherAllocationScheme
+  typename OtherCoreAllocatorType
 >
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme> const& /* lhs */,
-  allocation_policy<U, OtherAllocationScheme> const& /* rhs */)
+  allocation_policy<T, CoreAllocatorType> const& /* lhs */,
+  allocation_policy<U, OtherCoreAllocatorType> const& /* rhs */)
 {
   return false;
 }
@@ -229,12 +203,12 @@ bool operator==(
 
 template<
   typename T,
-  typename AllocationScheme,
+  typename CoreAllocatorType,
   typename other_allocation_policy_type
 >
 inline
 bool operator==(
-  allocation_policy<T, AllocationScheme> const& /* lhs */,
+  allocation_policy<T, CoreAllocatorType> const& /* lhs */,
   other_allocation_policy_type const& /* rhs */)
 {
   return false;
@@ -242,11 +216,11 @@ bool operator==(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme> const& lhs,
-  allocation_policy<T, AllocationScheme> const& rhs)
+  allocation_policy<T, CoreAllocatorType> const& lhs,
+  allocation_policy<T, CoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -255,14 +229,14 @@ bool operator!=(
 
 template<
   typename T,
-  typename AllocationScheme,
+  typename CoreAllocatorType,
   typename U,
-  typename OtherAllocationScheme
+  typename OtherCoreAllocatorType
 >
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme> const& lhs,
-  allocation_policy<U, OtherAllocationScheme> const& rhs)
+  allocation_policy<T, CoreAllocatorType> const& lhs,
+  allocation_policy<U, OtherCoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -271,12 +245,12 @@ bool operator!=(
 
 template<
   typename T,
-  typename AllocationScheme,
+  typename CoreAllocatorType,
   typename other_allocation_policy_type
 >
 inline
 bool operator!=(
-  allocation_policy<T, AllocationScheme> const& lhs,
+  allocation_policy<T, CoreAllocatorType> const& lhs,
   other_allocation_policy_type const& rhs)
 {
   return !operator==(lhs, rhs);

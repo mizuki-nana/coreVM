@@ -27,6 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <sneaker/testing/_unittest.h>
 
+#include <list>
+
 
 template<class GarbageCollectionScheme>
 class garbage_collection_unittest : public ::testing::Test

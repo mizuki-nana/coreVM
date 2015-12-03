@@ -40,11 +40,11 @@ namespace dyobj {
 using sneaker::allocator::object_traits;
 
 
-template<typename T, typename AllocationScheme>
-class heap_allocator : public corevm::memory::allocation_policy<T, AllocationScheme>, public object_traits<T>
+template<typename T, typename CoreAllocatorType>
+class heap_allocator : public corevm::memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
 {
 private:
-  using AllocationPolicyType = corevm::memory::allocation_policy<T, AllocationScheme>;
+  using AllocationPolicyType = corevm::memory::allocation_policy<T, CoreAllocatorType>;
 
 public:
   using value_type      = typename AllocationPolicyType::value_type;
@@ -61,14 +61,14 @@ public:
 
   heap_allocator(heap_allocator const&);
 
-  template<typename U, typename OtherAllocationScheme>
-  heap_allocator(heap_allocator<U, OtherAllocationScheme> const&) = delete;
+  template<typename U, typename OtherCoreAllocatorType>
+  heap_allocator(heap_allocator<U, OtherCoreAllocatorType> const&) = delete;
 };
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator()
+template<typename T, typename CoreAllocatorType>
+corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator()
   :
   AllocationPolicyType(COREVM_DEFAULT_HEAP_SIZE)
 {
@@ -77,8 +77,8 @@ corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator()
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator(
+template<typename T, typename CoreAllocatorType>
+corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator(
   uint64_t total_size)
   :
   AllocationPolicyType(total_size)
@@ -88,17 +88,17 @@ corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::dyobj::heap_allocator<T, AllocationScheme>::~heap_allocator()
+template<typename T, typename CoreAllocatorType>
+corevm::dyobj::heap_allocator<T, CoreAllocatorType>::~heap_allocator()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
-corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator(
-  heap_allocator<T, AllocationScheme> const& other)
+template<typename T, typename CoreAllocatorType>
+corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator(
+  heap_allocator<T, CoreAllocatorType> const& other)
   :
   AllocationPolicyType(other.total_size())
 {
@@ -107,71 +107,71 @@ corevm::dyobj::heap_allocator<T, AllocationScheme>::heap_allocator(
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 inline
 bool operator==(
-  heap_allocator<T, AllocationScheme> const& lhs,
-  heap_allocator<T, AllocationScheme> const& rhs)
+  heap_allocator<T, CoreAllocatorType> const& lhs,
+  heap_allocator<T, CoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, AllocationScheme>>(lhs),
-    static_cast<corevm::memory::allocation_policy<T, AllocationScheme>>(rhs)
+    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs),
+    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(rhs)
   ) && lhs.total_size() == rhs.total_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
+template<typename T, typename CoreAllocatorType, typename U, typename OtherCoreAllocatorType>
 inline
 bool operator==(
-  heap_allocator<T, AllocationScheme> const& lhs,
-  heap_allocator<U, OtherAllocationScheme> const& rhs)
+  heap_allocator<T, CoreAllocatorType> const& lhs,
+  heap_allocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, AllocationScheme>>(lhs),
-    static_cast<corevm::memory::allocation_policy<U, OtherAllocationScheme>>(rhs)
+    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs),
+    static_cast<corevm::memory::allocation_policy<U, OtherCoreAllocatorType>>(rhs)
   );
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename other_allocator_type>
+template<typename T, typename CoreAllocatorType, typename other_allocator_type>
 inline
 bool operator==(
-  heap_allocator<T, AllocationScheme> const& lhs, other_allocator_type const& rhs)
+  heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, AllocationScheme>>(lhs), rhs
+    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs), rhs
   );
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme>
+template<typename T, typename CoreAllocatorType>
 inline
 bool operator!=(
-  heap_allocator<T, AllocationScheme> const& lhs,
-  heap_allocator<T, AllocationScheme> const& rhs)
+  heap_allocator<T, CoreAllocatorType> const& lhs,
+  heap_allocator<T, CoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename U, typename OtherAllocationScheme>
+template<typename T, typename CoreAllocatorType, typename U, typename OtherCoreAllocatorType>
 inline
 bool operator!=(
-  heap_allocator<T, AllocationScheme> const& lhs,
-  heap_allocator<U, OtherAllocationScheme> const& rhs)
+  heap_allocator<T, CoreAllocatorType> const& lhs,
+  heap_allocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename AllocationScheme, typename other_allocator_type>
+template<typename T, typename CoreAllocatorType, typename other_allocator_type>
 inline
-bool operator!=(heap_allocator<T, AllocationScheme> const& lhs, other_allocator_type const& rhs)
+bool operator!=(heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
 {
   return !operator==(lhs, rhs);
 }
