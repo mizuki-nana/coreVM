@@ -129,9 +129,6 @@ const size_t DEFAULT_VECTOR_CAPACITY = 1 << 14;
 
 // -----------------------------------------------------------------------------
 
-
-// -----------------------------------------------------------------------------
-
 static_assert(
   std::numeric_limits<corevm::runtime::vector::size_type>::max() >=
   std::numeric_limits<corevm::runtime::instr_addr>::max(),
@@ -151,7 +148,8 @@ static_assert(
 corevm::runtime::process::options::options()
   :
   heap_alloc_size(corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE),
-  pool_alloc_size(corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
+  pool_alloc_size(corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
+  gc_flag(0)
 {
 }
 
@@ -194,7 +192,7 @@ corevm::runtime::process::process()
   m_sig_instr_map(),
   m_compartments()
 {
-  m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
+  init();
 }
 
 // -----------------------------------------------------------------------------
@@ -213,7 +211,7 @@ corevm::runtime::process::process(
   m_sig_instr_map(),
   m_compartments()
 {
-  m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
+  init();
 }
 
 // -----------------------------------------------------------------------------
@@ -221,7 +219,7 @@ corevm::runtime::process::process(
 corevm::runtime::process::process(const process::options& options)
   :
   m_pause_exec(false),
-  m_gc_flag(0),
+  m_gc_flag(options.gc_flag),
   m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(options.heap_alloc_size),
   m_dyobj_stack(),
@@ -231,6 +229,15 @@ corevm::runtime::process::process(const process::options& options)
   m_sig_instr_map(),
   m_compartments()
 {
+  init();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::runtime::process::init()
+{
+  m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 }
 
 // -----------------------------------------------------------------------------
@@ -666,7 +673,7 @@ corevm::runtime::process::resume_exec()
 inline bool
 corevm::runtime::process::is_valid_pc() const
 {
-  return !((uint64_t)m_pc >= m_instrs.size());
+  return (uint64_t)m_pc < m_instrs.size();
 }
 
 // -----------------------------------------------------------------------------
@@ -835,6 +842,14 @@ corevm::runtime::process::do_gc()
 
 // -----------------------------------------------------------------------------
 
+void
+corevm::runtime::process::set_gc_flag(uint8_t gc_flag)
+{
+  m_gc_flag = gc_flag;
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::runtime::instr_addr
 corevm::runtime::process::pc() const
 {
@@ -904,32 +919,23 @@ corevm::runtime::process::get_frame_by_closure_ctx(
 bool
 corevm::runtime::process::should_gc() const
 {
-  if (!m_gc_flag)
-  {
-    return false;
-  }
-
-  size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
+  const size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
   for (size_t i = 0; i < flag_size; ++i)
   {
-    bool bit_set = is_bit_set(m_gc_flag, static_cast<char>(i));
-
-    if (!bit_set)
+    // Add 1 to bit since the gc flag values are 0 index based.
+    if (is_bit_set(m_gc_flag + 1, static_cast<char>(i)))
     {
-      continue;
-    }
+      corevm::runtime::gc_rule_meta::gc_bitfields bit =
+        static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
 
-    corevm::runtime::gc_rule_meta::gc_bitfields bit =
-      static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
+      const corevm::runtime::gc_rule_ptr gc_rule =
+        corevm::runtime::gc_rule_meta::get_gc_rule(bit);
 
-    const corevm::runtime::gc_rule* gc_rule =
-      corevm::runtime::gc_rule_meta::get_gc_rule(bit);
-
-    if (gc_rule &&
-        gc_rule->should_gc(const_cast<const corevm::runtime::process&>(*this)))
-    {
-      return true;
+      if (gc_rule && gc_rule->should_gc(*this))
+      {
+        return true;
+      }
     }
   }
 

@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <memory>
-#include <unordered_map>
 
 
 namespace corevm {
@@ -35,6 +34,8 @@ namespace corevm {
 
 namespace runtime {
 
+
+// -----------------------------------------------------------------------------
 
 // Forward declaration of `corevm::runtime::process`.
 class process;
@@ -79,10 +80,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-typedef struct gc_rule_wrapper
-{
-  const std::shared_ptr<corevm::runtime::gc_rule> gc_rule;
-} gc_rule_wrapper;
+typedef std::shared_ptr<corevm::runtime::gc_rule> gc_rule_ptr;
 
 // -----------------------------------------------------------------------------
 
@@ -90,15 +88,16 @@ class gc_rule_meta
 {
 public:
   enum gc_bitfields : uint8_t {
-    GC_ALWAYS = 1,
-    GC_BY_HEAP_SIZE = 2,
-    GC_BY_NTV_POOLSIZE = 3
+    GC_ALWAYS,
+    GC_BY_HEAP_SIZE,
+    GC_BY_NTV_POOLSIZE,
+    GC_RULE_MAX
   };
 
-  static const corevm::runtime::gc_rule* get_gc_rule(gc_bitfields bit);
+  static const corevm::runtime::gc_rule_ptr get_gc_rule(gc_bitfields bit);
 
 private:
-  static const std::unordered_map<corevm::runtime::gc_bitfield_t, corevm::runtime::gc_rule_wrapper> gc_rule_map;
+  static const corevm::runtime::gc_rule_ptr gc_rules[GC_RULE_MAX];
 };
 
 // -----------------------------------------------------------------------------

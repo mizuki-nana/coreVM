@@ -56,6 +56,8 @@ public:
 
   uint32_t gc_interval() const;
 
+  uint8_t gc_flag() const;
+
   /* Value setters. */
   void set_heap_alloc_size(uint64_t);
 
@@ -63,12 +65,15 @@ public:
 
   void set_gc_interval(uint32_t);
 
+  void set_gc_flag(uint8_t);
+
 private:
   static void set_values(configuration&, const JSON&);
 
   uint64_t m_heap_alloc_size;
   uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
+  uint8_t m_gc_flag;
 
 private:
   static const std::string schema;

@@ -27,8 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 
 
-const double corevm::runtime::gc_rule_by_heap_size::DEFAULT_CUTOFF = 0.75f;
+// -----------------------------------------------------------------------------
 
+const double corevm::runtime::gc_rule_by_heap_size::DEFAULT_CUTOFF = 0.75f;
 
 // -----------------------------------------------------------------------------
 
@@ -44,44 +45,28 @@ corevm::runtime::gc_rule::~gc_rule()
 
 // -----------------------------------------------------------------------------
 
-#if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wc99-extensions"
-#endif
-
-const std::unordered_map<corevm::runtime::gc_bitfield_t, corevm::runtime::gc_rule_wrapper>
-corevm::runtime::gc_rule_meta::gc_rule_map {
-  {
-    corevm::runtime::gc_rule_meta::gc_bitfields::GC_ALWAYS,
-    {
-      .gc_rule=std::make_shared<corevm::runtime::gc_rule_always>()
-    }
-  },
-  {
-    corevm::runtime::gc_rule_meta::gc_bitfields::GC_BY_HEAP_SIZE,
-    {
-      .gc_rule=std::make_shared<corevm::runtime::gc_rule_by_heap_size>()
-    }
-  },
-  {
-    corevm::runtime::gc_rule_meta::gc_bitfields::GC_BY_NTV_POOLSIZE,
-    {
-      .gc_rule=std::make_shared<corevm::runtime::gc_rule_by_ntvhndl_pool_size>()
-    }
-  }
+const corevm::runtime::gc_rule_ptr
+corevm::runtime::gc_rule_meta::gc_rules[GC_RULE_MAX] {
+  std::make_shared<corevm::runtime::gc_rule_always>(),
+  std::make_shared<corevm::runtime::gc_rule_by_heap_size>(),
+  std::make_shared<corevm::runtime::gc_rule_by_ntvhndl_pool_size>()
 };
-
-#if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
-#endif  /* #if defined(__clang__) and __clang__ */
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::gc_rule*
+const corevm::runtime::gc_rule_ptr
 corevm::runtime::gc_rule_meta::get_gc_rule(gc_bitfields bit)
 {
-  auto itr = corevm::runtime::gc_rule_meta::gc_rule_map.find(bit);
-  return itr != corevm::runtime::gc_rule_meta::gc_rule_map.end() ? itr->second.gc_rule.get() : nullptr;
+  const uint8_t uint8_bit = static_cast<uint8_t>(bit);
+
+  corevm::runtime::gc_rule_ptr gc_rule;
+
+  if (uint8_bit < GC_RULE_MAX)
+  {
+    gc_rule = corevm::runtime::gc_rule_meta::gc_rules[uint8_bit];
+  }
+
+  return gc_rule;
 }
 
 // -----------------------------------------------------------------------------

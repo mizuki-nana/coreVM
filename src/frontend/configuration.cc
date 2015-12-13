@@ -53,6 +53,9 @@ const std::string corevm::frontend::configuration::schema =
       "},"
       "\"gc-interval\": {"
         "\"type\": \"integer\""
+      "},"
+      "\"gc-flag\": {"
+        "\"type\": \"integer\""
       "}"
     "}"
   "}";
@@ -63,7 +66,8 @@ corevm::frontend::configuration::configuration()
   :
   m_heap_alloc_size(0u),
   m_pool_alloc_size(0u),
-  m_gc_interval(0u)
+  m_gc_interval(0u),
+  m_gc_flag(0u)
 {
 }
 
@@ -93,6 +97,14 @@ corevm::frontend::configuration::gc_interval() const
 
 // -----------------------------------------------------------------------------
 
+uint8_t
+corevm::frontend::configuration::gc_flag() const
+{
+  return m_gc_flag;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 corevm::frontend::configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
@@ -113,6 +125,14 @@ void
 corevm::frontend::configuration::set_gc_interval(uint32_t gc_interval)
 {
   m_gc_interval = gc_interval;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+corevm::frontend::configuration::set_gc_flag(uint8_t gc_flag)
+{
+  m_gc_flag = gc_flag;
 }
 
 // -----------------------------------------------------------------------------
@@ -221,6 +241,15 @@ corevm::frontend::configuration::set_values(
     uint32_t gc_interval =
       static_cast<uint32_t>(gc_interval_raw.int_value());
     configuration.set_gc_interval(gc_interval);
+  }
+
+  // GC flag.
+  if (config_obj.find("gc-flag") != config_obj.end())
+  {
+    const JSON& gc_flag_raw = config_obj.at("gc-flag");
+    const uint8_t gc_flag =
+      static_cast<uint8_t>(gc_flag_raw.int_value());
+    configuration.set_gc_flag(gc_flag);
   }
 }
 

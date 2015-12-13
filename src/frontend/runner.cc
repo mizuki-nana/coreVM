@@ -83,6 +83,8 @@ corevm::frontend::runner::run() const noexcept
     options.pool_alloc_size = m_configuration.pool_alloc_size();
   }
 
+  options.gc_flag = m_configuration.gc_flag();
+
   corevm::runtime::process process(options);
 
   corevm::frontend::bytecode_loader_binary loader;

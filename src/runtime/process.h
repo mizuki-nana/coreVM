@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 #include "frame.h"
+#include "gc_rule.h"
 #include "instr.h"
 #include "invocation_ctx.h"
 #include "native_types_pool.h"
@@ -90,6 +91,7 @@ public:
 
     uint64_t heap_alloc_size;
     uint64_t pool_alloc_size;
+    uint8_t gc_flag;
   };
 
   process();
@@ -200,6 +202,8 @@ public:
 
   void do_gc();
 
+  void set_gc_flag(uint8_t gc_flag);
+
   bool can_execute();
 
   void pause_exec();
@@ -263,6 +267,8 @@ public:
   friend class process_printer;
 
 private:
+  void init();
+
   bool is_valid_pc() const;
 
   bool pre_start();
