@@ -117,7 +117,7 @@ void pretty_print_measurements(const ContainerType& measurements)
   std::cout << std::setw(AVG_CUMULATIVE_WALL_TIME_WIDTH) << "Avg wall clock time (ns) ";
   std::cout << std::endl;
 
-  for (size_t i = 0; i < corevm::runtime::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < INSTR_CODE_MAX; ++i)
   {
     const auto& measurement = measurements[i];
 
@@ -126,7 +126,7 @@ void pretty_print_measurements(const ContainerType& measurements)
     const auto invocation_count = measurement.invocation_count;
     const auto avg_wall_time = _avg(measurement);
 
-    std::cout << std::setw(INSTR_NAME_WIDTH) << corevm::runtime::instr_set_info::instr_infos[i].name << BAR;
+    std::cout << std::setw(INSTR_NAME_WIDTH) << instr_set_info::instr_infos[i].name << BAR;
     std::cout << std::setw(PERCENTAGE_WIDTH) << std::setprecision(2) << cumulative_wall_time_percentage << std::fixed << BAR;
     std::cout << std::setw(INVOCATION_COUNT_WIDTH) << invocation_count << BAR;
     std::cout << std::setw(CUMULATIVE_WALL_TIME_WIDTH) << cumulative_wall_time << BAR;

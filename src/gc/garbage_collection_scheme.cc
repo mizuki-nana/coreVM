@@ -23,12 +23,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "garbage_collection_scheme.h"
 
 
+namespace corevm {
+
+
+namespace gc {
+
+
 // -----------------------------------------------------------------------------
 
 /* virtual */
-corevm::gc::garbage_collection_scheme::~garbage_collection_scheme()
+garbage_collection_scheme::~garbage_collection_scheme()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace gc */
+
+
+} /* end namespace corevm */

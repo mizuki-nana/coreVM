@@ -32,17 +32,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::vector
-corevm::frontend::get_vector_from_json(const JSON& json)
+runtime::vector
+get_vector_from_json(const JSON& json)
 {
 #if __DEBUG__
   ASSERT(json.type() == JSON::ARRAY);
 #endif
 
   const JSON::array& vector_array = json.array_items();
-  corevm::runtime::vector vector;
+  runtime::vector vector;
 
   for (auto itr = vector_array.begin(); itr != vector_array.end(); ++itr)
   {
@@ -57,12 +63,12 @@ corevm::frontend::get_vector_from_json(const JSON& json)
     const JSON& oprd1_raw = instr_tuple[1];
     const JSON& oprd2_raw = instr_tuple[2];
 
-    corevm::runtime::instr_code code =
-      static_cast<corevm::runtime::instr_code>(code_raw.int_value());
-    corevm::runtime::instr_oprd oprd1 =
-      static_cast<corevm::runtime::instr_oprd>(oprd1_raw.int_value());
-    corevm::runtime::instr_oprd oprd2 =
-      static_cast<corevm::runtime::instr_oprd>(oprd2_raw.int_value());
+    runtime::instr_code code =
+      static_cast<runtime::instr_code>(code_raw.int_value());
+    runtime::instr_oprd oprd1 =
+      static_cast<runtime::instr_oprd>(oprd1_raw.int_value());
+    runtime::instr_oprd oprd2 =
+      static_cast<runtime::instr_oprd>(oprd2_raw.int_value());
 
     vector.emplace_back(code, oprd1, oprd2);
   }
@@ -73,7 +79,7 @@ corevm::frontend::get_vector_from_json(const JSON& json)
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::get_v0_1_instr_code_schema_definition()
+get_v0_1_instr_code_schema_definition()
 {
   static const std::string unformatted_def(
     "{"
@@ -85,13 +91,13 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
   std::stringstream ss;
   ss << "[";
 
-  for (size_t i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < runtime::instr_enum::INSTR_CODE_MAX; ++i)
   {
-    const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
+    const runtime::instr_code code = static_cast<runtime::instr_code>(i);
 
     ss << code;
 
-    if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)
+    if (i + 1 != runtime::instr_enum::INSTR_CODE_MAX)
     {
       ss << ",";
     }
@@ -110,7 +116,7 @@ corevm::frontend::get_v0_1_instr_code_schema_definition()
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::get_v0_1_instr_oprd_schema_definition()
+get_v0_1_instr_oprd_schema_definition()
 {
   static const std::string unformatted_def(
     "{"
@@ -135,7 +141,7 @@ corevm::frontend::get_v0_1_instr_oprd_schema_definition()
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::get_v0_1_vector_schema_definition()
+get_v0_1_vector_schema_definition()
 {
   static const std::string unformatted_def(
     "{"
@@ -166,3 +172,9 @@ corevm::frontend::get_v0_1_vector_schema_definition()
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

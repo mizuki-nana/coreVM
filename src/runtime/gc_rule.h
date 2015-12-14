@@ -37,7 +37,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-// Forward declaration of `corevm::runtime::process`.
+// Forward declaration of `process`.
 class process;
 
 // -----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class process;
 class gc_rule
 {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process) const = 0;
+  virtual bool should_gc(const process& process) const = 0;
 
   virtual ~gc_rule();
 };
@@ -55,7 +55,7 @@ public:
 class gc_rule_always : public gc_rule
 {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process) const;
+  virtual bool should_gc(const process& process) const;
 };
 
 // -----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public:
 class gc_rule_by_heap_size : public gc_rule
 {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process) const;
+  virtual bool should_gc(const process& process) const;
 
   static const double DEFAULT_CUTOFF;
 };
@@ -73,14 +73,14 @@ public:
 class gc_rule_by_ntvhndl_pool_size : public gc_rule
 {
 public:
-  virtual bool should_gc(const corevm::runtime::process& process) const;
+  virtual bool should_gc(const process& process) const;
 
   static const double DEFAULT_CUTOFF;
 };
 
 // -----------------------------------------------------------------------------
 
-typedef std::shared_ptr<corevm::runtime::gc_rule> gc_rule_ptr;
+typedef std::shared_ptr<gc_rule> gc_rule_ptr;
 
 // -----------------------------------------------------------------------------
 
@@ -94,10 +94,10 @@ public:
     GC_RULE_MAX
   };
 
-  static const corevm::runtime::gc_rule_ptr get_gc_rule(gc_bitfields bit);
+  static const gc_rule_ptr get_gc_rule(gc_bitfields bit);
 
 private:
-  static const corevm::runtime::gc_rule_ptr gc_rules[GC_RULE_MAX];
+  static const gc_rule_ptr gc_rules[GC_RULE_MAX];
 };
 
 // -----------------------------------------------------------------------------

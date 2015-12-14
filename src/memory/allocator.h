@@ -79,7 +79,7 @@ private:
 // -----------------------------------------------------------------------------
 
 template<class allocation_scheme>
-corevm::memory::allocator<allocation_scheme>::allocator(uint64_t total_size):
+allocator<allocation_scheme>::allocator(uint64_t total_size):
   m_total_size(total_size),
   m_allocated_size(0),
   m_heap(nullptr),
@@ -98,7 +98,7 @@ corevm::memory::allocator<allocation_scheme>::allocator(uint64_t total_size):
 // -----------------------------------------------------------------------------
 
 template<class allocation_scheme>
-corevm::memory::allocator<allocation_scheme>::~allocator()
+allocator<allocation_scheme>::~allocator()
 {
   if (m_heap)
   {
@@ -111,7 +111,7 @@ corevm::memory::allocator<allocation_scheme>::~allocator()
 
 template<class allocation_scheme>
 uint64_t
-corevm::memory::allocator<allocation_scheme>::base_addr() const noexcept
+allocator<allocation_scheme>::base_addr() const noexcept
 {
   return static_cast<uint64_t>((uint8_t*)m_heap - (uint8_t*)NULL);
 }
@@ -120,7 +120,7 @@ corevm::memory::allocator<allocation_scheme>::base_addr() const noexcept
 
 template<class allocation_scheme>
 uint64_t
-corevm::memory::allocator<allocation_scheme>::total_size() const noexcept
+allocator<allocation_scheme>::total_size() const noexcept
 {
   return m_total_size;
 }
@@ -129,7 +129,7 @@ corevm::memory::allocator<allocation_scheme>::total_size() const noexcept
 
 template<class allocation_scheme>
 void*
-corevm::memory::allocator<allocation_scheme>::allocate(size_t size) noexcept
+allocator<allocation_scheme>::allocate(size_t size) noexcept
 {
   void* ptr = nullptr;
 
@@ -163,7 +163,7 @@ corevm::memory::allocator<allocation_scheme>::allocate(size_t size) noexcept
 
 template<class allocation_scheme>
 void*
-corevm::memory::allocator<allocation_scheme>::allocate_n(size_t num, size_t size) noexcept
+allocator<allocation_scheme>::allocate_n(size_t num, size_t size) noexcept
 {
   void* ptr = nullptr;
 
@@ -199,7 +199,7 @@ corevm::memory::allocator<allocation_scheme>::allocate_n(size_t num, size_t size
 
 template<class allocation_scheme>
 int
-corevm::memory::allocator<allocation_scheme>::deallocate(void* ptr) noexcept
+allocator<allocation_scheme>::deallocate(void* ptr) noexcept
 {
   int res = -1;
 
@@ -233,7 +233,7 @@ corevm::memory::allocator<allocation_scheme>::deallocate(void* ptr) noexcept
 
 template<class allocation_scheme>
 void
-corevm::memory::allocator<allocation_scheme>::debug_print() const noexcept
+allocator<allocation_scheme>::debug_print() const noexcept
 {
   uint32_t base = static_cast<uint8_t*>(m_heap) - static_cast<uint8_t*>(NULL);
   m_allocation_scheme.debug_print(base);

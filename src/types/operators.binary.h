@@ -55,11 +55,11 @@ public:
 
 template<>
 inline
-corevm::types::string
-corevm::types::addition::operator()<corevm::types::string>(
-  const corevm::types::string& lhs, const corevm::types::string& rhs)
+string
+addition::operator()<string>(
+  const string& lhs, const string& rhs)
 {
-  return static_cast<corevm::types::string>(lhs + rhs);
+  return static_cast<string>(lhs + rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -107,16 +107,16 @@ public:
   DominantType operator()(const T& lhs, const U& rhs)
   {
     return modulus_impl<DominantType>(
-      static_cast<corevm::types::decimal2>(lhs),
-      static_cast<corevm::types::decimal2>(rhs)
+      static_cast<decimal2>(lhs),
+      static_cast<decimal2>(rhs)
     );
   }
 
 private:
   template<typename R>
   R modulus_impl(
-      const corevm::types::decimal2& lhs,
-      const corevm::types::decimal2& rhs)
+      const decimal2& lhs,
+      const decimal2& rhs)
   {
     double res = fmod(lhs, rhs);
 
@@ -142,33 +142,33 @@ private:
 
 template<>
 inline
-corevm::types::string
-corevm::types::modulus::operator()<corevm::types::string>(
-  const corevm::types::string& lhs, const corevm::types::string& rhs)
+string
+modulus::operator()<string>(
+  const string& lhs, const string& rhs)
 {
-  return static_cast<corevm::types::string>(lhs % rhs);
+  return static_cast<string>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::array
-corevm::types::modulus::operator()<corevm::types::array>(
-  const corevm::types::array& lhs, const corevm::types::array& rhs)
+array
+modulus::operator()<array>(
+  const array& lhs, const array& rhs)
 {
-  return static_cast<corevm::types::array>(lhs % rhs);
+  return static_cast<array>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::map
-corevm::types::modulus::operator()<corevm::types::map>(
-  const corevm::types::map& lhs, const corevm::types::map& rhs)
+map
+modulus::operator()<map>(
+  const map& lhs, const map& rhs)
 {
-  return static_cast<corevm::types::map>(lhs % rhs);
+  return static_cast<map>(lhs % rhs);
 }
 
 // -----------------------------------------------------------------------------
@@ -176,12 +176,12 @@ corevm::types::modulus::operator()<corevm::types::map>(
 class pow_op : public op<binary_op_tag>
 {
 public:
-  corevm::types::decimal operator()(
-    const corevm::types::decimal& lhs, const corevm::types::decimal& rhs)
+  decimal operator()(
+    const decimal& lhs, const decimal& rhs)
   {
     return pow(
-      static_cast<corevm::types::decimal>(lhs),
-      static_cast<corevm::types::decimal>(rhs)
+      static_cast<decimal>(lhs),
+      static_cast<decimal>(rhs)
     );
   }
 
@@ -189,15 +189,15 @@ public:
   DominantType operator()(const T& lhs, const U& rhs)
   {
     return pow(
-      static_cast<corevm::types::decimal2>(lhs),
-      static_cast<corevm::types::decimal2>(rhs)
+      static_cast<decimal2>(lhs),
+      static_cast<decimal2>(rhs)
     );
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class logical_and : public op<typed_binary_op_tag, corevm::types::boolean>
+class logical_and : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -209,7 +209,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class logical_or : public op<typed_binary_op_tag, corevm::types::boolean>
+class logical_or : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -221,7 +221,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_and : public op<typed_cast_binary_op_tag, corevm::types::int64>
+class bitwise_and : public op<typed_cast_binary_op_tag, int64>
 {
 public:
   typedef result_type cast_type;
@@ -235,7 +235,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_or : public op<typed_cast_binary_op_tag, corevm::types::int64>
+class bitwise_or : public op<typed_cast_binary_op_tag, int64>
 {
 public:
   typedef result_type cast_type;
@@ -249,7 +249,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_xor : public op<typed_cast_binary_op_tag, corevm::types::int64>
+class bitwise_xor : public op<typed_cast_binary_op_tag, int64>
 {
 public:
   typedef result_type cast_type;
@@ -263,7 +263,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_left_shift : public op<typed_cast_binary_op_tag, corevm::types::int64>
+class bitwise_left_shift : public op<typed_cast_binary_op_tag, int64>
 {
 public:
   typedef result_type cast_type;
@@ -277,7 +277,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class bitwise_right_shift : public op<typed_cast_binary_op_tag, corevm::types::int64>
+class bitwise_right_shift : public op<typed_cast_binary_op_tag, int64>
 {
 public:
   typedef result_type cast_type;
@@ -291,7 +291,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class eq : public op<typed_binary_op_tag, corevm::types::boolean>
+class eq : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -303,7 +303,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class neq : public op<typed_binary_op_tag, corevm::types::boolean>
+class neq : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -315,7 +315,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class gt : public op<typed_binary_op_tag, corevm::types::boolean>
+class gt : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -327,7 +327,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class lt : public op<typed_binary_op_tag, corevm::types::boolean>
+class lt : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -339,7 +339,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class gte : public op<typed_binary_op_tag, corevm::types::boolean>
+class gte : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -351,7 +351,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class lte : public op<typed_binary_op_tag, corevm::types::boolean>
+class lte : public op<typed_binary_op_tag, boolean>
 {
 public:
   template<typename DominantType, typename T, typename U>

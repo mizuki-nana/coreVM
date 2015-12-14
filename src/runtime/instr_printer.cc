@@ -29,10 +29,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::instr_printer::instr_printer(
-  const corevm::runtime::instr& instr,
+instr_printer::instr_printer(
+  const instr& instr,
   uint32_t opts)
   :
   m_instr(instr),
@@ -44,7 +50,7 @@ corevm::runtime::instr_printer::instr_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-corevm::runtime::instr_printer::operator()(std::ostream& ost) const
+instr_printer::operator()(std::ostream& ost) const
 {
   const bool show_canonical_form = m_opts & OPT_SHOW_CANONICAL_FORM;
 
@@ -72,3 +78,9 @@ corevm::runtime::instr_printer::operator()(std::ostream& ost) const
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

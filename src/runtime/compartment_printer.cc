@@ -25,10 +25,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ostream>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::compartment_printer::compartment_printer(
-  const corevm::runtime::compartment& compartment,
+compartment_printer::compartment_printer(
+  const compartment& compartment,
   uint32_t opts)
   :
   m_compartment(compartment),
@@ -39,7 +45,7 @@ corevm::runtime::compartment_printer::compartment_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-corevm::runtime::compartment_printer::operator()(std::ostream& ost) const
+compartment_printer::operator()(std::ostream& ost) const
 {
   ost << "Compartment" << std::endl;
   ost << std::endl;
@@ -48,7 +54,7 @@ corevm::runtime::compartment_printer::operator()(std::ostream& ost) const
 
   for (const auto& closure : m_compartment.m_closure_table)
   {
-    corevm::runtime::closure_printer printer(closure, m_opts);
+    closure_printer printer(closure, m_opts);
     printer(ost) << std::endl;
   }
 
@@ -56,3 +62,9 @@ corevm::runtime::compartment_printer::operator()(std::ostream& ost) const
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

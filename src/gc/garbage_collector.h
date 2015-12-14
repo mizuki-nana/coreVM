@@ -38,7 +38,7 @@ template<class garbage_collection_scheme>
 class garbage_collector
 {
 public:
-  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<
+  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<
     typename garbage_collection_scheme::dynamic_object_manager>;
 
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
@@ -67,8 +67,8 @@ protected:
 // -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
-corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
-  corevm::gc::garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
+garbage_collector<garbage_collection_scheme>::garbage_collector(
+  garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
   :
   m_gc_scheme(),
   m_heap(heap)
@@ -80,7 +80,7 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::garbage_collector(
 
 template<class garbage_collection_scheme>
 void
-corevm::gc::garbage_collector<garbage_collection_scheme>::gc() noexcept
+garbage_collector<garbage_collection_scheme>::gc() noexcept
 {
   m_gc_scheme.gc(m_heap);
   this->free();
@@ -90,7 +90,7 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::gc() noexcept
 
 template<class garbage_collection_scheme>
 void
-corevm::gc::garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
+garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
 {
   m_gc_scheme.gc(m_heap);
   this->free(f);
@@ -100,7 +100,7 @@ corevm::gc::garbage_collector<garbage_collection_scheme>::gc(callback* f) noexce
 
 template<class garbage_collection_scheme>
 void
-corevm::gc::garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
+garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
 {
   auto remove_criterion = [](typename dynamic_object_heap_type::iterator itr) -> bool {
     dynamic_object_type& object = static_cast<dynamic_object_type&>(*itr);

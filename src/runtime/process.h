@@ -49,15 +49,15 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::closure` */
+/** Forward declaration of `closure` */
 struct closure;
 
 
-/** Forward declaration of `corevm::runtime::closure_ctx` */
+/** Forward declaration of `closure_ctx` */
 struct closure_ctx;
 
 
-/** Forward declaration of `corevm::runtime::process_printer` */
+/** Forward declaration of `process_printer` */
 class process_printer;
 
 
@@ -79,10 +79,10 @@ class process_printer;
 class process
 {
 public:
-  typedef corevm::gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
-  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
-  typedef corevm::runtime::native_types_pool native_types_pool_type;
+  typedef gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
+  using dynamic_object_type = typename dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
+  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
+  typedef native_types_pool native_types_pool_type;
 
 public:
   struct options
@@ -103,98 +103,98 @@ public:
   process(const process&) = delete;
   process& operator=(const process&) = delete;
 
-  corevm::dyobj::dyobj_id create_dyobj();
+  dyobj::dyobj_id create_dyobj();
 
   dynamic_object_type* create_dyobjs(size_t n);
 
-  dynamic_object_type& get_dyobj(corevm::dyobj::dyobj_id id);
+  dynamic_object_type& get_dyobj(dyobj::dyobj_id id);
 
   uint64_t call_stack_size() const;
 
   bool has_frame() const;
 
-  corevm::runtime::frame& top_frame()
-    throw(corevm::runtime::frame_not_found_error);
+  frame& top_frame()
+    throw(frame_not_found_error);
 
   /**
    * Gets the top frame, only when the call stack is not empty.
    * Will result in undefined behavior otherwise.
    */
-  void top_frame(corevm::runtime::frame**);
+  void top_frame(frame**);
 
   /**
    * Gets the `n`th frame from the top of the call stack.
    * A value of 0 means the top frame.
    */
-  corevm::runtime::frame& top_nth_frame(size_t n)
-    throw(corevm::runtime::frame_not_found_error);
+  frame& top_nth_frame(size_t n)
+    throw(frame_not_found_error);
 
-  void push_frame(corevm::runtime::frame&);
-
-  void emplace_frame(
-    const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*, corevm::runtime::closure*);
+  void push_frame(frame&);
 
   void emplace_frame(
-    const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*,
-    corevm::runtime::closure*, corevm::runtime::instr_addr);
+    const closure_ctx&,
+    compartment*, closure*);
 
-  void pop_frame() throw(corevm::runtime::frame_not_found_error);
+  void emplace_frame(
+    const closure_ctx&,
+    compartment*,
+    closure*, instr_addr);
+
+  void pop_frame() throw(frame_not_found_error);
 
   uint64_t stack_size() const;
 
-  corevm::runtime::invocation_ctx& top_invocation_ctx()
-    throw(corevm::runtime::invocation_ctx_not_found_error);
+  invocation_ctx& top_invocation_ctx()
+    throw(invocation_ctx_not_found_error);
 
   /**
    * Gets the top invocation context, only when the invocation stack
    * is not empty.
    * Will result in undefined behavior otherwise.
    */
-  void top_invocation_ctx(corevm::runtime::invocation_ctx**);
+  void top_invocation_ctx(invocation_ctx**);
 
   void push_invocation_ctx(const invocation_ctx&);
 
   void emplace_invocation_ctx(
-    const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*, corevm::runtime::closure*);
+    const closure_ctx&,
+    compartment*, closure*);
 
   void pop_invocation_ctx()
-    throw(corevm::runtime::invocation_ctx_not_found_error);
+    throw(invocation_ctx_not_found_error);
 
-  const corevm::dyobj::dyobj_id& top_stack()
-    throw(corevm::runtime::object_stack_empty_error);
+  const dyobj::dyobj_id& top_stack()
+    throw(object_stack_empty_error);
 
-  corevm::dyobj::dyobj_id pop_stack()
-    throw(corevm::runtime::object_stack_empty_error);
+  dyobj::dyobj_id pop_stack()
+    throw(object_stack_empty_error);
 
   void swap_stack();
 
-  void push_stack(corevm::dyobj::dyobj_id&);
+  void push_stack(dyobj::dyobj_id&);
 
-  bool has_ntvhndl(corevm::dyobj::ntvhndl_key&);
+  bool has_ntvhndl(dyobj::ntvhndl_key&);
 
-  corevm::types::native_type_handle& get_ntvhndl(corevm::dyobj::ntvhndl_key)
-    throw(corevm::runtime::native_type_handle_not_found_error);
+  types::native_type_handle& get_ntvhndl(dyobj::ntvhndl_key)
+    throw(native_type_handle_not_found_error);
 
-  corevm::dyobj::ntvhndl_key insert_ntvhndl(corevm::types::native_type_handle&)
-    throw(corevm::runtime::native_type_handle_insertion_error);
+  dyobj::ntvhndl_key insert_ntvhndl(types::native_type_handle&)
+    throw(native_type_handle_insertion_error);
 
-  void erase_ntvhndl(corevm::dyobj::ntvhndl_key)
-    throw(corevm::runtime::native_type_handle_deletion_error);
+  void erase_ntvhndl(dyobj::ntvhndl_key)
+    throw(native_type_handle_deletion_error);
 
-  corevm::runtime::instr_addr pc() const;
+  instr_addr pc() const;
 
-  void set_pc(const corevm::runtime::instr_addr)
-    throw(corevm::runtime::invalid_instr_addr_error);
+  void set_pc(const instr_addr)
+    throw(invalid_instr_addr_error);
 
-  void append_vector(const corevm::runtime::vector&);
+  void append_vector(const vector&);
 
-  void insert_vector(const corevm::runtime::vector& vector);
+  void insert_vector(const vector& vector);
 
   bool get_frame_by_closure_ctx(
-    corevm::runtime::closure_ctx&, corevm::runtime::frame**);
+    closure_ctx&, frame**);
 
   void start();
 
@@ -210,9 +210,9 @@ public:
 
   void resume_exec();
 
-  void set_sig_vector(sig_atomic_t, corevm::runtime::vector&);
+  void set_sig_vector(sig_atomic_t, vector&);
 
-  void handle_signal(sig_atomic_t, corevm::runtime::sighandler*);
+  void handle_signal(sig_atomic_t, sighandler*);
 
   dynamic_object_heap_type::size_type heap_size() const;
 
@@ -224,14 +224,14 @@ public:
 
   size_t compartment_count() const;
 
-  corevm::runtime::compartment_id insert_compartment(
-    const corevm::runtime::compartment&);
+  compartment_id insert_compartment(
+    const compartment&);
 
-  corevm::runtime::compartment_id insert_compartment(
-    const corevm::runtime::compartment&&);
+  compartment_id insert_compartment(
+    const compartment&&);
 
   void get_compartment(
-    corevm::runtime::compartment_id, corevm::runtime::compartment**);
+    compartment_id, compartment**);
 
   void reset();
 
@@ -243,10 +243,10 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  corevm::runtime::frame* find_frame_by_ctx(
-    corevm::runtime::closure_ctx ctx,
-    corevm::runtime::compartment* compartment,
-    corevm::runtime::process& process);
+  frame* find_frame_by_ctx(
+    closure_ctx ctx,
+    compartment* compartment,
+    process& process);
 
   /**
    * Given a pointer to a starting frame, find the existing frame associated
@@ -256,13 +256,13 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  corevm::runtime::frame* find_parent_frame_in_process(
-    corevm::runtime::frame* frame_ptr,
-    corevm::runtime::process& process);
+  frame* find_parent_frame_in_process(
+    frame* frame_ptr,
+    process& process);
 
   // NOTE: Once the stack is unwinded, the action cannot be undone.
   static void unwind_stack(
-    corevm::runtime::process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
+    process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
   friend class process_printer;
 
@@ -283,15 +283,15 @@ private:
 
   bool m_pause_exec;
   uint8_t m_gc_flag;
-  corevm::runtime::instr_addr m_pc;
-  corevm::runtime::vector m_instrs;
-  corevm::dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
-  std::vector<corevm::dyobj::dyobj_id> m_dyobj_stack;
-  std::vector<corevm::runtime::frame> m_call_stack;
+  instr_addr m_pc;
+  vector m_instrs;
+  dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
+  std::vector<dyobj::dyobj_id> m_dyobj_stack;
+  std::vector<frame> m_call_stack;
   std::vector<invocation_ctx> m_invocation_ctx_stack;
   native_types_pool_type m_ntvhndl_pool;
-  std::unordered_map<sig_atomic_t, corevm::runtime::vector> m_sig_instr_map;
-  std::vector<corevm::runtime::compartment> m_compartments;
+  std::unordered_map<sig_atomic_t, vector> m_sig_instr_map;
+  std::vector<compartment> m_compartments;
 };
 
 // -----------------------------------------------------------------------------

@@ -28,10 +28,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr_info.h"
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::instr_info
-corevm::runtime::instr_set_info::instr_infos[INSTR_CODE_MAX] {
+const instr_info instr_set_info::instr_infos[INSTR_CODE_MAX] {
 
   /* -------------------------- Object instructions ------------------------- */
 
@@ -235,6 +240,13 @@ corevm::runtime::instr_set_info::instr_infos[INSTR_CODE_MAX] {
 };
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
+
 
 #if defined(__clang__) and __clang__
   #pragma clang diagnostic pop

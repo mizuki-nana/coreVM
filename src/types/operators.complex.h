@@ -57,7 +57,7 @@ public:
   template<typename T>
   T operator()(const T& handle)
   {
-    corevm::types::decimal2 value = static_cast<corevm::types::decimal2>(handle);
+    decimal2 value = static_cast<decimal2>(handle);
     return std::abs(value);
   }
 };
@@ -66,33 +66,33 @@ public:
 
 template<>
 inline
-corevm::types::string
-corevm::types::absolute::operator()(const corevm::types::string& handle)
+string
+absolute::operator()(const string& handle)
 {
-  return corevm::types::string(
-    std::abs(static_cast<corevm::types::int64>(handle)));
+  return string(
+    std::abs(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::array
-corevm::types::absolute::operator()(const corevm::types::array& handle)
+array
+absolute::operator()(const array& handle)
 {
-  return corevm::types::array(
-    std::abs(static_cast<corevm::types::int64>(handle)));
+  return array(
+    std::abs(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::map
-corevm::types::absolute::operator()(const corevm::types::map& handle)
+map
+absolute::operator()(const map& handle)
 {
-  return corevm::types::map(
-    std::abs(static_cast<corevm::types::int64>(handle)));
+  return map(
+    std::abs(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ public:
   template<typename T>
   T operator()(const T& handle)
   {
-    corevm::types::decimal2 value = static_cast<corevm::types::decimal2>(handle);
+    decimal2 value = static_cast<decimal2>(handle);
     return std::sqrt(value);
   }
 };
@@ -112,44 +112,44 @@ public:
 
 template<>
 inline
-corevm::types::string
-corevm::types::sqrt::operator()(const corevm::types::string& handle)
+string
+sqrt::operator()(const string& handle)
 {
-  return corevm::types::string(
-    std::sqrt(static_cast<corevm::types::int64>(handle)));
+  return string(
+    std::sqrt(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::array
-corevm::types::sqrt::operator()(const corevm::types::array& handle)
+array
+sqrt::operator()(const array& handle)
 {
-  return corevm::types::array(
-    std::sqrt(static_cast<corevm::types::int64>(handle)));
+  return array(
+    std::sqrt(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::map
-corevm::types::sqrt::operator()(const corevm::types::map& handle)
+map
+sqrt::operator()(const map& handle)
 {
-  return corevm::types::map(
-    std::sqrt(static_cast<corevm::types::int64>(handle)));
+  return map(
+    std::sqrt(static_cast<int64>(handle)));
 }
 
 // -----------------------------------------------------------------------------
 
-class truthy : public op<typed_unary_op_tag, corevm::types::boolean>
+class truthy : public op<typed_unary_op_tag, boolean>
 {
 public:
   template<typename T>
   result_type operator()(const T& handle)
   {
-    corevm::types::boolean value = static_cast<corevm::types::boolean>(handle);
+    boolean value = static_cast<boolean>(handle);
     return value;
   }
 };
@@ -158,8 +158,8 @@ public:
 
 template<>
 inline
-corevm::types::truthy::result_type
-corevm::types::truthy::operator()(const corevm::types::string& handle)
+truthy::result_type
+truthy::operator()(const string& handle)
 {
   return !handle.empty();
 }
@@ -168,8 +168,8 @@ corevm::types::truthy::operator()(const corevm::types::string& handle)
 
 template<>
 inline
-corevm::types::truthy::result_type
-corevm::types::truthy::operator()(const corevm::types::array& handle)
+truthy::result_type
+truthy::operator()(const array& handle)
 {
   return !handle.empty();
 }
@@ -178,15 +178,15 @@ corevm::types::truthy::operator()(const corevm::types::array& handle)
 
 template<>
 inline
-corevm::types::truthy::result_type
-corevm::types::truthy::operator()(const corevm::types::map& handle)
+truthy::result_type
+truthy::operator()(const map& handle)
 {
   return !handle.empty();
 }
 
 // -----------------------------------------------------------------------------
 
-class repr: public op<typed_unary_op_tag, corevm::types::string>
+class repr: public op<typed_unary_op_tag, string>
 {
 public:
   template<typename T>
@@ -201,7 +201,7 @@ public:
     // http://www.boost.org/doc/libs/1_58_0/doc/html/boost_lexical_cast/performance.html
     //
     // TODO: consider using `sprintf` here.
-    return boost::lexical_cast<corevm::types::string>(handle);
+    return boost::lexical_cast<string>(handle);
   }
 };
 
@@ -209,32 +209,32 @@ public:
 
 template<>
 inline
-corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::decimal& handle)
+repr::result_type
+repr::operator()(const decimal& handle)
 {
   char buf[20];
   snprintf(buf, sizeof(buf), "%0.6f", handle);
-  return std::move(corevm::types::string(buf));
+  return std::move(string(buf));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::decimal2& handle)
+repr::result_type
+repr::operator()(const decimal2& handle)
 {
   char buf[20];
   snprintf(buf, sizeof(buf), "%0.6f", handle);
-  return std::move(corevm::types::string(buf));
+  return std::move(string(buf));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::string& handle)
+repr::result_type
+repr::operator()(const string& handle)
 {
   return handle;
 }
@@ -243,32 +243,32 @@ corevm::types::repr::operator()(const corevm::types::string& handle)
 
 template<>
 inline
-corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::array& /* handle */)
+repr::result_type
+repr::operator()(const array& /* handle */)
 {
-  return static_cast<corevm::types::string>("<array>");
+  return static_cast<string>("<array>");
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::repr::result_type
-corevm::types::repr::operator()(const corevm::types::map& /* handle */)
+repr::result_type
+repr::operator()(const map& /* handle */)
 {
-  return static_cast<corevm::types::string>("<map>");
+  return static_cast<string>("<map>");
 }
 
 // -----------------------------------------------------------------------------
 
-class hash: public op<typed_unary_op_tag, corevm::types::int64>
+class hash: public op<typed_unary_op_tag, int64>
 {
 public:
   template<typename T>
   result_type operator()(const T& handle)
   {
     std::hash<T> hash_func;
-    corevm::types::uint64 value = hash_func(handle);
+    uint64 value = hash_func(handle);
     return static_cast<result_type>(value);
   }
 };
@@ -277,28 +277,28 @@ public:
 
 template<>
 inline
-corevm::types::hash::result_type
-corevm::types::hash::operator()(const corevm::types::string& handle)
+hash::result_type
+hash::operator()(const string& handle)
 {
   uint64_t res = 0;
 
-  std::hash<corevm::types::native_string_base> hash_func;
+  std::hash<native_string_base> hash_func;
 
   res = hash_func(handle);
 
-  return static_cast<corevm::types::int64>(res);
+  return static_cast<int64>(res);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::hash::result_type
-corevm::types::hash::operator()(const corevm::types::array& handle)
+hash::result_type
+hash::operator()(const array& handle)
 {
   uint64_t res = 0;
 
-  std::hash<corevm::types::native_array_element_type> element_hash;
+  std::hash<native_array_element_type> element_hash;
 
   for (auto itr = handle.cbegin(); itr != handle.cend(); ++itr)
   {
@@ -306,20 +306,20 @@ corevm::types::hash::operator()(const corevm::types::array& handle)
     res += element_hash(value);
   }
 
-  return static_cast<corevm::types::int64>(res);
+  return static_cast<int64>(res);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::hash::result_type
-corevm::types::hash::operator()(const corevm::types::map& handle)
+hash::result_type
+hash::operator()(const map& handle)
 {
   uint64_t res = 0;
 
-  std::hash<corevm::types::native_map_key_type> key_hash;
-  std::hash<corevm::types::native_map_mapped_type> value_hash;
+  std::hash<native_map_key_type> key_hash;
+  std::hash<native_map_mapped_type> value_hash;
 
   for (auto itr = handle.begin(); itr != handle.end(); ++itr)
   {
@@ -330,7 +330,7 @@ corevm::types::hash::operator()(const corevm::types::map& handle)
     res += value_hash(value);
   }
 
-  return static_cast<corevm::types::int64>(res);
+  return static_cast<int64>(res);
 }
 
 // -----------------------------------------------------------------------------
@@ -348,7 +348,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(corevm::types::runtime_error("Calling 'slice' operator on invalid type"));
+    THROW(runtime_error("Calling 'slice' operator on invalid type"));
   }
 
   uint32_t m_start;
@@ -374,8 +374,8 @@ private:
 
 template<>
 inline
-corevm::types::string
-corevm::types::slice::operator()(const corevm::types::string& handle) const
+string
+slice::operator()(const string& handle) const
 {
   return slice_impl(handle);
 }
@@ -384,8 +384,8 @@ corevm::types::slice::operator()(const corevm::types::string& handle) const
 
 template<>
 inline
-corevm::types::array
-corevm::types::slice::operator()(const corevm::types::array& handle) const
+array
+slice::operator()(const array& handle) const
 {
   return slice_impl(handle);
 }
@@ -404,7 +404,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(corevm::types::runtime_error("Calling 'stride' operator on invalid type"));
+    THROW(runtime_error("Calling 'stride' operator on invalid type"));
   }
 
 private:
@@ -440,8 +440,8 @@ private:
 
 template<>
 inline
-corevm::types::string
-corevm::types::stride::operator()(const corevm::types::string& handle) const
+string
+stride::operator()(const string& handle) const
 {
   return stride_impl(handle);
 }
@@ -450,8 +450,8 @@ corevm::types::stride::operator()(const corevm::types::string& handle) const
 
 template<>
 inline
-corevm::types::array
-corevm::types::stride::operator()(const corevm::types::array& handle) const
+array
+stride::operator()(const array& handle) const
 {
   return stride_impl(handle);
 }
@@ -464,7 +464,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(corevm::types::runtime_error("Calling 'reverse' operator on invalid type"));
+    THROW(runtime_error("Calling 'reverse' operator on invalid type"));
   }
 
 private:
@@ -484,8 +484,8 @@ private:
 
 template<>
 inline
-corevm::types::string
-corevm::types::reverse::operator()(const corevm::types::string& handle) const
+string
+reverse::operator()(const string& handle) const
 {
   return reverse_impl(handle);
 }
@@ -494,15 +494,15 @@ corevm::types::reverse::operator()(const corevm::types::string& handle) const
 
 template<>
 inline
-corevm::types::array
-corevm::types::reverse::operator()(const corevm::types::array& handle) const
+array
+reverse::operator()(const array& handle) const
 {
   return reverse_impl(handle);
 }
 
 // -----------------------------------------------------------------------------
 
-class cmp : public op<typed_binary_op_tag, corevm::types::int32>
+class cmp : public op<typed_binary_op_tag, int32>
 {
 public:
   template<typename DominantType, typename T, typename U>
@@ -539,9 +539,9 @@ T clamp(T val, T lower, T upper)
 
 template<>
 inline
-corevm::types::cmp::result_type
-corevm::types::cmp::operator()<corevm::types::string>(
-  const corevm::types::string& lhs, const corevm::types::string& rhs)
+cmp::result_type
+cmp::operator()<string>(
+  const string& lhs, const string& rhs)
 {
   return clamp<int32_t>(lhs.compare(rhs), -1, 1);
 }
@@ -550,22 +550,22 @@ corevm::types::cmp::operator()<corevm::types::string>(
 
 template<>
 inline
-corevm::types::cmp::result_type
-corevm::types::cmp::operator()<corevm::types::array>(
-  const corevm::types::array& /* lhs */, const corevm::types::array& /* rhs */)
+cmp::result_type
+cmp::operator()<array>(
+  const array& /* lhs */, const array& /* rhs */)
 {
-  THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
+  THROW(runtime_error("Calling 'cmp' operator on invalid type"));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::cmp::result_type
-corevm::types::cmp::operator()<corevm::types::map>(
-  const corevm::types::map& /* lhs */, const corevm::types::map& /* rhs */)
+cmp::result_type
+cmp::operator()<map>(
+  const map& /* lhs */, const map& /* rhs */)
 {
-  THROW(corevm::types::runtime_error("Calling 'cmp' operator on invalid type"));
+  THROW(runtime_error("Calling 'cmp' operator on invalid type"));
 }
 
 // -----------------------------------------------------------------------------

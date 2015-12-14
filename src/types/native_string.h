@@ -99,28 +99,25 @@ public:
 
   native_string& operator>>(const native_string&) const;
 
-  reference at(size_type n) throw(corevm::types::out_of_range_error);
+  reference at(size_type n) throw(out_of_range_error);
 
   const_reference at(size_type n) const
-    throw(corevm::types::out_of_range_error);
+    throw(out_of_range_error);
 
-  corevm::types::native_string& insert(
-    size_type pos, const corevm::types::native_string& str)
-    throw(corevm::types::out_of_range_error);
+  native_string& insert(size_type pos, const native_string& str)
+    throw(out_of_range_error);
 
-  corevm::types::native_string& insert(
-    size_type pos, size_type n, value_type c) throw(corevm::types::out_of_range_error);
+  native_string& insert(size_type pos, size_type n, value_type c)
+    throw(out_of_range_error);
 
-  corevm::types::native_string& erase(size_type pos)
-    throw(corevm::types::out_of_range_error);
+  native_string& erase(size_type pos)
+    throw(out_of_range_error);
 
-  corevm::types::native_string& erase(
-    size_type pos, size_type len) throw(corevm::types::out_of_range_error);
+  native_string& erase(
+    size_type pos, size_type len) throw(out_of_range_error);
 
-  corevm::types::native_string& replace(
-    size_type pos,
-    size_type len,
-    const corevm::types::native_string& str) throw(corevm::types::out_of_range_error);
+  native_string& replace(size_type pos, size_type len, const native_string& str)
+    throw(out_of_range_error);
 };
 
 

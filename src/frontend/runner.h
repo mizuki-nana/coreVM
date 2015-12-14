@@ -39,13 +39,13 @@ class configuration;
 class runner
 {
 public:
-  runner(const std::string&, corevm::frontend::configuration&);
+  runner(const std::string&, configuration&);
 
   int run() const noexcept;
 
 private:
   const std::string m_path;
-  corevm::frontend::configuration& m_configuration;
+  configuration& m_configuration;
 };
 
 

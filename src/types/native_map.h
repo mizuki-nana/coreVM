@@ -102,9 +102,9 @@ public:
 
   native_map& operator>=(const native_map&) const;
 
-  mapped_type& at(const key_type& k) throw(corevm::types::out_of_range_error);
+  mapped_type& at(const key_type& k) throw(out_of_range_error);
 
-  const mapped_type& at(const key_type& k) const throw(corevm::types::out_of_range_error);
+  const mapped_type& at(const key_type& k) const throw(out_of_range_error);
 };
 
 

@@ -46,8 +46,8 @@ typedef struct closure
   closure()
     :
     name(),
-    id(corevm::runtime::NONESET_CLOSURE_ID),
-    parent_id(corevm::runtime::NONESET_CLOSURE_ID),
+    id(NONESET_CLOSURE_ID),
+    parent_id(NONESET_CLOSURE_ID),
     vector(),
     locs(),
     catch_sites()
@@ -56,11 +56,11 @@ typedef struct closure
 
   closure(
     std::string name_,
-    corevm::runtime::closure_id id_,
-    corevm::runtime::closure_id parent_id_,
-    corevm::runtime::vector vector_,
-    corevm::runtime::loc_table locs_,
-    corevm::runtime::catch_site_list catch_sites_)
+    closure_id id_,
+    closure_id parent_id_,
+    vector vector_,
+    loc_table locs_,
+    catch_site_list catch_sites_)
     :
     name(name_),
     id(id_),
@@ -72,27 +72,27 @@ typedef struct closure
   }
 
   std::string name;
-  corevm::runtime::closure_id id;
-  corevm::runtime::closure_id parent_id;
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
+  closure_id id;
+  closure_id parent_id;
+  vector vector;
+  loc_table locs;
+  catch_site_list catch_sites;
 } closure;
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<corevm::runtime::closure> closure_table;
+typedef std::vector<closure> closure_table;
 
 // -----------------------------------------------------------------------------
 
 struct closure_printer
 {
-  closure_printer(const corevm::runtime::closure&, uint32_t opts);
+  closure_printer(const closure&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 
 private:
-  const corevm::runtime::closure& m_closure;
+  const closure& m_closure;
   const uint32_t m_opts;
 };
 

@@ -37,10 +37,10 @@ namespace types {
 
 template<typename T>
 T
-get_value_from_handle(corevm::types::native_type_handle& handle)
+get_value_from_handle(native_type_handle& handle)
 {
   return variant::apply_visitor(
-    corevm::types::native_type_value_visitor<T>(), handle
+    native_type_value_visitor<T>(), handle
   );
 }
 
@@ -48,7 +48,7 @@ get_value_from_handle(corevm::types::native_type_handle& handle)
 
 template<typename T>
 T&
-get_value_ref_from_handle(corevm::types::native_type_handle& handle)
+get_value_ref_from_handle(native_type_handle& handle)
 {
   return handle.get<T>();
 }
@@ -56,8 +56,8 @@ get_value_ref_from_handle(corevm::types::native_type_handle& handle)
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-corevm::types::native_type_handle
-apply_unary_visitor(corevm::types::native_type_handle& handle)
+native_type_handle
+apply_unary_visitor(native_type_handle& handle)
 {
   return variant::apply_visitor(operator_visitor(), handle);
 }
@@ -65,8 +65,8 @@ apply_unary_visitor(corevm::types::native_type_handle& handle)
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor, typename... Arguments>
-corevm::types::native_type_handle
-apply_unary_visitor_parameterized(corevm::types::native_type_handle& handle, Arguments... args)
+native_type_handle
+apply_unary_visitor_parameterized(native_type_handle& handle, Arguments... args)
 {
   return variant::apply_visitor(operator_visitor(args...), handle);
 }
@@ -74,9 +74,9 @@ apply_unary_visitor_parameterized(corevm::types::native_type_handle& handle, Arg
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-corevm::types::native_type_handle
+native_type_handle
 apply_binary_visitor(
-  corevm::types::native_type_handle& lhs, corevm::types::native_type_handle& rhs)
+  native_type_handle& lhs, native_type_handle& rhs)
 {
   return variant::apply_visitor(operator_visitor(), lhs, rhs);
 }

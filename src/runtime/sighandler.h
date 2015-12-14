@@ -32,7 +32,7 @@ namespace corevm {
 namespace runtime {
 
 
-/* Forward declaration of `corevm::runtime::process` */
+/* Forward declaration of `process` */
 class process;
 
 // -----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ class process;
 class sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&) = 0;
+  virtual void handle_signal(sig_atomic_t, process&) = 0;
 
   virtual ~sighandler();
 };
@@ -56,7 +56,7 @@ public:
 class sighandler_SIGFPE : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ public:
 class sighandler_SIGILL : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ public:
 class sighandler_SIGSEGV : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -80,7 +80,7 @@ public:
 class sighandler_SIGBUS : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ public:
 class sighandler_SIGABRT : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ public:
 class sighandler_SIGINT : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ public:
 class sighandler_SIGTERM : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ public:
 class sighandler_SIGQUIT : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ public:
 class sighandler_SIGALRM : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -140,7 +140,7 @@ public:
 class sighandler_SIGVTALRM : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ public:
 class sighandler_SIGPROF : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -162,7 +162,7 @@ public:
 class sighandler_SIGPIPE : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -170,7 +170,7 @@ public:
 class sighandler_SIGLOST : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ public:
 class sighandler_SIGXCPU : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ public:
 class sighandler_SIGXFSZ : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -200,7 +200,7 @@ public:
 class sighandler_SIGIO : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -208,7 +208,7 @@ public:
 class sighandler_SIGURG : public sighandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, corevm::runtime::process&);
+  virtual void handle_signal(sig_atomic_t, process&);
 };
 
 // -----------------------------------------------------------------------------

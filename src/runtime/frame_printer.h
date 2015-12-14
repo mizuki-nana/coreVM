@@ -38,15 +38,15 @@ namespace runtime {
 class frame_printer
 {
 public:
-  frame_printer(const runtime::frame&, uint32_t opts);
+  frame_printer(const frame&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
   template<typename V>
   void print_variables(std::ostream&,
-    const corevm::runtime::compartment*, const V& vars) const;
+    const compartment*, const V& vars) const;
 
-  const corevm::runtime::frame& m_frame;
+  const frame& m_frame;
   const uint32_t m_opts;
 };
 

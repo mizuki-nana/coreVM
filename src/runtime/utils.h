@@ -39,11 +39,11 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::compartment`. */
+/** Forward declaration of `compartment`. */
 class compartment;
 
 
-using corevm::dyobj::ntvhndl_key;
+using dyobj::ntvhndl_key;
 
 // -----------------------------------------------------------------------------
 
@@ -61,31 +61,31 @@ inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::attr_key
+dyobj::attr_key
 get_attr_key(
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key str_key,
+  compartment* compartment,
+  encoding_key str_key,
   std::string* attr_str);
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::attr_key
+dyobj::attr_key
 get_attr_key(
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key str_key);
+  compartment* compartment,
+  encoding_key str_key);
 
 // -----------------------------------------------------------------------------
 
 template<typename ObjType>
-corevm::dyobj::dyobj_id
-getattr(const ObjType& obj, corevm::dyobj::attr_key attr_key,
+dyobj::dyobj_id
+getattr(const ObjType& obj, dyobj::attr_key attr_key,
   const std::string& attr_name)
 {
-  corevm::dyobj::dyobj_id attr_id = 0;
+  dyobj::dyobj_id attr_id = 0;
 
   if (!obj.getattr(attr_key, &attr_id))
   {
-    THROW(corevm::dyobj::object_attribute_not_found_error(
+    THROW(dyobj::object_attribute_not_found_error(
       attr_key, obj.id(), attr_name));
   }
 
@@ -95,10 +95,10 @@ getattr(const ObjType& obj, corevm::dyobj::attr_key attr_key,
 // -----------------------------------------------------------------------------
 
 template<typename ObjType>
-corevm::dyobj::dyobj_id
+dyobj::dyobj_id
 getattr(const ObjType& obj, const std::string& attr_name)
 {
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+  dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_name);
 
   return getattr(obj, attr_key, attr_name);
 }
@@ -106,13 +106,13 @@ getattr(const ObjType& obj, const std::string& attr_name)
 // -----------------------------------------------------------------------------
 
 template<typename ObjType>
-corevm::dyobj::dyobj_id
+dyobj::dyobj_id
 getattr(const ObjType& obj,
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key attr_encoding_key)
+  compartment* compartment,
+  encoding_key attr_encoding_key)
 {
   std::string attr_name;
-  corevm::dyobj::attr_key attr_key = corevm::runtime::get_attr_key(
+  dyobj::attr_key attr_key = get_attr_key(
     compartment, attr_encoding_key, &attr_name);
 
   return getattr(obj, attr_key, attr_name);

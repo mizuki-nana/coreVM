@@ -28,10 +28,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame_printer::frame_printer(
-  const corevm::runtime::frame& frame,
+frame_printer::frame_printer(
+  const frame& frame,
   uint32_t opts)
   :
   m_frame(frame),
@@ -43,9 +49,9 @@ corevm::runtime::frame_printer::frame_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-corevm::runtime::frame_printer::operator()(std::ostream& ost) const
+frame_printer::operator()(std::ostream& ost) const
 {
-  const corevm::runtime::closure& closure = *(m_frame.closure_ptr());
+  const closure& closure = *(m_frame.closure_ptr());
   ost << "Frame info for: " << closure.name << std::endl;
 
   ost << std::endl;
@@ -55,7 +61,7 @@ corevm::runtime::frame_printer::operator()(std::ostream& ost) const
   // Eval stack info.
   ost << "Eval stack size: " << m_frame.eval_stack_size() << std::endl;
 
-  corevm::runtime::compartment* compartment = m_frame.compartment_ptr();
+  compartment* compartment = m_frame.compartment_ptr();
 
   // Visible variables info.
   {
@@ -73,15 +79,15 @@ corevm::runtime::frame_printer::operator()(std::ostream& ost) const
 
   // Closure info.
   {
-    corevm::runtime::closure_printer closure_printer(closure, m_opts);
+    closure_printer closure_printer(closure, m_opts);
     closure_printer(ost) << std::endl;
   }
 
   // Parent closure info.
   {
-    if (closure.parent_id != corevm::runtime::NONESET_CLOSURE_ID)
+    if (closure.parent_id != NONESET_CLOSURE_ID)
     {
-      corevm::runtime::closure* parent_closure = nullptr;
+      runtime::closure* parent_closure = nullptr;
       compartment->get_closure_by_id(closure.parent_id, &parent_closure);
 
       if (parent_closure)
@@ -102,17 +108,23 @@ corevm::runtime::frame_printer::operator()(std::ostream& ost) const
 
 template<typename V>
 void
-corevm::runtime::frame_printer::print_variables(std::ostream& ost,
-  const corevm::runtime::compartment* compartment, const V& vars) const
+frame_printer::print_variables(std::ostream& ost,
+  const compartment* compartment, const V& vars) const
 {
   ost << std::endl;
   for (const auto var : vars)
   {
     std::string var_name;
-    auto encoding_key = static_cast<corevm::runtime::encoding_key>(var);
+    auto encoding_key = static_cast<runtime::encoding_key>(var);
     compartment->get_encoding_string(encoding_key, &var_name);
     ost << "  - " << var_name << std::endl;
   }
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

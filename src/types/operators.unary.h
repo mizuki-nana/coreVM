@@ -83,8 +83,8 @@ public:
 // on bool is deprecated.
 template<>
 inline
-corevm::types::boolean
-corevm::types::increment::operator()(const corevm::types::boolean& handle)
+boolean
+increment::operator()(const boolean& handle)
 {
   uint64_t int_val = static_cast<uint64_t>(handle);
   ++int_val;
@@ -109,21 +109,21 @@ public:
 
 template<>
 inline
-corevm::types::boolean
-corevm::types::decrement::operator()(const corevm::types::boolean& /* handle */)
+boolean
+decrement::operator()(const boolean& /* handle */)
 {
-  THROW(corevm::types::invalid_operator_error("--", "boolean"));
+  THROW(invalid_operator_error("--", "boolean"));
 }
 
 // -----------------------------------------------------------------------------
 
-class logical_not : public op<typed_unary_op_tag, corevm::types::boolean>
+class logical_not : public op<typed_unary_op_tag, boolean>
 {
 public:
   template<typename T>
   result_type operator()(const T& handle)
   {
-    return corevm::types::boolean(!handle);
+    return boolean(!handle);
   }
 };
 
@@ -143,50 +143,50 @@ public:
 
 template<>
 inline
-corevm::types::decimal
-corevm::types::bitwise_not::operator()(const corevm::types::decimal& /* handle */)
+decimal
+bitwise_not::operator()(const decimal& /* handle */)
 {
-  THROW(corevm::types::invalid_operator_error("~", "decimal"));
+  THROW(invalid_operator_error("~", "decimal"));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::decimal2
-corevm::types::bitwise_not::operator()(const corevm::types::decimal2& /* handle */)
+decimal2
+bitwise_not::operator()(const decimal2& /* handle */)
 {
-  THROW(corevm::types::invalid_operator_error("~", "decimal2"));
+  THROW(invalid_operator_error("~", "decimal2"));
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::string
-corevm::types::bitwise_not::operator()(const corevm::types::string& handle)
+string
+bitwise_not::operator()(const string& handle)
 {
-  return static_cast<corevm::types::string>(~handle);
+  return static_cast<string>(~handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::array
-corevm::types::bitwise_not::operator()(const corevm::types::array& handle)
+array
+bitwise_not::operator()(const array& handle)
 {
-  return static_cast<corevm::types::array>(~handle);
+  return static_cast<array>(~handle);
 }
 
 // -----------------------------------------------------------------------------
 
 template<>
 inline
-corevm::types::map
-corevm::types::bitwise_not::operator()(const corevm::types::map& handle)
+map
+bitwise_not::operator()(const map& handle)
 {
-  return static_cast<corevm::types::map>(~handle);
+  return static_cast<map>(~handle);
 }
 
 // -----------------------------------------------------------------------------

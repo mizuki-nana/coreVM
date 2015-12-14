@@ -46,7 +46,7 @@ public:
   configuration();
 
   static configuration load_config(const std::string&)
-    throw(corevm::frontend::configuration_loading_error);
+    throw(configuration_loading_error);
 
 public:
   /* Value accessors. */

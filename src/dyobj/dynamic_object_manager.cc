@@ -23,12 +23,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dynamic_object_manager.h"
 
 
+namespace corevm {
+
+
+namespace dyobj {
+
+
 // -----------------------------------------------------------------------------
 
 /* virtual */
-corevm::dyobj::dynamic_object_manager::~dynamic_object_manager()
+dynamic_object_manager::~dynamic_object_manager()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace dyobj */
+
+
+} /* end namespace corevm */

@@ -46,8 +46,8 @@ class process;
 class process_runner : public sneaker::threading::fixed_time_interval_daemon_service
 {
 public:
-  explicit process_runner(corevm::runtime::process&);
-  process_runner(corevm::runtime::process&, uint32_t);
+  explicit process_runner(process&);
+  process_runner(process&, uint32_t);
 
   bool start();
 
@@ -56,7 +56,7 @@ protected:
 
   void gc();
 
-  corevm::runtime::process& m_process;
+  process& m_process;
 };
 
 

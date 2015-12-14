@@ -69,7 +69,7 @@ typedef struct __sequential_block_descriptor
 
 // -----------------------------------------------------------------------------
 
-class sequential_allocation_scheme : public corevm::memory::allocation_scheme
+class sequential_allocation_scheme : public allocation_scheme
 {
 public:
   explicit sequential_allocation_scheme(size_t);
@@ -104,7 +104,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class first_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
+class first_fit_allocation_scheme : public sequential_allocation_scheme
 {
 public:
   explicit first_fit_allocation_scheme(size_t total_size);
@@ -115,7 +115,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class best_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
+class best_fit_allocation_scheme : public sequential_allocation_scheme
 {
 public:
   explicit best_fit_allocation_scheme(size_t total_size);
@@ -126,7 +126,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class worst_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
+class worst_fit_allocation_scheme : public sequential_allocation_scheme
 {
 public:
   explicit worst_fit_allocation_scheme(size_t total_size);
@@ -137,7 +137,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class next_fit_allocation_scheme : public corevm::memory::sequential_allocation_scheme
+class next_fit_allocation_scheme : public sequential_allocation_scheme
 {
 public:
   explicit next_fit_allocation_scheme(size_t total_size);
@@ -152,7 +152,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class buddy_allocation_scheme : public corevm::memory::sequential_allocation_scheme
+class buddy_allocation_scheme : public sequential_allocation_scheme
 {
 public:
   explicit buddy_allocation_scheme(size_t total_size);

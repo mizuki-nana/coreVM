@@ -29,9 +29,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/format.hpp>
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::frontend::program::program()
+program::program()
   :
   sneaker::utility::cmdline_program(
     str(boost::format("coreVM v%s") % COREVM_CANONICAL_VERSION).c_str()),
@@ -54,7 +60,7 @@ corevm::frontend::program::program()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-corevm::frontend::program::~program()
+program::~program()
 {
   // Do nothing here.
 }
@@ -62,7 +68,7 @@ corevm::frontend::program::~program()
 // -----------------------------------------------------------------------------
 
 bool
-corevm::frontend::program::check_parameters() const
+program::check_parameters() const
 {
   return !m_input_path.empty() &&
     (m_format.empty() || m_format == "text" || m_format == "binary");
@@ -71,13 +77,13 @@ corevm::frontend::program::check_parameters() const
 // -----------------------------------------------------------------------------
 
 int
-corevm::frontend::program::do_run()
+program::do_run()
 {
-  corevm::frontend::configuration configuration;
+  configuration configuration;
 
   if (option_provided("config"))
   {
-    configuration = corevm::frontend::configuration::load_config(m_config_path);
+    configuration = configuration::load_config(m_config_path);
   }
 
   if (option_provided("heap-alloc-size"))
@@ -95,7 +101,13 @@ corevm::frontend::program::do_run()
     configuration.set_gc_interval(m_gc_interval);
   }
 
-  return corevm::frontend::runner(m_input_path, configuration).run();
+  return runner(m_input_path, configuration).run();
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

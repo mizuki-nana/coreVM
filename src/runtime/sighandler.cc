@@ -27,10 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
 /* virtual */
-corevm::runtime::sighandler::~sighandler()
+sighandler::~sighandler()
 {
   // Do nothing here.
 }
@@ -38,80 +44,80 @@ corevm::runtime::sighandler::~sighandler()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGFPE::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGFPE::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::execution_signal_error("SIGFPE"));
+  THROW(execution_signal_error("SIGFPE"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGILL::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGILL::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::execution_signal_error("SIGILL"));
+  THROW(execution_signal_error("SIGILL"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGSEGV::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGSEGV::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::execution_signal_error("SIGSEGV"));
+  THROW(execution_signal_error("SIGSEGV"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGBUS::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGBUS::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::execution_signal_error("SIGBUS"));
+  THROW(execution_signal_error("SIGBUS"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGABRT::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGABRT::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::termination_signal_error("SIGABRT"));
+  THROW(termination_signal_error("SIGABRT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGINT::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGINT::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::termination_signal_error("SIGINT"));
+  THROW(termination_signal_error("SIGINT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGTERM::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGTERM::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::termination_signal_error("SIGTERM"));
+  THROW(termination_signal_error("SIGTERM"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGQUIT::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGQUIT::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::termination_signal_error("SIGQUIT"));
+  THROW(termination_signal_error("SIGQUIT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGALRM::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGALRM::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
   // Do nothing.
 }
@@ -119,8 +125,8 @@ corevm::runtime::sighandler_SIGALRM::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGVTALRM::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGVTALRM::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
   // Do nothing.
 }
@@ -128,8 +134,8 @@ corevm::runtime::sighandler_SIGVTALRM::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGPROF::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGPROF::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
   // Do nothing.
 }
@@ -137,55 +143,61 @@ corevm::runtime::sighandler_SIGPROF::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGPIPE::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGPIPE::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::operation_signal_error("SIGPIPE"));
+  THROW(operation_signal_error("SIGPIPE"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGLOST::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGLOST::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::operation_signal_error("SIGLOST"));
+  THROW(operation_signal_error("SIGLOST"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGXCPU::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGXCPU::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::operation_signal_error("SIGXCPU"));
+  THROW(operation_signal_error("SIGXCPU"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGXFSZ::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGXFSZ::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::operation_signal_error("SIGXFSZ"));
+  THROW(operation_signal_error("SIGXFSZ"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGIO::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGIO::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::io_signal_error("SIGIO"));
+  THROW(io_signal_error("SIGIO"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_SIGURG::handle_signal(
-  sig_atomic_t /* signum */, corevm::runtime::process& /* process */)
+sighandler_SIGURG::handle_signal(
+  sig_atomic_t /* signum */, process& /* process */)
 {
-  THROW(corevm::runtime::io_signal_error("SIGURG"));
+  THROW(io_signal_error("SIGURG"));
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

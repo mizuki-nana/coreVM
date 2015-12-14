@@ -31,7 +31,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 
 
-corevm::types::native_array::native_array()
+namespace corevm {
+
+
+namespace types {
+
+
+// -----------------------------------------------------------------------------
+
+native_array::native_array()
   :
   native_array_base()
 {
@@ -39,7 +47,7 @@ corevm::types::native_array::native_array()
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::native_array(const native_array_base& other)
+native_array::native_array(const native_array_base& other)
   :
   native_array_base(other)
 {
@@ -47,7 +55,7 @@ corevm::types::native_array::native_array(const native_array_base& other)
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::native_array(native_array_base&& other)
+native_array::native_array(native_array_base&& other)
   :
   native_array_base(std::forward<native_array_base>(other))
 {
@@ -55,7 +63,7 @@ corevm::types::native_array::native_array(native_array_base&& other)
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::native_array(std::initializer_list<value_type> il)
+native_array::native_array(std::initializer_list<value_type> il)
   :
   native_array_base(il)
 {
@@ -63,185 +71,169 @@ corevm::types::native_array::native_array(std::initializer_list<value_type> il)
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::native_array(int8_t)
+native_array::native_array(int8_t)
   :
   native_array_base()
 {
-  THROW(corevm::types::conversion_error("int8", "array"));
+  THROW(conversion_error("int8", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::operator int8_t() const
+native_array::operator int8_t() const
 {
-  THROW(corevm::types::conversion_error("array", "int8"));
+  THROW(conversion_error("array", "int8"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator+() const
+native_array&
+native_array::operator+() const
 {
-  THROW(corevm::types::invalid_operator_error("+", "array"));
+  THROW(invalid_operator_error("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator-() const
+native_array&
+native_array::operator-() const
 {
-  THROW(corevm::types::invalid_operator_error("-", "array"));
+  THROW(invalid_operator_error("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator++() const
+native_array&
+native_array::operator++() const
 {
-  THROW(corevm::types::invalid_operator_error("++", "array"));
+  THROW(invalid_operator_error("++", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator--() const
+native_array&
+native_array::operator--() const
 {
-  THROW(corevm::types::invalid_operator_error("--", "array"));
+  THROW(invalid_operator_error("--", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator!() const
+native_array&
+native_array::operator!() const
 {
-  THROW(corevm::types::invalid_operator_error("!", "array"));
+  THROW(invalid_operator_error("!", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator~() const
+native_array&
+native_array::operator~() const
 {
-  THROW(corevm::types::invalid_operator_error("~", "array"));
+  THROW(invalid_operator_error("~", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator+(const native_array&) const
+native_array&
+native_array::operator+(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("+", "array"));
+  THROW(invalid_operator_error("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator-(const native_array&) const
+native_array&
+native_array::operator-(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("-", "array"));
+  THROW(invalid_operator_error("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator*(const native_array&) const
+native_array&
+native_array::operator*(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("*", "array"));
+  THROW(invalid_operator_error("*", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator/(const native_array&) const
+native_array&
+native_array::operator/(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("/", "array"));
+  THROW(invalid_operator_error("/", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator%(const native_array&) const
+native_array&
+native_array::operator%(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("%", "array"));
+  THROW(invalid_operator_error("%", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator&&(const native_array&) const
+native_array&
+native_array::operator&&(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("&&", "array"));
+  THROW(invalid_operator_error("&&", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator||(const native_array&) const
+native_array&
+native_array::operator||(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("||", "array"));
+  THROW(invalid_operator_error("||", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator&(const native_array&) const
+native_array&
+native_array::operator&(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("&", "array"));
+  THROW(invalid_operator_error("&", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator|(const native_array&) const
+native_array&
+native_array::operator|(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("|", "array"));
+  THROW(invalid_operator_error("|", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator^(const native_array&) const
+native_array&
+native_array::operator^(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("^", "array"));
+  THROW(invalid_operator_error("^", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator<<(const native_array&) const
+native_array&
+native_array::operator<<(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error("<<", "array"));
+  THROW(invalid_operator_error("<<", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array&
-corevm::types::native_array::operator>>(const native_array&) const
+native_array&
+native_array::operator>>(const native_array&) const
 {
-  THROW(corevm::types::invalid_operator_error(">>", "array"));
+  THROW(invalid_operator_error(">>", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_array::reference
-corevm::types::native_array::at(size_type n)
-  throw(corevm::types::out_of_range_error)
-{
-  try
-  {
-    return native_array_base::at(n);
-  }
-  catch (const std::out_of_range&)
-  {
-    THROW(corevm::types::out_of_range_error("Array index out of range"));
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-corevm::types::native_array::const_reference
-corevm::types::native_array::at(size_type n) const
-  throw(corevm::types::out_of_range_error)
+native_array::reference
+native_array::at(size_type n)
+  throw(out_of_range_error)
 {
   try
   {
@@ -249,19 +241,35 @@ corevm::types::native_array::at(size_type n) const
   }
   catch (const std::out_of_range&)
   {
-    THROW(corevm::types::out_of_range_error("Array index out of range"));
+    THROW(out_of_range_error("Array index out of range"));
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+native_array::const_reference
+native_array::at(size_type n) const
+  throw(out_of_range_error)
+{
+  try
+  {
+    return native_array_base::at(n);
+  }
+  catch (const std::out_of_range&)
+  {
+    THROW(out_of_range_error("Array index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::types::native_array::erase(size_t n)
-  throw (corevm::types::out_of_range_error)
+native_array::erase(size_t n)
+  throw (out_of_range_error)
 {
   if (n >= this->size())
   {
-    THROW(corevm::types::out_of_range_error("Array index out of range"));
+    THROW(out_of_range_error("Array index out of range"));
   }
 
   auto itr = begin();
@@ -270,3 +278,9 @@ corevm::types::native_array::erase(size_t n)
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace types */
+
+
+} /* end namespace corevm */

@@ -27,16 +27,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
 const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::invocation_ctx::invocation_ctx(
-  const corevm::runtime::closure_ctx& ctx,
-  corevm::runtime::compartment* compartment_ptr,
-  corevm::runtime::closure* closure_ptr)
+invocation_ctx::invocation_ctx(
+  const runtime::closure_ctx& ctx,
+  compartment* compartment_ptr,
+  closure* closure_ptr)
   :
   m_closure_ctx(ctx),
   m_compartment_ptr(compartment_ptr),
@@ -50,40 +56,40 @@ corevm::runtime::invocation_ctx::invocation_ctx(
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::closure_ctx&
-corevm::runtime::invocation_ctx::closure_ctx() const
+const closure_ctx&
+invocation_ctx::closure_ctx() const
 {
   return m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::compartment*
-corevm::runtime::invocation_ctx::compartment_ptr() const
+compartment*
+invocation_ctx::compartment_ptr() const
 {
   return m_compartment_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::closure*
-corevm::runtime::invocation_ctx::closure_ptr() const
+closure*
+invocation_ctx::closure_ptr() const
 {
   return m_closure_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::param_list_type&
-corevm::runtime::invocation_ctx::params_list() const
+const param_list_type&
+invocation_ctx::params_list() const
 {
   return m_params_list;
 }
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::param_value_map_type&
-corevm::runtime::invocation_ctx::param_value_map() const
+const param_value_map_type&
+invocation_ctx::param_value_map() const
 {
   return m_param_value_map;
 }
@@ -91,7 +97,7 @@ corevm::runtime::invocation_ctx::param_value_map() const
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::invocation_ctx::has_params() const
+invocation_ctx::has_params() const
 {
   return m_params_list_pop_index < m_params_list.size();
 }
@@ -99,20 +105,20 @@ corevm::runtime::invocation_ctx::has_params() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::invocation_ctx::put_param(const corevm::dyobj::dyobj_id& id)
+invocation_ctx::put_param(const dyobj::dyobj_id& id)
 {
   m_params_list.push_back(id);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
-corevm::runtime::invocation_ctx::pop_param()
-  throw(corevm::runtime::missing_parameter_error)
+dyobj::dyobj_id
+invocation_ctx::pop_param()
+  throw(missing_parameter_error)
 {
   if (m_params_list_pop_index >= m_params_list.size())
   {
-    THROW(corevm::runtime::missing_parameter_error());
+    THROW(missing_parameter_error());
   }
 
   return m_params_list[m_params_list_pop_index++];
@@ -121,7 +127,7 @@ corevm::runtime::invocation_ctx::pop_param()
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::invocation_ctx::has_param_value_pairs() const
+invocation_ctx::has_param_value_pairs() const
 {
   return !m_param_value_map.empty();
 }
@@ -129,8 +135,8 @@ corevm::runtime::invocation_ctx::has_param_value_pairs() const
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::invocation_ctx::has_param_value_pair_with_key(
-  const corevm::runtime::variable_key& key) const
+invocation_ctx::has_param_value_pair_with_key(
+  const variable_key& key) const
 {
   return m_param_value_map.find(key) != m_param_value_map.end();
 }
@@ -138,27 +144,27 @@ corevm::runtime::invocation_ctx::has_param_value_pair_with_key(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::invocation_ctx::put_param_value_pair(
-  const corevm::runtime::variable_key& key, const corevm::dyobj::dyobj_id& id)
+invocation_ctx::put_param_value_pair(
+  const variable_key& key, const dyobj::dyobj_id& id)
 {
   m_param_value_map[key] = id;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
-corevm::runtime::invocation_ctx::pop_param_value_pair(
-  const corevm::runtime::variable_key& key)
-  throw(corevm::runtime::missing_parameter_error)
+dyobj::dyobj_id
+invocation_ctx::pop_param_value_pair(
+  const variable_key& key)
+  throw(missing_parameter_error)
 {
   auto itr = m_param_value_map.find(key);
 
   if (itr == m_param_value_map.end())
   {
-    THROW(corevm::runtime::missing_parameter_error());
+    THROW(missing_parameter_error());
   }
 
-  corevm::dyobj::dyobj_id id = itr->second;
+  dyobj::dyobj_id id = itr->second;
 
   m_param_value_map.erase(itr);
 
@@ -167,16 +173,16 @@ corevm::runtime::invocation_ctx::pop_param_value_pair(
 
 // -----------------------------------------------------------------------------
 
-std::vector<corevm::runtime::variable_key>
-corevm::runtime::invocation_ctx::param_value_pair_keys() const
+std::vector<variable_key>
+invocation_ctx::param_value_pair_keys() const
 {
-  std::vector<corevm::runtime::variable_key> keys;
+  std::vector<variable_key> keys;
   keys.reserve(m_param_value_map.size());
 
   for (auto itr = m_param_value_map.begin();
        itr != m_param_value_map.end(); ++itr)
   {
-    corevm::runtime::variable_key key = itr->first;
+    variable_key key = itr->first;
     keys.push_back(key);
   }
 
@@ -184,3 +190,9 @@ corevm::runtime::invocation_ctx::param_value_pair_keys() const
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

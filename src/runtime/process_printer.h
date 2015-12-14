@@ -37,11 +37,11 @@ namespace runtime {
 class process_printer
 {
 public:
-  process_printer(const corevm::runtime::process&, uint32_t opts);
+  process_printer(const process&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  const corevm::runtime::process& m_process;
+  const process& m_process;
   const uint32_t m_opts;
 };
 

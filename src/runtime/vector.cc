@@ -34,11 +34,11 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 std::ostream& operator<<(
-  std::ostream& ost, const corevm::runtime::vector& vector)
+  std::ostream& ost, const vector& vector)
 {
   for (auto itr = vector.cbegin(); itr != vector.cend(); ++itr)
   {
-    const corevm::runtime::instr& instr = *itr;
+    const instr& instr = *itr;
     ost << instr << std::endl;
   }
 

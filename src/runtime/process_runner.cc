@@ -33,18 +33,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
 const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process_runner::process_runner(
-  corevm::runtime::process& process)
+process_runner::process_runner(
+  process& process)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     COREVM_DEFAULT_GC_INTERVAL,
-    corevm::runtime::process_runner::tick_handler,
+    process_runner::tick_handler,
     false,
     COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
@@ -55,13 +61,13 @@ corevm::runtime::process_runner::process_runner(
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process_runner::process_runner(
-  corevm::runtime::process& process,
+process_runner::process_runner(
+  process& process,
   uint32_t gc_interval)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     gc_interval,
-    corevm::runtime::process_runner::tick_handler,
+    process_runner::tick_handler,
     false,
     COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
@@ -73,7 +79,7 @@ corevm::runtime::process_runner::process_runner(
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process_runner::start()
+process_runner::start()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
@@ -88,14 +94,14 @@ corevm::runtime::process_runner::start()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process_runner::tick_handler(void* arg)
+process_runner::tick_handler(void* arg)
 {
 #if __DEBUG__
   ASSERT(arg);
 #endif
 
-  corevm::runtime::process_runner* runner =
-    static_cast<corevm::runtime::process_runner*>(arg);
+  process_runner* runner =
+    static_cast<process_runner*>(arg);
 
   runner->gc();
 }
@@ -103,11 +109,18 @@ corevm::runtime::process_runner::tick_handler(void* arg)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process_runner::gc()
+process_runner::gc()
 {
   m_process.maybe_gc();
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */
+
 
 #endif /* COREVM_247_COMPLETED */

@@ -52,13 +52,13 @@ using sneaker::allocator::object_traits;
 class native_types_pool
 {
 public:
-  typedef corevm::types::native_type_handle value_type;
+  typedef types::native_type_handle value_type;
 
   template<typename T>
-  class allocator : public corevm::memory::allocation_policy<T, corevm::memory::block_allocator<value_type>>, public object_traits<T>
+  class allocator : public memory::allocation_policy<T, memory::block_allocator<value_type>>, public object_traits<T>
   {
     private:
-      using AllocationPolicyType = typename corevm::memory::allocation_policy<T, corevm::memory::block_allocator<value_type>>;
+      using AllocationPolicyType = typename memory::allocation_policy<T, memory::block_allocator<value_type>>;
 
     public:
       using value_type      = typename AllocationPolicyType::value_type;
@@ -78,7 +78,7 @@ public:
 
   typedef allocator<value_type> allocator_type;
 
-  using container_type = typename corevm::memory::object_container<corevm::types::native_type_handle, allocator_type>;
+  using container_type = typename memory::object_container<types::native_type_handle, allocator_type>;
 
   typedef value_type& reference;
   typedef value_type* pointer;
@@ -98,19 +98,19 @@ public:
 
   size_type total_size() const;
 
-  reference at(const corevm::dyobj::ntvhndl_key&)
-    throw(corevm::runtime::native_type_handle_not_found_error);
+  reference at(const dyobj::ntvhndl_key&)
+    throw(native_type_handle_not_found_error);
 
-  corevm::dyobj::ntvhndl_key create()
-    throw(corevm::runtime::native_type_handle_insertion_error);
+  dyobj::ntvhndl_key create()
+    throw(native_type_handle_insertion_error);
 
-  corevm::dyobj::ntvhndl_key create(corevm::types::native_type_handle& hndl)
-    throw(corevm::runtime::native_type_handle_insertion_error);
+  dyobj::ntvhndl_key create(types::native_type_handle& hndl)
+    throw(native_type_handle_insertion_error);
 
-  void erase(const corevm::dyobj::ntvhndl_key&)
-    throw(corevm::runtime::native_type_handle_not_found_error);
+  void erase(const dyobj::ntvhndl_key&)
+    throw(native_type_handle_not_found_error);
 
-  friend std::ostream& operator<<(std::ostream&, const corevm::runtime::native_types_pool&);
+  friend std::ostream& operator<<(std::ostream&, const native_types_pool&);
 
 private:
   container_type m_container;

@@ -87,7 +87,7 @@ using _MyType = typename corevm::memory::allocation_policy<T, CoreAllocatorType>
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
+allocation_policy<T, CoreAllocatorType>::allocation_policy(
   uint64_t total_size)
   :
   m_allocator(total_size)
@@ -98,7 +98,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
+allocation_policy<T, CoreAllocatorType>::allocation_policy(
   allocation_policy const& other)
   :
   m_allocator(other.total_size())
@@ -110,7 +110,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::allocation_policy(
 
 /* virtual */
 template<typename T, typename CoreAllocatorType>
-corevm::memory::allocation_policy<T, CoreAllocatorType>::~allocation_policy()
+allocation_policy<T, CoreAllocatorType>::~allocation_policy()
 {
   // Do nothing here.
 }
@@ -119,7 +119,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::~allocation_policy()
 
 template<typename T, typename CoreAllocatorType>
 typename _MyType<T, CoreAllocatorType>::pointer
-corevm::memory::allocation_policy<T, CoreAllocatorType>::allocate(
+allocation_policy<T, CoreAllocatorType>::allocate(
   typename allocation_policy<T, CoreAllocatorType>::size_type n,
   typename std::allocator<void>::const_pointer
 )
@@ -132,7 +132,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::allocate(
 
 template<typename T, typename CoreAllocatorType>
 void
-corevm::memory::allocation_policy<T, CoreAllocatorType>::deallocate(
+allocation_policy<T, CoreAllocatorType>::deallocate(
   typename allocation_policy<T, CoreAllocatorType>::pointer p,
   typename allocation_policy<T, CoreAllocatorType>::size_type
 )
@@ -149,7 +149,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::deallocate(
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, CoreAllocatorType>::base_addr() const
+allocation_policy<T, CoreAllocatorType>::base_addr() const
 {
   return m_allocator.base_addr();
 }
@@ -158,7 +158,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::base_addr() const
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, CoreAllocatorType>::total_size() const
+allocation_policy<T, CoreAllocatorType>::total_size() const
 {
   return m_allocator.total_size();
 }
@@ -167,7 +167,7 @@ corevm::memory::allocation_policy<T, CoreAllocatorType>::total_size() const
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-corevm::memory::allocation_policy<T, CoreAllocatorType>::max_size() const
+allocation_policy<T, CoreAllocatorType>::max_size() const
 {
   return total_size() / sizeof(T);
 }

@@ -25,13 +25,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <functional>
 
 
+namespace corevm {
+
+
+namespace dyobj {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::attr_key
-corevm::dyobj::hash_attr_str(const std::string& attr_str)
+attr_key
+hash_attr_str(const std::string& attr_str)
 {
   static std::hash<std::string> hasher;
-  return static_cast<corevm::dyobj::attr_key>(hasher(attr_str));
+  return static_cast<attr_key>(hasher(attr_str));
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace dyobj */
+
+
+} /* end namespace corevm */

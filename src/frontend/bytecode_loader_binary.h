@@ -31,12 +31,13 @@ namespace corevm {
 
 namespace frontend {
 
+
 // -----------------------------------------------------------------------------
 
 class bytecode_loader_binary : public bytecode_loader
 {
 public:
-  virtual void load(const std::string&, corevm::runtime::process&);
+  virtual void load(const std::string&, runtime::process&);
 };
 
 // -----------------------------------------------------------------------------

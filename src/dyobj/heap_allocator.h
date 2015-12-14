@@ -41,10 +41,10 @@ using sneaker::allocator::object_traits;
 
 
 template<typename T, typename CoreAllocatorType>
-class heap_allocator : public corevm::memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
+class heap_allocator : public memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
 {
 private:
-  using AllocationPolicyType = corevm::memory::allocation_policy<T, CoreAllocatorType>;
+  using AllocationPolicyType = memory::allocation_policy<T, CoreAllocatorType>;
 
 public:
   using value_type      = typename AllocationPolicyType::value_type;
@@ -68,7 +68,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator()
+heap_allocator<T, CoreAllocatorType>::heap_allocator()
   :
   AllocationPolicyType(COREVM_DEFAULT_HEAP_SIZE)
 {
@@ -78,7 +78,7 @@ corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator(
+heap_allocator<T, CoreAllocatorType>::heap_allocator(
   uint64_t total_size)
   :
   AllocationPolicyType(total_size)
@@ -89,7 +89,7 @@ corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::dyobj::heap_allocator<T, CoreAllocatorType>::~heap_allocator()
+heap_allocator<T, CoreAllocatorType>::~heap_allocator()
 {
   // Do nothing here.
 }
@@ -97,7 +97,7 @@ corevm::dyobj::heap_allocator<T, CoreAllocatorType>::~heap_allocator()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-corevm::dyobj::heap_allocator<T, CoreAllocatorType>::heap_allocator(
+heap_allocator<T, CoreAllocatorType>::heap_allocator(
   heap_allocator<T, CoreAllocatorType> const& other)
   :
   AllocationPolicyType(other.total_size())
@@ -114,8 +114,8 @@ bool operator==(
   heap_allocator<T, CoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs),
-    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(rhs)
+    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs),
+    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(rhs)
   ) && lhs.total_size() == rhs.total_size();
 }
 
@@ -128,8 +128,8 @@ bool operator==(
   heap_allocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs),
-    static_cast<corevm::memory::allocation_policy<U, OtherCoreAllocatorType>>(rhs)
+    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs),
+    static_cast<memory::allocation_policy<U, OtherCoreAllocatorType>>(rhs)
   );
 }
 
@@ -141,7 +141,7 @@ bool operator==(
   heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
-    static_cast<corevm::memory::allocation_policy<T, CoreAllocatorType>>(lhs), rhs
+    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs), rhs
   );
 }
 

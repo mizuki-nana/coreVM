@@ -35,12 +35,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <avro/DataFile.hh>
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::bytecode_loader_binary::load(
-  const std::string& path,
-  corevm::runtime::process& process)
+bytecode_loader_binary::load(const std::string& path, runtime::process& process)
 {
   // `avro::DataFileReader` documentation:
   // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
@@ -51,13 +55,13 @@ corevm::frontend::bytecode_loader_binary::load(
   // Load source path.
   const std::string& source_path = bytecode_data.path;
 
-  corevm::runtime::compartment compartment(source_path);
+  runtime::compartment compartment(source_path);
 
   // Load encoding map.
   compartment.set_encoding_map(bytecode_data.encoding_map);
 
   // Load closures.
-  corevm::runtime::closure_table closure_table;
+  runtime::closure_table closure_table;
 
   for (auto itr = bytecode_data.__MAIN__.cbegin();
        itr != bytecode_data.__MAIN__.cend();
@@ -69,18 +73,18 @@ corevm::frontend::bytecode_loader_binary::load(
     const std::string& name = closure.name;
 
     // ID
-    const auto id = static_cast<corevm::runtime::closure_id>(closure.__id__);
+    const auto id = static_cast<runtime::closure_id>(closure.__id__);
 
     // Parent ID
-    corevm::runtime::closure_id parent_id = corevm::runtime::NONESET_CLOSURE_ID;
+    runtime::closure_id parent_id = runtime::NONESET_CLOSURE_ID;
     if (!closure.__parent__.is_null())
     {
       parent_id =
-        static_cast<corevm::runtime::closure_id>(closure.__parent__.get_long());
+        static_cast<runtime::closure_id>(closure.__parent__.get_long());
     }
 
     // Vector
-    corevm::runtime::vector vector;
+    runtime::vector vector;
 
     for (auto vector_itr = closure.__vector__.cbegin();
          vector_itr != closure.__vector__.cend();
@@ -88,15 +92,15 @@ corevm::frontend::bytecode_loader_binary::load(
     {
       const auto& instr = *vector_itr;
 
-      const auto code = static_cast<corevm::runtime::instr_code>(instr.code);
-      const auto oprd1 = static_cast<corevm::runtime::instr_oprd>(instr.oprd1);
-      const auto oprd2 = static_cast<corevm::runtime::instr_oprd>(instr.oprd2);
+      const auto code = static_cast<runtime::instr_code>(instr.code);
+      const auto oprd1 = static_cast<runtime::instr_oprd>(instr.oprd1);
+      const auto oprd2 = static_cast<runtime::instr_oprd>(instr.oprd2);
 
       vector.emplace_back(code, oprd1, oprd2);
     }
 
     // Locs
-    corevm::runtime::loc_table locs_table;
+    runtime::loc_table locs_table;
     if (!closure.locs.is_null())
     {
       const auto& locs_array = closure.locs.get_array();
@@ -110,14 +114,14 @@ corevm::frontend::bytecode_loader_binary::load(
         const auto lineno = static_cast<int32_t>(loc_record.lineno);
         const auto col_offset = static_cast<int32_t>(loc_record.col_offset);
 
-        corevm::runtime::loc_info loc(lineno, col_offset);
+        runtime::loc_info loc(lineno, col_offset);
 
         locs_table[index] = loc;
       }
     }
 
     // Catch sites
-    corevm::runtime::catch_site_list catch_sites;
+    runtime::catch_site_list catch_sites;
     if (!closure.catch_sites.is_null())
     {
       const auto& catch_sites_array = closure.catch_sites.get_array();
@@ -151,3 +155,9 @@ corevm::frontend::bytecode_loader_binary::load(
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

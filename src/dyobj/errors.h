@@ -94,7 +94,7 @@ public:
   }
 
   object_attribute_not_found_error(
-    corevm::dyobj::attr_key attr_key_, corevm::dyobj::dyobj_id id_)
+    attr_key attr_key_, dyobj_id id_)
     :
     corevm::dyobj::runtime_error(
       str(boost::format(
@@ -104,8 +104,8 @@ public:
   {
   }
 
-  object_attribute_not_found_error(corevm::dyobj::attr_key attr_key_,
-    corevm::dyobj::dyobj_id id_, const std::string& attr_name)
+  object_attribute_not_found_error(attr_key attr_key_,
+    dyobj_id id_, const std::string& attr_name)
     :
     corevm::dyobj::runtime_error(
       str(boost::format(
@@ -115,8 +115,8 @@ public:
   {
   }
 
-  corevm::dyobj::attr_key attr_key;
-  corevm::dyobj::dyobj_id id;
+  attr_key attr_key;
+  dyobj_id id;
 };
 
 // -----------------------------------------------------------------------------

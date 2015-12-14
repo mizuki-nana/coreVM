@@ -40,10 +40,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using namespace sneaker::json;
 
+
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
 const std::string
-corevm::frontend::signal_vector_loader::schema() const
+signal_vector_loader::schema() const
 {
   static const std::string unformatted_def(
     "{"
@@ -144,7 +151,7 @@ corevm::frontend::signal_vector_loader::schema() const
 
 // -----------------------------------------------------------------------------
 
-corevm::frontend::signal_vector_loader::signal_vector_loader(
+signal_vector_loader::signal_vector_loader(
   const std::string& path)
   :
   m_path(path)
@@ -155,8 +162,8 @@ corevm::frontend::signal_vector_loader::signal_vector_loader(
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
-  throw(corevm::frontend::file_loading_error)
+signal_vector_loader::load(runtime::process& process)
+  throw(file_loading_error)
 {
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
@@ -169,7 +176,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   }
   catch (const std::ios_base::failure& ex)
   {
-    THROW(corevm::frontend::file_loading_error(
+    THROW(file_loading_error(
       str(
         boost::format(
           "Error while loading file \"%s\": %s"
@@ -188,7 +195,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    THROW(corevm::frontend::file_loading_error(
+    THROW(file_loading_error(
       str(
         boost::format(
           "Error while parsing file \"%s\": %s"
@@ -207,11 +214,11 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
-    corevm::runtime::vector vector =
-      corevm::frontend::get_vector_from_json(signal_json);
+    runtime::vector vector =
+      get_vector_from_json(signal_json);
 
     sig_atomic_t sig =
-      corevm::runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
+      runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
 
     process.set_sig_vector(sig, vector);
   }
@@ -220,7 +227,7 @@ corevm::frontend::signal_vector_loader::load(corevm::runtime::process& process)
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
+signal_vector_loader::validate(const JSON& content_json)
 {
   const JSON schema = sneaker::json::parse(this->schema());
 
@@ -230,7 +237,7 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    THROW(corevm::frontend::file_loading_error(
+    THROW(file_loading_error(
       str(
         boost::format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )
@@ -239,3 +246,9 @@ corevm::frontend::signal_vector_loader::validate(const JSON& content_json)
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

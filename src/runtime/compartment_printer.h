@@ -37,11 +37,11 @@ namespace runtime {
 class compartment_printer
 {
 public:
-  compartment_printer(const corevm::runtime::compartment&, uint32_t opts);
+  compartment_printer(const compartment&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  const corevm::runtime::compartment& m_compartment;
+  const compartment& m_compartment;
   const uint32_t m_opts;
 };
 

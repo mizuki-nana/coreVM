@@ -36,6 +36,8 @@ namespace corevm {
 namespace frontend {
 
 
+// -----------------------------------------------------------------------------
+
 class runtime_error : public corevm::runtime_error
 {
 public:
@@ -52,32 +54,32 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class file_loading_error : public corevm::frontend::runtime_error
+class file_loading_error : public runtime_error
 {
 public:
   explicit file_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
+    runtime_error(what_arg)
   {
   }
 
   explicit file_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
+    runtime_error(what_arg)
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class configuration_loading_error : public corevm::frontend::runtime_error
+class configuration_loading_error : public runtime_error
 {
 public:
   explicit configuration_loading_error(const std::string& what_arg):
-    corevm::frontend::runtime_error(what_arg)
+    runtime_error(what_arg)
   {
   }
 
   explicit configuration_loading_error(const char* what_arg):
-    corevm::frontend::runtime_error(what_arg)
+    runtime_error(what_arg)
   {
   }
 };

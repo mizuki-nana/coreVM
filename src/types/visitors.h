@@ -51,10 +51,10 @@ typedef native_type_unary_visitor<sqrt>  native_type_sqrt_visitor;
 
 /** Typed unary operator visitors */
 
-typedef native_type_typed_unary_visitor<repr, corevm::types::string> native_type_repr_visitor;
-typedef native_type_typed_unary_visitor<logical_not, corevm::types::boolean> native_type_logical_not_visitor;
-typedef native_type_typed_unary_visitor<truthy, corevm::types::boolean> native_type_truthy_visitor;
-typedef native_type_typed_unary_visitor<hash, corevm::types::int64> native_type_hash_visitor;
+typedef native_type_typed_unary_visitor<repr, string> native_type_repr_visitor;
+typedef native_type_typed_unary_visitor<logical_not, boolean> native_type_logical_not_visitor;
+typedef native_type_typed_unary_visitor<truthy, boolean> native_type_truthy_visitor;
+typedef native_type_typed_unary_visitor<hash, int64> native_type_hash_visitor;
 
 // -----------------------------------------------------------------------------
 
@@ -78,25 +78,25 @@ typedef native_type_binary_visitor<pow_op> native_type_pow_visitor;
 
 /** Typed cast binary operator visitors */
 
-typedef native_type_typed_cast_binary_visitor<bitwise_and, corevm::types::int64> native_type_bitwise_and_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_or, corevm::types::int64> native_type_bitwise_or_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_xor, corevm::types::int64> native_type_bitwise_xor_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_left_shift, corevm::types::int64> native_type_bitwise_left_shift_visitor;
-typedef native_type_typed_cast_binary_visitor<bitwise_right_shift, corevm::types::int64> native_type_bitwise_right_shift_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_and, int64> native_type_bitwise_and_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_or, int64> native_type_bitwise_or_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_xor, int64> native_type_bitwise_xor_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_left_shift, int64> native_type_bitwise_left_shift_visitor;
+typedef native_type_typed_cast_binary_visitor<bitwise_right_shift, int64> native_type_bitwise_right_shift_visitor;
 
 // -----------------------------------------------------------------------------
 
 /** Typed binary operator visitors */
 
-typedef native_type_typed_binary_visitor<logical_and, corevm::types::boolean> native_type_logical_and_visitor;
-typedef native_type_typed_binary_visitor<logical_or, corevm::types::boolean> native_type_logical_or_visitor;
-typedef native_type_typed_binary_visitor<eq, corevm::types::boolean> native_type_eq_visitor;
-typedef native_type_typed_binary_visitor<neq, corevm::types::boolean> native_type_neq_visitor;
-typedef native_type_typed_binary_visitor<gt, corevm::types::boolean> native_type_gt_visitor;
-typedef native_type_typed_binary_visitor<lt, corevm::types::boolean> native_type_lt_visitor;
-typedef native_type_typed_binary_visitor<gte, corevm::types::boolean> native_type_gte_visitor;
-typedef native_type_typed_binary_visitor<lte, corevm::types::boolean> native_type_lte_visitor;
-typedef native_type_typed_binary_visitor<cmp, corevm::types::int32> native_type_cmp_visitor;
+typedef native_type_typed_binary_visitor<logical_and, boolean> native_type_logical_and_visitor;
+typedef native_type_typed_binary_visitor<logical_or, boolean> native_type_logical_or_visitor;
+typedef native_type_typed_binary_visitor<eq, boolean> native_type_eq_visitor;
+typedef native_type_typed_binary_visitor<neq, boolean> native_type_neq_visitor;
+typedef native_type_typed_binary_visitor<gt, boolean> native_type_gt_visitor;
+typedef native_type_typed_binary_visitor<lt, boolean> native_type_lt_visitor;
+typedef native_type_typed_binary_visitor<gte, boolean> native_type_gte_visitor;
+typedef native_type_typed_binary_visitor<lte, boolean> native_type_lte_visitor;
+typedef native_type_typed_binary_visitor<cmp, int32> native_type_cmp_visitor;
 
 // -----------------------------------------------------------------------------
 

@@ -40,7 +40,7 @@ class bytecode_loader
 {
 public:
   virtual void load(
-    const std::string&, corevm::runtime::process&) = 0;
+    const std::string&, runtime::process&) = 0;
 
   virtual ~bytecode_loader();
 };

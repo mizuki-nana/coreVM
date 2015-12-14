@@ -43,7 +43,7 @@ typedef struct instr_info
 
 struct instr_set_info
 {
-  static const corevm::runtime::instr_info instr_infos[INSTR_CODE_MAX];
+  static const instr_info instr_infos[INSTR_CODE_MAX];
 };
 
 // -----------------------------------------------------------------------------

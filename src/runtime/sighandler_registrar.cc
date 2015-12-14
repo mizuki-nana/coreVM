@@ -29,13 +29,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process* corevm::runtime::sighandler_registrar::process = nullptr;
+process* sighandler_registrar::process = nullptr;
 
 // -----------------------------------------------------------------------------
 
-bool corevm::runtime::sighandler_registrar::sig_raised = false;
+bool sighandler_registrar::sig_raised = false;
 
 // -----------------------------------------------------------------------------
 
@@ -44,7 +50,7 @@ static sigjmp_buf _env;
 // -----------------------------------------------------------------------------
 
 sigjmp_buf&
-corevm::runtime::sighandler_registrar::get_sigjmp_env()
+sighandler_registrar::get_sigjmp_env()
 {
   return _env;
 }
@@ -56,8 +62,8 @@ corevm::runtime::sighandler_registrar::get_sigjmp_env()
   #pragma clang diagnostic ignored "-Wc99-extensions"
 #endif
 
-const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
-  corevm::runtime::sighandler_registrar::handler_map
+const std::unordered_map<sig_atomic_t, sighandler_wrapper> \
+  sighandler_registrar::handler_map
 {
 
   /* --------------- Arithmetic and execution signals ---------------------- */
@@ -100,7 +106,7 @@ const std::unordered_map<sig_atomic_t, corevm::runtime::sighandler_wrapper> \
 // -----------------------------------------------------------------------------
 
 const std::unordered_map<std::string, sig_atomic_t> \
-  corevm::runtime::sighandler_registrar::sig_value_to_str_map
+  sighandler_registrar::sig_value_to_str_map
 {
 
   /* ---------------- Arithmetic and execution signals ---------------------- */
@@ -139,40 +145,40 @@ const std::unordered_map<std::string, sig_atomic_t> \
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::sighandler_registrar::is_sig_raised()
+sighandler_registrar::is_sig_raised()
 {
-  return corevm::runtime::sighandler_registrar::sig_raised;
+  return sighandler_registrar::sig_raised;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_registrar::clear_sig_raised()
+sighandler_registrar::clear_sig_raised()
 {
-  corevm::runtime::sighandler_registrar::sig_raised = false;
+  sighandler_registrar::sig_raised = false;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_registrar::init(corevm::runtime::process* process_)
+sighandler_registrar::init(runtime::process* process_)
 {
-  corevm::runtime::sighandler_registrar::process = process_;
+  sighandler_registrar::process = process_;
 
   for (
-    auto itr = corevm::runtime::sighandler_registrar::handler_map.begin();
-    itr != corevm::runtime::sighandler_registrar::handler_map.end();
+    auto itr = sighandler_registrar::handler_map.begin();
+    itr != sighandler_registrar::handler_map.end();
     ++itr)
   {
     sig_atomic_t sig = itr->first;
-    signal(sig, corevm::runtime::sighandler_registrar::handle_signal);
+    signal(sig, sighandler_registrar::handle_signal);
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_registrar::ignore(sig_atomic_t sig)
+sighandler_registrar::ignore(sig_atomic_t sig)
 {
   signal(sig, SIG_IGN);
 }
@@ -180,30 +186,36 @@ corevm::runtime::sighandler_registrar::ignore(sig_atomic_t sig)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::sighandler_registrar::handle_signal(int signum)
+sighandler_registrar::handle_signal(int signum)
 {
-  auto itr = corevm::runtime::sighandler_registrar::handler_map.find(signum);
+  auto itr = sighandler_registrar::handler_map.find(signum);
 
-  corevm::runtime::sighandler *handler =
-    itr != corevm::runtime::sighandler_registrar::handler_map.end() ?
+  sighandler *handler =
+    itr != sighandler_registrar::handler_map.end() ?
     itr->second.handler.get() : nullptr;
 
-  corevm::runtime::sighandler_registrar::process->handle_signal(
+  sighandler_registrar::process->handle_signal(
     signum,
     handler
   );
 
-  corevm::runtime::sighandler_registrar::sig_raised = true;
+  sighandler_registrar::sig_raised = true;
 
-  siglongjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
+  siglongjmp(sighandler_registrar::get_sigjmp_env(), 1);
 }
 
 // -----------------------------------------------------------------------------
 
 sig_atomic_t
-corevm::runtime::sighandler_registrar::get_sig_value_from_string(const std::string& str)
+sighandler_registrar::get_sig_value_from_string(const std::string& str)
 {
   return sig_value_to_str_map.at(str);
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

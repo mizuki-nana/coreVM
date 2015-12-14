@@ -23,12 +23,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "allocation_scheme.h"
 
 
+namespace corevm {
+
+
+namespace memory {
+
+
 // -----------------------------------------------------------------------------
 
 /* virtual */
-corevm::memory::allocation_scheme::~allocation_scheme()
+allocation_scheme::~allocation_scheme()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace memory */
+
+
+} /* end namespace corevm */

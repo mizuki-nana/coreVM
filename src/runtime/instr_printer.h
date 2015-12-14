@@ -37,11 +37,11 @@ namespace runtime {
 class instr_printer
 {
 public:
-  instr_printer(const corevm::runtime::instr&, uint32_t opts);
+  instr_printer(const instr&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  const corevm::runtime::instr& m_instr;
+  const instr& m_instr;
   const uint32_t m_opts;
 };
 

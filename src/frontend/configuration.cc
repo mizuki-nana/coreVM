@@ -39,9 +39,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using sneaker::json::JSON;
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
-const std::string corevm::frontend::configuration::schema =
+const std::string configuration::schema =
   "{"
     "\"type\": \"object\","
     "\"properties\": {"
@@ -62,7 +68,7 @@ const std::string corevm::frontend::configuration::schema =
 
 // -----------------------------------------------------------------------------
 
-corevm::frontend::configuration::configuration()
+configuration::configuration()
   :
   m_heap_alloc_size(0u),
   m_pool_alloc_size(0u),
@@ -74,7 +80,7 @@ corevm::frontend::configuration::configuration()
 // -----------------------------------------------------------------------------
 
 uint64_t
-corevm::frontend::configuration::heap_alloc_size() const
+configuration::heap_alloc_size() const
 {
   return m_heap_alloc_size;
 }
@@ -82,7 +88,7 @@ corevm::frontend::configuration::heap_alloc_size() const
 // -----------------------------------------------------------------------------
 
 uint64_t
-corevm::frontend::configuration::pool_alloc_size() const
+configuration::pool_alloc_size() const
 {
   return m_pool_alloc_size;
 }
@@ -90,7 +96,7 @@ corevm::frontend::configuration::pool_alloc_size() const
 // -----------------------------------------------------------------------------
 
 uint32_t
-corevm::frontend::configuration::gc_interval() const
+configuration::gc_interval() const
 {
   return m_gc_interval;
 }
@@ -98,7 +104,7 @@ corevm::frontend::configuration::gc_interval() const
 // -----------------------------------------------------------------------------
 
 uint8_t
-corevm::frontend::configuration::gc_flag() const
+configuration::gc_flag() const
 {
   return m_gc_flag;
 }
@@ -106,7 +112,7 @@ corevm::frontend::configuration::gc_flag() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
+configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
   m_heap_alloc_size = heap_alloc_size;
 }
@@ -114,7 +120,7 @@ corevm::frontend::configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
+configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
 {
   m_pool_alloc_size = pool_alloc_size;
 }
@@ -122,7 +128,7 @@ corevm::frontend::configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_gc_interval(uint32_t gc_interval)
+configuration::set_gc_interval(uint32_t gc_interval)
 {
   m_gc_interval = gc_interval;
 }
@@ -130,16 +136,16 @@ corevm::frontend::configuration::set_gc_interval(uint32_t gc_interval)
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_gc_flag(uint8_t gc_flag)
+configuration::set_gc_flag(uint8_t gc_flag)
 {
   m_gc_flag = gc_flag;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::frontend::configuration
-corevm::frontend::configuration::load_config(const std::string& path)
-  throw(corevm::frontend::configuration_loading_error)
+configuration
+configuration::load_config(const std::string& path)
+  throw(configuration_loading_error)
 {
   std::ifstream fs(path, std::ios::binary);
   std::stringstream buffer;
@@ -152,7 +158,7 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const std::ios_base::failure& ex)
   {
-    THROW(corevm::frontend::configuration_loading_error(
+    THROW(configuration_loading_error(
       str(
         boost::format(
           "Error loading configuration file %s: %s"
@@ -171,7 +177,7 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    THROW(corevm::frontend::configuration_loading_error(
+    THROW(configuration_loading_error(
       str(
         boost::format(
           "Error parsing configuration file %s: %s"
@@ -188,7 +194,7 @@ corevm::frontend::configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    THROW(corevm::frontend::configuration_loading_error(
+    THROW(configuration_loading_error(
       str(
         boost::format(
           "Invalid configuration file %s: %s"
@@ -197,7 +203,7 @@ corevm::frontend::configuration::load_config(const std::string& path)
     ));
   }
 
-  corevm::frontend::configuration configuration;
+  configuration configuration;
 
   set_values(configuration, content_json);
 
@@ -207,8 +213,8 @@ corevm::frontend::configuration::load_config(const std::string& path)
 // -----------------------------------------------------------------------------
 
 void
-corevm::frontend::configuration::set_values(
-  corevm::frontend::configuration& configuration, const JSON& config_json)
+configuration::set_values(
+  configuration& configuration, const JSON& config_json)
 {
 #if __DEBUG__
   ASSERT(config_json.is_object());
@@ -254,3 +260,9 @@ corevm::frontend::configuration::set_values(
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

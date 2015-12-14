@@ -37,13 +37,13 @@ namespace runtime {
 
 static_assert(
   std::numeric_limits<closure_table::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::closure_id>::max(),
+  std::numeric_limits<closure_id>::max(),
   "Closure ID incompatibility");
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::closure_printer::closure_printer(
-  const corevm::runtime::closure& closure,
+closure_printer::closure_printer(
+  const closure& closure,
   uint32_t opts)
   :
   m_closure(closure),
@@ -54,7 +54,7 @@ corevm::runtime::closure_printer::closure_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-corevm::runtime::closure_printer::operator()(std::ostream& ost) const
+closure_printer::operator()(std::ostream& ost) const
 {
   ost << "Closure:" << std::endl;
   ost << std::endl;
@@ -65,7 +65,7 @@ corevm::runtime::closure_printer::operator()(std::ostream& ost) const
 
   for (const auto& instr : m_closure.vector)
   {
-    corevm::runtime::instr_printer instr_printer(instr, m_opts);
+    instr_printer instr_printer(instr, m_opts);
     instr_printer(ost) << std::endl;
   }
 

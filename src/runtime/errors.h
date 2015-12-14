@@ -157,7 +157,7 @@ public:
 class object_deletion_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit object_deletion_error(const corevm::dyobj::dyobj_id id):
+  explicit object_deletion_error(const dyobj::dyobj_id id):
     corevm::runtime::runtime_error(
       str(format("Cannot delete object %#x") % id))
   {
@@ -169,7 +169,7 @@ public:
 class invocation_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit invocation_error(const corevm::dyobj::dyobj_id id):
+  explicit invocation_error(const dyobj::dyobj_id id):
     corevm::runtime::runtime_error(
       str(format("Cannot invoke call on object %#x") % id))
   {
@@ -223,7 +223,7 @@ public:
 class encoding_string_not_found_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit encoding_string_not_found_error(corevm::runtime::encoding_key key):
+  explicit encoding_string_not_found_error(encoding_key key):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot find encoding string for key: %llu") % key)
     )
@@ -236,7 +236,7 @@ public:
 class compartment_not_found_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit compartment_not_found_error(corevm::runtime::compartment_id id):
+  explicit compartment_not_found_error(compartment_id id):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot find compartment %llu") % id)
     )
@@ -249,7 +249,7 @@ public:
 class closure_not_found_error : public corevm::runtime::runtime_error
 {
 public:
-  explicit closure_not_found_error(corevm::runtime::closure_id id):
+  explicit closure_not_found_error(closure_id id):
     corevm::runtime::runtime_error(
       str(boost::format("Cannot find closure %lld") % id)
     )

@@ -50,10 +50,15 @@ static_assert(
 } /* anonymous namespace */
 
 
+namespace corevm {
+
+
+namespace runtime {
+
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::native_types_pool::native_types_pool()
+native_types_pool::native_types_pool()
   :
   m_container(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
 {
@@ -62,7 +67,7 @@ corevm::runtime::native_types_pool::native_types_pool()
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::native_types_pool::native_types_pool(uint64_t total_size)
+native_types_pool::native_types_pool(uint64_t total_size)
   :
   m_container(total_size)
 {
@@ -72,7 +77,7 @@ corevm::runtime::native_types_pool::native_types_pool(uint64_t total_size)
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-corevm::runtime::native_types_pool::size() const
+native_types_pool::size() const
 {
   return m_container.size();
 }
@@ -80,7 +85,7 @@ corevm::runtime::native_types_pool::size() const
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-corevm::runtime::native_types_pool::max_size() const
+native_types_pool::max_size() const
 {
   return m_container.max_size();
 }
@@ -88,7 +93,7 @@ corevm::runtime::native_types_pool::max_size() const
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-corevm::runtime::native_types_pool::total_size() const
+native_types_pool::total_size() const
 {
   return m_container.total_size();
 }
@@ -96,17 +101,17 @@ corevm::runtime::native_types_pool::total_size() const
 // -----------------------------------------------------------------------------
 
 _MyType::reference
-corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
-  throw(corevm::runtime::native_type_handle_not_found_error)
+native_types_pool::at(const dyobj::ntvhndl_key& key)
+  throw(native_type_handle_not_found_error)
 {
-  void* raw_ptr = corevm::runtime::ntvhndl_key_to_ptr(key);
+  void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
 
   ptr = m_container[ptr];
 
   if (ptr == nullptr)
   {
-    THROW(corevm::runtime::native_type_handle_not_found_error());
+    THROW(native_type_handle_not_found_error());
   }
 
   return *ptr;
@@ -114,52 +119,52 @@ corevm::runtime::native_types_pool::at(const corevm::dyobj::ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::ntvhndl_key
-corevm::runtime::native_types_pool::create()
-  throw(corevm::runtime::native_type_handle_insertion_error)
+dyobj::ntvhndl_key
+native_types_pool::create()
+  throw(native_type_handle_insertion_error)
 {
   auto ptr = m_container.create();
 
   if (ptr == nullptr)
   {
-    THROW(corevm::runtime::native_type_handle_insertion_error(
+    THROW(native_type_handle_insertion_error(
       "insufficient memory to store native type handle"));
   }
 
-  return corevm::runtime::ptr_to_ntvhndl_key(ptr);
+  return ptr_to_ntvhndl_key(ptr);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::ntvhndl_key
-corevm::runtime::native_types_pool::create(corevm::types::native_type_handle& hndl)
-  throw(corevm::runtime::native_type_handle_insertion_error)
+dyobj::ntvhndl_key
+native_types_pool::create(types::native_type_handle& hndl)
+  throw(native_type_handle_insertion_error)
 {
   auto ptr = m_container.create(hndl);
 
   if (ptr == nullptr)
   {
-    THROW(corevm::runtime::native_type_handle_insertion_error(
+    THROW(native_type_handle_insertion_error(
       "insufficient memory to store native type handle"));
   }
 
-  return corevm::runtime::ptr_to_ntvhndl_key(ptr);
+  return ptr_to_ntvhndl_key(ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
-  throw(corevm::runtime::native_type_handle_not_found_error)
+native_types_pool::erase(const dyobj::ntvhndl_key& key)
+  throw(native_type_handle_not_found_error)
 {
-  void* raw_ptr = corevm::runtime::ntvhndl_key_to_ptr(key);
+  void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
 
   ptr = m_container[ptr];
 
   if (ptr == nullptr)
   {
-    THROW(corevm::runtime::native_type_handle_not_found_error());
+    THROW(native_type_handle_not_found_error());
   }
 
   m_container.destroy(ptr);
@@ -167,14 +172,8 @@ corevm::runtime::native_types_pool::erase(const corevm::dyobj::ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-namespace corevm {
-
-
-namespace runtime {
-
-
 std::ostream&
-operator<<(std::ostream& ost, const corevm::runtime::native_types_pool& pool)
+operator<<(std::ostream& ost, const native_types_pool& pool)
 {
   ost << "Native types pool: ";
   ost << pool.size() << "/" << pool.max_size();
@@ -190,10 +189,10 @@ operator<<(std::ostream& ost, const corevm::runtime::native_types_pool& pool)
   return ost;
 }
 
+// -----------------------------------------------------------------------------
+
 
 } /* end namespace runtime */
 
 
 } /* end namespace corevm */
-
-// -----------------------------------------------------------------------------

@@ -64,8 +64,8 @@ namespace runtime {
 namespace internal {
 
 
-using _GarbageCollectorType = typename corevm::gc::garbage_collector<
-  corevm::runtime::process::garbage_collection_scheme>;
+using _GarbageCollectorType = typename gc::garbage_collector<
+  process::garbage_collection_scheme>;
 
 // -----------------------------------------------------------------------------
 
@@ -77,13 +77,13 @@ private:
 public:
   virtual void operator()(const dynamic_object_type& obj);
 
-  const std::vector<corevm::dyobj::ntvhndl_key>& list() const
+  const std::vector<dyobj::ntvhndl_key>& list() const
   {
     return m_ntvhndl_keys;
   }
 
 private:
-  std::vector<corevm::dyobj::ntvhndl_key> m_ntvhndl_keys;
+  std::vector<dyobj::ntvhndl_key> m_ntvhndl_keys;
 };
 
 // -----------------------------------------------------------------------------
@@ -99,12 +99,6 @@ ntvhndl_collector_gc_callback::operator()(const dynamic_object_type& obj)
 
 
 } /* end namespace internal */
-
-
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
 
 
 // -----------------------------------------------------------------------------
@@ -130,56 +124,56 @@ const size_t DEFAULT_VECTOR_CAPACITY = 1 << 14;
 // -----------------------------------------------------------------------------
 
 static_assert(
-  std::numeric_limits<corevm::runtime::vector::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::instr_addr>::max(),
+  std::numeric_limits<runtime::vector::size_type>::max() >=
+  std::numeric_limits<instr_addr>::max(),
   "Vector size incompatibility"
 );
 
 // -----------------------------------------------------------------------------
 
 static_assert(
-  std::numeric_limits<std::vector<corevm::runtime::compartment>::size_type>::max() >=
-  std::numeric_limits<corevm::runtime::compartment_id>::max(),
+  std::numeric_limits<std::vector<compartment>::size_type>::max() >=
+  std::numeric_limits<compartment_id>::max(),
   "Compartment ID incompatibility"
 );
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::options::options()
+process::options::options()
   :
-  heap_alloc_size(corevm::dyobj::COREVM_DEFAULT_HEAP_SIZE),
-  pool_alloc_size(corevm::runtime::COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
+  heap_alloc_size(dyobj::COREVM_DEFAULT_HEAP_SIZE),
+  pool_alloc_size(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
   gc_flag(0)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
-corevm::runtime::process::create_dyobj()
+dyobj::dyobj_id
+process::create_dyobj()
 {
   return m_dynamic_object_heap.create_dyobj();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::dynamic_object_type*
-corevm::runtime::process::create_dyobjs(size_t n)
+process::dynamic_object_type*
+process::create_dyobjs(size_t n)
 {
   return m_dynamic_object_heap.create_dyobjs(n);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::dynamic_object_type&
-corevm::runtime::process::get_dyobj(corevm::dyobj::dyobj_id id)
+process::dynamic_object_type&
+process::get_dyobj(dyobj::dyobj_id id)
 {
   return m_dynamic_object_heap.at(id);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::process()
+process::process()
   :
   m_pause_exec(false),
   m_gc_flag(0),
@@ -197,7 +191,7 @@ corevm::runtime::process::process()
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::process(
+process::process(
   uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
   m_pause_exec(false),
@@ -216,7 +210,7 @@ corevm::runtime::process::process(
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::process(const process::options& options)
+process::process(const process::options& options)
   :
   m_pause_exec(false),
   m_gc_flag(options.gc_flag),
@@ -235,14 +229,14 @@ corevm::runtime::process::process(const process::options& options)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::init()
+process::init()
 {
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::~process()
+process::~process()
 {
   // Do nothing here.
 }
@@ -250,7 +244,7 @@ corevm::runtime::process::~process()
 // -----------------------------------------------------------------------------
 
 uint64_t
-corevm::runtime::process::call_stack_size() const
+process::call_stack_size() const
 {
   return m_call_stack.size();
 }
@@ -258,20 +252,20 @@ corevm::runtime::process::call_stack_size() const
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::has_frame() const
+process::has_frame() const
 {
   return !(this->m_call_stack.empty());
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame&
-corevm::runtime::process::top_frame()
-  throw(corevm::runtime::frame_not_found_error)
+frame&
+process::top_frame()
+  throw(frame_not_found_error)
 {
   if (m_call_stack.empty())
   {
-    THROW(corevm::runtime::frame_not_found_error());
+    THROW(frame_not_found_error());
   }
 
   return m_call_stack.back();
@@ -280,20 +274,20 @@ corevm::runtime::process::top_frame()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::top_frame(corevm::runtime::frame** frame_ptr)
+process::top_frame(frame** frame_ptr)
 {
   *frame_ptr = &m_call_stack.back();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame&
-corevm::runtime::process::top_nth_frame(size_t n)
-  throw(corevm::runtime::frame_not_found_error)
+frame&
+process::top_nth_frame(size_t n)
+  throw(frame_not_found_error)
 {
   if (n >= m_call_stack.size())
   {
-    THROW(corevm::runtime::frame_not_found_error());
+    THROW(frame_not_found_error());
   }
 
   return m_call_stack[m_call_stack.size() - n - 1];
@@ -302,18 +296,18 @@ corevm::runtime::process::top_nth_frame(size_t n)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::pop_frame()
-  throw(corevm::runtime::frame_not_found_error)
+process::pop_frame()
+  throw(frame_not_found_error)
 {
-  corevm::runtime::frame& frame = this->top_frame();
+  frame& frame = this->top_frame();
 
-  std::list<corevm::dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
-  std::list<corevm::dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
+  std::list<dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
+  std::list<dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
 
   std::for_each(
     visible_objs.begin(),
     visible_objs.end(),
-    [this](corevm::dyobj::dyobj_id id) {
+    [this](dyobj::dyobj_id id) {
       auto &obj = this->get_dyobj(id);
       obj.manager().on_exit();
     }
@@ -322,7 +316,7 @@ corevm::runtime::process::pop_frame()
   std::for_each(
     invisible_objs.begin(),
     invisible_objs.end(),
-    [this](corevm::dyobj::dyobj_id id) {
+    [this](dyobj::dyobj_id id) {
       auto &obj = this->get_dyobj(id);
       obj.manager().on_exit();
     }
@@ -330,7 +324,7 @@ corevm::runtime::process::pop_frame()
 
   set_pc(frame.return_addr());
 
-  const corevm::runtime::closure* closure_ptr = frame.closure_ptr();
+  const closure* closure_ptr = frame.closure_ptr();
 
   auto begin_itr = m_instrs.begin() + pc() + 1;
   auto end_itr = begin_itr;
@@ -346,7 +340,7 @@ corevm::runtime::process::pop_frame()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::check_call_stack_capacity()
+process::check_call_stack_capacity()
 {
   // NOTE: Pointers of frames on the call stack are used to set as parents
   // on frames. If memories for frames are ever relocated here, we need to
@@ -365,7 +359,7 @@ corevm::runtime::process::check_call_stack_capacity()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
+process::push_frame(frame& frame)
 {
   check_call_stack_capacity();
   m_call_stack.push_back(frame);
@@ -376,10 +370,10 @@ corevm::runtime::process::push_frame(corevm::runtime::frame& frame)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::emplace_frame(
-  const corevm::runtime::closure_ctx& ctx,
-  corevm::runtime::compartment* compartment_ptr,
-  corevm::runtime::closure* closure_ptr)
+process::emplace_frame(
+  const closure_ctx& ctx,
+  compartment* compartment_ptr,
+  closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -392,10 +386,10 @@ corevm::runtime::process::emplace_frame(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::emplace_frame(
-  const corevm::runtime::closure_ctx& ctx,
-  corevm::runtime::compartment* compartment_ptr,
-  corevm::runtime::closure* closure_ptr, corevm::runtime::instr_addr return_addr)
+process::emplace_frame(
+  const closure_ctx& ctx,
+  compartment* compartment_ptr,
+  closure* closure_ptr, instr_addr return_addr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -408,11 +402,11 @@ corevm::runtime::process::emplace_frame(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::set_parent_for_top_frame()
+process::set_parent_for_top_frame()
 {
-  corevm::runtime::frame* frame = &m_call_stack.back();
-  corevm::runtime::frame* parent =
-    corevm::runtime::process::find_parent_frame_in_process(frame, *this);
+  frame* frame = &m_call_stack.back();
+  runtime::frame* parent =
+    process::find_parent_frame_in_process(frame, *this);
 
   frame->set_parent(parent);
 }
@@ -420,16 +414,16 @@ corevm::runtime::process::set_parent_for_top_frame()
 // -----------------------------------------------------------------------------
 
 uint64_t
-corevm::runtime::process::stack_size() const
+process::stack_size() const
 {
   return m_dyobj_stack.size();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::invocation_ctx&
-corevm::runtime::process::top_invocation_ctx()
-  throw(corevm::runtime::invocation_ctx_not_found_error)
+invocation_ctx&
+process::top_invocation_ctx()
+  throw(invocation_ctx_not_found_error)
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -442,8 +436,8 @@ corevm::runtime::process::top_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::top_invocation_ctx(
-  corevm::runtime::invocation_ctx** invk_ctx_ptr)
+process::top_invocation_ctx(
+  invocation_ctx** invk_ctx_ptr)
 {
   *invk_ctx_ptr = &m_invocation_ctx_stack.back();
 }
@@ -451,7 +445,7 @@ corevm::runtime::process::top_invocation_ctx(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::check_invk_ctx_stack_capacity()
+process::check_invk_ctx_stack_capacity()
 {
   size_t current_size = m_invocation_ctx_stack.size();
   if (current_size == m_invocation_ctx_stack.capacity())
@@ -467,7 +461,7 @@ corevm::runtime::process::check_invk_ctx_stack_capacity()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::push_invocation_ctx(const invocation_ctx& invk_ctx)
+process::push_invocation_ctx(const invocation_ctx& invk_ctx)
 {
   check_invk_ctx_stack_capacity();
   m_invocation_ctx_stack.push_back(invk_ctx);
@@ -476,10 +470,10 @@ corevm::runtime::process::push_invocation_ctx(const invocation_ctx& invk_ctx)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::emplace_invocation_ctx(
-  const corevm::runtime::closure_ctx& ctx,
-  corevm::runtime::compartment* compartment_ptr,
-  corevm::runtime::closure* closure_ptr)
+process::emplace_invocation_ctx(
+  const closure_ctx& ctx,
+  compartment* compartment_ptr,
+  closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -490,8 +484,8 @@ corevm::runtime::process::emplace_invocation_ctx(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::pop_invocation_ctx()
-  throw(corevm::runtime::invocation_ctx_not_found_error)
+process::pop_invocation_ctx()
+  throw(invocation_ctx_not_found_error)
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -503,13 +497,13 @@ corevm::runtime::process::pop_invocation_ctx()
 
 // -----------------------------------------------------------------------------
 
-const corevm::dyobj::dyobj_id&
-corevm::runtime::process::top_stack()
-  throw(corevm::runtime::object_stack_empty_error)
+const dyobj::dyobj_id&
+process::top_stack()
+  throw(object_stack_empty_error)
 {
   if (m_dyobj_stack.empty())
   {
-    THROW(corevm::runtime::object_stack_empty_error());
+    THROW(object_stack_empty_error());
   }
 
   return m_dyobj_stack.back();
@@ -518,7 +512,7 @@ corevm::runtime::process::top_stack()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
+process::push_stack(dyobj::dyobj_id& id)
 {
   size_t current_size = m_dyobj_stack.size();
   if (current_size == m_dyobj_stack.capacity())
@@ -534,16 +528,16 @@ corevm::runtime::process::push_stack(corevm::dyobj::dyobj_id& id)
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::dyobj_id
-corevm::runtime::process::pop_stack()
-  throw(corevm::runtime::object_stack_empty_error)
+dyobj::dyobj_id
+process::pop_stack()
+  throw(object_stack_empty_error)
 {
   if (m_dyobj_stack.empty())
   {
-    THROW(corevm::runtime::object_stack_empty_error());
+    THROW(object_stack_empty_error());
   }
 
-  corevm::dyobj::dyobj_id id = m_dyobj_stack.back();
+  dyobj::dyobj_id id = m_dyobj_stack.back();
   m_dyobj_stack.pop_back();
   return id;
 }
@@ -551,11 +545,11 @@ corevm::runtime::process::pop_stack()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::swap_stack()
+process::swap_stack()
 {
   if (m_dyobj_stack.size() < 2)
   {
-    THROW(corevm::runtime::invalid_operation_error(
+    THROW(invalid_operation_error(
       "Cannot swap top of object stack"));
   }
 
@@ -566,32 +560,32 @@ corevm::runtime::process::swap_stack()
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::dynamic_object_heap_type::size_type
-corevm::runtime::process::heap_size() const
+process::dynamic_object_heap_type::size_type
+process::heap_size() const
 {
   return m_dynamic_object_heap.size();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::dynamic_object_heap_type::size_type
-corevm::runtime::process::max_heap_size() const
+process::dynamic_object_heap_type::size_type
+process::max_heap_size() const
 {
   return m_dynamic_object_heap.max_size();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::native_types_pool_type::size_type
-corevm::runtime::process::ntvhndl_pool_size() const
+process::native_types_pool_type::size_type
+process::ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.size();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process::native_types_pool_type::size_type
-corevm::runtime::process::max_ntvhndl_pool_size() const
+process::native_types_pool_type::size_type
+process::max_ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.max_size();
 }
@@ -599,13 +593,13 @@ corevm::runtime::process::max_ntvhndl_pool_size() const
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
+process::has_ntvhndl(dyobj::ntvhndl_key& key)
 {
   try
   {
     m_ntvhndl_pool.at(key);
   }
-  catch(const corevm::runtime::native_type_handle_not_found_error&)
+  catch(const native_type_handle_not_found_error&)
   {
     return false;
   }
@@ -615,18 +609,18 @@ corevm::runtime::process::has_ntvhndl(corevm::dyobj::ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-corevm::types::native_type_handle&
-corevm::runtime::process::get_ntvhndl(corevm::dyobj::ntvhndl_key key)
-  throw(corevm::runtime::native_type_handle_not_found_error)
+types::native_type_handle&
+process::get_ntvhndl(dyobj::ntvhndl_key key)
+  throw(native_type_handle_not_found_error)
 {
   return m_ntvhndl_pool.at(key);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::ntvhndl_key
-corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl)
-  throw(corevm::runtime::native_type_handle_insertion_error)
+dyobj::ntvhndl_key
+process::insert_ntvhndl(types::native_type_handle& hndl)
+  throw(native_type_handle_insertion_error)
 {
   return m_ntvhndl_pool.create(hndl);
 }
@@ -634,10 +628,10 @@ corevm::runtime::process::insert_ntvhndl(corevm::types::native_type_handle& hndl
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key key)
-  throw(corevm::runtime::native_type_handle_deletion_error)
+process::erase_ntvhndl(dyobj::ntvhndl_key key)
+  throw(native_type_handle_deletion_error)
 {
-  if (key == corevm::dyobj::NONESET_NTVHNDL_KEY)
+  if (key == dyobj::NONESET_NTVHNDL_KEY)
   {
     return;
   }
@@ -646,16 +640,16 @@ corevm::runtime::process::erase_ntvhndl(corevm::dyobj::ntvhndl_key key)
   {
     m_ntvhndl_pool.erase(key);
   }
-  catch(const corevm::runtime::native_type_handle_not_found_error)
+  catch(const native_type_handle_not_found_error)
   {
-    THROW(corevm::runtime::native_type_handle_deletion_error());
+    THROW(native_type_handle_deletion_error());
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::pause_exec()
+process::pause_exec()
 {
   m_pause_exec = true;
 }
@@ -663,7 +657,7 @@ corevm::runtime::process::pause_exec()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::resume_exec()
+process::resume_exec()
 {
   m_pause_exec = false;
 }
@@ -671,7 +665,7 @@ corevm::runtime::process::resume_exec()
 // -----------------------------------------------------------------------------
 
 inline bool
-corevm::runtime::process::is_valid_pc() const
+process::is_valid_pc() const
 {
   return (uint64_t)m_pc < m_instrs.size();
 }
@@ -679,7 +673,7 @@ corevm::runtime::process::is_valid_pc() const
 // -----------------------------------------------------------------------------
 
 inline bool
-corevm::runtime::process::can_execute()
+process::can_execute()
 {
   return is_valid_pc();
 }
@@ -687,15 +681,15 @@ corevm::runtime::process::can_execute()
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::pre_start()
+process::pre_start()
 {
   if (m_compartments.empty())
   {
     return false;
   }
 
-  corevm::runtime::closure* closure = nullptr;
-  corevm::runtime::compartment* compartment = &m_compartments.front();
+  closure* closure = nullptr;
+  compartment* compartment = &m_compartments.front();
 
   bool res = compartment->get_starting_closure(&closure);
 
@@ -710,7 +704,7 @@ corevm::runtime::process::pre_start()
     m_instrs.reserve(DEFAULT_VECTOR_CAPACITY);
     append_vector(closure->vector);
 
-    corevm::runtime::closure_ctx ctx(0, closure->id);
+    closure_ctx ctx(0, closure->id);
 
     m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
     emplace_frame(ctx, compartment, closure, m_pc);
@@ -729,7 +723,7 @@ corevm::runtime::process::pre_start()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::start()
+process::start()
 {
   if (!pre_start())
   {
@@ -741,14 +735,14 @@ corevm::runtime::process::start()
   ASSERT(!m_invocation_ctx_stack.empty());
 #endif
 
-  corevm::runtime::frame* frame = &m_call_stack.back();
-  corevm::runtime::invocation_ctx* invk_ctx = &m_invocation_ctx_stack.back();
+  frame* frame = &m_call_stack.back();
+  invocation_ctx* invk_ctx = &m_invocation_ctx_stack.back();
 
-  corevm::runtime::frame** frame_ptr = &frame;
-  corevm::runtime::invocation_ctx** invk_ctx_ptr = &invk_ctx;
+  runtime::frame** frame_ptr = &frame;
+  invocation_ctx** invk_ctx_ptr = &invk_ctx;
 
 #if __MEASURE_INSTRS__
-  std::array<corevm::runtime::instr_measurement, corevm::runtime::INSTR_CODE_MAX> measurements;
+  std::array<instr_measurement, INSTR_CODE_MAX> measurements;
   boost::timer::cpu_timer t;
 #endif
 
@@ -756,10 +750,10 @@ corevm::runtime::process::start()
   {
     while (m_pause_exec) {}
 
-    const corevm::runtime::instr& instr = m_instrs[static_cast<size_t>(m_pc)];
+    const instr& instr = m_instrs[static_cast<size_t>(m_pc)];
 
     auto& handler =
-      corevm::runtime::instr_handler_meta::instr_handlers[instr.code].handler;
+      instr_handler_meta::instr_handlers[instr.code].handler;
 
 #if __MEASURE_INSTRS__
     t.start();
@@ -778,9 +772,9 @@ corevm::runtime::process::start()
     /**
      * TODO: [COREVM-246] Enable support for signal handling mechanism
      *
-    sigsetjmp(corevm::runtime::sighandler_registrar::get_sigjmp_env(), 1);
+    sigsetjmp(sighandler_registrar::get_sigjmp_env(), 1);
 
-    if (!corevm::runtime::sighandler_registrar::is_sig_raised())
+    if (!sighandler_registrar::is_sig_raised())
     {
       handler->execute(instr, *this);
     }
@@ -792,7 +786,7 @@ corevm::runtime::process::start()
       }
     }
 
-    corevm::runtime::sighandler_registrar::clear_sig_raised();
+    sighandler_registrar::clear_sig_raised();
     *
     **/
 
@@ -801,14 +795,14 @@ corevm::runtime::process::start()
   } /* end `while (can_execute())` */
 
 #if __MEASURE_INSTRS__
-  corevm::runtime::pretty_print_measurements(measurements);
+  pretty_print_measurements(measurements);
 #endif
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::maybe_gc()
+process::maybe_gc()
 {
   if (should_gc())
   {
@@ -819,20 +813,20 @@ corevm::runtime::process::maybe_gc()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::do_gc()
+process::do_gc()
 {
   this->pause_exec();
 
-  corevm::gc::garbage_collector<garbage_collection_scheme> garbage_collector(
+  gc::garbage_collector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
 
-  corevm::runtime::internal::ntvhndl_collector_gc_callback callback;
+  internal::ntvhndl_collector_gc_callback callback;
   garbage_collector.gc(&callback);
 
   std::for_each(
     callback.list().begin(),
     callback.list().end(),
-    [&](corevm::dyobj::ntvhndl_key key) {
+    [&](dyobj::ntvhndl_key key) {
       this->erase_ntvhndl(key);
     }
   );
@@ -843,15 +837,15 @@ corevm::runtime::process::do_gc()
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::set_gc_flag(uint8_t gc_flag)
+process::set_gc_flag(uint8_t gc_flag)
 {
   m_gc_flag = gc_flag;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::instr_addr
-corevm::runtime::process::pc() const
+instr_addr
+process::pc() const
 {
   return m_pc;
 }
@@ -859,12 +853,12 @@ corevm::runtime::process::pc() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
-  throw(corevm::runtime::invalid_instr_addr_error)
+process::set_pc(const instr_addr addr)
+  throw(invalid_instr_addr_error)
 {
   if ( (uint64_t)addr >= m_instrs.size() )
   {
-    THROW(corevm::runtime::invalid_instr_addr_error());
+    THROW(invalid_instr_addr_error());
   }
 
   m_pc = addr;
@@ -873,7 +867,7 @@ corevm::runtime::process::set_pc(const corevm::runtime::instr_addr addr)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
+process::append_vector(const vector& vector)
 {
   // Inserts the vector at the very end of the instr array.
   std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
@@ -882,7 +876,7 @@ corevm::runtime::process::append_vector(const corevm::runtime::vector& vector)
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::insert_vector(const corevm::runtime::vector& vector)
+process::insert_vector(const vector& vector)
 {
   // We want to insert the vector right after the current pc().
   //
@@ -894,13 +888,13 @@ corevm::runtime::process::insert_vector(const corevm::runtime::vector& vector)
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::get_frame_by_closure_ctx(
-  corevm::runtime::closure_ctx& closure_ctx, corevm::runtime::frame** frame_ptr)
+process::get_frame_by_closure_ctx(
+  closure_ctx& closure_ctx, frame** frame_ptr)
 {
   auto itr = std::find_if(
     m_call_stack.begin(),
     m_call_stack.end(),
-    [&closure_ctx](const corevm::runtime::frame& frame) -> bool {
+    [&closure_ctx](const frame& frame) -> bool {
       return frame.closure_ctx() == closure_ctx;
     }
   );
@@ -917,7 +911,7 @@ corevm::runtime::process::get_frame_by_closure_ctx(
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::process::should_gc() const
+process::should_gc() const
 {
   const size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
 
@@ -926,11 +920,11 @@ corevm::runtime::process::should_gc() const
     // Add 1 to bit since the gc flag values are 0 index based.
     if (is_bit_set(m_gc_flag + 1, static_cast<char>(i)))
     {
-      corevm::runtime::gc_rule_meta::gc_bitfields bit =
-        static_cast<corevm::runtime::gc_rule_meta::gc_bitfields>(i);
+      gc_rule_meta::gc_bitfields bit =
+        static_cast<gc_rule_meta::gc_bitfields>(i);
 
-      const corevm::runtime::gc_rule_ptr gc_rule =
-        corevm::runtime::gc_rule_meta::get_gc_rule(bit);
+      const gc_rule_ptr gc_rule =
+        gc_rule_meta::get_gc_rule(bit);
 
       if (gc_rule && gc_rule->should_gc(*this))
       {
@@ -945,8 +939,8 @@ corevm::runtime::process::should_gc() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::set_sig_vector(
-  sig_atomic_t sig, corevm::runtime::vector& vector)
+process::set_sig_vector(
+  sig_atomic_t sig, vector& vector)
 {
   m_sig_instr_map.insert({sig, vector});
 }
@@ -954,14 +948,14 @@ corevm::runtime::process::set_sig_vector(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::handle_signal(
-  sig_atomic_t sig, corevm::runtime::sighandler* handler)
+process::handle_signal(
+  sig_atomic_t sig, sighandler* handler)
 {
   auto itr = m_sig_instr_map.find(sig);
 
   if (itr != m_sig_instr_map.end())
   {
-    corevm::runtime::vector vector = itr->second;
+    vector vector = itr->second;
     this->pause_exec();
     this->insert_vector(vector);
     this->resume_exec();
@@ -975,40 +969,40 @@ corevm::runtime::process::handle_signal(
 // -----------------------------------------------------------------------------
 
 size_t
-corevm::runtime::process::compartment_count() const
+process::compartment_count() const
 {
   return m_compartments.size();
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::compartment_id
-corevm::runtime::process::insert_compartment(
-  const corevm::runtime::compartment& compartment)
+compartment_id
+process::insert_compartment(
+  const compartment& compartment)
 {
   m_compartments.push_back(compartment);
-  return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);
+  return static_cast<compartment_id>(m_compartments.size() - 1);
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::compartment_id
-corevm::runtime::process::insert_compartment(
-  const corevm::runtime::compartment&& compartment)
+compartment_id
+process::insert_compartment(
+  const compartment&& compartment)
 {
   m_compartments.push_back(
-    std::forward<const corevm::runtime::compartment>(compartment));
+    std::forward<const runtime::compartment>(compartment));
 
-  return static_cast<corevm::runtime::compartment_id>(m_compartments.size() - 1);
+  return static_cast<compartment_id>(m_compartments.size() - 1);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::get_compartment(
-  corevm::runtime::compartment_id id, corevm::runtime::compartment** ptr)
+process::get_compartment(
+  compartment_id id, compartment** ptr)
 {
-  if (id < static_cast<corevm::runtime::compartment_id>(m_compartments.size()))
+  if (id < static_cast<compartment_id>(m_compartments.size()))
   {
     *ptr = &m_compartments[static_cast<size_t>(id)];
   }
@@ -1017,10 +1011,10 @@ corevm::runtime::process::get_compartment(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::reset()
+process::reset()
 {
   m_gc_flag = 0;
-  m_pc = corevm::runtime::NONESET_INSTR_ADDR;
+  m_pc = NONESET_INSTR_ADDR;
   m_dyobj_stack.clear();
   m_call_stack.clear();
   m_invocation_ctx_stack.clear();
@@ -1029,17 +1023,17 @@ corevm::runtime::process::reset()
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame*
-corevm::runtime::process::find_frame_by_ctx(
-  corevm::runtime::closure_ctx ctx,
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::process& process)
+frame*
+process::find_frame_by_ctx(
+  closure_ctx ctx,
+  compartment* compartment,
+  process& process)
 {
 #if __DEBUG__
   ASSERT(compartment);
 #endif
 
-  corevm::runtime::frame* frame = nullptr;
+  frame* frame = nullptr;
 
   while (!frame)
   {
@@ -1053,7 +1047,7 @@ corevm::runtime::process::find_frame_by_ctx(
       break;
     }
 
-    corevm::runtime::closure *closure = nullptr;
+    closure *closure = nullptr;
     compartment->get_closure_by_id(ctx.closure_id, &closure);
 
 #if __DEBUG__
@@ -1062,7 +1056,7 @@ corevm::runtime::process::find_frame_by_ctx(
 
     ctx.closure_id = closure->parent_id;
 
-    if (ctx.closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+    if (ctx.closure_id == NONESET_CLOSURE_ID)
     {
 #if __DEBUG__
       ASSERT(!frame);
@@ -1076,37 +1070,37 @@ corevm::runtime::process::find_frame_by_ctx(
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::frame*
-corevm::runtime::process::find_parent_frame_in_process(
-  corevm::runtime::frame* frame_ptr,
-  corevm::runtime::process& process)
+frame*
+process::find_parent_frame_in_process(
+  frame* frame_ptr,
+  process& process)
 {
 #if __DEBUG__
   ASSERT(frame_ptr);
 #endif
 
-  const corevm::runtime::closure* closure = frame_ptr->closure_ptr();
+  const closure* closure = frame_ptr->closure_ptr();
 
 #if __DEBUG__
   ASSERT(closure);
 #endif
 
-  corevm::runtime::closure_id parent_closure_id = closure->parent_id;
+  closure_id parent_closure_id = closure->parent_id;
 
-  if (parent_closure_id == corevm::runtime::NONESET_CLOSURE_ID)
+  if (parent_closure_id == NONESET_CLOSURE_ID)
   {
     return nullptr;
   }
 
   closure_ctx ctx(frame_ptr->closure_ctx().compartment_id, parent_closure_id);
 
-  corevm::runtime::compartment* compartment = frame_ptr->compartment_ptr();
+  compartment* compartment = frame_ptr->compartment_ptr();
 
 #if __DEBUG__
   ASSERT(compartment);
 #endif
 
-  frame_ptr = corevm::runtime::process::find_frame_by_ctx(
+  frame_ptr = process::find_frame_by_ctx(
     ctx, compartment, process);
 
   return frame_ptr;
@@ -1115,8 +1109,8 @@ corevm::runtime::process::find_parent_frame_in_process(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::process::unwind_stack(
-  corevm::runtime::process& process, size_t limit)
+process::unwind_stack(
+  process& process, size_t limit)
 {
   size_t unwind_count = 0;
   std::vector<std::string> output_lines;
@@ -1130,21 +1124,21 @@ corevm::runtime::process::unwind_stack(
   {
     std::stringstream line_ss;
 
-    corevm::runtime::frame& frame = process.top_frame();
+    frame& frame = process.top_frame();
 
-    const corevm::runtime::compartment* compartment = frame.compartment_ptr();
+    const compartment* compartment = frame.compartment_ptr();
 
     line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
 
-    const corevm::runtime::closure* closure = frame.closure_ptr();
+    const closure* closure = frame.closure_ptr();
 
-    const corevm::runtime::loc_table& locs = closure->locs;
+    const loc_table& locs = closure->locs;
 
     int32_t index = process.pc() - frame.return_addr();
 
     if (locs.find(index) != locs.end())
     {
-      const corevm::runtime::loc_info& loc = locs.at(index);
+      const loc_info& loc = locs.at(index);
 
       line_ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
     }
@@ -1177,3 +1171,9 @@ corevm::runtime::process::unwind_stack(
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

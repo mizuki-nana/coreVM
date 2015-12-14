@@ -36,7 +36,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<corevm::runtime::instr> vector;
+typedef std::vector<instr> vector;
 
 // -----------------------------------------------------------------------------
 

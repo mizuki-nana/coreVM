@@ -41,11 +41,11 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::closure` */
+/** Forward declaration of `closure` */
 struct closure;
 
 
-/** Forward declaration of `corevm::runtime::compartment` */
+/** Forward declaration of `compartment` */
 class compartment;
 
 
@@ -63,104 +63,104 @@ class compartment;
 class frame
 {
 public:
-  frame(const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*, corevm::runtime::closure*);
+  frame(const closure_ctx&,
+    compartment*, closure*);
 
-  frame(const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*,
-    corevm::runtime::closure*, corevm::runtime::instr_addr);
+  frame(const closure_ctx&,
+    compartment*,
+    closure*, instr_addr);
 
   ~frame();
 
   size_t eval_stack_size() const;
 
-  corevm::runtime::instr_addr return_addr() const;
+  instr_addr return_addr() const;
 
-  void set_return_addr(const corevm::runtime::instr_addr);
+  void set_return_addr(const instr_addr);
 
-  void push_eval_stack(corevm::types::native_type_handle&);
+  void push_eval_stack(types::native_type_handle&);
 
-  void push_eval_stack(corevm::types::native_type_handle&&);
+  void push_eval_stack(types::native_type_handle&&);
 
-  corevm::types::native_type_handle pop_eval_stack()
-    throw(corevm::runtime::evaluation_stack_empty_error);
+  types::native_type_handle pop_eval_stack()
+    throw(evaluation_stack_empty_error);
 
-  corevm::types::native_type_handle& top_eval_stack()
-    throw(corevm::runtime::evaluation_stack_empty_error);
+  types::native_type_handle& top_eval_stack()
+    throw(evaluation_stack_empty_error);
 
   void swap_eval_stack();
 
-  const std::vector<corevm::types::native_type_handle>& eval_stack() const;
+  const std::vector<types::native_type_handle>& eval_stack() const;
 
-  corevm::types::native_type_handle& eval_stack_element(size_t i);
+  types::native_type_handle& eval_stack_element(size_t i);
 
   size_t visible_var_count() const;
 
-  bool has_visible_var(const corevm::runtime::variable_key) const;
+  bool has_visible_var(const variable_key) const;
 
-  corevm::dyobj::dyobj_id get_visible_var(const corevm::runtime::variable_key)
-    const throw(corevm::runtime::name_not_found_error);
+  dyobj::dyobj_id get_visible_var(const variable_key)
+    const throw(name_not_found_error);
 
   bool get_visible_var_fast(
-    const corevm::runtime::variable_key, corevm::dyobj::dyobj_id*) const;
+    const variable_key, dyobj::dyobj_id*) const;
 
-  corevm::dyobj::dyobj_id pop_visible_var(const corevm::runtime::variable_key)
-    throw(corevm::runtime::name_not_found_error);
+  dyobj::dyobj_id pop_visible_var(const variable_key)
+    throw(name_not_found_error);
 
-  void set_visible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
+  void set_visible_var(variable_key, dyobj::dyobj_id);
 
   size_t invisible_var_count() const;
 
-  bool has_invisible_var(const corevm::runtime::variable_key) const;
+  bool has_invisible_var(const variable_key) const;
 
-  corevm::dyobj::dyobj_id get_invisible_var(const corevm::runtime::variable_key)
-    const throw(corevm::runtime::name_not_found_error);
+  dyobj::dyobj_id get_invisible_var(const variable_key)
+    const throw(name_not_found_error);
 
   bool get_invisible_var_fast(
-    const corevm::runtime::variable_key, corevm::dyobj::dyobj_id*) const;
+    const variable_key, dyobj::dyobj_id*) const;
 
-  corevm::dyobj::dyobj_id pop_invisible_var(const corevm::runtime::variable_key)
-    throw(corevm::runtime::name_not_found_error);
+  dyobj::dyobj_id pop_invisible_var(const variable_key)
+    throw(name_not_found_error);
 
-  void set_invisible_var(corevm::runtime::variable_key, corevm::dyobj::dyobj_id);
+  void set_invisible_var(variable_key, dyobj::dyobj_id);
 
-  std::vector<corevm::runtime::variable_key> visible_var_keys() const;
+  std::vector<variable_key> visible_var_keys() const;
 
-  std::vector<corevm::runtime::variable_key> invisible_var_keys() const;
+  std::vector<variable_key> invisible_var_keys() const;
 
-  std::list<corevm::dyobj::dyobj_id> get_visible_objs() const;
+  std::list<dyobj::dyobj_id> get_visible_objs() const;
 
-  std::list<corevm::dyobj::dyobj_id> get_invisible_objs() const;
+  std::list<dyobj::dyobj_id> get_invisible_objs() const;
 
-  corevm::runtime::closure_ctx closure_ctx() const;
+  closure_ctx closure_ctx() const;
 
-  corevm::runtime::compartment* compartment_ptr() const;
+  compartment* compartment_ptr() const;
 
-  corevm::runtime::closure* closure_ptr() const;
+  closure* closure_ptr() const;
 
-  corevm::runtime::frame* parent() const;
+  frame* parent() const;
 
   /**
    * Sets the optional parent of the frame in the process.
    */
-  void set_parent(corevm::runtime::frame*);
+  void set_parent(frame*);
 
-  corevm::dyobj::dyobj_id exc_obj() const;
+  dyobj::dyobj_id exc_obj() const;
 
-  void set_exc_obj(corevm::dyobj::dyobj_id exc_obj);
+  void set_exc_obj(dyobj::dyobj_id exc_obj);
 
   void clear_exc_obj();
 
 protected:
-  const corevm::runtime::closure_ctx m_closure_ctx;
-  corevm::runtime::compartment* m_compartment_ptr;
-  corevm::runtime::closure* m_closure_ptr;
-  corevm::runtime::frame* m_parent;
-  corevm::runtime::instr_addr m_return_addr;
-  std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_visible_vars;
-  std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> m_invisible_vars;
-  std::vector<corevm::types::native_type_handle> m_eval_stack;
-  corevm::dyobj::dyobj_id m_exc_obj;
+  const runtime::closure_ctx m_closure_ctx;
+  compartment* m_compartment_ptr;
+  closure* m_closure_ptr;
+  frame* m_parent;
+  instr_addr m_return_addr;
+  std::unordered_map<variable_key, dyobj::dyobj_id> m_visible_vars;
+  std::unordered_map<variable_key, dyobj::dyobj_id> m_invisible_vars;
+  std::vector<types::native_type_handle> m_eval_stack;
+  dyobj::dyobj_id m_exc_obj;
 };
 
 

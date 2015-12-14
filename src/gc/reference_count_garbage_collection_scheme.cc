@@ -29,9 +29,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <unordered_map>
 
 
+namespace corevm {
+
+
+namespace gc {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
+reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
   :
   m_count(0u)
 {
@@ -39,7 +45,7 @@ corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_manager::d
 
 /* virtual */
 void
-corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_manager::on_delete() noexcept
+reference_count_garbage_collection_scheme::dynamic_object_manager::on_delete() noexcept
 {
   dec_ref_count();
 }
@@ -51,14 +57,14 @@ using sneaker::algorithm::tarjan;
 // -----------------------------------------------------------------------------
 
 void
-corevm::gc::reference_count_garbage_collection_scheme::gc(
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
+reference_count_garbage_collection_scheme::gc(
+  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
 {
   using _dynamic_object_heap_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
   using heap_iterator_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::heap_iterator<_dynamic_object_heap_type>;
+    reference_count_garbage_collection_scheme::heap_iterator<_dynamic_object_heap_type>;
 
   heap_iterator_type heap_iterator(heap, *this);
 
@@ -109,12 +115,12 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-corevm::gc::reference_count_garbage_collection_scheme::check_and_dec_ref_count(
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type& object) const
+reference_count_garbage_collection_scheme::check_and_dec_ref_count(
+  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
+  reference_count_garbage_collection_scheme::dynamic_object_type& object) const
 {
   using _dynamic_object_heap_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
   if (!object.is_garbage_collectible())
   {
@@ -168,12 +174,12 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-corevm::gc::reference_count_garbage_collection_scheme::resolve_self_reference_cycles(
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_type& object) const
+reference_count_garbage_collection_scheme::resolve_self_reference_cycles(
+  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
+  reference_count_garbage_collection_scheme::dynamic_object_type& object) const
 {
   using _dynamic_object_heap_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
   cycled_object_reference_decrementor<_dynamic_object_heap_type> decrementor(heap, object);
   object.iterate(decrementor);
@@ -203,7 +209,7 @@ public:
 
   void operator()(dyobj_id_type id, dynamic_object_type& object)
   {
-    if (object.get_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE))
+    if (object.get_flag(dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE))
     {
       object.iterate(
         [&](
@@ -252,11 +258,11 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
-  corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
+reference_count_garbage_collection_scheme::remove_cycles(
+  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
 {
   using _dynamic_object_heap_type = typename
-    corevm::gc::reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
   typedef object_graph_builder<_dynamic_object_heap_type> object_graph_builder_type;
 
@@ -322,3 +328,9 @@ corevm::gc::reference_count_garbage_collection_scheme::remove_cycles(
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace gc */
+
+
+} /* end namespace corevm */

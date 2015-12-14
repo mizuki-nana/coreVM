@@ -41,7 +41,7 @@ namespace gc {
 class mark_and_sweep_garbage_collection_scheme : public garbage_collection_scheme
 {
 public:
-  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+  typedef class dynamic_object_manager : public dyobj::dynamic_object_manager
   {
     public:
       dynamic_object_manager();
@@ -59,8 +59,8 @@ public:
       bool m_marked;
   } mark_and_sweep_dynamic_object_manager;
 
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<mark_and_sweep_dynamic_object_manager>;
-  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<mark_and_sweep_dynamic_object_manager>;
+  using dynamic_object_type = typename dyobj::dynamic_object<mark_and_sweep_dynamic_object_manager>;
+  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<mark_and_sweep_dynamic_object_manager>;
 
   virtual void gc(dynamic_object_heap_type&) const;
 

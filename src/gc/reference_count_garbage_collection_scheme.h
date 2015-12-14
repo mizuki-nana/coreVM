@@ -42,7 +42,7 @@ namespace gc {
 class reference_count_garbage_collection_scheme : public garbage_collection_scheme
 {
 public:
-  typedef class dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+  typedef class dynamic_object_manager : public dyobj::dynamic_object_manager
   {
     public:
       dynamic_object_manager();
@@ -97,8 +97,8 @@ public:
       uint64_t m_count;
   } reference_count_dynamic_object_manager;
 
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<reference_count_dynamic_object_manager>;
-  using dynamic_object_heap_type = typename corevm::dyobj::dynamic_object_heap<reference_count_dynamic_object_manager>;
+  using dynamic_object_type = typename dyobj::dynamic_object<reference_count_dynamic_object_manager>;
+  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<reference_count_dynamic_object_manager>;
 
   virtual void gc(dynamic_object_heap_type&) const;
 
@@ -108,7 +108,7 @@ public:
     public:
       explicit heap_iterator(
         dynamic_object_heap_type& heap,
-        const corevm::gc::reference_count_garbage_collection_scheme& scheme)
+        const reference_count_garbage_collection_scheme& scheme)
         :
         m_heap(heap),
         m_scheme(scheme)
@@ -125,7 +125,7 @@ public:
 
     private:
       dynamic_object_heap_type& m_heap;
-      const corevm::gc::reference_count_garbage_collection_scheme& m_scheme;
+      const reference_count_garbage_collection_scheme& m_scheme;
   };
 
   friend class heap_iterator<dynamic_object_heap_type>;

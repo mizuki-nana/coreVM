@@ -28,9 +28,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ostream>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::runtime::compartment::compartment(const std::string& path)
+compartment::compartment(const std::string& path)
   :
   m_path(path)
 {
@@ -39,7 +45,7 @@ corevm::runtime::compartment::compartment(const std::string& path)
 // -----------------------------------------------------------------------------
 
 const std::string&
-corevm::runtime::compartment::path() const
+compartment::path() const
 {
   return m_path;
 }
@@ -47,8 +53,8 @@ corevm::runtime::compartment::path() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::compartment::set_encoding_map(
-  const corevm::runtime::encoding_map& encoding_map)
+compartment::set_encoding_map(
+  const encoding_map& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -56,8 +62,8 @@ corevm::runtime::compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::compartment::set_encoding_map(
-  const corevm::runtime::encoding_map&& encoding_map)
+compartment::set_encoding_map(
+  const encoding_map&& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -65,13 +71,13 @@ corevm::runtime::compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 std::string
-corevm::runtime::compartment::get_encoding_string(
-  corevm::runtime::encoding_key key) const
-  throw(corevm::runtime::encoding_string_not_found_error)
+compartment::get_encoding_string(
+  encoding_key key) const
+  throw(encoding_string_not_found_error)
 {
   if (key >= m_encoding_map.size())
   {
-    THROW(corevm::runtime::encoding_string_not_found_error(key));
+    THROW(encoding_string_not_found_error(key));
   }
 
   return m_encoding_map[key];
@@ -80,8 +86,8 @@ corevm::runtime::compartment::get_encoding_string(
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::compartment::get_encoding_string(
-  corevm::runtime::encoding_key key, std::string* str) const
+compartment::get_encoding_string(
+  encoding_key key, std::string* str) const
 {
   if (!str)
   {
@@ -97,7 +103,7 @@ corevm::runtime::compartment::get_encoding_string(
 // -----------------------------------------------------------------------------
 
 size_t
-corevm::runtime::compartment::closure_count() const
+compartment::closure_count() const
 {
   return m_closure_table.size();
 }
@@ -105,33 +111,33 @@ corevm::runtime::compartment::closure_count() const
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::compartment::set_closure_table(
-  const corevm::runtime::closure_table&& closure_table)
+compartment::set_closure_table(
+  const closure_table&& closure_table)
 {
   m_closure_table = closure_table;
 }
 
 // -----------------------------------------------------------------------------
 
-const corevm::runtime::closure
-corevm::runtime::compartment::get_closure_by_id(corevm::runtime::closure_id id)
-  const throw(corevm::runtime::closure_not_found_error)
+const closure
+compartment::get_closure_by_id(closure_id id)
+  const throw(closure_not_found_error)
 {
-  if (id < static_cast<corevm::runtime::closure_id>(m_closure_table.size()))
+  if (id < static_cast<closure_id>(m_closure_table.size()))
   {
     return m_closure_table[static_cast<size_t>(id)];
   }
 
-  THROW(corevm::runtime::closure_not_found_error(id));
+  THROW(closure_not_found_error(id));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-corevm::runtime::compartment::get_closure_by_id(
-  corevm::runtime::closure_id id, corevm::runtime::closure** closure_ptr)
+compartment::get_closure_by_id(
+  closure_id id, closure** closure_ptr)
 {
-  if (id < static_cast<corevm::runtime::closure_id>(m_closure_table.size()))
+  if (id < static_cast<closure_id>(m_closure_table.size()))
   {
     *closure_ptr = &m_closure_table[static_cast<size_t>(id)];
   }
@@ -140,17 +146,17 @@ corevm::runtime::compartment::get_closure_by_id(
 // -----------------------------------------------------------------------------
 
 bool
-corevm::runtime::compartment::get_starting_closure(
-  corevm::runtime::closure** closure)
+compartment::get_starting_closure(
+  closure** closure)
 {
   for (size_t i = 0; i < m_closure_table.size(); ++i)
   {
-    const corevm::runtime::closure& closure_ = m_closure_table[i];
+    const runtime::closure& closure_ = m_closure_table[i];
 
-    if (closure_.id != corevm::runtime::NONESET_CLOSURE_ID &&
-        closure_.parent_id == corevm::runtime::NONESET_CLOSURE_ID)
+    if (closure_.id != NONESET_CLOSURE_ID &&
+        closure_.parent_id == NONESET_CLOSURE_ID)
     {
-      *closure = const_cast<corevm::runtime::closure*>(&closure_);
+      *closure = const_cast<runtime::closure*>(&closure_);
 
       return true;
     }
@@ -160,3 +166,9 @@ corevm::runtime::compartment::get_starting_closure(
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

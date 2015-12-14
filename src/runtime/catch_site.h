@@ -52,7 +52,7 @@ struct catch_site
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<corevm::runtime::catch_site> catch_site_list;
+typedef std::vector<catch_site> catch_site_list;
 
 // -----------------------------------------------------------------------------
 

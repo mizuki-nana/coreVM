@@ -23,8 +23,24 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "flags.h"
 
 
+namespace corevm {
+
+
+namespace dyobj {
+
+
+// -----------------------------------------------------------------------------
+
 bool
-corevm::dyobj::is_valid_flag_bit(char bit)
+is_valid_flag_bit(char bit)
 {
-  return (0 < bit) && (static_cast<corevm::dyobj::flags>(bit) < corevm::dyobj::flags::DYOBJ_MAX_VALUE);
+  return (0 < bit) && (static_cast<flags>(bit) < DYOBJ_MAX_VALUE);
 }
+
+// -----------------------------------------------------------------------------
+
+
+} /* end namespace dyobj */
+
+
+} /* end namespace corevm */

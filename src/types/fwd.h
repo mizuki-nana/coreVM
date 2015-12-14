@@ -43,21 +43,21 @@ class variant;
 } /* end namespace variant */
 
 
-typedef corevm::types::variant::variant<
-  corevm::types::int8,
-  corevm::types::uint8,
-  corevm::types::int16,
-  corevm::types::uint16,
-  corevm::types::int32,
-  corevm::types::uint32,
-  corevm::types::int64,
-  corevm::types::uint64,
-  corevm::types::boolean,
-  corevm::types::decimal,
-  corevm::types::decimal2,
-  corevm::types::string,
-  corevm::types::array,
-  corevm::types::map
+typedef variant::variant<
+  int8,
+  uint8,
+  int16,
+  uint16,
+  int32,
+  uint32,
+  int64,
+  uint64,
+  boolean,
+  decimal,
+  decimal2,
+  string,
+  array,
+  map
 > native_type_handle;
 
 

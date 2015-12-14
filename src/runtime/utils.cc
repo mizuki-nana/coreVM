@@ -29,29 +29,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
+namespace corevm {
+
+
+namespace runtime {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::attr_key
-corevm::runtime::get_attr_key(
-  corevm::runtime::compartment* compartment,
-  corevm::runtime::encoding_key str_key,
+dyobj::attr_key
+get_attr_key(
+  compartment* compartment,
+  encoding_key str_key,
   std::string* attr_str)
 {
   compartment->get_encoding_string(str_key, attr_str);
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(*attr_str);
+  dyobj::attr_key attr_key = dyobj::hash_attr_str(*attr_str);
 
   return attr_key;
 }
 
 // -----------------------------------------------------------------------------
 
-corevm::dyobj::attr_key
-corevm::runtime::get_attr_key(
-  corevm::runtime::compartment* compartment, corevm::runtime::encoding_key str_key)
+dyobj::attr_key
+get_attr_key(
+  compartment* compartment, encoding_key str_key)
 {
   std::string attr_str;
   return get_attr_key(compartment, str_key, &attr_str);
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

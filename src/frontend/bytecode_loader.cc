@@ -23,11 +23,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bytecode_loader.h"
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
-corevm::frontend::bytecode_loader::~bytecode_loader()
+bytecode_loader::~bytecode_loader()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

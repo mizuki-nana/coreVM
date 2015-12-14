@@ -36,7 +36,7 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::compartment_printer` */
+/** Forward declaration of `compartment_printer` */
 class compartment_printer;
 
 
@@ -47,34 +47,34 @@ public:
 
   const std::string& path() const;
 
-  void set_encoding_map(const corevm::runtime::encoding_map&);
+  void set_encoding_map(const encoding_map&);
 
-  void set_encoding_map(const corevm::runtime::encoding_map&&);
+  void set_encoding_map(const encoding_map&&);
 
-  std::string get_encoding_string(corevm::runtime::encoding_key) const
-    throw(corevm::runtime::encoding_string_not_found_error);
+  std::string get_encoding_string(encoding_key) const
+    throw(encoding_string_not_found_error);
 
-  void get_encoding_string(corevm::runtime::encoding_key, std::string*) const;
+  void get_encoding_string(encoding_key, std::string*) const;
 
   size_t closure_count() const;
 
-  const corevm::runtime::closure
-    get_closure_by_id(corevm::runtime::closure_id) const
-    throw(corevm::runtime::closure_not_found_error);
+  const closure
+    get_closure_by_id(closure_id) const
+    throw(closure_not_found_error);
 
   void get_closure_by_id(
-    corevm::runtime::closure_id, corevm::runtime::closure** closure);
+    closure_id, closure** closure);
 
-  void set_closure_table(const corevm::runtime::closure_table&&);
+  void set_closure_table(const closure_table&&);
 
-  bool get_starting_closure(corevm::runtime::closure**);
+  bool get_starting_closure(closure**);
 
   friend class compartment_printer;
 
 private:
   const std::string m_path;
-  corevm::runtime::encoding_map m_encoding_map;
-  corevm::runtime::closure_table m_closure_table;
+  encoding_map m_encoding_map;
+  closure_table m_closure_table;
 };
 
 

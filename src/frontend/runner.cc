@@ -38,6 +38,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
+namespace corevm {
+
+
+namespace frontend {
+
+
 // -----------------------------------------------------------------------------
 
 #if __DEBUG__
@@ -53,9 +59,9 @@ print_stack_trace()
 
 // -----------------------------------------------------------------------------
 
-corevm::frontend::runner::runner(
+runner::runner(
   const std::string& path,
-  corevm::frontend::configuration& configuration)
+  configuration& configuration)
   :
   m_path(path),
   m_configuration(configuration)
@@ -65,13 +71,13 @@ corevm::frontend::runner::runner(
 // -----------------------------------------------------------------------------
 
 int
-corevm::frontend::runner::run() const noexcept
+runner::run() const noexcept
 {
   // [COREVM-247] Enable garbage collection mechanism
   //uint32_t gc_interval = m_configuration.gc_interval() ? \
   // m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
-  corevm::runtime::process::options options;
+  runtime::process::options options;
 
   if (m_configuration.heap_alloc_size())
   {
@@ -85,9 +91,9 @@ corevm::frontend::runner::run() const noexcept
 
   options.gc_flag = m_configuration.gc_flag();
 
-  corevm::runtime::process process(options);
+  runtime::process process(options);
 
-  corevm::frontend::bytecode_loader_binary loader;
+  bytecode_loader_binary loader;
 
   try
   {
@@ -95,7 +101,7 @@ corevm::frontend::runner::run() const noexcept
 
 #if COREVM_247_COMPLETED
     // TODO: [COREVM-247] Enable garbage collection mechanism
-    bool res = corevm::runtime::process_runner(process, gc_interval).start();
+    bool res = runtime::process_runner(process, gc_interval).start();
 #else
     process.start();
     bool res = true;
@@ -109,12 +115,12 @@ corevm::frontend::runner::run() const noexcept
       print_stack_trace();
 #endif
 
-      corevm::runtime::process::unwind_stack(process);
+      runtime::process::unwind_stack(process);
 
       return -1;
     }
   }
-  catch (const corevm::runtime_error& ex)
+  catch (const runtime_error& ex)
   {
     std::cerr << "Runtime error: " << ex.what() << std::endl;
     std::cerr << "Abort" << std::endl;
@@ -123,7 +129,7 @@ corevm::frontend::runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    corevm::runtime::process::unwind_stack(process);
+    runtime::process::unwind_stack(process);
 
     return -1;
   }
@@ -136,7 +142,7 @@ corevm::frontend::runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    corevm::runtime::process::unwind_stack(process);
+    runtime::process::unwind_stack(process);
 
     return -1;
   }
@@ -149,7 +155,7 @@ corevm::frontend::runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    corevm::runtime::process::unwind_stack(process);
+    runtime::process::unwind_stack(process);
 
     return -1;
   }
@@ -158,3 +164,9 @@ corevm::frontend::runner::run() const noexcept
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace frontend */
+
+
+} /* end namespace corevm */

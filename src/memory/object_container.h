@@ -141,7 +141,7 @@ public:
       _ContainerType* m_container;
       _Inner m_inner;
 
-      friend class corevm::memory::object_container<T, AllocatorType>;
+      friend class object_container<T, AllocatorType>;
   };
 
   class const_iterator : public std::iterator<std::forward_iterator_tag, T>
@@ -214,7 +214,7 @@ public:
       const _ContainerType* m_container;
       _Inner m_inner;
 
-      friend class corevm::memory::object_container<T, AllocatorType>;
+      friend class object_container<T, AllocatorType>;
   };
 
   object_container();
@@ -265,7 +265,7 @@ private:
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-corevm::memory::object_container<T, AllocatorType>::object_container()
+object_container<T, AllocatorType>::object_container()
   :
   m_allocator()
 {
@@ -275,7 +275,7 @@ corevm::memory::object_container<T, AllocatorType>::object_container()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-corevm::memory::object_container<T, AllocatorType>::object_container(
+object_container<T, AllocatorType>::object_container(
   uint64_t total_size)
   :
   m_allocator(total_size)
@@ -286,8 +286,8 @@ corevm::memory::object_container<T, AllocatorType>::object_container(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::iterator
-corevm::memory::object_container<T, AllocatorType>::begin()
+typename object_container<T, AllocatorType>::iterator
+object_container<T, AllocatorType>::begin()
 {
   return iterator(*this, m_addrs.begin());
 }
@@ -295,8 +295,8 @@ corevm::memory::object_container<T, AllocatorType>::begin()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::iterator
-corevm::memory::object_container<T, AllocatorType>::end()
+typename object_container<T, AllocatorType>::iterator
+object_container<T, AllocatorType>::end()
 {
   return iterator(*this, m_addrs.end());
 }
@@ -304,8 +304,8 @@ corevm::memory::object_container<T, AllocatorType>::end()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::const_iterator
-corevm::memory::object_container<T, AllocatorType>::cbegin() const
+typename object_container<T, AllocatorType>::const_iterator
+object_container<T, AllocatorType>::cbegin() const
 {
   return const_iterator(*this, m_addrs.cbegin());
 }
@@ -313,8 +313,8 @@ corevm::memory::object_container<T, AllocatorType>::cbegin() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::const_iterator
-corevm::memory::object_container<T, AllocatorType>::cend() const
+typename object_container<T, AllocatorType>::const_iterator
+object_container<T, AllocatorType>::cend() const
 {
   return const_iterator(*this, m_addrs.cend());
 }
@@ -322,8 +322,8 @@ corevm::memory::object_container<T, AllocatorType>::cend() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::size_type
-corevm::memory::object_container<T, AllocatorType>::size() const
+typename object_container<T, AllocatorType>::size_type
+object_container<T, AllocatorType>::size() const
 {
   return m_addrs.size();
 }
@@ -331,8 +331,8 @@ corevm::memory::object_container<T, AllocatorType>::size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::size_type
-corevm::memory::object_container<T, AllocatorType>::max_size() const
+typename object_container<T, AllocatorType>::size_type
+object_container<T, AllocatorType>::max_size() const
 {
   return m_allocator.max_size();
 }
@@ -340,8 +340,8 @@ corevm::memory::object_container<T, AllocatorType>::max_size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::size_type
-corevm::memory::object_container<T, AllocatorType>::total_size() const
+typename object_container<T, AllocatorType>::size_type
+object_container<T, AllocatorType>::total_size() const
 {
   return m_allocator.total_size();
 }
@@ -349,8 +349,8 @@ corevm::memory::object_container<T, AllocatorType>::total_size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::create()
+typename object_container<T, AllocatorType>::pointer
+object_container<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
@@ -369,8 +369,8 @@ corevm::memory::object_container<T, AllocatorType>::create()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::create(size_t n)
+typename object_container<T, AllocatorType>::pointer
+object_container<T, AllocatorType>::create(size_t n)
 {
   pointer p = m_allocator.allocate(n, 0);
 
@@ -392,8 +392,8 @@ corevm::memory::object_container<T, AllocatorType>::create(size_t n)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::create(const_reference value)
+typename object_container<T, AllocatorType>::pointer
+object_container<T, AllocatorType>::create(const_reference value)
 {
   pointer p = m_allocator.allocate(1, 0);
 
@@ -413,7 +413,7 @@ corevm::memory::object_container<T, AllocatorType>::create(const_reference value
 
 template<typename T, typename AllocatorType>
 bool
-corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
+object_container<T, AllocatorType>::check_ptr(pointer p) const
 {
   return m_addrs.find(p) != m_addrs.end();
 }
@@ -421,8 +421,8 @@ corevm::memory::object_container<T, AllocatorType>::check_ptr(pointer p) const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
+typename object_container<T, AllocatorType>::pointer
+object_container<T, AllocatorType>::operator[](pointer p)
 {
   if (!check_ptr(p))
   {
@@ -435,8 +435,8 @@ corevm::memory::object_container<T, AllocatorType>::operator[](pointer p)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::const_pointer
-corevm::memory::object_container<T, AllocatorType>::operator[](const_pointer p) const
+typename object_container<T, AllocatorType>::const_pointer
+object_container<T, AllocatorType>::operator[](const_pointer p) const
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {
@@ -449,8 +449,8 @@ corevm::memory::object_container<T, AllocatorType>::operator[](const_pointer p) 
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::pointer
-corevm::memory::object_container<T, AllocatorType>::at(pointer p)
+typename object_container<T, AllocatorType>::pointer
+object_container<T, AllocatorType>::at(pointer p)
   throw(corevm::memory::invalid_address_error)
 {
   if (!check_ptr(p))
@@ -464,8 +464,8 @@ corevm::memory::object_container<T, AllocatorType>::at(pointer p)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename corevm::memory::object_container<T, AllocatorType>::const_pointer
-corevm::memory::object_container<T, AllocatorType>::at(const_pointer p) const
+typename object_container<T, AllocatorType>::const_pointer
+object_container<T, AllocatorType>::at(const_pointer p) const
   throw(corevm::memory::invalid_address_error)
 {
   if (!check_ptr(const_cast<pointer>(p)))
@@ -480,7 +480,7 @@ corevm::memory::object_container<T, AllocatorType>::at(const_pointer p) const
 
 template<typename T, typename AllocatorType>
 void
-corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
+object_container<T, AllocatorType>::destroy(pointer p)
 {
   if (!check_ptr(p))
   {
@@ -496,7 +496,7 @@ corevm::memory::object_container<T, AllocatorType>::destroy(pointer p)
 
 template<typename T, typename AllocatorType>
 void
-corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
+object_container<T, AllocatorType>::erase(iterator& itr)
 {
   if (itr == end())
   {
@@ -511,7 +511,7 @@ corevm::memory::object_container<T, AllocatorType>::erase(iterator& itr)
 
 template<typename T, typename AllocatorType>
 void
-corevm::memory::object_container<T, AllocatorType>::erase(const_iterator& itr)
+object_container<T, AllocatorType>::erase(const_iterator& itr)
 {
   if (itr == cend())
   {
@@ -528,7 +528,7 @@ template<typename T, typename AllocatorType>
 std::ostream&
 operator<<(
   std::ostream& ost,
-  const corevm::memory::object_container<T, AllocatorType>& container)
+  const object_container<T, AllocatorType>& container)
 {
   ost << "object container: ";
   ost << container.size() << "/" << container.max_size();

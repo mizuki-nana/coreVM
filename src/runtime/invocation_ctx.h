@@ -38,28 +38,28 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::closure` */
+/** Forward declaration of `closure` */
 struct closure;
 
-/** Forward declaration of `corevm::runtime::compartment` */
+/** Forward declaration of `compartment` */
 class compartment;
 
 
-typedef std::vector<corevm::dyobj::dyobj_id> param_list_type;
-typedef std::unordered_map<corevm::runtime::variable_key, corevm::dyobj::dyobj_id> param_value_map_type;
+typedef std::vector<dyobj::dyobj_id> param_list_type;
+typedef std::unordered_map<variable_key, dyobj::dyobj_id> param_value_map_type;
 
 
 class invocation_ctx
 {
 public:
-  invocation_ctx(const corevm::runtime::closure_ctx&,
-    corevm::runtime::compartment*, corevm::runtime::closure*);
+  invocation_ctx(const closure_ctx&,
+    compartment*, closure*);
 
   const closure_ctx& closure_ctx() const;
 
-  corevm::runtime::compartment* compartment_ptr() const;
+  compartment* compartment_ptr() const;
 
-  corevm::runtime::closure* closure_ptr() const;
+  closure* closure_ptr() const;
 
   const param_list_type& params_list() const;
 
@@ -67,27 +67,27 @@ public:
 
   bool has_params() const;
 
-  void put_param(const corevm::dyobj::dyobj_id&);
+  void put_param(const dyobj::dyobj_id&);
 
-  corevm::dyobj::dyobj_id pop_param()
-    throw(corevm::runtime::missing_parameter_error);
+  dyobj::dyobj_id pop_param()
+    throw(missing_parameter_error);
 
   bool has_param_value_pairs() const;
 
-  bool has_param_value_pair_with_key(const corevm::runtime::variable_key&) const;
+  bool has_param_value_pair_with_key(const variable_key&) const;
 
   void put_param_value_pair(
-    const corevm::runtime::variable_key&, const corevm::dyobj::dyobj_id&);
+    const variable_key&, const dyobj::dyobj_id&);
 
-  corevm::dyobj::dyobj_id pop_param_value_pair(const corevm::runtime::variable_key&)
-    throw(corevm::runtime::missing_parameter_error);
+  dyobj::dyobj_id pop_param_value_pair(const variable_key&)
+    throw(missing_parameter_error);
 
-  std::vector<corevm::runtime::variable_key> param_value_pair_keys() const;
+  std::vector<variable_key> param_value_pair_keys() const;
 
 private:
-  corevm::runtime::closure_ctx m_closure_ctx;
-  corevm::runtime::compartment* m_compartment_ptr;
-  corevm::runtime::closure* m_closure_ptr;
+  runtime::closure_ctx m_closure_ctx;
+  compartment* m_compartment_ptr;
+  closure* m_closure_ptr;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
   size_t m_params_list_pop_index;
