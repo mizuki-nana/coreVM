@@ -8,6 +8,16 @@ coreVM
 A virtual machine designed to revolutionize the development of modern dynamic
 programming languages.
 
+* [Overview] (#overview)
+* [Design and Architecture] (#design-and-architecture)
+* [Current State and Roadmap] (#current-state-and-roadmap)
+* [Focus Areas] (#focues-areas)
+* [Moonshots] (#moonshots)
+* [Compilation Environments] (#compilation-environments)
+* [Dependencies] (#dependencies)
+* [License] (#license)
+* [Blog Posts] (#blog-posts)
+* [Inquiries] (#inquiries)
 
 ## Overview
 With the proliferation of dynamic programming languages being a dominating trend
@@ -29,7 +39,7 @@ compiler integrations involved. Instead of re-inventing the wheel, developers
 can focus on the design and development of language features.
 
 
-## Design Overview
+## Design and Architecture
 coreVM's architecture can be generalized into 6 components:
 
   * [memory management](#memory-management)
@@ -48,8 +58,7 @@ responsible for allocating and deallocating memories used by the object heap
 and the native types pool. The memory management component is equipped with
 several allocation schemes, such as first-fit, last-fit, buddy-system, etc,
 and can be configured to choose one over the others in different scenarios for
-the most efficient usages. For example, the object heap uses the buddy-system
-scheme by default, while the native types pool uses the first-fit scheme.
+the most efficient usages.
 
 ### Native Types
 The native types system is an independent system that defines all the native
@@ -94,8 +103,8 @@ of custom integer type in a language may hold a native type handle of type
 ### Garbage Collection
 The garbage collection layer is responsible for cleaning up unreachable objects
 on the heap. The garbage collector is designed to be configured to use one of
-several types of garbage collection schemes. Currently only the
-"reference counting" scheme is supported.
+several types of garbage collection schemes, with one example being the
+"reference counting" scheme.
 
 The garbage collector is tightly coupled with the object heap in terms of their
 interactions, but not so much in the design. Each dynamic object is associated
@@ -121,22 +130,14 @@ one function call. Each frame also contains an "execution stack" for native
 types operations. Finally, the runtime is responsible for thread management,
 signal handling, and garbage collection during execution.
 
-Currently, the runtime is a single-threaded stack-based machine, a
-registered-based version and multi-threading are in the future roadmap.
-
 ### Frontend
 The frontend component is an intermediate layer that interacts between the core
-runtime and the outside world. It's responsible for loading instructions and
-definitions into the runtime.
-
-In addition, coreVM defines a custom file format for storing bytecode
-instructions and object definitions. The actual data encapsulated in the format
-is in JSON, which is not only easy to interpret semantically and convenient for
-validation (currently using JSON schema validation), but also has very minimal
-learning curve for many developers.
+runtime and the outside world. Its responsibilities include loading
+instructions and definitions into the runtime, as well as configurations for
+various components of the system.
 
 
-## Current State & Roadmap
+## Current State and Roadmap
 Since the inception of this project, which is the beginning of March 2014, a
 great number of milestones have been achieved and many components are near
 completion at this point. However, there are still many new and exciting
@@ -194,7 +195,7 @@ capabilities and versatilities. Moreover, it also serves as an great example
 of developing compilers as well as the necessary tools for language developers
 to utilize and leverage the capabilities of coreVM.
 
-<br/>
+### Milestones and Roadmap
 
 Below is a table of all the past milestones and some of the goals defined in the
 roadmap in the near future, with their respective completion dates and ETAs:
@@ -215,9 +216,9 @@ roadmap in the near future, with their respective completion dates and ETAs:
   Optimizations (done)                        |            May, 2015
   Benchmark infrastructure                    |            Jun, 2015
   Python features convergence (cont'd)        |            Oct, 2015
-  Optimizations (cont'd)                      |            Oct, 2015
-  Multi-threaded runtime                      |            TBD
-  JIT optimizations                           |            TBD
+  Optimizations (cont'd)                      |            Feb, 2016
+  JIT optimizations                           |            Jul, 2016
+  Multi-threaded runtime                      |            Nov, 2016
   Debugging and Profiling APIs                |            TBD
   Embedder APIs                               |            TBD
   Extension APIs                              |            TBD
@@ -233,12 +234,12 @@ Here's an illustration of the envisioned future architecture of coreVM:
 This project is consisted of three focus areas that are in-sync with its
 development:
 
-### Project "Lithum-Ion"
+### Project "Lithium-Ion"
 Focuses on achieving the highest performance possible while striving to maintain
 great architecture designs. Performance and efficiency should be factors taken
 into consideration at every stage of design and development. Some metrics for
 measuring performance and efficiency include per-instruction and overall
-execution time, memory usage, byte-code loading time, etc.
+execution time, memory usage, bytecode loading time, etc.
 
 ### Project "Swiss Army Knife"
 Focuses on achieving versatile capabilities and flexibilities to meet the needs
@@ -282,20 +283,7 @@ a good name of my variant by then.
 ## Compilation Environments
 
 ### OS X
-Operating System:<br/>
-`OS X 10.9.5 (13F34)`
-
-Compiler:<br/>
-`Apple LLVM version 5.1 (clang-503.0.40) (based on LLVM 3.4svn)
-Target: x86_64-apple-darwin13.4.0
-Thread model: posix`
-
-Make:<br/>
-`GNU Make 3.81`
-`built for i386-apple-darwin11.3.0`
-
-Sphinx:<br/>
-`Sphinx 1.2.2`
+To be supported.
 
 ### Debian
 Operating System:<br/>
@@ -338,7 +326,4 @@ Follow the latest news and updates on the [coreVM Official Blog](https://corevm.
 ## Inquiries
 For technical issues and bugs, please file new issues on GitHub.
 For all other inquiries, please e-mail myself at
-<a href="mailto:yli@corevm.org">yli@corevm.org</a>.
-
-In addition, a mailing list from @corevm.org will be made available in the near
-future.
+<a href="mailto:yanzheng819@gmail.com">yanzheng819@gmail.com</a>.
