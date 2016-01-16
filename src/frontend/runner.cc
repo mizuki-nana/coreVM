@@ -73,9 +73,8 @@ runner::runner(
 int
 runner::run() const noexcept
 {
-  // [COREVM-247] Enable garbage collection mechanism
-  //uint32_t gc_interval = m_configuration.gc_interval() ? \
-  // m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
+  const uint32_t gc_interval = m_configuration.gc_interval() ? \
+    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
   runtime::process::options options;
 
@@ -99,13 +98,7 @@ runner::run() const noexcept
   {
     loader.load(m_path, process);
 
-#if COREVM_247_COMPLETED
-    // TODO: [COREVM-247] Enable garbage collection mechanism
-    bool res = runtime::process_runner(process, gc_interval).start();
-#else
-    process.start();
-    bool res = true;
-#endif
+    const bool res = runtime::process_runner(process, gc_interval).start();
 
     if (!res)
     {

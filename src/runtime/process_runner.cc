@@ -22,8 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "process_runner.h"
 
-#if COREVM_247_COMPLETED
-
 #include "common.h"
 #include "process.h"
 #include "corevm/macros.h"
@@ -78,6 +76,14 @@ process_runner::process_runner(
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
+process_runner::~process_runner()
+{
+  // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
 bool
 process_runner::start()
 {
@@ -121,6 +127,3 @@ process_runner::gc()
 
 
 } /* end namespace corevm */
-
-
-#endif /* COREVM_247_COMPLETED */

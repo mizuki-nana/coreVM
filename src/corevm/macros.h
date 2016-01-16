@@ -83,9 +83,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-// TODO: [COREVM-247] Enable garbage collection mechanism
-#define COREVM_247_COMPLETED 0
-
-// -----------------------------------------------------------------------------
 
 #endif /* COREVM_MACROS_H_ */

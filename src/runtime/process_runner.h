@@ -25,9 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 
-#if COREVM_247_COMPLETED
-
-
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
 
 #include <cstdint>
@@ -49,6 +46,8 @@ public:
   explicit process_runner(process&);
   process_runner(process&, uint32_t);
 
+  virtual ~process_runner();
+
   bool start();
 
 protected:
@@ -60,13 +59,10 @@ protected:
 };
 
 
-}; /* end namespace runtime */
+} /* end namespace runtime */
 
 
-}; /* end namespace corevm */
-
-
-#endif /* COREVM_247_COMPLETED */
+} /* end namespace corevm */
 
 
 #endif /* COREVM_PROCESS_RUNNER_H_ */
