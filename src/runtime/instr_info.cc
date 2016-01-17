@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -109,6 +109,7 @@ const instr_info instr_set_info::instr_infos[INSTR_CODE_MAX] {
   /* GC        */    { .name="gc"        },
   /* DEBUG     */    { .name="debug"     },
   /* DBGFRM    */    { .name="dbgfrm"    },
+  /* DBGMEM    */    { .name="dbgmem"    },
   /* PRINT     */    { .name="print"     },
   /* SWAP2     */    { .name="swap2"     },
 

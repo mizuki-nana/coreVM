@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -514,6 +514,15 @@ enum instr_enum : uint32_t
    *    1. Show instructions in canonical form.
    */
   DBGFRM,
+
+  /**
+   * <dbgmem, #, _>
+   * Show information of current process memory usages.
+   * The first operand is the set of options:
+   *
+   *    1. Show peak virtual memory size and resident set size.
+   */
+  DBGMEM,
 
   /**
    * <print, <trailing_new_line>, _>

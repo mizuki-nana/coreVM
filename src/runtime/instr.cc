@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "instr.h"
 
+#include "dbgmem_printer.h"
 #include "frame_printer.h"
 #include "process.h"
 #include "process_printer.h"
@@ -131,6 +132,7 @@ instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
   /* GC        */    { .handler=std::make_shared<instr_handler_gc>()        },
   /* DEBUG     */    { .handler=std::make_shared<instr_handler_debug>()     },
   /* DBGFRM    */    { .handler=std::make_shared<instr_handler_dbgfrm>()    },
+  /* DBGMEM    */    { .handler=std::make_shared<instr_handler_dbgmem>()    },
   /* PRINT     */    { .handler=std::make_shared<instr_handler_print>()     },
   /* SWAP2     */    { .handler=std::make_shared<instr_handler_swap2>()     },
 
@@ -2027,6 +2029,18 @@ instr_handler_dbgfrm::execute(
 
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
   frame_printer printer(*frame, opts);
+  printer(std::cout) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+instr_handler_dbgmem::execute(
+  const instr& instr, process& /* process */,
+  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+{
+  const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
+  dbgmem_printer printer(opts);
   printer(std::cout) << std::endl;
 }
 

@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2015 Yanzheng Li
+# Copyright (c) 2016 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -48,6 +48,7 @@ SOURCES += $(TOP_DIR)/$(SRC)/$(TYPES)/native_string.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/closure.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/compartment_printer.cc
+SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/dbgmem_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/frame.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/frame_printer.cc
 SOURCES += $(TOP_DIR)/$(SRC)/$(RUNTIME)/gc_rule.cc
