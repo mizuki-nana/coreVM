@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -87,7 +87,8 @@ typedef std::shared_ptr<gc_rule> gc_rule_ptr;
 class gc_rule_meta
 {
 public:
-  enum gc_bitfields : uint8_t {
+  enum gc_bitfields : uint8_t
+  {
     GC_ALWAYS,
     GC_BY_HEAP_SIZE,
     GC_BY_NTV_POOLSIZE,
@@ -95,6 +96,8 @@ public:
   };
 
   static const gc_rule_ptr get_gc_rule(gc_bitfields bit);
+
+  static const uint8_t DEFAULT_GC_FLAGS;
 
 private:
   static const gc_rule_ptr gc_rules[GC_RULE_MAX];

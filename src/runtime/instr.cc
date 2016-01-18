@@ -750,6 +750,9 @@ instr_handler_setattr2::execute(
   dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
 
   target_obj.putattr(attr_key, attr_value);
+
+  auto& attr_obj = process.get_dyobj(attr_value);
+  attr_obj.manager().on_setattr();
 }
 
 // -----------------------------------------------------------------------------

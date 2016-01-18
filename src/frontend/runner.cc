@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -88,7 +88,10 @@ runner::run() const noexcept
     options.pool_alloc_size = m_configuration.pool_alloc_size();
   }
 
-  options.gc_flag = m_configuration.gc_flag();
+  if (m_configuration.gc_flag())
+  {
+    options.gc_flag = m_configuration.gc_flag();
+  }
 
   runtime::process process(options);
 
@@ -113,7 +116,7 @@ runner::run() const noexcept
       return -1;
     }
   }
-  catch (const runtime_error& ex)
+  catch (const corevm::runtime_error& ex)
   {
     std::cerr << "Runtime error: " << ex.what() << std::endl;
     std::cerr << "Abort" << std::endl;

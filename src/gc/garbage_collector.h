@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -34,6 +34,27 @@ namespace corevm {
 namespace gc {
 
 
+// -----------------------------------------------------------------------------
+
+template<typename dynamic_object_heap_type>
+struct dyobj_remove_criterion
+{
+  dyobj_remove_criterion()
+  {
+    // Do nothing here.
+  }
+
+  bool operator()(const typename dynamic_object_heap_type::iterator& itr) const
+  {
+    auto& object =
+      static_cast<typename dynamic_object_heap_type::dynamic_object_type&>(*itr);
+
+    return object.is_garbage_collectible();
+  }
+};
+
+// -----------------------------------------------------------------------------
+
 template<class garbage_collection_scheme>
 class garbage_collector
 {
@@ -46,6 +67,8 @@ public:
   class callback
   {
     public:
+      using dynamic_object_type = typename garbage_collector::dynamic_object_type;
+
       virtual void operator()(const dynamic_object_type& obj) = 0;
 
     virtual ~callback() {}
@@ -90,10 +113,13 @@ garbage_collector<garbage_collection_scheme>::gc() noexcept
 
 template<class garbage_collection_scheme>
 void
-garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
+garbage_collector<garbage_collection_scheme>::gc(callback* /* f */) noexcept
 {
+  // TODO: [COREVM-440] Fix reference-counting GC scheme
+#if 0
   m_gc_scheme.gc(m_heap);
   this->free(f);
+#endif
 }
 
 // -----------------------------------------------------------------------------
@@ -102,10 +128,7 @@ template<class garbage_collection_scheme>
 void
 garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
 {
-  auto remove_criterion = [](typename dynamic_object_heap_type::iterator itr) -> bool {
-    dynamic_object_type& object = static_cast<dynamic_object_type&>(*itr);
-    return object.is_garbage_collectible();
-  };
+  static const dyobj_remove_criterion<dynamic_object_heap_type> remove_criterion;
 
   // NOTE: Cannot use `std::remove_if` here because certain implementations
   // require copying the underlying container elements, in this case

@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -49,8 +49,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <limits>
 #include <sstream>
 #include <stdexcept>
-#include <utility>
 #include <unordered_map>
+#include <utility>
 
 #include <setjmp.h>
 
@@ -64,16 +64,11 @@ namespace runtime {
 namespace internal {
 
 
-using _GarbageCollectorType = typename gc::garbage_collector<
-  process::garbage_collection_scheme>;
-
 // -----------------------------------------------------------------------------
 
-class ntvhndl_collector_gc_callback : public _GarbageCollectorType::callback
+class ntvhndl_collector_gc_callback :
+  public gc::garbage_collector<process::garbage_collection_scheme>::callback
 {
-private:
-  using dynamic_object_type = typename _GarbageCollectorType::dynamic_object_type;
-
 public:
   virtual void operator()(const dynamic_object_type& obj);
 
@@ -143,7 +138,7 @@ process::options::options()
   :
   heap_alloc_size(dyobj::COREVM_DEFAULT_HEAP_SIZE),
   pool_alloc_size(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
-  gc_flag(0)
+  gc_flag(gc_rule_meta::DEFAULT_GC_FLAGS)
 {
 }
 
@@ -184,7 +179,8 @@ process::process()
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(),
   m_sig_instr_map(),
-  m_compartments()
+  m_compartments(),
+  m_gc_rules()
 {
   init();
 }
@@ -203,7 +199,8 @@ process::process(
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(pool_alloc_size),
   m_sig_instr_map(),
-  m_compartments()
+  m_compartments(),
+  m_gc_rules()
 {
   init();
 }
@@ -221,7 +218,8 @@ process::process(const process::options& options)
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(options.pool_alloc_size),
   m_sig_instr_map(),
-  m_compartments()
+  m_compartments(),
+  m_gc_rules()
 {
   init();
 }
@@ -232,6 +230,24 @@ void
 process::init()
 {
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
+
+  // Initialize gc rules.
+  const size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
+
+  for (size_t i = 0; i < flag_size; ++i)
+  {
+    // Add 1 to bit since the gc flag values are 0 index based.
+    if (is_bit_set(m_gc_flag, static_cast<char>(i) + 1))
+    {
+      gc_rule_meta::gc_bitfields bit =
+        static_cast<gc_rule_meta::gc_bitfields>(i);
+
+      const gc_rule_ptr gc_rule =
+        gc_rule_meta::get_gc_rule(bit);
+
+      m_gc_rules.push_back(gc_rule);
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -913,23 +929,11 @@ process::get_frame_by_closure_ctx(
 bool
 process::should_gc() const
 {
-  const size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
-
-  for (size_t i = 0; i < flag_size; ++i)
+  for (const auto& gc_rule : m_gc_rules)
   {
-    // Add 1 to bit since the gc flag values are 0 index based.
-    if (is_bit_set(m_gc_flag + 1, static_cast<char>(i)))
+    if (gc_rule->should_gc(*this))
     {
-      gc_rule_meta::gc_bitfields bit =
-        static_cast<gc_rule_meta::gc_bitfields>(i);
-
-      const gc_rule_ptr gc_rule =
-        gc_rule_meta::get_gc_rule(bit);
-
-      if (gc_rule && gc_rule->should_gc(*this))
-      {
-        return true;
-      }
+      return true;
     }
   }
 
@@ -1019,6 +1023,7 @@ process::reset()
   m_call_stack.clear();
   m_invocation_ctx_stack.clear();
   m_compartments.clear();
+  m_gc_rules.clear();
 }
 
 // -----------------------------------------------------------------------------

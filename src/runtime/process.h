@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -292,6 +292,7 @@ private:
   native_types_pool_type m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, vector> m_sig_instr_map;
   std::vector<compartment> m_compartments;
+  std::vector<gc_rule_ptr> m_gc_rules;
 };
 
 // -----------------------------------------------------------------------------
