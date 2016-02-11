@@ -1,7 +1,4 @@
-coreVM
-======
-
-![logo](/resources/corevm_logo_256x256.png)
+![logo](/resources/banners/v1/coreVM_banner_v1_RES_LOW.jpg)
 
 *Turn On, Boot Up, Jack In...*
 
