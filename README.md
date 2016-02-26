@@ -13,6 +13,7 @@ programming languages.
 * [Compilation Environments] (#compilation-environments)
 * [Dependencies] (#dependencies)
 * [License] (#license)
+* [Blog Posts] (#blog-posts)
 * [Inquiries] (#inquiries)
 
 ## Overview
@@ -313,6 +314,10 @@ The latest build of coreVM depends on the following libraries:
 
 ## License
 coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
+
+
+## Blog Posts
+Follow the latest news and updates on the [coreVM Official Blog](https://medium.com/corevm-official-blog).
 
 
 ## Inquiries
