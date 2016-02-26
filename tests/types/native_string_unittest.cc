@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/errors.h"
 #include "types/native_string.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 
 class native_string_unittest : public ::testing::Test {};

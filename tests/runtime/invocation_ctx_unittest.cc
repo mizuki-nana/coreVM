@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/invocation_ctx.h"
 #include "dyobj/dyobj_id.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <algorithm>
 

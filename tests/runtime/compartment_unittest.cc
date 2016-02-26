@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/closure.h"
 #include "runtime/vector.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 
 class compartment_unittest : public ::testing::Test {};

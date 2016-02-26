@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_BYTECODE_LOADER_UNITTEST_BASE_H_
 #define COREVM_BYTECODE_LOADER_UNITTEST_BASE_H_
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <fstream>
 

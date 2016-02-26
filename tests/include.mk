@@ -64,3 +64,5 @@ TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/program_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/runner_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/signal_vector_loader_unittest.cc
 TEST_SOURCES += $(TOP_DIR)/$(TESTS)/$(FRONTEND)/utils_unittest.cc
+
+TEST_SOURCES += $(TOP_DIR)/$(TESTS)/main.cc

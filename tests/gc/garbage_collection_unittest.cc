@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gc/garbage_collector.h"
 #include "gc/reference_count_garbage_collection_scheme.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <list>
 

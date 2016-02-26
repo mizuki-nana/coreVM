@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/compartment.h"
 #include "types/native_type_handle.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 
 class frame_unittest : public ::testing::Test

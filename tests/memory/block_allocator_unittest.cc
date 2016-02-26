@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "memory/block_allocator.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 
 // -----------------------------------------------------------------------------

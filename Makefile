@@ -19,8 +19,6 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# TODO: [COREVM-161] Cleanup final build dependencies in Makefile
-
 
 ## -----------------------------------------------------------------------------
 
@@ -71,6 +69,7 @@ TEST_CXXFLAGS=-Wno-weak-vtables -Wno-missing-variable-declarations
 
 LFLAGS=-lsneaker -lpthread -lavrocpp_s
 DBG_LFLAGS=-lsneaker -lpthread -lavrocpp_s
+TESTS_LFLAGS=$(LFLAGS) -lgtest
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -228,7 +227,7 @@ $(TESTS_BUILD_DIR)/%.o: $(TOP_DIR)/%.cc
 $(TESTS): $(LIBCOREVM) $(TEST_OBJECTS)
 	mkdir -p $(@D)
 	mkdir -p $(BIN)
-	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_OBJECTS) -o $(BIN)/$(RUN_TESTS) libcorevm.a $(LFLAGS) -lgtest
+	$(CXX) $(CXXFLAGS) $(EXTRA_CXXFLAGS) $(TEST_OBJECTS) -o $(BIN)/$(RUN_TESTS) libcorevm.a $(TESTS_LFLAGS)
 	exec $(BIN)/$(RUN_TESTS) $(RUN_TESTS_ARGS)
 	@echo "\033[32mTests run completed...\033[0m";
 

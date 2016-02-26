@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/operators.h"
 #include "types/types.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <cmath>
 #include <cstdlib>

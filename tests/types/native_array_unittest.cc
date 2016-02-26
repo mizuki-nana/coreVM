@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/native_array.h"
 #include "types/types.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <stdexcept>
 

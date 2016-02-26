@@ -67,6 +67,7 @@ program::~program()
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
 bool
 program::check_parameters() const
 {
@@ -76,6 +77,7 @@ program::check_parameters() const
 
 // -----------------------------------------------------------------------------
 
+/* virtual */
 int
 program::do_run()
 {

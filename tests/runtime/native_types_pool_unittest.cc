@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/native_types_pool.h"
 #include "types/native_type_handle.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 #include <cstdint>
 #include <sstream>

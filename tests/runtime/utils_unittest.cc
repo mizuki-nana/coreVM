@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/compartment.h"
 #include "runtime/utils.h"
 
-#include <sneaker/testing/_unittest.h>
+#include <gtest/gtest.h>
 
 
 // -----------------------------------------------------------------------------

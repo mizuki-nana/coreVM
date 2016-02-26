@@ -42,12 +42,11 @@ public:
 
   virtual ~program();
 
-protected:
+private:
   virtual int do_run();
 
   virtual bool check_parameters() const;
 
-private:
   std::string m_input_path;
   std::string m_config_path;
   std::string m_format;
