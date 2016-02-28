@@ -66,8 +66,6 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-// TODO: [COREVM-448] Fix `BenchmarkInstrINVK`
-#if 0
 static
 void BenchmarkInstrINVK(benchmark::State& state)
 {
@@ -84,7 +82,6 @@ void BenchmarkInstrINVK(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
@@ -295,6 +292,7 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 BENCHMARK(BenchmarkInstrPINVK);
+BENCHMARK(BenchmarkInstrINVK);
 BENCHMARK(BenchmarkInstrJMP);
 BENCHMARK(BenchmarkInstrJMPIF);
 BENCHMARK(BenchmarkInstrJMPR);
@@ -303,7 +301,6 @@ BENCHMARK(BenchmarkInstrCLREXC);
 BENCHMARK(BenchmarkInstrJMPEXC);
 
 // Skipping these benchmarks.
-//BENCHMARK(BenchmarkInstrINVK);
 //BENCHMARK(BenchmarkInstrRTRN);
 //BENCHMARK(BenchmarkInstrEXC);
 
