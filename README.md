@@ -284,7 +284,7 @@ To be supported.
 
 ### Debian
 Operating System:<br/>
-`Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.1 LTS)`
+`Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.4 LTS)`
 
 Compiler:<br/>
 `Ubuntu clang version 3.4-1ubuntu3 (tags/RELEASE_34/final) (based on LLVM 3.4)
@@ -292,7 +292,7 @@ Target: x86_64-pc-linux-gnu
 Thread model: posix`
 
 Python:<br/>
-`Python 2.7.6 (default, Mar 22 2014, 22:59:56)`
+`Python 2.7.6 (default, Jun 22 2015, 17:58:13)`
 
 CMake:<br/>
 `cmake version 2.8.12.2`
@@ -302,7 +302,7 @@ Make:<br/>
 `This program built for x86_64-pc-linux-gnu`
 
 Sphinx:<br/>
-`Sphinx v1.1.3`
+`Sphinx v1.2.2`
 
 
 ## Dependencies
