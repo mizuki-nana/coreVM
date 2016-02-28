@@ -294,6 +294,9 @@ Thread model: posix`
 Python:<br/>
 `Python 2.7.6 (default, Mar 22 2014, 22:59:56)`
 
+CMake:<br/>
+`cmake version 2.8.12.2`
+
 Make:<br/>
 `GNU Make 3.81`
 `This program built for x86_64-pc-linux-gnu`

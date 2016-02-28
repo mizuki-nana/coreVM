@@ -32,9 +32,9 @@ from colors import colors
 PYTHON = 'python'
 PYTHON_COMPILER = './python/python_compiler.py'
 PYTHON_CODE_TRANSFORMER = './python/code_transformer.py'
-METADATA_FILE = './artifacts/corevm_metadata.json'
-COREVM = './coreVM'
-COREVM_DBG = './coreVM_dbg'
+METADATA_FILE = './build/artifacts/corevm_metadata.json'
+COREVM = './build/src/coreVM'
+COREVM_DBG = './build/src/coreVM_dbg'
 INTERMEDIATE_EXTENSION = '.tmp.py'
 BYTECODE_EXTENSION = '.core'
 

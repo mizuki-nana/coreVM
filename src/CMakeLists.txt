@@ -1,0 +1,163 @@
+#!/bin/bash
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016 Yanzheng Li
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+# the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+add_custom_command(
+    OUTPUT ${CMAKE_SOURCE_DIR}/src/corevm/corevm_bytecode_schema.h
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND sh scripts/compile_bytecode_schema.sh)
+
+
+# Library `libcorevm`.
+add_library(corevm
+    memory/allocation_scheme.cc
+    memory/sequential_allocation_scheme.cc
+    dyobj/dynamic_object_manager.cc
+    dyobj/flags.cc
+    dyobj/util.cc
+    gc/garbage_collection_scheme.cc
+    gc/mark_and_sweep_garbage_collection_scheme.cc
+    gc/reference_count_garbage_collection_scheme.cc
+    types/interfaces.cc
+    types/native_array.cc
+    types/native_map.cc
+    types/native_string.cc
+    runtime/closure.cc
+    runtime/compartment.cc
+    runtime/compartment_printer.cc
+    runtime/dbgmem_printer.cc
+    runtime/frame.cc
+    runtime/frame_printer.cc
+    runtime/gc_rule.cc
+    runtime/instr.cc
+    runtime/instr_info.cc
+    runtime/instr_printer.cc
+    runtime/invocation_ctx.cc
+    runtime/native_types_pool.cc
+    runtime/process.cc
+    runtime/process_printer.cc
+    runtime/process_runner.cc
+    runtime/sighandler.cc
+    runtime/sighandler_registrar.cc
+    runtime/utils.cc
+    frontend/bytecode_loader_binary.cc
+    frontend/bytecode_loader.cc
+    frontend/configuration.cc
+    frontend/program.cc
+    frontend/runner.cc
+    frontend/signal_vector_loader.cc
+    frontend/utils.cc
+    corevm/errors.cc
+    corevm/corevm_bytecode_schema.h
+    )
+
+
+set_target_properties(corevm PROPERTIES COMPILE_FLAGS "-O3")
+
+
+# Binary `coreVM`.
+add_executable(coreVM corevm/main.cc)
+
+
+set_target_properties(coreVM PROPERTIES COMPILE_FLAGS "-O3")
+
+
+target_link_libraries(coreVM
+    corevm
+    boost_system
+    boost_regex
+    boost_iostreams
+    boost_program_options
+    pthread
+    sneaker
+    avrocpp_s)
+
+
+### Debug version.
+
+
+# Library `libcorevm_dbg`.
+add_library(corevm_dbg
+    memory/allocation_scheme.cc
+    memory/sequential_allocation_scheme.cc
+    dyobj/dynamic_object_manager.cc
+    dyobj/flags.cc
+    dyobj/util.cc
+    gc/garbage_collection_scheme.cc
+    gc/mark_and_sweep_garbage_collection_scheme.cc
+    gc/reference_count_garbage_collection_scheme.cc
+    types/interfaces.cc
+    types/native_array.cc
+    types/native_map.cc
+    types/native_string.cc
+    runtime/closure.cc
+    runtime/compartment.cc
+    runtime/compartment_printer.cc
+    runtime/dbgmem_printer.cc
+    runtime/frame.cc
+    runtime/frame_printer.cc
+    runtime/gc_rule.cc
+    runtime/instr.cc
+    runtime/instr_info.cc
+    runtime/instr_printer.cc
+    runtime/invocation_ctx.cc
+    runtime/native_types_pool.cc
+    runtime/process.cc
+    runtime/process_printer.cc
+    runtime/process_runner.cc
+    runtime/sighandler.cc
+    runtime/sighandler_registrar.cc
+    runtime/utils.cc
+    frontend/bytecode_loader_binary.cc
+    frontend/bytecode_loader.cc
+    frontend/configuration.cc
+    frontend/program.cc
+    frontend/runner.cc
+    frontend/signal_vector_loader.cc
+    frontend/utils.cc
+    corevm/errors.cc
+    corevm/corevm_bytecode_schema.h
+    )
+
+
+set_target_properties(corevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+
+
+# Binary `coreVM_dbg`.
+add_executable(coreVM_dbg corevm/main.cc)
+
+
+target_link_libraries(coreVM_dbg
+    corevm_dbg
+    boost_system
+    boost_regex
+    boost_iostreams
+    boost_timer
+    boost_program_options
+    pthread
+    sneaker
+    avrocpp_s
+    -fsanitize=address
+    -fno-omit-frame-pointer
+    -fno-optimize-sibling-calls
+    )
