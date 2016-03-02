@@ -31,6 +31,7 @@ PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 BOOTSTRAP_TESTS=bootstrap_tests.py
 SANITY_TESTS_ARGS=--sanity-test
+DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
 PYTHON=`which python`
 
 ## -----------------------------------------------------------------------------
@@ -57,6 +58,12 @@ python_tests:
 sanity_tests:
 	export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-3.4)
 	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(SANITY_TESTS_ARGS)
+
+## -----------------------------------------------------------------------------
+
+.PHONY: dynamic_analysis_tests
+dynamic_analysis_tests:
+	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(DYNAMIC_ANALYSIS_TESTS_ARGS)
 
 ## -----------------------------------------------------------------------------
 

@@ -50,6 +50,8 @@ def pyta_cmdl_args(path, options):
 
     if options.sanity_test:
         args.append('--sanity-test')
+    elif options.dynamic_analysis:
+        args.append('--dynamic-analysis')
 
     return args
 
@@ -73,6 +75,8 @@ def run(options):
         print '(Python only)'
     elif options.sanity_test:
         print '(Sanity test)'
+    elif options.dynamic_analysis:
+        print '(Dynamic analysis)'
     print 'Testing using the following %d input file(s):' % len(real_inputs)
 
     # Bring blank line.
@@ -94,7 +98,7 @@ def run(options):
 
         begin_time = time.time()
 
-        if not options.sanity_test:
+        if not (options.sanity_test or options.dynamic_analysis):
             retcode = StdoutComparator(lhs_args, rhs_args).run()
         else:
             retcode = subprocess.call(lhs_args, stdout=subprocess.PIPE)
@@ -165,10 +169,27 @@ def main():
         help='Sanity test only'
     )
 
+    parser.add_option(
+        '-a',
+        '--dynamic-analysis',
+        action='store_true',
+        dest='dynamic_analysis',
+        default=False,
+        help='Enable dynamic analysis'
+    )
+
     options, _ = parser.parse_args()
 
     if options.python_only and options.sanity_test:
         sys.stderr.write('Cannot specify --python-only and --sanity-test togeter.\n')
+        sys.exit(-1)
+
+    if options.python_only and options.dynamic_analysis:
+        sys.stderr.write('Cannot specify --python-only and --dynamic-analysis together.\n')
+        sys.exit(-1)
+
+    if options.sanity_test and options.dynamic_analysis:
+        sys.stderr.write('Cannot specify --sanity-test and --dynamic-analysis together.\n')
         sys.exit(-1)
 
     run(options)

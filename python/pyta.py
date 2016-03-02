@@ -35,6 +35,7 @@ PYTHON_CODE_TRANSFORMER = './python/code_transformer.py'
 METADATA_FILE = './build/artifacts/corevm_metadata.json'
 COREVM = './build/src/coreVM'
 COREVM_DBG = './build/src/coreVM_dbg'
+COREVM_DBG_ASAN = './build/src/coreVM_dbg_asan'
 INTERMEDIATE_EXTENSION = '.tmp.py'
 BYTECODE_EXTENSION = '.core'
 
@@ -106,6 +107,42 @@ class Pyta(object):
             self.steps.append(
                 PytaStep(
                     [
+                        COREVM_DBG_ASAN,
+                        compiled_path
+                    ],
+                    is_severe=True
+                )
+            )
+        elif self.options.dynamic_analysis:
+            self.steps.append(
+                # Run coreVM with Valgrind's Memcheck.
+                PytaStep(
+                    [
+                        'valgrind',
+                        '--tool=memcheck',
+                        '--gen-suppressions=no',
+
+                        # Do not print detailed leak analysis.
+                        # (May want to turn it on for individual tests).
+                        '--leak-check=no',
+
+                        # Show "still reachable" leaks.
+                        # http://valgrind.org/docs/manual/faq.html#faq.deflost
+                        '--show-reachable=yes',
+
+                        # Do not generate mingled names.
+                        '--demangle=yes',
+
+                        # A non-zero exit code to indicate unsuppressed errors
+                        # reported.
+                        '--error-exitcode=20',
+
+                        # Supply a list of suppressions.
+                        '--suppressions=valgrind/memcheck.supp',
+
+                        # Only print errors.
+                        '--quiet',
+
                         COREVM_DBG,
                         compiled_path
                     ],
@@ -164,6 +201,15 @@ def main():
         dest='sanity_test',
         default=False,
         help='Sanity test only'
+    )
+
+    parser.add_option(
+        '-a',
+        '--dynamic-analysis',
+        action='store_true',
+        dest='dynamic_analysis',
+        default=False,
+        help='Enable dynamic analysis'
     )
 
     options, args = parser.parse_args()

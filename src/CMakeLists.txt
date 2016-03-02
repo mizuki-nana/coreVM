@@ -28,8 +28,7 @@ add_custom_command(
     COMMAND sh scripts/compile_bytecode_schema.sh)
 
 
-# Library `libcorevm`.
-add_library(corevm
+set(sources
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
     dyobj/dynamic_object_manager.cc
@@ -70,6 +69,10 @@ add_library(corevm
     corevm/errors.cc
     corevm/corevm_bytecode_schema.h
     )
+
+
+# Library `libcorevm`.
+add_library(corevm ${sources})
 
 
 set_target_properties(corevm PROPERTIES COMPILE_FLAGS "-O3")
@@ -93,54 +96,14 @@ target_link_libraries(coreVM
     avrocpp_s)
 
 
-### Debug version.
+### Debug version (pure).
 
 
 # Library `libcorevm_dbg`.
-add_library(corevm_dbg
-    memory/allocation_scheme.cc
-    memory/sequential_allocation_scheme.cc
-    dyobj/dynamic_object_manager.cc
-    dyobj/flags.cc
-    dyobj/util.cc
-    gc/garbage_collection_scheme.cc
-    gc/mark_and_sweep_garbage_collection_scheme.cc
-    gc/reference_count_garbage_collection_scheme.cc
-    types/interfaces.cc
-    types/native_array.cc
-    types/native_map.cc
-    types/native_string.cc
-    runtime/closure.cc
-    runtime/compartment.cc
-    runtime/compartment_printer.cc
-    runtime/dbgmem_printer.cc
-    runtime/frame.cc
-    runtime/frame_printer.cc
-    runtime/gc_rule.cc
-    runtime/instr.cc
-    runtime/instr_info.cc
-    runtime/instr_printer.cc
-    runtime/invocation_ctx.cc
-    runtime/native_types_pool.cc
-    runtime/process.cc
-    runtime/process_printer.cc
-    runtime/process_runner.cc
-    runtime/sighandler.cc
-    runtime/sighandler_registrar.cc
-    runtime/utils.cc
-    frontend/bytecode_loader_binary.cc
-    frontend/bytecode_loader.cc
-    frontend/configuration.cc
-    frontend/program.cc
-    frontend/runner.cc
-    frontend/signal_vector_loader.cc
-    frontend/utils.cc
-    corevm/errors.cc
-    corevm/corevm_bytecode_schema.h
-    )
+add_library(corevm_dbg ${sources})
 
 
-set_target_properties(corevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+set_target_properties(corevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 
 # Binary `coreVM_dbg`.
@@ -149,6 +112,36 @@ add_executable(coreVM_dbg corevm/main.cc)
 
 target_link_libraries(coreVM_dbg
     corevm_dbg
+    boost_system
+    boost_regex
+    boost_iostreams
+    boost_timer
+    boost_program_options
+    pthread
+    sneaker
+    avrocpp_s
+    -fno-inline
+    -fno-omit-frame-pointer
+    -fno-optimize-sibling-calls
+    )
+
+
+### Debug version with Address Sanitizer support.
+
+
+# Library `libcorevm_dbg_asan`.
+add_library(corevm_dbg_asan ${sources})
+
+
+set_target_properties(corevm_dbg_asan PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+
+
+# Binary `coreVM_dbg_asan`.
+add_executable(coreVM_dbg_asan corevm/main.cc)
+
+
+target_link_libraries(coreVM_dbg_asan
+    corevm_dbg_asan
     boost_system
     boost_regex
     boost_iostreams
