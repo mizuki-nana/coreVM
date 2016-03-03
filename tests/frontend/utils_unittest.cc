@@ -71,8 +71,6 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
 
 // -----------------------------------------------------------------------------
 
-// TODO: [COREVM-445] Fix `utils_unittest::TestValidateInvalidVectorFails` failure
-#if 0
 TEST_F(utils_unittest, TestValidateInvalidVectorFails)
 {
   // Invalid instruction code.
@@ -92,6 +90,5 @@ TEST_F(utils_unittest, TestValidateInvalidVectorFails)
     sneaker::json::json_validation_error
   );
 }
-#endif
 
 // -----------------------------------------------------------------------------
