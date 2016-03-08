@@ -1,0 +1,33 @@
+language: cpp
+
+os:
+  - linux
+
+addons:
+  apt:
+    sources:
+      - boost-latest
+      - ubuntu-toolchain-r-test
+
+packages:
+  - libboost1.55-all-dev
+
+compiler:
+  - clang
+
+install:
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get update -qq ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install -y make ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install libboost1.55-all-dev ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install python-sphinx ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install -qq gcc-4.8 g++-4.8 ; fi
+  - sudo pip install --upgrade pip
+  - sudo pip install sphinx_rtd_theme
+  - export PATH=/usr/local/bin:$PATH
+
+script:
+  - sudo git submodule sync
+  - sudo git submodule update --init
+  - make -C libs full=0
+  - make full=0

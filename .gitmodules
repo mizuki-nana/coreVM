@@ -1,0 +1,12 @@
+[submodule "libs/sneaker"]
+	path = libs/sneaker
+	url = git://github.com/yanzhengli/sneaker
+[submodule "libs/benchmark"]
+	path = libs/benchmark
+	url = git://github.com/google/benchmark
+[submodule "libs/googletest"]
+	path = libs/googletest
+	url = git://github.com/google/googletest
+[submodule "libs/avro"]
+	path = libs/avro
+	url = git://github.com/apache/avro

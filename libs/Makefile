@@ -20,72 +20,54 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-## Top level Makefile. Used to bootstrap cmake to build from source.
-
+## Makefile for installing all dependencies.
 
 ## -----------------------------------------------------------------------------
 
 TOP_DIR=$(CURDIR)
-BUILD_DIR=$(TOP_DIR)/build
-PYTHON_DIR=python
-PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
-BOOTSTRAP_TESTS=bootstrap_tests.py
-SANITY_TESTS_ARGS=--sanity-test
-DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
-PYTHON=`which python`
-
-## -----------------------------------------------------------------------------
-
-ifeq ($(full), 1)
-	BUILD_TARGETS=build python_tests benchmarks sanity_tests dynamic_analysis_tests
-	BUILD_TARGET_CMAKE_ARGS=-DBUILD_FULL=ON
-else
-	BUILD_TARGETS=build python_tests
-endif
+SNEAKER_DIR=$(TOP_DIR)/sneaker
+BENCHMARK_DIR=$(TOP_DIR)/benchmark
+AVRO_DIR=$(TOP_DIR)/avro
+AVRO_CPP_DIR=$(AVRO_DIR)/lang/c++
+AVRO_PY_DIR=$(AVRO_DIR)/lang/py
 
 ## -----------------------------------------------------------------------------
 
 .PHONY: all
-all: $(BUILD_TARGETS)
+ifeq ($(full), 1)
+all: avro sneaker benchmark
+else
+all: avro sneaker
+endif
 
 ## -----------------------------------------------------------------------------
 
-.PHONY: build
-build:
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make
+.PHONY: sneaker
+sneaker:
+	$(MAKE) -C sneaker
+	$(MAKE) -C sneaker install
 
 ## -----------------------------------------------------------------------------
 
-.PHONY: python_tests
-python_tests:
-	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
+.PHONY: benchmark
+benchmark:
+	cd $(BENCHMARK_DIR) && cmake -DCMAKE_BUILD_TYPE=Release
+	$(MAKE) -C benchmark
+	sudo cp -f $(BENCHMARK_DIR)/src/libbenchmark.a /usr/local/lib/
+	sudo cp -r $(BENCHMARK_DIR)/include/benchmark/ /usr/local/include/
 
 ## -----------------------------------------------------------------------------
 
-.PHONY: sanity_tests
-sanity_tests:
-	export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-3.4)
-	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(SANITY_TESTS_ARGS)
-
-## -----------------------------------------------------------------------------
-
-.PHONY: dynamic_analysis_tests
-dynamic_analysis_tests:
-	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(DYNAMIC_ANALYSIS_TESTS_ARGS)
-
-## -----------------------------------------------------------------------------
-
-.PHONY: benchmarks
-benchmarks:
-	$(BUILD_DIR)/benchmarks/run_benchmarks
-
-## -----------------------------------------------------------------------------
-
-.PHONY: clean
-clean:
-	rm -rf $(BUILD_DIR)
-	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
-	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py.core
+.PHONY: avro
+avro:
+	cd $(AVRO_CPP_DIR) && cmake -G "Unix Makefiles" && $(MAKE)
+	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp_s.a /usr/local/lib
+	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.so /usr/local/lib
+	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.so.1.7.7.0 /usr/local/lib
+	sudo cp -f $(AVRO_CPP_DIR)/avrogencpp /usr/local/bin
+	sudo cp -f $(AVRO_CPP_DIR)/precompile /usr/local/bin
+	sudo mkdir -p /usr/local/include/avro
+	sudo cp -rf $(AVRO_CPP_DIR)/api/* /usr/local/include/avro/
+	cd $(AVRO_PY_DIR) && sudo python setup.py install
 
 ## -----------------------------------------------------------------------------

@@ -28,6 +28,10 @@ cmake_minimum_required(VERSION 2.6)
 project(coreVM CXX)
 
 
+# Option.
+option(BUILD_FULL "Build project in full" OFF)
+
+
 # Release mode.
 set(CMAKE_BUILD_TYPE Release ... FORCE)
 
@@ -71,4 +75,7 @@ set(BENCHMARKS_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
 ADD_SUBDIRECTORY(${SRC_DIR})
 ADD_SUBDIRECTORY(${TESTS_DIR})
 ADD_SUBDIRECTORY(${TOOLS_DIR})
-ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
+
+if(BUILD_FULL)
+  ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
+endif()

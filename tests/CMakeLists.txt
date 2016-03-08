@@ -78,5 +78,10 @@ target_link_libraries(run_tests
 
 
 # Run tests.
-add_custom_command(TARGET run_tests POST_BUILD COMMAND
-    ./run_tests --gtest_color=yes --gtest_shuffle --gtest_repeat=3)
+if(BUILD_FULL)
+  add_custom_command(TARGET run_tests POST_BUILD COMMAND
+      ./run_tests --gtest_color=yes --gtest_shuffle --gtest_repeat=3)
+else()
+  add_custom_command(TARGET run_tests POST_BUILD COMMAND
+      ./run_tests --gtest_color=yes --gtest_shuffle)
+endif()
