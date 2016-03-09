@@ -4,6 +4,7 @@
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -14,9 +15,12 @@
    2
    Memcheck:Addr4
    fun:pthread_mutex_lock
+   fun:_ZN5boost4asio6detail11posix_mutex4lockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEEC2ERS3_
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -27,9 +31,12 @@
    3
    Memcheck:Addr4
    fun:__pthread_mutex_lock_full
+   fun:_ZN5boost4asio6detail11posix_mutex4lockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEEC2ERS3_
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -39,9 +46,11 @@
 {
    4
    Memcheck:Addr8
+   fun:_ZN5boost4asio6detail15timer_queue_set16get_ready_timersERNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -54,6 +63,7 @@
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -63,9 +73,12 @@
 {
    6
    Memcheck:Addr8
+   fun:_ZNK5boost4asio6detail15timer_queue_set18wait_duration_usecEl
+   fun:_ZN5boost4asio6detail13epoll_reactor11get_timeoutER10itimerspec
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -78,6 +91,7 @@
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -87,9 +101,14 @@
 {
    8
    Memcheck:Addr4
+   fun:__pthread_mutex_unlock_usercnt
+   fun:pthread_mutex_unlock
+   fun:_ZN5boost4asio6detail11posix_mutex6unlockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEED2Ev
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -99,11 +118,13 @@
 {
    9
    Memcheck:Addr4
-   fun:__pthread_mutex_unlock_usercnt
-   fun:pthread_mutex_unlock
+   fun:__pthread_mutex_unlock_full
+   fun:_ZN5boost4asio6detail11posix_mutex6unlockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEED2Ev
    fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -113,10 +134,13 @@
 {
    10
    Memcheck:Addr4
-   fun:__pthread_mutex_unlock_full
-   fun:_ZN5boost4asio6detail13epoll_reactor3runEbRNS1_8op_queueINS1_25task_io_service_operationEEE
+   fun:pthread_mutex_lock
+   fun:_ZN5boost4asio6detail11posix_mutex4lockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEE4lockEv
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -126,9 +150,13 @@
 {
    11
    Memcheck:Addr4
-   fun:pthread_mutex_lock
+   fun:__pthread_mutex_lock_full
+   fun:_ZN5boost4asio6detail11posix_mutex4lockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEE4lockEv
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -137,10 +165,11 @@
 
 {
    12
-   Memcheck:Addr4
-   fun:__pthread_mutex_lock_full
+   Memcheck:Addr1
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -149,9 +178,13 @@
 
 {
    13
-   Memcheck:Addr1
+   Memcheck:Addr8
+   fun:_ZN5boost4asio6detail15op_queue_access4nextINS1_25task_io_service_operationES4_EEvRPT_PT0_
+   fun:_ZN5boost4asio6detail8op_queueINS1_25task_io_service_operationEE4pushEPS3_
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -161,8 +194,11 @@
 {
    14
    Memcheck:Addr8
+   fun:_ZN5boost4asio6detail8op_queueINS1_25task_io_service_operationEE4pushEPS3_
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -172,8 +208,11 @@
 {
    15
    Memcheck:Addr8
+   fun:_ZN5boost4asio6detail8op_queueINS1_25task_io_service_operationEE4pushEPS3_
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -183,8 +222,11 @@
 {
    16
    Memcheck:Addr8
+   fun:_ZN5boost4asio6detail8op_queueINS1_25task_io_service_operationEE4pushEPS3_
+   fun:_ZN5boost4asio6detail15task_io_service12task_cleanupD2Ev
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -193,9 +235,10 @@
 
 {
    17
-   Memcheck:Addr8
+   Memcheck:Addr1
    fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -204,9 +247,13 @@
 
 {
    18
-   Memcheck:Addr1
-   fun:_ZN5boost4asio6detail15task_io_service10do_run_oneERNS1_11scoped_lockINS1_11posix_mutexEEERNS1_27task_io_service_thread_infoERKNS_6system10error_codeE
+   Memcheck:Addr4
+   fun:__pthread_mutex_unlock_usercnt
+   fun:pthread_mutex_unlock
+   fun:_ZN5boost4asio6detail11posix_mutex6unlockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEED2Ev
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -216,9 +263,11 @@
 {
    19
    Memcheck:Addr4
-   fun:__pthread_mutex_unlock_usercnt
-   fun:pthread_mutex_unlock
+   fun:__pthread_mutex_unlock_full
+   fun:_ZN5boost4asio6detail11posix_mutex6unlockEv
+   fun:_ZN5boost4asio6detail11scoped_lockINS1_11posix_mutexEED2Ev
    fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
+   fun:_ZN5boost4asio10io_service3runEv
    fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
    fun:_ZN7sneaker9threading14daemon_service7handlerEPv
    fun:start_thread
@@ -227,11 +276,413 @@
 
 {
    20
-   Memcheck:Addr4
-   fun:__pthread_mutex_unlock_full
-   fun:_ZN5boost4asio6detail15task_io_service3runERNS_6system10error_codeE
-   fun:_ZN7sneaker9threading34fixed_time_interval_daemon_service6handleEv
-   fun:_ZN7sneaker9threading14daemon_service7handlerEPv
-   fun:start_thread
-   fun:clone
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   21
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   22
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   23
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   24
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   25
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   26
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init8
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   27
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init16
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   28
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init16
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   29
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init16
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   30
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init16
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   31
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init16
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   32
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   33
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   34
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   35
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   36
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   37
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:__cxx_global_var_init22
+   fun:_GLOBAL__I_a
+   fun:__libc_csu_init
+   fun:(below main)
+}
+
+{
+   38
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorImE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseImSaImEE11_M_allocateEm
+   fun:_ZNSt12_Vector_baseImSaImEE17_M_create_storageEm
+   fun:_ZNSt12_Vector_baseImSaImEEC2EmRKS0_
+   fun:_ZNSt6vectorImSaImEEC2ERKS1_
+   fun:_ZN6corevm5types12native_arrayC2ERKS1_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJbfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+}
+
+{
+   39
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt4pairIjmEE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseISt4pairIjmESaIS1_EE11_M_allocateEm
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE20_M_allocate_and_copyISt13move_iteratorIPS1_EEES6_mT_S8_
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE7reserveEm
+   fun:_ZN6corevm5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEC2Ev
+   fun:_ZN7sneaker9allocator13object_traitsIN6corevm5dyobj14dynamic_objectINS2_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEEE9constructIS8_JEEEvPT_DpOT0_
+   fun:_ZN6corevm6memory16object_containerINS_5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEENS2_14heap_allocatorIS7_NS0_15block_allocatorIS7_EEEEE6createEm
+   fun:_ZN6corevm5dyobj19dynamic_object_heapINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEE13create_dyobjsEm
+   fun:_ZN6corevm7runtime7process13create_dyobjsEm
+   fun:_ZN6corevm7runtime23instr_handler_setattrs27executeERKNS0_5instrERNS0_7processEPPNS0_5frameEPPNS0_14invocation_ctxE
+   fun:_ZN6corevm7runtime7process5startEv
+}
+
+{
+   40
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:calloc
+   fun:allocate_dtv
+   fun:_dl_allocate_tls
+   fun:allocate_stack
+   fun:pthread_create@@GLIBC_2.2.5
+   fun:_ZN7sneaker9threading14daemon_service5startEv
+   fun:_ZN6corevm7runtime14process_runner5startEv
+   fun:_ZNK6corevm8frontend6runner3runEv
+   fun:_ZN6corevm8frontend7program6do_runEv
+   fun:_ZN7sneaker7utility15cmdline_program3runEiPPc
+   fun:main
+}
+
+{
+   41
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZStrsIcSt11char_traitsIcESaIcEERSt13basic_istreamIT_T0_ES7_RSbIS4_S5_T1_E
+   fun:_ZN5boost6detail26lexical_stream_limited_srcIcSt11char_traitsIcELb0EE20shr_using_base_classIN6corevm5types13native_stringEEEbRT_
+   fun:_ZN5boost6detail26lexical_stream_limited_srcIcSt11char_traitsIcELb0EErsIN6corevm5types13native_stringEEEbRT_
+   fun:_ZN5boost6detail20lexical_cast_do_castIN6corevm5types13native_stringElE17lexical_cast_implERKl
+   fun:_ZN5boost12lexical_castIN6corevm5types13native_stringElEET_RKT0_
+   fun:_ZN6corevm5types4reprclIlEENS0_13native_stringERKT_
+   fun:_ZNK6corevm5types31native_type_typed_unary_visitorINS0_4reprENS0_13native_stringEEclIlEES3_RKT_
+   fun:_ZN6corevm5types7variant4impl10dispatcherINS0_31native_type_typed_unary_visitorINS0_4reprENS0_13native_stringEEENS1_7variantIJahstijlmbfdS6_NS0_12native_arrayENS0_10native_mapEEEES6_JlmbfdS6_S9_SA_EE5applyERSB_S7_
+}
+
+{
+   42
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEmPKv
+   fun:_ZNSt10_HashtableImSt4pairIKmmESaIS2_ENSt8__detail10_Select1stESt8equal_toImESt4hashImENS4_18_Mod_range_hashingENS4_20_Default_ranged_hashENS4_20_Prime_rehash_policyENS4_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEm
+   fun:_ZNSt10_HashtableImSt4pairIKmmESaIS2_ENSt8__detail10_Select1stESt8equal_toImESt4hashImENS4_18_Mod_range_hashingENS4_20_Default_ranged_hashENS4_20_Prime_rehash_policyENS4_17_Hashtable_traitsILb0ELb0ELb1EEEEC2EOSF_
+   fun:_ZNSt13unordered_mapImmSt4hashImESt8equal_toImESaISt4pairIKmmEEEC2EOS8_
+   fun:_ZN6corevm5types10native_mapC2EOS1_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_10native_mapEEE4moveEmPvS6_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_12native_arrayENS0_10native_mapEEE4moveEmPvS7_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4moveEmPvS8_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4moveEmPvS8_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4moveEmPvS8_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJbfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4moveEmPvS8_
+}
+
+{
+   43
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSs6appendEPKcm
+   fun:_ZStrsIcSt11char_traitsIcESaIcEERSt13basic_istreamIT_T0_ES7_RSbIS4_S5_T1_E
+   fun:_ZN5boost6detail26lexical_stream_limited_srcIcSt11char_traitsIcELb0EE20shr_using_base_classIN6corevm5types13native_stringEEEbRT_
+   fun:_ZN5boost6detail26lexical_stream_limited_srcIcSt11char_traitsIcELb0EErsIN6corevm5types13native_stringEEEbRT_
+   fun:_ZN5boost6detail20lexical_cast_do_castIN6corevm5types13native_stringElE17lexical_cast_implERKl
+   fun:_ZN5boost12lexical_castIN6corevm5types13native_stringElEET_RKT0_
+   fun:_ZN6corevm5types4reprclIlEENS0_13native_stringERKT_
+   fun:_ZNK6corevm5types31native_type_typed_unary_visitorINS0_4reprENS0_13native_stringEEclIlEES3_RKT_
+}
+
+{
+   44
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZNSs4_Rep9_S_createEmmRKSaIcE
+   fun:_ZNSs4_Rep8_M_cloneERKSaIcEm
+   fun:_ZNSs7reserveEm
+   fun:_ZNSs6appendEmc
+   fun:_ZN4avro13BinaryDecoder12decodeStringERSs
+   fun:_ZN4avro7Decoder12decodeStringEv
+   fun:_ZN4avro12codec_traitsISsE6decodeERNS_7DecoderERSs
+   fun:_ZN4avro6decodeISsEEvRNS_7DecoderERT_
+   fun:_ZN4avro12codec_traitsISt6vectorISsSaISsEEE6decodeERNS_7DecoderERS3_
+   fun:_ZN4avro6decodeISt6vectorISsSaISsEEEEvRNS_7DecoderERT_
+   fun:_ZN4avro12codec_traitsIN6corevm8bytecodeEE6decodeERNS_7DecoderERS2_
+}
+
+{
+   45
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorIPNSt8__detail15_Hash_node_baseEE8allocateEmPKv
+   fun:_ZNSt10_HashtableImSt4pairIKmmESaIS2_ENSt8__detail10_Select1stESt8equal_toImESt4hashImENS4_18_Mod_range_hashingENS4_20_Default_ranged_hashENS4_20_Prime_rehash_policyENS4_17_Hashtable_traitsILb0ELb0ELb1EEEE19_M_allocate_bucketsEm
+   fun:_ZNSt10_HashtableImSt4pairIKmmESaIS2_ENSt8__detail10_Select1stESt8equal_toImESt4hashImENS4_18_Mod_range_hashingENS4_20_Default_ranged_hashENS4_20_Prime_rehash_policyENS4_17_Hashtable_traitsILb0ELb0ELb1EEEEC2ERKSF_
+   fun:_ZNSt13unordered_mapImmSt4hashImESt8equal_toImESaISt4pairIKmmEEEC2ERKS8_
+   fun:_ZN6corevm5types10native_mapC2ERKS1_
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+   fun:_ZN6corevm5types7variant4impl14variant_helperIJbfdNS0_13native_stringENS0_12native_arrayENS0_10native_mapEEE4copyEmPKvPv
+}
+
+{
+   46
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt4pairIjmEE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseISt4pairIjmESaIS1_EE11_M_allocateEm
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE19_M_emplace_back_auxIJRjRmEEEvDpOT_
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE12emplace_backIJRjRmEEEvDpOT_
+   fun:_ZN6corevm5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEE7putattrEjm
+   fun:_ZN6corevm7runtime21instr_handler_setattr7executeERKNS0_5instrERNS0_7processEPPNS0_5frameEPPNS0_14invocation_ctxE
+   fun:_ZN6corevm7runtime7process5startEv
+   fun:_ZN6corevm7runtime14process_runner5startEv
+   fun:_ZNK6corevm8frontend6runner3runEv
+   fun:_ZN6corevm8frontend7program6do_runEv
+   fun:_ZN7sneaker7utility15cmdline_program3runEiPPc
+}
+
+{
+   47
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt4pairIjmEE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseISt4pairIjmESaIS1_EE11_M_allocateEm
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE20_M_allocate_and_copyISt13move_iteratorIPS1_EEES6_mT_S8_
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE7reserveEm
+   fun:_ZN6corevm5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEC2Ev
+   fun:_ZN7sneaker9allocator13object_traitsIN6corevm5dyobj14dynamic_objectINS2_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEEE9constructIS8_JEEEvPT_DpOT0_
+   fun:_ZN6corevm6memory16object_containerINS_5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEENS2_14heap_allocatorIS7_NS0_15block_allocatorIS7_EEEEE6createEv
+   fun:_ZN6corevm5dyobj19dynamic_object_heapINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEE12create_dyobjEv
+   fun:_ZN6corevm7runtime7process12create_dyobjEv
+   fun:_ZN6corevm7runtime17instr_handler_new7executeERKNS0_5instrERNS0_7processEPPNS0_5frameEPPNS0_14invocation_ctxE
+   fun:_ZN6corevm7runtime7process5startEv
+}
+
+{
+   48
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt4pairIjmEE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseISt4pairIjmESaIS1_EE11_M_allocateEm
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE19_M_emplace_back_auxIJRjRmEEEvDpOT_
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE12emplace_backIJRjRmEEEvDpOT_
+   fun:_ZN6corevm5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEE7putattrEjm
+   fun:_ZN6corevm7runtime23instr_handler_setattrs27executeERKNS0_5instrERNS0_7processEPPNS0_5frameEPPNS0_14invocation_ctxE
+   fun:_ZN6corevm7runtime7process5startEv
+   fun:_ZN6corevm7runtime14process_runner5startEv
+   fun:_ZNK6corevm8frontend6runner3runEv
+   fun:_ZN6corevm8frontend7program6do_runEv
+   fun:_ZN7sneaker7utility15cmdline_program3runEiPPc
+}
+
+{
+   49
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   fun:_ZN9__gnu_cxx13new_allocatorISt4pairIjmEE8allocateEmPKv
+   fun:_ZNSt12_Vector_baseISt4pairIjmESaIS1_EE11_M_allocateEm
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE20_M_allocate_and_copyISt13move_iteratorIPS1_EEES6_mT_S8_
+   fun:_ZNSt6vectorISt4pairIjmESaIS1_EE7reserveEm
+   fun:_ZN6corevm5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEC2Ev
+   fun:_ZN7sneaker9allocator13object_traitsIN6corevm5dyobj14dynamic_objectINS2_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEEE9constructIS8_JEEEvPT_DpOT0_
+   fun:_ZN6corevm6memory16object_containerINS_5dyobj14dynamic_objectINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEEENS2_14heap_allocatorIS7_NS0_15block_allocatorIS7_EEEEE6createEm
+   fun:_ZN6corevm5dyobj19dynamic_object_heapINS_2gc41reference_count_garbage_collection_scheme22dynamic_object_managerEE13create_dyobjsEm
+   fun:_ZN6corevm7runtime7process13create_dyobjsEm
+   fun:_ZN6corevm7runtime23instr_handler_setattrs27executeERKNS0_5instrERNS0_7processEPPNS0_5frameEPPNS0_14invocation_ctxE
+   fun:_ZN6corevm7runtime7process5startEv
 }

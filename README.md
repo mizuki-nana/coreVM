@@ -303,6 +303,9 @@ Make:<br/>
 `GNU Make 3.81`
 `This program built for x86_64-pc-linux-gnu`
 
+Valgrind:<br/>
+`valgrind-3.10.1`
+
 Sphinx:<br/>
 `Sphinx v1.2.2`
 

@@ -118,7 +118,7 @@ target_link_libraries(coreVM_dbg
     boost_timer
     boost_program_options
     pthread
-    sneaker
+    sneaker_dbg
     avrocpp_s
     -fno-inline
     -fno-omit-frame-pointer
@@ -148,7 +148,7 @@ target_link_libraries(coreVM_dbg_asan
     boost_timer
     boost_program_options
     pthread
-    sneaker
+    sneaker_dbg
     avrocpp_s
     -fsanitize=address
     -fno-omit-frame-pointer
