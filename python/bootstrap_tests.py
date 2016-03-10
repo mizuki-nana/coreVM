@@ -63,6 +63,7 @@ def python_cmdl_args(path):
 ## -----------------------------------------------------------------------------
 
 def run(options):
+    """Return a boolean value indicating if the run succeeds."""
     inputs = glob.glob(PYTHON_TESTS_DIR + '*.py') \
         if not options.tests else options.tests
 
@@ -77,6 +78,10 @@ def run(options):
         print '(Sanity test)'
     elif options.dynamic_analysis:
         print '(Dynamic analysis)'
+
+    if options.strict_mode:
+        print '[strict mode]'
+
     print 'Testing using the following %d input file(s):' % len(real_inputs)
 
     # Bring blank line.
@@ -135,6 +140,8 @@ def run(options):
     print 'Cumulated execution time: {cumulated_time:3.3f} s'.format(
         cumulated_time=cumulated_time)
 
+    return success if options.strict_mode else True
+
 ## -----------------------------------------------------------------------------
 
 def main():
@@ -178,6 +185,15 @@ def main():
         help='Enable dynamic analysis'
     )
 
+    parser.add_option(
+        '-x',
+        '--strict-mode',
+        action='store_true',
+        dest='strict_mode',
+        default=False,
+        help='Run in strict mode (all tests must pass)'
+    )
+
     options, _ = parser.parse_args()
 
     if options.python_only and options.sanity_test:
@@ -192,11 +208,13 @@ def main():
         sys.stderr.write('Cannot specify --sanity-test and --dynamic-analysis together.\n')
         sys.exit(-1)
 
-    run(options)
+    # Success boolean to exit code conversion.
+    return 0 if run(options) else 1
 
 ## -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    main()
+    import sys
+    sys.exit(main())
 
 ## -----------------------------------------------------------------------------

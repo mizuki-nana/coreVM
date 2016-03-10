@@ -30,6 +30,7 @@ BUILD_DIR=$(TOP_DIR)/build
 PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 BOOTSTRAP_TESTS=bootstrap_tests.py
+BOOTSTRAP_TESTS_ARGS=--strict-mode
 SANITY_TESTS_ARGS=--sanity-test
 DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
 PYTHON=`which python`
@@ -59,7 +60,7 @@ build:
 
 .PHONY: python_tests
 python_tests:
-	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS)
+	$(PYTHON) $(PYTHON_DIR)/$(BOOTSTRAP_TESTS) $(BOOTSTRAP_TESTS_ARGS)
 
 ## -----------------------------------------------------------------------------
 
