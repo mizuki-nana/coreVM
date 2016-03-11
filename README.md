@@ -8,6 +8,7 @@ programming languages.
 [![Build status](https://api.travis-ci.org/yanzhengli/coreVM.png)](https://travis-ci.org/yanzhengli/coreVM)
 
 * [Overview] (#overview)
+* [Get Started] (#get-started)
 * [Design and Architecture] (#design-and-architecture)
 * [Current State and Roadmap] (#current-state-and-roadmap)
 * [Focus Areas] (#focues-areas)
@@ -36,6 +37,20 @@ interfaces and modern runtime functionalities, which unfetters language
 developers from the burden of developing custom runtimes and the tedious
 compiler integrations involved. Instead of re-inventing the wheel, developers
 can focus on the design and development of language features.
+
+
+## Get Started
+
+Steps to build and run project:
+
+1. Build all dependency libraries.
+> `make -C libs full=1`
+
+2. Build binaries and run tests.
+> `make`
+
+3. Build all, include benchmarks, sanity tests, and dynamic analysis tests (optional).
+> `make full=1`
 
 
 ## Design and Architecture
