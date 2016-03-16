@@ -159,7 +159,7 @@ def test_list_slicing_special_case():
 def test_list_append_stress():
     l = []
     v = 5
-    for i in range(30000):
+    for i in range(300):
         l.append(v)
     print len(l)
 

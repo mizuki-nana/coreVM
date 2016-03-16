@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "corevm/macros.h"
 #include "dyobj/flags.h"
 #include "dyobj/util.h"
 #include "runtime/closure.h"
@@ -186,7 +187,7 @@ TEST_F(instrs_obj_unittest, TestInstrSTOBJ)
   corevm::runtime::frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::dyobj::dyobj_id id = 1;
+  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   m_process.push_stack(id);
 
   execute_instr<corevm::runtime::instr_handler_stobj>(instr, 0);
@@ -217,7 +218,7 @@ TEST_F(instrs_obj_unittest, TestInstrSTOBJN)
   m_process.push_frame(frame);
   m_process.push_frame(frame2);
 
-  corevm::dyobj::dyobj_id id = 1;
+  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   m_process.push_stack(id);
 
   execute_instr<corevm::runtime::instr_handler_stobjn>(instr, 0);
@@ -1381,7 +1382,7 @@ class instrs_functions_instrs_test : public instrs_unittest {};
 
 TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
 {
-  corevm::dyobj::dyobj_id id = 1;
+  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   m_process.push_stack(id);
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
@@ -1406,7 +1407,7 @@ TEST_F(instrs_functions_instrs_test, TestInstrPUTARG)
 TEST_F(instrs_functions_instrs_test, TestInstrPUTKWARG)
 {
   corevm::runtime::variable_key key = 3;
-  corevm::dyobj::dyobj_id id = 2;
+  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
   m_process.push_stack(id);
 
   corevm::runtime::invocation_ctx& actual_invk_ctx = m_process.top_invocation_ctx();
@@ -1688,8 +1689,7 @@ class instrs_runtime_instrs_test : public instrs_unittest {};
 
 TEST_F(instrs_runtime_instrs_test, TestInstrGC)
 {
-  // TODO: [COREVM-440] Fix reference-counting GC scheme
-#if 0
+#if COREVM_457
   m_process.create_dyobj();
 
   ASSERT_EQ(1, m_process.heap_size());
@@ -1699,7 +1699,7 @@ TEST_F(instrs_runtime_instrs_test, TestInstrGC)
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
 
   ASSERT_EQ(0, m_process.heap_size());
-#endif
+#endif /* #if COREVM_457 */
 }
 
 // -----------------------------------------------------------------------------

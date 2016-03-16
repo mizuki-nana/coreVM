@@ -117,7 +117,10 @@ process_runner::tick_handler(void* arg)
 void
 process_runner::gc()
 {
-  m_process.maybe_gc();
+  if (m_process.should_gc())
+  {
+    m_process.set_do_gc();
+  }
 }
 
 // -----------------------------------------------------------------------------

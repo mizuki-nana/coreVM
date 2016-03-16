@@ -142,6 +142,8 @@ public:
 
   void pop_frame() throw(frame_not_found_error);
 
+  void pop_frame_safe();
+
   uint64_t stack_size() const;
 
   invocation_ctx& top_invocation_ctx()
@@ -198,7 +200,9 @@ public:
 
   void start();
 
-  void maybe_gc();
+  bool should_gc() const;
+
+  void set_do_gc();
 
   void do_gc();
 
@@ -260,7 +264,11 @@ public:
     frame* frame_ptr,
     process& process);
 
-  // NOTE: Once the stack is unwinded, the action cannot be undone.
+  // A few things to note:
+  //
+  // 1. Once the stack is unwinded, the action cannot be undone.
+  // 2. This function has to be exception safe because there are no catch
+  //    blocks to catch exceptions from it.
   static void unwind_stack(
     process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
@@ -273,8 +281,6 @@ private:
 
   bool pre_start();
 
-  bool should_gc() const;
-
   void check_call_stack_capacity();
 
   void check_invk_ctx_stack_capacity();
@@ -282,6 +288,7 @@ private:
   void set_parent_for_top_frame();
 
   bool m_pause_exec;
+  bool m_do_gc;
   uint8_t m_gc_flag;
   instr_addr m_pc;
   vector m_instrs;

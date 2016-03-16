@@ -25,10 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "garbage_collection_scheme.h"
 
+#include "corevm/macros.h"
 #include "dyobj/dynamic_object.h"
-
 #include "dyobj/dynamic_object_heap.h"
 #include "dyobj/dynamic_object_manager.h"
+
 
 #include <cstdint>
 
@@ -49,7 +50,13 @@ public:
 
       virtual inline bool garbage_collectible() const noexcept
       {
-        return m_count == 0;
+        /**
+         * An object is only garbage-collectible if it's "attached",
+         * meaning that it has been used either as a reference or
+         * placed in a frame. This will help make sure that temporary objects
+         * sitting on the object stack not being garbage-collected.
+         */
+        return m_count == 0 && m_attached;
       }
 
       virtual inline void on_create() noexcept
@@ -59,6 +66,7 @@ public:
 
       virtual inline void on_setattr() noexcept
       {
+        m_attached = true;
         inc_ref_count();
       }
 
@@ -75,11 +83,6 @@ public:
         dec_ref_count();
       }
 
-      virtual inline uint64_t ref_count() const noexcept
-      {
-        return m_count;
-      }
-
       virtual inline void inc_ref_count() noexcept
       {
         ++m_count;
@@ -93,8 +96,14 @@ public:
         }
       }
 
+      uint64_t ref_count() const
+      {
+        return m_count;
+      }
+
     protected:
       uint64_t m_count;
+      bool m_attached;
   } reference_count_dynamic_object_manager;
 
   using dynamic_object_type = typename dyobj::dynamic_object<reference_count_dynamic_object_manager>;
@@ -102,6 +111,7 @@ public:
 
   virtual void gc(dynamic_object_heap_type&) const;
 
+#if COREVM_457
   template<typename dynamic_object_heap_type>
   class heap_iterator
   {
@@ -135,6 +145,7 @@ protected:
 
   void resolve_self_reference_cycles(dynamic_object_heap_type&, dynamic_object_type&) const;
   void remove_cycles(dynamic_object_heap_type&) const;
+#endif /* if COREVM_457 */
 };
 
 

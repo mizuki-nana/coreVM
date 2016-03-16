@@ -590,6 +590,9 @@ instr_handler_stobj::execute(
 
   dyobj::dyobj_id id = process.pop_stack();
 
+  auto& obj = process.get_dyobj(id);
+  obj.manager().on_setattr();
+
   frame->set_visible_var(key, id);
 }
 
@@ -606,6 +609,9 @@ instr_handler_stobjn::execute(
   frame& frame = process.top_nth_frame(n);
 
   dyobj::dyobj_id id = process.pop_stack();
+
+  auto& obj = process.get_dyobj(id);
+  obj.manager().on_setattr();
 
   frame.set_visible_var(key, id);
 }
@@ -1575,6 +1581,13 @@ instr_handler_rtrn::execute(
     process.top_frame(frame_ptr);
     process.top_invocation_ctx(invk_ctx_ptr);
   }
+
+  if (process.stack_size() > 0)
+  {
+    auto obj_id = process.top_stack();
+    auto& obj = process.get_dyobj(obj_id);
+    obj.manager().on_setattr();
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -1829,6 +1842,8 @@ instr_handler_putarg::execute(
   frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
 {
   dyobj::dyobj_id id = process.pop_stack();
+  auto& obj = process.get_dyobj(id);
+  obj.manager().on_setattr();
   invocation_ctx* invk_ctx = *invk_ctx_ptr;
   invk_ctx->put_param(id);
 }
@@ -1844,6 +1859,8 @@ instr_handler_putkwarg::execute(
   dyobj::dyobj_id id = process.pop_stack();
 
   invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  auto& obj = process.get_dyobj(id);
+  obj.manager().on_setattr();
   invk_ctx->put_param_value_pair(key, id);
 }
 
@@ -1867,6 +1884,8 @@ instr_handler_putargs::execute(
   for (auto itr = array.begin(); itr != array.end(); ++itr)
   {
     dyobj::dyobj_id arg_id = static_cast<dyobj::dyobj_id>(*itr);
+    auto& arg_obj = process.get_dyobj(arg_id);
+    arg_obj.manager().on_setattr();
     invk_ctx->put_param(arg_id);
   }
 }
@@ -1892,6 +1911,9 @@ instr_handler_putkwargs::execute(
   {
     variable_key arg_key = static_cast<variable_key>(itr->first);
     dyobj::dyobj_id arg_id = static_cast<dyobj::dyobj_id>(itr->second);
+
+    auto& arg_obj = process.get_dyobj(arg_id);
+    arg_obj.manager().on_setattr();
 
     invk_ctx->put_param_value_pair(arg_key, arg_id);
   }

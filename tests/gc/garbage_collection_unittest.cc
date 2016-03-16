@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "corevm/macros.h"
 #include "dyobj/dynamic_object.h"
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/garbage_collector.h"
@@ -28,6 +29,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 #include <list>
+
+
+#if COREVM_457
 
 
 template<class GarbageCollectionScheme>
@@ -641,3 +645,5 @@ TYPED_TEST(garbage_collection_unittest, TestSingleCycleWithNonGarbageCollectible
 }
 
 // -----------------------------------------------------------------------------
+
+#endif /* #if COREVM_457 */

@@ -83,5 +83,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+/**
+ * TODO: [COREVM-457] Improve reference-count GC scheme
+ */
+#define COREVM_457 0
+
+// -----------------------------------------------------------------------------
+
 
 #endif /* COREVM_MACROS_H_ */

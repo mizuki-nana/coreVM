@@ -113,13 +113,10 @@ garbage_collector<garbage_collection_scheme>::gc() noexcept
 
 template<class garbage_collection_scheme>
 void
-garbage_collector<garbage_collection_scheme>::gc(callback* /* f */) noexcept
+garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
 {
-  // TODO: [COREVM-440] Fix reference-counting GC scheme
-#if 0
   m_gc_scheme.gc(m_heap);
   this->free(f);
-#endif
 }
 
 // -----------------------------------------------------------------------------

@@ -39,9 +39,12 @@ namespace gc {
 
 reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
   :
-  m_count(0u)
+  m_count(0u),
+  m_attached(false)
 {
 }
+
+// -----------------------------------------------------------------------------
 
 /* virtual */
 void
@@ -52,14 +55,14 @@ reference_count_garbage_collection_scheme::dynamic_object_manager::on_delete() n
 
 // -----------------------------------------------------------------------------
 
-using sneaker::algorithm::tarjan;
 
 // -----------------------------------------------------------------------------
 
 void
 reference_count_garbage_collection_scheme::gc(
-  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
+  reference_count_garbage_collection_scheme::dynamic_object_heap_type& /* heap */) const
 {
+#if COREVM_457
   using _dynamic_object_heap_type = typename
     reference_count_garbage_collection_scheme::dynamic_object_heap_type;
 
@@ -83,9 +86,12 @@ reference_count_garbage_collection_scheme::gc(
 
     prev_active_size = heap.active_size();
   } /* end of `while (true)` */
+#endif /* if COREVM_457 */
 }
 
 // -----------------------------------------------------------------------------
+
+#if COREVM_457
 
 template<typename dynamic_object_heap_type>
 struct object_ref_count_decrementor
@@ -193,7 +199,7 @@ struct object_graph_builder
 public:
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
   using dyobj_id_type = typename dynamic_object_type::dyobj_id_type;
-  using vertex_type = typename tarjan<dyobj_id_type>::vertex;
+  using vertex_type = typename sneaker::algorithm::tarjan<dyobj_id_type>::vertex;
   using vertices_map_type = typename std::unordered_map<dyobj_id_type, vertex_type>;
   using neighbor_set_type = typename std::set<dyobj_id_type>;
 
@@ -287,7 +293,7 @@ reference_count_garbage_collection_scheme::remove_cycles(
     vertices.push_back(vertex_ptr);
   }
 
-  tarjan<dyobj_id_type> algo;
+  sneaker::algorithm::tarjan<dyobj_id_type> algo;
   auto components = algo.get_components(vertices);
 
   std::list<std::list<dyobj_id_type>> cycles = components.cycles();
@@ -326,6 +332,7 @@ reference_count_garbage_collection_scheme::remove_cycles(
     }
   }
 }
+#endif /* if COREVM_457 */
 
 // -----------------------------------------------------------------------------
 

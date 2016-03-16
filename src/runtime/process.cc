@@ -171,6 +171,7 @@ process::get_dyobj(dyobj::dyobj_id id)
 process::process()
   :
   m_pause_exec(false),
+  m_do_gc(false),
   m_gc_flag(0),
   m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(),
@@ -191,6 +192,7 @@ process::process(
   uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
   m_pause_exec(false),
+  m_do_gc(false),
   m_gc_flag(0),
   m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(heap_alloc_size),
@@ -210,6 +212,7 @@ process::process(
 process::process(const process::options& options)
   :
   m_pause_exec(false),
+  m_do_gc(false),
   m_gc_flag(options.gc_flag),
   m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(options.heap_alloc_size),
@@ -351,6 +354,15 @@ process::pop_frame()
   m_call_stack.pop_back();
 
   this->pop_invocation_ctx();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+process::pop_frame_safe()
+{
+  m_call_stack.pop_back();
+  pop_invocation_ctx();
 }
 
 // -----------------------------------------------------------------------------
@@ -777,6 +789,12 @@ process::start()
 
     handler->execute(instr, *this, frame_ptr, invk_ctx_ptr);
 
+    if (m_do_gc)
+    {
+      do_gc();
+      m_do_gc = false;
+    }
+
 #if __MEASURE_INSTRS__
     t.stop();
 
@@ -818,12 +836,9 @@ process::start()
 // -----------------------------------------------------------------------------
 
 void
-process::maybe_gc()
+process::set_do_gc()
 {
-  if (should_gc())
-  {
-    do_gc();
-  }
+  m_do_gc = true;
 }
 
 // -----------------------------------------------------------------------------
@@ -1152,7 +1167,7 @@ process::unwind_stack(
 
     output_lines.push_back(std::move(line_ss.str()));
 
-    process.pop_frame();
+    process.pop_frame_safe();
 
     ++unwind_count;
 
