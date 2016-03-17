@@ -44,7 +44,7 @@ endif
 
 .PHONY: sneaker
 sneaker:
-	$(MAKE) -C sneaker
+	$(MAKE) -C sneaker fast=1
 	$(MAKE) -C sneaker install
 
 ## -----------------------------------------------------------------------------
