@@ -61,14 +61,15 @@ add_executable(run_tests
     )
 
 
-set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-Wno-weak-vtables -Wno-missing-variable-declarations -O3")
+set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -g -Wno-weak-vtables -Wno-missing-variable-declarations")
 
 
 target_link_libraries(run_tests
-    corevm
+    corevm_dbg
     boost_system
     boost_regex
     boost_iostreams
+    boost_timer
     boost_program_options
     pthread
     sneaker

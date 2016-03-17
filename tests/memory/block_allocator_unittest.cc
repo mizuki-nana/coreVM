@@ -481,3 +481,79 @@ TEST_F(block_allocator_unittest, TestBidirectionalInwardDeallocation)
 }
 
 // -----------------------------------------------------------------------------
+
+/**
+ * Tests that block allocator is able to handle scenarios where there could be
+ * non-adjacent free lists during deallocations.
+ *
+ * See:
+ * [COREVM-458] Fix assertion failure in block allocator
+ *
+ * Steps:
+ *
+ * 1. Initially, all 10 slots are allocated, and in 1 list.
+ *
+ *  [x] [x] [x] [x] [x] [x] [x] [x] [x] [x]
+ * |---------------------------------------|
+ *
+ * 2. Next, the 8th, 10th, and 9th slots are deallocated, in that order,
+ *    leaving 2 lists, with the last one being a free list.
+ *
+ *  [x] [x] [x] [x] [x] [x] [x] [ ] [ ] [ ]
+ * |-------------------------------|-------|
+ *
+ * 3. Next, the 3rd, 2nd, and 1st slots are deallocated, in that order,
+ *    leaving another free list. Now there are two free lists,
+ *    but they are not adjacent.
+ *
+ *  [ ] [ ] [ ] [x] [x] [x] [x] [ ] [ ] [ ]
+ * |-----------|-------------------|-------|
+ *
+ * 4. Next, the 7th, 6th, 5th, and 4th slots are deallocated, in that order,
+ *    leaving another free list. Now there are three free lists.
+ *
+ *  [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+ * |-----------|-------------------|-------|
+ *
+ * 5. Next, the three adjacent free lists are combined into one.
+ *
+ *  [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
+ * |---------------------------------------|
+ */
+TEST_F(block_allocator_unittest, TestAllocationAndDeallocationWithNoInitialFreeLists)
+{
+  const size_t local_N = 10;
+  typedef uint32_t local_T;
+  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+
+  run_3_times([this, &local_N, &local_allocator]()
+  {
+    void* p[local_N] = { 0 };
+
+    for (size_t i = 0; i < local_N; ++i)
+    {
+      p[i] = local_allocator.allocate();
+      ASSERT_NE(nullptr, p[i]);
+    }
+
+    for (size_t i = 7; i <= 9; ++i)
+    {
+      int res = local_allocator.deallocate(p[i]);
+      ASSERT_EQ(1, res);
+    }
+
+    for (ssize_t i = 2; i >= 0; --i)
+    {
+      int res = local_allocator.deallocate(p[i]);
+      ASSERT_EQ(1, res);
+    }
+
+    for (size_t i = 6; i >= 3; --i)
+    {
+      int res = local_allocator.deallocate(p[i]);
+      ASSERT_EQ(1, res);
+    }
+  });
+}
+
+// -----------------------------------------------------------------------------

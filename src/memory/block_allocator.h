@@ -303,8 +303,13 @@ block_allocator<T>::deallocate(void* ptr)
        *    - split the current list into two, with the left list
        *      having the free block at `index` at the end.
        */
+
       if (index == descriptor.current_index - 1)
       {
+        /**
+         * Free at end of block.
+         *
+         */
         --descriptor.current_index;
 
         if (is_empty_free_list(descriptor))
@@ -402,11 +407,6 @@ block_allocator<T>::combine_empty_freelists(size_t i)
 
 #if __DEBUG__
   ASSERT(is_empty_free_list(m_free_lists[i]));
-#endif
-
-#if __DEBUG__
-  // TODO: [COREVM-458] Fix assertion failure in debug build of coreVM
-  // ASSERT(combine_with_previous or combine_with_next);
 #endif
 
   if (combine_with_next)
