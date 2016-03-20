@@ -39,6 +39,8 @@ class instr_benchmarks_fixture
 public:
   instr_benchmarks_fixture();
 
+  explicit instr_benchmarks_fixture(const runtime::process::options& opts);
+
   corevm::runtime::process& process();
 
 protected:

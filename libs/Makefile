@@ -35,9 +35,9 @@ AVRO_PY_DIR=$(AVRO_DIR)/lang/py
 
 .PHONY: all
 ifeq ($(full), 1)
-all: avro sneaker benchmark
+all: cmake_target avro sneaker benchmark
 else
-all: avro sneaker
+all: cmake_target avro sneaker
 endif
 
 ## -----------------------------------------------------------------------------
@@ -51,10 +51,20 @@ sneaker:
 
 .PHONY: benchmark
 benchmark:
-	cd $(BENCHMARK_DIR) && cmake -DCMAKE_BUILD_TYPE=Release
+	cd $(BENCHMARK_DIR) && cmake -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true
 	$(MAKE) -C benchmark
 	sudo cp -f $(BENCHMARK_DIR)/src/libbenchmark.a /usr/local/lib/
 	sudo cp -r $(BENCHMARK_DIR)/include/benchmark/ /usr/local/include/
+
+## -----------------------------------------------------------------------------
+
+.PHONY: cmake_target
+cmake_target:
+	wget "https://cmake.org/files/v3.2/cmake-3.2.3.tar.gz" --no-check-certificate -v -O cmake-3.2.3.tar.gz
+	tar -zxf cmake-3.2.3.tar.gz
+	cd cmake-3.2.3 && ./bootstrap -- -DCMAKE_RULE_MESSAGES=OFF >/dev/null && \
+		make --no-print-directory --quiet && \
+		sudo make install --no-print-directory --quiet >/dev/null
 
 ## -----------------------------------------------------------------------------
 

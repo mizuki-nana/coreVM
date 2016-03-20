@@ -514,14 +514,17 @@ BENCHMARK(BenchmarkInstrSTRPSH);
 BENCHMARK(BenchmarkInstrSTRIST);
 BENCHMARK(BenchmarkInstrSTRIST2);
 BENCHMARK(BenchmarkInstrSTRERS);
-BENCHMARK(BenchmarkInstrSTRERS2);
 BENCHMARK(BenchmarkInstrSTRRPLC);
 BENCHMARK(BenchmarkInstrSTRSWP);
 BENCHMARK(BenchmarkInstrSTRSUB);
-BENCHMARK(BenchmarkInstrSTRSUB2);
-BENCHMARK(BenchmarkInstrSTRFND);
-BENCHMARK(BenchmarkInstrSTRFND2);
-BENCHMARK(BenchmarkInstrSTRRFND);
-BENCHMARK(BenchmarkInstrSTRRFND2);
+
+#ifdef BUILD_BENCHMARKS_STRICT
+  BENCHMARK(BenchmarkInstrSTRERS2);
+  BENCHMARK(BenchmarkInstrSTRSUB2);
+  BENCHMARK(BenchmarkInstrSTRFND);
+  BENCHMARK(BenchmarkInstrSTRFND2);
+  BENCHMARK(BenchmarkInstrSTRRFND);
+  BENCHMARK(BenchmarkInstrSTRRFND2);
+#endif
 
 // -----------------------------------------------------------------------------

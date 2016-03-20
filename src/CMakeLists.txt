@@ -130,6 +130,9 @@ target_link_libraries(coreVM_dbg
 
 
 # Library `libcorevm_dbg_asan`.
+if(BUILD_SANITY_BIN)
+
+
 add_library(corevm_dbg_asan ${sources})
 
 
@@ -154,3 +157,6 @@ target_link_libraries(coreVM_dbg_asan
     -fno-omit-frame-pointer
     -fno-optimize-sibling-calls
     )
+
+
+endif() # if(BUILD_SANITY_BIN)

@@ -37,15 +37,16 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 
 // -----------------------------------------------------------------------------
 
+// TODO: [COREVM-460] Re-enable functional instruction micro benchmarks
+#if 0
 static
 void BenchmarkInstrPUTARG(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::dyobj::dyobj_id id = 1;
-
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
+    corevm::dyobj::dyobj_id id = fixture.process().create_dyobj();
     fixture.process().push_stack(id);
   }
 
@@ -60,9 +61,12 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+// TODO: [COREVM-460] Re-enable functional instruction micro benchmarks
+#if 0
 static
 void BenchmarkInstrPUTKWARG(benchmark::State& state)
 {
@@ -86,9 +90,12 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+// TODO: [COREVM-460] Re-enable functional instruction micro benchmarks
+#if 0
 static
 void BenchmarkInstrPUTARGS(benchmark::State& state)
 {
@@ -118,9 +125,12 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+// TODO: [COREVM-460] Re-enable functional instruction micro benchmarks
+#if 0
 static
 void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 {
@@ -154,6 +164,7 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -282,10 +293,11 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK(BenchmarkInstrPUTARG);
-BENCHMARK(BenchmarkInstrPUTKWARG);
-BENCHMARK(BenchmarkInstrPUTARGS);
-BENCHMARK(BenchmarkInstrPUTKWARGS);
+// TODO: [COREVM-460] Re-enable functional instruction micro benchmarks
+//BENCHMARK(BenchmarkInstrPUTARG);
+//BENCHMARK(BenchmarkInstrPUTKWARG);
+//BENCHMARK(BenchmarkInstrPUTARGS);
+//BENCHMARK(BenchmarkInstrPUTKWARGS);
 BENCHMARK(BenchmarkInstrGETARG);
 BENCHMARK(BenchmarkInstrGETKWARG);
 BENCHMARK(BenchmarkInstrGETARGS);

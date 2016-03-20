@@ -29,7 +29,9 @@ project(coreVM CXX)
 
 
 # Option.
-option(BUILD_FULL "Build project in full" OFF)
+option(BUILD_BENCHMARKS "Build micro benchmarks" OFF)
+option(BUILD_SANITY_BIN "Build sanity-check binaries" OFF)
+option(BUILD_BENCHMARKS_STRICT "Build all benchmarks" ON)
 
 
 # Release mode.
@@ -76,6 +78,6 @@ ADD_SUBDIRECTORY(${SRC_DIR})
 ADD_SUBDIRECTORY(${TOOLS_DIR})
 ADD_SUBDIRECTORY(${TESTS_DIR})
 
-if(BUILD_FULL)
-  ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
+if(BUILD_BENCHMARKS)
+    ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
 endif()

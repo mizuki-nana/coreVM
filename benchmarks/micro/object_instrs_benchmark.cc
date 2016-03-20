@@ -708,7 +708,6 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::i
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithAttr, corevm::runtime::instr_handler_getattr);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_setattr);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration, corevm::runtime::instr_handler_delattr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_pop);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope, corevm::runtime::instr_handler_ldobj2);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_stobj2);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration, corevm::runtime::instr_handler_delobj);
@@ -737,5 +736,9 @@ BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::i
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setfldel);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflcall);
 BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflmute);
+
+#ifdef BUILD_BENCHMARKS_STRICT
+  BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_pop);
+#endif
 
 // -----------------------------------------------------------------------------

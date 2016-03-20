@@ -410,6 +410,8 @@ BENCHMARK(BenchmarkInstrMAPCLR);
 BENCHMARK(BenchmarkInstrMAPSWP);
 BENCHMARK(BenchmarkInstrMAPKEYS);
 BENCHMARK(BenchmarkInstrMAPVALS);
-BENCHMARK(BenchmarkInstrMAPMRG);
+#ifdef BUILD_BENCHMARKS_STRICT
+  BENCHMARK(BenchmarkInstrMAPMRG);
+#endif
 
 // -----------------------------------------------------------------------------

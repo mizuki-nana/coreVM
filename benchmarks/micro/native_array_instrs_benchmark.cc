@@ -362,6 +362,8 @@ BENCHMARK(BenchmarkInstrARYERS);
 BENCHMARK(BenchmarkInstrARYPOP);
 BENCHMARK(BenchmarkInstrARYSWP);
 BENCHMARK(BenchmarkInstrARYCLR);
-BENCHMARK(BenchmarkInstrARYMRG);
+#ifdef BUILD_BENCHMARKS_STRICT
+  BENCHMARK(BenchmarkInstrARYMRG);
+#endif
 
 // -----------------------------------------------------------------------------

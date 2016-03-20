@@ -50,7 +50,11 @@ add_executable(run_benchmarks
     )
 
 
-set_target_properties(run_benchmarks PROPERTIES COMPILE_FLAGS "-O3")
+if(BUILD_BENCHMARKS_STRICT)
+    set_target_properties(run_benchmarks PROPERTIES COMPILE_FLAGS "-O3 -DBUILD_BENCHMARKS_STRICT")
+else()
+    set_target_properties(run_benchmarks PROPERTIES COMPILE_FLAGS "-O3")
+endif()
 
 
 target_link_libraries(run_benchmarks

@@ -37,11 +37,21 @@ PYTHON=`which python`
 
 ## -----------------------------------------------------------------------------
 
+BASE_TARGETS=build python_tests
+
 ifeq ($(full), 1)
-	BUILD_TARGETS=build python_tests benchmarks sanity_tests dynamic_analysis_tests
-	BUILD_TARGET_CMAKE_ARGS=-DBUILD_FULL=ON
+	BUILD_TARGETS=$(BASE_TARGETS) benchmarks
+	BUILD_TARGET_CMAKE_ARGS=-DBUILD_BENCHMARKS=ON
+else ifeq ($(full), 2)
+	BUILD_TARGETS=$(BASE_TARGETS) benchmarks sanity_tests dynamic_analysis_tests
+	BUILD_TARGET_CMAKE_ARGS=-DBUILD_BENCHMARKS=ON -DBUILD_SANITY_BIN=ON
 else
-	BUILD_TARGETS=build python_tests
+	BUILD_TARGETS=$(BASE_TARGETS)
+	BUILD_TARGET_CMAKE_ARGS=
+endif
+
+ifeq ($(travis_ci), 1)
+	BUILD_TARGET_CMAKE_ARGS+=-DBUILD_BENCHMARKS_STRICT=OFF
 endif
 
 ## -----------------------------------------------------------------------------

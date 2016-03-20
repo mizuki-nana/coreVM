@@ -31,7 +31,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void BenchmarkProcessCreateDyobj(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::process::options opts;
+
+  opts.heap_alloc_size = 1024 * 1024 * 512;
+  opts.pool_alloc_size = 1024 * 1024 * 512;
+
+  corevm::runtime::process process(opts);
 
   while (state.KeepRunning())
   {
@@ -74,7 +79,12 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 static
 void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::process::options opts;
+
+  opts.heap_alloc_size = 1024 * 1024 * 512;
+  opts.pool_alloc_size = 1024 * 1024 * 512;
+
+  corevm::runtime::process process(opts);
 
   corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
 

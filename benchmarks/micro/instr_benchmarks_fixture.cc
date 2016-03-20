@@ -35,15 +35,36 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 
 
+namespace corevm {
+
+
+namespace benchmarks {
+
+
 // -----------------------------------------------------------------------------
 
 static const char* DUMMY_PATH = "./example.core";
 
 // -----------------------------------------------------------------------------
 
-corevm::benchmarks::instr_benchmarks_fixture::instr_benchmarks_fixture()
+const uint64_t BENCHMARK_PROCESS_HEAP_SIZE = 1024 * 1024 * 512;
+const uint64_t BENCHMARK_PROCESS_POOL_SIZE = 1024 * 1024 * 512;
+
+// -----------------------------------------------------------------------------
+
+instr_benchmarks_fixture::instr_benchmarks_fixture()
   :
-  m_process()
+  m_process(BENCHMARK_PROCESS_HEAP_SIZE, BENCHMARK_PROCESS_POOL_SIZE)
+{
+  init();
+}
+
+// -----------------------------------------------------------------------------
+
+instr_benchmarks_fixture::instr_benchmarks_fixture(
+  const runtime::process::options& opts)
+  :
+  m_process(opts)
 {
   init();
 }
@@ -51,7 +72,7 @@ corevm::benchmarks::instr_benchmarks_fixture::instr_benchmarks_fixture()
 // -----------------------------------------------------------------------------
 
 void
-corevm::benchmarks::instr_benchmarks_fixture::init()
+instr_benchmarks_fixture::init()
 {
   corevm::runtime::compartment compartment(DUMMY_PATH);
 
@@ -98,9 +119,15 @@ corevm::benchmarks::instr_benchmarks_fixture::init()
 // -----------------------------------------------------------------------------
 
 corevm::runtime::process&
-corevm::benchmarks::instr_benchmarks_fixture::process()
+instr_benchmarks_fixture::process()
 {
   return m_process;
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* endnamespace benchmarks */
+
+
+} /* end namespace corevm */
