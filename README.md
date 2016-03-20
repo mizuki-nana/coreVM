@@ -49,8 +49,8 @@ Steps to build and run project:
 2. Build binaries and run tests.
 > `make`
 
-3. Build all, include benchmarks, sanity tests, and dynamic analysis tests (optional).
-> `make full=1`
+3. Build all, including benchmarks, sanity tests, and dynamic analysis tests (optional).
+> `make full=2`
 
 
 ## Design and Architecture
