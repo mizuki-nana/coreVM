@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_ALLOCATION_POLICY_H_
 #define COREVM_ALLOCATION_POLICY_H_
 
+#include "corevm/macros.h"
+
 #include <sneaker/allocator/alloc_policy.h>
 
 #include <cstdint>
@@ -47,6 +49,9 @@ public:
   using difference_type                        = typename sneaker::allocator::standard_alloc_policy<T>::difference_type;
   using propagate_on_container_move_assignment = typename sneaker::allocator::standard_alloc_policy<T>::propagate_on_container_move_assignment;
 
+  using iterator        = typename CoreAllocatorType::iterator;
+  using const_iterator  = typename CoreAllocatorType::const_iterator;
+
   inline explicit allocation_policy(uint64_t);
   inline explicit allocation_policy(allocation_policy const&);
   inline virtual ~allocation_policy();
@@ -57,6 +62,12 @@ public:
   inline virtual void deallocate(pointer, size_type);
 
   inline uint64_t base_addr() const;
+
+  iterator begin();
+  iterator end();
+
+  const_iterator cbegin() const;
+  const_iterator cend() const;
 
   /**
    * The maximum number of bytes can be used.
@@ -170,6 +181,42 @@ uint64_t
 allocation_policy<T, CoreAllocatorType>::max_size() const
 {
   return total_size() / sizeof(T);
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename CoreAllocatorType>
+typename allocation_policy<T, CoreAllocatorType>::iterator
+allocation_policy<T, CoreAllocatorType>::begin()
+{
+  return m_allocator.begin();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename CoreAllocatorType>
+typename allocation_policy<T, CoreAllocatorType>::iterator
+allocation_policy<T, CoreAllocatorType>::end()
+{
+  return m_allocator.end();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename CoreAllocatorType>
+typename allocation_policy<T, CoreAllocatorType>::const_iterator
+allocation_policy<T, CoreAllocatorType>::cbegin() const
+{
+  return m_allocator.cbegin();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename CoreAllocatorType>
+typename allocation_policy<T, CoreAllocatorType>::const_iterator
+allocation_policy<T, CoreAllocatorType>::cend() const
+{
+  return m_allocator.cend();
 }
 
 // -----------------------------------------------------------------------------

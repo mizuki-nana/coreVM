@@ -111,6 +111,127 @@ private:
   const uint64_t m_total_size;
   size_t m_empty_lists_count;
   std::vector<free_list_descriptor> m_free_lists;
+
+private:
+
+  /**
+   * An implementation of forward iterator for block allocator, with
+   * flattened inheritance hierarchy.
+   */
+  class iterator_t : public std::iterator<std::forward_iterator_tag, T>
+  {
+  public:
+    iterator_t(block_allocator<T>& parent, int64_t descriptor_index,
+      int64_t slot_index)
+      :
+      m_parent(parent),
+      m_descriptor_index(descriptor_index),
+      m_slot_index(slot_index)
+    {
+    }
+
+    iterator_t(const iterator_t& other)
+      :
+      m_parent(other.m_parent),
+      m_descriptor_index(other.m_descriptor_index),
+      m_slot_index(other.m_slot_index)
+    {
+    }
+
+    iterator_t& operator=(const iterator_t& other)
+    {
+      m_descriptor_index = other.m_descriptor_index;
+      m_slot_index = other.m_slot_index;
+      return *this;
+    }
+
+    typename std::iterator<std::forward_iterator_tag, T>::reference operator*()
+    {
+      const auto desp_index = static_cast<size_t>(m_descriptor_index);
+      const auto start_index = m_parent.m_free_lists[desp_index].start_index;
+      const uint64_t slot_index = start_index + static_cast<uint64_t>(m_slot_index);
+      T* heap_ = reinterpret_cast<T*>(m_parent.m_heap);
+      return heap_[slot_index];
+    }
+
+    typename std::iterator<std::forward_iterator_tag, T>::value_type operator*() const
+    {
+      return const_cast<iterator_t>(this)->operator*();
+    }
+
+    typename std::iterator<std::forward_iterator_tag, T>::pointer operator->()
+    {
+      return &(this->operator*());
+    }
+
+    friend bool operator==(const iterator_t& lhs, const iterator_t& rhs)
+    {
+      return &lhs.m_parent == &rhs.m_parent &&
+        lhs.m_descriptor_index == rhs.m_descriptor_index &&
+        lhs.m_slot_index == rhs.m_slot_index;
+    }
+
+    friend bool operator!=(const iterator_t& lhs, const iterator_t& rhs)
+    {
+      return !(operator==(lhs, rhs));
+    }
+
+    /** Prefix increment. */
+    iterator_t& operator++()
+    {
+      while (*this != m_parent.end())
+      {
+        // Invalid case.
+        if (m_descriptor_index < 0 ||
+            static_cast<size_t>(m_descriptor_index) >= m_parent.m_free_lists.size())
+        {
+          *this = m_parent.end();
+        }
+        else
+        {
+          const auto& descriptor =
+            m_parent.m_free_lists[static_cast<size_t>(m_descriptor_index)];
+
+          if (descriptor.start_index + m_slot_index + 1 < descriptor.current_index)
+          {
+            ++m_slot_index;
+            break;
+          }
+          else
+          {
+            ++m_descriptor_index;
+            m_slot_index = 0;
+          }
+
+        }
+      }
+
+      return *this;
+    }
+
+    /** Postfix iterator. */
+    iterator_t operator++(int)
+    {
+      auto copy(*this);
+      operator++();
+      return copy;
+    }
+
+  protected:
+    block_allocator<T>& m_parent;
+    int64_t m_descriptor_index;
+    int64_t m_slot_index;
+  };
+
+public:
+  typedef iterator_t iterator;
+  typedef iterator_t const_iterator;
+
+  iterator begin();
+  iterator end();
+
+  const_iterator cbegin() const;
+  const_iterator cend() const;
 };
 
 // -----------------------------------------------------------------------------
@@ -438,6 +559,59 @@ uint64_t
 block_allocator<T>::total_size() const noexcept
 {
   return m_total_size;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+typename block_allocator<T>::iterator
+block_allocator<T>::begin()
+{
+  int64_t descriptor_index = -1;
+  int64_t slot_index = -1;
+  size_t i = 0;
+
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
+  {
+    free_list_descriptor& descriptor = *itr;
+
+    if (descriptor.current_index > descriptor.start_index &&
+        descriptor.current_index <= descriptor.end_index)
+    {
+      descriptor_index = static_cast<int64_t>(i);
+      slot_index = 0;
+      break;
+    }
+  }
+
+  return block_allocator<T>::iterator(*this, descriptor_index, slot_index);
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+typename block_allocator<T>::iterator
+block_allocator<T>::end()
+{
+  return block_allocator<T>::iterator(*this, -1, -1);
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+typename block_allocator<T>::const_iterator
+block_allocator<T>::cbegin() const
+{
+  return const_cast<block_allocator<T>*>(this)->begin();
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
+typename block_allocator<T>::const_iterator
+block_allocator<T>::cend() const
+{
+  return const_cast<block_allocator<T>*>(this)->end();
 }
 
 // -----------------------------------------------------------------------------

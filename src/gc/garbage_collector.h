@@ -46,8 +46,8 @@ struct dyobj_remove_criterion
 
   bool operator()(const typename dynamic_object_heap_type::iterator& itr) const
   {
-    auto& object =
-      static_cast<typename dynamic_object_heap_type::dynamic_object_type&>(*itr);
+    auto& object = static_cast<typename dynamic_object_heap_type::dynamic_object_type&>(
+      *const_cast<typename dynamic_object_heap_type::iterator&>(itr));
 
     return object.is_garbage_collectible();
   }

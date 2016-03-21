@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
+#include "corevm/macros.h"
 #include "memory/allocator.h"
 #include "memory/object_container.h"
 #include "memory/sequential_allocation_scheme.h"
@@ -51,19 +52,6 @@ void BenchmarkObjectContainerAllocateAndConstructObject(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-static
-void BenchmarkObjectContainerWithStdAllocator(benchmark::State& state)
-{
-  corevm::memory::object_container<T, std::allocator<T>> object_container;
-
-  while (state.KeepRunning())
-  {
-    object_container.create();
-  }
-}
-
-// -----------------------------------------------------------------------------
-
 template <class AllocatorType>
 static void BenchmarkObjectContainer(benchmark::State& state)
 {
@@ -78,8 +66,9 @@ static void BenchmarkObjectContainer(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 BENCHMARK(BenchmarkObjectContainerAllocateAndConstructObject);
-BENCHMARK(BenchmarkObjectContainerWithStdAllocator);
+#if COREVM_463
 BENCHMARK_TEMPLATE(BenchmarkObjectContainer,
   corevm::dyobj::heap_allocator<T, corevm::memory::allocator<corevm::memory::next_fit_allocation_scheme>>);
+#endif
 
 // -----------------------------------------------------------------------------

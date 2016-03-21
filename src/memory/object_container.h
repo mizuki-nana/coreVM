@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 
 #include <cstdint>
-#include <iterator>
 #include <ostream>
 #include <unordered_set>
 
@@ -48,13 +47,9 @@ namespace memory {
  * deallocates their memory.
  *
  * In addition, it provides a set of iterator interfaces for the outside world
- * to iterate through all the contained objects. To do so, it uses an instance
- * of `std::set` to store the addresses of the allocated objects. This way,
- * its iterator types are merely wrappers around the iterator types of the
- * address map, thus avoid the complexity associated with implementing custom
- * iterator types.
+ * to iterate through all the contained objects.
  */
-template<typename T, typename AllocatorType=std::allocator<T>>
+template<typename T, typename AllocatorType>
 class object_container
 {
 public:
@@ -67,155 +62,8 @@ public:
   typedef typename AllocatorType::difference_type difference_type;
   typedef typename AllocatorType::size_type size_type;
 
-private:
-  using _HashSet = typename std::unordered_set<pointer>;
-
-public:
-  class iterator : public std::iterator<std::forward_iterator_tag, T>
-  {
-    private:
-      using _ContainerType = object_container<T, AllocatorType>;
-      typedef typename _HashSet::iterator _Inner;
-
-    public:
-      typedef typename AllocatorType::value_type value_type;
-      typedef typename AllocatorType::reference reference;
-      typedef typename AllocatorType::const_reference const_reference;
-      typedef typename AllocatorType::difference_type difference_type;
-      typedef typename AllocatorType::size_type size_type;
-
-      iterator(_ContainerType& container, _Inner inner)
-        :
-        m_container(&container),
-        m_inner(inner)
-      {
-      }
-
-      iterator(const iterator& rhs)
-      {
-        m_container = rhs.m_container;
-        m_inner = rhs.m_inner;
-      }
-
-      iterator& operator=(const iterator& rhs)
-      {
-        m_container = rhs.m_container;
-        m_inner = rhs.m_inner;
-        return *this;
-      }
-
-      bool operator==(const iterator& rhs) const
-      {
-        return m_inner == rhs.m_inner;
-      }
-
-      bool operator!=(const iterator& rhs) const
-      {
-        return m_inner != rhs.m_inner;
-      }
-
-      iterator& operator++()
-      {
-        m_inner++;
-        return *this;
-      }
-
-      iterator operator++(int)
-      {
-        iterator tmp(*this);
-        operator++();
-        return tmp;
-      }
-
-      reference operator*() const
-      {
-        return *( (*m_container)[*m_inner] );
-      }
-
-      pointer operator->() const
-      {
-        return ( (*m_container)[*m_inner] );
-      }
-
-    private:
-      _ContainerType* m_container;
-      _Inner m_inner;
-
-      friend class object_container<T, AllocatorType>;
-  };
-
-  class const_iterator : public std::iterator<std::forward_iterator_tag, T>
-  {
-    private:
-      using _ContainerType = const object_container<T, AllocatorType>;
-      typedef typename _HashSet::const_iterator _Inner;
-
-    public:
-      typedef typename AllocatorType::value_type value_type;
-      typedef typename AllocatorType::reference reference;
-      typedef typename AllocatorType::const_reference const_reference;
-      typedef typename AllocatorType::difference_type difference_type;
-      typedef typename AllocatorType::size_type size_type;
-
-      const_iterator(_ContainerType& container, _Inner inner)
-        :
-        m_container(&container),
-        m_inner(inner)
-      {
-      }
-
-      const_iterator(const const_iterator& rhs)
-      {
-        m_container = rhs.m_container;
-        m_inner = rhs.m_inner;
-      }
-
-      const_iterator& operator=(const const_iterator& rhs)
-      {
-        m_container = rhs.m_container;
-        m_inner = rhs.m_inner;
-        return *this;
-      }
-
-      bool operator==(const const_iterator& rhs)
-      {
-        return m_inner == rhs.m_inner;
-      }
-
-      bool operator!=(const const_iterator& rhs)
-      {
-        return m_inner != rhs.m_inner;
-      }
-
-      const_iterator& operator++()
-      {
-        m_inner++;
-        return *this;
-      }
-
-      const_iterator operator++(int)
-      {
-        const_iterator tmp(*this);
-        operator++();
-        return tmp;
-      }
-
-      const_reference operator*() const
-      {
-        return *( (*m_container)[*m_inner] );
-      }
-
-      const_pointer operator->() const
-      {
-        return ( (*m_container)[*m_inner] );
-      }
-
-    private:
-      const _ContainerType* m_container;
-      _Inner m_inner;
-
-      friend class object_container<T, AllocatorType>;
-  };
+  typedef typename AllocatorType::iterator iterator;
+  typedef typename AllocatorType::const_iterator const_iterator;
 
   object_container();
 
@@ -253,9 +101,9 @@ public:
 
   void erase(iterator&);
 
-  void erase(const_iterator&);
-
 private:
+  using _HashSet = typename std::unordered_set<pointer>;
+
   bool check_ptr(pointer) const;
 
   AllocatorType m_allocator;
@@ -289,7 +137,7 @@ template<typename T, typename AllocatorType>
 typename object_container<T, AllocatorType>::iterator
 object_container<T, AllocatorType>::begin()
 {
-  return iterator(*this, m_addrs.begin());
+  return m_allocator.begin();
 }
 
 // -----------------------------------------------------------------------------
@@ -298,7 +146,7 @@ template<typename T, typename AllocatorType>
 typename object_container<T, AllocatorType>::iterator
 object_container<T, AllocatorType>::end()
 {
-  return iterator(*this, m_addrs.end());
+  return m_allocator.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -307,7 +155,7 @@ template<typename T, typename AllocatorType>
 typename object_container<T, AllocatorType>::const_iterator
 object_container<T, AllocatorType>::cbegin() const
 {
-  return const_iterator(*this, m_addrs.cbegin());
+  return m_allocator.cbegin();
 }
 
 // -----------------------------------------------------------------------------
@@ -316,7 +164,7 @@ template<typename T, typename AllocatorType>
 typename object_container<T, AllocatorType>::const_iterator
 object_container<T, AllocatorType>::cend() const
 {
-  return const_iterator(*this, m_addrs.cend());
+  return m_allocator.cend();
 }
 
 // -----------------------------------------------------------------------------
@@ -503,22 +351,7 @@ object_container<T, AllocatorType>::erase(iterator& itr)
     return;
   }
 
-  pointer p = static_cast<pointer>(*itr.m_inner);
-  destroy(p);
-}
-
-// -----------------------------------------------------------------------------
-
-template<typename T, typename AllocatorType>
-void
-object_container<T, AllocatorType>::erase(const_iterator& itr)
-{
-  if (itr == cend())
-  {
-    return;
-  }
-
-  pointer p = static_cast<pointer>(*itr.m_inner);
+  pointer p = static_cast<pointer>(&(*itr));
   destroy(p);
 }
 

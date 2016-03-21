@@ -90,5 +90,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+/**
+ * TODO: [COREVM-463] Design and implement forward iterator for sequential allocator
+ */
+#define COREVM_463 0
+
+// -----------------------------------------------------------------------------
+
 
 #endif /* COREVM_MACROS_H_ */

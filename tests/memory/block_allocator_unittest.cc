@@ -557,3 +557,71 @@ TEST_F(block_allocator_unittest, TestAllocationAndDeallocationWithNoInitialFreeL
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(block_allocator_unittest, TestIteratorBegin)
+{
+  auto itr = m_allocator.begin();
+  ASSERT_EQ(itr, m_allocator.begin());
+  ASSERT_EQ(itr, m_allocator.end());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(block_allocator_unittest, TestIteratorEnd)
+{
+  auto itr = m_allocator.end();
+  ASSERT_EQ(itr, m_allocator.begin());
+  ASSERT_EQ(itr, m_allocator.end());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(block_allocator_unittest, TestIteratorPreIncrement)
+{
+  const size_t local_N = 10;
+  typedef uint32_t local_T;
+  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+
+  void* p[local_N] = { 0 };
+
+  for (size_t i = 0; i < local_N; ++i)
+  {
+    p[i] = local_allocator.allocate();
+    ASSERT_NE(nullptr, p[i]);
+  }
+
+  size_t i = 0;
+  for (auto itr = local_allocator.begin(); itr != local_allocator.end(); ++i, ++itr)
+  {
+    local_T expected_value = *reinterpret_cast<local_T*>(p[i]);
+    local_T actual_value = *itr;
+    ASSERT_EQ(expected_value, actual_value);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(block_allocator_unittest, TestIteratorPostIncrement)
+{
+  const size_t local_N = 10;
+  typedef uint32_t local_T;
+  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+
+  void* p[local_N] = { 0 };
+
+  for (size_t i = 0; i < local_N; ++i)
+  {
+    p[i] = local_allocator.allocate();
+    ASSERT_NE(nullptr, p[i]);
+  }
+
+  size_t i = 0;
+  for (auto itr = local_allocator.begin(); itr != local_allocator.end(); ++i, itr++)
+  {
+    local_T expected_value = *reinterpret_cast<local_T*>(p[i]);
+    local_T actual_value = *itr;
+    ASSERT_EQ(expected_value, actual_value);
+  }
+}
+
+// -----------------------------------------------------------------------------

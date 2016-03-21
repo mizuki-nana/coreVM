@@ -20,6 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
+#include "corevm/macros.h"
 #include "memory/allocator.h"
 #include "memory/allocation_policy.h"
 #include "memory/sequential_allocation_scheme.h"
@@ -28,6 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <climits>
 
+
+#if COREVM_463
 
 class allocation_policy_unit_test : public ::testing::Test
 {
@@ -163,3 +166,5 @@ TEST_F(allocation_policy_unit_test, TestEquality5)
 }
 
 // -----------------------------------------------------------------------------
+
+#endif /* if COREVM_463 */

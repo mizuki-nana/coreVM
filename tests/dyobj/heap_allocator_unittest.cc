@@ -20,8 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "memory/allocator.h"
-#include "memory/sequential_allocation_scheme.h"
+#include "memory/block_allocator.h"
 #include "dyobj/heap_allocator.h"
 
 #include <gtest/gtest.h>
@@ -30,11 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class heap_allocator_unit_test : public ::testing::Test
 {
 public:
-  typedef corevm::memory::first_fit_allocation_scheme AllocationScheme;
-  typedef corevm::memory::best_fit_allocation_scheme OtherAllocationScheme;
-
-  typedef corevm::memory::allocator<AllocationScheme> CoreAllocatorType;
-  typedef corevm::memory::allocator<OtherAllocationScheme> OtherCoreAllocatorType;
+  typedef corevm::memory::block_allocator<uint64_t> CoreAllocatorType;
+  typedef corevm::memory::block_allocator<float> OtherCoreAllocatorType;
 };
 
 // -----------------------------------------------------------------------------
