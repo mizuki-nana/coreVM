@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <ostream>
-#include <unordered_set>
 
 
 #define PTR_TO_INT(p) (uint8_t*)( (p) ) - (uint8_t*)(NULL)
@@ -102,12 +101,9 @@ public:
   void erase(iterator&);
 
 private:
-  using _HashSet = typename std::unordered_set<pointer>;
-
   bool check_ptr(pointer) const;
 
   AllocatorType m_allocator;
-  _HashSet m_addrs;
 };
 
 // -----------------------------------------------------------------------------
@@ -173,7 +169,13 @@ template<typename T, typename AllocatorType>
 typename object_container<T, AllocatorType>::size_type
 object_container<T, AllocatorType>::size() const
 {
-  return m_addrs.size();
+  size_t count = 0;
+  for (auto itr = cbegin(); itr != cend(); ++itr)
+  {
+    ++count;
+  }
+
+  return count;
 }
 
 // -----------------------------------------------------------------------------
@@ -209,8 +211,6 @@ object_container<T, AllocatorType>::create()
 
   m_allocator.construct(p);
 
-  m_addrs.insert(p);
-
   return p;
 }
 
@@ -230,8 +230,6 @@ object_container<T, AllocatorType>::create(size_t n)
   for (size_t i = 0; i < n; ++i)
   {
     m_allocator.construct(&p[i]);
-
-    m_addrs.insert(&p[i]);
   }
 
   return p;
@@ -252,8 +250,6 @@ object_container<T, AllocatorType>::create(const_reference value)
 
   m_allocator.construct(p, value);
 
-  m_addrs.insert(p);
-
   return p;
 }
 
@@ -263,7 +259,7 @@ template<typename T, typename AllocatorType>
 bool
 object_container<T, AllocatorType>::check_ptr(pointer p) const
 {
-  return m_addrs.find(p) != m_addrs.end();
+  return m_allocator.find(p) != nullptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -337,7 +333,6 @@ object_container<T, AllocatorType>::destroy(pointer p)
 
   m_allocator.destroy(p);
   m_allocator.deallocate(p, 1);
-  m_addrs.erase(p);
 }
 
 // -----------------------------------------------------------------------------

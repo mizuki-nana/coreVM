@@ -70,6 +70,43 @@ typedef struct free_list_descriptor
   #pragma clang diagnostic pop
 #endif
 
+// -----------------------------------------------------------------------------
+
+/**
+ * Determines if the given freelist is large enough to hold
+ * `n` blocks.
+ *
+ * `n` has to be greater than 0.
+ */
+inline bool
+is_free_list_available(const free_list_descriptor& descriptor, size_t n)
+{
+  return descriptor.current_index + (n - 1) <= descriptor.end_index;
+}
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Determines if the given index has been allocated in the freelist provided.
+ */
+inline bool
+is_allocated_in_free_list(const free_list_descriptor& descriptor, uint32_t index)
+{
+  return index >= descriptor.start_index && index < descriptor.current_index;
+}
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Determines if the given freelist is empty.
+ */
+inline bool
+is_empty_free_list(const free_list_descriptor& descriptor)
+{
+  return descriptor.current_index == descriptor.start_index;
+}
+
+// -----------------------------------------------------------------------------
 
 } /* end anonymous namespace */
 
@@ -201,8 +238,30 @@ private:
           {
             ++m_descriptor_index;
             m_slot_index = 0;
-          }
 
+            // Skip empty lists.
+            while (static_cast<size_t>(m_descriptor_index) < m_parent.m_free_lists.size())
+            {
+              const auto& descriptor_ =
+                m_parent.m_free_lists[static_cast<size_t>(m_descriptor_index)];
+
+              if (!is_empty_free_list(descriptor_))
+              {
+                  break;
+              }
+
+              ++m_descriptor_index;
+              m_slot_index = 0;
+            }
+          }
+          if (static_cast<size_t>(m_descriptor_index) >= m_parent.m_free_lists.size())
+          {
+            *this = m_parent.end();
+          }
+          else
+          {
+            break;
+          }
         }
       }
 
@@ -232,43 +291,9 @@ public:
 
   const_iterator cbegin() const;
   const_iterator cend() const;
+
+  void* find(void*) const;
 };
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given freelist is large enough to hold
- * `n` blocks.
- *
- * `n` has to be greater than 0.
- */
-inline bool
-is_free_list_available(const free_list_descriptor& descriptor, size_t n)
-{
-  return descriptor.current_index + (n - 1) <= descriptor.end_index;
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given index has been allocated in the freelist provided.
- */
-inline bool
-is_allocated_in_free_list(const free_list_descriptor& descriptor, uint32_t index)
-{
-  return index >= descriptor.start_index && index < descriptor.current_index;
-}
-
-// -----------------------------------------------------------------------------
-
-/**
- * Determines if the given freelist is empty.
- */
-inline bool
-is_empty_free_list(const free_list_descriptor& descriptor)
-{
-  return descriptor.current_index == descriptor.start_index;
-}
 
 // -----------------------------------------------------------------------------
 
@@ -502,6 +527,37 @@ block_allocator<T>::deallocate(void* ptr)
 // -----------------------------------------------------------------------------
 
 template<class T>
+void*
+block_allocator<T>::find(void* ptr) const
+{
+  uint64_t ptr_ = reinterpret_cast<uint64_t>(ptr);
+  uint64_t heap_ = reinterpret_cast<uint64_t>(m_heap);
+
+  if (ptr_ < heap_ || ptr_ > heap_ + m_total_size)
+  {
+    return NULL;
+  }
+
+  const uint64_t range = ptr_ - heap_;
+
+  const uint32_t index = (uint32_t)( range / sizeof(T) );
+
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr)
+  {
+    const free_list_descriptor& descriptor = *itr;
+
+    if (is_allocated_in_free_list(descriptor, index))
+    {
+      return ptr;
+    }
+  }
+
+  return NULL;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
 void
 block_allocator<T>::combine_empty_freelists(size_t i)
 {
@@ -575,8 +631,7 @@ block_allocator<T>::begin()
   {
     free_list_descriptor& descriptor = *itr;
 
-    if (descriptor.current_index > descriptor.start_index &&
-        descriptor.current_index <= descriptor.end_index)
+    if (descriptor.current_index > descriptor.start_index)
     {
       descriptor_index = static_cast<int64_t>(i);
       slot_index = 0;

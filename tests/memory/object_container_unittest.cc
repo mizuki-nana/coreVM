@@ -173,6 +173,38 @@ TEST_F(object_container_unittest, TestBulkCreateAndUpdate)
 
 // -----------------------------------------------------------------------------
 
+TEST_F(object_container_unittest, TestEraseInMiddleFirst)
+{
+  const size_t N = 5;
+
+  T* p = m_container.create(N);
+  ASSERT_NE(nullptr, p);
+
+  ASSERT_EQ(N, m_container.size());
+
+  // Destroy the 2nd to 4th elements, inclusive.
+  for (size_t i = 1; i <= 3; ++i)
+  {
+    m_container.destroy(&p[i]);
+
+    ASSERT_EQ(nullptr, m_container[&p[i]]);
+  }
+
+  ASSERT_EQ(N - 3, m_container.size());
+
+  // Destroy the 1st element.
+  m_container.destroy(&p[0]);
+
+  ASSERT_EQ(1, m_container.size());
+
+  // Destroy the last element.
+  m_container.destroy(&p[N - 1]);
+
+  ASSERT_EQ(0, m_container.size());
+}
+
+// -----------------------------------------------------------------------------
+
 TEST_F(object_container_unittest, TestIterator)
 {
   int data1 = 666;

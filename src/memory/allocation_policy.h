@@ -69,6 +69,8 @@ public:
   const_iterator cbegin() const;
   const_iterator cend() const;
 
+  pointer find(pointer) const;
+
   /**
    * The maximum number of bytes can be used.
    */
@@ -217,6 +219,17 @@ typename allocation_policy<T, CoreAllocatorType>::const_iterator
 allocation_policy<T, CoreAllocatorType>::cend() const
 {
   return m_allocator.cend();
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename T, typename CoreAllocatorType>
+typename allocation_policy<T, CoreAllocatorType>::pointer
+allocation_policy<T, CoreAllocatorType>::find(
+  typename allocation_policy<T, CoreAllocatorType>::pointer p) const
+{
+  return reinterpret_cast<typename allocation_policy<T, CoreAllocatorType>::pointer>(
+    m_allocator.find(reinterpret_cast<void*>(p)));
 }
 
 // -----------------------------------------------------------------------------

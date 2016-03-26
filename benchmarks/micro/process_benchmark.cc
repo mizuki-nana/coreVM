@@ -61,6 +61,7 @@ void BenchmarkProcessGetDyobj(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkProcessPushStack(benchmark::State& state)
 {
@@ -73,9 +74,11 @@ void BenchmarkProcessPushStack(benchmark::State& state)
     process.push_stack(id);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 {
@@ -93,6 +96,7 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
     process.insert_ntvhndl(hndl);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -112,6 +116,7 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkProcessInsertVector(benchmark::State& state)
 {
@@ -131,14 +136,17 @@ void BenchmarkProcessInsertVector(benchmark::State& state)
     process.insert_vector(vector);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
 BENCHMARK(BenchmarkProcessCreateDyobj);
 BENCHMARK(BenchmarkProcessGetDyobj);
+BENCHMARK(BenchmarkProcessGetNtvHndl);
+#ifdef BUILD_BENCHMARKS_STRICT
 BENCHMARK(BenchmarkProcessPushStack);
 BENCHMARK(BenchmarkProcessInsertNtvHndl);
-BENCHMARK(BenchmarkProcessGetNtvHndl);
 BENCHMARK(BenchmarkProcessInsertVector);
+#endif
 
 // -----------------------------------------------------------------------------

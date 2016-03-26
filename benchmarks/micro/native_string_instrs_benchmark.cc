@@ -231,6 +231,7 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRERS2(benchmark::State& state)
 {
@@ -260,6 +261,7 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -355,6 +357,7 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRSUB2(benchmark::State& state)
 {
@@ -384,9 +387,11 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRFND(benchmark::State& state)
 {
@@ -412,9 +417,11 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRFND2(benchmark::State& state)
 {
@@ -444,9 +451,11 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRRFND(benchmark::State& state)
 {
@@ -472,9 +481,11 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrSTRRFND2(benchmark::State& state)
 {
@@ -504,6 +515,7 @@ void BenchmarkInstrSTRRFND2(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 

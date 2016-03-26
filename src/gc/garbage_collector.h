@@ -125,31 +125,31 @@ template<class garbage_collection_scheme>
 void
 garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
 {
-  static const dyobj_remove_criterion<dynamic_object_heap_type> remove_criterion;
-
   // NOTE: Cannot use `std::remove_if` here because certain implementations
   // require copying the underlying container elements, in this case
   // `dynamic_object_type`, which does not support explicit copy semantics.
-  for (auto itr = m_heap.begin(); itr != m_heap.end();)
+
+  std::vector<dyobj::dyobj_id> objs_to_delete;
+  objs_to_delete.reserve(m_heap.size());
+
+  for (auto itr = m_heap.begin(); itr != m_heap.end(); ++itr)
   {
-    if (remove_criterion(itr))
+    dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
+
+    if (obj.is_garbage_collectible())
     {
-      dynamic_object_type& obj = static_cast<dynamic_object_type&>(*itr);
+      objs_to_delete.push_back(obj.id());
 
       if (f)
       {
         (*f)(obj);
       }
+    }
+  }
 
-      auto itr_next = itr;
-      ++itr_next;
-      m_heap.erase(itr);
-      itr = itr_next;
-    }
-    else
-    {
-      ++itr;
-    }
+  for (const auto& dyobj_id: objs_to_delete)
+  {
+    m_heap.erase(dyobj_id);
   }
 }
 
