@@ -72,10 +72,10 @@ set(sources
 
 
 # Library `libcorevm`.
-add_library(corevm ${sources})
+add_library(libcorevm ${sources})
 
 
-set_target_properties(corevm PROPERTIES COMPILE_FLAGS "-O3")
+set_target_properties(libcorevm PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "corevm")
 
 
 # Binary `coreVM`.
@@ -86,7 +86,7 @@ set_target_properties(coreVM PROPERTIES COMPILE_FLAGS "-O3")
 
 
 target_link_libraries(coreVM
-    corevm
+    libcorevm
     boost_system
     boost_regex
     boost_iostreams
@@ -100,10 +100,10 @@ target_link_libraries(coreVM
 
 
 # Library `libcorevm_dbg`.
-add_library(corevm_dbg ${sources})
+add_library(libcorevm_dbg ${sources})
 
 
-set_target_properties(corevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+set_target_properties(libcorevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg")
 
 
 # Binary `coreVM_dbg`.
@@ -111,7 +111,7 @@ add_executable(coreVM_dbg corevm/main.cc)
 
 
 target_link_libraries(coreVM_dbg
-    corevm_dbg
+    libcorevm_dbg
     boost_system
     boost_regex
     boost_iostreams
@@ -133,10 +133,10 @@ target_link_libraries(coreVM_dbg
 if(BUILD_SANITY_BIN)
 
 
-add_library(corevm_dbg_asan ${sources})
+add_library(libcorevm_dbg_asan ${sources})
 
 
-set_target_properties(corevm_dbg_asan PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+set_target_properties(libcorevm_dbg_asan PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg_asan")
 
 
 # Binary `coreVM_dbg_asan`.
@@ -144,7 +144,7 @@ add_executable(coreVM_dbg_asan corevm/main.cc)
 
 
 target_link_libraries(coreVM_dbg_asan
-    corevm_dbg_asan
+    libcorevm_dbg_asan
     boost_system
     boost_regex
     boost_iostreams

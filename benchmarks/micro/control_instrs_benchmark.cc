@@ -38,6 +38,7 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 
 // -----------------------------------------------------------------------------
 
+#ifdef __linux__
 static
 void BenchmarkInstrPINVK(benchmark::State& state)
 {
@@ -63,9 +64,11 @@ void BenchmarkInstrPINVK(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#ifdef __linux__
 static
 void BenchmarkInstrINVK(benchmark::State& state)
 {
@@ -82,6 +85,7 @@ void BenchmarkInstrINVK(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -291,8 +295,10 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef __linux__
 BENCHMARK(BenchmarkInstrPINVK);
 BENCHMARK(BenchmarkInstrINVK);
+#endif
 BENCHMARK(BenchmarkInstrJMP);
 BENCHMARK(BenchmarkInstrJMPIF);
 BENCHMARK(BenchmarkInstrJMPR);

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 import optparse
-import simplejson
+import json
 import sys
 
 
@@ -106,10 +106,10 @@ class BenchmarkDiffer(object):
 
     def init(self):
         with open(self.left_path) as fd:
-            self.left_content = simplejson.load(fd)
+            self.left_content = json.load(fd)
 
         with open(self.right_path) as fd:
-            self.right_content = simplejson.load(fd)
+            self.right_content = json.load(fd)
 
     def __print_path(self, path):
         formatter = '{color}{path}{end_color}'

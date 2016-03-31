@@ -296,9 +296,6 @@ a good name of my variant by then.
 
 ## Compilation Environments
 
-### OS X
-To be supported.
-
 ### Debian
 Operating System:<br/>
 `Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.4 LTS)`
@@ -323,6 +320,25 @@ Valgrind:<br/>
 
 Sphinx:<br/>
 `Sphinx v1.2.2`
+
+### OS X
+Operating System:<br/>
+`OS X 10.9.5 Darwin Kernel Version 13.4.0`
+
+Compiler:<br/>
+`Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)
+Target: x86_64-apple-darwin13.4.0
+Thread model: posix`
+
+Python:<br/>
+`Python 2.7.5`
+
+CMake:<br/>
+`cmake version 4.0.2`
+
+Make:<br/>
+`GNU Make 3.81`
+`This program built for i386-apple-darwin11.3.0`
 
 
 ## Dependencies

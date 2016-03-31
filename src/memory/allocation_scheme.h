@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_ALLOCATION_SCHEME_H_
 
 #include <cstdlib>
+#include <sys/types.h>
 
 
 namespace corevm {

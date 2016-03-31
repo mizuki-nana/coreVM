@@ -2261,7 +2261,7 @@ TEST_F(instrs_unary_arithmetic_instrs_test, TestInstrLNOT)
 
 TEST_F(instrs_unary_arithmetic_instrs_test, TestInstrABS)
 {
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_abs>(std::abs(m_oprd));
+  execute_instr_and_assert_result<corevm::runtime::instr_handler_abs>(std::abs(static_cast<long int>(m_oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -3712,8 +3712,31 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPKEYS)
 
   push_eval_stack(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapkeys,
-    corevm::types::native_array>(expected_result);
+  corevm::runtime::instr_handler_mapkeys instr_handler;
+
+  corevm::runtime::frame* frame = &m_process.top_frame();
+  corevm::runtime::invocation_ctx* invk_ctx = &m_process.top_invocation_ctx();
+
+  corevm::runtime::instr instr(0, 0, 0);
+  instr_handler.execute(instr, m_process, &frame, &invk_ctx);
+
+  corevm::runtime::frame& top_frame = m_process.top_frame();
+
+  ASSERT_GT(top_frame.eval_stack_size(), 0);
+
+  corevm::types::native_type_handle result_handle = top_frame.pop_eval_stack();
+
+  auto actual_result =
+    corevm::types::get_value_from_handle<corevm::types::native_array>(
+      result_handle);
+
+  ASSERT_EQ(expected_result.size(), actual_result.size());
+
+  for (const auto& expected_key : expected_result)
+  {
+    ASSERT_NE(actual_result.end(),
+      std::find(actual_result.begin(), actual_result.end(), expected_key));
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -3733,8 +3756,31 @@ TEST_F(instrs_native_map_type_complex_instrs_test, TestInstrMAPVALS)
 
   push_eval_stack(eval_oprds_list{oprd});
 
-  execute_instr_and_assert_result<corevm::runtime::instr_handler_mapvals,
-    corevm::types::native_array>(expected_result);
+  corevm::runtime::instr_handler_mapvals instr_handler;
+
+  corevm::runtime::frame* frame = &m_process.top_frame();
+  corevm::runtime::invocation_ctx* invk_ctx = &m_process.top_invocation_ctx();
+
+  corevm::runtime::instr instr(0, 0, 0);
+  instr_handler.execute(instr, m_process, &frame, &invk_ctx);
+
+  corevm::runtime::frame& top_frame = m_process.top_frame();
+
+  ASSERT_GT(top_frame.eval_stack_size(), 0);
+
+  corevm::types::native_type_handle result_handle = top_frame.pop_eval_stack();
+
+  auto actual_result =
+    corevm::types::get_value_from_handle<corevm::types::native_array>(
+      result_handle);
+
+  ASSERT_EQ(expected_result.size(), actual_result.size());
+
+  for (const auto& expected_val : expected_result)
+  {
+    ASSERT_NE(actual_result.end(),
+      std::find(actual_result.begin(), actual_result.end(), expected_val));
+  }
 }
 
 // -----------------------------------------------------------------------------

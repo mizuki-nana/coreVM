@@ -58,7 +58,7 @@ endif()
 
 
 target_link_libraries(run_benchmarks
-    corevm
+    libcorevm
     boost_system
     boost_regex
     boost_iostreams

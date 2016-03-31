@@ -32,7 +32,7 @@ set_target_properties(extract_metadata PROPERTIES COMPILE_FLAGS "-O3")
 
 
 target_link_libraries(extract_metadata
-    corevm
+    libcorevm
     boost_system
     boost_regex
     boost_iostreams

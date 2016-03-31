@@ -323,6 +323,7 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrARYMRG(benchmark::State& state)
 {
@@ -348,6 +349,7 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 

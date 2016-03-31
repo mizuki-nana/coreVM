@@ -26,7 +26,7 @@ import optparse
 import os
 import pprint
 import random
-import simplejson
+import json
 import string
 import sys
 import time
@@ -371,7 +371,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         # Read info file
         with open(options.metadata_file, 'r') as fd:
-            info_json = simplejson.load(fd)
+            info_json = json.load(fd)
 
         self.instr_str_to_code_map = info_json[INSTR_STR_TO_CODE_MAP]
         self.dyobj_flag_str_to_value_map = info_json[DYOBJ_FLAG_STR_TO_VALUE_MAP]
@@ -443,7 +443,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             pprint.pprint(structured_bytecode)
 
         with open(self.output_file, 'w') as fd:
-            fd.write(simplejson.dumps(structured_bytecode))
+            fd.write(json.dumps(structured_bytecode))
 
     def finalize_binary(self):
         """Finalize binary format encoding."""

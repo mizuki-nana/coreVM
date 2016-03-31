@@ -365,6 +365,7 @@ void BenchmarkInstrMAPVALS(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#ifdef BUILD_BENCHMARKS_STRICT
 static
 void BenchmarkInstrMAPMRG(benchmark::State& state)
 {
@@ -396,6 +397,7 @@ void BenchmarkInstrMAPMRG(benchmark::State& state)
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 

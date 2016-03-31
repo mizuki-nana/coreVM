@@ -43,7 +43,7 @@ set(CMAKE_CXX_COMPILER "clang++")
 
 
 # General compiler flags.
-set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
+set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
 
 
 # Linker options.
@@ -52,7 +52,9 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
 
 # Reset per-target ar/ranlib flags.
-set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> rvs -o <TARGET> <LINK_FLAGS> <OBJECTS>")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> rvs -o <TARGET> <LINK_FLAGS> <OBJECTS>")
+endif ()
 
 
 # Packages.

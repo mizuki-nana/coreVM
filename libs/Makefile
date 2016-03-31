@@ -30,14 +30,23 @@ BENCHMARK_DIR=$(TOP_DIR)/benchmark
 AVRO_DIR=$(TOP_DIR)/avro
 AVRO_CPP_DIR=$(AVRO_DIR)/lang/c++
 AVRO_PY_DIR=$(AVRO_DIR)/lang/py
+BENCHMARK_HEADER_INSTALL_PATH=/usr/local/include/benchmark/
+
+## -----------------------------------------------------------------------------
+
+ifeq ($(TRAVIS_OS_NAME), linux)
+BASE_TARGETS=cmake_target avro sneaker
+else
+BASE_TARGETS=avro sneaker
+endif
 
 ## -----------------------------------------------------------------------------
 
 .PHONY: all
 ifeq ($(full), 1)
-all: cmake_target avro sneaker benchmark
+all: $(BASE_TARGETS) benchmark
 else
-all: cmake_target avro sneaker
+all: $(BASE_TARGETS)
 endif
 
 ## -----------------------------------------------------------------------------
@@ -54,7 +63,8 @@ benchmark:
 	cd $(BENCHMARK_DIR) && cmake -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true
 	$(MAKE) -C benchmark
 	sudo cp -f $(BENCHMARK_DIR)/src/libbenchmark.a /usr/local/lib/
-	sudo cp -r $(BENCHMARK_DIR)/include/benchmark/ /usr/local/include/
+	sudo mkdir -p $(BENCHMARK_HEADER_INSTALL_PATH)
+	sudo cp -vr $(BENCHMARK_DIR)/include/benchmark/* $(BENCHMARK_HEADER_INSTALL_PATH)
 
 ## -----------------------------------------------------------------------------
 
@@ -72,8 +82,12 @@ cmake_target:
 avro:
 	cd $(AVRO_CPP_DIR) && cmake -G "Unix Makefiles" && $(MAKE)
 	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp_s.a /usr/local/lib
+ifeq ($(TRAVIS_OS_NAME), linux)
 	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.so /usr/local/lib
 	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.so.1.7.7.0 /usr/local/lib
+else
+	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.dylib /usr/local/lib
+endif
 	sudo cp -f $(AVRO_CPP_DIR)/avrogencpp /usr/local/bin
 	sudo cp -f $(AVRO_CPP_DIR)/precompile /usr/local/bin
 	sudo mkdir -p /usr/local/include/avro

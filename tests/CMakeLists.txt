@@ -65,7 +65,7 @@ set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -g -Wno-
 
 
 target_link_libraries(run_tests
-    corevm_dbg
+    libcorevm_dbg
     boost_system
     boost_regex
     boost_iostreams
@@ -80,4 +80,4 @@ target_link_libraries(run_tests
 
 # Run tests.
 add_custom_command(TARGET run_tests POST_BUILD COMMAND
-    ./run_tests --gtest_color=yes --gtest_shuffle --gtest_repeat=2)
+    ./run_tests --gtest_color=yes --gtest_shuffle --gtest_repeat=1)
