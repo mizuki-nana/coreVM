@@ -29,14 +29,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class dummy_dynamic_object_manager {};
+class DummyDynamicObjectManager {};
 
 // -----------------------------------------------------------------------------
 
 class runtime_utils_unittest : public ::testing::Test
 {
 public:
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+  using DynamicObjectType = typename corevm::dyobj::DynamicObject<DummyDynamicObjectManager>;
 };
 
 // -----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ TEST_F(runtime_utils_unittest, TestGetattr)
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
   corevm::dyobj::dyobj_id attr_id = 123;
 
-  dynamic_object_type obj;
+  DynamicObjectType obj;
   obj.putattr(attr_key, attr_id);
 
   ASSERT_EQ(true, obj.hasattr(attr_key));
@@ -125,7 +125,7 @@ TEST_F(runtime_utils_unittest, TestGetattr2)
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
   corevm::dyobj::dyobj_id attr_id = 123;
 
-  dynamic_object_type obj;
+  DynamicObjectType obj;
   obj.putattr(attr_key, attr_id);
 
   ASSERT_EQ(true, obj.hasattr(attr_key));

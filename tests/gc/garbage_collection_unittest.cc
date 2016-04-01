@@ -41,7 +41,7 @@ protected:
   using _GarbageCollectorType = typename corevm::gc::garbage_collector<GarbageCollectionScheme>;
 
   using _ObjectType = typename corevm::dyobj::dynamic_object<
-    typename GarbageCollectionScheme::dynamic_object_manager>;
+    typename GarbageCollectionScheme::DynamicObjectManager>;
 
   void do_gc_and_check_results(std::list<corevm::dyobj::dyobj_id> ids)
   {
@@ -84,7 +84,7 @@ protected:
   }
 
   corevm::dyobj::dynamic_object_heap<
-    typename GarbageCollectionScheme::dynamic_object_manager> m_heap;
+    typename GarbageCollectionScheme::DynamicObjectManager> m_heap;
 };
 
 // -----------------------------------------------------------------------------

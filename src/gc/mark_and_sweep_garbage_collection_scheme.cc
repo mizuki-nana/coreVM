@@ -33,7 +33,7 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::DynamicObjectManager()
   :
   m_marked(false)
 {
@@ -43,7 +43,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::dynamic_object
 
 /* virtual inline */
 bool
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::garbage_collectible() const noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::garbage_collectible() const noexcept
 {
   return marked();
 }
@@ -52,7 +52,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::garbage_collec
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_create() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_create() noexcept
 {
   // Do nothing here.
 }
@@ -61,7 +61,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_create() no
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_setattr() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_setattr() noexcept
 {
   // Do nothing here.
 }
@@ -70,7 +70,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_setattr() n
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_delattr() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delattr() noexcept
 {
   // Do nothing here.
 }
@@ -79,7 +79,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_delattr() n
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_delete() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delete() noexcept
 {
   // Do nothing here.
 }
@@ -88,7 +88,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_delete() no
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_exit() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_exit() noexcept
 {
   // Do nothing here.
 }
@@ -97,7 +97,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::on_exit() noex
 
 /* virtual inline */
 bool
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::marked() const noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::marked() const noexcept
 {
   return m_marked;
 }
@@ -106,7 +106,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::marked() const
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::mark() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::mark() noexcept
 {
   m_marked = true;
 }
@@ -115,7 +115,7 @@ mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::mark() noexcep
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::dynamic_object_manager::unmark() noexcept
+mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::unmark() noexcept
 {
   m_marked = false;
 }

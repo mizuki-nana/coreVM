@@ -32,7 +32,7 @@ namespace dyobj {
 // -----------------------------------------------------------------------------
 
 /* virtual */
-dynamic_object_manager::~dynamic_object_manager()
+DynamicObjectManager::~DynamicObjectManager()
 {
   // Do nothing here.
 }

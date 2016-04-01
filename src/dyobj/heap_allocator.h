@@ -41,7 +41,7 @@ using sneaker::allocator::object_traits;
 
 
 template<typename T, typename CoreAllocatorType>
-class heap_allocator : public memory::AllocationPolicy<T, CoreAllocatorType>, public object_traits<T>
+class HeapAllocator : public memory::AllocationPolicy<T, CoreAllocatorType>, public object_traits<T>
 {
 private:
   using AllocationPolicyType = memory::AllocationPolicy<T, CoreAllocatorType>;
@@ -55,20 +55,20 @@ public:
   using size_type       = typename AllocationPolicyType::size_type;
   using difference_type = typename AllocationPolicyType::difference_type;
 
-  heap_allocator();
-  explicit heap_allocator(uint64_t);
-  ~heap_allocator();
+  HeapAllocator();
+  explicit HeapAllocator(uint64_t);
+  ~HeapAllocator();
 
-  heap_allocator(heap_allocator const&);
+  HeapAllocator(HeapAllocator const&);
 
   template<typename U, typename OtherCoreAllocatorType>
-  heap_allocator(heap_allocator<U, OtherCoreAllocatorType> const&) = delete;
+  HeapAllocator(HeapAllocator<U, OtherCoreAllocatorType> const&) = delete;
 };
 
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-heap_allocator<T, CoreAllocatorType>::heap_allocator()
+HeapAllocator<T, CoreAllocatorType>::HeapAllocator()
   :
   AllocationPolicyType(COREVM_DEFAULT_HEAP_SIZE)
 {
@@ -78,7 +78,7 @@ heap_allocator<T, CoreAllocatorType>::heap_allocator()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-heap_allocator<T, CoreAllocatorType>::heap_allocator(
+HeapAllocator<T, CoreAllocatorType>::HeapAllocator(
   uint64_t total_size)
   :
   AllocationPolicyType(total_size)
@@ -89,7 +89,7 @@ heap_allocator<T, CoreAllocatorType>::heap_allocator(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-heap_allocator<T, CoreAllocatorType>::~heap_allocator()
+HeapAllocator<T, CoreAllocatorType>::~HeapAllocator()
 {
   // Do nothing here.
 }
@@ -97,8 +97,8 @@ heap_allocator<T, CoreAllocatorType>::~heap_allocator()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-heap_allocator<T, CoreAllocatorType>::heap_allocator(
-  heap_allocator<T, CoreAllocatorType> const& other)
+HeapAllocator<T, CoreAllocatorType>::HeapAllocator(
+  HeapAllocator<T, CoreAllocatorType> const& other)
   :
   AllocationPolicyType(other.total_size())
 {
@@ -110,8 +110,8 @@ heap_allocator<T, CoreAllocatorType>::heap_allocator(
 template<typename T, typename CoreAllocatorType>
 inline
 bool operator==(
-  heap_allocator<T, CoreAllocatorType> const& lhs,
-  heap_allocator<T, CoreAllocatorType> const& rhs)
+  HeapAllocator<T, CoreAllocatorType> const& lhs,
+  HeapAllocator<T, CoreAllocatorType> const& rhs)
 {
   return operator==(
     static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs),
@@ -124,8 +124,8 @@ bool operator==(
 template<typename T, typename CoreAllocatorType, typename U, typename OtherCoreAllocatorType>
 inline
 bool operator==(
-  heap_allocator<T, CoreAllocatorType> const& lhs,
-  heap_allocator<U, OtherCoreAllocatorType> const& rhs)
+  HeapAllocator<T, CoreAllocatorType> const& lhs,
+  HeapAllocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return operator==(
     static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs),
@@ -138,7 +138,7 @@ bool operator==(
 template<typename T, typename CoreAllocatorType, typename other_allocator_type>
 inline
 bool operator==(
-  heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
+  HeapAllocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
     static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs), rhs
@@ -150,8 +150,8 @@ bool operator==(
 template<typename T, typename CoreAllocatorType>
 inline
 bool operator!=(
-  heap_allocator<T, CoreAllocatorType> const& lhs,
-  heap_allocator<T, CoreAllocatorType> const& rhs)
+  HeapAllocator<T, CoreAllocatorType> const& lhs,
+  HeapAllocator<T, CoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -161,17 +161,17 @@ bool operator!=(
 template<typename T, typename CoreAllocatorType, typename U, typename OtherCoreAllocatorType>
 inline
 bool operator!=(
-  heap_allocator<T, CoreAllocatorType> const& lhs,
-  heap_allocator<U, OtherCoreAllocatorType> const& rhs)
+  HeapAllocator<T, CoreAllocatorType> const& lhs,
+  HeapAllocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename T, typename CoreAllocatorType, typename other_allocator_type>
+template<typename T, typename CoreAllocatorType, typename OtherAllocatorType>
 inline
-bool operator!=(heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
+bool operator!=(HeapAllocator<T, CoreAllocatorType> const& lhs, OtherAllocatorType const& rhs)
 {
   return !operator==(lhs, rhs);
 }

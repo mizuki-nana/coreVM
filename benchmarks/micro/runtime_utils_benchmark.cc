@@ -33,9 +33,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace {
 
-class dummy_dynamic_object_manager {};
+class DummyDynamicObjectManager {};
 
-using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+using DynamicObjectType = typename corevm::dyobj::DynamicObject<DummyDynamicObjectManager>;
 
 } /* end anonymous namespace */
 
@@ -79,7 +79,7 @@ void BenchmarkGetattr(benchmark::State& state)
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
   corevm::dyobj::dyobj_id attr_id = 123;
 
-  dynamic_object_type obj;
+  DynamicObjectType obj;
   obj.putattr(attr_key, attr_id);
 
   while (state.KeepRunning())
@@ -107,7 +107,7 @@ void BenchmarkGetattr2(benchmark::State& state)
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
   corevm::dyobj::dyobj_id attr_id = 123;
 
-  dynamic_object_type obj;
+  DynamicObjectType obj;
   obj.putattr(attr_key, attr_id);
 
   while (state.KeepRunning())

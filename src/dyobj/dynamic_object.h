@@ -43,8 +43,8 @@ namespace corevm {
 namespace dyobj {
 
 
-template<class dynamic_object_manager>
-class dynamic_object
+template<class DynamicObjectManager>
+class DynamicObject
 {
 public:
   typedef attr_key attr_key_type;
@@ -56,16 +56,16 @@ public:
   typedef attr_map_type::iterator iterator;
   typedef attr_map_type::const_iterator const_iterator;
 
-  dynamic_object();
+  DynamicObject();
 
   /* Dynamic objects should not be copyable. */
-  dynamic_object(const dynamic_object&) = delete;
-  dynamic_object& operator=(const dynamic_object&) = delete;
+  DynamicObject(const DynamicObject&) = delete;
+  DynamicObject& operator=(const DynamicObject&) = delete;
 
-  ~dynamic_object();
+  ~DynamicObject();
 
-  bool operator==(const dynamic_object<dynamic_object_manager>&);
-  bool operator!=(const dynamic_object<dynamic_object_manager>&);
+  bool operator==(const DynamicObject<DynamicObjectManager>&);
+  bool operator!=(const DynamicObject<DynamicObjectManager>&);
 
   void set_id(dyobj_id id) noexcept;
 
@@ -79,7 +79,7 @@ public:
 
   flag flags() const noexcept;
 
-  dynamic_object_manager& manager() noexcept;
+  DynamicObjectManager& manager() noexcept;
 
   ntvhndl_key ntvhndl_key() const noexcept;
   void set_ntvhndl_key(dyobj::ntvhndl_key) noexcept;
@@ -98,10 +98,10 @@ public:
   void putattr(attr_key_type, dyobj_id_type) noexcept;
 
   void delattr(attr_key_type)
-    throw(object_attribute_not_found_error);
+    throw(ObjectAttributeNotFoundError);
 
   dyobj_id_type getattr(attr_key_type) const
-    throw(object_attribute_not_found_error);
+    throw(ObjectAttributeNotFoundError);
 
   bool getattr(attr_key_type, dyobj_id_type*) const;
 
@@ -114,10 +114,10 @@ public:
   template<typename Function>
   void iterate(Function) noexcept;
 
-  void copy_from(const dynamic_object<dynamic_object_manager>&);
+  void copy_from(const DynamicObject<DynamicObjectManager>&);
 
 private:
-  void check_flag_bit(char) const throw(invalid_flag_bit_error);
+  void check_flag_bit(char) const throw(InvalidFlagBitError);
 
   struct attr_key_pred
   {
@@ -156,7 +156,7 @@ private:
   dyobj_id_type m_id;
   flag m_flags;
   attr_map_type m_attrs;
-  dynamic_object_manager m_manager;
+  DynamicObjectManager m_manager;
   dyobj::ntvhndl_key m_ntvhndl_key;
   runtime::closure_ctx m_closure_ctx;
 };
@@ -171,8 +171,8 @@ static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object<dynamic_object_manager>::dynamic_object():
+template<class DynamicObjectManager>
+DynamicObject<DynamicObjectManager>::DynamicObject():
   m_id(0u),
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
@@ -186,37 +186,37 @@ dynamic_object<dynamic_object_manager>::dynamic_object():
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object<dynamic_object_manager>::~dynamic_object()
+template<class DynamicObjectManager>
+DynamicObject<DynamicObjectManager>::~DynamicObject()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::operator==(
-  const dynamic_object<dynamic_object_manager>& rhs)
+DynamicObject<DynamicObjectManager>::operator==(
+  const DynamicObject<DynamicObjectManager>& rhs)
 {
   return this->id() == rhs.id();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::operator!=(
-  const dynamic_object<dynamic_object_manager>& rhs)
+DynamicObject<DynamicObjectManager>::operator!=(
+  const DynamicObject<DynamicObjectManager>& rhs)
 {
   return !((*this) == rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::set_id(
+DynamicObject<DynamicObjectManager>::set_id(
   dyobj_id id) noexcept
 {
   m_id = id;
@@ -224,81 +224,81 @@ dynamic_object<dynamic_object_manager>::set_id(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object<dynamic_object_manager>::iterator
-dynamic_object<dynamic_object_manager>::begin() noexcept
+template<class DynamicObjectManager>
+typename DynamicObject<DynamicObjectManager>::iterator
+DynamicObject<DynamicObjectManager>::begin() noexcept
 {
   return m_attrs.begin();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object<dynamic_object_manager>::iterator
-dynamic_object<dynamic_object_manager>::end() noexcept
+template<class DynamicObjectManager>
+typename DynamicObject<DynamicObjectManager>::iterator
+DynamicObject<DynamicObjectManager>::end() noexcept
 {
   return m_attrs.end();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object<dynamic_object_manager>::const_iterator
-dynamic_object<dynamic_object_manager>::cbegin() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObject<DynamicObjectManager>::const_iterator
+DynamicObject<DynamicObjectManager>::cbegin() const noexcept
 {
   return m_attrs.cbegin();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object<dynamic_object_manager>::const_iterator
-dynamic_object<dynamic_object_manager>::cend() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObject<DynamicObjectManager>::const_iterator
+DynamicObject<DynamicObjectManager>::cend() const noexcept
 {
   return m_attrs.cend();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 dyobj_id
-dynamic_object<dynamic_object_manager>::id() const noexcept
+DynamicObject<DynamicObjectManager>::id() const noexcept
 {
   return m_id;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 flag
-dynamic_object<dynamic_object_manager>::flags() const noexcept
+DynamicObject<DynamicObjectManager>::flags() const noexcept
 {
   return m_flags;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object_manager&
-dynamic_object<dynamic_object_manager>::manager() noexcept
+template<class DynamicObjectManager>
+DynamicObjectManager&
+DynamicObject<DynamicObjectManager>::manager() noexcept
 {
   return m_manager;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 ntvhndl_key
-dynamic_object<dynamic_object_manager>::ntvhndl_key() const noexcept
+DynamicObject<DynamicObjectManager>::ntvhndl_key() const noexcept
 {
   return m_ntvhndl_key;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::set_ntvhndl_key(
+DynamicObject<DynamicObjectManager>::set_ntvhndl_key(
   dyobj::ntvhndl_key ntvhndl_key) noexcept
 {
   m_ntvhndl_key = ntvhndl_key;
@@ -306,31 +306,31 @@ dynamic_object<dynamic_object_manager>::set_ntvhndl_key(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::clear_ntvhndl_key() noexcept
+DynamicObject<DynamicObjectManager>::clear_ntvhndl_key() noexcept
 {
   m_ntvhndl_key = NONESET_NTVHNDL_KEY;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::check_flag_bit(char bit) const
-  throw(invalid_flag_bit_error)
+DynamicObject<DynamicObjectManager>::check_flag_bit(char bit) const
+  throw(InvalidFlagBitError)
 {
   if (!is_valid_flag_bit(bit))
   {
-    THROW(invalid_flag_bit_error());
+    THROW(InvalidFlagBitError());
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::get_flag(char bit) const
+DynamicObject<DynamicObjectManager>::get_flag(char bit) const
 {
   this->check_flag_bit(bit);
   return static_cast<bool>(is_bit_set_uint32(m_flags, bit));
@@ -338,9 +338,9 @@ dynamic_object<dynamic_object_manager>::get_flag(char bit) const
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::set_flag(char bit)
+DynamicObject<DynamicObjectManager>::set_flag(char bit)
 {
   this->check_flag_bit(bit);
   set_nth_bit_uint32(&m_flags, bit);
@@ -348,9 +348,9 @@ dynamic_object<dynamic_object_manager>::set_flag(char bit)
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::clear_flag(char bit)
+DynamicObject<DynamicObjectManager>::clear_flag(char bit)
 {
   this->check_flag_bit(bit);
   clear_nth_bit_uint32(&m_flags, bit);
@@ -358,9 +358,9 @@ dynamic_object<dynamic_object_manager>::clear_flag(char bit)
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::is_garbage_collectible() const noexcept
+DynamicObject<DynamicObjectManager>::is_garbage_collectible() const noexcept
 {
   return (
     get_flag(flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) == false &&
@@ -370,19 +370,19 @@ dynamic_object<dynamic_object_manager>::is_garbage_collectible() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<typename dynamic_object_manager>
+template<typename DynamicObjectManager>
 size_t
-dynamic_object<dynamic_object_manager>::attr_count() const
+DynamicObject<DynamicObjectManager>::attr_count() const
 {
   return m_attrs.size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::hasattr(
-  dynamic_object<dynamic_object_manager>::attr_key_type attr_key) const noexcept
+DynamicObject<DynamicObjectManager>::hasattr(
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const noexcept
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
   return itr != m_attrs.end();
@@ -390,34 +390,34 @@ dynamic_object<dynamic_object_manager>::hasattr(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::delattr(
-  dynamic_object<dynamic_object_manager>::attr_key_type attr_key)
-  throw(object_attribute_not_found_error)
+DynamicObject<DynamicObjectManager>::delattr(
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key)
+  throw(ObjectAttributeNotFoundError)
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
   if (itr == m_attrs.end())
   {
-    THROW(object_attribute_not_found_error(attr_key, id()));
+    THROW(ObjectAttributeNotFoundError(attr_key, id()));
   }
   m_attrs.erase(itr);
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 dyobj_id
-dynamic_object<dynamic_object_manager>::getattr(
-  dynamic_object<dynamic_object_manager>::attr_key_type attr_key) const
-  throw(object_attribute_not_found_error)
+DynamicObject<DynamicObjectManager>::getattr(
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const
+  throw(ObjectAttributeNotFoundError)
 {
   dyobj_id attr_id = 0;
 
   bool res = getattr(attr_key, &attr_id);
   if (!res)
   {
-    THROW(object_attribute_not_found_error(attr_key, id()));
+    THROW(ObjectAttributeNotFoundError(attr_key, id()));
   }
 
   return attr_id;
@@ -425,10 +425,10 @@ dynamic_object<dynamic_object_manager>::getattr(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::getattr(
-  dynamic_object<dynamic_object_manager>::attr_key_type attr_key,
+DynamicObject<DynamicObjectManager>::getattr(
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
   dyobj_id_type* attr_id) const
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
@@ -444,11 +444,11 @@ dynamic_object<dynamic_object_manager>::getattr(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::putattr(
-  dynamic_object<dynamic_object_manager>::attr_key_type attr_key,
-  dynamic_object<dynamic_object_manager>::dyobj_id_type obj_id) noexcept
+DynamicObject<DynamicObjectManager>::putattr(
+  DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
+  DynamicObject<DynamicObjectManager>::dyobj_id_type obj_id) noexcept
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
   if (itr == m_attrs.end())
@@ -463,18 +463,18 @@ dynamic_object<dynamic_object_manager>::putattr(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 const corevm::runtime::closure_ctx&
-dynamic_object<dynamic_object_manager>::closure_ctx() const
+DynamicObject<DynamicObjectManager>::closure_ctx() const
 {
   return m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::set_closure_ctx(
+DynamicObject<DynamicObjectManager>::set_closure_ctx(
   const runtime::closure_ctx& ctx)
 {
   m_closure_ctx = ctx;
@@ -482,27 +482,27 @@ dynamic_object<dynamic_object_manager>::set_closure_ctx(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 bool
-dynamic_object<dynamic_object_manager>::has_ref(dyobj_id_type id) const noexcept
+DynamicObject<DynamicObjectManager>::has_ref(dyobj_id_type id) const noexcept
 {
   return std::find_if(cbegin(), cend(), attr_value_pred(id)) != cend();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 template<typename Function>
 void
-dynamic_object<dynamic_object_manager>::iterate(Function func) noexcept
+DynamicObject<DynamicObjectManager>::iterate(Function func) noexcept
 {
   std::for_each(
     begin(),
     end(),
-    [&func](dynamic_object<dynamic_object_manager>::attr_key_value_pair& pair) {
+    [&func](DynamicObject<DynamicObjectManager>::attr_key_value_pair& pair) {
       func(
-        static_cast<dynamic_object<dynamic_object_manager>::attr_key_type>(pair.first),
-        static_cast<dynamic_object<dynamic_object_manager>::dyobj_id_type>(pair.second)
+        static_cast<DynamicObject<DynamicObjectManager>::attr_key_type>(pair.first),
+        static_cast<DynamicObject<DynamicObjectManager>::dyobj_id_type>(pair.second)
       );
     }
   );
@@ -510,10 +510,10 @@ dynamic_object<dynamic_object_manager>::iterate(Function func) noexcept
 
 // -----------------------------------------------------------------------------
 
-template <class dynamic_object_manager>
+template <class DynamicObjectManager>
 void
-dynamic_object<dynamic_object_manager>::copy_from(
-  const dynamic_object<dynamic_object_manager>& src)
+DynamicObject<DynamicObjectManager>::copy_from(
+  const DynamicObject<DynamicObjectManager>& src)
 {
   // NOTE: Need to be careful about what fields are being copied here.
   m_flags = src.m_flags;
@@ -523,22 +523,22 @@ dynamic_object<dynamic_object_manager>::copy_from(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 inline
 bool operator==(
-  const dynamic_object<dynamic_object_manager>& lhs,
-  const dynamic_object<dynamic_object_manager>& rhs)
+  const DynamicObject<DynamicObjectManager>& lhs,
+  const DynamicObject<DynamicObjectManager>& rhs)
 {
   return lhs.id() == rhs.id();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 inline
 bool operator!=(
-  const dynamic_object<dynamic_object_manager>& lhs,
-  const dynamic_object<dynamic_object_manager>& rhs)
+  const DynamicObject<DynamicObjectManager>& lhs,
+  const DynamicObject<DynamicObjectManager>& rhs)
 {
   return !operator==(lhs, rhs);
 }

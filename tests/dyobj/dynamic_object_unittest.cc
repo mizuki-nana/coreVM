@@ -28,19 +28,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <map>
 
 
-class dummy_dynamic_object_manager {};
+class DummyDynamicObjectManager {};
 
 // -----------------------------------------------------------------------------
 
-class dynamic_object_unittest : public ::testing::Test
+class DynamicObjectUnitTest : public ::testing::Test
 {
 public:
-  using dynamic_object_type = typename corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>;
+  using dynamic_object_type = typename corevm::dyobj::DynamicObject<DummyDynamicObjectManager>;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestInitialization)
+TEST_F(DynamicObjectUnitTest, TestInitialization)
 {
   dynamic_object_type obj;
 
@@ -52,7 +52,7 @@ TEST_F(dynamic_object_unittest, TestInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
+TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
 {
   dynamic_object_type obj;
 
@@ -82,13 +82,13 @@ TEST_F(dynamic_object_unittest, TestGetAndSetFlags)
     {
       obj.set_flag(invalid_flag);
     },
-    corevm::dyobj::invalid_flag_bit_error
+    corevm::dyobj::InvalidFlagBitError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestGetattr)
+TEST_F(DynamicObjectUnitTest, TestGetattr)
 {
   dynamic_object_type obj;
 
@@ -118,7 +118,7 @@ TEST_F(dynamic_object_unittest, TestGetattr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
+TEST_F(DynamicObjectUnitTest, TestGetAndSetAttrs)
 {
   dynamic_object_type obj;
 
@@ -144,21 +144,21 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
     {
       obj.delattr(key1);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key2);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key3);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   obj.putattr(key1, mock_attrs[key1]);
@@ -199,48 +199,48 @@ TEST_F(dynamic_object_unittest, TestGetAndSetAttrs)
     {
       obj.delattr(key1);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key2);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.delattr(key3);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.getattr(key1);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.getattr(key2);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 
   ASSERT_THROW(
     {
       obj.getattr(key3);
     },
-    corevm::dyobj::object_attribute_not_found_error
+    corevm::dyobj::ObjectAttributeNotFoundError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
+TEST_F(DynamicObjectUnitTest, TestSetAndGetClosureCtx)
 {
   dynamic_object_type obj;
 
@@ -264,7 +264,7 @@ TEST_F(dynamic_object_unittest, TestSetAndGetClosureCtx)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestCopyFrom)
+TEST_F(DynamicObjectUnitTest, TestCopyFrom)
 {
   dynamic_object_type obj;
 
@@ -308,7 +308,7 @@ TEST_F(dynamic_object_unittest, TestCopyFrom)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestEquality)
+TEST_F(DynamicObjectUnitTest, TestEquality)
 {
   dynamic_object_type obj;
 
@@ -317,7 +317,7 @@ TEST_F(dynamic_object_unittest, TestEquality)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_unittest, TestInequality)
+TEST_F(DynamicObjectUnitTest, TestInequality)
 {
   dynamic_object_type obj1;
   dynamic_object_type obj2;

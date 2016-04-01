@@ -35,7 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class dummy_dynamic_object_manager : public corevm::dyobj::dynamic_object_manager
+class DummyDynamicObjectManager : public corevm::dyobj::DynamicObjectManager
 {
 public:
   virtual bool garbage_collectible() const noexcept { return true; }
@@ -50,28 +50,28 @@ public:
 
 /* virtual */
 void
-dummy_dynamic_object_manager::on_create() noexcept
+DummyDynamicObjectManager::on_create() noexcept
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-class dynamic_object_heap_unittest : public ::testing::Test
+class DynamicObjectHeapUnitTest : public ::testing::Test
 {
 protected:
-  dynamic_object_heap_unittest()
+  DynamicObjectHeapUnitTest()
     :
     m_heap(1024)
   {
   }
 
-  corevm::dyobj::dynamic_object_heap<dummy_dynamic_object_manager> m_heap;
+  corevm::dyobj::DynamicObjectHeap<DummyDynamicObjectManager> m_heap;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
+TEST_F(DynamicObjectHeapUnitTest, TestCreateDyobj)
 {
   corevm::dyobj::dyobj_id id1 = m_heap.create_dyobj();
   corevm::dyobj::dyobj_id id2 = m_heap.create_dyobj();
@@ -83,8 +83,8 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
   ASSERT_LT(id1, id2);
 
   // Tests that we can get the objects by those ids and they are equivalent.
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>& obj1 = m_heap.at(id1);
-  corevm::dyobj::dynamic_object<dummy_dynamic_object_manager>& obj2 = m_heap.at(id2);
+  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj1 = m_heap.at(id1);
+  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj2 = m_heap.at(id2);
 
   ASSERT_EQ(id1, obj1.id());
   ASSERT_EQ(id2, obj2.id());
@@ -96,7 +96,7 @@ TEST_F(dynamic_object_heap_unittest, TestCreateDyobj)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_heap_unittest, TestBulkCreate)
+TEST_F(DynamicObjectHeapUnitTest, TestBulkCreate)
 {
   const size_t N = 8;
 
@@ -122,18 +122,18 @@ TEST_F(dynamic_object_heap_unittest, TestBulkCreate)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_heap_unittest, TestAtOnNonExistentKeys)
+TEST_F(DynamicObjectHeapUnitTest, TestAtOnNonExistentKeys)
 {
   corevm::dyobj::dyobj_id id1 = 0;
   corevm::dyobj::dyobj_id id2 = 1;
 
-  ASSERT_THROW(m_heap.at(id1), corevm::dyobj::object_not_found_error);
-  ASSERT_THROW(m_heap.at(id2), corevm::dyobj::object_not_found_error);
+  ASSERT_THROW(m_heap.at(id1), corevm::dyobj::ObjectNotFoundError);
+  ASSERT_THROW(m_heap.at(id2), corevm::dyobj::ObjectNotFoundError);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
+TEST_F(DynamicObjectHeapUnitTest, TestAllocationOverMaxSize)
 {
   /* NOTE: This test may not work if using buddy allocation for the heap. */
 
@@ -149,7 +149,7 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
     {
       m_heap.create_dyobj();
     },
-    corevm::dyobj::object_creation_error
+    corevm::dyobj::ObjectCreationError
   );
 
   // Clean up.
@@ -161,7 +161,7 @@ TEST_F(dynamic_object_heap_unittest, TestAllocationOverMaxSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(dynamic_object_heap_unittest, TestOutputStream)
+TEST_F(DynamicObjectHeapUnitTest, TestOutputStream)
 {
   corevm::dyobj::dyobj_id id1 = m_heap.create_dyobj();
   corevm::dyobj::dyobj_id id2 = m_heap.create_dyobj();

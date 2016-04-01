@@ -37,7 +37,7 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_object_manager()
+reference_count_garbage_collection_scheme::DynamicObjectManager::DynamicObjectManager()
   :
   m_count(0u),
   m_attached(false)
@@ -48,7 +48,7 @@ reference_count_garbage_collection_scheme::dynamic_object_manager::dynamic_objec
 
 /* virtual */
 void
-reference_count_garbage_collection_scheme::dynamic_object_manager::on_delete() noexcept
+reference_count_garbage_collection_scheme::DynamicObjectManager::on_delete() noexcept
 {
   dec_ref_count();
 }

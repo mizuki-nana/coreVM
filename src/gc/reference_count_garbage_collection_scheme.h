@@ -43,10 +43,10 @@ namespace gc {
 class reference_count_garbage_collection_scheme : public garbage_collection_scheme
 {
 public:
-  typedef class dynamic_object_manager : public dyobj::dynamic_object_manager
+  typedef class DynamicObjectManager : public dyobj::DynamicObjectManager
   {
     public:
-      dynamic_object_manager();
+      DynamicObjectManager();
 
       virtual inline bool garbage_collectible() const noexcept
       {
@@ -106,8 +106,8 @@ public:
       bool m_attached;
   } reference_count_dynamic_object_manager;
 
-  using dynamic_object_type = typename dyobj::dynamic_object<reference_count_dynamic_object_manager>;
-  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<reference_count_dynamic_object_manager>;
+  using dynamic_object_type = typename dyobj::DynamicObject<reference_count_dynamic_object_manager>;
+  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<reference_count_dynamic_object_manager>;
 
   virtual void gc(dynamic_object_heap_type&) const;
 

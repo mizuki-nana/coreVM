@@ -59,8 +59,8 @@ template<class garbage_collection_scheme>
 class garbage_collector
 {
 public:
-  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<
-    typename garbage_collection_scheme::dynamic_object_manager>;
+  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<
+    typename garbage_collection_scheme::DynamicObjectManager>;
 
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
 

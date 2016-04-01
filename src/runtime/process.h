@@ -80,8 +80,8 @@ class process
 {
 public:
   typedef gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
-  using dynamic_object_type = typename dyobj::dynamic_object<garbage_collection_scheme::dynamic_object_manager>;
-  using dynamic_object_heap_type = typename dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager>;
+  using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
+  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
   typedef native_types_pool native_types_pool_type;
 
 public:
@@ -292,7 +292,7 @@ private:
   uint8_t m_gc_flag;
   instr_addr m_pc;
   vector m_instrs;
-  dyobj::dynamic_object_heap<garbage_collection_scheme::dynamic_object_manager> m_dynamic_object_heap;
+  dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager> m_dynamic_object_heap;
   std::vector<dyobj::dyobj_id> m_dyobj_stack;
   std::vector<frame> m_call_stack;
   std::vector<invocation_ctx> m_invocation_ctx_stack;

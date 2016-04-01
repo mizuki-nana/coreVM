@@ -85,7 +85,7 @@ getattr(const ObjType& obj, dyobj::attr_key attr_key,
 
   if (!obj.getattr(attr_key, &attr_id))
   {
-    THROW(dyobj::object_attribute_not_found_error(
+    THROW(dyobj::ObjectAttributeNotFoundError(
       attr_key, obj.id(), attr_name));
   }
 

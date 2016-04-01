@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class heap_allocator_unit_test : public ::testing::Test
+class HeapAllocatorUnitTest : public ::testing::Test
 {
 public:
   typedef corevm::memory::BlockAllocator<uint64_t> CoreAllocatorType;
@@ -35,13 +35,13 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class heap_allocator_simple_test : public heap_allocator_unit_test {};
+class HeapAllocatorSimpleTest : public HeapAllocatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_simple_test, TestAllocation)
+TEST_F(HeapAllocatorSimpleTest, TestAllocation)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator;
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator;
   int *a = allocator.allocate(10);
 
   assert(a);
@@ -61,9 +61,9 @@ TEST_F(heap_allocator_simple_test, TestAllocation)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_simple_test, TestAllocationAndDestroy)
+TEST_F(HeapAllocatorSimpleTest, TestAllocationAndDestroy)
 {
-  corevm::dyobj::heap_allocator<std::string, CoreAllocatorType> allocator;
+  corevm::dyobj::HeapAllocator<std::string, CoreAllocatorType> allocator;
   std::string* s = allocator.allocate(2);
 
   allocator.construct(s, "foo");
@@ -79,16 +79,16 @@ TEST_F(heap_allocator_simple_test, TestAllocationAndDestroy)
 
 // -----------------------------------------------------------------------------
 
-class heap_allocator_container_test : public heap_allocator_unit_test
+class HeapAllocatorContainerTest : public HeapAllocatorUnitTest
 {
 public:
   template<typename T>
-  using vector_type = typename std::vector<T, corevm::dyobj::heap_allocator<T, CoreAllocatorType>>;
+  using vector_type = typename std::vector<T, corevm::dyobj::HeapAllocator<T, CoreAllocatorType>>;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_container_test, TestInitialization)
+TEST_F(HeapAllocatorContainerTest, TestInitialization)
 {
   vector_type<int> v(10);
   ASSERT_EQ(10, v.capacity());
@@ -97,7 +97,7 @@ TEST_F(heap_allocator_container_test, TestInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_container_test, TestPushback)
+TEST_F(HeapAllocatorContainerTest, TestPushback)
 {
   vector_type<char> *v = new vector_type<char>();
   assert(v);
@@ -113,7 +113,7 @@ TEST_F(heap_allocator_container_test, TestPushback)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_container_test, TestPushBackWithPointers)
+TEST_F(HeapAllocatorContainerTest, TestPushBackWithPointers)
 {
   vector_type<int*> v;
 
@@ -130,14 +130,14 @@ TEST_F(heap_allocator_container_test, TestPushBackWithPointers)
 
 // -----------------------------------------------------------------------------
 
-class heap_allocator_equality_test : public heap_allocator_unit_test {};
+class HeapAllocatorEqualityTest : public HeapAllocatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_equality_test, TestEquality1)
+TEST_F(HeapAllocatorEqualityTest, TestEquality1)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator1;
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator2;
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator1;
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator2;
 
   ASSERT_TRUE(allocator1 == allocator2);
   ASSERT_FALSE(allocator1 != allocator2);
@@ -145,10 +145,10 @@ TEST_F(heap_allocator_equality_test, TestEquality1)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_equality_test, TestEquality2)
+TEST_F(HeapAllocatorEqualityTest, TestEquality2)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator1(100);
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator2(200);
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator1(100);
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator2(200);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -156,10 +156,10 @@ TEST_F(heap_allocator_equality_test, TestEquality2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_equality_test, TestEquality3)
+TEST_F(HeapAllocatorEqualityTest, TestEquality3)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator1(100);
-  corevm::dyobj::heap_allocator<float, CoreAllocatorType> allocator2(100);
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator1(100);
+  corevm::dyobj::HeapAllocator<float, CoreAllocatorType> allocator2(100);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -167,10 +167,10 @@ TEST_F(heap_allocator_equality_test, TestEquality3)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_equality_test, TestEquality4)
+TEST_F(HeapAllocatorEqualityTest, TestEquality4)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator1(100);
-  corevm::dyobj::heap_allocator<int, OtherCoreAllocatorType> allocator2(100);
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator1(100);
+  corevm::dyobj::HeapAllocator<int, OtherCoreAllocatorType> allocator2(100);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);
@@ -178,10 +178,10 @@ TEST_F(heap_allocator_equality_test, TestEquality4)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(heap_allocator_equality_test, TestEquality5)
+TEST_F(HeapAllocatorEqualityTest, TestEquality5)
 {
-  corevm::dyobj::heap_allocator<int, CoreAllocatorType> allocator1(100);
-  corevm::dyobj::heap_allocator<float, OtherCoreAllocatorType> allocator2(200);
+  corevm::dyobj::HeapAllocator<int, CoreAllocatorType> allocator1(100);
+  corevm::dyobj::HeapAllocator<float, OtherCoreAllocatorType> allocator2(200);
 
   ASSERT_TRUE(allocator1 != allocator2);
   ASSERT_FALSE(allocator1 == allocator2);

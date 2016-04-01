@@ -54,20 +54,20 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class object_not_found_error : public corevm::dyobj::runtime_error
+class ObjectNotFoundError : public corevm::dyobj::runtime_error
 {
 public:
-  explicit object_not_found_error(const std::string& what_arg):
+  explicit ObjectNotFoundError(const std::string& what_arg):
     corevm::dyobj::runtime_error(what_arg)
   {
   }
 
-  explicit object_not_found_error(const char* what_arg):
+  explicit ObjectNotFoundError(const char* what_arg):
     corevm::dyobj::runtime_error(what_arg)
   {
   }
 
-  explicit object_not_found_error(corevm::dyobj::dyobj_id id_):
+  explicit ObjectNotFoundError(corevm::dyobj::dyobj_id id_):
     corevm::dyobj::runtime_error(
       str(boost::format("Object %#x not found") % id_)
     ),
@@ -80,20 +80,20 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class object_attribute_not_found_error : public corevm::dyobj::runtime_error
+class ObjectAttributeNotFoundError : public corevm::dyobj::runtime_error
 {
 public:
-  explicit object_attribute_not_found_error(const std::string& what_arg):
+  explicit ObjectAttributeNotFoundError(const std::string& what_arg):
     corevm::dyobj::runtime_error(what_arg)
   {
   }
 
-  explicit object_attribute_not_found_error(const char* what_arg):
+  explicit ObjectAttributeNotFoundError(const char* what_arg):
     corevm::dyobj::runtime_error(what_arg)
   {
   }
 
-  object_attribute_not_found_error(
+  ObjectAttributeNotFoundError(
     attr_key attr_key_, dyobj_id id_)
     :
     corevm::dyobj::runtime_error(
@@ -104,7 +104,7 @@ public:
   {
   }
 
-  object_attribute_not_found_error(attr_key attr_key_,
+  ObjectAttributeNotFoundError(attr_key attr_key_,
     dyobj_id id_, const std::string& attr_name)
     :
     corevm::dyobj::runtime_error(
@@ -121,10 +121,10 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class object_creation_error : public corevm::dyobj::runtime_error
+class ObjectCreationError : public corevm::dyobj::runtime_error
 {
 public:
-  explicit object_creation_error():
+  explicit ObjectCreationError():
     corevm::dyobj::runtime_error("Failed to create dynamic object")
   {
   }
@@ -132,10 +132,10 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class invalid_flag_bit_error : public corevm::dyobj::runtime_error
+class InvalidFlagBitError : public corevm::dyobj::runtime_error
 {
 public:
-  explicit invalid_flag_bit_error():
+  explicit InvalidFlagBitError():
     corevm::dyobj::runtime_error("Invalid flag bit provided")
   {
   }

@@ -48,14 +48,14 @@ namespace corevm {
 namespace dyobj {
 
 
-template<class dynamic_object_manager>
-class dynamic_object_heap
+template<class DynamicObjectManager>
+class DynamicObjectHeap
 {
 public:
 
   typedef dyobj_id dynamic_object_id_type;
-  using dynamic_object_type = typename dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename dyobj::heap_allocator<dynamic_object_type, corevm::memory::BlockAllocator<dynamic_object_type>>;
+  using dynamic_object_type = typename dyobj::DynamicObject<DynamicObjectManager>;
+  using allocator_type = typename dyobj::HeapAllocator<dynamic_object_type, corevm::memory::BlockAllocator<dynamic_object_type>>;
   using dynamic_object_container_type = typename corevm::memory::ObjectContainer<dynamic_object_type, allocator_type>;
 
   static_assert(
@@ -73,13 +73,13 @@ public:
   using size_type           = typename dynamic_object_container_type::size_type;
   using difference_type     = typename dynamic_object_container_type::difference_type;
 
-  dynamic_object_heap();
-  explicit dynamic_object_heap(uint64_t);
-  ~dynamic_object_heap();
+  DynamicObjectHeap();
+  explicit DynamicObjectHeap(uint64_t);
+  ~DynamicObjectHeap();
 
   /* Dynamic object heap should not be copyable. */
-  dynamic_object_heap(const dynamic_object_heap&) = delete;
-  dynamic_object_heap& operator=(const dynamic_object_heap&) = delete;
+  DynamicObjectHeap(const DynamicObjectHeap&) = delete;
+  DynamicObjectHeap& operator=(const DynamicObjectHeap&) = delete;
 
   size_type size() const noexcept;
 
@@ -103,13 +103,13 @@ public:
   void iterate(Function) noexcept;
 
   dynamic_object_type& at(const dynamic_object_id_type)
-    throw(object_not_found_error);
+    throw(ObjectNotFoundError);
 
   dynamic_object_id_type create_dyobj()
-    throw(object_creation_error);
+    throw(ObjectCreationError);
 
   dynamic_object_type* create_dyobjs(size_t n)
-    throw(object_creation_error);
+    throw(ObjectCreationError);
 
 private:
   dynamic_object_container_type m_container;
@@ -117,8 +117,8 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap()
+template<class DynamicObjectManager>
+DynamicObjectHeap<DynamicObjectManager>::DynamicObjectHeap()
   :
   m_container(COREVM_DEFAULT_HEAP_SIZE)
 {
@@ -127,8 +127,8 @@ dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap()
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
+template<class DynamicObjectManager>
+DynamicObjectHeap<DynamicObjectManager>::DynamicObjectHeap(
   uint64_t total_size)
   :
   m_container(total_size)
@@ -138,46 +138,46 @@ dynamic_object_heap<dynamic_object_manager>::dynamic_object_heap(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-dynamic_object_heap<dynamic_object_manager>::~dynamic_object_heap()
+template<class DynamicObjectManager>
+DynamicObjectHeap<DynamicObjectManager>::~DynamicObjectHeap()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::size_type
-dynamic_object_heap<dynamic_object_manager>::size() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::size_type
+DynamicObjectHeap<DynamicObjectManager>::size() const noexcept
 {
   return m_container.size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::size_type
-dynamic_object_heap<dynamic_object_manager>::max_size() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::size_type
+DynamicObjectHeap<DynamicObjectManager>::max_size() const noexcept
 {
   return m_container.max_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::size_type
-dynamic_object_heap<dynamic_object_manager>::total_size() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::size_type
+DynamicObjectHeap<DynamicObjectManager>::total_size() const noexcept
 {
   return m_container.total_size();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::size_type
-dynamic_object_heap<dynamic_object_manager>::active_size() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::size_type
+DynamicObjectHeap<DynamicObjectManager>::active_size() const noexcept
 {
-  typedef typename dynamic_object_heap<dynamic_object_manager>::size_type active_size_type;
+  typedef typename DynamicObjectHeap<DynamicObjectManager>::size_type active_size_type;
 
   return static_cast<active_size_type>(std::count_if(cbegin(), cend(),
     [](const dynamic_object_type& obj) {
@@ -187,18 +187,18 @@ dynamic_object_heap<dynamic_object_manager>::active_size() const noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object_heap<dynamic_object_manager>::erase(iterator pos)
+DynamicObjectHeap<DynamicObjectManager>::erase(iterator pos)
 {
   m_container.erase(pos);
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 void
-dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object_id_type id)
+DynamicObjectHeap<DynamicObjectManager>::erase(dynamic_object_id_type id)
 {
   void* raw_ptr = obj_id_to_ptr(id);
   dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
@@ -210,46 +210,46 @@ dynamic_object_heap<dynamic_object_manager>::erase(dynamic_object_id_type id)
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::iterator
-dynamic_object_heap<dynamic_object_manager>::begin() noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::iterator
+DynamicObjectHeap<DynamicObjectManager>::begin() noexcept
 {
   return m_container.begin();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::const_iterator
-dynamic_object_heap<dynamic_object_manager>::cbegin() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::const_iterator
+DynamicObjectHeap<DynamicObjectManager>::cbegin() const noexcept
 {
   return m_container.cbegin();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::iterator
-dynamic_object_heap<dynamic_object_manager>::end() noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::iterator
+DynamicObjectHeap<DynamicObjectManager>::end() noexcept
 {
   return m_container.end();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::const_iterator
-dynamic_object_heap<dynamic_object_manager>::cend() const noexcept
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::const_iterator
+DynamicObjectHeap<DynamicObjectManager>::cend() const noexcept
 {
   return m_container.cend();
 }
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 template<typename Function>
 void
-dynamic_object_heap<dynamic_object_manager>::iterate(Function func) noexcept
+DynamicObjectHeap<DynamicObjectManager>::iterate(Function func) noexcept
 {
   std::for_each(
     begin(),
@@ -262,11 +262,11 @@ dynamic_object_heap<dynamic_object_manager>::iterate(Function func) noexcept
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::dynamic_object_type&
-dynamic_object_heap<dynamic_object_manager>::at(
-  const dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type id)
-  throw(object_not_found_error)
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type&
+DynamicObjectHeap<DynamicObjectManager>::at(
+  const DynamicObjectHeap<DynamicObjectManager>::dynamic_object_id_type id)
+  throw(ObjectNotFoundError)
 {
   void* raw_ptr = obj_id_to_ptr(id);
   dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
@@ -275,7 +275,7 @@ dynamic_object_heap<dynamic_object_manager>::at(
 
   if (ptr == nullptr)
   {
-    THROW(object_not_found_error(id));
+    THROW(ObjectNotFoundError(id));
   }
 
   return *ptr;
@@ -283,16 +283,16 @@ dynamic_object_heap<dynamic_object_manager>::at(
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::dynamic_object_id_type
-dynamic_object_heap<dynamic_object_manager>::create_dyobj()
-  throw(object_creation_error)
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_id_type
+DynamicObjectHeap<DynamicObjectManager>::create_dyobj()
+  throw(ObjectCreationError)
 {
   auto obj_ptr = m_container.create();
 
   if (obj_ptr == nullptr)
   {
-    THROW(object_creation_error());
+    THROW(ObjectCreationError());
   }
 
   auto id = obj_ptr_to_id(obj_ptr);
@@ -304,16 +304,16 @@ dynamic_object_heap<dynamic_object_manager>::create_dyobj()
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
-typename dynamic_object_heap<dynamic_object_manager>::dynamic_object_type*
-dynamic_object_heap<dynamic_object_manager>::create_dyobjs(size_t n)
-  throw(object_creation_error)
+template<class DynamicObjectManager>
+typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type*
+DynamicObjectHeap<DynamicObjectManager>::create_dyobjs(size_t n)
+  throw(ObjectCreationError)
 {
   auto ptr = m_container.create(n);
 
   if (ptr == nullptr)
   {
-    THROW(object_creation_error());
+    THROW(ObjectCreationError());
   }
 
   for (size_t i = 0; i < n; ++i)
@@ -328,11 +328,11 @@ dynamic_object_heap<dynamic_object_manager>::create_dyobjs(size_t n)
 
 // -----------------------------------------------------------------------------
 
-template<class dynamic_object_manager>
+template<class DynamicObjectManager>
 std::ostream&
-operator<<(std::ostream& ost, const dynamic_object_heap<dynamic_object_manager>& heap)
+operator<<(std::ostream& ost, const DynamicObjectHeap<DynamicObjectManager>& heap)
 {
-  using T = typename dynamic_object_heap<dynamic_object_manager>::dynamic_object_type;
+  using T = typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type;
 
   ost << "Dynamic object heap: ";
   ost << heap.size() << "/" << heap.max_size();
