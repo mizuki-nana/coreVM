@@ -55,8 +55,8 @@ public:
 
   typedef dyobj_id dynamic_object_id_type;
   using dynamic_object_type = typename dyobj::dynamic_object<dynamic_object_manager>;
-  using allocator_type = typename dyobj::heap_allocator<dynamic_object_type, corevm::memory::block_allocator<dynamic_object_type>>;
-  using dynamic_object_container_type = typename corevm::memory::object_container<dynamic_object_type, allocator_type>;
+  using allocator_type = typename dyobj::heap_allocator<dynamic_object_type, corevm::memory::BlockAllocator<dynamic_object_type>>;
+  using dynamic_object_container_type = typename corevm::memory::ObjectContainer<dynamic_object_type, allocator_type>;
 
   static_assert(
     std::numeric_limits<typename dynamic_object_container_type::size_type>::max() >=

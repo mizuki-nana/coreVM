@@ -36,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using sneaker::allocator::object_traits;
 
 
-class object_container_unittest : public ::testing::Test
+class ObjectContainerUnitTest : public ::testing::Test
 {
 protected:
   typedef struct Dummy
@@ -52,10 +52,10 @@ protected:
    * maximum number of elements can be allocated by an allocator.
    */
   template<typename T, typename CoreAllocatorType>
-  class Allocator : public corevm::memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
+  class Allocator : public corevm::memory::AllocationPolicy<T, CoreAllocatorType>, public object_traits<T>
   {
     public:
-      using AllocationPolicyType = corevm::memory::allocation_policy<T, CoreAllocatorType>;
+      using AllocationPolicyType = corevm::memory::AllocationPolicy<T, CoreAllocatorType>;
 
       explicit Allocator(uint64_t total_size)
         :
@@ -64,9 +64,9 @@ protected:
       }
   };
 
-  typedef Allocator<Dummy, corevm::memory::block_allocator<T>> MyAllocator;
+  typedef Allocator<Dummy, corevm::memory::BlockAllocator<T>> MyAllocator;
 
-  object_container_unittest()
+  ObjectContainerUnitTest()
     :
     m_container(1024)
   {
@@ -79,12 +79,12 @@ protected:
     ASSERT_EQ(m_container.end(), m_container.begin());
   }
 
-  corevm::memory::object_container<Dummy, MyAllocator> m_container;
+  corevm::memory::ObjectContainer<Dummy, MyAllocator> m_container;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestCreateAndUpdate)
+TEST_F(ObjectContainerUnitTest, TestCreateAndUpdate)
 {
   int data = 888;
 
@@ -109,13 +109,13 @@ TEST_F(object_container_unittest, TestCreateAndUpdate)
     {
       m_container.at(p);
     },
-    corevm::memory::invalid_address_error
+    corevm::memory::InvalidAddressError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestBulkCreateWithZeroNumber)
+TEST_F(ObjectContainerUnitTest, TestBulkCreateWithZeroNumber)
 {
   const size_t N = 0;
 
@@ -125,7 +125,7 @@ TEST_F(object_container_unittest, TestBulkCreateWithZeroNumber)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestBulkCreateAndUpdate)
+TEST_F(ObjectContainerUnitTest, TestBulkCreateAndUpdate)
 {
   const size_t N = 8;
 
@@ -173,7 +173,7 @@ TEST_F(object_container_unittest, TestBulkCreateAndUpdate)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestEraseInMiddleFirst)
+TEST_F(ObjectContainerUnitTest, TestEraseInMiddleFirst)
 {
   const size_t N = 5;
 
@@ -205,7 +205,7 @@ TEST_F(object_container_unittest, TestEraseInMiddleFirst)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestIterator)
+TEST_F(ObjectContainerUnitTest, TestIterator)
 {
   int data1 = 666;
   int data2 = 777;
@@ -245,7 +245,7 @@ TEST_F(object_container_unittest, TestIterator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestConstIterator)
+TEST_F(ObjectContainerUnitTest, TestConstIterator)
 {
   int data1 = 666;
   int data2 = 777;
@@ -285,7 +285,7 @@ TEST_F(object_container_unittest, TestConstIterator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestIteratorWithStdForEach)
+TEST_F(ObjectContainerUnitTest, TestIteratorWithStdForEach)
 {
   int data1 = 666;
   int data2 = 777;
@@ -327,7 +327,7 @@ TEST_F(object_container_unittest, TestIteratorWithStdForEach)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestConstIteratorWithStdForEach)
+TEST_F(ObjectContainerUnitTest, TestConstIteratorWithStdForEach)
 {
   int data1 = 666;
   int data2 = 777;
@@ -369,7 +369,7 @@ TEST_F(object_container_unittest, TestConstIteratorWithStdForEach)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestIteratorReflectsChange)
+TEST_F(ObjectContainerUnitTest, TestIteratorReflectsChange)
 {
   T* p = m_container.create();
   ASSERT_NE(nullptr, p);
@@ -397,7 +397,7 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestPostIncrement)
+TEST_F(ObjectContainerUnitTest, TestPostIncrement)
 {
   int data1 = 666;
   int data2 = 777;
@@ -442,7 +442,7 @@ TEST_F(object_container_unittest, TestPostIncrement)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestIteratorReflectsChange2)
+TEST_F(ObjectContainerUnitTest, TestIteratorReflectsChange2)
 {
   T* p = m_container.create();
   ASSERT_NE(nullptr, p);
@@ -468,7 +468,7 @@ TEST_F(object_container_unittest, TestIteratorReflectsChange2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestErase)
+TEST_F(ObjectContainerUnitTest, TestErase)
 {
   int data1 = 666;
   int data2 = 777;
@@ -522,7 +522,7 @@ TEST_F(object_container_unittest, TestErase)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestAllocationOverMaxSize)
+TEST_F(ObjectContainerUnitTest, TestAllocationOverMaxSize)
 {
   uint64_t max_size = m_container.max_size();
 
@@ -548,7 +548,7 @@ TEST_F(object_container_unittest, TestAllocationOverMaxSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(object_container_unittest, TestOutputStream)
+TEST_F(ObjectContainerUnitTest, TestOutputStream)
 {
   T* p1 = m_container.create();
   T* p2 = m_container.create();

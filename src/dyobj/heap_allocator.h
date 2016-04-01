@@ -41,10 +41,10 @@ using sneaker::allocator::object_traits;
 
 
 template<typename T, typename CoreAllocatorType>
-class heap_allocator : public memory::allocation_policy<T, CoreAllocatorType>, public object_traits<T>
+class heap_allocator : public memory::AllocationPolicy<T, CoreAllocatorType>, public object_traits<T>
 {
 private:
-  using AllocationPolicyType = memory::allocation_policy<T, CoreAllocatorType>;
+  using AllocationPolicyType = memory::AllocationPolicy<T, CoreAllocatorType>;
 
 public:
   using value_type      = typename AllocationPolicyType::value_type;
@@ -114,8 +114,8 @@ bool operator==(
   heap_allocator<T, CoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs),
-    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(rhs)
+    static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs),
+    static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(rhs)
   ) && lhs.total_size() == rhs.total_size();
 }
 
@@ -128,8 +128,8 @@ bool operator==(
   heap_allocator<U, OtherCoreAllocatorType> const& rhs)
 {
   return operator==(
-    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs),
-    static_cast<memory::allocation_policy<U, OtherCoreAllocatorType>>(rhs)
+    static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs),
+    static_cast<memory::AllocationPolicy<U, OtherCoreAllocatorType>>(rhs)
   );
 }
 
@@ -141,7 +141,7 @@ bool operator==(
   heap_allocator<T, CoreAllocatorType> const& lhs, other_allocator_type const& rhs)
 {
   return operator==(
-    static_cast<memory::allocation_policy<T, CoreAllocatorType>>(lhs), rhs
+    static_cast<memory::AllocationPolicy<T, CoreAllocatorType>>(lhs), rhs
   );
 }
 

@@ -29,8 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class heap_allocator_unit_test : public ::testing::Test
 {
 public:
-  typedef corevm::memory::block_allocator<uint64_t> CoreAllocatorType;
-  typedef corevm::memory::block_allocator<float> OtherCoreAllocatorType;
+  typedef corevm::memory::BlockAllocator<uint64_t> CoreAllocatorType;
+  typedef corevm::memory::BlockAllocator<float> OtherCoreAllocatorType;
 };
 
 // -----------------------------------------------------------------------------

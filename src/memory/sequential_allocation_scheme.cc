@@ -42,21 +42,21 @@ namespace memory {
 
 // -----------------------------------------------------------------------------
 
-const size_t sequential_allocation_scheme::LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD = 10;
+const size_t SequentialAllocationScheme::LINEAR_SEARCH_BLOCK_COUNT_THRESHOLD = 10;
 
 // -----------------------------------------------------------------------------
 
-bool sequential_allocation_scheme::SUPPRESS_LINEAR_SEARCH = false;
+bool SequentialAllocationScheme::SUPPRESS_LINEAR_SEARCH = false;
 
 // -----------------------------------------------------------------------------
 
-typedef sequential_allocation_scheme::iterator iterator_type;
-typedef sequential_allocation_scheme::const_iterator const_iterator_type;
-typedef sequential_block_descriptor block_descriptor_type;
+typedef SequentialAllocationScheme::iterator iterator_type;
+typedef SequentialAllocationScheme::const_iterator const_iterator_type;
+typedef SequentialBlockDescriptor block_descriptor_type;
 
 // -----------------------------------------------------------------------------
 
-sequential_allocation_scheme::sequential_allocation_scheme(
+SequentialAllocationScheme::SequentialAllocationScheme(
   size_t total_size)
   :
   m_total_size(total_size)
@@ -66,7 +66,7 @@ sequential_allocation_scheme::sequential_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 void
-sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
+SequentialAllocationScheme::debug_print(uint32_t base) const noexcept
 {
   const std::string LINE        = "------------------------------------------------------------------------------------------";
   const std::string BLANK_SPACE = "|                                                                                        |";
@@ -101,7 +101,7 @@ sequential_allocation_scheme::debug_print(uint32_t base) const noexcept
 // -----------------------------------------------------------------------------
 
 block_descriptor_type
-sequential_allocation_scheme::default_block() const noexcept
+SequentialAllocationScheme::default_block() const noexcept
 {
   return block_descriptor_type(m_total_size, 0u, 0u, 0u);
 }
@@ -109,7 +109,7 @@ sequential_allocation_scheme::default_block() const noexcept
 // -----------------------------------------------------------------------------
 
 void
-sequential_allocation_scheme::split(
+SequentialAllocationScheme::split(
   iterator_type itr, size_t size, uint64_t offset) noexcept
 {
   block_descriptor_type descriptor(size, 0u, offset, 0u);
@@ -119,7 +119,7 @@ sequential_allocation_scheme::split(
 // -----------------------------------------------------------------------------
 
 void
-sequential_allocation_scheme::combine_free_blocks() noexcept
+SequentialAllocationScheme::combine_free_blocks() noexcept
 {
   iterator_type itr = m_blocks.begin();
 
@@ -156,7 +156,7 @@ sequential_allocation_scheme::combine_free_blocks() noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-sequential_allocation_scheme::malloc(size_t size) noexcept
+SequentialAllocationScheme::malloc(size_t size) noexcept
 {
   ssize_t res = -1;
   iterator_type itr;
@@ -188,7 +188,7 @@ sequential_allocation_scheme::malloc(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-sequential_allocation_scheme::calloc(size_t num, size_t size) noexcept
+SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 {
   // TODO: [COREVM-282] Optimize allocator
   ssize_t res = -1;
@@ -273,7 +273,7 @@ ForwardIterator binary_find_if(
 // -----------------------------------------------------------------------------
 
 ssize_t
-sequential_allocation_scheme::free(size_t offset) noexcept
+SequentialAllocationScheme::free(size_t offset) noexcept
 {
   ssize_t size_freed = -1;
   iterator_type itr;
@@ -325,15 +325,15 @@ sequential_allocation_scheme::free(size_t offset) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* -------------- first_fit_allocation_scheme --------------- */
+/* -------------- FirstFitAllocationScheme --------------- */
 
 
 // -----------------------------------------------------------------------------
 
-first_fit_allocation_scheme::first_fit_allocation_scheme(
+FirstFitAllocationScheme::FirstFitAllocationScheme(
   size_t total_size)
   :
-  sequential_allocation_scheme(total_size)
+  SequentialAllocationScheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
 }
@@ -341,7 +341,7 @@ first_fit_allocation_scheme::first_fit_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 iterator_type
-first_fit_allocation_scheme::find_fit(size_t size) noexcept
+FirstFitAllocationScheme::find_fit(size_t size) noexcept
 {
   return std::find_if(
     m_blocks.begin(),
@@ -355,15 +355,15 @@ first_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* -------------- best_fit_allocation_scheme ---------------- */
+/* -------------- BestFitAllocationScheme ---------------- */
 
 
 // -----------------------------------------------------------------------------
 
-best_fit_allocation_scheme::best_fit_allocation_scheme(
+BestFitAllocationScheme::BestFitAllocationScheme(
   size_t total_size)
   :
-  sequential_allocation_scheme(total_size)
+  SequentialAllocationScheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
 }
@@ -371,7 +371,7 @@ best_fit_allocation_scheme::best_fit_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 iterator_type
-best_fit_allocation_scheme::find_fit(size_t size) noexcept
+BestFitAllocationScheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::min_element(
     m_blocks.begin(),
@@ -410,15 +410,15 @@ best_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* ------------- worst_fit_allocation_scheme ---------------- */
+/* ------------- WorstFitAllocationScheme ---------------- */
 
 
 // -----------------------------------------------------------------------------
 
-worst_fit_allocation_scheme::worst_fit_allocation_scheme(
+WorstFitAllocationScheme::WorstFitAllocationScheme(
   size_t total_size)
   :
-  sequential_allocation_scheme(total_size)
+  SequentialAllocationScheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
 }
@@ -426,7 +426,7 @@ worst_fit_allocation_scheme::worst_fit_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 iterator_type
-worst_fit_allocation_scheme::find_fit(size_t size) noexcept
+WorstFitAllocationScheme::find_fit(size_t size) noexcept
 {
   iterator_type itr = std::max_element(
     m_blocks.begin(),
@@ -465,15 +465,15 @@ worst_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* -------------- next_fit_allocation_scheme ---------------- */
+/* -------------- NextFitAllocationScheme ---------------- */
 
 
 // -----------------------------------------------------------------------------
 
-next_fit_allocation_scheme::next_fit_allocation_scheme(
+NextFitAllocationScheme::NextFitAllocationScheme(
   size_t total_size)
   :
-  sequential_allocation_scheme(total_size)
+  SequentialAllocationScheme(total_size)
 {
   m_last_itr = m_blocks.begin();
   this->m_blocks.push_back(this->default_block());
@@ -482,7 +482,7 @@ next_fit_allocation_scheme::next_fit_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 iterator_type
-next_fit_allocation_scheme::find_fit(size_t size) noexcept
+NextFitAllocationScheme::find_fit(size_t size) noexcept
 {
   auto criterion = [size](block_descriptor_type block) -> bool {
     return block.size >= size && block.actual_size == 0;
@@ -509,7 +509,7 @@ next_fit_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-next_fit_allocation_scheme::free(size_t offset) noexcept
+NextFitAllocationScheme::free(size_t offset) noexcept
 {
   if (m_last_itr != m_blocks.end())
   {
@@ -520,29 +520,29 @@ next_fit_allocation_scheme::free(size_t offset) noexcept
     }
   }
 
-  return sequential_allocation_scheme::free(offset);
+  return SequentialAllocationScheme::free(offset);
 }
 
 // -----------------------------------------------------------------------------
 
 
-/* ---------------- buddy_allocation_scheme ----------------- */
+/* ---------------- BuddyAllocationScheme ----------------- */
 
 
 // -----------------------------------------------------------------------------
 
-const uint8_t buddy_allocation_scheme::FLAG_SPLIT = 1;
+const uint8_t BuddyAllocationScheme::FLAG_SPLIT = 1;
 
 // -----------------------------------------------------------------------------
 
-const uint8_t buddy_allocation_scheme::FLAG_PARENT_SPLIT = 2;
+const uint8_t BuddyAllocationScheme::FLAG_PARENT_SPLIT = 2;
 
 // -----------------------------------------------------------------------------
 
-buddy_allocation_scheme::buddy_allocation_scheme(
+BuddyAllocationScheme::BuddyAllocationScheme(
   size_t total_size)
   :
-  sequential_allocation_scheme(total_size)
+  SequentialAllocationScheme(total_size)
 {
   this->m_blocks.push_back(this->default_block());
 }
@@ -550,7 +550,7 @@ buddy_allocation_scheme::buddy_allocation_scheme(
 // -----------------------------------------------------------------------------
 
 block_descriptor_type
-buddy_allocation_scheme::default_block() const noexcept
+BuddyAllocationScheme::default_block() const noexcept
 {
   return block_descriptor_type(
     m_total_size,
@@ -562,7 +562,7 @@ buddy_allocation_scheme::default_block() const noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-buddy_allocation_scheme::malloc(size_t size) noexcept
+BuddyAllocationScheme::malloc(size_t size) noexcept
 {
   ssize_t res = -1;
   iterator_type itr;
@@ -586,7 +586,7 @@ buddy_allocation_scheme::malloc(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 ssize_t
-buddy_allocation_scheme::calloc(size_t /* num */, size_t /* size */) noexcept
+BuddyAllocationScheme::calloc(size_t /* num */, size_t /* size */) noexcept
 {
   // Buddy allocation scheme does not currently support `calloc`.
   return -1;
@@ -595,7 +595,7 @@ buddy_allocation_scheme::calloc(size_t /* num */, size_t /* size */) noexcept
 // -----------------------------------------------------------------------------
 
 iterator_type
-buddy_allocation_scheme::find_fit(size_t size) noexcept
+BuddyAllocationScheme::find_fit(size_t size) noexcept
 {
   size_t nearest_power_of_2 = static_cast<size_t>(
     nearest_exp2_ceil(static_cast<uint32_t>(size)));
@@ -645,7 +645,7 @@ buddy_allocation_scheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 void
-buddy_allocation_scheme::combine_free_blocks() noexcept
+BuddyAllocationScheme::combine_free_blocks() noexcept
 {
   /*
    * We want to combine two free blocks only if they were originally splitted

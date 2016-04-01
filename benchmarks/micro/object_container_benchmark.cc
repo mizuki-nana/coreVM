@@ -55,11 +55,11 @@ void BenchmarkObjectContainerAllocateAndConstructObject(benchmark::State& state)
 template <class AllocatorType>
 static void BenchmarkObjectContainer(benchmark::State& state)
 {
-  corevm::memory::object_container<T, AllocatorType> object_container(1000000000);
+  corevm::memory::ObjectContainer<T, AllocatorType> ObjectContainer(1000000000);
 
   while (state.KeepRunning())
   {
-    object_container.create();
+    ObjectContainer.create();
   }
 }
 
@@ -68,7 +68,7 @@ static void BenchmarkObjectContainer(benchmark::State& state)
 BENCHMARK(BenchmarkObjectContainerAllocateAndConstructObject);
 #if COREVM_463
 BENCHMARK_TEMPLATE(BenchmarkObjectContainer,
-  corevm::dyobj::heap_allocator<T, corevm::memory::allocator<corevm::memory::next_fit_allocation_scheme>>);
+  corevm::dyobj::heap_allocator<T, corevm::memory::allocator<corevm::memory::NextFitAllocationScheme>>);
 #endif
 
 // -----------------------------------------------------------------------------

@@ -45,10 +45,10 @@ const int HEAP_STORAGE_FOR_TEST = N * T_SIZE + (T_SIZE - 1);
 
 // -----------------------------------------------------------------------------
 
-class block_allocator_unittest : public ::testing::Test
+class BlockAllocatorUnitTest : public ::testing::Test
 {
 protected:
-  block_allocator_unittest()
+  BlockAllocatorUnitTest()
     :
     m_allocator(HEAP_STORAGE_FOR_TEST)
   {
@@ -69,14 +69,14 @@ protected:
     run_n_times(func, 3);
   }
 
-  corevm::memory::block_allocator<T> m_allocator;
+  corevm::memory::BlockAllocator<T> m_allocator;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestAllocatorWithZeroTotalSize)
+TEST_F(BlockAllocatorUnitTest, TestAllocatorWithZeroTotalSize)
 {
-  corevm::memory::block_allocator<T> allocator(0);
+  corevm::memory::BlockAllocator<T> allocator(0);
 
   run_3_times([&allocator]()
   {
@@ -90,9 +90,9 @@ TEST_F(block_allocator_unittest, TestAllocatorWithZeroTotalSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestAllocatorWithInsufficentTotalSize)
+TEST_F(BlockAllocatorUnitTest, TestAllocatorWithInsufficentTotalSize)
 {
-  corevm::memory::block_allocator<T> allocator(sizeof(uint8_t));
+  corevm::memory::BlockAllocator<T> allocator(sizeof(uint8_t));
 
   run_3_times([&allocator]()
   {
@@ -106,7 +106,7 @@ TEST_F(block_allocator_unittest, TestAllocatorWithInsufficentTotalSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestSingleDeallocationOutsideBoundary)
+TEST_F(BlockAllocatorUnitTest, TestSingleDeallocationOutsideBoundary)
 {
   run_3_times([this]()
   {
@@ -122,14 +122,14 @@ TEST_F(block_allocator_unittest, TestSingleDeallocationOutsideBoundary)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestTotalSize)
+TEST_F(BlockAllocatorUnitTest, TestTotalSize)
 {
   ASSERT_EQ(HEAP_STORAGE_FOR_TEST, m_allocator.total_size());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestSingleAllocation)
+TEST_F(BlockAllocatorUnitTest, TestSingleAllocation)
 {
   run_3_times([this]()
   {
@@ -145,7 +145,7 @@ TEST_F(block_allocator_unittest, TestSingleAllocation)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestConsecutiveAllocation)
+TEST_F(BlockAllocatorUnitTest, TestConsecutiveAllocation)
 {
   run_3_times([this]()
   {
@@ -170,7 +170,7 @@ TEST_F(block_allocator_unittest, TestConsecutiveAllocation)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestBulkAllocationWithExcessiveN)
+TEST_F(BlockAllocatorUnitTest, TestBulkAllocationWithExcessiveN)
 {
   run_3_times([this]()
   {
@@ -181,7 +181,7 @@ TEST_F(block_allocator_unittest, TestBulkAllocationWithExcessiveN)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocations)
 {
   run_3_times([this]()
   {
@@ -200,7 +200,7 @@ TEST_F(block_allocator_unittest, TestFullAllocations)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsWithReverseDeallocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsWithReverseDeallocations)
 {
   run_3_times([this]()
   {
@@ -219,7 +219,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsWithReverseDeallocations)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsWithRandomsDeallocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsWithRandomsDeallocations)
 {
   run_3_times([this]()
   {
@@ -240,7 +240,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsWithRandomsDeallocations)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsWithInterleavedDeallocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsWithInterleavedDeallocations)
 {
   run_3_times([this]()
   {
@@ -264,7 +264,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsWithInterleavedDeallocations
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsWithBidirectionalInterleavedDeallocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsWithBidirectionalInterleavedDeallocations)
 {
   run_3_times([this]()
   {
@@ -291,7 +291,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsWithBidirectionalInterleaved
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsWithCircularInterleavedDeallocations)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsWithCircularInterleavedDeallocations)
 {
   /**
    * Deallocate indices with the following order:
@@ -327,7 +327,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsWithCircularInterleavedDeall
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestFullAllocationsInDifferentChunks)
+TEST_F(BlockAllocatorUnitTest, TestFullAllocationsInDifferentChunks)
 {
   run_3_times([this]()
   {
@@ -364,7 +364,7 @@ TEST_F(block_allocator_unittest, TestFullAllocationsInDifferentChunks)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestSingleAndBulkAllocations)
+TEST_F(BlockAllocatorUnitTest, TestSingleAndBulkAllocations)
 {
   run_3_times([this]()
   {
@@ -402,7 +402,7 @@ TEST_F(block_allocator_unittest, TestSingleAndBulkAllocations)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestBulkAllocations)
+TEST_F(BlockAllocatorUnitTest, TestBulkAllocations)
 {
   run_3_times([this]()
   {
@@ -426,7 +426,7 @@ TEST_F(block_allocator_unittest, TestBulkAllocations)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestBidirectionalOutwardDeallocation)
+TEST_F(BlockAllocatorUnitTest, TestBidirectionalOutwardDeallocation)
 {
   run_3_times([this]()
   {
@@ -454,7 +454,7 @@ TEST_F(block_allocator_unittest, TestBidirectionalOutwardDeallocation)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestBidirectionalInwardDeallocation)
+TEST_F(BlockAllocatorUnitTest, TestBidirectionalInwardDeallocation)
 {
   run_3_times([this]()
   {
@@ -520,11 +520,11 @@ TEST_F(block_allocator_unittest, TestBidirectionalInwardDeallocation)
  *  [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]
  * |---------------------------------------|
  */
-TEST_F(block_allocator_unittest, TestAllocationAndDeallocationWithNoInitialFreeLists)
+TEST_F(BlockAllocatorUnitTest, TestAllocationAndDeallocationWithNoInitialFreeLists)
 {
   const size_t local_N = 10;
   typedef uint32_t local_T;
-  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+  corevm::memory::BlockAllocator<local_T> local_allocator(local_N * sizeof(local_T));
 
   run_3_times([this, &local_N, &local_allocator]()
   {
@@ -558,7 +558,7 @@ TEST_F(block_allocator_unittest, TestAllocationAndDeallocationWithNoInitialFreeL
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestIteratorBegin)
+TEST_F(BlockAllocatorUnitTest, TestIteratorBegin)
 {
   auto itr = m_allocator.begin();
   ASSERT_EQ(itr, m_allocator.begin());
@@ -567,7 +567,7 @@ TEST_F(block_allocator_unittest, TestIteratorBegin)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestIteratorEnd)
+TEST_F(BlockAllocatorUnitTest, TestIteratorEnd)
 {
   auto itr = m_allocator.end();
   ASSERT_EQ(itr, m_allocator.begin());
@@ -576,11 +576,11 @@ TEST_F(block_allocator_unittest, TestIteratorEnd)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestIteratorPreIncrement)
+TEST_F(BlockAllocatorUnitTest, TestIteratorPreIncrement)
 {
   const size_t local_N = 10;
   typedef uint32_t local_T;
-  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+  corevm::memory::BlockAllocator<local_T> local_allocator(local_N * sizeof(local_T));
 
   void* p[local_N] = { 0 };
 
@@ -601,11 +601,11 @@ TEST_F(block_allocator_unittest, TestIteratorPreIncrement)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(block_allocator_unittest, TestIteratorPostIncrement)
+TEST_F(BlockAllocatorUnitTest, TestIteratorPostIncrement)
 {
   const size_t local_N = 10;
   typedef uint32_t local_T;
-  corevm::memory::block_allocator<local_T> local_allocator(local_N * sizeof(local_T));
+  corevm::memory::BlockAllocator<local_T> local_allocator(local_N * sizeof(local_T));
 
   void* p[local_N] = { 0 };
 

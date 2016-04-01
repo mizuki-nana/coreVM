@@ -33,7 +33,7 @@ namespace corevm {
 namespace memory {
 
 
-class allocation_scheme
+class AllocationScheme
 {
 public:
   virtual ssize_t malloc(size_t) noexcept = 0;
@@ -41,7 +41,7 @@ public:
   virtual ssize_t free(size_t) noexcept = 0;
 
 protected:
-  virtual ~allocation_scheme();
+  virtual ~AllocationScheme();
 };
 
 

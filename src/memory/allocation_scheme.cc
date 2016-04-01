@@ -32,7 +32,7 @@ namespace memory {
 // -----------------------------------------------------------------------------
 
 /* virtual */
-allocation_scheme::~allocation_scheme()
+AllocationScheme::~AllocationScheme()
 {
   // Do nothing here.
 }

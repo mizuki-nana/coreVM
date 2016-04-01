@@ -37,7 +37,7 @@ namespace memory {
 
 
 template<typename T, typename CoreAllocatorType>
-class allocation_policy : public sneaker::allocator::standard_alloc_policy<T>
+class AllocationPolicy : public sneaker::allocator::standard_alloc_policy<T>
 {
 public:
   using value_type                             = typename sneaker::allocator::standard_alloc_policy<T>::value_type;
@@ -52,9 +52,9 @@ public:
   using iterator        = typename CoreAllocatorType::iterator;
   using const_iterator  = typename CoreAllocatorType::const_iterator;
 
-  inline explicit allocation_policy(uint64_t);
-  inline explicit allocation_policy(allocation_policy const&);
-  inline virtual ~allocation_policy();
+  inline explicit AllocationPolicy(uint64_t);
+  inline explicit AllocationPolicy(AllocationPolicy const&);
+  inline virtual ~AllocationPolicy();
 
   inline virtual pointer allocate(
     size_type, typename std::allocator<void>::const_pointer=0);
@@ -92,7 +92,7 @@ namespace {
 
 
 template<typename T, typename CoreAllocatorType>
-using _MyType = typename corevm::memory::allocation_policy<T, CoreAllocatorType>;
+using _MyType = typename corevm::memory::AllocationPolicy<T, CoreAllocatorType>;
 
 
 } /* end namespace */
@@ -100,8 +100,7 @@ using _MyType = typename corevm::memory::allocation_policy<T, CoreAllocatorType>
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-allocation_policy<T, CoreAllocatorType>::allocation_policy(
-  uint64_t total_size)
+AllocationPolicy<T, CoreAllocatorType>::AllocationPolicy(uint64_t total_size)
   :
   m_allocator(total_size)
 {
@@ -111,8 +110,8 @@ allocation_policy<T, CoreAllocatorType>::allocation_policy(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-allocation_policy<T, CoreAllocatorType>::allocation_policy(
-  allocation_policy const& other)
+AllocationPolicy<T, CoreAllocatorType>::AllocationPolicy(
+  AllocationPolicy const& other)
   :
   m_allocator(other.total_size())
 {
@@ -123,7 +122,7 @@ allocation_policy<T, CoreAllocatorType>::allocation_policy(
 
 /* virtual */
 template<typename T, typename CoreAllocatorType>
-allocation_policy<T, CoreAllocatorType>::~allocation_policy()
+AllocationPolicy<T, CoreAllocatorType>::~AllocationPolicy()
 {
   // Do nothing here.
 }
@@ -132,8 +131,8 @@ allocation_policy<T, CoreAllocatorType>::~allocation_policy()
 
 template<typename T, typename CoreAllocatorType>
 typename _MyType<T, CoreAllocatorType>::pointer
-allocation_policy<T, CoreAllocatorType>::allocate(
-  typename allocation_policy<T, CoreAllocatorType>::size_type n,
+AllocationPolicy<T, CoreAllocatorType>::allocate(
+  typename AllocationPolicy<T, CoreAllocatorType>::size_type n,
   typename std::allocator<void>::const_pointer
 )
 {
@@ -145,9 +144,9 @@ allocation_policy<T, CoreAllocatorType>::allocate(
 
 template<typename T, typename CoreAllocatorType>
 void
-allocation_policy<T, CoreAllocatorType>::deallocate(
-  typename allocation_policy<T, CoreAllocatorType>::pointer p,
-  typename allocation_policy<T, CoreAllocatorType>::size_type
+AllocationPolicy<T, CoreAllocatorType>::deallocate(
+  typename AllocationPolicy<T, CoreAllocatorType>::pointer p,
+  typename AllocationPolicy<T, CoreAllocatorType>::size_type
 )
 {
 #if __DEBUG__
@@ -162,7 +161,7 @@ allocation_policy<T, CoreAllocatorType>::deallocate(
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-allocation_policy<T, CoreAllocatorType>::base_addr() const
+AllocationPolicy<T, CoreAllocatorType>::base_addr() const
 {
   return m_allocator.base_addr();
 }
@@ -171,7 +170,7 @@ allocation_policy<T, CoreAllocatorType>::base_addr() const
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-allocation_policy<T, CoreAllocatorType>::total_size() const
+AllocationPolicy<T, CoreAllocatorType>::total_size() const
 {
   return m_allocator.total_size();
 }
@@ -180,7 +179,7 @@ allocation_policy<T, CoreAllocatorType>::total_size() const
 
 template<typename T, typename CoreAllocatorType>
 uint64_t
-allocation_policy<T, CoreAllocatorType>::max_size() const
+AllocationPolicy<T, CoreAllocatorType>::max_size() const
 {
   return total_size() / sizeof(T);
 }
@@ -188,8 +187,8 @@ allocation_policy<T, CoreAllocatorType>::max_size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-typename allocation_policy<T, CoreAllocatorType>::iterator
-allocation_policy<T, CoreAllocatorType>::begin()
+typename AllocationPolicy<T, CoreAllocatorType>::iterator
+AllocationPolicy<T, CoreAllocatorType>::begin()
 {
   return m_allocator.begin();
 }
@@ -197,8 +196,8 @@ allocation_policy<T, CoreAllocatorType>::begin()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-typename allocation_policy<T, CoreAllocatorType>::iterator
-allocation_policy<T, CoreAllocatorType>::end()
+typename AllocationPolicy<T, CoreAllocatorType>::iterator
+AllocationPolicy<T, CoreAllocatorType>::end()
 {
   return m_allocator.end();
 }
@@ -206,8 +205,8 @@ allocation_policy<T, CoreAllocatorType>::end()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-typename allocation_policy<T, CoreAllocatorType>::const_iterator
-allocation_policy<T, CoreAllocatorType>::cbegin() const
+typename AllocationPolicy<T, CoreAllocatorType>::const_iterator
+AllocationPolicy<T, CoreAllocatorType>::cbegin() const
 {
   return m_allocator.cbegin();
 }
@@ -215,8 +214,8 @@ allocation_policy<T, CoreAllocatorType>::cbegin() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-typename allocation_policy<T, CoreAllocatorType>::const_iterator
-allocation_policy<T, CoreAllocatorType>::cend() const
+typename AllocationPolicy<T, CoreAllocatorType>::const_iterator
+AllocationPolicy<T, CoreAllocatorType>::cend() const
 {
   return m_allocator.cend();
 }
@@ -224,11 +223,11 @@ allocation_policy<T, CoreAllocatorType>::cend() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-typename allocation_policy<T, CoreAllocatorType>::pointer
-allocation_policy<T, CoreAllocatorType>::find(
-  typename allocation_policy<T, CoreAllocatorType>::pointer p) const
+typename AllocationPolicy<T, CoreAllocatorType>::pointer
+AllocationPolicy<T, CoreAllocatorType>::find(
+  typename AllocationPolicy<T, CoreAllocatorType>::pointer p) const
 {
-  return reinterpret_cast<typename allocation_policy<T, CoreAllocatorType>::pointer>(
+  return reinterpret_cast<typename AllocationPolicy<T, CoreAllocatorType>::pointer>(
     m_allocator.find(reinterpret_cast<void*>(p)));
 }
 
@@ -237,8 +236,8 @@ allocation_policy<T, CoreAllocatorType>::find(
 template<typename T, typename CoreAllocatorType>
 inline
 bool operator==(
-  allocation_policy<T, CoreAllocatorType> const& lhs,
-  allocation_policy<T, CoreAllocatorType> const& rhs)
+  AllocationPolicy<T, CoreAllocatorType> const& lhs,
+  AllocationPolicy<T, CoreAllocatorType> const& rhs)
 {
   return lhs.total_size() == rhs.total_size();
 }
@@ -253,8 +252,8 @@ template<
 >
 inline
 bool operator==(
-  allocation_policy<T, CoreAllocatorType> const& /* lhs */,
-  allocation_policy<U, OtherCoreAllocatorType> const& /* rhs */)
+  AllocationPolicy<T, CoreAllocatorType> const& /* lhs */,
+  AllocationPolicy<U, OtherCoreAllocatorType> const& /* rhs */)
 {
   return false;
 }
@@ -264,12 +263,12 @@ bool operator==(
 template<
   typename T,
   typename CoreAllocatorType,
-  typename other_allocation_policy_type
+  typename OtherAllocationPolicyType
 >
 inline
 bool operator==(
-  allocation_policy<T, CoreAllocatorType> const& /* lhs */,
-  other_allocation_policy_type const& /* rhs */)
+  AllocationPolicy<T, CoreAllocatorType> const& /* lhs */,
+  OtherAllocationPolicyType const& /* rhs */)
 {
   return false;
 }
@@ -279,8 +278,8 @@ bool operator==(
 template<typename T, typename CoreAllocatorType>
 inline
 bool operator!=(
-  allocation_policy<T, CoreAllocatorType> const& lhs,
-  allocation_policy<T, CoreAllocatorType> const& rhs)
+  AllocationPolicy<T, CoreAllocatorType> const& lhs,
+  AllocationPolicy<T, CoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -295,8 +294,8 @@ template<
 >
 inline
 bool operator!=(
-  allocation_policy<T, CoreAllocatorType> const& lhs,
-  allocation_policy<U, OtherCoreAllocatorType> const& rhs)
+  AllocationPolicy<T, CoreAllocatorType> const& lhs,
+  AllocationPolicy<U, OtherCoreAllocatorType> const& rhs)
 {
   return !operator==(lhs, rhs);
 }
@@ -306,12 +305,12 @@ bool operator!=(
 template<
   typename T,
   typename CoreAllocatorType,
-  typename other_allocation_policy_type
+  typename OtherAllocationPolicyType
 >
 inline
 bool operator!=(
-  allocation_policy<T, CoreAllocatorType> const& lhs,
-  other_allocation_policy_type const& rhs)
+  AllocationPolicy<T, CoreAllocatorType> const& lhs,
+  OtherAllocationPolicyType const& rhs)
 {
   return !operator==(lhs, rhs);
 }

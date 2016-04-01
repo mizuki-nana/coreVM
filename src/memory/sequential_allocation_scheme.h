@@ -37,9 +37,9 @@ namespace memory {
 
 // -----------------------------------------------------------------------------
 
-typedef struct __sequential_block_descriptor
+typedef struct __SequentialBlockDescriptor
 {
-  __sequential_block_descriptor()
+  __SequentialBlockDescriptor()
     :
     size(0u),
     actual_size(0u),
@@ -48,7 +48,7 @@ typedef struct __sequential_block_descriptor
   {
   }
 
-  __sequential_block_descriptor(
+  __SequentialBlockDescriptor(
     uint64_t size_,
     uint64_t actual_size_,
     uint64_t offset_,
@@ -65,17 +65,17 @@ typedef struct __sequential_block_descriptor
   uint64_t actual_size;
   uint64_t offset;
   uint8_t flags;
-} sequential_block_descriptor;
+} SequentialBlockDescriptor;
 
 // -----------------------------------------------------------------------------
 
-class sequential_allocation_scheme : public allocation_scheme
+class SequentialAllocationScheme : public AllocationScheme
 {
 public:
-  explicit sequential_allocation_scheme(size_t);
+  explicit SequentialAllocationScheme(size_t);
 
 private:
-  using list_type = typename std::list<sequential_block_descriptor>;
+  using list_type = typename std::list<SequentialBlockDescriptor>;
 
 public:
   using iterator = list_type::iterator;
@@ -93,21 +93,21 @@ public:
   static bool SUPPRESS_LINEAR_SEARCH;
 
 protected:
-  virtual sequential_block_descriptor default_block() const noexcept;
+  virtual SequentialBlockDescriptor default_block() const noexcept;
   virtual iterator find_fit(size_t) noexcept = 0;
   virtual void split(iterator, size_t, uint64_t) noexcept;
   virtual void combine_free_blocks() noexcept;
 
   size_t m_total_size;
-  std::list<sequential_block_descriptor> m_blocks;
+  std::list<SequentialBlockDescriptor> m_blocks;
 };
 
 // -----------------------------------------------------------------------------
 
-class first_fit_allocation_scheme : public sequential_allocation_scheme
+class FirstFitAllocationScheme : public SequentialAllocationScheme
 {
 public:
-  explicit first_fit_allocation_scheme(size_t total_size);
+  explicit FirstFitAllocationScheme(size_t total_size);
 
 protected:
   virtual iterator find_fit(size_t) noexcept;
@@ -115,10 +115,10 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class best_fit_allocation_scheme : public sequential_allocation_scheme
+class BestFitAllocationScheme : public SequentialAllocationScheme
 {
 public:
-  explicit best_fit_allocation_scheme(size_t total_size);
+  explicit BestFitAllocationScheme(size_t total_size);
 
 protected:
   virtual iterator find_fit(size_t) noexcept;
@@ -126,10 +126,10 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class worst_fit_allocation_scheme : public sequential_allocation_scheme
+class WorstFitAllocationScheme : public SequentialAllocationScheme
 {
 public:
-  explicit worst_fit_allocation_scheme(size_t total_size);
+  explicit WorstFitAllocationScheme(size_t total_size);
 
 protected:
   virtual iterator find_fit(size_t) noexcept;
@@ -137,10 +137,10 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class next_fit_allocation_scheme : public sequential_allocation_scheme
+class NextFitAllocationScheme : public SequentialAllocationScheme
 {
 public:
-  explicit next_fit_allocation_scheme(size_t total_size);
+  explicit NextFitAllocationScheme(size_t total_size);
 
   virtual ssize_t free(size_t) noexcept;
 
@@ -152,16 +152,16 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class buddy_allocation_scheme : public sequential_allocation_scheme
+class BuddyAllocationScheme : public SequentialAllocationScheme
 {
 public:
-  explicit buddy_allocation_scheme(size_t total_size);
+  explicit BuddyAllocationScheme(size_t total_size);
 
   virtual ssize_t malloc(size_t) noexcept;
   virtual ssize_t calloc(size_t, size_t) noexcept;
 
 protected:
-  virtual sequential_block_descriptor default_block() const noexcept;
+  virtual SequentialBlockDescriptor default_block() const noexcept;
   virtual iterator find_fit(size_t) noexcept;
   virtual void combine_free_blocks() noexcept;
 

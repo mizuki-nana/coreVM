@@ -34,7 +34,7 @@ const int HEAP_STORAGE_FOR_TEST = 1024;
 // -----------------------------------------------------------------------------
 
 template<typename AllocationSchemeType>
-class allocator_unittest : public ::testing::Test
+class AllocatorUnitTest : public ::testing::Test
 {
 protected:
   /**
@@ -60,32 +60,32 @@ protected:
     return m_allocator.total_size();
   }
 
-  allocator_unittest()
+  AllocatorUnitTest()
     :
     m_allocator(HEAP_STORAGE_FOR_TEST)
   {
   }
 
-  corevm::memory::allocator<AllocationSchemeType> m_allocator;
+  corevm::memory::Allocator<AllocationSchemeType> m_allocator;
 };
 
 // -----------------------------------------------------------------------------
 
 typedef ::testing::Types<
-  corevm::memory::first_fit_allocation_scheme,
-  corevm::memory::best_fit_allocation_scheme,
-  corevm::memory::worst_fit_allocation_scheme,
-  corevm::memory::next_fit_allocation_scheme,
-  corevm::memory::buddy_allocation_scheme
+  corevm::memory::FirstFitAllocationScheme,
+  corevm::memory::BestFitAllocationScheme,
+  corevm::memory::WorstFitAllocationScheme,
+  corevm::memory::NextFitAllocationScheme,
+  corevm::memory::BuddyAllocationScheme
 > SequentialAllocationSchemeTypes;
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST_CASE(allocator_unittest, SequentialAllocationSchemeTypes);
+TYPED_TEST_CASE(AllocatorUnitTest, SequentialAllocationSchemeTypes);
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestFirstMallocSuccessful)
+TYPED_TEST(AllocatorUnitTest, TestFirstMallocSuccessful)
 {
   void* p = this->allocate(10);
   ASSERT_NE(nullptr, p);
@@ -93,7 +93,7 @@ TYPED_TEST(allocator_unittest, TestFirstMallocSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestMallocWithSizeZeroFails)
+TYPED_TEST(AllocatorUnitTest, TestMallocWithSizeZeroFails)
 {
   void* p = this->allocate(0);
   ASSERT_EQ(nullptr, p);
@@ -101,7 +101,7 @@ TYPED_TEST(allocator_unittest, TestMallocWithSizeZeroFails)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestMallocWithExcessiveSizeFails)
+TYPED_TEST(AllocatorUnitTest, TestMallocWithExcessiveSizeFails)
 {
   void* p = this->allocate(HEAP_STORAGE_FOR_TEST + 1);
   ASSERT_EQ(nullptr, p);
@@ -109,7 +109,7 @@ TYPED_TEST(allocator_unittest, TestMallocWithExcessiveSizeFails)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestFreeFailsOnInvalidPtr)
+TYPED_TEST(AllocatorUnitTest, TestFreeFailsOnInvalidPtr)
 {
   int c = 5;
   void* ptr = &c;
@@ -119,7 +119,7 @@ TYPED_TEST(allocator_unittest, TestFreeFailsOnInvalidPtr)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestSingleMallocAndFree)
+TYPED_TEST(AllocatorUnitTest, TestSingleMallocAndFree)
 {
   void* p = this->allocate(HEAP_STORAGE_FOR_TEST / 2);
   ASSERT_NE(nullptr, p);
@@ -131,7 +131,7 @@ TYPED_TEST(allocator_unittest, TestSingleMallocAndFree)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
+TYPED_TEST(AllocatorUnitTest, TestMallocFreeOnFullSpaceCycleSuccessful)
 {
   const int CYCLES = 3;
 
@@ -149,17 +149,17 @@ TYPED_TEST(allocator_unittest, TestMallocFreeOnFullSpaceCycleSuccessful)
 // -----------------------------------------------------------------------------
 
 template<typename AllocationSchemeType>
-class sequential_allocation_schemes_unittest :
-  public allocator_unittest<AllocationSchemeType>
+class SequentialAllocationSchemesUnitTest :
+  public AllocatorUnitTest<AllocationSchemeType>
 {
 protected:
   template<typename F>
   void run(F func)
   {
-    corevm::memory::sequential_allocation_scheme::SUPPRESS_LINEAR_SEARCH = true;
+    corevm::memory::SequentialAllocationScheme::SUPPRESS_LINEAR_SEARCH = true;
     func();
 
-    corevm::memory::sequential_allocation_scheme::SUPPRESS_LINEAR_SEARCH = false;
+    corevm::memory::SequentialAllocationScheme::SUPPRESS_LINEAR_SEARCH = false;
     func();
   }
 };
@@ -167,19 +167,19 @@ protected:
 // -----------------------------------------------------------------------------
 
 typedef ::testing::Types<
-  corevm::memory::first_fit_allocation_scheme,
-  corevm::memory::best_fit_allocation_scheme,
-  corevm::memory::worst_fit_allocation_scheme,
-  corevm::memory::next_fit_allocation_scheme
+  corevm::memory::FirstFitAllocationScheme,
+  corevm::memory::BestFitAllocationScheme,
+  corevm::memory::WorstFitAllocationScheme,
+  corevm::memory::NextFitAllocationScheme
 > ExtraAllocationSchemeTypes;
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST_CASE(sequential_allocation_schemes_unittest, ExtraAllocationSchemeTypes);
+TYPED_TEST_CASE(SequentialAllocationSchemesUnitTest, ExtraAllocationSchemeTypes);
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestDoubleMallocAndFree)
 {
   this->run(
     [this]() {
@@ -214,7 +214,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestDoubleMallocAndFree)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestMallocAndFreeNTimes)
 {
   this->run(
     [this]() {
@@ -254,7 +254,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAndFreeNTimes)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestMallocAfterFree)
 {
   this->run(
     [this]() {
@@ -299,7 +299,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestMallocAfterFree)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestAllocationOverTotalSize)
 {
   this->run(
     [this]() {
@@ -329,7 +329,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestAllocationOverTotalSize)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroNumber)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestCallocWithZeroNumber)
 {
   const size_t num = 0;
   const size_t size = HEAP_STORAGE_FOR_TEST / 4;
@@ -340,7 +340,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroNumber)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroSize)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestCallocWithZeroSize)
 {
   const size_t num = 4;
   const size_t size = 0;
@@ -351,7 +351,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithZeroSize)
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocOnFullCapacitySucceeds)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestCallocOnFullCapacitySucceeds)
 {
   this->run(
     [this]() {
@@ -376,7 +376,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocOnFullCapacitySucce
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithExcessiveSizeFails)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestCallocWithExcessiveSizeFails)
 {
   const size_t num = 100;
   const size_t size = HEAP_STORAGE_FOR_TEST;
@@ -389,7 +389,7 @@ TYPED_TEST(sequential_allocation_schemes_unittest, TestCallocWithExcessiveSizeFa
 
 // -----------------------------------------------------------------------------
 
-TYPED_TEST(sequential_allocation_schemes_unittest, TestInterleavedCallocAndMalloc)
+TYPED_TEST(SequentialAllocationSchemesUnitTest, TestInterleavedCallocAndMalloc)
 {
   this->run(
     [this]() {
@@ -436,12 +436,12 @@ const int BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE = 1024;
 
 // -----------------------------------------------------------------------------
 
-class buddy_allocation_scheme_unittest : public ::testing::Test
+class BuddyAllocationSchemeUnitTest : public ::testing::Test
 {
 protected:
-  corevm::memory::allocator<corevm::memory::buddy_allocation_scheme> m_allocator;
+  corevm::memory::Allocator<corevm::memory::BuddyAllocationScheme> m_allocator;
 
-  buddy_allocation_scheme_unittest()
+  BuddyAllocationSchemeUnitTest()
     :
     m_allocator(BUDDY_ALLOCATION_SCHEME_TEST_HEAP_SIZE)
   {
@@ -468,7 +468,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
+TEST_F(BuddyAllocationSchemeUnitTest, TestAllocHalfAndHalf)
 {
   this->run_twice(
     [this]() {
@@ -494,7 +494,7 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocHalfAndHalf)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
+TEST_F(BuddyAllocationSchemeUnitTest, TestSequentialAllocAndFree)
 {
   this->run_twice(
     [this]() {
@@ -524,7 +524,7 @@ TEST_F(buddy_allocation_scheme_unittest, TestSequentialAllocAndFree)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
+TEST_F(BuddyAllocationSchemeUnitTest, TestAllocAndFreeInterleaved)
 {
   /* This test is based on the example on page 1 in
    * http://www.cs.fsu.edu/~engelen/courses/COP402003/p827.pdf
@@ -572,7 +572,7 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
+TEST_F(BuddyAllocationSchemeUnitTest, TestAllocAndFreeInterleaved2)
 {
   /* This test is based on the example given in
    * http://en.wikipedia.org/wiki/Buddy_memory_allocation#In_practice
@@ -620,7 +620,7 @@ TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(buddy_allocation_scheme_unittest, TestAllocAndFreeInterleaved3)
+TEST_F(BuddyAllocationSchemeUnitTest, TestAllocAndFreeInterleaved3)
 {
   this->run_twice(
     [this]() {

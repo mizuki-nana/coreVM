@@ -49,7 +49,7 @@ namespace memory {
  * to iterate through all the contained objects.
  */
 template<typename T, typename AllocatorType>
-class object_container
+class ObjectContainer
 {
 public:
 
@@ -64,13 +64,13 @@ public:
   typedef typename AllocatorType::iterator iterator;
   typedef typename AllocatorType::const_iterator const_iterator;
 
-  object_container();
+  ObjectContainer();
 
-  explicit object_container(uint64_t);
+  explicit ObjectContainer(uint64_t);
 
   /* Object containers should not be copyable. */
-  object_container(const object_container&) = delete;
-  object_container& operator=(const object_container&) = delete;
+  ObjectContainer(const ObjectContainer&) = delete;
+  ObjectContainer& operator=(const ObjectContainer&) = delete;
 
   iterator begin();
   iterator end();
@@ -93,8 +93,8 @@ public:
   pointer operator[](pointer);
   const_pointer operator[](const_pointer) const;
 
-  pointer at(pointer) throw(corevm::memory::invalid_address_error);
-  const_pointer at(const_pointer) const throw(corevm::memory::invalid_address_error);
+  pointer at(pointer) throw(corevm::memory::InvalidAddressError);
+  const_pointer at(const_pointer) const throw(corevm::memory::InvalidAddressError);
 
   void destroy(pointer);
 
@@ -109,7 +109,7 @@ private:
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-object_container<T, AllocatorType>::object_container()
+ObjectContainer<T, AllocatorType>::ObjectContainer()
   :
   m_allocator()
 {
@@ -119,7 +119,7 @@ object_container<T, AllocatorType>::object_container()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-object_container<T, AllocatorType>::object_container(
+ObjectContainer<T, AllocatorType>::ObjectContainer(
   uint64_t total_size)
   :
   m_allocator(total_size)
@@ -130,8 +130,8 @@ object_container<T, AllocatorType>::object_container(
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::iterator
-object_container<T, AllocatorType>::begin()
+typename ObjectContainer<T, AllocatorType>::iterator
+ObjectContainer<T, AllocatorType>::begin()
 {
   return m_allocator.begin();
 }
@@ -139,8 +139,8 @@ object_container<T, AllocatorType>::begin()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::iterator
-object_container<T, AllocatorType>::end()
+typename ObjectContainer<T, AllocatorType>::iterator
+ObjectContainer<T, AllocatorType>::end()
 {
   return m_allocator.end();
 }
@@ -148,8 +148,8 @@ object_container<T, AllocatorType>::end()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::const_iterator
-object_container<T, AllocatorType>::cbegin() const
+typename ObjectContainer<T, AllocatorType>::const_iterator
+ObjectContainer<T, AllocatorType>::cbegin() const
 {
   return m_allocator.cbegin();
 }
@@ -157,8 +157,8 @@ object_container<T, AllocatorType>::cbegin() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::const_iterator
-object_container<T, AllocatorType>::cend() const
+typename ObjectContainer<T, AllocatorType>::const_iterator
+ObjectContainer<T, AllocatorType>::cend() const
 {
   return m_allocator.cend();
 }
@@ -166,8 +166,8 @@ object_container<T, AllocatorType>::cend() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::size_type
-object_container<T, AllocatorType>::size() const
+typename ObjectContainer<T, AllocatorType>::size_type
+ObjectContainer<T, AllocatorType>::size() const
 {
   size_t count = 0;
   for (auto itr = cbegin(); itr != cend(); ++itr)
@@ -181,8 +181,8 @@ object_container<T, AllocatorType>::size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::size_type
-object_container<T, AllocatorType>::max_size() const
+typename ObjectContainer<T, AllocatorType>::size_type
+ObjectContainer<T, AllocatorType>::max_size() const
 {
   return m_allocator.max_size();
 }
@@ -190,8 +190,8 @@ object_container<T, AllocatorType>::max_size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::size_type
-object_container<T, AllocatorType>::total_size() const
+typename ObjectContainer<T, AllocatorType>::size_type
+ObjectContainer<T, AllocatorType>::total_size() const
 {
   return m_allocator.total_size();
 }
@@ -199,8 +199,8 @@ object_container<T, AllocatorType>::total_size() const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::pointer
-object_container<T, AllocatorType>::create()
+typename ObjectContainer<T, AllocatorType>::pointer
+ObjectContainer<T, AllocatorType>::create()
 {
   pointer p = m_allocator.allocate(1, 0);
 
@@ -217,8 +217,8 @@ object_container<T, AllocatorType>::create()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::pointer
-object_container<T, AllocatorType>::create(size_t n)
+typename ObjectContainer<T, AllocatorType>::pointer
+ObjectContainer<T, AllocatorType>::create(size_t n)
 {
   pointer p = m_allocator.allocate(n, 0);
 
@@ -238,8 +238,8 @@ object_container<T, AllocatorType>::create(size_t n)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::pointer
-object_container<T, AllocatorType>::create(const_reference value)
+typename ObjectContainer<T, AllocatorType>::pointer
+ObjectContainer<T, AllocatorType>::create(const_reference value)
 {
   pointer p = m_allocator.allocate(1, 0);
 
@@ -257,7 +257,7 @@ object_container<T, AllocatorType>::create(const_reference value)
 
 template<typename T, typename AllocatorType>
 bool
-object_container<T, AllocatorType>::check_ptr(pointer p) const
+ObjectContainer<T, AllocatorType>::check_ptr(pointer p) const
 {
   return m_allocator.find(p) != nullptr;
 }
@@ -265,8 +265,8 @@ object_container<T, AllocatorType>::check_ptr(pointer p) const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::pointer
-object_container<T, AllocatorType>::operator[](pointer p)
+typename ObjectContainer<T, AllocatorType>::pointer
+ObjectContainer<T, AllocatorType>::operator[](pointer p)
 {
   if (!check_ptr(p))
   {
@@ -279,8 +279,8 @@ object_container<T, AllocatorType>::operator[](pointer p)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::const_pointer
-object_container<T, AllocatorType>::operator[](const_pointer p) const
+typename ObjectContainer<T, AllocatorType>::const_pointer
+ObjectContainer<T, AllocatorType>::operator[](const_pointer p) const
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {
@@ -293,13 +293,13 @@ object_container<T, AllocatorType>::operator[](const_pointer p) const
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::pointer
-object_container<T, AllocatorType>::at(pointer p)
-  throw(corevm::memory::invalid_address_error)
+typename ObjectContainer<T, AllocatorType>::pointer
+ObjectContainer<T, AllocatorType>::at(pointer p)
+  throw(corevm::memory::InvalidAddressError)
 {
   if (!check_ptr(p))
   {
-    THROW(invalid_address_error(static_cast<uint64_t>(PTR_TO_INT(p))));
+    THROW(InvalidAddressError(static_cast<uint64_t>(PTR_TO_INT(p))));
   }
 
   return static_cast<pointer>((void*)p);
@@ -308,13 +308,13 @@ object_container<T, AllocatorType>::at(pointer p)
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-typename object_container<T, AllocatorType>::const_pointer
-object_container<T, AllocatorType>::at(const_pointer p) const
-  throw(corevm::memory::invalid_address_error)
+typename ObjectContainer<T, AllocatorType>::const_pointer
+ObjectContainer<T, AllocatorType>::at(const_pointer p) const
+  throw(corevm::memory::InvalidAddressError)
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {
-    THROW(invalid_address_error(PTR_TO_INT(p)));
+    THROW(InvalidAddressError(PTR_TO_INT(p)));
   }
 
   return static_cast<const_pointer>((void*)p);
@@ -324,11 +324,11 @@ object_container<T, AllocatorType>::at(const_pointer p) const
 
 template<typename T, typename AllocatorType>
 void
-object_container<T, AllocatorType>::destroy(pointer p)
+ObjectContainer<T, AllocatorType>::destroy(pointer p)
 {
   if (!check_ptr(p))
   {
-    THROW(invalid_address_error(static_cast<uint64_t>(PTR_TO_INT(p))));
+    THROW(InvalidAddressError(static_cast<uint64_t>(PTR_TO_INT(p))));
   }
 
   m_allocator.destroy(p);
@@ -339,7 +339,7 @@ object_container<T, AllocatorType>::destroy(pointer p)
 
 template<typename T, typename AllocatorType>
 void
-object_container<T, AllocatorType>::erase(iterator& itr)
+ObjectContainer<T, AllocatorType>::erase(iterator& itr)
 {
   if (itr == end())
   {
@@ -356,7 +356,7 @@ template<typename T, typename AllocatorType>
 std::ostream&
 operator<<(
   std::ostream& ost,
-  const object_container<T, AllocatorType>& container)
+  const ObjectContainer<T, AllocatorType>& container)
 {
   ost << "object container: ";
   ost << container.size() << "/" << container.max_size();
