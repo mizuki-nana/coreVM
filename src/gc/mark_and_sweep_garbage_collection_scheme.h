@@ -38,7 +38,7 @@ namespace corevm {
 namespace gc {
 
 
-class mark_and_sweep_garbage_collection_scheme : public garbage_collection_scheme
+class MarkAndSweepGarbageCollectionScheme : public GarbageCollectionScheme
 {
 public:
   typedef class DynamicObjectManager : public dyobj::DynamicObjectManager

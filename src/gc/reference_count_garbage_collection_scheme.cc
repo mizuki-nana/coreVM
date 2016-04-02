@@ -37,7 +37,7 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-reference_count_garbage_collection_scheme::DynamicObjectManager::DynamicObjectManager()
+RefCountGarbageCollectionScheme::DynamicObjectManager::DynamicObjectManager()
   :
   m_count(0u),
   m_attached(false)
@@ -48,7 +48,7 @@ reference_count_garbage_collection_scheme::DynamicObjectManager::DynamicObjectMa
 
 /* virtual */
 void
-reference_count_garbage_collection_scheme::DynamicObjectManager::on_delete() noexcept
+RefCountGarbageCollectionScheme::DynamicObjectManager::on_delete() noexcept
 {
   dec_ref_count();
 }
@@ -59,15 +59,15 @@ reference_count_garbage_collection_scheme::DynamicObjectManager::on_delete() noe
 // -----------------------------------------------------------------------------
 
 void
-reference_count_garbage_collection_scheme::gc(
-  reference_count_garbage_collection_scheme::dynamic_object_heap_type& /* heap */) const
+RefCountGarbageCollectionScheme::gc(
+  RefCountGarbageCollectionScheme::dynamic_object_heap_type& /* heap */) const
 {
 #if COREVM_457
   using _dynamic_object_heap_type = typename
-    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
   using heap_iterator_type = typename
-    reference_count_garbage_collection_scheme::heap_iterator<_dynamic_object_heap_type>;
+    RefCountGarbageCollectionScheme::heap_iterator<_dynamic_object_heap_type>;
 
   heap_iterator_type heap_iterator(heap, *this);
 
@@ -121,12 +121,12 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-reference_count_garbage_collection_scheme::check_and_dec_ref_count(
-  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
-  reference_count_garbage_collection_scheme::dynamic_object_type& object) const
+RefCountGarbageCollectionScheme::check_and_dec_ref_count(
+  RefCountGarbageCollectionScheme::dynamic_object_heap_type& heap,
+  RefCountGarbageCollectionScheme::dynamic_object_type& object) const
 {
   using _dynamic_object_heap_type = typename
-    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
   if (!object.is_garbage_collectible())
   {
@@ -180,12 +180,12 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-reference_count_garbage_collection_scheme::resolve_self_reference_cycles(
-  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap,
-  reference_count_garbage_collection_scheme::dynamic_object_type& object) const
+RefCountGarbageCollectionScheme::resolve_self_reference_cycles(
+  RefCountGarbageCollectionScheme::dynamic_object_heap_type& heap,
+  RefCountGarbageCollectionScheme::dynamic_object_type& object) const
 {
   using _dynamic_object_heap_type = typename
-    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
   cycled_object_reference_decrementor<_dynamic_object_heap_type> decrementor(heap, object);
   object.iterate(decrementor);
@@ -264,11 +264,11 @@ private:
 // -----------------------------------------------------------------------------
 
 void
-reference_count_garbage_collection_scheme::remove_cycles(
-  reference_count_garbage_collection_scheme::dynamic_object_heap_type& heap) const
+RefCountGarbageCollectionScheme::remove_cycles(
+  RefCountGarbageCollectionScheme::dynamic_object_heap_type& heap) const
 {
   using _dynamic_object_heap_type = typename
-    reference_count_garbage_collection_scheme::dynamic_object_heap_type;
+    RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
   typedef object_graph_builder<_dynamic_object_heap_type> object_graph_builder_type;
 

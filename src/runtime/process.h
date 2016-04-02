@@ -79,7 +79,7 @@ class process_printer;
 class process
 {
 public:
-  typedef gc::reference_count_garbage_collection_scheme garbage_collection_scheme;
+  typedef gc::RefCountGarbageCollectionScheme garbage_collection_scheme;
   using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
   using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
   typedef native_types_pool native_types_pool_type;

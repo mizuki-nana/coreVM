@@ -36,18 +36,18 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-template<typename dynamic_object_heap_type>
-struct dyobj_remove_criterion
+template<typename DynamicObjectHeapType>
+struct DyobjRemoveCriterion
 {
-  dyobj_remove_criterion()
+  DyobjRemoveCriterion()
   {
     // Do nothing here.
   }
 
-  bool operator()(const typename dynamic_object_heap_type::iterator& itr) const
+  bool operator()(const typename DynamicObjectHeapType::iterator& itr) const
   {
-    auto& object = static_cast<typename dynamic_object_heap_type::dynamic_object_type&>(
-      *const_cast<typename dynamic_object_heap_type::iterator&>(itr));
+    auto& object = static_cast<typename DynamicObjectHeapType::dynamic_object_type&>(
+      *const_cast<typename DynamicObjectHeapType::iterator&>(itr));
 
     return object.is_garbage_collectible();
   }
@@ -56,7 +56,7 @@ struct dyobj_remove_criterion
 // -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
-class garbage_collector
+class GarbageCollector
 {
 public:
   using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<
@@ -64,24 +64,24 @@ public:
 
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
 
-  class callback
+  class Callback
   {
     public:
-      using dynamic_object_type = typename garbage_collector::dynamic_object_type;
+      using dynamic_object_type = typename GarbageCollector::dynamic_object_type;
 
       virtual void operator()(const dynamic_object_type& obj) = 0;
 
-    virtual ~callback() {}
+    virtual ~Callback() {}
   };
 
-  explicit garbage_collector(dynamic_object_heap_type&);
+  explicit GarbageCollector(dynamic_object_heap_type&);
 
   void gc() noexcept;
 
-  void gc(callback*) noexcept;
+  void gc(Callback*) noexcept;
 
 protected:
-  void free(callback* f=nullptr) noexcept;
+  void free(Callback* f=nullptr) noexcept;
 
   garbage_collection_scheme m_gc_scheme;
   dynamic_object_heap_type& m_heap;
@@ -90,8 +90,8 @@ protected:
 // -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
-garbage_collector<garbage_collection_scheme>::garbage_collector(
-  garbage_collector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
+GarbageCollector<garbage_collection_scheme>::GarbageCollector(
+  GarbageCollector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
   :
   m_gc_scheme(),
   m_heap(heap)
@@ -103,7 +103,7 @@ garbage_collector<garbage_collection_scheme>::garbage_collector(
 
 template<class garbage_collection_scheme>
 void
-garbage_collector<garbage_collection_scheme>::gc() noexcept
+GarbageCollector<garbage_collection_scheme>::gc() noexcept
 {
   m_gc_scheme.gc(m_heap);
   this->free();
@@ -113,7 +113,7 @@ garbage_collector<garbage_collection_scheme>::gc() noexcept
 
 template<class garbage_collection_scheme>
 void
-garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
+GarbageCollector<garbage_collection_scheme>::gc(Callback* f) noexcept
 {
   m_gc_scheme.gc(m_heap);
   this->free(f);
@@ -123,7 +123,7 @@ garbage_collector<garbage_collection_scheme>::gc(callback* f) noexcept
 
 template<class garbage_collection_scheme>
 void
-garbage_collector<garbage_collection_scheme>::free(callback* f) noexcept
+GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
 {
   // NOTE: Cannot use `std::remove_if` here because certain implementations
   // require copying the underlying container elements, in this case

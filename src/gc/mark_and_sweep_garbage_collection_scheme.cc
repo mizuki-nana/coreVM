@@ -33,7 +33,7 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::DynamicObjectManager()
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::DynamicObjectManager()
   :
   m_marked(false)
 {
@@ -43,7 +43,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::DynamicObjectMan
 
 /* virtual inline */
 bool
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::garbage_collectible() const noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::garbage_collectible() const noexcept
 {
   return marked();
 }
@@ -52,7 +52,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::garbage_collecti
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_create() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::on_create() noexcept
 {
   // Do nothing here.
 }
@@ -61,7 +61,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_create() noex
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_setattr() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::on_setattr() noexcept
 {
   // Do nothing here.
 }
@@ -70,7 +70,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_setattr() noe
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delattr() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::on_delattr() noexcept
 {
   // Do nothing here.
 }
@@ -79,7 +79,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delattr() noe
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delete() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::on_delete() noexcept
 {
   // Do nothing here.
 }
@@ -88,7 +88,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_delete() noex
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_exit() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::on_exit() noexcept
 {
   // Do nothing here.
 }
@@ -97,7 +97,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::on_exit() noexce
 
 /* virtual inline */
 bool
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::marked() const noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::marked() const noexcept
 {
   return m_marked;
 }
@@ -106,7 +106,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::marked() const n
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::mark() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::mark() noexcept
 {
   m_marked = true;
 }
@@ -115,7 +115,7 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::mark() noexcept
 
 /* virtual inline */
 void
-mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::unmark() noexcept
+MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::unmark() noexcept
 {
   m_marked = false;
 }
@@ -123,11 +123,11 @@ mark_and_sweep_garbage_collection_scheme::DynamicObjectManager::unmark() noexcep
 // -----------------------------------------------------------------------------
 
 void
-mark_and_sweep_garbage_collection_scheme::gc(
-  mark_and_sweep_garbage_collection_scheme::dynamic_object_heap_type& heap) const
+MarkAndSweepGarbageCollectionScheme::gc(
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& heap) const
 {
   using _dynamic_object_heap_type = typename
-    mark_and_sweep_garbage_collection_scheme::dynamic_object_heap_type;
+    MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type;
 
   heap.iterate(
     [this, &heap](
@@ -145,8 +145,8 @@ mark_and_sweep_garbage_collection_scheme::gc(
 // -----------------------------------------------------------------------------
 
 bool
-mark_and_sweep_garbage_collection_scheme::is_root_object(
-  const mark_and_sweep_garbage_collection_scheme::dynamic_object_type& /* object */) const noexcept
+MarkAndSweepGarbageCollectionScheme::is_root_object(
+  const MarkAndSweepGarbageCollectionScheme::dynamic_object_type& /* object */) const noexcept
 {
   // TODO: [COREVM-62] Complete mark and sweep GC scheme implementation
   return true;
@@ -155,12 +155,12 @@ mark_and_sweep_garbage_collection_scheme::is_root_object(
 // -----------------------------------------------------------------------------
 
 void
-mark_and_sweep_garbage_collection_scheme::mark(
-  mark_and_sweep_garbage_collection_scheme::dynamic_object_heap_type& heap,
-  mark_and_sweep_garbage_collection_scheme::dynamic_object_type& object) const
+MarkAndSweepGarbageCollectionScheme::mark(
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& heap,
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_type& object) const
 {
   using _dynamic_object_type = typename
-    mark_and_sweep_garbage_collection_scheme::dynamic_object_type;
+    MarkAndSweepGarbageCollectionScheme::dynamic_object_type;
 
   if (!object.is_garbage_collectible())
   {

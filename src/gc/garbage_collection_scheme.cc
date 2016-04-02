@@ -32,7 +32,7 @@ namespace gc {
 // -----------------------------------------------------------------------------
 
 /* virtual */
-garbage_collection_scheme::~garbage_collection_scheme()
+GarbageCollectionScheme::~GarbageCollectionScheme()
 {
   // Do nothing here.
 }

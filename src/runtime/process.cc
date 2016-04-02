@@ -67,7 +67,7 @@ namespace internal {
 // -----------------------------------------------------------------------------
 
 class ntvhndl_collector_gc_callback :
-  public gc::garbage_collector<process::garbage_collection_scheme>::callback
+  public gc::GarbageCollector<process::garbage_collection_scheme>::Callback
 {
 public:
   virtual void operator()(const dynamic_object_type& obj);
@@ -848,7 +848,7 @@ process::do_gc()
 {
   this->pause_exec();
 
-  gc::garbage_collector<garbage_collection_scheme> garbage_collector(
+  gc::GarbageCollector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
 
   internal::ntvhndl_collector_gc_callback callback;

@@ -40,7 +40,7 @@ namespace corevm {
 namespace gc {
 
 
-class reference_count_garbage_collection_scheme : public garbage_collection_scheme
+class RefCountGarbageCollectionScheme : public GarbageCollectionScheme
 {
 public:
   typedef class DynamicObjectManager : public dyobj::DynamicObjectManager
@@ -118,7 +118,7 @@ public:
     public:
       explicit heap_iterator(
         dynamic_object_heap_type& heap,
-        const reference_count_garbage_collection_scheme& scheme)
+        const RefCountGarbageCollectionScheme& scheme)
         :
         m_heap(heap),
         m_scheme(scheme)
@@ -135,7 +135,7 @@ public:
 
     private:
       dynamic_object_heap_type& m_heap;
-      const reference_count_garbage_collection_scheme& m_scheme;
+      const RefCountGarbageCollectionScheme& m_scheme;
   };
 
   friend class heap_iterator<dynamic_object_heap_type>;
