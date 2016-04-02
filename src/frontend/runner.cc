@@ -76,7 +76,7 @@ runner::run() const noexcept
   const uint32_t gc_interval = m_configuration.gc_interval() ? \
     m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
 
-  runtime::process::options options;
+  runtime::Process::Options options;
 
   if (m_configuration.heap_alloc_size())
   {
@@ -93,7 +93,7 @@ runner::run() const noexcept
     options.gc_flag = m_configuration.gc_flag();
   }
 
-  runtime::process process(options);
+  runtime::Process process(options);
 
   bytecode_loader_binary loader;
 
@@ -101,7 +101,7 @@ runner::run() const noexcept
   {
     loader.load(m_path, process);
 
-    const bool res = runtime::process_runner(process, gc_interval).start();
+    const bool res = runtime::ProcessRunner(process, gc_interval).start();
 
     if (!res)
     {
@@ -111,7 +111,7 @@ runner::run() const noexcept
       print_stack_trace();
 #endif
 
-      runtime::process::unwind_stack(process);
+      runtime::Process::unwind_stack(process);
 
       return -1;
     }
@@ -125,7 +125,7 @@ runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::process::unwind_stack(process);
+    runtime::Process::unwind_stack(process);
 
     return -1;
   }
@@ -138,7 +138,7 @@ runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::process::unwind_stack(process);
+    runtime::Process::unwind_stack(process);
 
     return -1;
   }
@@ -151,7 +151,7 @@ runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::process::unwind_stack(process);
+    runtime::Process::unwind_stack(process);
 
     return -1;
   }

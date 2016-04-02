@@ -34,14 +34,14 @@ namespace corevm {
 namespace runtime {
 
 
-class compartment_printer
+class CompartmentPrinter
 {
 public:
-  compartment_printer(const compartment&, uint32_t opts);
+  CompartmentPrinter(const Compartment&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  const compartment& m_compartment;
+  const Compartment& m_compartment;
   const uint32_t m_opts;
 };
 

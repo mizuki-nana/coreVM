@@ -58,7 +58,7 @@ typedef int64_t closure_id;
 typedef uint64_t encoding_key;
 
 
-typedef std::vector<std::string> encoding_map;
+typedef std::vector<std::string> EncodingMap;
 
 
 typedef int32_t compartment_id;

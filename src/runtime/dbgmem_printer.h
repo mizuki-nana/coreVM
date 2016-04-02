@@ -33,16 +33,16 @@ namespace corevm {
 namespace runtime {
 
 
-class dbgmem_printer
+class DbgMemPrinter
 {
 public:
-  enum opts : uint32_t
+  enum Opts : uint32_t
   {
     OPTS_UNIT_BYTES = 0,
     OPTS_SHOW_PEAK = 1
   };
 
-  dbgmem_printer(uint32_t opts);
+  DbgMemPrinter(uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 

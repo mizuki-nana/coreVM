@@ -34,14 +34,14 @@ namespace corevm {
 namespace runtime {
 
 
-class process_printer
+class ProcessPrinter
 {
 public:
-  process_printer(const process&, uint32_t opts);
+  ProcessPrinter(const Process&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
-  const process& m_process;
+  const Process& m_process;
   const uint32_t m_opts;
 };
 

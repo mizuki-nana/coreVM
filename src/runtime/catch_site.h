@@ -35,9 +35,9 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct catch_site
+struct CatchSite
 {
-  catch_site(uint32_t from_, uint32_t to_, uint32_t dst_)
+  CatchSite(uint32_t from_, uint32_t to_, uint32_t dst_)
     :
     from(from_),
     to(to_),
@@ -52,7 +52,7 @@ struct catch_site
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<catch_site> catch_site_list;
+typedef std::vector<CatchSite> CatchSiteList;
 
 // -----------------------------------------------------------------------------
 

@@ -287,7 +287,7 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_unary_operator_instr(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   types::native_type_handle& oprd = frame->top_eval_stack();
 
@@ -300,13 +300,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_binary_operator_instr(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 2)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& lhs = frame->eval_stack_element(eval_stack_size - 1);
@@ -321,7 +321,7 @@ template<typename NativeType>
 /* static */
 void
 instr_handler::execute_native_integer_type_creation_instr(
-  const instr& instr, frame* frame)
+  const Instr& instr, Frame* frame)
 {
   types::native_type_handle hndl(NativeType(instr.oprd1));
 
@@ -334,7 +334,7 @@ template<typename NativeType>
 /* static */
 void
 instr_handler::execute_native_floating_type_creation_instr(
-  const instr& instr, frame* frame)
+  const Instr& instr, Frame* frame)
 {
   std::stringstream oprd2_ss;
   oprd2_ss << instr.oprd2;
@@ -356,7 +356,7 @@ template<typename NativeType>
 /* static */
 void
 instr_handler::execute_native_complex_type_creation_instr(
-  const instr& /* instr */, frame* frame)
+  const Instr& /* instr */, Frame* frame)
 {
   NativeType value;
   types::native_type_handle hndl(value);
@@ -370,7 +370,7 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_conversion_instr(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   types::native_type_handle& oprd = frame->top_eval_stack();
 
@@ -383,7 +383,7 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_single_operand(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   types::native_type_handle& oprd = frame->top_eval_stack();
 
@@ -396,7 +396,7 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   types::native_type_handle& oprd = frame->top_eval_stack();
 
@@ -409,13 +409,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_two_operands(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 2)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -430,13 +430,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 2)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -451,13 +451,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_three_operands(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 3)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -473,13 +473,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 3)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -495,13 +495,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_four_operands(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 4)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -518,13 +518,13 @@ template<typename InterfaceFunc>
 /* static */
 void
 instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
-  frame* frame, InterfaceFunc interface_func)
+  Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
   if (eval_stack_size < 4)
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
@@ -539,8 +539,8 @@ instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
 
 void
 instr_handler_new::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto id = process.create_dyobj();
 
@@ -551,12 +551,12 @@ instr_handler_new::execute(
 
 void
 instr_handler_ldobj::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id id = 0;
 
@@ -566,7 +566,7 @@ instr_handler_ldobj::execute(
 
     if (!frame)
     {
-      THROW(name_not_found_error());
+      THROW(NameNotFoundError());
     }
   }
 
@@ -581,12 +581,12 @@ instr_handler_ldobj::execute(
 
 void
 instr_handler_stobj::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  frame* frame= *frame_ptr;
+  Frame* frame= *frame_ptr;
 
   dyobj::dyobj_id id = process.pop_stack();
 
@@ -600,13 +600,13 @@ instr_handler_stobj::execute(
 
 void
 instr_handler_stobjn::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
   size_t n = static_cast<size_t>(instr.oprd2);
 
-  frame& frame = process.top_nth_frame(n);
+  Frame& frame = process.top_nth_frame(n);
 
   dyobj::dyobj_id id = process.pop_stack();
 
@@ -620,8 +620,8 @@ instr_handler_stobjn::execute(
 
 void
 instr_handler_getattr::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -639,8 +639,8 @@ instr_handler_getattr::execute(
 
 void
 instr_handler_setattr::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -654,7 +654,7 @@ instr_handler_setattr::execute(
 
   if (obj.get_flag(dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
-    THROW(invalid_operation_error(
+    THROW(InvalidOperationError(
       str(format("cannot mutate immutable object 0x%08x") % target_id)));
   }
 
@@ -667,8 +667,8 @@ instr_handler_setattr::execute(
 
 void
 instr_handler_delattr::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::attr_key attr_key = static_cast<dyobj::attr_key>(instr.oprd1);
 
@@ -677,7 +677,7 @@ instr_handler_delattr::execute(
 
   if (obj.get_flag(dyobj::flags::DYOBJ_IS_IMMUTABLE))
   {
-    THROW(invalid_operation_error(
+    THROW(InvalidOperationError(
       str(format("cannot mutate immutable object 0x%08x") % id)));
   }
 
@@ -693,8 +693,8 @@ instr_handler_delattr::execute(
 
 void
 instr_handler_hasattr2::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -718,8 +718,8 @@ instr_handler_hasattr2::execute(
 
 void
 instr_handler_getattr2::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
@@ -739,8 +739,8 @@ instr_handler_getattr2::execute(
 
 void
 instr_handler_setattr2::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id attr_value = process.pop_stack();
 
@@ -765,8 +765,8 @@ instr_handler_setattr2::execute(
 
 void
 instr_handler_delattr2::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -786,8 +786,8 @@ instr_handler_delattr2::execute(
 
 void
 instr_handler_pop::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.pop_stack();
 }
@@ -796,12 +796,12 @@ instr_handler_pop::execute(
 
 void
 instr_handler_ldobj2::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id id = 0;
 
@@ -811,7 +811,7 @@ instr_handler_ldobj2::execute(
 
     if (!frame)
     {
-      THROW(name_not_found_error());
+      THROW(NameNotFoundError());
     }
   }
 
@@ -826,12 +826,12 @@ instr_handler_ldobj2::execute(
 
 void
 instr_handler_stobj2::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   dyobj::dyobj_id id = process.pop_stack();
 
   frame->set_invisible_var(key, id);
@@ -841,18 +841,18 @@ instr_handler_stobj2::execute(
 
 void
 instr_handler_delobj::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id id = frame->pop_visible_var(key);
   auto &obj = process.get_dyobj(id);
 
   if (obj.get_flag(dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
-    THROW(object_deletion_error(id));
+    THROW(ObjectDeletionError(id));
   }
 
   obj.manager().on_delete();
@@ -862,18 +862,18 @@ instr_handler_delobj::execute(
 
 void
 instr_handler_delobj2::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id id = frame->pop_invisible_var(key);
   auto &obj = process.get_dyobj(id);
 
   if (obj.get_flag(dyobj::flags::DYOBJ_IS_INDELIBLE))
   {
-    THROW(object_deletion_error(id));
+    THROW(ObjectDeletionError(id));
   }
 
   obj.manager().on_delete();
@@ -883,10 +883,10 @@ instr_handler_delobj2::execute(
 
 void
 instr_handler_gethndl::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
 
@@ -894,7 +894,7 @@ instr_handler_gethndl::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -906,10 +906,10 @@ instr_handler_gethndl::execute(
 
 void
 instr_handler_sethndl::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle hndl(std::move(frame->pop_eval_stack()));
 
@@ -934,10 +934,10 @@ instr_handler_sethndl::execute(
 
 void
 instr_handler_gethndl2::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
   auto id = frame->get_visible_var(key);
@@ -947,7 +947,7 @@ instr_handler_gethndl2::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -959,8 +959,8 @@ instr_handler_gethndl2::execute(
 
 void
 instr_handler_clrhndl::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -969,7 +969,7 @@ instr_handler_clrhndl::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_deletion_error());
+    THROW(NativeTypeHandleDeletionError());
   }
 
   process.erase_ntvhndl(ntvhndl_key);
@@ -980,8 +980,8 @@ instr_handler_clrhndl::execute(
 
 void
 instr_handler_cpyhndl::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id src_obj_id= process.pop_stack();
   dyobj::dyobj_id target_obj_id = process.pop_stack();
@@ -993,7 +993,7 @@ instr_handler_cpyhndl::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_deletion_error());
+    THROW(NativeTypeHandleDeletionError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -1086,8 +1086,8 @@ instr_handler_cpyhndl::execute(
 
 void
 instr_handler_cpyrepr::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id src_obj_id= process.pop_stack();
   dyobj::dyobj_id target_obj_id = process.pop_stack();
@@ -1099,7 +1099,7 @@ instr_handler_cpyrepr::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_deletion_error());
+    THROW(NativeTypeHandleDeletionError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -1114,10 +1114,10 @@ instr_handler_cpyrepr::execute(
 
 void
 instr_handler_istruthy::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id obj_id= process.top_stack();
   auto &obj = process.get_dyobj(obj_id);
@@ -1126,7 +1126,7 @@ instr_handler_istruthy::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -1141,15 +1141,15 @@ instr_handler_istruthy::execute(
 
 void
 instr_handler_objeq::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id1 = process.pop_stack();
   dyobj::dyobj_id id2 = process.pop_stack();
 
   types::native_type_handle hndl(types::boolean(id1 == id2));
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
 }
 
@@ -1157,15 +1157,15 @@ instr_handler_objeq::execute(
 
 void
 instr_handler_objneq::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id1 = process.pop_stack();
   dyobj::dyobj_id id2 = process.pop_stack();
 
   types::native_type_handle hndl(types::boolean(id1 != id2));
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
 }
 
@@ -1173,16 +1173,16 @@ instr_handler_objneq::execute(
 
 void
 instr_handler_setctx::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
 
-  frame* frame = *frame_ptr;
-  closure_ctx frame_cls = frame->closure_ctx();
+  Frame* frame = *frame_ptr;
+  ClosureCtx frame_cls = frame->closure_ctx();
 
-  closure_ctx ctx(
+  ClosureCtx ctx(
     frame_cls.compartment_id,
     static_cast<closure_id>(instr.oprd1));
 
@@ -1193,10 +1193,10 @@ instr_handler_setctx::execute(
 
 void
 instr_handler_cldobj::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle hndl = frame->pop_eval_stack();
 
@@ -1215,7 +1215,7 @@ instr_handler_cldobj::execute(
 
     if (!frame)
     {
-      THROW(name_not_found_error());
+      THROW(NameNotFoundError());
     }
   }
 
@@ -1230,8 +1230,8 @@ instr_handler_cldobj::execute(
 
 void
 instr_handler_setattrs::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id src_id = process.pop_stack();
   auto& src_obj = process.get_dyobj(src_id);
@@ -1239,7 +1239,7 @@ instr_handler_setattrs::execute(
   dyobj::dyobj_id id = process.top_stack();
   auto& obj = process.get_dyobj(id);
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle& hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
   types::native_type_handle res = hndl;
@@ -1253,12 +1253,12 @@ instr_handler_setattrs::execute(
 
   auto compartment_id = src_obj.closure_ctx().compartment_id;
 
-  compartment* compartment = nullptr;
+  Compartment* compartment = nullptr;
   process.get_compartment(compartment_id, &compartment);
 
   if (!compartment)
   {
-    THROW(compartment_not_found_error(compartment_id));
+    THROW(CompartmentNotFoundError(compartment_id));
   }
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
@@ -1301,12 +1301,12 @@ instr_handler_setattrs::execute(
 
 void
 instr_handler_rsetattrs::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key>(instr.oprd1);
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   dyobj::attr_key attr_key = get_attr_key(
     frame->compartment_ptr(), str_key);
 
@@ -1332,8 +1332,8 @@ instr_handler_rsetattrs::execute(
 
 void
 instr_handler_setattrs2::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto self_str_key = static_cast<encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
@@ -1371,11 +1371,11 @@ instr_handler_setattrs2::execute(
 
 void
 instr_handler_putobj::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::uint64 value(id);
   types::native_type_handle hndl(value);
@@ -1387,10 +1387,10 @@ instr_handler_putobj::execute(
 
 void
 instr_handler_getobj::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   auto hndl = frame->pop_eval_stack();
 
   dyobj::dyobj_id id = types::get_value_from_handle<
@@ -1403,8 +1403,8 @@ instr_handler_getobj::execute(
 
 void
 instr_handler_swap::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.swap_stack();
 }
@@ -1413,8 +1413,8 @@ instr_handler_swap::execute(
 
 void
 instr_handler_setflgc::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1435,8 +1435,8 @@ instr_handler_setflgc::execute(
 
 void
 instr_handler_setfldel::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1457,8 +1457,8 @@ instr_handler_setfldel::execute(
 
 void
 instr_handler_setflcall::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1479,8 +1479,8 @@ instr_handler_setflcall::execute(
 
 void
 instr_handler_setflmute::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -1501,33 +1501,33 @@ instr_handler_setflmute::execute(
 
 void
 instr_handler_pinvk::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto& obj = process.get_dyobj(id);
 
   if (obj.get_flag(dyobj::flags::DYOBJ_IS_NON_CALLABLE))
   {
-    THROW(invocation_error(id));
+    THROW(InvocationError(id));
   }
 
-  const closure_ctx& ctx = obj.closure_ctx();
+  const ClosureCtx& ctx = obj.closure_ctx();
 
   if (ctx.compartment_id == NONESET_COMPARTMENT_ID)
   {
-    THROW(compartment_not_found_error(ctx.compartment_id));
+    THROW(CompartmentNotFoundError(ctx.compartment_id));
   }
 
   if (ctx.closure_id == NONESET_CLOSURE_ID)
   {
-    THROW(closure_not_found_error(ctx.closure_id));
+    THROW(ClosureNotFoundError(ctx.closure_id));
   }
 
-  compartment* compartment = nullptr;
+  Compartment* compartment = nullptr;
   process.get_compartment(ctx.compartment_id, &compartment);
 
-  closure *closure = nullptr;
+  Closure *closure = nullptr;
   compartment->get_closure_by_id(ctx.closure_id, &closure);
 
 #if __DEBUG__
@@ -1543,14 +1543,14 @@ instr_handler_pinvk::execute(
 
 void
 instr_handler_invk::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
-  const closure_ctx& ctx = invk_ctx->closure_ctx();
-  compartment* compartment = invk_ctx->compartment_ptr();
-  closure* closure = invk_ctx->closure_ptr();
+  const ClosureCtx& ctx = invk_ctx->closure_ctx();
+  Compartment* compartment = invk_ctx->compartment_ptr();
+  Closure* closure = invk_ctx->closure_ptr();
 
   process.emplace_frame(ctx, compartment, closure, process.pc());
   process.top_frame(frame_ptr);
@@ -1562,16 +1562,16 @@ instr_handler_invk::execute(
 
 void
 instr_handler_rtrn::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   instr_addr return_addr = frame->return_addr();
 
   if (return_addr == NONESET_INSTR_ADDR)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
 
   process.pop_frame();
@@ -1594,8 +1594,8 @@ instr_handler_rtrn::execute(
 
 void
 instr_handler_jmp::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_addr starting_addr = process.pc();
   instr_addr relative_addr = static_cast<instr_addr>(instr.oprd1);
@@ -1604,11 +1604,11 @@ instr_handler_jmp::execute(
 
   if (addr == NONESET_INSTR_ADDR)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
   else if (addr < starting_addr)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
 
   process.set_pc(addr);
@@ -1618,10 +1618,10 @@ instr_handler_jmp::execute(
 
 void
 instr_handler_jmpif::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   instr_addr starting_addr = process.pc();
   instr_addr relative_addr = static_cast<instr_addr>(instr.oprd1);
@@ -1630,11 +1630,11 @@ instr_handler_jmpif::execute(
 
   if (addr == NONESET_INSTR_ADDR)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
   else if (addr < starting_addr)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
 
   types::native_type_handle& hndl = frame->top_eval_stack();
@@ -1651,10 +1651,10 @@ instr_handler_jmpif::execute(
 
 void
 instr_handler_jmpr::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   instr_addr starting_addr = frame->return_addr() + 1;
 
   instr_addr relative_addr =
@@ -1664,11 +1664,11 @@ instr_handler_jmpr::execute(
 
   if (addr == NONESET_INSTR_ADDR)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
   else if (addr < starting_addr)
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
 
   process.set_pc(addr);
@@ -1678,21 +1678,21 @@ instr_handler_jmpr::execute(
 
 void
 instr_handler_exc::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   bool search_catch_sites = static_cast<bool>(instr.oprd1);
 
   while (process.has_frame())
   {
-    frame& frame = process.top_frame();
+    Frame& frame = process.top_frame();
     dyobj::dyobj_id exc_obj_id = process.pop_stack();
     instr_addr starting_addr = frame.return_addr() + 1;
     uint32_t dst = 0;
 
     if (search_catch_sites)
     {
-      const closure *closure = frame.closure_ptr();
+      const Closure *closure = frame.closure_ptr();
 
 #if __DEBUG__
       ASSERT(closure);
@@ -1707,14 +1707,14 @@ instr_handler_exc::execute(
         auto itr = std::find_if(
           catch_sites.begin(),
           catch_sites.end(),
-          [&index](const catch_site& catch_site) -> bool {
+          [&index](const CatchSite& catch_site) -> bool {
             return index >= catch_site.from && index <= catch_site.to;
           }
         );
 
         if (itr != catch_sites.end())
         {
-          const catch_site& catch_site = *itr;
+          const CatchSite& catch_site = *itr;
 
           dst = catch_site.dst;
         }
@@ -1742,7 +1742,7 @@ instr_handler_exc::execute(
 
       if (process.has_frame())
       {
-        runtime::frame& previous_frame = process.top_frame();
+        runtime::Frame& previous_frame = process.top_frame();
         *frame_ptr = &previous_frame;
         *invk_ctx_ptr = &process.top_invocation_ctx();
 
@@ -1761,16 +1761,16 @@ instr_handler_exc::execute(
 
 void
 instr_handler_excobj::execute(
-  const instr& /* instr */, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  const frame* frame = *frame_ptr;
+  const Frame* frame = *frame_ptr;
 
   dyobj::dyobj_id exc_obj_id = frame->exc_obj();
 
   if (!exc_obj_id)
   {
-    THROW(invalid_operation_error("No exception raised"));
+    THROW(InvalidOperationError("No exception raised"));
   }
   else
   {
@@ -1782,10 +1782,10 @@ instr_handler_excobj::execute(
 
 void
 instr_handler_clrexc::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   frame->clear_exc_obj();
 }
 
@@ -1793,10 +1793,10 @@ instr_handler_clrexc::execute(
 
 void
 instr_handler_jmpexc::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  const frame* frame = *frame_ptr;
+  const Frame* frame = *frame_ptr;
   dyobj::dyobj_id exc_obj_id = frame->exc_obj();
 
   bool jump_on_exc = static_cast<bool>(instr.oprd2);
@@ -1813,11 +1813,11 @@ instr_handler_jmpexc::execute(
 
     if (addr == NONESET_INSTR_ADDR)
     {
-      THROW(invalid_instr_addr_error());
+      THROW(InvalidInstrAddrError());
     }
     else if (addr < starting_addr)
     {
-      THROW(invalid_instr_addr_error());
+      THROW(InvalidInstrAddrError());
     }
 
     process.set_pc(addr);
@@ -1828,8 +1828,8 @@ instr_handler_jmpexc::execute(
 
 void
 instr_handler_exit::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   raise(SIGTERM);
 }
@@ -1838,13 +1838,13 @@ instr_handler_exit::execute(
 
 void
 instr_handler_putarg::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   dyobj::dyobj_id id = process.pop_stack();
   auto& obj = process.get_dyobj(id);
   obj.manager().on_setattr();
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   invk_ctx->put_param(id);
 }
 
@@ -1852,13 +1852,13 @@ instr_handler_putarg::execute(
 
 void
 instr_handler_putkwarg::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
   dyobj::dyobj_id id = process.pop_stack();
 
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto& obj = process.get_dyobj(id);
   obj.manager().on_setattr();
   invk_ctx->put_param_value_pair(key, id);
@@ -1868,10 +1868,10 @@ instr_handler_putkwarg::execute(
 
 void
 instr_handler_putargs::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
 
@@ -1894,10 +1894,10 @@ instr_handler_putargs::execute(
 
 void
 instr_handler_putkwargs::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   dyobj::dyobj_id id = process.pop_stack();
   auto &obj = process.get_dyobj(id);
 
@@ -1923,10 +1923,10 @@ instr_handler_putkwargs::execute(
 
 void
 instr_handler_getarg::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   dyobj::dyobj_id id = invk_ctx->pop_param();
   process.push_stack(id);
 }
@@ -1935,17 +1935,17 @@ instr_handler_getarg::execute(
 
 void
 instr_handler_getkwarg::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
   if (invk_ctx->has_param_value_pair_with_key(key))
   {
     dyobj::dyobj_id id = invk_ctx->pop_param_value_pair(key);
 
-    frame* frame = *frame_ptr;
+    Frame* frame = *frame_ptr;
     frame->set_visible_var(key, id);
 
     instr_addr relative_addr = static_cast<instr_addr>(instr.oprd2);
@@ -1957,11 +1957,11 @@ instr_handler_getkwarg::execute(
 
 void
 instr_handler_getargs::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  frame* frame = *frame_ptr;
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  Frame* frame = *frame_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
   types::native_array array;
 
@@ -1980,11 +1980,11 @@ instr_handler_getargs::execute(
 
 void
 instr_handler_getkwargs::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  frame* frame = *frame_ptr;
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  Frame* frame = *frame_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
   types::native_map map;
 
@@ -2008,11 +2008,11 @@ instr_handler_getkwargs::execute(
 
 void
 instr_handler_hasargs::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** invk_ctx_ptr)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
-  frame* frame = *frame_ptr;
-  invocation_ctx* invk_ctx = *invk_ctx_ptr;
+  Frame* frame = *frame_ptr;
+  InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
   const bool result = invk_ctx->has_params();
 
@@ -2025,8 +2025,8 @@ instr_handler_hasargs::execute(
 
 void
 instr_handler_gc::execute(
-  const instr& /* instr */, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.do_gc();
 }
@@ -2035,11 +2035,11 @@ instr_handler_gc::execute(
 
 void
 instr_handler_debug::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
-  process_printer printer(process, opts);
+  ProcessPrinter printer(process, opts);
   printer(std::cout) << std::endl;
 }
 
@@ -2047,13 +2047,13 @@ instr_handler_debug::execute(
 
 void
 instr_handler_dbgfrm::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto& frame = *frame_ptr;
 
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
-  frame_printer printer(*frame, opts);
+  FramePrinter printer(*frame, opts);
   printer(std::cout) << std::endl;
 }
 
@@ -2061,11 +2061,11 @@ instr_handler_dbgfrm::execute(
 
 void
 instr_handler_dbgmem::execute(
-  const instr& instr, process& /* process */,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
-  dbgmem_printer printer(opts);
+  DbgMemPrinter printer(opts);
   printer(std::cout) << std::endl;
 }
 
@@ -2073,8 +2073,8 @@ instr_handler_dbgmem::execute(
 
 void
 instr_handler_print::execute(
-  const instr& instr, process& process,
-  frame** /* frame_ptr */, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::dyobj_id id = process.top_stack();
   auto &obj = process.get_dyobj(id);
@@ -2083,7 +2083,7 @@ instr_handler_print::execute(
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   types::native_type_handle& hndl = process.get_ntvhndl(ntvhndl_key);
@@ -2105,10 +2105,10 @@ instr_handler_print::execute(
 
 void
 instr_handler_swap2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
   frame->swap_eval_stack();
 }
 
@@ -2116,8 +2116,8 @@ instr_handler_swap2::execute(
 
 void
 instr_handler_pos::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2129,8 +2129,8 @@ instr_handler_pos::execute(
 
 void
 instr_handler_neg::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2142,8 +2142,8 @@ instr_handler_neg::execute(
 
 void
 instr_handler_inc::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2155,8 +2155,8 @@ instr_handler_inc::execute(
 
 void
 instr_handler_dec::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2168,8 +2168,8 @@ instr_handler_dec::execute(
 
 void
 instr_handler_abs::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2181,8 +2181,8 @@ instr_handler_abs::execute(
 
 void
 instr_handler_sqrt::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2194,8 +2194,8 @@ instr_handler_sqrt::execute(
 
 void
 instr_handler_add::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2207,8 +2207,8 @@ instr_handler_add::execute(
 
 void
 instr_handler_sub::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2220,8 +2220,8 @@ instr_handler_sub::execute(
 
 void
 instr_handler_mul::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2233,8 +2233,8 @@ instr_handler_mul::execute(
 
 void
 instr_handler_div::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2246,8 +2246,8 @@ instr_handler_div::execute(
 
 void
 instr_handler_mod::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2259,8 +2259,8 @@ instr_handler_mod::execute(
 
 void
 instr_handler_pow::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2272,8 +2272,8 @@ instr_handler_pow::execute(
 
 void
 instr_handler_bnot::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2285,8 +2285,8 @@ instr_handler_bnot::execute(
 
 void
 instr_handler_band::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2298,8 +2298,8 @@ instr_handler_band::execute(
 
 void
 instr_handler_bor::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2311,8 +2311,8 @@ instr_handler_bor::execute(
 
 void
 instr_handler_bxor::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2324,8 +2324,8 @@ instr_handler_bxor::execute(
 
 void
 instr_handler_bls::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2337,8 +2337,8 @@ instr_handler_bls::execute(
 
 void
 instr_handler_brs::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2350,8 +2350,8 @@ instr_handler_brs::execute(
 
 void
 instr_handler_eq::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2363,8 +2363,8 @@ instr_handler_eq::execute(
 
 void
 instr_handler_neq::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2376,8 +2376,8 @@ instr_handler_neq::execute(
 
 void
 instr_handler_gt::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2389,8 +2389,8 @@ instr_handler_gt::execute(
 
 void
 instr_handler_lt::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2402,8 +2402,8 @@ instr_handler_lt::execute(
 
 void
 instr_handler_gte::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2415,8 +2415,8 @@ instr_handler_gte::execute(
 
 void
 instr_handler_lte::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2428,8 +2428,8 @@ instr_handler_lte::execute(
 
 void
 instr_handler_lnot::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_unary_operator_instr(
     *frame_ptr,
@@ -2441,8 +2441,8 @@ instr_handler_lnot::execute(
 
 void
 instr_handler_land::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2454,8 +2454,8 @@ instr_handler_land::execute(
 
 void
 instr_handler_lor::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2467,8 +2467,8 @@ instr_handler_lor::execute(
 
 void
 instr_handler_cmp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_binary_operator_instr(
     *frame_ptr,
@@ -2480,8 +2480,8 @@ instr_handler_cmp::execute(
 
 void
 instr_handler_int8::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::int8>(
     instr,
@@ -2493,8 +2493,8 @@ instr_handler_int8::execute(
 
 void
 instr_handler_uint8::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::uint8>(
     instr,
@@ -2506,8 +2506,8 @@ instr_handler_uint8::execute(
 
 void
 instr_handler_int16::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::int16>(
     instr,
@@ -2519,8 +2519,8 @@ instr_handler_int16::execute(
 
 void
 instr_handler_uint16::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::uint16>(
     instr,
@@ -2532,8 +2532,8 @@ instr_handler_uint16::execute(
 
 void
 instr_handler_int32::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::int32>(
     instr,
@@ -2545,8 +2545,8 @@ instr_handler_int32::execute(
 
 void
 instr_handler_uint32::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::uint32>(
     instr,
@@ -2558,8 +2558,8 @@ instr_handler_uint32::execute(
 
 void
 instr_handler_int64::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::int64>(
     instr,
@@ -2571,8 +2571,8 @@ instr_handler_int64::execute(
 
 void
 instr_handler_uint64::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::uint64>(
     instr,
@@ -2584,8 +2584,8 @@ instr_handler_uint64::execute(
 
 void
 instr_handler_bool::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_integer_type_creation_instr<types::boolean>(
     instr,
@@ -2597,8 +2597,8 @@ instr_handler_bool::execute(
 
 void
 instr_handler_dec1::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_floating_type_creation_instr<types::decimal>(
     instr,
@@ -2610,8 +2610,8 @@ instr_handler_dec1::execute(
 
 void
 instr_handler_dec2::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_floating_type_creation_instr<types::decimal2>(
     instr,
@@ -2623,11 +2623,11 @@ instr_handler_dec2::execute(
 
 void
 instr_handler_str::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   // String type is different than other complex types.
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   std::string str;
 
@@ -2635,7 +2635,7 @@ instr_handler_str::execute(
   {
     auto encoding_key = static_cast<runtime::encoding_key>(instr.oprd1);
 
-    const compartment* compartment = frame->compartment_ptr();
+    const Compartment* compartment = frame->compartment_ptr();
 
     str = compartment->get_encoding_string(encoding_key);
   }
@@ -2649,8 +2649,8 @@ instr_handler_str::execute(
 
 void
 instr_handler_ary::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_complex_type_creation_instr<types::array>(
     instr,
@@ -2662,8 +2662,8 @@ instr_handler_ary::execute(
 
 void
 instr_handler_map::execute(
-  const instr& instr, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_complex_type_creation_instr<types::map>(
     instr,
@@ -2675,8 +2675,8 @@ instr_handler_map::execute(
 
 void
 instr_handler_2int8::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2688,8 +2688,8 @@ instr_handler_2int8::execute(
 
 void
 instr_handler_2uint8::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2701,8 +2701,8 @@ instr_handler_2uint8::execute(
 
 void
 instr_handler_2int16::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2714,8 +2714,8 @@ instr_handler_2int16::execute(
 
 void
 instr_handler_2uint16::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2727,8 +2727,8 @@ instr_handler_2uint16::execute(
 
 void
 instr_handler_2int32::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2740,8 +2740,8 @@ instr_handler_2int32::execute(
 
 void
 instr_handler_2uint32::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2753,8 +2753,8 @@ instr_handler_2uint32::execute(
 
 void
 instr_handler_2int64::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2766,8 +2766,8 @@ instr_handler_2int64::execute(
 
 void
 instr_handler_2uint64::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2779,8 +2779,8 @@ instr_handler_2uint64::execute(
 
 void
 instr_handler_2bool::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2792,8 +2792,8 @@ instr_handler_2bool::execute(
 
 void
 instr_handler_2dec1::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2805,8 +2805,8 @@ instr_handler_2dec1::execute(
 
 void
 instr_handler_2dec2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2818,8 +2818,8 @@ instr_handler_2dec2::execute(
 
 void
 instr_handler_2str::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2831,8 +2831,8 @@ instr_handler_2str::execute(
 
 void
 instr_handler_2ary::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2844,8 +2844,8 @@ instr_handler_2ary::execute(
 
 void
 instr_handler_2map::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_conversion_instr(
     *frame_ptr,
@@ -2857,10 +2857,10 @@ instr_handler_2map::execute(
 
 void
 instr_handler_truthy::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle& oprd = frame->top_eval_stack();
   types::native_type_handle result =
@@ -2873,10 +2873,10 @@ instr_handler_truthy::execute(
 
 void
 instr_handler_repr::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle& oprd = frame->top_eval_stack();
   types::native_type_handle result =
@@ -2889,10 +2889,10 @@ instr_handler_repr::execute(
 
 void
 instr_handler_hash::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle& oprd = frame->top_eval_stack();
   types::native_type_handle result =
@@ -2905,8 +2905,8 @@ instr_handler_hash::execute(
 
 void
 instr_handler_slice::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -2918,8 +2918,8 @@ instr_handler_slice::execute(
 
 void
 instr_handler_stride::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2931,8 +2931,8 @@ instr_handler_stride::execute(
 
 void
 instr_handler_reverse::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -2944,8 +2944,8 @@ instr_handler_reverse::execute(
 
 void
 instr_handler_round::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2957,8 +2957,8 @@ instr_handler_round::execute(
 
 void
 instr_handler_strlen::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -2970,8 +2970,8 @@ instr_handler_strlen::execute(
 
 void
 instr_handler_strat::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -2983,8 +2983,8 @@ instr_handler_strat::execute(
 
 void
 instr_handler_strclr::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -2996,8 +2996,8 @@ instr_handler_strclr::execute(
 
 void
 instr_handler_strapd::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3009,8 +3009,8 @@ instr_handler_strapd::execute(
 
 void
 instr_handler_strpsh::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3022,8 +3022,8 @@ instr_handler_strpsh::execute(
 
 void
 instr_handler_strist::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3035,8 +3035,8 @@ instr_handler_strist::execute(
 
 void
 instr_handler_strist2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3048,8 +3048,8 @@ instr_handler_strist2::execute(
 
 void
 instr_handler_strers::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3061,8 +3061,8 @@ instr_handler_strers::execute(
 
 void
 instr_handler_strers2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3074,8 +3074,8 @@ instr_handler_strers2::execute(
 
 void
 instr_handler_strrplc::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
     *frame_ptr,
@@ -3087,8 +3087,8 @@ instr_handler_strrplc::execute(
 
 void
 instr_handler_strswp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3100,8 +3100,8 @@ instr_handler_strswp::execute(
 
 void
 instr_handler_strsub::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3113,8 +3113,8 @@ instr_handler_strsub::execute(
 
 void
 instr_handler_strsub2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3126,8 +3126,8 @@ instr_handler_strsub2::execute(
 
 void
 instr_handler_strfnd::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3139,8 +3139,8 @@ instr_handler_strfnd::execute(
 
 void
 instr_handler_strfnd2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3152,8 +3152,8 @@ instr_handler_strfnd2::execute(
 
 void
 instr_handler_strrfnd::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3165,8 +3165,8 @@ instr_handler_strrfnd::execute(
 
 void
 instr_handler_strrfnd2::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands(
     *frame_ptr,
@@ -3178,8 +3178,8 @@ instr_handler_strrfnd2::execute(
 
 void
 instr_handler_arylen::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3191,8 +3191,8 @@ instr_handler_arylen::execute(
 
 void
 instr_handler_aryemp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3204,8 +3204,8 @@ instr_handler_aryemp::execute(
 
 void
 instr_handler_aryat::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3217,8 +3217,8 @@ instr_handler_aryat::execute(
 
 void
 instr_handler_aryfrt::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3230,8 +3230,8 @@ instr_handler_aryfrt::execute(
 
 void
 instr_handler_arybak::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3243,8 +3243,8 @@ instr_handler_arybak::execute(
 
 void
 instr_handler_aryput::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3256,8 +3256,8 @@ instr_handler_aryput::execute(
 
 void
 instr_handler_aryapnd::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3269,8 +3269,8 @@ instr_handler_aryapnd::execute(
 
 void
 instr_handler_aryers::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3282,8 +3282,8 @@ instr_handler_aryers::execute(
 
 void
 instr_handler_arypop::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3295,8 +3295,8 @@ instr_handler_arypop::execute(
 
 void
 instr_handler_aryswp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3308,8 +3308,8 @@ instr_handler_aryswp::execute(
 
 void
 instr_handler_aryclr::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -3321,8 +3321,8 @@ instr_handler_aryclr::execute(
 
 void
 instr_handler_arymrg::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3334,8 +3334,8 @@ instr_handler_arymrg::execute(
 
 void
 instr_handler_maplen::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3347,8 +3347,8 @@ instr_handler_maplen::execute(
 
 void
 instr_handler_mapemp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3360,8 +3360,8 @@ instr_handler_mapemp::execute(
 
 void
 instr_handler_mapat::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3373,8 +3373,8 @@ instr_handler_mapat::execute(
 
 void
 instr_handler_mapfind::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,
@@ -3386,8 +3386,8 @@ instr_handler_mapfind::execute(
 
 void
 instr_handler_mapput::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
     *frame_ptr,
@@ -3399,15 +3399,15 @@ instr_handler_mapput::execute(
 
 void
 instr_handler_mapset::execute(
-  const instr& instr, process& process,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& instr, Process& process,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   types::native_map_key_type key = static_cast<
     types::native_map_key_type>(instr.oprd1);
 
   dyobj::dyobj_id id = process.top_stack();
 
-  frame* frame = *frame_ptr;
+  Frame* frame = *frame_ptr;
 
   types::native_type_handle& res = frame->top_eval_stack();
 
@@ -3423,8 +3423,8 @@ instr_handler_mapset::execute(
 
 void
 instr_handler_mapers::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3436,8 +3436,8 @@ instr_handler_mapers::execute(
 
 void
 instr_handler_mapclr::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
     *frame_ptr,
@@ -3449,8 +3449,8 @@ instr_handler_mapclr::execute(
 
 void
 instr_handler_mapswp::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
     *frame_ptr,
@@ -3462,8 +3462,8 @@ instr_handler_mapswp::execute(
 
 void
 instr_handler_mapkeys::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3475,8 +3475,8 @@ instr_handler_mapkeys::execute(
 
 void
 instr_handler_mapvals::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_single_operand(
     *frame_ptr,
@@ -3488,8 +3488,8 @@ instr_handler_mapvals::execute(
 
 void
 instr_handler_mapmrg::execute(
-  const instr& /* instr */, process& /* process */,
-  frame** frame_ptr, invocation_ctx** /* invk_ctx_ptr */)
+  const Instr& /* instr */, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_handler::execute_native_type_complex_instr_with_two_operands(
     *frame_ptr,

@@ -35,7 +35,7 @@ namespace {
 
 // -----------------------------------------------------------------------------
 
-typedef corevm::runtime::native_types_pool _MyType;
+typedef corevm::runtime::NativeTypesPool _MyType;
 
 // -----------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-native_types_pool::native_types_pool()
+NativeTypesPool::NativeTypesPool()
   :
   m_container(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE)
 {
@@ -67,7 +67,7 @@ native_types_pool::native_types_pool()
 
 // -----------------------------------------------------------------------------
 
-native_types_pool::native_types_pool(uint64_t total_size)
+NativeTypesPool::NativeTypesPool(uint64_t total_size)
   :
   m_container(total_size)
 {
@@ -77,7 +77,7 @@ native_types_pool::native_types_pool(uint64_t total_size)
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-native_types_pool::size() const
+NativeTypesPool::size() const
 {
   return m_container.size();
 }
@@ -85,7 +85,7 @@ native_types_pool::size() const
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-native_types_pool::max_size() const
+NativeTypesPool::max_size() const
 {
   return m_container.max_size();
 }
@@ -93,7 +93,7 @@ native_types_pool::max_size() const
 // -----------------------------------------------------------------------------
 
 _MyType::size_type
-native_types_pool::total_size() const
+NativeTypesPool::total_size() const
 {
   return m_container.total_size();
 }
@@ -101,8 +101,8 @@ native_types_pool::total_size() const
 // -----------------------------------------------------------------------------
 
 _MyType::reference
-native_types_pool::at(const dyobj::ntvhndl_key& key)
-  throw(native_type_handle_not_found_error)
+NativeTypesPool::at(const dyobj::ntvhndl_key& key)
+  throw(NativeTypeHandleNotFoundError)
 {
   void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
@@ -111,7 +111,7 @@ native_types_pool::at(const dyobj::ntvhndl_key& key)
 
   if (ptr == nullptr)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   return *ptr;
@@ -120,14 +120,14 @@ native_types_pool::at(const dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-native_types_pool::create()
-  throw(native_type_handle_insertion_error)
+NativeTypesPool::create()
+  throw(NativeTypeHandleInsertionError)
 {
   auto ptr = m_container.create();
 
   if (ptr == nullptr)
   {
-    THROW(native_type_handle_insertion_error(
+    THROW(NativeTypeHandleInsertionError(
       "insufficient memory to store native type handle"));
   }
 
@@ -137,14 +137,14 @@ native_types_pool::create()
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-native_types_pool::create(types::native_type_handle& hndl)
-  throw(native_type_handle_insertion_error)
+NativeTypesPool::create(types::native_type_handle& hndl)
+  throw(NativeTypeHandleInsertionError)
 {
   auto ptr = m_container.create(hndl);
 
   if (ptr == nullptr)
   {
-    THROW(native_type_handle_insertion_error(
+    THROW(NativeTypeHandleInsertionError(
       "insufficient memory to store native type handle"));
   }
 
@@ -154,8 +154,8 @@ native_types_pool::create(types::native_type_handle& hndl)
 // -----------------------------------------------------------------------------
 
 void
-native_types_pool::erase(const dyobj::ntvhndl_key& key)
-  throw(native_type_handle_not_found_error)
+NativeTypesPool::erase(const dyobj::ntvhndl_key& key)
+  throw(NativeTypeHandleNotFoundError)
 {
   void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
@@ -164,7 +164,7 @@ native_types_pool::erase(const dyobj::ntvhndl_key& key)
 
   if (ptr == nullptr)
   {
-    THROW(native_type_handle_not_found_error());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   m_container.destroy(ptr);
@@ -173,7 +173,7 @@ native_types_pool::erase(const dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 std::ostream&
-operator<<(std::ostream& ost, const native_types_pool& pool)
+operator<<(std::ostream& ost, const NativeTypesPool& pool)
 {
   ost << "Native types pool: ";
   ost << pool.size() << "/" << pool.max_size();

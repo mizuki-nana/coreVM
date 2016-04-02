@@ -127,15 +127,15 @@ extract_metadata::extract_instr_info() const
 
   ss << "{" << std::endl;
 
-  for (size_t i = 0; i < corevm::runtime::instr_enum::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
     const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
-    const corevm::runtime::instr_info& info = corevm::runtime::instr_set_info::instr_infos[code];
+    const corevm::runtime::InstrInfo& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
     ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
       << DOUBLE_QUOTE << ": " << code;
 
-    if (i + 1 != corevm::runtime::instr_enum::INSTR_CODE_MAX)
+    if (i + 1 != corevm::runtime::InstrEnum::INSTR_CODE_MAX)
     {
       ss << ",";
     }

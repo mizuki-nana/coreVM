@@ -37,57 +37,57 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-// Forward declaration of `process`.
-class process;
+// Forward declaration of `Process`.
+class Process;
 
 // -----------------------------------------------------------------------------
 
-class gc_rule
+class GCRule
 {
 public:
-  virtual bool should_gc(const process& process) const = 0;
+  virtual bool should_gc(const Process& process) const = 0;
 
-  virtual ~gc_rule();
+  virtual ~GCRule();
 };
 
 // -----------------------------------------------------------------------------
 
-class gc_rule_always : public gc_rule
+class GCRuleAlways : public GCRule
 {
 public:
-  virtual bool should_gc(const process& process) const;
+  virtual bool should_gc(const Process& process) const;
 };
 
 // -----------------------------------------------------------------------------
 
-class gc_rule_by_heap_size : public gc_rule
+class GCRuleByHeapSize : public GCRule
 {
 public:
-  virtual bool should_gc(const process& process) const;
+  virtual bool should_gc(const Process& process) const;
 
   static const double DEFAULT_CUTOFF;
 };
 
 // -----------------------------------------------------------------------------
 
-class gc_rule_by_ntvhndl_pool_size : public gc_rule
+class GCRuleByNtvhndlPoolSize : public GCRule
 {
 public:
-  virtual bool should_gc(const process& process) const;
+  virtual bool should_gc(const Process& process) const;
 
   static const double DEFAULT_CUTOFF;
 };
 
 // -----------------------------------------------------------------------------
 
-typedef std::shared_ptr<gc_rule> gc_rule_ptr;
+typedef std::shared_ptr<GCRule> GCRulePtr;
 
 // -----------------------------------------------------------------------------
 
-class gc_rule_meta
+class GCRuleMeta
 {
 public:
-  enum gc_bitfields : uint8_t
+  enum GCBitfields : uint8_t
   {
     GC_ALWAYS,
     GC_BY_HEAP_SIZE,
@@ -95,12 +95,12 @@ public:
     GC_RULE_MAX
   };
 
-  static const gc_rule_ptr get_gc_rule(gc_bitfields bit);
+  static const GCRulePtr get_gc_rule(GCBitfields bit);
 
   static const uint8_t DEFAULT_GC_FLAGS;
 
 private:
-  static const gc_rule_ptr gc_rules[GC_RULE_MAX];
+  static const GCRulePtr gc_rules[GC_RULE_MAX];
 };
 
 // -----------------------------------------------------------------------------

@@ -31,10 +31,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void BenchmarkPushEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame(ctx, NULL, NULL);
+  corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::types::native_type_handle hndl =
     corevm::types::native_string("hello world");
@@ -50,10 +50,10 @@ void BenchmarkPushEvalStack(benchmark::State& state)
 static
 void BenchmarkPushEvalStack2(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame(ctx, NULL, NULL);
+  corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::types::native_type_handle hndl =
     corevm::types::native_string("hello world");
@@ -69,10 +69,10 @@ void BenchmarkPushEvalStack2(benchmark::State& state)
 static
 void BenchmarkPopEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame(ctx, NULL, NULL);
+  corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::types::native_type_handle hndl =
     corevm::types::native_string("hello world");
@@ -93,10 +93,10 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 static
 void BenchmarkGetVisibleVariable1(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame(ctx, NULL, NULL);
+  corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::runtime::variable_key key = 1;
   corevm::dyobj::dyobj_id id = 2;
@@ -122,12 +122,12 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
    * NOTE: based on the results observed, it shows that the run time
    * grows linearly as the number of frames have to traverse grows.
    */
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame1(ctx, NULL, NULL);
-  corevm::runtime::frame frame2(ctx, NULL, NULL);
-  corevm::runtime::frame frame3(ctx, NULL, NULL);
+  corevm::runtime::Frame frame1(ctx, NULL, NULL);
+  corevm::runtime::Frame frame2(ctx, NULL, NULL);
+  corevm::runtime::Frame frame3(ctx, NULL, NULL);
 
   frame1.set_parent(&frame2);
   frame2.set_parent(&frame3);
@@ -141,7 +141,7 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::runtime::frame* frame = &frame1;
+    corevm::runtime::Frame* frame = &frame1;
 
     while (!frame->has_visible_var(key))
     {
@@ -157,10 +157,10 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
 static
 void BenchmarkSwapEvalStack(benchmark::State& state)
 {
-  corevm::runtime::closure_ctx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
+  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
 
-  corevm::runtime::frame frame(ctx, NULL, NULL);
+  corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::types::native_type_handle hndl1((corevm::types::native_string("Hello world I'm FAT")));
   corevm::types::native_type_handle hndl2((corevm::types::native_map({

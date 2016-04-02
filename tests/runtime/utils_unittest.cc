@@ -33,7 +33,7 @@ class DummyDynamicObjectManager {};
 
 // -----------------------------------------------------------------------------
 
-class runtime_utils_unittest : public ::testing::Test
+class RuntimeUtilsUnitTest : public ::testing::Test
 {
 public:
   using DynamicObjectType = typename corevm::dyobj::DynamicObject<DummyDynamicObjectManager>;
@@ -45,13 +45,13 @@ static const std::string DUMMY_PATH("");
 
 // -----------------------------------------------------------------------------
 
-TEST_F(runtime_utils_unittest, TestGetAttrKey)
+TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey)
 {
-  corevm::runtime::compartment compartment(DUMMY_PATH);
+  corevm::runtime::Compartment compartment(DUMMY_PATH);
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::encoding_map encoding_map;
+  corevm::runtime::EncodingMap encoding_map;
   encoding_map.emplace_back(attr_name);
 
   compartment.set_encoding_map(std::move(encoding_map));
@@ -66,13 +66,13 @@ TEST_F(runtime_utils_unittest, TestGetAttrKey)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(runtime_utils_unittest, TestGetAttrKey2)
+TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey2)
 {
-  corevm::runtime::compartment compartment(DUMMY_PATH);
+  corevm::runtime::Compartment compartment(DUMMY_PATH);
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::encoding_map encoding_map;
+  corevm::runtime::EncodingMap encoding_map;
   encoding_map.emplace_back(attr_name);
 
   compartment.set_encoding_map(std::move(encoding_map));
@@ -90,7 +90,7 @@ TEST_F(runtime_utils_unittest, TestGetAttrKey2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(runtime_utils_unittest, TestGetattr)
+TEST_F(RuntimeUtilsUnitTest, TestGetattr)
 {
   const std::string attr_name("__str__");
 
@@ -109,13 +109,13 @@ TEST_F(runtime_utils_unittest, TestGetattr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(runtime_utils_unittest, TestGetattr2)
+TEST_F(RuntimeUtilsUnitTest, TestGetattr2)
 {
-  corevm::runtime::compartment compartment(DUMMY_PATH);
+  corevm::runtime::Compartment compartment(DUMMY_PATH);
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::encoding_map encoding_map;
+  corevm::runtime::EncodingMap encoding_map;
   encoding_map.emplace_back(attr_name);
 
   compartment.set_encoding_map(std::move(encoding_map));

@@ -91,13 +91,13 @@ get_v0_1_instr_code_schema_definition()
   std::stringstream ss;
   ss << "[";
 
-  for (size_t i = 0; i < runtime::instr_enum::INSTR_CODE_MAX; ++i)
+  for (size_t i = 0; i < runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
     const runtime::instr_code code = static_cast<runtime::instr_code>(i);
 
     ss << code;
 
-    if (i + 1 != runtime::instr_enum::INSTR_CODE_MAX)
+    if (i + 1 != runtime::InstrEnum::INSTR_CODE_MAX)
     {
       ss << ",";
     }

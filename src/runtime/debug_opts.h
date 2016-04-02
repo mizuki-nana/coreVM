@@ -32,7 +32,7 @@ namespace corevm {
 namespace runtime {
 
 
-enum debug_options : uint32_t
+enum DebugOptions : uint32_t
 {
   OPT_SHOW_CANONICAL_FORM = (1 << 0)
 };

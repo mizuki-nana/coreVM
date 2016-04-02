@@ -41,12 +41,12 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `closure` */
-struct closure;
+/** Forward declaration of `Closure` */
+struct Closure;
 
 
-/** Forward declaration of `compartment` */
-class compartment;
+/** Forward declaration of `Compartment` */
+class Compartment;
 
 
 /**
@@ -60,17 +60,17 @@ class compartment;
  * - A pointer to the associated compartment.
  * - A pointer to the associated closure object.
  */
-class frame
+class Frame
 {
 public:
-  frame(const closure_ctx&,
-    compartment*, closure*);
+  Frame(const ClosureCtx&,
+    Compartment*, Closure*);
 
-  frame(const closure_ctx&,
-    compartment*,
-    closure*, instr_addr);
+  Frame(const ClosureCtx&,
+    Compartment*,
+    Closure*, instr_addr);
 
-  ~frame();
+  ~Frame();
 
   size_t eval_stack_size() const;
 
@@ -83,10 +83,10 @@ public:
   void push_eval_stack(types::native_type_handle&&);
 
   types::native_type_handle pop_eval_stack()
-    throw(evaluation_stack_empty_error);
+    throw(EvaluationStackEmptyError);
 
   types::native_type_handle& top_eval_stack()
-    throw(evaluation_stack_empty_error);
+    throw(EvaluationStackEmptyError);
 
   void swap_eval_stack();
 
@@ -99,13 +99,13 @@ public:
   bool has_visible_var(const variable_key) const;
 
   dyobj::dyobj_id get_visible_var(const variable_key)
-    const throw(name_not_found_error);
+    const throw(NameNotFoundError);
 
   bool get_visible_var_fast(
     const variable_key, dyobj::dyobj_id*) const;
 
   dyobj::dyobj_id pop_visible_var(const variable_key)
-    throw(name_not_found_error);
+    throw(NameNotFoundError);
 
   void set_visible_var(variable_key, dyobj::dyobj_id);
 
@@ -114,13 +114,13 @@ public:
   bool has_invisible_var(const variable_key) const;
 
   dyobj::dyobj_id get_invisible_var(const variable_key)
-    const throw(name_not_found_error);
+    const throw(NameNotFoundError);
 
   bool get_invisible_var_fast(
     const variable_key, dyobj::dyobj_id*) const;
 
   dyobj::dyobj_id pop_invisible_var(const variable_key)
-    throw(name_not_found_error);
+    throw(NameNotFoundError);
 
   void set_invisible_var(variable_key, dyobj::dyobj_id);
 
@@ -132,18 +132,18 @@ public:
 
   std::list<dyobj::dyobj_id> get_invisible_objs() const;
 
-  closure_ctx closure_ctx() const;
+  ClosureCtx closure_ctx() const;
 
-  compartment* compartment_ptr() const;
+  Compartment* compartment_ptr() const;
 
-  closure* closure_ptr() const;
+  Closure* closure_ptr() const;
 
-  frame* parent() const;
+  Frame* parent() const;
 
   /**
    * Sets the optional parent of the frame in the process.
    */
-  void set_parent(frame*);
+  void set_parent(Frame*);
 
   dyobj::dyobj_id exc_obj() const;
 
@@ -152,10 +152,10 @@ public:
   void clear_exc_obj();
 
 protected:
-  const runtime::closure_ctx m_closure_ctx;
-  compartment* m_compartment_ptr;
-  closure* m_closure_ptr;
-  frame* m_parent;
+  const runtime::ClosureCtx m_closure_ctx;
+  Compartment* m_compartment_ptr;
+  Closure* m_closure_ptr;
+  Frame* m_parent;
   instr_addr m_return_addr;
   std::unordered_map<variable_key, dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<variable_key, dyobj::dyobj_id> m_invisible_vars;

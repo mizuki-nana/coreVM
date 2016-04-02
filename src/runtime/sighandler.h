@@ -32,17 +32,17 @@ namespace corevm {
 namespace runtime {
 
 
-/* Forward declaration of `process` */
-class process;
+/* Forward declaration of `Process` */
+class Process;
 
 // -----------------------------------------------------------------------------
 
-class sighandler
+class SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&) = 0;
+  virtual void handle_signal(sig_atomic_t, Process&) = 0;
 
-  virtual ~sighandler();
+  virtual ~SigHandler();
 };
 
 // -----------------------------------------------------------------------------
@@ -53,34 +53,34 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGFPE : public sighandler
+class SigHandler_SIGFPE : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGILL : public sighandler
+class SigHandler_SIGILL : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGSEGV : public sighandler
+class SigHandler_SIGSEGV : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGBUS : public sighandler
+class SigHandler_SIGBUS : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -91,34 +91,34 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGABRT : public sighandler
+class SigHandler_SIGABRT : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGINT : public sighandler
+class SigHandler_SIGINT : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGTERM : public sighandler
+class SigHandler_SIGTERM : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGQUIT : public sighandler
+class SigHandler_SIGQUIT : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -129,26 +129,26 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGALRM : public sighandler
+class SigHandler_SIGALRM : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGVTALRM : public sighandler
+class SigHandler_SIGVTALRM : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGPROF : public sighandler
+class SigHandler_SIGPROF : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -159,34 +159,34 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGPIPE : public sighandler
+class SigHandler_SIGPIPE : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGLOST : public sighandler
+class SigHandler_SIGLOST : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGXCPU : public sighandler
+class SigHandler_SIGXCPU : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGXFSZ : public sighandler
+class SigHandler_SIGXFSZ : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
@@ -197,18 +197,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGIO : public sighandler
+class SigHandler_SIGIO : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------
 
-class sighandler_SIGURG : public sighandler
+class SigHandler_SIGURG : public SigHandler
 {
 public:
-  virtual void handle_signal(sig_atomic_t, process&);
+  virtual void handle_signal(sig_atomic_t, Process&);
 };
 
 // -----------------------------------------------------------------------------

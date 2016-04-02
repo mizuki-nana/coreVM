@@ -28,19 +28,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class compartment_unittest : public ::testing::Test {};
+class CompartmentUnitTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(compartment_unittest, TestGetClosureByID)
+TEST_F(CompartmentUnitTest, TestGetClosureByID)
 {
-  corevm::runtime::compartment compartment("./example.core");
+  corevm::runtime::Compartment compartment("./example.core");
 
   corevm::runtime::vector vector;
   corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
+  corevm::runtime::CatchSiteList catch_sites;
 
-  corevm::runtime::closure closure(
+  corevm::runtime::Closure closure(
     /* name */ "__main__",
     /* id */ 0,
     /* parent_id */ corevm::runtime::NONESET_CLOSURE_ID,
@@ -48,13 +48,13 @@ TEST_F(compartment_unittest, TestGetClosureByID)
     /* locs */ locs,
     /* catch_sites */ catch_sites);
 
-  corevm::runtime::closure_table closure_table {
+  corevm::runtime::ClosureTable closure_table {
     closure
   };
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure* result = nullptr;
+  corevm::runtime::Closure* result = nullptr;
 
   compartment.get_closure_by_id(closure.id, &result);
 
@@ -63,7 +63,7 @@ TEST_F(compartment_unittest, TestGetClosureByID)
   ASSERT_EQ(closure.id, result->id);
   ASSERT_EQ(closure.parent_id, result->parent_id);
 
-  corevm::runtime::closure* result2 = nullptr;
+  corevm::runtime::Closure* result2 = nullptr;
   corevm::runtime::closure_id invalid_id = 0xfff;
 
   compartment.get_closure_by_id(invalid_id, &result2);
@@ -73,15 +73,15 @@ TEST_F(compartment_unittest, TestGetClosureByID)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(compartment_unittest, TestGetClosureByID2)
+TEST_F(CompartmentUnitTest, TestGetClosureByID2)
 {
-  corevm::runtime::compartment compartment("./example.core");
+  corevm::runtime::Compartment compartment("./example.core");
 
   corevm::runtime::vector vector;
   corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
+  corevm::runtime::CatchSiteList catch_sites;
 
-  corevm::runtime::closure closure(
+  corevm::runtime::Closure closure(
     /* name */ "__main__",
     /* id */ 0,
     /* parent_id */ corevm::runtime::NONESET_CLOSURE_ID,
@@ -89,13 +89,13 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
     /* locs */ locs,
     /* catch_sites */ catch_sites);
 
-  corevm::runtime::closure_table closure_table {
+  corevm::runtime::ClosureTable closure_table {
     closure
   };
 
   compartment.set_closure_table(std::move(closure_table));
 
-  corevm::runtime::closure result = compartment.get_closure_by_id(closure.id);
+  corevm::runtime::Closure result = compartment.get_closure_by_id(closure.id);
 
   ASSERT_EQ(closure.id, result.id);
   ASSERT_EQ(closure.parent_id, result.parent_id);
@@ -106,7 +106,7 @@ TEST_F(compartment_unittest, TestGetClosureByID2)
     {
       compartment.get_closure_by_id(invalid_id);
     },
-    corevm::runtime::closure_not_found_error
+    corevm::runtime::ClosureNotFoundError
   );
 }
 

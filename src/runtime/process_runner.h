@@ -36,17 +36,17 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::process` */
-class process;
+/** Forward declaration of `corevm::runtime::Process` */
+class Process;
 
 
-class process_runner : public sneaker::threading::fixed_time_interval_daemon_service
+class ProcessRunner : public sneaker::threading::fixed_time_interval_daemon_service
 {
 public:
-  explicit process_runner(process&);
-  process_runner(process&, uint32_t);
+  explicit ProcessRunner(Process&);
+  ProcessRunner(Process&, uint32_t);
 
-  virtual ~process_runner();
+  virtual ~ProcessRunner();
 
   bool start();
 
@@ -55,7 +55,7 @@ protected:
 
   void gc();
 
-  process& m_process;
+  Process& m_process;
 };
 
 

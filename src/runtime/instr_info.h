@@ -34,16 +34,16 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef struct instr_info
+typedef struct InstrInfo
 {
   const char* const name;
-} instr_info;
+} InstrInfo;
 
 // -----------------------------------------------------------------------------
 
-struct instr_set_info
+struct InstrSetInfo
 {
-  static const instr_info instr_infos[INSTR_CODE_MAX];
+  static const InstrInfo instr_infos[INSTR_CODE_MAX];
 };
 
 // -----------------------------------------------------------------------------

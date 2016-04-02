@@ -47,14 +47,14 @@ void BenchmarkInstrPINVK(benchmark::State& state)
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
 
-  corevm::runtime::closure_ctx ctx(0, 0);
+  corevm::runtime::ClosureCtx ctx(0, 0);
 
   obj.set_closure_ctx(ctx);
 
   fixture.process().push_stack(id);
 
   corevm::runtime::instr_handler_pinvk handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -75,7 +75,7 @@ void BenchmarkInstrINVK(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_invk handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -99,7 +99,7 @@ void BenchmarkInstrRTRN(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_rtrn handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
   corevm::runtime::closure* closure =
     fixture.process().top_frame().closure_ptr();
@@ -108,14 +108,14 @@ void BenchmarkInstrRTRN(benchmark::State& state)
 
   closure->vector.clear();
 
-  corevm::runtime::compartment* compartment =
+  corevm::runtime::Compartment* compartment =
     fixture.process().top_frame().compartment_ptr();
 
   ASSERT(compartment);
 
   fixture.process().top_frame().set_return_addr(0);
 
-  corevm::runtime::closure_ctx ctx {
+  corevm::runtime::ClosureCtx ctx {
     .compartment_id = 0,
     .closure_id = 0
   };
@@ -144,7 +144,7 @@ void BenchmarkInstrJMP(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_jmp handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -163,7 +163,7 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_jmpif handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   corevm::types::native_type_handle hndl = corevm::types::boolean(true);
   fixture.process().top_frame().push_eval_stack(hndl);
@@ -185,7 +185,7 @@ void BenchmarkInstrJMPR(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_jmpr handler;
-  corevm::runtime::instr instr(0, 1, 0);
+  corevm::runtime::Instr instr(0, 1, 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -219,7 +219,7 @@ void BenchmarkInstrEXC(benchmark::State& state)
   );
 
   corevm::runtime::instr_handler_exc handler;
-  corevm::runtime::instr instr { .code=0, .oprd1=0, .oprd2=0 };
+  corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
   while (state.KeepRunning())
   {
@@ -236,7 +236,7 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_excobj handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_exc_obj(id);
@@ -258,7 +258,7 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_clrexc handler;
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
 
   fixture.process().top_frame().set_exc_obj(1);
 
@@ -279,7 +279,7 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
   instr_benchmarks_fixture fixture;
 
   corevm::runtime::instr_handler_jmpexc handler;
-  corevm::runtime::instr instr(0, 0, 1);
+  corevm::runtime::Instr instr(0, 0, 1);
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_exc_obj(id);

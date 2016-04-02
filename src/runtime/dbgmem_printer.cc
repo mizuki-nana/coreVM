@@ -35,7 +35,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-dbgmem_printer::dbgmem_printer(uint32_t opts)
+DbgMemPrinter::DbgMemPrinter(uint32_t opts)
   :
   m_opts(opts)
 {
@@ -44,7 +44,7 @@ dbgmem_printer::dbgmem_printer(uint32_t opts)
 // -----------------------------------------------------------------------------
 
 std::ostream&
-dbgmem_printer::operator()(std::ostream& ost) const
+DbgMemPrinter::operator()(std::ostream& ost) const
 {
   ost << "Memory usages:" << std::endl;
 
@@ -55,7 +55,7 @@ dbgmem_printer::operator()(std::ostream& ost) const
 
   sneaker::utility::get_process_mem_usage(&vm_peak, &vm_size, &vm_hwm, &vm_rss);
 
-  const bool in_bytes = m_opts & dbgmem_printer::OPTS_UNIT_BYTES;
+  const bool in_bytes = m_opts & DbgMemPrinter::OPTS_UNIT_BYTES;
 
   const std::string unit(in_bytes ? "bytes" : "kB");
 
@@ -70,7 +70,7 @@ dbgmem_printer::operator()(std::ostream& ost) const
   ost << "VmSize: " << vm_size << " " << unit << std::endl;
   ost << "VmRSS: " << vm_rss << " " << unit << std::endl;
 
-  if (m_opts & dbgmem_printer::OPTS_SHOW_PEAK)
+  if (m_opts & DbgMemPrinter::OPTS_SHOW_PEAK)
   {
     ost << "VmPeak: " << vm_peak << " " << unit << std::endl;
     ost << "VmHWM: " << vm_hwm << " " << unit << std::endl;

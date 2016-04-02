@@ -35,18 +35,18 @@ namespace corevm {
 namespace runtime {
 
 
-class frame_printer
+class FramePrinter
 {
 public:
-  frame_printer(const frame&, uint32_t opts);
+  FramePrinter(const Frame&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
   template<typename V>
   void print_variables(std::ostream&,
-    const compartment*, const V& vars) const;
+    const Compartment*, const V& vars) const;
 
-  const frame& m_frame;
+  const Frame& m_frame;
   const uint32_t m_opts;
 };
 

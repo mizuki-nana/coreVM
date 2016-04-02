@@ -36,33 +36,33 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 
-class invocation_ctx_unittest: public ::testing::Test
+class InvocationCtxUnitTest: public ::testing::Test
 {
 protected:
-  invocation_ctx_unittest()
+  InvocationCtxUnitTest()
     :
-    m_compartment(new corevm::runtime::compartment("")),
+    m_compartment(new corevm::runtime::Compartment("")),
     m_ctx(corevm::runtime::NONESET_COMPARTMENT_ID, corevm::runtime::NONESET_CLOSURE_ID),
     m_closure()
   {
   }
 
-  ~invocation_ctx_unittest()
+  ~InvocationCtxUnitTest()
   {
     delete m_compartment;
   }
 
-  corevm::runtime::compartment* m_compartment;
-  corevm::runtime::closure_ctx m_ctx;
-  corevm::runtime::closure m_closure;
+  corevm::runtime::Compartment* m_compartment;
+  corevm::runtime::ClosureCtx m_ctx;
+  corevm::runtime::Closure m_closure;
 };
 
 
 // -----------------------------------------------------------------------------
 
-TEST_F(invocation_ctx_unittest, TestInitialization)
+TEST_F(InvocationCtxUnitTest, TestInitialization)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
   ASSERT_TRUE(m_ctx == invk_ctx.closure_ctx());
   ASSERT_EQ(m_compartment, invk_ctx.compartment_ptr());
   ASSERT_EQ(&m_closure, invk_ctx.closure_ptr());
@@ -70,9 +70,9 @@ TEST_F(invocation_ctx_unittest, TestInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(invocation_ctx_unittest, TestPutAndGetParams)
+TEST_F(InvocationCtxUnitTest, TestPutAndGetParams)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   ASSERT_EQ(false, invk_ctx.has_params());
 
@@ -93,15 +93,15 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParams)
     {
       invk_ctx.pop_param();
     },
-    corevm::runtime::missing_parameter_error
+    corevm::runtime::MissingParameterError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(invocation_ctx_unittest, TestPutAndGetParamValuePairs)
+TEST_F(InvocationCtxUnitTest, TestPutAndGetParamValuePairs)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   ASSERT_EQ(false, invk_ctx.has_param_value_pairs());
 
@@ -122,7 +122,7 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParamValuePairs)
     {
       invk_ctx.pop_param_value_pair(key1);
     },
-    corevm::runtime::missing_parameter_error
+    corevm::runtime::MissingParameterError
   );
 
   ASSERT_EQ(false, invk_ctx.has_param_value_pairs());
@@ -130,9 +130,9 @@ TEST_F(invocation_ctx_unittest, TestPutAndGetParamValuePairs)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(invocation_ctx_unittest, TestListParamValuePairKeys)
+TEST_F(InvocationCtxUnitTest, TestListParamValuePairKeys)
 {
-  corevm::runtime::invocation_ctx invk_ctx(m_ctx, m_compartment, &m_closure);
+  corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
 
   std::vector<corevm::runtime::variable_key> expected_keys {};
   std::vector<corevm::runtime::variable_key> actual_keys = invk_ctx.param_value_pair_keys();

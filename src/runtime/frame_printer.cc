@@ -36,8 +36,8 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-frame_printer::frame_printer(
-  const frame& frame,
+FramePrinter::FramePrinter(
+  const Frame& frame,
   uint32_t opts)
   :
   m_frame(frame),
@@ -49,9 +49,9 @@ frame_printer::frame_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-frame_printer::operator()(std::ostream& ost) const
+FramePrinter::operator()(std::ostream& ost) const
 {
-  const closure& closure = *(m_frame.closure_ptr());
+  const Closure& closure = *(m_frame.closure_ptr());
   ost << "Frame info for: " << closure.name << std::endl;
 
   ost << std::endl;
@@ -61,7 +61,7 @@ frame_printer::operator()(std::ostream& ost) const
   // Eval stack info.
   ost << "Eval stack size: " << m_frame.eval_stack_size() << std::endl;
 
-  compartment* compartment = m_frame.compartment_ptr();
+  Compartment* compartment = m_frame.compartment_ptr();
 
   // Visible variables info.
   {
@@ -79,7 +79,7 @@ frame_printer::operator()(std::ostream& ost) const
 
   // Closure info.
   {
-    closure_printer closure_printer(closure, m_opts);
+    ClosurePrinter closure_printer(closure, m_opts);
     closure_printer(ost) << std::endl;
   }
 
@@ -87,7 +87,7 @@ frame_printer::operator()(std::ostream& ost) const
   {
     if (closure.parent_id != NONESET_CLOSURE_ID)
     {
-      runtime::closure* parent_closure = nullptr;
+      runtime::Closure* parent_closure = nullptr;
       compartment->get_closure_by_id(closure.parent_id, &parent_closure);
 
       if (parent_closure)
@@ -108,8 +108,8 @@ frame_printer::operator()(std::ostream& ost) const
 
 template<typename V>
 void
-frame_printer::print_variables(std::ostream& ost,
-  const compartment* compartment, const V& vars) const
+FramePrinter::print_variables(std::ostream& ost,
+  const Compartment* compartment, const V& vars) const
 {
   ost << std::endl;
   for (const auto var : vars)

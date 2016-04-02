@@ -33,8 +33,8 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-process_printer::process_printer(
-  const process& process,
+ProcessPrinter::ProcessPrinter(
+  const Process& process,
   uint32_t opts)
   :
   m_process(process),
@@ -45,7 +45,7 @@ process_printer::process_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-process_printer::operator()(std::ostream& ost) const
+ProcessPrinter::operator()(std::ostream& ost) const
 {
   ost << "Process" << std::endl;
   ost << std::endl;
@@ -59,7 +59,7 @@ process_printer::operator()(std::ostream& ost) const
 
   for (const auto& compartment : m_process.m_compartments)
   {
-    compartment_printer printer(compartment, m_opts);
+    CompartmentPrinter printer(compartment, m_opts);
     printer(ost) << std::endl;
   }
 

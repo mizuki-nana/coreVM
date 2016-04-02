@@ -38,7 +38,7 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 instr_printer::instr_printer(
-  const instr& instr,
+  const Instr& instr,
   uint32_t opts)
   :
   m_instr(instr),
@@ -60,7 +60,7 @@ instr_printer::operator()(std::ostream& ost) const
   if (show_canonical_form)
   {
     ost << std::setw(10);
-    ost << instr_set_info::instr_infos[m_instr.code].name;
+    ost << InstrSetInfo::instr_infos[m_instr.code].name;
   }
   else
   {

@@ -43,12 +43,12 @@ const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
 
 // -----------------------------------------------------------------------------
 
-process_runner::process_runner(
-  process& process)
+ProcessRunner::ProcessRunner(
+  Process& process)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     COREVM_DEFAULT_GC_INTERVAL,
-    process_runner::tick_handler,
+    ProcessRunner::tick_handler,
     false,
     COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
@@ -59,13 +59,13 @@ process_runner::process_runner(
 
 // -----------------------------------------------------------------------------
 
-process_runner::process_runner(
-  process& process,
+ProcessRunner::ProcessRunner(
+  Process& process,
   uint32_t gc_interval)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     gc_interval,
-    process_runner::tick_handler,
+    ProcessRunner::tick_handler,
     false,
     COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
   ),
@@ -77,7 +77,7 @@ process_runner::process_runner(
 // -----------------------------------------------------------------------------
 
 /* virtual */
-process_runner::~process_runner()
+ProcessRunner::~ProcessRunner()
 {
   // Do nothing here.
 }
@@ -85,7 +85,7 @@ process_runner::~process_runner()
 // -----------------------------------------------------------------------------
 
 bool
-process_runner::start()
+ProcessRunner::start()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
@@ -100,14 +100,14 @@ process_runner::start()
 // -----------------------------------------------------------------------------
 
 void
-process_runner::tick_handler(void* arg)
+ProcessRunner::tick_handler(void* arg)
 {
 #if __DEBUG__
   ASSERT(arg);
 #endif
 
-  process_runner* runner =
-    static_cast<process_runner*>(arg);
+  ProcessRunner* runner =
+    static_cast<ProcessRunner*>(arg);
 
   runner->gc();
 }
@@ -115,7 +115,7 @@ process_runner::tick_handler(void* arg)
 // -----------------------------------------------------------------------------
 
 void
-process_runner::gc()
+ProcessRunner::gc()
 {
   if (m_process.should_gc())
   {

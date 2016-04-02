@@ -35,45 +35,45 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-const uint8_t gc_rule_meta::DEFAULT_GC_FLAGS = 1 << gc_rule_meta::GC_ALWAYS;
+const uint8_t GCRuleMeta::DEFAULT_GC_FLAGS = 1 << GCRuleMeta::GC_ALWAYS;
 
 // -----------------------------------------------------------------------------
 
-const double gc_rule_by_heap_size::DEFAULT_CUTOFF = 0.75f;
+const double GCRuleByHeapSize::DEFAULT_CUTOFF = 0.75f;
 
 // -----------------------------------------------------------------------------
 
-const double gc_rule_by_ntvhndl_pool_size::DEFAULT_CUTOFF = 0.75f;
+const double GCRuleByNtvhndlPoolSize::DEFAULT_CUTOFF = 0.75f;
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
-gc_rule::~gc_rule()
+GCRule::~GCRule()
 {
   // Do nothing here.
 }
 
 // -----------------------------------------------------------------------------
 
-const gc_rule_ptr
-gc_rule_meta::gc_rules[GC_RULE_MAX] {
-  std::make_shared<gc_rule_always>(),
-  std::make_shared<gc_rule_by_heap_size>(),
-  std::make_shared<gc_rule_by_ntvhndl_pool_size>()
+const GCRulePtr
+GCRuleMeta::gc_rules[GC_RULE_MAX] {
+  std::make_shared<GCRuleAlways>(),
+  std::make_shared<GCRuleByHeapSize>(),
+  std::make_shared<GCRuleByNtvhndlPoolSize>()
 };
 
 // -----------------------------------------------------------------------------
 
-const gc_rule_ptr
-gc_rule_meta::get_gc_rule(gc_bitfields bit)
+const GCRulePtr
+GCRuleMeta::get_gc_rule(GCBitfields bit)
 {
   const uint8_t uint8_bit = static_cast<uint8_t>(bit);
 
-  gc_rule_ptr gc_rule;
+  GCRulePtr gc_rule;
 
   if (uint8_bit < GC_RULE_MAX)
   {
-    gc_rule = gc_rule_meta::gc_rules[uint8_bit];
+    gc_rule = GCRuleMeta::gc_rules[uint8_bit];
   }
 
   return gc_rule;
@@ -82,8 +82,8 @@ gc_rule_meta::get_gc_rule(gc_bitfields bit)
 // -----------------------------------------------------------------------------
 
 bool
-gc_rule_always::should_gc(
-  const process& /* process */) const
+GCRuleAlways::should_gc(
+  const Process& /* process */) const
 {
   return true;
 }
@@ -91,22 +91,22 @@ gc_rule_always::should_gc(
 // -----------------------------------------------------------------------------
 
 bool
-gc_rule_by_heap_size::should_gc(
-  const process& process) const
+GCRuleByHeapSize::should_gc(
+  const Process& process) const
 {
   return process.heap_size() > (
-    process.max_heap_size() * gc_rule_by_heap_size::DEFAULT_CUTOFF
+    process.max_heap_size() * GCRuleByHeapSize::DEFAULT_CUTOFF
   );
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-gc_rule_by_ntvhndl_pool_size::should_gc(
-  const process& process) const
+GCRuleByNtvhndlPoolSize::should_gc(
+  const Process& process) const
 {
   return process.ntvhndl_pool_size() > (
-    process.max_ntvhndl_pool_size() * gc_rule_by_ntvhndl_pool_size::DEFAULT_CUTOFF
+    process.max_ntvhndl_pool_size() * GCRuleByNtvhndlPoolSize::DEFAULT_CUTOFF
   );
 }
 

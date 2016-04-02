@@ -49,16 +49,16 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `closure` */
-struct closure;
+/** Forward declaration of `Closure` */
+struct Closure;
 
 
-/** Forward declaration of `closure_ctx` */
-struct closure_ctx;
+/** Forward declaration of `ClosureCtx` */
+struct ClosureCtx;
 
 
-/** Forward declaration of `process_printer` */
-class process_printer;
+/** Forward declaration of `ProcessPrinter` */
+class ProcessPrinter;
 
 
 /**
@@ -76,32 +76,32 @@ class process_printer;
  * - A pool of native type handles.
  * - A set of compartments.
  */
-class process
+class Process
 {
 public:
   typedef gc::RefCountGarbageCollectionScheme garbage_collection_scheme;
   using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
   using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
-  typedef native_types_pool native_types_pool_type;
+  typedef NativeTypesPool native_types_pool_type;
 
 public:
-  struct options
+  struct Options
   {
-    options();
+    Options();
 
     uint64_t heap_alloc_size;
     uint64_t pool_alloc_size;
     uint8_t gc_flag;
   };
 
-  process();
-  process(uint64_t, uint64_t);
-  explicit process(const process::options&);
-  ~process();
+  Process();
+  Process(uint64_t, uint64_t);
+  explicit Process(const Process::Options&);
+  ~Process();
 
   /* Processes should not be copyable. */
-  process(const process&) = delete;
-  process& operator=(const process&) = delete;
+  Process(const Process&) = delete;
+  Process& operator=(const Process&) = delete;
 
   dyobj::dyobj_id create_dyobj();
 
@@ -113,63 +113,63 @@ public:
 
   bool has_frame() const;
 
-  frame& top_frame()
-    throw(frame_not_found_error);
+  Frame& top_frame()
+    throw(FrameNotFoundError);
 
   /**
    * Gets the top frame, only when the call stack is not empty.
    * Will result in undefined behavior otherwise.
    */
-  void top_frame(frame**);
+  void top_frame(Frame**);
 
   /**
    * Gets the `n`th frame from the top of the call stack.
    * A value of 0 means the top frame.
    */
-  frame& top_nth_frame(size_t n)
-    throw(frame_not_found_error);
+  Frame& top_nth_frame(size_t n)
+    throw(FrameNotFoundError);
 
-  void push_frame(frame&);
-
-  void emplace_frame(
-    const closure_ctx&,
-    compartment*, closure*);
+  void push_frame(Frame&);
 
   void emplace_frame(
-    const closure_ctx&,
-    compartment*,
-    closure*, instr_addr);
+    const ClosureCtx&,
+    Compartment*, Closure*);
 
-  void pop_frame() throw(frame_not_found_error);
+  void emplace_frame(
+    const ClosureCtx&,
+    Compartment*,
+    Closure*, instr_addr);
+
+  void pop_frame() throw(FrameNotFoundError);
 
   void pop_frame_safe();
 
   uint64_t stack_size() const;
 
-  invocation_ctx& top_invocation_ctx()
-    throw(invocation_ctx_not_found_error);
+  InvocationCtx& top_invocation_ctx()
+    throw(InvocationCtxNotFoundError);
 
   /**
    * Gets the top invocation context, only when the invocation stack
    * is not empty.
    * Will result in undefined behavior otherwise.
    */
-  void top_invocation_ctx(invocation_ctx**);
+  void top_invocation_ctx(InvocationCtx**);
 
-  void push_invocation_ctx(const invocation_ctx&);
+  void push_invocation_ctx(const InvocationCtx&);
 
   void emplace_invocation_ctx(
-    const closure_ctx&,
-    compartment*, closure*);
+    const ClosureCtx&,
+    Compartment*, Closure*);
 
   void pop_invocation_ctx()
-    throw(invocation_ctx_not_found_error);
+    throw(InvocationCtxNotFoundError);
 
   const dyobj::dyobj_id& top_stack()
-    throw(object_stack_empty_error);
+    throw(ObjectStackEmptyError);
 
   dyobj::dyobj_id pop_stack()
-    throw(object_stack_empty_error);
+    throw(ObjectStackEmptyError);
 
   void swap_stack();
 
@@ -178,25 +178,25 @@ public:
   bool has_ntvhndl(dyobj::ntvhndl_key&);
 
   types::native_type_handle& get_ntvhndl(dyobj::ntvhndl_key)
-    throw(native_type_handle_not_found_error);
+    throw(NativeTypeHandleNotFoundError);
 
   dyobj::ntvhndl_key insert_ntvhndl(types::native_type_handle&)
-    throw(native_type_handle_insertion_error);
+    throw(NativeTypeHandleInsertionError);
 
   void erase_ntvhndl(dyobj::ntvhndl_key)
-    throw(native_type_handle_deletion_error);
+    throw(NativeTypeHandleDeletionError);
 
   instr_addr pc() const;
 
   void set_pc(const instr_addr)
-    throw(invalid_instr_addr_error);
+    throw(InvalidInstrAddrError);
 
   void append_vector(const vector&);
 
   void insert_vector(const vector& vector);
 
   bool get_frame_by_closure_ctx(
-    closure_ctx&, frame**);
+    ClosureCtx&, Frame**);
 
   void start();
 
@@ -216,7 +216,7 @@ public:
 
   void set_sig_vector(sig_atomic_t, vector&);
 
-  void handle_signal(sig_atomic_t, sighandler*);
+  void handle_signal(sig_atomic_t, SigHandler*);
 
   dynamic_object_heap_type::size_type heap_size() const;
 
@@ -229,13 +229,13 @@ public:
   size_t compartment_count() const;
 
   compartment_id insert_compartment(
-    const compartment&);
+    const Compartment&);
 
   compartment_id insert_compartment(
-    const compartment&&);
+    const Compartment&&);
 
   void get_compartment(
-    compartment_id, compartment**);
+    compartment_id, Compartment**);
 
   void reset();
 
@@ -247,10 +247,10 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  frame* find_frame_by_ctx(
-    closure_ctx ctx,
-    compartment* compartment,
-    process& process);
+  Frame* find_frame_by_ctx(
+    ClosureCtx ctx,
+    Compartment* compartment,
+    Process& process);
 
   /**
    * Given a pointer to a starting frame, find the existing frame associated
@@ -260,9 +260,9 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  frame* find_parent_frame_in_process(
-    frame* frame_ptr,
-    process& process);
+  Frame* find_parent_frame_in_process(
+    Frame* frame_ptr,
+    Process& process);
 
   // A few things to note:
   //
@@ -270,9 +270,9 @@ public:
   // 2. This function has to be exception safe because there are no catch
   //    blocks to catch exceptions from it.
   static void unwind_stack(
-    process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
+    Process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
-  friend class process_printer;
+  friend class ProcessPrinter;
 
 private:
   void init();
@@ -294,12 +294,12 @@ private:
   vector m_instrs;
   dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager> m_dynamic_object_heap;
   std::vector<dyobj::dyobj_id> m_dyobj_stack;
-  std::vector<frame> m_call_stack;
-  std::vector<invocation_ctx> m_invocation_ctx_stack;
+  std::vector<Frame> m_call_stack;
+  std::vector<InvocationCtx> m_invocation_ctx_stack;
   native_types_pool_type m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, vector> m_sig_instr_map;
-  std::vector<compartment> m_compartments;
-  std::vector<gc_rule_ptr> m_gc_rules;
+  std::vector<Compartment> m_compartments;
+  std::vector<GCRulePtr> m_gc_rules;
 };
 
 // -----------------------------------------------------------------------------

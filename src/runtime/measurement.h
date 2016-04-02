@@ -35,9 +35,9 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct instr_measurement
+struct InstrMeasurement
 {
-  instr_measurement()
+  InstrMeasurement()
     :
     cumulative_wall_time(0u),
     invocation_count(0u)
@@ -66,7 +66,7 @@ T _sum(const ContainerType& measurements)
 // -----------------------------------------------------------------------------
 
 boost::timer::nanosecond_type
-_avg(const instr_measurement& measurement)
+_avg(const InstrMeasurement& measurement)
 {
   const auto invocation_count = measurement.invocation_count;
 
@@ -126,7 +126,7 @@ void pretty_print_measurements(const ContainerType& measurements)
     const auto invocation_count = measurement.invocation_count;
     const auto avg_wall_time = _avg(measurement);
 
-    std::cout << std::setw(INSTR_NAME_WIDTH) << instr_set_info::instr_infos[i].name << BAR;
+    std::cout << std::setw(INSTR_NAME_WIDTH) << InstrSetInfo::instr_infos[i].name << BAR;
     std::cout << std::setw(PERCENTAGE_WIDTH) << std::setprecision(2) << cumulative_wall_time_percentage << std::fixed << BAR;
     std::cout << std::setw(INVOCATION_COUNT_WIDTH) << invocation_count << BAR;
     std::cout << std::setw(CUMULATIVE_WALL_TIME_WIDTH) << cumulative_wall_time << BAR;

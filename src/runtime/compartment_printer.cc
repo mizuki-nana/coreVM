@@ -33,8 +33,8 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-compartment_printer::compartment_printer(
-  const compartment& compartment,
+CompartmentPrinter::CompartmentPrinter(
+  const Compartment& compartment,
   uint32_t opts)
   :
   m_compartment(compartment),
@@ -45,7 +45,7 @@ compartment_printer::compartment_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-compartment_printer::operator()(std::ostream& ost) const
+CompartmentPrinter::operator()(std::ostream& ost) const
 {
   ost << "Compartment" << std::endl;
   ost << std::endl;
@@ -54,7 +54,7 @@ compartment_printer::operator()(std::ostream& ost) const
 
   for (const auto& closure : m_compartment.m_closure_table)
   {
-    closure_printer printer(closure, m_opts);
+    ClosurePrinter printer(closure, m_opts);
     printer(ost) << std::endl;
   }
 

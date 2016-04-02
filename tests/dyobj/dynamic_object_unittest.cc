@@ -244,7 +244,7 @@ TEST_F(DynamicObjectUnitTest, TestSetAndGetClosureCtx)
 {
   dynamic_object_type obj;
 
-  const corevm::runtime::closure_ctx& ctx = obj.closure_ctx();
+  const corevm::runtime::ClosureCtx& ctx = obj.closure_ctx();
 
   ASSERT_EQ(corevm::runtime::NONESET_COMPARTMENT_ID, ctx.compartment_id);
   ASSERT_EQ(corevm::runtime::NONESET_CLOSURE_ID, ctx.closure_id);
@@ -252,11 +252,11 @@ TEST_F(DynamicObjectUnitTest, TestSetAndGetClosureCtx)
   corevm::runtime::compartment_id compartment_id = 123;
   corevm::runtime::closure_id closure_id = 456;
 
-  corevm::runtime::closure_ctx expected_ctx(compartment_id, closure_id);
+  corevm::runtime::ClosureCtx expected_ctx(compartment_id, closure_id);
 
   obj.set_closure_ctx(expected_ctx);
 
-  const corevm::runtime::closure_ctx& ctx2 = obj.closure_ctx();
+  const corevm::runtime::ClosureCtx& ctx2 = obj.closure_ctx();
 
   ASSERT_EQ(expected_ctx.compartment_id, ctx2.compartment_id);
   ASSERT_EQ(expected_ctx.closure_id, ctx2.closure_id);
@@ -271,7 +271,7 @@ TEST_F(DynamicObjectUnitTest, TestCopyFrom)
   corevm::runtime::compartment_id compartment_id = 123;
   corevm::runtime::closure_id closure_id = 456;
 
-  corevm::runtime::closure_ctx expected_ctx(compartment_id, closure_id);
+  corevm::runtime::ClosureCtx expected_ctx(compartment_id, closure_id);
   obj.set_closure_ctx(expected_ctx);
 
   corevm::dyobj::attr_key key1 = 123;

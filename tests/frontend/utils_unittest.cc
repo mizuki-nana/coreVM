@@ -52,9 +52,9 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
 
   corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(vector_json);
 
-  corevm::runtime::instr instr1 = vector[0];
-  corevm::runtime::instr instr2 = vector[1];
-  corevm::runtime::instr instr3 = vector[2];
+  corevm::runtime::Instr instr1 = vector[0];
+  corevm::runtime::Instr instr2 = vector[1];
+  corevm::runtime::Instr instr3 = vector[2];
 
   ASSERT_EQ(10, instr1.code);
   ASSERT_EQ(11, instr1.oprd1);

@@ -44,7 +44,7 @@ namespace frontend {
 // -----------------------------------------------------------------------------
 
 void
-bytecode_loader_binary::load(const std::string& path, runtime::process& process)
+bytecode_loader_binary::load(const std::string& path, runtime::Process& process)
 {
   // `avro::DataFileReader` documentation:
   // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
@@ -55,13 +55,13 @@ bytecode_loader_binary::load(const std::string& path, runtime::process& process)
   // Load source path.
   const std::string& source_path = bytecode_data.path;
 
-  runtime::compartment compartment(source_path);
+  runtime::Compartment compartment(source_path);
 
   // Load encoding map.
   compartment.set_encoding_map(bytecode_data.encoding_map);
 
   // Load closures.
-  runtime::closure_table closure_table;
+  runtime::ClosureTable closure_table;
 
   for (auto itr = bytecode_data.__MAIN__.cbegin();
        itr != bytecode_data.__MAIN__.cend();
@@ -114,14 +114,14 @@ bytecode_loader_binary::load(const std::string& path, runtime::process& process)
         const auto lineno = static_cast<int32_t>(loc_record.lineno);
         const auto col_offset = static_cast<int32_t>(loc_record.col_offset);
 
-        runtime::loc_info loc(lineno, col_offset);
+        runtime::LocInfo loc(lineno, col_offset);
 
         locs_table[index] = loc;
       }
     }
 
     // Catch sites
-    runtime::catch_site_list catch_sites;
+    runtime::CatchSiteList catch_sites;
     if (!closure.catch_sites.is_null())
     {
       const auto& catch_sites_array = closure.catch_sites.get_array();

@@ -39,10 +39,10 @@ const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
-invocation_ctx::invocation_ctx(
-  const runtime::closure_ctx& ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr)
+InvocationCtx::InvocationCtx(
+  const runtime::ClosureCtx& ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr)
   :
   m_closure_ctx(ctx),
   m_compartment_ptr(compartment_ptr),
@@ -56,24 +56,24 @@ invocation_ctx::invocation_ctx(
 
 // -----------------------------------------------------------------------------
 
-const closure_ctx&
-invocation_ctx::closure_ctx() const
+const ClosureCtx&
+InvocationCtx::closure_ctx() const
 {
   return m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------
 
-compartment*
-invocation_ctx::compartment_ptr() const
+Compartment*
+InvocationCtx::compartment_ptr() const
 {
   return m_compartment_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-closure*
-invocation_ctx::closure_ptr() const
+Closure*
+InvocationCtx::closure_ptr() const
 {
   return m_closure_ptr;
 }
@@ -81,7 +81,7 @@ invocation_ctx::closure_ptr() const
 // -----------------------------------------------------------------------------
 
 const param_list_type&
-invocation_ctx::params_list() const
+InvocationCtx::params_list() const
 {
   return m_params_list;
 }
@@ -89,7 +89,7 @@ invocation_ctx::params_list() const
 // -----------------------------------------------------------------------------
 
 const param_value_map_type&
-invocation_ctx::param_value_map() const
+InvocationCtx::param_value_map() const
 {
   return m_param_value_map;
 }
@@ -97,7 +97,7 @@ invocation_ctx::param_value_map() const
 // -----------------------------------------------------------------------------
 
 bool
-invocation_ctx::has_params() const
+InvocationCtx::has_params() const
 {
   return m_params_list_pop_index < m_params_list.size();
 }
@@ -105,7 +105,7 @@ invocation_ctx::has_params() const
 // -----------------------------------------------------------------------------
 
 void
-invocation_ctx::put_param(const dyobj::dyobj_id& id)
+InvocationCtx::put_param(const dyobj::dyobj_id& id)
 {
   m_params_list.push_back(id);
 }
@@ -113,12 +113,12 @@ invocation_ctx::put_param(const dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-invocation_ctx::pop_param()
-  throw(missing_parameter_error)
+InvocationCtx::pop_param()
+  throw(MissingParameterError)
 {
   if (m_params_list_pop_index >= m_params_list.size())
   {
-    THROW(missing_parameter_error());
+    THROW(MissingParameterError());
   }
 
   return m_params_list[m_params_list_pop_index++];
@@ -127,7 +127,7 @@ invocation_ctx::pop_param()
 // -----------------------------------------------------------------------------
 
 bool
-invocation_ctx::has_param_value_pairs() const
+InvocationCtx::has_param_value_pairs() const
 {
   return !m_param_value_map.empty();
 }
@@ -135,7 +135,7 @@ invocation_ctx::has_param_value_pairs() const
 // -----------------------------------------------------------------------------
 
 bool
-invocation_ctx::has_param_value_pair_with_key(
+InvocationCtx::has_param_value_pair_with_key(
   const variable_key& key) const
 {
   return m_param_value_map.find(key) != m_param_value_map.end();
@@ -144,7 +144,7 @@ invocation_ctx::has_param_value_pair_with_key(
 // -----------------------------------------------------------------------------
 
 void
-invocation_ctx::put_param_value_pair(
+InvocationCtx::put_param_value_pair(
   const variable_key& key, const dyobj::dyobj_id& id)
 {
   m_param_value_map[key] = id;
@@ -153,15 +153,15 @@ invocation_ctx::put_param_value_pair(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-invocation_ctx::pop_param_value_pair(
+InvocationCtx::pop_param_value_pair(
   const variable_key& key)
-  throw(missing_parameter_error)
+  throw(MissingParameterError)
 {
   auto itr = m_param_value_map.find(key);
 
   if (itr == m_param_value_map.end())
   {
-    THROW(missing_parameter_error());
+    THROW(MissingParameterError());
   }
 
   dyobj::dyobj_id id = itr->second;
@@ -174,7 +174,7 @@ invocation_ctx::pop_param_value_pair(
 // -----------------------------------------------------------------------------
 
 std::vector<variable_key>
-invocation_ctx::param_value_pair_keys() const
+InvocationCtx::param_value_pair_keys() const
 {
   std::vector<variable_key> keys;
   keys.reserve(m_param_value_map.size());

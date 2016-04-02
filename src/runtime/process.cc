@@ -67,7 +67,7 @@ namespace internal {
 // -----------------------------------------------------------------------------
 
 class ntvhndl_collector_gc_callback :
-  public gc::GarbageCollector<process::garbage_collection_scheme>::Callback
+  public gc::GarbageCollector<Process::garbage_collection_scheme>::Callback
 {
 public:
   virtual void operator()(const dynamic_object_type& obj);
@@ -127,48 +127,48 @@ static_assert(
 // -----------------------------------------------------------------------------
 
 static_assert(
-  std::numeric_limits<std::vector<compartment>::size_type>::max() >=
+  std::numeric_limits<std::vector<Compartment>::size_type>::max() >=
   std::numeric_limits<compartment_id>::max(),
   "Compartment ID incompatibility"
 );
 
 // -----------------------------------------------------------------------------
 
-process::options::options()
+Process::Options::Options()
   :
   heap_alloc_size(dyobj::COREVM_DEFAULT_HEAP_SIZE),
   pool_alloc_size(COREVM_DEFAULT_NATIVE_TYPES_POOL_SIZE),
-  gc_flag(gc_rule_meta::DEFAULT_GC_FLAGS)
+  gc_flag(GCRuleMeta::DEFAULT_GC_FLAGS)
 {
 }
 
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-process::create_dyobj()
+Process::create_dyobj()
 {
   return m_dynamic_object_heap.create_dyobj();
 }
 
 // -----------------------------------------------------------------------------
 
-process::dynamic_object_type*
-process::create_dyobjs(size_t n)
+Process::dynamic_object_type*
+Process::create_dyobjs(size_t n)
 {
   return m_dynamic_object_heap.create_dyobjs(n);
 }
 
 // -----------------------------------------------------------------------------
 
-process::dynamic_object_type&
-process::get_dyobj(dyobj::dyobj_id id)
+Process::dynamic_object_type&
+Process::get_dyobj(dyobj::dyobj_id id)
 {
   return m_dynamic_object_heap.at(id);
 }
 
 // -----------------------------------------------------------------------------
 
-process::process()
+Process::Process()
   :
   m_pause_exec(false),
   m_do_gc(false),
@@ -188,7 +188,7 @@ process::process()
 
 // -----------------------------------------------------------------------------
 
-process::process(
+Process::Process(
   uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
   m_pause_exec(false),
@@ -209,7 +209,7 @@ process::process(
 
 // -----------------------------------------------------------------------------
 
-process::process(const process::options& options)
+Process::Process(const Process::Options& options)
   :
   m_pause_exec(false),
   m_do_gc(false),
@@ -230,7 +230,7 @@ process::process(const process::options& options)
 // -----------------------------------------------------------------------------
 
 void
-process::init()
+Process::init()
 {
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 
@@ -242,11 +242,11 @@ process::init()
     // Add 1 to bit since the gc flag values are 0 index based.
     if (is_bit_set(m_gc_flag, static_cast<char>(i) + 1))
     {
-      gc_rule_meta::gc_bitfields bit =
-        static_cast<gc_rule_meta::gc_bitfields>(i);
+      GCRuleMeta::GCBitfields bit =
+        static_cast<GCRuleMeta::GCBitfields>(i);
 
-      const gc_rule_ptr gc_rule =
-        gc_rule_meta::get_gc_rule(bit);
+      const GCRulePtr gc_rule =
+        GCRuleMeta::get_gc_rule(bit);
 
       m_gc_rules.push_back(gc_rule);
     }
@@ -255,7 +255,7 @@ process::init()
 
 // -----------------------------------------------------------------------------
 
-process::~process()
+Process::~Process()
 {
   // Do nothing here.
 }
@@ -263,7 +263,7 @@ process::~process()
 // -----------------------------------------------------------------------------
 
 uint64_t
-process::call_stack_size() const
+Process::call_stack_size() const
 {
   return m_call_stack.size();
 }
@@ -271,20 +271,20 @@ process::call_stack_size() const
 // -----------------------------------------------------------------------------
 
 bool
-process::has_frame() const
+Process::has_frame() const
 {
   return !(this->m_call_stack.empty());
 }
 
 // -----------------------------------------------------------------------------
 
-frame&
-process::top_frame()
-  throw(frame_not_found_error)
+Frame&
+Process::top_frame()
+  throw(FrameNotFoundError)
 {
   if (m_call_stack.empty())
   {
-    THROW(frame_not_found_error());
+    THROW(FrameNotFoundError());
   }
 
   return m_call_stack.back();
@@ -293,20 +293,20 @@ process::top_frame()
 // -----------------------------------------------------------------------------
 
 void
-process::top_frame(frame** frame_ptr)
+Process::top_frame(Frame** frame_ptr)
 {
   *frame_ptr = &m_call_stack.back();
 }
 
 // -----------------------------------------------------------------------------
 
-frame&
-process::top_nth_frame(size_t n)
-  throw(frame_not_found_error)
+Frame&
+Process::top_nth_frame(size_t n)
+  throw(FrameNotFoundError)
 {
   if (n >= m_call_stack.size())
   {
-    THROW(frame_not_found_error());
+    THROW(FrameNotFoundError());
   }
 
   return m_call_stack[m_call_stack.size() - n - 1];
@@ -315,10 +315,10 @@ process::top_nth_frame(size_t n)
 // -----------------------------------------------------------------------------
 
 void
-process::pop_frame()
-  throw(frame_not_found_error)
+Process::pop_frame()
+  throw(FrameNotFoundError)
 {
-  frame& frame = this->top_frame();
+  Frame& frame = this->top_frame();
 
   std::list<dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
   std::list<dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
@@ -343,7 +343,7 @@ process::pop_frame()
 
   set_pc(frame.return_addr());
 
-  const closure* closure_ptr = frame.closure_ptr();
+  const Closure* closure_ptr = frame.closure_ptr();
 
   auto begin_itr = m_instrs.begin() + pc() + 1;
   auto end_itr = begin_itr;
@@ -359,7 +359,7 @@ process::pop_frame()
 // -----------------------------------------------------------------------------
 
 void
-process::pop_frame_safe()
+Process::pop_frame_safe()
 {
   m_call_stack.pop_back();
   pop_invocation_ctx();
@@ -368,7 +368,7 @@ process::pop_frame_safe()
 // -----------------------------------------------------------------------------
 
 void
-process::check_call_stack_capacity()
+Process::check_call_stack_capacity()
 {
   // NOTE: Pointers of frames on the call stack are used to set as parents
   // on frames. If memories for frames are ever relocated here, we need to
@@ -387,7 +387,7 @@ process::check_call_stack_capacity()
 // -----------------------------------------------------------------------------
 
 void
-process::push_frame(frame& frame)
+Process::push_frame(Frame& frame)
 {
   check_call_stack_capacity();
   m_call_stack.push_back(frame);
@@ -398,10 +398,10 @@ process::push_frame(frame& frame)
 // -----------------------------------------------------------------------------
 
 void
-process::emplace_frame(
-  const closure_ctx& ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr)
+Process::emplace_frame(
+  const ClosureCtx& ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -414,10 +414,10 @@ process::emplace_frame(
 // -----------------------------------------------------------------------------
 
 void
-process::emplace_frame(
-  const closure_ctx& ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr, instr_addr return_addr)
+Process::emplace_frame(
+  const ClosureCtx& ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr, instr_addr return_addr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -430,11 +430,11 @@ process::emplace_frame(
 // -----------------------------------------------------------------------------
 
 void
-process::set_parent_for_top_frame()
+Process::set_parent_for_top_frame()
 {
-  frame* frame = &m_call_stack.back();
-  runtime::frame* parent =
-    process::find_parent_frame_in_process(frame, *this);
+  Frame* frame = &m_call_stack.back();
+  runtime::Frame* parent =
+    Process::find_parent_frame_in_process(frame, *this);
 
   frame->set_parent(parent);
 }
@@ -442,20 +442,20 @@ process::set_parent_for_top_frame()
 // -----------------------------------------------------------------------------
 
 uint64_t
-process::stack_size() const
+Process::stack_size() const
 {
   return m_dyobj_stack.size();
 }
 
 // -----------------------------------------------------------------------------
 
-invocation_ctx&
-process::top_invocation_ctx()
-  throw(invocation_ctx_not_found_error)
+InvocationCtx&
+Process::top_invocation_ctx()
+  throw(InvocationCtxNotFoundError)
 {
   if (m_invocation_ctx_stack.empty())
   {
-    THROW(invocation_ctx_not_found_error());
+    THROW(InvocationCtxNotFoundError());
   }
 
   return m_invocation_ctx_stack.back();
@@ -464,8 +464,8 @@ process::top_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 void
-process::top_invocation_ctx(
-  invocation_ctx** invk_ctx_ptr)
+Process::top_invocation_ctx(
+  InvocationCtx** invk_ctx_ptr)
 {
   *invk_ctx_ptr = &m_invocation_ctx_stack.back();
 }
@@ -473,7 +473,7 @@ process::top_invocation_ctx(
 // -----------------------------------------------------------------------------
 
 void
-process::check_invk_ctx_stack_capacity()
+Process::check_invk_ctx_stack_capacity()
 {
   size_t current_size = m_invocation_ctx_stack.size();
   if (current_size == m_invocation_ctx_stack.capacity())
@@ -489,7 +489,7 @@ process::check_invk_ctx_stack_capacity()
 // -----------------------------------------------------------------------------
 
 void
-process::push_invocation_ctx(const invocation_ctx& invk_ctx)
+Process::push_invocation_ctx(const InvocationCtx& invk_ctx)
 {
   check_invk_ctx_stack_capacity();
   m_invocation_ctx_stack.push_back(invk_ctx);
@@ -498,10 +498,10 @@ process::push_invocation_ctx(const invocation_ctx& invk_ctx)
 // -----------------------------------------------------------------------------
 
 void
-process::emplace_invocation_ctx(
-  const closure_ctx& ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr)
+Process::emplace_invocation_ctx(
+  const ClosureCtx& ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -512,12 +512,12 @@ process::emplace_invocation_ctx(
 // -----------------------------------------------------------------------------
 
 void
-process::pop_invocation_ctx()
-  throw(invocation_ctx_not_found_error)
+Process::pop_invocation_ctx()
+  throw(InvocationCtxNotFoundError)
 {
   if (m_invocation_ctx_stack.empty())
   {
-    THROW(invocation_ctx_not_found_error());
+    THROW(InvocationCtxNotFoundError());
   }
 
   m_invocation_ctx_stack.pop_back();
@@ -526,12 +526,12 @@ process::pop_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 const dyobj::dyobj_id&
-process::top_stack()
-  throw(object_stack_empty_error)
+Process::top_stack()
+  throw(ObjectStackEmptyError)
 {
   if (m_dyobj_stack.empty())
   {
-    THROW(object_stack_empty_error());
+    THROW(ObjectStackEmptyError());
   }
 
   return m_dyobj_stack.back();
@@ -540,7 +540,7 @@ process::top_stack()
 // -----------------------------------------------------------------------------
 
 void
-process::push_stack(dyobj::dyobj_id& id)
+Process::push_stack(dyobj::dyobj_id& id)
 {
   size_t current_size = m_dyobj_stack.size();
   if (current_size == m_dyobj_stack.capacity())
@@ -557,12 +557,12 @@ process::push_stack(dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-process::pop_stack()
-  throw(object_stack_empty_error)
+Process::pop_stack()
+  throw(ObjectStackEmptyError)
 {
   if (m_dyobj_stack.empty())
   {
-    THROW(object_stack_empty_error());
+    THROW(ObjectStackEmptyError());
   }
 
   dyobj::dyobj_id id = m_dyobj_stack.back();
@@ -573,11 +573,11 @@ process::pop_stack()
 // -----------------------------------------------------------------------------
 
 void
-process::swap_stack()
+Process::swap_stack()
 {
   if (m_dyobj_stack.size() < 2)
   {
-    THROW(invalid_operation_error(
+    THROW(InvalidOperationError(
       "Cannot swap top of object stack"));
   }
 
@@ -588,32 +588,32 @@ process::swap_stack()
 
 // -----------------------------------------------------------------------------
 
-process::dynamic_object_heap_type::size_type
-process::heap_size() const
+Process::dynamic_object_heap_type::size_type
+Process::heap_size() const
 {
   return m_dynamic_object_heap.size();
 }
 
 // -----------------------------------------------------------------------------
 
-process::dynamic_object_heap_type::size_type
-process::max_heap_size() const
+Process::dynamic_object_heap_type::size_type
+Process::max_heap_size() const
 {
   return m_dynamic_object_heap.max_size();
 }
 
 // -----------------------------------------------------------------------------
 
-process::native_types_pool_type::size_type
-process::ntvhndl_pool_size() const
+Process::native_types_pool_type::size_type
+Process::ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.size();
 }
 
 // -----------------------------------------------------------------------------
 
-process::native_types_pool_type::size_type
-process::max_ntvhndl_pool_size() const
+Process::native_types_pool_type::size_type
+Process::max_ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.max_size();
 }
@@ -621,13 +621,13 @@ process::max_ntvhndl_pool_size() const
 // -----------------------------------------------------------------------------
 
 bool
-process::has_ntvhndl(dyobj::ntvhndl_key& key)
+Process::has_ntvhndl(dyobj::ntvhndl_key& key)
 {
   try
   {
     m_ntvhndl_pool.at(key);
   }
-  catch(const native_type_handle_not_found_error&)
+  catch(const NativeTypeHandleNotFoundError&)
   {
     return false;
   }
@@ -638,8 +638,8 @@ process::has_ntvhndl(dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 types::native_type_handle&
-process::get_ntvhndl(dyobj::ntvhndl_key key)
-  throw(native_type_handle_not_found_error)
+Process::get_ntvhndl(dyobj::ntvhndl_key key)
+  throw(NativeTypeHandleNotFoundError)
 {
   return m_ntvhndl_pool.at(key);
 }
@@ -647,8 +647,8 @@ process::get_ntvhndl(dyobj::ntvhndl_key key)
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-process::insert_ntvhndl(types::native_type_handle& hndl)
-  throw(native_type_handle_insertion_error)
+Process::insert_ntvhndl(types::native_type_handle& hndl)
+  throw(NativeTypeHandleInsertionError)
 {
   return m_ntvhndl_pool.create(hndl);
 }
@@ -656,8 +656,8 @@ process::insert_ntvhndl(types::native_type_handle& hndl)
 // -----------------------------------------------------------------------------
 
 void
-process::erase_ntvhndl(dyobj::ntvhndl_key key)
-  throw(native_type_handle_deletion_error)
+Process::erase_ntvhndl(dyobj::ntvhndl_key key)
+  throw(NativeTypeHandleDeletionError)
 {
   if (key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -668,16 +668,16 @@ process::erase_ntvhndl(dyobj::ntvhndl_key key)
   {
     m_ntvhndl_pool.erase(key);
   }
-  catch(const native_type_handle_not_found_error)
+  catch(const NativeTypeHandleNotFoundError)
   {
-    THROW(native_type_handle_deletion_error());
+    THROW(NativeTypeHandleDeletionError());
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-process::pause_exec()
+Process::pause_exec()
 {
   m_pause_exec = true;
 }
@@ -685,7 +685,7 @@ process::pause_exec()
 // -----------------------------------------------------------------------------
 
 void
-process::resume_exec()
+Process::resume_exec()
 {
   m_pause_exec = false;
 }
@@ -693,7 +693,7 @@ process::resume_exec()
 // -----------------------------------------------------------------------------
 
 inline bool
-process::is_valid_pc() const
+Process::is_valid_pc() const
 {
   return (uint64_t)m_pc < m_instrs.size();
 }
@@ -701,7 +701,7 @@ process::is_valid_pc() const
 // -----------------------------------------------------------------------------
 
 inline bool
-process::can_execute()
+Process::can_execute()
 {
   return is_valid_pc();
 }
@@ -709,15 +709,15 @@ process::can_execute()
 // -----------------------------------------------------------------------------
 
 bool
-process::pre_start()
+Process::pre_start()
 {
   if (m_compartments.empty())
   {
     return false;
   }
 
-  closure* closure = nullptr;
-  compartment* compartment = &m_compartments.front();
+  Closure* closure = nullptr;
+  Compartment* compartment = &m_compartments.front();
 
   bool res = compartment->get_starting_closure(&closure);
 
@@ -732,7 +732,7 @@ process::pre_start()
     m_instrs.reserve(DEFAULT_VECTOR_CAPACITY);
     append_vector(closure->vector);
 
-    closure_ctx ctx(0, closure->id);
+    ClosureCtx ctx(0, closure->id);
 
     m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
     emplace_frame(ctx, compartment, closure, m_pc);
@@ -751,7 +751,7 @@ process::pre_start()
 // -----------------------------------------------------------------------------
 
 void
-process::start()
+Process::start()
 {
   if (!pre_start())
   {
@@ -763,14 +763,14 @@ process::start()
   ASSERT(!m_invocation_ctx_stack.empty());
 #endif
 
-  frame* frame = &m_call_stack.back();
-  invocation_ctx* invk_ctx = &m_invocation_ctx_stack.back();
+  Frame* frame = &m_call_stack.back();
+  InvocationCtx* invk_ctx = &m_invocation_ctx_stack.back();
 
-  runtime::frame** frame_ptr = &frame;
-  invocation_ctx** invk_ctx_ptr = &invk_ctx;
+  runtime::Frame** frame_ptr = &frame;
+  InvocationCtx** invk_ctx_ptr = &invk_ctx;
 
 #if __MEASURE_INSTRS__
-  std::array<instr_measurement, INSTR_CODE_MAX> measurements;
+  std::array<InstrMeasurement, INSTR_CODE_MAX> measurements;
   boost::timer::cpu_timer t;
 #endif
 
@@ -778,7 +778,7 @@ process::start()
   {
     while (m_pause_exec) {}
 
-    const instr& instr = m_instrs[static_cast<size_t>(m_pc)];
+    const Instr& instr = m_instrs[static_cast<size_t>(m_pc)];
 
     auto& handler =
       instr_handler_meta::instr_handlers[instr.code].handler;
@@ -806,9 +806,9 @@ process::start()
     /**
      * TODO: [COREVM-246] Enable support for signal handling mechanism
      *
-    sigsetjmp(sighandler_registrar::get_sigjmp_env(), 1);
+    sigsetjmp(SigHandlerRegistrar::get_sigjmp_env(), 1);
 
-    if (!sighandler_registrar::is_sig_raised())
+    if (!SigHandlerRegistrar::is_sig_raised())
     {
       handler->execute(instr, *this);
     }
@@ -820,7 +820,7 @@ process::start()
       }
     }
 
-    sighandler_registrar::clear_sig_raised();
+    SigHandlerRegistrar::clear_sig_raised();
     *
     **/
 
@@ -836,7 +836,7 @@ process::start()
 // -----------------------------------------------------------------------------
 
 void
-process::set_do_gc()
+Process::set_do_gc()
 {
   m_do_gc = true;
 }
@@ -844,7 +844,7 @@ process::set_do_gc()
 // -----------------------------------------------------------------------------
 
 void
-process::do_gc()
+Process::do_gc()
 {
   this->pause_exec();
 
@@ -868,7 +868,7 @@ process::do_gc()
 // -----------------------------------------------------------------------------
 
 void
-process::set_gc_flag(uint8_t gc_flag)
+Process::set_gc_flag(uint8_t gc_flag)
 {
   m_gc_flag = gc_flag;
 }
@@ -876,7 +876,7 @@ process::set_gc_flag(uint8_t gc_flag)
 // -----------------------------------------------------------------------------
 
 instr_addr
-process::pc() const
+Process::pc() const
 {
   return m_pc;
 }
@@ -884,12 +884,12 @@ process::pc() const
 // -----------------------------------------------------------------------------
 
 void
-process::set_pc(const instr_addr addr)
-  throw(invalid_instr_addr_error)
+Process::set_pc(const instr_addr addr)
+  throw(InvalidInstrAddrError)
 {
   if ( (uint64_t)addr >= m_instrs.size() )
   {
-    THROW(invalid_instr_addr_error());
+    THROW(InvalidInstrAddrError());
   }
 
   m_pc = addr;
@@ -898,7 +898,7 @@ process::set_pc(const instr_addr addr)
 // -----------------------------------------------------------------------------
 
 void
-process::append_vector(const vector& vector)
+Process::append_vector(const vector& vector)
 {
   // Inserts the vector at the very end of the instr array.
   std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
@@ -907,7 +907,7 @@ process::append_vector(const vector& vector)
 // -----------------------------------------------------------------------------
 
 void
-process::insert_vector(const vector& vector)
+Process::insert_vector(const vector& vector)
 {
   // We want to insert the vector right after the current pc().
   //
@@ -919,13 +919,13 @@ process::insert_vector(const vector& vector)
 // -----------------------------------------------------------------------------
 
 bool
-process::get_frame_by_closure_ctx(
-  closure_ctx& closure_ctx, frame** frame_ptr)
+Process::get_frame_by_closure_ctx(
+  ClosureCtx& closure_ctx, Frame** frame_ptr)
 {
   auto itr = std::find_if(
     m_call_stack.begin(),
     m_call_stack.end(),
-    [&closure_ctx](const frame& frame) -> bool {
+    [&closure_ctx](const Frame& frame) -> bool {
       return frame.closure_ctx() == closure_ctx;
     }
   );
@@ -942,7 +942,7 @@ process::get_frame_by_closure_ctx(
 // -----------------------------------------------------------------------------
 
 bool
-process::should_gc() const
+Process::should_gc() const
 {
   for (const auto& gc_rule : m_gc_rules)
   {
@@ -958,7 +958,7 @@ process::should_gc() const
 // -----------------------------------------------------------------------------
 
 void
-process::set_sig_vector(
+Process::set_sig_vector(
   sig_atomic_t sig, vector& vector)
 {
   m_sig_instr_map.insert({sig, vector});
@@ -967,8 +967,8 @@ process::set_sig_vector(
 // -----------------------------------------------------------------------------
 
 void
-process::handle_signal(
-  sig_atomic_t sig, sighandler* handler)
+Process::handle_signal(
+  sig_atomic_t sig, SigHandler* handler)
 {
   auto itr = m_sig_instr_map.find(sig);
 
@@ -988,7 +988,7 @@ process::handle_signal(
 // -----------------------------------------------------------------------------
 
 size_t
-process::compartment_count() const
+Process::compartment_count() const
 {
   return m_compartments.size();
 }
@@ -996,8 +996,8 @@ process::compartment_count() const
 // -----------------------------------------------------------------------------
 
 compartment_id
-process::insert_compartment(
-  const compartment& compartment)
+Process::insert_compartment(
+  const Compartment& compartment)
 {
   m_compartments.push_back(compartment);
   return static_cast<compartment_id>(m_compartments.size() - 1);
@@ -1006,11 +1006,11 @@ process::insert_compartment(
 // -----------------------------------------------------------------------------
 
 compartment_id
-process::insert_compartment(
-  const compartment&& compartment)
+Process::insert_compartment(
+  const Compartment&& compartment)
 {
   m_compartments.push_back(
-    std::forward<const runtime::compartment>(compartment));
+    std::forward<const runtime::Compartment>(compartment));
 
   return static_cast<compartment_id>(m_compartments.size() - 1);
 }
@@ -1018,8 +1018,8 @@ process::insert_compartment(
 // -----------------------------------------------------------------------------
 
 void
-process::get_compartment(
-  compartment_id id, compartment** ptr)
+Process::get_compartment(
+  compartment_id id, Compartment** ptr)
 {
   if (id < static_cast<compartment_id>(m_compartments.size()))
   {
@@ -1030,7 +1030,7 @@ process::get_compartment(
 // -----------------------------------------------------------------------------
 
 void
-process::reset()
+Process::reset()
 {
   m_gc_flag = 0;
   m_pc = NONESET_INSTR_ADDR;
@@ -1043,17 +1043,17 @@ process::reset()
 
 // -----------------------------------------------------------------------------
 
-frame*
-process::find_frame_by_ctx(
-  closure_ctx ctx,
-  compartment* compartment,
-  process& process)
+Frame*
+Process::find_frame_by_ctx(
+  ClosureCtx ctx,
+  Compartment* compartment,
+  Process& process)
 {
 #if __DEBUG__
   ASSERT(compartment);
 #endif
 
-  frame* frame = nullptr;
+  Frame* frame = nullptr;
 
   while (!frame)
   {
@@ -1067,7 +1067,7 @@ process::find_frame_by_ctx(
       break;
     }
 
-    closure *closure = nullptr;
+    Closure *closure = nullptr;
     compartment->get_closure_by_id(ctx.closure_id, &closure);
 
 #if __DEBUG__
@@ -1090,16 +1090,16 @@ process::find_frame_by_ctx(
 
 // -----------------------------------------------------------------------------
 
-frame*
-process::find_parent_frame_in_process(
-  frame* frame_ptr,
-  process& process)
+Frame*
+Process::find_parent_frame_in_process(
+  Frame* frame_ptr,
+  Process& process)
 {
 #if __DEBUG__
   ASSERT(frame_ptr);
 #endif
 
-  const closure* closure = frame_ptr->closure_ptr();
+  const Closure* closure = frame_ptr->closure_ptr();
 
 #if __DEBUG__
   ASSERT(closure);
@@ -1112,15 +1112,15 @@ process::find_parent_frame_in_process(
     return nullptr;
   }
 
-  closure_ctx ctx(frame_ptr->closure_ctx().compartment_id, parent_closure_id);
+  ClosureCtx ctx(frame_ptr->closure_ctx().compartment_id, parent_closure_id);
 
-  compartment* compartment = frame_ptr->compartment_ptr();
+  Compartment* compartment = frame_ptr->compartment_ptr();
 
 #if __DEBUG__
   ASSERT(compartment);
 #endif
 
-  frame_ptr = process::find_frame_by_ctx(
+  frame_ptr = Process::find_frame_by_ctx(
     ctx, compartment, process);
 
   return frame_ptr;
@@ -1129,8 +1129,8 @@ process::find_parent_frame_in_process(
 // -----------------------------------------------------------------------------
 
 void
-process::unwind_stack(
-  process& process, size_t limit)
+Process::unwind_stack(
+  Process& process, size_t limit)
 {
   size_t unwind_count = 0;
   std::vector<std::string> output_lines;
@@ -1144,13 +1144,13 @@ process::unwind_stack(
   {
     std::stringstream line_ss;
 
-    frame& frame = process.top_frame();
+    Frame& frame = process.top_frame();
 
-    const compartment* compartment = frame.compartment_ptr();
+    const Compartment* compartment = frame.compartment_ptr();
 
     line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
 
-    const closure* closure = frame.closure_ptr();
+    const Closure* closure = frame.closure_ptr();
 
     const loc_table& locs = closure->locs;
 
@@ -1158,7 +1158,7 @@ process::unwind_stack(
 
     if (locs.find(index) != locs.end())
     {
-      const loc_info& loc = locs.at(index);
+      const LocInfo& loc = locs.at(index);
 
       line_ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
     }

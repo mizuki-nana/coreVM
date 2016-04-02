@@ -62,7 +62,7 @@ instr_benchmarks_fixture::instr_benchmarks_fixture()
 // -----------------------------------------------------------------------------
 
 instr_benchmarks_fixture::instr_benchmarks_fixture(
-  const runtime::process::options& opts)
+  const runtime::Process::Options& opts)
   :
   m_process(opts)
 {
@@ -74,21 +74,21 @@ instr_benchmarks_fixture::instr_benchmarks_fixture(
 void
 instr_benchmarks_fixture::init()
 {
-  corevm::runtime::compartment compartment(DUMMY_PATH);
+  corevm::runtime::Compartment compartment(DUMMY_PATH);
 
   // Please note that setting this vector too long can cause runtime errors
   // in certain benchmarks.
   corevm::runtime::vector vector {
-    corevm::runtime::instr(0, 0, 0),
-    corevm::runtime::instr(0, 0, 0),
-    corevm::runtime::instr(0, 0, 0),
-    corevm::runtime::instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0),
   };
 
   corevm::runtime::loc_table locs;
-  corevm::runtime::catch_site_list catch_sites;
+  corevm::runtime::CatchSiteList catch_sites;
 
-  corevm::runtime::closure closure(
+  corevm::runtime::Closure closure(
     "__main__",
     0,
     corevm::runtime::NONESET_CLOSURE_ID,
@@ -96,15 +96,15 @@ instr_benchmarks_fixture::init()
     locs,
     catch_sites);
 
-  corevm::runtime::closure_table closure_table { closure };
+  corevm::runtime::ClosureTable closure_table { closure };
   compartment.set_closure_table(std::move(closure_table));
 
   auto compartment_id = m_process.insert_compartment(compartment);
 
   // TODO: consolidate this code with `process::pre_start()`.
-  corevm::runtime::closure_ctx ctx(compartment_id, closure.id);
+  corevm::runtime::ClosureCtx ctx(compartment_id, closure.id);
 
-  corevm::runtime::compartment* compartment_ptr = nullptr;
+  corevm::runtime::Compartment* compartment_ptr = nullptr;
   m_process.get_compartment(compartment_id, &compartment_ptr);
   assert(compartment_ptr);
 
@@ -118,7 +118,7 @@ instr_benchmarks_fixture::init()
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::process&
+corevm::runtime::Process&
 instr_benchmarks_fixture::process()
 {
   return m_process;

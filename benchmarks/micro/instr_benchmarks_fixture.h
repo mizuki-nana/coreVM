@@ -39,14 +39,14 @@ class instr_benchmarks_fixture
 public:
   instr_benchmarks_fixture();
 
-  explicit instr_benchmarks_fixture(const runtime::process::options& opts);
+  explicit instr_benchmarks_fixture(const runtime::Process::Options& opts);
 
-  corevm::runtime::process& process();
+  corevm::runtime::Process& process();
 
 protected:
   void init();
 
-  corevm::runtime::process m_process;
+  corevm::runtime::Process m_process;
 };
 
 

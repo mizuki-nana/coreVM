@@ -37,7 +37,7 @@ namespace runtime {
 /**
  * coreVM instruction set.
  */
-enum instr_enum : uint32_t
+enum InstrEnum : uint32_t
 {
 
   /* -------------------------- Object instructions ------------------------- */

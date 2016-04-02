@@ -37,11 +37,11 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-process* sighandler_registrar::process = nullptr;
+Process* SigHandlerRegistrar::process = nullptr;
 
 // -----------------------------------------------------------------------------
 
-bool sighandler_registrar::sig_raised = false;
+bool SigHandlerRegistrar::sig_raised = false;
 
 // -----------------------------------------------------------------------------
 
@@ -50,7 +50,7 @@ static sigjmp_buf _env;
 // -----------------------------------------------------------------------------
 
 sigjmp_buf&
-sighandler_registrar::get_sigjmp_env()
+SigHandlerRegistrar::get_sigjmp_env()
 {
   return _env;
 }
@@ -63,39 +63,39 @@ sighandler_registrar::get_sigjmp_env()
 #endif
 
 const std::unordered_map<sig_atomic_t, sighandler_wrapper> \
-  sighandler_registrar::handler_map
+  SigHandlerRegistrar::handler_map
 {
 
   /* --------------- Arithmetic and execution signals ---------------------- */
 
-  { SIGFPE,     { .handler=std::make_shared<sighandler_SIGFPE>()    } },
-  { SIGKILL,    { .handler=std::make_shared<sighandler_SIGILL>()    } },
-  { SIGSEGV,    { .handler=std::make_shared<sighandler_SIGSEGV>()   } },
-  { SIGBUS,     { .handler=std::make_shared<sighandler_SIGBUS>()    } },
+  { SIGFPE,     { .handler=std::make_shared<SigHandler_SIGFPE>()    } },
+  { SIGKILL,    { .handler=std::make_shared<SigHandler_SIGILL>()    } },
+  { SIGSEGV,    { .handler=std::make_shared<SigHandler_SIGSEGV>()   } },
+  { SIGBUS,     { .handler=std::make_shared<SigHandler_SIGBUS>()    } },
 
   /* ----------------------- Termination signals ---------------------------- */
 
-  { SIGABRT,    { .handler=std::make_shared<sighandler_SIGABRT>()   } },
-  { SIGINT,     { .handler=std::make_shared<sighandler_SIGINT>()    } },
-  { SIGTERM,    { .handler=std::make_shared<sighandler_SIGTERM>()   } },
-  { SIGQUIT,    { .handler=std::make_shared<sighandler_SIGQUIT>()   } },
+  { SIGABRT,    { .handler=std::make_shared<SigHandler_SIGABRT>()   } },
+  { SIGINT,     { .handler=std::make_shared<SigHandler_SIGINT>()    } },
+  { SIGTERM,    { .handler=std::make_shared<SigHandler_SIGTERM>()   } },
+  { SIGQUIT,    { .handler=std::make_shared<SigHandler_SIGQUIT>()   } },
 
   /* ------------------------ Alarm signals --------------------------------- */
 
-  { SIGALRM,    { .handler=std::make_shared<sighandler_SIGALRM>()   } },
-  { SIGVTALRM,  { .handler=std::make_shared<sighandler_SIGVTALRM>() } },
-  { SIGPROF,    { .handler=std::make_shared<sighandler_SIGPROF>()   } },
+  { SIGALRM,    { .handler=std::make_shared<SigHandler_SIGALRM>()   } },
+  { SIGVTALRM,  { .handler=std::make_shared<SigHandler_SIGVTALRM>() } },
+  { SIGPROF,    { .handler=std::make_shared<SigHandler_SIGPROF>()   } },
 
   /* --------------------- Operation error signals -------------------------- */
 
-  { SIGPIPE,    { .handler=std::make_shared<sighandler_SIGPIPE>()   } },
-  { SIGXCPU,    { .handler=std::make_shared<sighandler_SIGXCPU>()   } },
-  { SIGXFSZ,    { .handler=std::make_shared<sighandler_SIGXFSZ>()   } },
+  { SIGPIPE,    { .handler=std::make_shared<SigHandler_SIGPIPE>()   } },
+  { SIGXCPU,    { .handler=std::make_shared<SigHandler_SIGXCPU>()   } },
+  { SIGXFSZ,    { .handler=std::make_shared<SigHandler_SIGXFSZ>()   } },
 
   /* -------------------- Asynchronous I/O signals -------------------------- */
 
-  { SIGIO,      { .handler=std::make_shared<sighandler_SIGIO>()     } },
-  { SIGURG,     { .handler=std::make_shared<sighandler_SIGURG>()    } },
+  { SIGIO,      { .handler=std::make_shared<SigHandler_SIGIO>()     } },
+  { SIGURG,     { .handler=std::make_shared<SigHandler_SIGURG>()    } },
 
 };
 
@@ -106,7 +106,7 @@ const std::unordered_map<sig_atomic_t, sighandler_wrapper> \
 // -----------------------------------------------------------------------------
 
 const std::unordered_map<std::string, sig_atomic_t> \
-  sighandler_registrar::sig_value_to_str_map
+  SigHandlerRegistrar::sig_value_to_str_map
 {
 
   /* ---------------- Arithmetic and execution signals ---------------------- */
@@ -145,40 +145,40 @@ const std::unordered_map<std::string, sig_atomic_t> \
 // -----------------------------------------------------------------------------
 
 bool
-sighandler_registrar::is_sig_raised()
+SigHandlerRegistrar::is_sig_raised()
 {
-  return sighandler_registrar::sig_raised;
+  return SigHandlerRegistrar::sig_raised;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_registrar::clear_sig_raised()
+SigHandlerRegistrar::clear_sig_raised()
 {
-  sighandler_registrar::sig_raised = false;
+  SigHandlerRegistrar::sig_raised = false;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_registrar::init(runtime::process* process_)
+SigHandlerRegistrar::init(runtime::Process* process_)
 {
-  sighandler_registrar::process = process_;
+  SigHandlerRegistrar::process = process_;
 
   for (
-    auto itr = sighandler_registrar::handler_map.begin();
-    itr != sighandler_registrar::handler_map.end();
+    auto itr = SigHandlerRegistrar::handler_map.begin();
+    itr != SigHandlerRegistrar::handler_map.end();
     ++itr)
   {
     sig_atomic_t sig = itr->first;
-    signal(sig, sighandler_registrar::handle_signal);
+    signal(sig, SigHandlerRegistrar::handle_signal);
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_registrar::ignore(sig_atomic_t sig)
+SigHandlerRegistrar::ignore(sig_atomic_t sig)
 {
   signal(sig, SIG_IGN);
 }
@@ -186,28 +186,28 @@ sighandler_registrar::ignore(sig_atomic_t sig)
 // -----------------------------------------------------------------------------
 
 void
-sighandler_registrar::handle_signal(int signum)
+SigHandlerRegistrar::handle_signal(int signum)
 {
-  auto itr = sighandler_registrar::handler_map.find(signum);
+  auto itr = SigHandlerRegistrar::handler_map.find(signum);
 
-  sighandler *handler =
-    itr != sighandler_registrar::handler_map.end() ?
+  SigHandler *handler =
+    itr != SigHandlerRegistrar::handler_map.end() ?
     itr->second.handler.get() : nullptr;
 
-  sighandler_registrar::process->handle_signal(
+  SigHandlerRegistrar::process->handle_signal(
     signum,
     handler
   );
 
-  sighandler_registrar::sig_raised = true;
+  SigHandlerRegistrar::sig_raised = true;
 
-  siglongjmp(sighandler_registrar::get_sigjmp_env(), 1);
+  siglongjmp(SigHandlerRegistrar::get_sigjmp_env(), 1);
 }
 
 // -----------------------------------------------------------------------------
 
 sig_atomic_t
-sighandler_registrar::get_sig_value_from_string(const std::string& str)
+SigHandlerRegistrar::get_sig_value_from_string(const std::string& str)
 {
   return sig_value_to_str_map.at(str);
 }

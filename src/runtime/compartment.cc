@@ -36,7 +36,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-compartment::compartment(const std::string& path)
+Compartment::Compartment(const std::string& path)
   :
   m_path(path)
 {
@@ -45,7 +45,7 @@ compartment::compartment(const std::string& path)
 // -----------------------------------------------------------------------------
 
 const std::string&
-compartment::path() const
+Compartment::path() const
 {
   return m_path;
 }
@@ -53,8 +53,8 @@ compartment::path() const
 // -----------------------------------------------------------------------------
 
 void
-compartment::set_encoding_map(
-  const encoding_map& encoding_map)
+Compartment::set_encoding_map(
+  const EncodingMap& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -62,8 +62,8 @@ compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 void
-compartment::set_encoding_map(
-  const encoding_map&& encoding_map)
+Compartment::set_encoding_map(
+  const EncodingMap&& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -71,13 +71,13 @@ compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 std::string
-compartment::get_encoding_string(
+Compartment::get_encoding_string(
   encoding_key key) const
-  throw(encoding_string_not_found_error)
+  throw(EncodingStringNotFoundError)
 {
   if (key >= m_encoding_map.size())
   {
-    THROW(encoding_string_not_found_error(key));
+    THROW(EncodingStringNotFoundError(key));
   }
 
   return m_encoding_map[key];
@@ -86,7 +86,7 @@ compartment::get_encoding_string(
 // -----------------------------------------------------------------------------
 
 void
-compartment::get_encoding_string(
+Compartment::get_encoding_string(
   encoding_key key, std::string* str) const
 {
   if (!str)
@@ -103,7 +103,7 @@ compartment::get_encoding_string(
 // -----------------------------------------------------------------------------
 
 size_t
-compartment::closure_count() const
+Compartment::closure_count() const
 {
   return m_closure_table.size();
 }
@@ -111,31 +111,31 @@ compartment::closure_count() const
 // -----------------------------------------------------------------------------
 
 void
-compartment::set_closure_table(
-  const closure_table&& closure_table)
+Compartment::set_closure_table(
+  const ClosureTable&& closure_table)
 {
   m_closure_table = closure_table;
 }
 
 // -----------------------------------------------------------------------------
 
-const closure
-compartment::get_closure_by_id(closure_id id)
-  const throw(closure_not_found_error)
+const Closure
+Compartment::get_closure_by_id(closure_id id)
+  const throw(ClosureNotFoundError)
 {
   if (id < static_cast<closure_id>(m_closure_table.size()))
   {
     return m_closure_table[static_cast<size_t>(id)];
   }
 
-  THROW(closure_not_found_error(id));
+  THROW(ClosureNotFoundError(id));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-compartment::get_closure_by_id(
-  closure_id id, closure** closure_ptr)
+Compartment::get_closure_by_id(
+  closure_id id, Closure** closure_ptr)
 {
   if (id < static_cast<closure_id>(m_closure_table.size()))
   {
@@ -146,17 +146,17 @@ compartment::get_closure_by_id(
 // -----------------------------------------------------------------------------
 
 bool
-compartment::get_starting_closure(
-  closure** closure)
+Compartment::get_starting_closure(
+  Closure** closure)
 {
   for (size_t i = 0; i < m_closure_table.size(); ++i)
   {
-    const runtime::closure& closure_ = m_closure_table[i];
+    const runtime::Closure& closure_ = m_closure_table[i];
 
     if (closure_.id != NONESET_CLOSURE_ID &&
         closure_.parent_id == NONESET_CLOSURE_ID)
     {
-      *closure = const_cast<runtime::closure*>(&closure_);
+      *closure = const_cast<runtime::Closure*>(&closure_);
 
       return true;
     }

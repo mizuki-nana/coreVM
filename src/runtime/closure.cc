@@ -36,14 +36,14 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 static_assert(
-  std::numeric_limits<closure_table::size_type>::max() >=
+  std::numeric_limits<ClosureTable::size_type>::max() >=
   std::numeric_limits<closure_id>::max(),
   "Closure ID incompatibility");
 
 // -----------------------------------------------------------------------------
 
-closure_printer::closure_printer(
-  const closure& closure,
+ClosurePrinter::ClosurePrinter(
+  const Closure& closure,
   uint32_t opts)
   :
   m_closure(closure),
@@ -54,7 +54,7 @@ closure_printer::closure_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-closure_printer::operator()(std::ostream& ost) const
+ClosurePrinter::operator()(std::ostream& ost) const
 {
   ost << "Closure:" << std::endl;
   ost << std::endl;

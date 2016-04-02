@@ -26,14 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class sighandler_registrar_test : public ::testing::Test {};
+class SighandlerRegistrarTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(sighandler_registrar_test, TestInit)
+TEST_F(SighandlerRegistrarTest, TestInit)
 {
-  corevm::runtime::process process;
-  corevm::runtime::sighandler_registrar::init(&process);
+  corevm::runtime::Process process;
+  corevm::runtime::SigHandlerRegistrar::init(&process);
 }
 
 // -----------------------------------------------------------------------------

@@ -31,7 +31,7 @@ namespace runtime {
 
 
 
-class process;
+class Process;
 
 
 

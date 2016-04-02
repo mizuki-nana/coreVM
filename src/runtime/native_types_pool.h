@@ -49,7 +49,7 @@ namespace runtime {
 using sneaker::allocator::object_traits;
 
 
-class native_types_pool
+class NativeTypesPool
 {
 public:
   typedef types::native_type_handle value_type;
@@ -85,12 +85,12 @@ public:
 
   using size_type = typename container_type::size_type;
 
-  native_types_pool();
-  explicit native_types_pool(uint64_t);
+  NativeTypesPool();
+  explicit NativeTypesPool(uint64_t);
 
   /* Native type pools should not be copyable. */
-  native_types_pool(const native_types_pool&) = delete;
-  native_types_pool& operator=(const native_types_pool&) = delete;
+  NativeTypesPool(const NativeTypesPool&) = delete;
+  NativeTypesPool& operator=(const NativeTypesPool&) = delete;
 
   size_type size() const;
 
@@ -99,18 +99,18 @@ public:
   size_type total_size() const;
 
   reference at(const dyobj::ntvhndl_key&)
-    throw(native_type_handle_not_found_error);
+    throw(NativeTypeHandleNotFoundError);
 
   dyobj::ntvhndl_key create()
-    throw(native_type_handle_insertion_error);
+    throw(NativeTypeHandleInsertionError);
 
   dyobj::ntvhndl_key create(types::native_type_handle& hndl)
-    throw(native_type_handle_insertion_error);
+    throw(NativeTypeHandleInsertionError);
 
   void erase(const dyobj::ntvhndl_key&)
-    throw(native_type_handle_not_found_error);
+    throw(NativeTypeHandleNotFoundError);
 
-  friend std::ostream& operator<<(std::ostream&, const native_types_pool&);
+  friend std::ostream& operator<<(std::ostream&, const NativeTypesPool&);
 
 private:
   container_type m_container;

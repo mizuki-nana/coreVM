@@ -105,9 +105,9 @@ public:
 
   bool getattr(attr_key_type, dyobj_id_type*) const;
 
-  const runtime::closure_ctx& closure_ctx() const;
+  const runtime::ClosureCtx& closure_ctx() const;
 
-  void set_closure_ctx(const runtime::closure_ctx&);
+  void set_closure_ctx(const runtime::ClosureCtx&);
 
   bool has_ref(dyobj_id_type) const noexcept;
 
@@ -158,7 +158,7 @@ private:
   attr_map_type m_attrs;
   DynamicObjectManager m_manager;
   dyobj::ntvhndl_key m_ntvhndl_key;
-  runtime::closure_ctx m_closure_ctx;
+  runtime::ClosureCtx m_closure_ctx;
 };
 
 // -----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ DynamicObject<DynamicObjectManager>::DynamicObject():
   m_attrs(),
   m_manager(),
   m_ntvhndl_key(NONESET_NTVHNDL_KEY),
-  m_closure_ctx(runtime::closure_ctx(
+  m_closure_ctx(runtime::ClosureCtx(
     runtime::NONESET_COMPARTMENT_ID, runtime::NONESET_CLOSURE_ID))
 {
   m_attrs.reserve(COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT);
@@ -464,7 +464,7 @@ DynamicObject<DynamicObjectManager>::putattr(
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-const corevm::runtime::closure_ctx&
+const corevm::runtime::ClosureCtx&
 DynamicObject<DynamicObjectManager>::closure_ctx() const
 {
   return m_closure_ctx;
@@ -475,7 +475,7 @@ DynamicObject<DynamicObjectManager>::closure_ctx() const
 template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::set_closure_ctx(
-  const runtime::closure_ctx& ctx)
+  const runtime::ClosureCtx& ctx)
 {
   m_closure_ctx = ctx;
 }

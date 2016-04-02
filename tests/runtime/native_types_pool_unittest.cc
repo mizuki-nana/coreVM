@@ -29,22 +29,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <sstream>
 
 
-class native_types_pool_unittest : public ::testing::Test {};
+class NativeTypesPoolUnitTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_types_pool_unittest, TestInitialization)
+TEST_F(NativeTypesPoolUnitTest, TestInitialization)
 {
-  corevm::runtime::native_types_pool pool;
+  corevm::runtime::NativeTypesPool pool;
 
   ASSERT_EQ(0, pool.size());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_types_pool_unittest, TestCreateAndAccess)
+TEST_F(NativeTypesPoolUnitTest, TestCreateAndAccess)
 {
-  corevm::runtime::native_types_pool pool;
+  corevm::runtime::NativeTypesPool pool;
 
   auto key = pool.create();
 
@@ -66,9 +66,9 @@ TEST_F(native_types_pool_unittest, TestCreateAndAccess)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_types_pool_unittest, TestInvalidAccess)
+TEST_F(NativeTypesPoolUnitTest, TestInvalidAccess)
 {
-  corevm::runtime::native_types_pool pool;
+  corevm::runtime::NativeTypesPool pool;
 
   corevm::dyobj::ntvhndl_key invalid_key = 1;
 
@@ -76,15 +76,15 @@ TEST_F(native_types_pool_unittest, TestInvalidAccess)
     {
       pool.at(invalid_key);
     },
-    corevm::runtime::native_type_handle_not_found_error
+    corevm::runtime::NativeTypeHandleNotFoundError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_types_pool_unittest, TestCreateAndErase)
+TEST_F(NativeTypesPoolUnitTest, TestCreateAndErase)
 {
-  corevm::runtime::native_types_pool pool;
+  corevm::runtime::NativeTypesPool pool;
 
   auto key = pool.create();
 
@@ -101,22 +101,22 @@ TEST_F(native_types_pool_unittest, TestCreateAndErase)
     {
       pool.erase(key);
     },
-    corevm::runtime::native_type_handle_not_found_error
+    corevm::runtime::NativeTypeHandleNotFoundError
   );
 
   ASSERT_THROW(
     {
       pool.at(key);
     },
-    corevm::runtime::native_type_handle_not_found_error
+    corevm::runtime::NativeTypeHandleNotFoundError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_types_pool_unittest, TestOutputStream)
+TEST_F(NativeTypesPoolUnitTest, TestOutputStream)
 {
-  corevm::runtime::native_types_pool pool;
+  corevm::runtime::NativeTypesPool pool;
   pool.create();
   pool.create();
   pool.create();

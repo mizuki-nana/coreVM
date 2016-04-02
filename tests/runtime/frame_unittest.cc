@@ -29,32 +29,32 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class frame_unittest : public ::testing::Test
+class FrameUnitTest : public ::testing::Test
 {
 protected:
-  frame_unittest()
+  FrameUnitTest()
     :
-    m_compartment(new corevm::runtime::compartment("")),
+    m_compartment(new corevm::runtime::Compartment("")),
     m_closure_ctx(corevm::runtime::NONESET_COMPARTMENT_ID, corevm::runtime::NONESET_CLOSURE_ID),
     m_closure()
   {
   }
 
-  ~frame_unittest()
+  ~FrameUnitTest()
   {
     delete m_compartment;
   }
 
-  corevm::runtime::compartment* m_compartment;
-  corevm::runtime::closure_ctx m_closure_ctx;
-  corevm::runtime::closure m_closure;
+  corevm::runtime::Compartment* m_compartment;
+  corevm::runtime::ClosureCtx m_closure_ctx;
+  corevm::runtime::Closure m_closure;
 };
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestInitialization)
+TEST_F(FrameUnitTest, TestInitialization)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   ASSERT_EQ(m_compartment, frame.compartment_ptr());
   ASSERT_EQ(&m_closure, frame.closure_ptr());
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
@@ -63,19 +63,19 @@ TEST_F(frame_unittest, TestInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestInitializationWithReturnAddr)
+TEST_F(FrameUnitTest, TestInitializationWithReturnAddr)
 {
   corevm::runtime::instr_addr return_addr = 100;
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure, return_addr);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure, return_addr);
 
   ASSERT_EQ(return_addr, frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestGetAndSetReturnAddr)
+TEST_F(FrameUnitTest, TestGetAndSetReturnAddr)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
 
   corevm::runtime::instr_addr expected_return_addr = 555;
@@ -85,9 +85,9 @@ TEST_F(frame_unittest, TestGetAndSetReturnAddr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestPushAndPopEvalStack)
+TEST_F(FrameUnitTest, TestPushAndPopEvalStack)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::types::native_type_handle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(handle);
@@ -97,15 +97,15 @@ TEST_F(frame_unittest, TestPushAndPopEvalStack)
     {
       frame.pop_eval_stack();
     },
-    corevm::runtime::evaluation_stack_empty_error
+    corevm::runtime::EvaluationStackEmptyError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestMovePushAndPopEvalStack)
+TEST_F(FrameUnitTest, TestMovePushAndPopEvalStack)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::types::native_type_handle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(std::move(handle));
@@ -115,15 +115,15 @@ TEST_F(frame_unittest, TestMovePushAndPopEvalStack)
     {
       frame.pop_eval_stack();
     },
-    corevm::runtime::evaluation_stack_empty_error
+    corevm::runtime::EvaluationStackEmptyError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestVisibleVars)
+TEST_F(FrameUnitTest, TestVisibleVars)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = 1;
 
@@ -133,7 +133,7 @@ TEST_F(frame_unittest, TestVisibleVars)
     {
       frame.get_visible_var(var_key);
     },
-    corevm::runtime::name_not_found_error
+    corevm::runtime::NameNotFoundError
   );
 
   frame.set_visible_var(var_key, obj_id);
@@ -146,15 +146,15 @@ TEST_F(frame_unittest, TestVisibleVars)
     {
       frame.get_visible_var(var_key);
     },
-    corevm::runtime::name_not_found_error
+    corevm::runtime::NameNotFoundError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestInvisibleVars)
+TEST_F(FrameUnitTest, TestInvisibleVars)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
   corevm::dyobj::dyobj_id obj_id = 812;
 
@@ -164,7 +164,7 @@ TEST_F(frame_unittest, TestInvisibleVars)
     {
       frame.get_invisible_var(var_key);
     },
-    corevm::runtime::name_not_found_error
+    corevm::runtime::NameNotFoundError
   );
 
   frame.set_invisible_var(var_key, obj_id);
@@ -177,15 +177,15 @@ TEST_F(frame_unittest, TestInvisibleVars)
     {
       frame.get_invisible_var(var_key);
     },
-    corevm::runtime::name_not_found_error
+    corevm::runtime::NameNotFoundError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(frame_unittest, TestGetAndSetExcObj)
+TEST_F(FrameUnitTest, TestGetAndSetExcObj)
 {
-  corevm::runtime::frame frame(m_closure_ctx, m_compartment, &m_closure);
+  corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::dyobj::dyobj_id id = 1;
 
   ASSERT_NE(id, frame.exc_obj());

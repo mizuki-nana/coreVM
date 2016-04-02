@@ -49,7 +49,7 @@ protected:
     remove(PATH);
   }
 
-  corevm::runtime::process m_process;
+  corevm::runtime::Process m_process;
 };
 
 // -----------------------------------------------------------------------------

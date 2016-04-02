@@ -162,7 +162,7 @@ signal_vector_loader::signal_vector_loader(
 // -----------------------------------------------------------------------------
 
 void
-signal_vector_loader::load(runtime::process& process)
+signal_vector_loader::load(runtime::Process& process)
   throw(file_loading_error)
 {
   std::ifstream f(m_path, std::ios::binary);
@@ -218,7 +218,7 @@ signal_vector_loader::load(runtime::process& process)
       get_vector_from_json(signal_json);
 
     sig_atomic_t sig =
-      runtime::sighandler_registrar::get_sig_value_from_string(signal_str);
+      runtime::SigHandlerRegistrar::get_sig_value_from_string(signal_str);
 
     process.set_sig_vector(sig, vector);
   }

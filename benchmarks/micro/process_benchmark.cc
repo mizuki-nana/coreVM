@@ -31,12 +31,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void BenchmarkProcessCreateDyobj(benchmark::State& state)
 {
-  corevm::runtime::process::options opts;
+  corevm::runtime::Process::Options opts;
 
   opts.heap_alloc_size = 1024 * 1024 * 512;
   opts.pool_alloc_size = 1024 * 1024 * 512;
 
-  corevm::runtime::process process(opts);
+  corevm::runtime::Process process(opts);
 
   while (state.KeepRunning())
   {
@@ -49,7 +49,7 @@ void BenchmarkProcessCreateDyobj(benchmark::State& state)
 static
 void BenchmarkProcessGetDyobj(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::Process process;
 
   auto id = process.create_dyobj();
 
@@ -65,7 +65,7 @@ void BenchmarkProcessGetDyobj(benchmark::State& state)
 static
 void BenchmarkProcessPushStack(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::Process process;
 
   corevm::dyobj::dyobj_id id = 1;
 
@@ -82,12 +82,12 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 static
 void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 {
-  corevm::runtime::process::options opts;
+  corevm::runtime::Process::Options opts;
 
   opts.heap_alloc_size = 1024 * 1024 * 512;
   opts.pool_alloc_size = 1024 * 1024 * 512;
 
-  corevm::runtime::process process(opts);
+  corevm::runtime::Process process(opts);
 
   corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
 
@@ -103,7 +103,7 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 static
 void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::Process process;
 
   corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
   auto key = process.insert_ntvhndl(hndl);
@@ -120,7 +120,7 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 static
 void BenchmarkProcessInsertVector(benchmark::State& state)
 {
-  corevm::runtime::process process;
+  corevm::runtime::Process process;
 
   // A vector of 100 instructions.
   corevm::runtime::vector vector;

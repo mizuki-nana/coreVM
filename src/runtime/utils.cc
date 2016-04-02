@@ -39,7 +39,7 @@ namespace runtime {
 
 dyobj::attr_key
 get_attr_key(
-  compartment* compartment,
+  Compartment* compartment,
   encoding_key str_key,
   std::string* attr_str)
 {
@@ -54,7 +54,7 @@ get_attr_key(
 
 dyobj::attr_key
 get_attr_key(
-  compartment* compartment, encoding_key str_key)
+  Compartment* compartment, encoding_key str_key)
 {
   std::string attr_str;
   return get_attr_key(compartment, str_key, &attr_str);

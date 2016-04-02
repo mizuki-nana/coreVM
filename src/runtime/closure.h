@@ -41,9 +41,9 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef struct closure
+typedef struct Closure
 {
-  closure()
+  Closure()
     :
     name(),
     id(NONESET_CLOSURE_ID),
@@ -54,13 +54,13 @@ typedef struct closure
   {
   }
 
-  closure(
+  Closure(
     std::string name_,
     closure_id id_,
     closure_id parent_id_,
     vector vector_,
     loc_table locs_,
-    catch_site_list catch_sites_)
+    CatchSiteList catch_sites_)
     :
     name(name_),
     id(id_),
@@ -76,23 +76,23 @@ typedef struct closure
   closure_id parent_id;
   vector vector;
   loc_table locs;
-  catch_site_list catch_sites;
-} closure;
+  CatchSiteList catch_sites;
+} Closure;
 
 // -----------------------------------------------------------------------------
 
-typedef std::vector<closure> closure_table;
+typedef std::vector<Closure> ClosureTable;
 
 // -----------------------------------------------------------------------------
 
-struct closure_printer
+struct ClosurePrinter
 {
-  closure_printer(const closure&, uint32_t opts);
+  ClosurePrinter(const Closure&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 
 private:
-  const closure& m_closure;
+  const Closure& m_closure;
   const uint32_t m_opts;
 };
 

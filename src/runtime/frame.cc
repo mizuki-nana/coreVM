@@ -40,10 +40,10 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-frame::frame(
-  const runtime::closure_ctx& closure_ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr)
+Frame::Frame(
+  const runtime::ClosureCtx& closure_ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr)
   :
   m_closure_ctx(closure_ctx),
   m_compartment_ptr(compartment_ptr),
@@ -61,10 +61,10 @@ frame::frame(
 
 // -----------------------------------------------------------------------------
 
-frame::frame(
-  const runtime::closure_ctx& closure_ctx,
-  compartment* compartment_ptr,
-  closure* closure_ptr,
+Frame::Frame(
+  const runtime::ClosureCtx& closure_ctx,
+  Compartment* compartment_ptr,
+  Closure* closure_ptr,
   instr_addr return_addr)
   :
   m_closure_ctx(closure_ctx),
@@ -83,7 +83,7 @@ frame::frame(
 
 // -----------------------------------------------------------------------------
 
-frame::~frame()
+Frame::~Frame()
 {
   // Do nothing here.
 }
@@ -91,7 +91,7 @@ frame::~frame()
 // -----------------------------------------------------------------------------
 
 size_t
-frame::eval_stack_size() const
+Frame::eval_stack_size() const
 {
   return m_eval_stack.size();
 }
@@ -99,7 +99,7 @@ frame::eval_stack_size() const
 // -----------------------------------------------------------------------------
 
 instr_addr
-frame::return_addr() const
+Frame::return_addr() const
 {
   return m_return_addr;
 }
@@ -107,7 +107,7 @@ frame::return_addr() const
 // -----------------------------------------------------------------------------
 
 void
-frame::set_return_addr(
+Frame::set_return_addr(
   const instr_addr return_addr)
 {
   m_return_addr = return_addr;
@@ -116,7 +116,7 @@ frame::set_return_addr(
 // -----------------------------------------------------------------------------
 
 void
-frame::push_eval_stack(
+Frame::push_eval_stack(
   types::native_type_handle& operand)
 {
   m_eval_stack.push_back(operand);
@@ -125,7 +125,7 @@ frame::push_eval_stack(
 // -----------------------------------------------------------------------------
 
 void
-frame::push_eval_stack(
+Frame::push_eval_stack(
   types::native_type_handle&& operand)
 {
   m_eval_stack.push_back(
@@ -134,12 +134,12 @@ frame::push_eval_stack(
 
 // -----------------------------------------------------------------------------
 types::native_type_handle
-frame::pop_eval_stack()
-  throw(evaluation_stack_empty_error)
+Frame::pop_eval_stack()
+  throw(EvaluationStackEmptyError)
 {
   if (m_eval_stack.empty())
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   types::native_type_handle operand = m_eval_stack.back();
@@ -150,12 +150,12 @@ frame::pop_eval_stack()
 // -----------------------------------------------------------------------------
 
 types::native_type_handle&
-frame::top_eval_stack()
-  throw(evaluation_stack_empty_error)
+Frame::top_eval_stack()
+  throw(EvaluationStackEmptyError)
 {
   if (m_eval_stack.empty())
   {
-    THROW(evaluation_stack_empty_error());
+    THROW(EvaluationStackEmptyError());
   }
 
   return m_eval_stack.back();
@@ -164,13 +164,13 @@ frame::top_eval_stack()
 // -----------------------------------------------------------------------------
 
 void
-frame::swap_eval_stack()
+Frame::swap_eval_stack()
 {
   const size_t eval_stack_size = m_eval_stack.size();
 
   if (eval_stack_size < 2u)
   {
-    THROW(invalid_operation_error(
+    THROW(InvalidOperationError(
       "Cannot swap eval stack"));
   }
 
@@ -182,7 +182,7 @@ frame::swap_eval_stack()
 // -----------------------------------------------------------------------------
 
 const std::vector<types::native_type_handle>&
-frame::eval_stack() const
+Frame::eval_stack() const
 {
   return m_eval_stack;
 }
@@ -190,7 +190,7 @@ frame::eval_stack() const
 // -----------------------------------------------------------------------------
 
 types::native_type_handle&
-frame::eval_stack_element(size_t i)
+Frame::eval_stack_element(size_t i)
 {
   return m_eval_stack[i];
 }
@@ -198,7 +198,7 @@ frame::eval_stack_element(size_t i)
 // -----------------------------------------------------------------------------
 
 size_t
-frame::visible_var_count() const
+Frame::visible_var_count() const
 {
   return m_visible_vars.size();
 }
@@ -206,7 +206,7 @@ frame::visible_var_count() const
 // -----------------------------------------------------------------------------
 
 bool
-frame::has_visible_var(
+Frame::has_visible_var(
   const variable_key var_key) const
 {
   return m_visible_vars.find(var_key) != m_visible_vars.end();
@@ -215,14 +215,14 @@ frame::has_visible_var(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-frame::get_visible_var(
+Frame::get_visible_var(
   const variable_key var_key) const
-  throw(name_not_found_error)
+  throw(NameNotFoundError)
 {
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
   {
-    THROW(name_not_found_error());
+    THROW(NameNotFoundError());
   }
 
   return itr->second;
@@ -231,7 +231,7 @@ frame::get_visible_var(
 // -----------------------------------------------------------------------------
 
 bool
-frame::get_visible_var_fast(
+Frame::get_visible_var_fast(
   const variable_key var_key,
   dyobj::dyobj_id* id) const
 {
@@ -249,9 +249,9 @@ frame::get_visible_var_fast(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-frame::pop_visible_var(
+Frame::pop_visible_var(
   const variable_key var_key)
-  throw(name_not_found_error)
+  throw(NameNotFoundError)
 {
   dyobj::dyobj_id obj_id = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
@@ -261,7 +261,7 @@ frame::pop_visible_var(
 // -----------------------------------------------------------------------------
 
 void
-frame::set_visible_var(
+Frame::set_visible_var(
   variable_key var_key, dyobj::dyobj_id obj_id)
 {
   m_visible_vars[var_key] = obj_id;
@@ -270,7 +270,7 @@ frame::set_visible_var(
 // -----------------------------------------------------------------------------
 
 size_t
-frame::invisible_var_count() const
+Frame::invisible_var_count() const
 {
   return m_invisible_vars.size();
 }
@@ -278,7 +278,7 @@ frame::invisible_var_count() const
 // -----------------------------------------------------------------------------
 
 bool
-frame::has_invisible_var(
+Frame::has_invisible_var(
   const variable_key var_key) const
 {
   return m_invisible_vars.find(var_key) != m_visible_vars.end();
@@ -287,14 +287,14 @@ frame::has_invisible_var(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-frame::get_invisible_var(
+Frame::get_invisible_var(
   const variable_key var_key) const
-  throw(name_not_found_error)
+  throw(NameNotFoundError)
 {
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
   {
-    THROW(name_not_found_error());
+    THROW(NameNotFoundError());
   }
 
   return itr->second;
@@ -303,7 +303,7 @@ frame::get_invisible_var(
 // -----------------------------------------------------------------------------
 
 bool
-frame::get_invisible_var_fast(
+Frame::get_invisible_var_fast(
   const variable_key var_key,
   dyobj::dyobj_id* id) const
 {
@@ -321,9 +321,9 @@ frame::get_invisible_var_fast(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-frame::pop_invisible_var(
+Frame::pop_invisible_var(
   const variable_key var_key)
-  throw(name_not_found_error)
+  throw(NameNotFoundError)
 {
   dyobj::dyobj_id obj_id = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);
@@ -333,7 +333,7 @@ frame::pop_invisible_var(
 // -----------------------------------------------------------------------------
 
 void
-frame::set_invisible_var(
+Frame::set_invisible_var(
   variable_key var_key, dyobj::dyobj_id obj_id)
 {
   m_invisible_vars[var_key] = obj_id;
@@ -342,7 +342,7 @@ frame::set_invisible_var(
 // -----------------------------------------------------------------------------
 
 std::vector<variable_key>
-frame::visible_var_keys() const
+Frame::visible_var_keys() const
 {
   std::vector<variable_key> keys;
   keys.reserve(m_visible_vars.size());
@@ -358,7 +358,7 @@ frame::visible_var_keys() const
 // -----------------------------------------------------------------------------
 
 std::vector<variable_key>
-frame::invisible_var_keys() const
+Frame::invisible_var_keys() const
 {
   std::vector<variable_key> keys;
   keys.reserve(m_invisible_vars.size());
@@ -374,7 +374,7 @@ frame::invisible_var_keys() const
 // -----------------------------------------------------------------------------
 
 std::list<dyobj::dyobj_id>
-frame::get_visible_objs() const
+Frame::get_visible_objs() const
 {
   std::list<dyobj::dyobj_id> ids;
 
@@ -390,7 +390,7 @@ frame::get_visible_objs() const
 // -----------------------------------------------------------------------------
 
 std::list<dyobj::dyobj_id>
-frame::get_invisible_objs() const
+Frame::get_invisible_objs() const
 {
   std::list<dyobj::dyobj_id> ids;
 
@@ -405,32 +405,32 @@ frame::get_invisible_objs() const
 
 // -----------------------------------------------------------------------------
 
-closure_ctx
-frame::closure_ctx() const
+ClosureCtx
+Frame::closure_ctx() const
 {
   return m_closure_ctx;
 }
 
 // -----------------------------------------------------------------------------
 
-compartment*
-frame::compartment_ptr() const
+Compartment*
+Frame::compartment_ptr() const
 {
   return m_compartment_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-closure*
-frame::closure_ptr() const
+Closure*
+Frame::closure_ptr() const
 {
   return m_closure_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-frame*
-frame::parent() const
+Frame*
+Frame::parent() const
 {
   return m_parent;
 }
@@ -438,7 +438,7 @@ frame::parent() const
 // -----------------------------------------------------------------------------
 
 void
-frame::set_parent(frame* parent)
+Frame::set_parent(Frame* parent)
 {
   m_parent = parent;
 }
@@ -446,7 +446,7 @@ frame::set_parent(frame* parent)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-frame::exc_obj() const
+Frame::exc_obj() const
 {
   return m_exc_obj;
 }
@@ -454,7 +454,7 @@ frame::exc_obj() const
 // -----------------------------------------------------------------------------
 
 void
-frame::set_exc_obj(dyobj::dyobj_id exc_obj)
+Frame::set_exc_obj(dyobj::dyobj_id exc_obj)
 {
   m_exc_obj = exc_obj;
 }
@@ -462,7 +462,7 @@ frame::set_exc_obj(dyobj::dyobj_id exc_obj)
 // -----------------------------------------------------------------------------
 
 void
-frame::clear_exc_obj()
+Frame::clear_exc_obj()
 {
   m_exc_obj = 0;
 }

@@ -39,8 +39,8 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `compartment`. */
-class compartment;
+/** Forward declaration of `Compartment`. */
+class Compartment;
 
 
 using dyobj::ntvhndl_key;
@@ -63,7 +63,7 @@ inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
 
 dyobj::attr_key
 get_attr_key(
-  compartment* compartment,
+  Compartment* compartment,
   encoding_key str_key,
   std::string* attr_str);
 
@@ -71,7 +71,7 @@ get_attr_key(
 
 dyobj::attr_key
 get_attr_key(
-  compartment* compartment,
+  Compartment* compartment,
   encoding_key str_key);
 
 // -----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ getattr(const ObjType& obj, const std::string& attr_name)
 template<typename ObjType>
 dyobj::dyobj_id
 getattr(const ObjType& obj,
-  compartment* compartment,
+  Compartment* compartment,
   encoding_key attr_encoding_key)
 {
   std::string attr_name;

@@ -32,16 +32,16 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct closure_ctx
+typedef struct ClosureCtx
 {
-  closure_ctx(compartment_id compartment_id_, closure_id closure_id_)
+  ClosureCtx(compartment_id compartment_id_, closure_id closure_id_)
     :
     compartment_id(compartment_id_),
     closure_id(closure_id_)
   {
   }
 
-  bool operator==(const closure_ctx& rhs)
+  bool operator==(const ClosureCtx& rhs)
   {
     return (
       compartment_id == rhs.compartment_id &&
@@ -52,7 +52,7 @@ typedef struct closure_ctx
   compartment_id compartment_id;
   closure_id closure_id;
 
-} closure_ctx;
+} ClosureCtx;
 
 
 } /* end namespace runtime */

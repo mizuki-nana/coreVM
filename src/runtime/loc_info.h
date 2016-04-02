@@ -34,16 +34,16 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct loc_info
+struct LocInfo
 {
-  loc_info(int32_t lineno_, int32_t col_offset_)
+  LocInfo(int32_t lineno_, int32_t col_offset_)
     :
     lineno(lineno_),
     col_offset(col_offset_)
   {
   }
 
-  loc_info()
+  LocInfo()
     :
     lineno(-1),
     col_offset(-1)
@@ -56,7 +56,7 @@ struct loc_info
 
 // -----------------------------------------------------------------------------
 
-typedef std::unordered_map<int32_t, loc_info> loc_table;
+typedef std::unordered_map<int32_t, LocInfo> loc_table;
 
 // -----------------------------------------------------------------------------
 

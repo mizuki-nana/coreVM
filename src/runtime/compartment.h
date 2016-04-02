@@ -36,45 +36,45 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `compartment_printer` */
-class compartment_printer;
+/** Forward declaration of `CompartmentPrinter` */
+class CompartmentPrinter;
 
 
-class compartment
+class Compartment
 {
 public:
-  explicit compartment(const std::string&);
+  explicit Compartment(const std::string&);
 
   const std::string& path() const;
 
-  void set_encoding_map(const encoding_map&);
+  void set_encoding_map(const EncodingMap&);
 
-  void set_encoding_map(const encoding_map&&);
+  void set_encoding_map(const EncodingMap&&);
 
   std::string get_encoding_string(encoding_key) const
-    throw(encoding_string_not_found_error);
+    throw(EncodingStringNotFoundError);
 
   void get_encoding_string(encoding_key, std::string*) const;
 
   size_t closure_count() const;
 
-  const closure
+  const Closure
     get_closure_by_id(closure_id) const
-    throw(closure_not_found_error);
+    throw(ClosureNotFoundError);
 
   void get_closure_by_id(
-    closure_id, closure** closure);
+    closure_id, Closure** closure);
 
-  void set_closure_table(const closure_table&&);
+  void set_closure_table(const ClosureTable&&);
 
-  bool get_starting_closure(closure**);
+  bool get_starting_closure(Closure**);
 
-  friend class compartment_printer;
+  friend class CompartmentPrinter;
 
 private:
   const std::string m_path;
-  encoding_map m_encoding_map;
-  closure_table m_closure_table;
+  EncodingMap m_encoding_map;
+  ClosureTable m_closure_table;
 };
 
 

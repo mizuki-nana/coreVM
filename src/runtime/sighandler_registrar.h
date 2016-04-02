@@ -39,22 +39,22 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `corevm::runtime::process` */
-class process;
+/** Forward declaration of `corevm::runtime::Process` */
+class Process;
 
 // -----------------------------------------------------------------------------
 
 typedef struct sighandler_wrapper
 {
-  const std::shared_ptr<corevm::runtime::sighandler> handler;
+  const std::shared_ptr<corevm::runtime::SigHandler> handler;
 } sighandler_wrapper;
 
 // -----------------------------------------------------------------------------
 
-class sighandler_registrar
+class SigHandlerRegistrar
 {
 public:
-  static void init(corevm::runtime::process*);
+  static void init(corevm::runtime::Process*);
 
   static sigjmp_buf& get_sigjmp_env();
 
@@ -76,7 +76,7 @@ public:
 protected:
   static bool sig_raised;
 
-  static corevm::runtime::process* process;
+  static corevm::runtime::Process* process;
   static const std::unordered_map<sig_atomic_t, sighandler_wrapper> handler_map;
   static const std::unordered_map<std::string, sig_atomic_t> sig_value_to_str_map;
 };

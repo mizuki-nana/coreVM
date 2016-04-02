@@ -28,14 +28,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class instr_info_unittest : public ::testing::Test {};
+class InstrInfoUnitTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(instr_info_unittest, TestInstrInfo)
+TEST_F(InstrInfoUnitTest, TestInstrInfo)
 {
-  corevm::runtime::instr_code code = corevm::runtime::instr_enum::LDOBJ;
-  const corevm::runtime::instr_info& info = corevm::runtime::instr_set_info::instr_infos[code];
+  corevm::runtime::instr_code code = corevm::runtime::InstrEnum::LDOBJ;
+  const corevm::runtime::InstrInfo& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
   ASSERT_STREQ("ldobj", info.name);
 }

@@ -41,15 +41,15 @@ namespace corevm {
 namespace runtime {
 
 
-class runtime_error : public corevm::runtime_error
+class RuntimeError : public corevm::runtime_error
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
+  explicit RuntimeError(const std::string& what_arg):
     corevm::runtime_error(what_arg)
   {
   }
 
-  explicit runtime_error(const char* what_arg):
+  explicit RuntimeError(const char* what_arg):
     corevm::runtime_error(what_arg)
   {
   }
@@ -57,18 +57,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class invalid_operation_error : public corevm::runtime::runtime_error
+class InvalidOperationError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit invalid_operation_error(const std::string& what_arg):
-    corevm::runtime::runtime_error(
+  explicit InvalidOperationError(const std::string& what_arg):
+    corevm::runtime::RuntimeError(
       str(format("Invalid operation: %s") % what_arg)
     )
   {
   }
 
-  explicit invalid_operation_error(const char* what_arg):
-    corevm::runtime::runtime_error(
+  explicit InvalidOperationError(const char* what_arg):
+    corevm::runtime::RuntimeError(
       str(format("Invalid operation: %s") % what_arg)
     )
   {
@@ -77,88 +77,88 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class frame_not_found_error : public corevm::runtime::runtime_error
+class FrameNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit frame_not_found_error():
-    corevm::runtime::runtime_error("Expected frame not found")
+  explicit FrameNotFoundError():
+    corevm::runtime::RuntimeError("Expected frame not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class invocation_ctx_not_found_error : public corevm::runtime::runtime_error
+class InvocationCtxNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  invocation_ctx_not_found_error():
-    corevm::runtime::runtime_error("Invocation context not found")
+  InvocationCtxNotFoundError():
+    corevm::runtime::RuntimeError("Invocation context not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class evaluation_stack_empty_error : public corevm::runtime::runtime_error
+class EvaluationStackEmptyError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit evaluation_stack_empty_error():
-    corevm::runtime::runtime_error("Evaluation stack is empty")
+  explicit EvaluationStackEmptyError():
+    corevm::runtime::RuntimeError("Evaluation stack is empty")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class name_not_found_error : public corevm::runtime::runtime_error
+class NameNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit name_not_found_error():
-    corevm::runtime::runtime_error("Local variable not found")
+  explicit NameNotFoundError():
+    corevm::runtime::RuntimeError("Local variable not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class object_stack_empty_error : public corevm::runtime::runtime_error
+class ObjectStackEmptyError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit object_stack_empty_error():
-    corevm::runtime::runtime_error("Process's object stack is empty")
+  explicit ObjectStackEmptyError():
+    corevm::runtime::RuntimeError("Process's object stack is empty")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class native_type_handle_not_found_error : public corevm::runtime::runtime_error
+class NativeTypeHandleNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit native_type_handle_not_found_error():
-    corevm::runtime::runtime_error("Native type handle not found")
+  explicit NativeTypeHandleNotFoundError():
+    corevm::runtime::RuntimeError("Native type handle not found")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class native_type_handle_deletion_error : public corevm::runtime::runtime_error
+class NativeTypeHandleDeletionError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit native_type_handle_deletion_error():
-    corevm::runtime::runtime_error("Native type handle cannot be deleted")
+  explicit NativeTypeHandleDeletionError():
+    corevm::runtime::RuntimeError("Native type handle cannot be deleted")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class object_deletion_error : public corevm::runtime::runtime_error
+class ObjectDeletionError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit object_deletion_error(const dyobj::dyobj_id id):
-    corevm::runtime::runtime_error(
+  explicit ObjectDeletionError(const dyobj::dyobj_id id):
+    corevm::runtime::RuntimeError(
       str(format("Cannot delete object %#x") % id))
   {
   }
@@ -166,11 +166,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class invocation_error : public corevm::runtime::runtime_error
+class InvocationError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit invocation_error(const dyobj::dyobj_id id):
-    corevm::runtime::runtime_error(
+  explicit InvocationError(const dyobj::dyobj_id id):
+    corevm::runtime::RuntimeError(
       str(format("Cannot invoke call on object %#x") % id))
   {
   }
@@ -178,40 +178,40 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class missing_parameter_error : public corevm::runtime::runtime_error
+class MissingParameterError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit missing_parameter_error():
-    corevm::runtime::runtime_error("Missing parameter")
+  explicit MissingParameterError():
+    corevm::runtime::RuntimeError("Missing parameter")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class invalid_instr_addr_error : public corevm::runtime::runtime_error
+class InvalidInstrAddrError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit invalid_instr_addr_error():
-    corevm::runtime::runtime_error("Invalid instruction address")
+  explicit InvalidInstrAddrError():
+    corevm::runtime::RuntimeError("Invalid instruction address")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class native_type_handle_insertion_error : public corevm::runtime::runtime_error
+class NativeTypeHandleInsertionError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit native_type_handle_insertion_error(const char* what_arg):
-    corevm::runtime::runtime_error(
+  explicit NativeTypeHandleInsertionError(const char* what_arg):
+    corevm::runtime::RuntimeError(
       str(boost::format("Cannot insert native type handle: %s") % what_arg)
     )
   {
   }
 
-  explicit native_type_handle_insertion_error(const std::string& what_arg):
-    corevm::runtime::runtime_error(
+  explicit NativeTypeHandleInsertionError(const std::string& what_arg):
+    corevm::runtime::RuntimeError(
       str(boost::format("Cannot insert native type handle: %s") % what_arg)
     )
   {
@@ -220,11 +220,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class encoding_string_not_found_error : public corevm::runtime::runtime_error
+class EncodingStringNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit encoding_string_not_found_error(encoding_key key):
-    corevm::runtime::runtime_error(
+  explicit EncodingStringNotFoundError(encoding_key key):
+    corevm::runtime::RuntimeError(
       str(boost::format("Cannot find encoding string for key: %llu") % key)
     )
   {
@@ -233,11 +233,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class compartment_not_found_error : public corevm::runtime::runtime_error
+class CompartmentNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit compartment_not_found_error(compartment_id id):
-    corevm::runtime::runtime_error(
+  explicit CompartmentNotFoundError(compartment_id id):
+    corevm::runtime::RuntimeError(
       str(boost::format("Cannot find compartment %llu") % id)
     )
   {
@@ -246,11 +246,11 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class closure_not_found_error : public corevm::runtime::runtime_error
+class ClosureNotFoundError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit closure_not_found_error(closure_id id):
-    corevm::runtime::runtime_error(
+  explicit ClosureNotFoundError(closure_id id):
+    corevm::runtime::RuntimeError(
       str(boost::format("Cannot find closure %lld") % id)
     )
   {
@@ -259,34 +259,34 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class signal_error : public corevm::runtime::runtime_error
+class SignalError : public corevm::runtime::RuntimeError
 {
 public:
-  explicit signal_error(const char* what_arg):
-    corevm::runtime::runtime_error(what_arg)
+  explicit SignalError(const char* what_arg):
+    corevm::runtime::RuntimeError(what_arg)
   {
   }
 
-  explicit signal_error(const std::string& what_arg):
-    corevm::runtime::runtime_error(what_arg)
+  explicit SignalError(const std::string& what_arg):
+    corevm::runtime::RuntimeError(what_arg)
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class execution_signal_error : public corevm::runtime::signal_error
+class ExecutionSignalError : public corevm::runtime::SignalError
 {
 public:
-  explicit execution_signal_error(const char* signal):
-    corevm::runtime::signal_error(
+  explicit ExecutionSignalError(const char* signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled arithmetic/execution signal %s") % signal)
     )
   {
   }
 
-  explicit execution_signal_error(const std::string& signal):
-    corevm::runtime::signal_error(
+  explicit ExecutionSignalError(const std::string& signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled arithmetic/execution signal %s") % signal)
     )
   {
@@ -295,18 +295,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class termination_signal_error : public corevm::runtime::signal_error
+class TerminationSignalError : public corevm::runtime::SignalError
 {
 public:
-  explicit termination_signal_error(const char* signal):
-    corevm::runtime::signal_error(
+  explicit TerminationSignalError(const char* signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled termination signal %s") % signal)
     )
   {
   }
 
-  explicit termination_signal_error(const  std::string& signal):
-    corevm::runtime::signal_error(
+  explicit TerminationSignalError(const  std::string& signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled termination signal %s") % signal)
     )
   {
@@ -315,18 +315,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class operation_signal_error : public corevm::runtime::signal_error
+class OperationSignalError : public corevm::runtime::SignalError
 {
 public:
-  explicit operation_signal_error(const char* signal):
-    corevm::runtime::signal_error(
+  explicit OperationSignalError(const char* signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled operation signal %s") % signal)
     )
   {
   }
 
-  explicit operation_signal_error(const std::string& signal):
-    corevm::runtime::signal_error(
+  explicit OperationSignalError(const std::string& signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled operation signal %s") % signal)
     )
   {
@@ -335,18 +335,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class io_signal_error : public corevm::runtime::signal_error
+class IoSignalError : public corevm::runtime::SignalError
 {
 public:
-  explicit io_signal_error(const char* signal):
-    corevm::runtime::signal_error(
+  explicit IoSignalError(const char* signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled IO signal %s") % signal)
     )
   {
   }
 
-  explicit io_signal_error(const std::string& signal):
-    corevm::runtime::signal_error(
+  explicit IoSignalError(const std::string& signal):
+    corevm::runtime::SignalError(
       str(format("Received unhandled IO signal %s") % signal)
     )
   {

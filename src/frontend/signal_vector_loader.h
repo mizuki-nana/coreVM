@@ -46,7 +46,7 @@ class signal_vector_loader
 public:
   explicit signal_vector_loader(const std::string&);
 
-  void load(corevm::runtime::process&) throw(file_loading_error);
+  void load(corevm::runtime::Process&) throw(file_loading_error);
 
   const std::string schema() const;
 

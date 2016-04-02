@@ -34,7 +34,7 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 template <class instr_handler_cls>
 static void BenchmarkNtvhndlCreationInstrs(benchmark::State& state)
 {
-  corevm::runtime::instr instr(0, 0, 0);
+  corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
   instr_benchmarks_fixture fixture;

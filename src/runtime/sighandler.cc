@@ -36,7 +36,7 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 /* virtual */
-sighandler::~sighandler()
+SigHandler::~SigHandler()
 {
   // Do nothing here.
 }
@@ -44,80 +44,80 @@ sighandler::~sighandler()
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGFPE::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGFPE::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(execution_signal_error("SIGFPE"));
+  THROW(ExecutionSignalError("SIGFPE"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGILL::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGILL::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(execution_signal_error("SIGILL"));
+  THROW(ExecutionSignalError("SIGILL"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGSEGV::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGSEGV::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(execution_signal_error("SIGSEGV"));
+  THROW(ExecutionSignalError("SIGSEGV"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGBUS::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGBUS::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(execution_signal_error("SIGBUS"));
+  THROW(ExecutionSignalError("SIGBUS"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGABRT::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGABRT::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(termination_signal_error("SIGABRT"));
+  THROW(TerminationSignalError("SIGABRT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGINT::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGINT::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(termination_signal_error("SIGINT"));
+  THROW(TerminationSignalError("SIGINT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGTERM::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGTERM::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(termination_signal_error("SIGTERM"));
+  THROW(TerminationSignalError("SIGTERM"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGQUIT::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGQUIT::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(termination_signal_error("SIGQUIT"));
+  THROW(TerminationSignalError("SIGQUIT"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGALRM::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGALRM::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
   // Do nothing.
 }
@@ -125,8 +125,8 @@ sighandler_SIGALRM::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGVTALRM::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGVTALRM::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
   // Do nothing.
 }
@@ -134,8 +134,8 @@ sighandler_SIGVTALRM::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGPROF::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGPROF::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
   // Do nothing.
 }
@@ -143,55 +143,55 @@ sighandler_SIGPROF::handle_signal(
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGPIPE::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGPIPE::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(operation_signal_error("SIGPIPE"));
+  THROW(OperationSignalError("SIGPIPE"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGLOST::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGLOST::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(operation_signal_error("SIGLOST"));
+  THROW(OperationSignalError("SIGLOST"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGXCPU::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGXCPU::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(operation_signal_error("SIGXCPU"));
+  THROW(OperationSignalError("SIGXCPU"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGXFSZ::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGXFSZ::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(operation_signal_error("SIGXFSZ"));
+  THROW(OperationSignalError("SIGXFSZ"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGIO::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGIO::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(io_signal_error("SIGIO"));
+  THROW(IoSignalError("SIGIO"));
 }
 
 // -----------------------------------------------------------------------------
 
 void
-sighandler_SIGURG::handle_signal(
-  sig_atomic_t /* signum */, process& /* process */)
+SigHandler_SIGURG::handle_signal(
+  sig_atomic_t /* signum */, Process& /* process */)
 {
-  THROW(io_signal_error("SIGURG"));
+  THROW(IoSignalError("SIGURG"));
 }
 
 // -----------------------------------------------------------------------------

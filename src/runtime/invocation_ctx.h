@@ -38,28 +38,28 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `closure` */
-struct closure;
+/** Forward declaration of `Closure` */
+struct Closure;
 
-/** Forward declaration of `compartment` */
-class compartment;
+/** Forward declaration of `Compartment` */
+class Compartment;
 
 
 typedef std::vector<dyobj::dyobj_id> param_list_type;
 typedef std::unordered_map<variable_key, dyobj::dyobj_id> param_value_map_type;
 
 
-class invocation_ctx
+class InvocationCtx
 {
 public:
-  invocation_ctx(const closure_ctx&,
-    compartment*, closure*);
+  InvocationCtx(const ClosureCtx&,
+    Compartment*, Closure*);
 
-  const closure_ctx& closure_ctx() const;
+  const ClosureCtx& closure_ctx() const;
 
-  compartment* compartment_ptr() const;
+  Compartment* compartment_ptr() const;
 
-  closure* closure_ptr() const;
+  Closure* closure_ptr() const;
 
   const param_list_type& params_list() const;
 
@@ -70,7 +70,7 @@ public:
   void put_param(const dyobj::dyobj_id&);
 
   dyobj::dyobj_id pop_param()
-    throw(missing_parameter_error);
+    throw(MissingParameterError);
 
   bool has_param_value_pairs() const;
 
@@ -80,14 +80,14 @@ public:
     const variable_key&, const dyobj::dyobj_id&);
 
   dyobj::dyobj_id pop_param_value_pair(const variable_key&)
-    throw(missing_parameter_error);
+    throw(MissingParameterError);
 
   std::vector<variable_key> param_value_pair_keys() const;
 
 private:
-  runtime::closure_ctx m_closure_ctx;
-  compartment* m_compartment_ptr;
-  closure* m_closure_ptr;
+  runtime::ClosureCtx m_closure_ctx;
+  Compartment* m_compartment_ptr;
+  Closure* m_closure_ptr;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
   size_t m_params_list_pop_index;

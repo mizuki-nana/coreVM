@@ -36,7 +36,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-const instr_info instr_set_info::instr_infos[INSTR_CODE_MAX] {
+const InstrInfo InstrSetInfo::instr_infos[INSTR_CODE_MAX] {
 
   /* -------------------------- Object instructions ------------------------- */
 
