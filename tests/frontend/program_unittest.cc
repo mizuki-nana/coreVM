@@ -28,12 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
-class program_unittest : public ::testing::Test {};
+class ProgramUnitTest : public ::testing::Test {};
 
 
-TEST_F(program_unittest, TestRun)
+TEST_F(ProgramUnitTest, TestRun)
 {
-  corevm::frontend::program program;
+  corevm::frontend::Program program;
 
   int argc = 2;
   std::array<char*, 4> argv {{

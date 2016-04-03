@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class configuration_unittest : public ::testing::Test
+class ConfigurationUnitTest : public ::testing::Test
 {
 protected:
   static const char* PATH;
@@ -65,13 +65,13 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-const char* configuration_unittest::PATH = "./sample-config.config";
+const char* ConfigurationUnitTest::PATH = "./sample-config.config";
 
 // -----------------------------------------------------------------------------
 
-TEST_F(configuration_unittest, TestLoadSuccessful)
+TEST_F(ConfigurationUnitTest, TestLoadSuccessful)
 {
-  auto configuration = corevm::frontend::configuration::load_config(PATH);
+  auto configuration = corevm::frontend::Configuration::load_config(PATH);
 
   ASSERT_EQ(2048, configuration.heap_alloc_size());
   ASSERT_EQ(1024, configuration.pool_alloc_size());
@@ -81,21 +81,21 @@ TEST_F(configuration_unittest, TestLoadSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(configuration_unittest, TestLoadFailsWithInvalidPath)
+TEST_F(ConfigurationUnitTest, TestLoadFailsWithInvalidPath)
 {
   ASSERT_THROW(
     {
-      corevm::frontend::configuration::load_config("$%^some-invalid-path!@#");
+      corevm::frontend::Configuration::load_config("$%^some-invalid-path!@#");
     },
-    corevm::frontend::configuration_loading_error
+    corevm::frontend::ConfigurationLoadingError
   );
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(configuration_unittest, TestGetAndSet)
+TEST_F(ConfigurationUnitTest, TestGetAndSet)
 {
-  corevm::frontend::configuration configuration;
+  corevm::frontend::Configuration configuration;
 
   ASSERT_EQ(0, configuration.heap_alloc_size());
   ASSERT_EQ(0, configuration.pool_alloc_size());

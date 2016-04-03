@@ -34,7 +34,7 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class bytecode_loader_binary : public bytecode_loader
+class BytecodeLoaderBinary : public BytecodeLoader
 {
 public:
   virtual void load(const std::string&, runtime::Process&);

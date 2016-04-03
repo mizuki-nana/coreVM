@@ -50,7 +50,7 @@ namespace frontend {
 // -----------------------------------------------------------------------------
 
 const std::string
-signal_vector_loader::schema() const
+SignalVectorLoader::schema() const
 {
   static const std::string unformatted_def(
     "{"
@@ -151,7 +151,7 @@ signal_vector_loader::schema() const
 
 // -----------------------------------------------------------------------------
 
-signal_vector_loader::signal_vector_loader(
+SignalVectorLoader::SignalVectorLoader(
   const std::string& path)
   :
   m_path(path)
@@ -162,8 +162,8 @@ signal_vector_loader::signal_vector_loader(
 // -----------------------------------------------------------------------------
 
 void
-signal_vector_loader::load(runtime::Process& process)
-  throw(file_loading_error)
+SignalVectorLoader::load(runtime::Process& process)
+  throw(FileLoadingError)
 {
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;
@@ -176,7 +176,7 @@ signal_vector_loader::load(runtime::Process& process)
   }
   catch (const std::ios_base::failure& ex)
   {
-    THROW(file_loading_error(
+    THROW(FileLoadingError(
       str(
         boost::format(
           "Error while loading file \"%s\": %s"
@@ -195,7 +195,7 @@ signal_vector_loader::load(runtime::Process& process)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    THROW(file_loading_error(
+    THROW(FileLoadingError(
       str(
         boost::format(
           "Error while parsing file \"%s\": %s"
@@ -227,7 +227,7 @@ signal_vector_loader::load(runtime::Process& process)
 // -----------------------------------------------------------------------------
 
 void
-signal_vector_loader::validate(const JSON& content_json)
+SignalVectorLoader::validate(const JSON& content_json)
 {
   const JSON schema = sneaker::json::parse(this->schema());
 
@@ -237,7 +237,7 @@ signal_vector_loader::validate(const JSON& content_json)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    THROW(file_loading_error(
+    THROW(FileLoadingError(
       str(
         boost::format("Invalid format in file \"%s\": %s") % m_path % ex.what()
       )

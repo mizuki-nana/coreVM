@@ -31,7 +31,7 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-bytecode_loader::~bytecode_loader()
+BytecodeLoader::~BytecodeLoader()
 {
   // Do nothing here.
 }

@@ -40,13 +40,13 @@ namespace corevm {
 namespace frontend {
 
 
-class configuration
+class Configuration
 {
 public:
-  configuration();
+  Configuration();
 
-  static configuration load_config(const std::string&)
-    throw(configuration_loading_error);
+  static Configuration load_config(const std::string&)
+    throw(ConfigurationLoadingError);
 
 public:
   /* Value accessors. */
@@ -68,7 +68,7 @@ public:
   void set_gc_flag(uint8_t);
 
 private:
-  static void set_values(configuration&, const JSON&);
+  static void set_values(Configuration&, const JSON&);
 
   uint64_t m_heap_alloc_size;
   uint64_t m_pool_alloc_size;

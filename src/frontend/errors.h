@@ -38,15 +38,15 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class runtime_error : public corevm::runtime_error
+class RuntimeError : public corevm::runtime_error
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
+  explicit RuntimeError(const std::string& what_arg):
     corevm::runtime_error(what_arg)
   {
   }
 
-  explicit runtime_error(const char* what_arg):
+  explicit RuntimeError(const char* what_arg):
     corevm::runtime_error(what_arg)
   {
   }
@@ -54,32 +54,32 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class file_loading_error : public runtime_error
+class FileLoadingError : public RuntimeError
 {
 public:
-  explicit file_loading_error(const std::string& what_arg):
-    runtime_error(what_arg)
+  explicit FileLoadingError(const std::string& what_arg):
+    RuntimeError(what_arg)
   {
   }
 
-  explicit file_loading_error(const char* what_arg):
-    runtime_error(what_arg)
+  explicit FileLoadingError(const char* what_arg):
+    RuntimeError(what_arg)
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class configuration_loading_error : public runtime_error
+class ConfigurationLoadingError : public RuntimeError
 {
 public:
-  explicit configuration_loading_error(const std::string& what_arg):
-    runtime_error(what_arg)
+  explicit ConfigurationLoadingError(const std::string& what_arg):
+    RuntimeError(what_arg)
   {
   }
 
-  explicit configuration_loading_error(const char* what_arg):
-    runtime_error(what_arg)
+  explicit ConfigurationLoadingError(const char* what_arg):
+    RuntimeError(what_arg)
   {
   }
 };

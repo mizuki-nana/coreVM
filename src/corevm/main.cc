@@ -25,6 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 int main(int argc, char** argv)
 {
-  corevm::frontend::program program;
+  corevm::frontend::Program program;
   return program.run(argc, argv);
 }

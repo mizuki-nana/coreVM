@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <fstream>
 
 
-class bytecode_loader_unittest_base : public ::testing::Test
+class BytecodeLoaderUnitTestBase : public ::testing::Test
 {
 protected:
   static const char* PATH;

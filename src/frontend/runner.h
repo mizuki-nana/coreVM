@@ -32,20 +32,20 @@ namespace corevm {
 namespace frontend {
 
 
-/** Forward declaration of `corevm::frontend::configuration` */
-class configuration;
+/** Forward declaration of `corevm::frontend::Configuration` */
+class Configuration;
 
 
-class runner
+class Runner
 {
 public:
-  runner(const std::string&, configuration&);
+  Runner(const std::string&, Configuration&);
 
   int run() const noexcept;
 
 private:
   const std::string m_path;
-  configuration& m_configuration;
+  Configuration& m_configuration;
 };
 
 

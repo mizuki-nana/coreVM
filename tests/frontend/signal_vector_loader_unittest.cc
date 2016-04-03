@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class signal_vector_loader_unittest : public ::testing::Test
+class SignalVectorLoaderUnitTest : public ::testing::Test
 {
 protected:
   static const char* PATH;
@@ -40,7 +40,7 @@ protected:
   virtual void SetUp()
   {
     std::ofstream f(PATH, std::ios::binary);
-    f << signal_vector_loader_unittest::SIGNAL_VECTOR;
+    f << SignalVectorLoaderUnitTest::SIGNAL_VECTOR;
     f.close();
   }
 
@@ -54,11 +54,11 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-const char* signal_vector_loader_unittest::PATH = "./example.sigvec";
+const char* SignalVectorLoaderUnitTest::PATH = "./example.sigvec";
 
 // -----------------------------------------------------------------------------
 
-const std::string signal_vector_loader_unittest::SIGNAL_VECTOR =
+const std::string SignalVectorLoaderUnitTest::SIGNAL_VECTOR =
   "{"
     "\"signals\": {"
       "\"SIGFPE\": ["
@@ -76,16 +76,16 @@ const std::string signal_vector_loader_unittest::SIGNAL_VECTOR =
 
 // -----------------------------------------------------------------------------
 
-TEST_F(signal_vector_loader_unittest, TestLoadSuccessful)
+TEST_F(SignalVectorLoaderUnitTest, TestLoadSuccessful)
 {
-  corevm::frontend::signal_vector_loader loader(PATH);
+  corevm::frontend::SignalVectorLoader loader(PATH);
 
   loader.load(m_process);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
+TEST_F(SignalVectorLoaderUnitTest, TestLoadFailsWithInvalidSignal)
 {
   const std::string INVALID_SIGNAL_VECTOR =
     "{"
@@ -109,13 +109,13 @@ TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
   f << INVALID_SIGNAL_VECTOR;
   f.close();
 
-  corevm::frontend::signal_vector_loader loader(path);
+  corevm::frontend::SignalVectorLoader loader(path);
 
   ASSERT_THROW(
     {
       loader.load(m_process);
     },
-    corevm::frontend::file_loading_error
+    corevm::frontend::FileLoadingError
   );
 
   remove(path);
@@ -123,15 +123,15 @@ TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidSignal)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(signal_vector_loader_unittest, TestLoadFailsWithInvalidPath)
+TEST_F(SignalVectorLoaderUnitTest, TestLoadFailsWithInvalidPath)
 {
-  corevm::frontend::signal_vector_loader loader("some/random/path/example.sigvec");
+  corevm::frontend::SignalVectorLoader loader("some/random/path/example.sigvec");
 
   ASSERT_THROW(
     {
       loader.load(m_process);
     },
-    corevm::frontend::file_loading_error
+    corevm::frontend::FileLoadingError
   );
 }
 

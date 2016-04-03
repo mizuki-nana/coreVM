@@ -44,7 +44,7 @@ namespace frontend {
 // -----------------------------------------------------------------------------
 
 void
-bytecode_loader_binary::load(const std::string& path, runtime::Process& process)
+BytecodeLoaderBinary::load(const std::string& path, runtime::Process& process)
 {
   // `avro::DataFileReader` documentation:
   // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html

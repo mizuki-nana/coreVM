@@ -41,12 +41,12 @@ using sneaker::json::JSON;
 
 // -----------------------------------------------------------------------------
 
-class signal_vector_loader
+class SignalVectorLoader
 {
 public:
-  explicit signal_vector_loader(const std::string&);
+  explicit SignalVectorLoader(const std::string&);
 
-  void load(corevm::runtime::Process&) throw(file_loading_error);
+  void load(corevm::runtime::Process&) throw(FileLoadingError);
 
   const std::string schema() const;
 

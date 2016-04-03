@@ -36,11 +36,11 @@ using sneaker::json::JSON;
 
 // -----------------------------------------------------------------------------
 
-class utils_unittest : public ::testing::Test {};
+class UtilsUnitTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(utils_unittest, TestGetVectorFromJson)
+TEST_F(UtilsUnitTest, TestGetVectorFromJson)
 {
   std::string vector_str = "["
     "[10, 11, 12],"
@@ -71,7 +71,7 @@ TEST_F(utils_unittest, TestGetVectorFromJson)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(utils_unittest, TestValidateInvalidVectorFails)
+TEST_F(UtilsUnitTest, TestValidateInvalidVectorFails)
 {
   // Invalid instruction code.
   const std::string vector_str = "["

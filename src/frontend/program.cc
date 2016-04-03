@@ -37,7 +37,7 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-program::program()
+Program::Program()
   :
   sneaker::utility::cmdline_program(
     str(boost::format("coreVM v%s") % COREVM_CANONICAL_VERSION).c_str()),
@@ -60,7 +60,7 @@ program::program()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-program::~program()
+Program::~Program()
 {
   // Do nothing here.
 }
@@ -69,7 +69,7 @@ program::~program()
 
 /* virtual */
 bool
-program::check_parameters() const
+Program::check_parameters() const
 {
   return !m_input_path.empty() &&
     (m_format.empty() || m_format == "text" || m_format == "binary");
@@ -79,13 +79,13 @@ program::check_parameters() const
 
 /* virtual */
 int
-program::do_run()
+Program::do_run()
 {
-  configuration configuration;
+  Configuration configuration;
 
   if (option_provided("config"))
   {
-    configuration = configuration::load_config(m_config_path);
+    configuration = Configuration::load_config(m_config_path);
   }
 
   if (option_provided("heap-alloc-size"))
@@ -103,7 +103,7 @@ program::do_run()
     configuration.set_gc_interval(m_gc_interval);
   }
 
-  return runner(m_input_path, configuration).run();
+  return Runner(m_input_path, configuration).run();
 }
 
 // -----------------------------------------------------------------------------

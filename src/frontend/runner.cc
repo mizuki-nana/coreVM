@@ -59,9 +59,9 @@ print_stack_trace()
 
 // -----------------------------------------------------------------------------
 
-runner::runner(
+Runner::Runner(
   const std::string& path,
-  configuration& configuration)
+  Configuration& configuration)
   :
   m_path(path),
   m_configuration(configuration)
@@ -71,7 +71,7 @@ runner::runner(
 // -----------------------------------------------------------------------------
 
 int
-runner::run() const noexcept
+Runner::run() const noexcept
 {
   const uint32_t gc_interval = m_configuration.gc_interval() ? \
     m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
@@ -95,7 +95,7 @@ runner::run() const noexcept
 
   runtime::Process process(options);
 
-  bytecode_loader_binary loader;
+  BytecodeLoaderBinary loader;
 
   try
   {

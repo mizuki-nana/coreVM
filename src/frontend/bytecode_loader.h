@@ -36,13 +36,13 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class bytecode_loader
+class BytecodeLoader
 {
 public:
   virtual void load(
     const std::string&, runtime::Process&) = 0;
 
-  virtual ~bytecode_loader();
+  virtual ~BytecodeLoader();
 };
 
 // -----------------------------------------------------------------------------

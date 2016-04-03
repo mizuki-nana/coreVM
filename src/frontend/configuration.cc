@@ -47,7 +47,7 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-const std::string configuration::schema =
+const std::string Configuration::schema =
   "{"
     "\"type\": \"object\","
     "\"properties\": {"
@@ -68,7 +68,7 @@ const std::string configuration::schema =
 
 // -----------------------------------------------------------------------------
 
-configuration::configuration()
+Configuration::Configuration()
   :
   m_heap_alloc_size(0u),
   m_pool_alloc_size(0u),
@@ -80,7 +80,7 @@ configuration::configuration()
 // -----------------------------------------------------------------------------
 
 uint64_t
-configuration::heap_alloc_size() const
+Configuration::heap_alloc_size() const
 {
   return m_heap_alloc_size;
 }
@@ -88,7 +88,7 @@ configuration::heap_alloc_size() const
 // -----------------------------------------------------------------------------
 
 uint64_t
-configuration::pool_alloc_size() const
+Configuration::pool_alloc_size() const
 {
   return m_pool_alloc_size;
 }
@@ -96,7 +96,7 @@ configuration::pool_alloc_size() const
 // -----------------------------------------------------------------------------
 
 uint32_t
-configuration::gc_interval() const
+Configuration::gc_interval() const
 {
   return m_gc_interval;
 }
@@ -104,7 +104,7 @@ configuration::gc_interval() const
 // -----------------------------------------------------------------------------
 
 uint8_t
-configuration::gc_flag() const
+Configuration::gc_flag() const
 {
   return m_gc_flag;
 }
@@ -112,7 +112,7 @@ configuration::gc_flag() const
 // -----------------------------------------------------------------------------
 
 void
-configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
+Configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
   m_heap_alloc_size = heap_alloc_size;
 }
@@ -120,7 +120,7 @@ configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 // -----------------------------------------------------------------------------
 
 void
-configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
+Configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
 {
   m_pool_alloc_size = pool_alloc_size;
 }
@@ -128,7 +128,7 @@ configuration::set_pool_alloc_size(uint64_t pool_alloc_size)
 // -----------------------------------------------------------------------------
 
 void
-configuration::set_gc_interval(uint32_t gc_interval)
+Configuration::set_gc_interval(uint32_t gc_interval)
 {
   m_gc_interval = gc_interval;
 }
@@ -136,16 +136,16 @@ configuration::set_gc_interval(uint32_t gc_interval)
 // -----------------------------------------------------------------------------
 
 void
-configuration::set_gc_flag(uint8_t gc_flag)
+Configuration::set_gc_flag(uint8_t gc_flag)
 {
   m_gc_flag = gc_flag;
 }
 
 // -----------------------------------------------------------------------------
 
-configuration
-configuration::load_config(const std::string& path)
-  throw(configuration_loading_error)
+Configuration
+Configuration::load_config(const std::string& path)
+  throw(ConfigurationLoadingError)
 {
   std::ifstream fs(path, std::ios::binary);
   std::stringstream buffer;
@@ -158,7 +158,7 @@ configuration::load_config(const std::string& path)
   }
   catch (const std::ios_base::failure& ex)
   {
-    THROW(configuration_loading_error(
+    THROW(ConfigurationLoadingError(
       str(
         boost::format(
           "Error loading configuration file %s: %s"
@@ -177,7 +177,7 @@ configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    THROW(configuration_loading_error(
+    THROW(ConfigurationLoadingError(
       str(
         boost::format(
           "Error parsing configuration file %s: %s"
@@ -186,7 +186,7 @@ configuration::load_config(const std::string& path)
     ));
   }
 
-  JSON schema_json = sneaker::json::parse(configuration::schema);
+  JSON schema_json = sneaker::json::parse(Configuration::schema);
 
   try
   {
@@ -194,7 +194,7 @@ configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    THROW(configuration_loading_error(
+    THROW(ConfigurationLoadingError(
       str(
         boost::format(
           "Invalid configuration file %s: %s"
@@ -203,7 +203,7 @@ configuration::load_config(const std::string& path)
     ));
   }
 
-  configuration configuration;
+  Configuration configuration;
 
   set_values(configuration, content_json);
 
@@ -213,8 +213,8 @@ configuration::load_config(const std::string& path)
 // -----------------------------------------------------------------------------
 
 void
-configuration::set_values(
-  configuration& configuration, const JSON& config_json)
+Configuration::set_values(
+  Configuration& configuration, const JSON& config_json)
 {
 #if __DEBUG__
   ASSERT(config_json.is_object());

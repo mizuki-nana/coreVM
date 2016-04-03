@@ -35,12 +35,12 @@ namespace corevm {
 namespace frontend {
 
 
-class program : public sneaker::utility::cmdline_program
+class Program : public sneaker::utility::cmdline_program
 {
 public:
-  program();
+  Program();
 
-  virtual ~program();
+  virtual ~Program();
 
 private:
   virtual int do_run();

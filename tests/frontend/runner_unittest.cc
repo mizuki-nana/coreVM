@@ -29,14 +29,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
-class runner_unittest : public ::testing::Test {};
+class RunnerUnitTest : public ::testing::Test {};
 
 
-TEST_F(runner_unittest, TestRun)
+TEST_F(RunnerUnitTest, TestRun)
 {
-  corevm::frontend::configuration configuration;
+  corevm::frontend::Configuration configuration;
 
-  int res = corevm::frontend::runner("./sample.core", configuration).run();
+  int res = corevm::frontend::Runner("./sample.core", configuration).run();
 
   ASSERT_EQ(-1, res);
 
