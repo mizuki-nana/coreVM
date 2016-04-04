@@ -34,12 +34,12 @@ namespace corevm {
 namespace benchmarks {
 
 
-class instr_benchmarks_fixture
+class InstrBenchmarksFixture
 {
 public:
-  instr_benchmarks_fixture();
+  InstrBenchmarksFixture();
 
-  explicit instr_benchmarks_fixture(const runtime::Process::Options& opts);
+  explicit InstrBenchmarksFixture(const runtime::Process::Options& opts);
 
   corevm::runtime::Process& process();
 

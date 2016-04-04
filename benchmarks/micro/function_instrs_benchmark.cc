@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 static
 void BenchmarkInstrPUTARG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
@@ -70,7 +70,7 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
 static
 void BenchmarkInstrPUTKWARG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::dyobj::dyobj_id id = 1;
 
@@ -99,7 +99,7 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
 static
 void BenchmarkInstrPUTARGS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
@@ -134,7 +134,7 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
 static
 void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
@@ -171,7 +171,7 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 static
 void BenchmarkInstrGETARG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::dyobj::dyobj_id id = 1;
 
@@ -197,7 +197,7 @@ void BenchmarkInstrGETARG(benchmark::State& state)
 static
 void BenchmarkInstrGETKWARG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::variable_key key = 1;
   corevm::dyobj::dyobj_id id = 1;
@@ -222,7 +222,7 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
 static
 void BenchmarkInstrGETARGS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::dyobj::dyobj_id id = 1;
 
@@ -247,7 +247,7 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
 static
 void BenchmarkInstrGETKWARGS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::variable_key key = 1;
   corevm::dyobj::dyobj_id id = 1;
@@ -273,7 +273,7 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
 static
 void BenchmarkInstrHASARGS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 

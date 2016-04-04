@@ -46,7 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ void BenchmarkObjectInstrs(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -93,7 +93,7 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope(benchmark::State& sta
 
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_visible_var(var_key, id);
@@ -116,7 +116,7 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope(benchmark::State& s
 
   corevm::runtime::instr_handler_ldobj2 handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_invisible_var(var_key, id);
@@ -136,7 +136,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
@@ -168,7 +168,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
 
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::EncodingMap encoding_map { attr_str };
   set_encoding_pair(fixture.process(), encoding_map);
@@ -203,7 +203,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::St
 
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
 
@@ -235,7 +235,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(benchmark::State& stat
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
@@ -261,7 +261,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
@@ -288,7 +288,7 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -321,7 +321,7 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration(benchmark
 
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
 
@@ -348,7 +348,7 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration(benchma
 
   corevm::runtime::instr_handler_ldobj2 handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   fixture.process().top_frame().set_invisible_var(var_key, id);
@@ -377,7 +377,7 @@ void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& st
 
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -403,7 +403,7 @@ void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& st
 static
 void BenchmarkSWAPInstr(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -430,7 +430,7 @@ static
 void
 BenchmarkHASATTR2Instr(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
   const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
@@ -464,7 +464,7 @@ static
 void
 BenchmarkGETATTR2Instr(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
   const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
@@ -500,7 +500,7 @@ static
 void
 BenchmarkSETATTR2Instr(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
@@ -531,7 +531,7 @@ static
 void
 BenchmarkDELATTR2Instr(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
   const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
@@ -569,7 +569,7 @@ BenchmarkSETATTRSInstr(benchmark::State& state)
   corevm::runtime::Instr instr(0, 1, 1);
   corevm::runtime::instr_handler_setattrs handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();
@@ -613,7 +613,7 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 
   corevm::runtime::instr_handler_rsetattrs handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::EncodingMap encoding_map { attr_str };
   set_encoding_pair(fixture.process(), encoding_map);
@@ -654,7 +654,7 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
   corevm::runtime::instr_handler_setattrs2 handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto id2 = fixture.process().create_dyobj();

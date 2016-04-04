@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ using corevm::benchmarks::instr_benchmarks_fixture;
 static
 void BenchmarkInstrPINVK(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto id = fixture.process().create_dyobj();
   auto& obj = fixture.process().get_dyobj(id);
@@ -72,7 +72,7 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 static
 void BenchmarkInstrINVK(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_invk handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -96,7 +96,7 @@ void BenchmarkInstrINVK(benchmark::State& state)
 static
 void BenchmarkInstrRTRN(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_rtrn handler;
   corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
@@ -141,7 +141,7 @@ void BenchmarkInstrRTRN(benchmark::State& state)
 static
 void BenchmarkInstrJMP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_jmp handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -160,7 +160,7 @@ void BenchmarkInstrJMP(benchmark::State& state)
 static
 void BenchmarkInstrJMPIF(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_jmpif handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -182,7 +182,7 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
 static
 void BenchmarkInstrJMPR(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_jmpr handler;
   corevm::runtime::Instr instr(0, 1, 0);
@@ -205,7 +205,7 @@ void BenchmarkInstrJMPR(benchmark::State& state)
 static
 void BenchmarkInstrEXC(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::closure* closure = fixture.process().top_frame().closure_ptr();
   ASSERT(closure);
@@ -233,7 +233,7 @@ void BenchmarkInstrEXC(benchmark::State& state)
 static
 void BenchmarkInstrEXCOBJ(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_excobj handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -255,7 +255,7 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
 static
 void BenchmarkInstrCLREXC(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_clrexc handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -276,7 +276,7 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
 static
 void BenchmarkInstrJMPEXC(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::runtime::instr_handler_jmpexc handler;
   corevm::runtime::Instr instr(0, 0, 1);

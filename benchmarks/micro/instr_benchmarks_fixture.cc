@@ -52,7 +52,7 @@ const uint64_t BENCHMARK_PROCESS_POOL_SIZE = 1024 * 1024 * 512;
 
 // -----------------------------------------------------------------------------
 
-instr_benchmarks_fixture::instr_benchmarks_fixture()
+InstrBenchmarksFixture::InstrBenchmarksFixture()
   :
   m_process(BENCHMARK_PROCESS_HEAP_SIZE, BENCHMARK_PROCESS_POOL_SIZE)
 {
@@ -61,7 +61,7 @@ instr_benchmarks_fixture::instr_benchmarks_fixture()
 
 // -----------------------------------------------------------------------------
 
-instr_benchmarks_fixture::instr_benchmarks_fixture(
+InstrBenchmarksFixture::InstrBenchmarksFixture(
   const runtime::Process::Options& opts)
   :
   m_process(opts)
@@ -72,7 +72,7 @@ instr_benchmarks_fixture::instr_benchmarks_fixture(
 // -----------------------------------------------------------------------------
 
 void
-instr_benchmarks_fixture::init()
+InstrBenchmarksFixture::init()
 {
   corevm::runtime::Compartment compartment(DUMMY_PATH);
 
@@ -119,7 +119,7 @@ instr_benchmarks_fixture::init()
 // -----------------------------------------------------------------------------
 
 corevm::runtime::Process&
-instr_benchmarks_fixture::process()
+InstrBenchmarksFixture::process()
 {
   return m_process;
 }

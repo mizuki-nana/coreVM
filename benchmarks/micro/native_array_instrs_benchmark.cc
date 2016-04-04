@@ -31,14 +31,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
 static
 void BenchmarkInstrARYLEN(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -62,7 +62,7 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
 static
 void BenchmarkInstrARYEMP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -86,7 +86,7 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
 static
 void BenchmarkInstrARYAT(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -114,7 +114,7 @@ void BenchmarkInstrARYAT(benchmark::State& state)
 static
 void BenchmarkInstrARYFRT(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -138,7 +138,7 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
 static
 void BenchmarkInstrARYBAK(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -162,7 +162,7 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
 static
 void BenchmarkInstrARYPUT(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -194,7 +194,7 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
 static
 void BenchmarkInstrARYAPND(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -222,7 +222,7 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
 static
 void BenchmarkInstrARYERS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -250,7 +250,7 @@ void BenchmarkInstrARYERS(benchmark::State& state)
 static
 void BenchmarkInstrARYPOP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -274,7 +274,7 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
 static
 void BenchmarkInstrARYSWP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -302,7 +302,7 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
 static
 void BenchmarkInstrARYCLR(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
@@ -327,7 +327,7 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
 static
 void BenchmarkInstrARYMRG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };

@@ -31,14 +31,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
 static
 void BenchmarkInstrSTRLEN(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -62,7 +62,7 @@ void BenchmarkInstrSTRLEN(benchmark::State& state)
 static
 void BenchmarkInstrSTRCLR(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -86,7 +86,7 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
 static
 void BenchmarkInstrSTRAPD(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -114,7 +114,7 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
 static
 void BenchmarkInstrSTRPSH(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -142,7 +142,7 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
 static
 void BenchmarkInstrSTRIST(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Helloworld");
@@ -174,7 +174,7 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
 static
 void BenchmarkInstrSTRIST2(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -206,7 +206,7 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
 static
 void BenchmarkInstrSTRERS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello  world");
@@ -235,7 +235,7 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
 static
 void BenchmarkInstrSTRERS2(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello  world");
@@ -268,7 +268,7 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
 static
 void BenchmarkInstrSTRRPLC(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello  world");
@@ -304,7 +304,7 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
 static
 void BenchmarkInstrSTRSWP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -332,7 +332,7 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
 static
 void BenchmarkInstrSTRSUB(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -361,7 +361,7 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
 static
 void BenchmarkInstrSTRSUB2(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -395,7 +395,7 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
 static
 void BenchmarkInstrSTRFND(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -425,7 +425,7 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
 static
 void BenchmarkInstrSTRFND2(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -459,7 +459,7 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
 static
 void BenchmarkInstrSTRRFND(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
@@ -489,7 +489,7 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
 static
 void BenchmarkInstrSTRRFND2(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");

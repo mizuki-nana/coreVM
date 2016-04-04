@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr_benchmarks_fixture.h"
 
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
 
   corevm::types::NativeTypeHandle oprd = corevm::types::uint32(666);
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
   fixture.process().top_frame().push_eval_stack(oprd);
 
   auto frame = &fixture.process().top_frame();
@@ -64,7 +64,7 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
   corevm::types::NativeTypeHandle oprd1 = FirstOperandType(1);
   corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   fixture.process().top_frame().push_eval_stack(oprd1);
   fixture.process().top_frame().push_eval_stack(oprd2);

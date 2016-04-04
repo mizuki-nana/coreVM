@@ -31,14 +31,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
 static
 void BenchmarkInstrMAPLEN(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -65,7 +65,7 @@ void BenchmarkInstrMAPLEN(benchmark::State& state)
 static
 void BenchmarkInstrMAPEMP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -92,7 +92,7 @@ void BenchmarkInstrMAPEMP(benchmark::State& state)
 static
 void BenchmarkInstrMAPFIND(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -123,7 +123,7 @@ void BenchmarkInstrMAPFIND(benchmark::State& state)
 static
 void BenchmarkInstrMAPAT(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -154,7 +154,7 @@ void BenchmarkInstrMAPAT(benchmark::State& state)
 static
 void BenchmarkInstrMAPPUT(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -189,7 +189,7 @@ void BenchmarkInstrMAPPUT(benchmark::State& state)
 static
 void BenchmarkInstrMAPSET(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -222,7 +222,7 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
 static
 void BenchmarkInstrMAPERS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -253,7 +253,7 @@ void BenchmarkInstrMAPERS(benchmark::State& state)
 static
 void BenchmarkInstrMAPCLR(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -280,7 +280,7 @@ void BenchmarkInstrMAPCLR(benchmark::State& state)
 static
 void BenchmarkInstrMAPSWP(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -314,7 +314,7 @@ void BenchmarkInstrMAPSWP(benchmark::State& state)
 static
 void BenchmarkInstrMAPKEYS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -341,7 +341,7 @@ void BenchmarkInstrMAPKEYS(benchmark::State& state)
 static
 void BenchmarkInstrMAPVALS(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },
@@ -369,7 +369,7 @@ void BenchmarkInstrMAPVALS(benchmark::State& state)
 static
 void BenchmarkInstrMAPMRG(benchmark::State& state)
 {
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
     { 1, 11 },

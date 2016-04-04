@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr_benchmarks_fixture.h"
 
 
-using corevm::benchmarks::instr_benchmarks_fixture;
+using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ static void BenchmarkNtvhndlCreationInstrs(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  instr_benchmarks_fixture fixture;
+  InstrBenchmarksFixture fixture;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
