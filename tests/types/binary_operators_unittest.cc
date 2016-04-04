@@ -32,7 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class binary_operators_unittest_base : public ::testing::Test
+class BinaryOperatorsUnittestBase : public ::testing::Test
 {
 protected:
   template<class op, class ResultType, class T, class U>
@@ -62,11 +62,11 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class addition_operator_unittest : public binary_operators_unittest_base {};
+class AdditionOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(addition_operator_unittest, TestWithIntegeralOperands)
+TEST_F(AdditionOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::uint32 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -79,7 +79,7 @@ TEST_F(addition_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(addition_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(AdditionOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -92,11 +92,11 @@ TEST_F(addition_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class subtraction_operator_unittest : public binary_operators_unittest_base {};
+class SubtractionOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(subtraction_operator_unittest, TestWithIntegeralOperands)
+TEST_F(SubtractionOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::uint32 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -109,7 +109,7 @@ TEST_F(subtraction_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(subtraction_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(SubtractionOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -122,11 +122,11 @@ TEST_F(subtraction_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class multiplication_operator_unittest : public binary_operators_unittest_base {};
+class MultiplicationOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(multiplication_operator_unittest, TestWithIntegeralOperands)
+TEST_F(MultiplicationOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::uint32 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -139,7 +139,7 @@ TEST_F(multiplication_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(multiplication_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(MultiplicationOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -152,11 +152,11 @@ TEST_F(multiplication_operator_unittest, TestWithIntegeralAndFloatingPointOperan
 
 // -----------------------------------------------------------------------------
 
-class division_operator_unittest : public binary_operators_unittest_base {};
+class DivisionOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(division_operator_unittest, TestWithIntegeralOperands)
+TEST_F(DivisionOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 64;
@@ -169,7 +169,7 @@ TEST_F(division_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(division_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(DivisionOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -182,11 +182,11 @@ TEST_F(division_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class modulus_operator_unittest : public binary_operators_unittest_base {};
+class ModulusOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(modulus_operator_unittest, TestWithIntegeralOperands)
+TEST_F(ModulusOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 64;
@@ -200,7 +200,7 @@ TEST_F(modulus_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(modulus_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(ModulusOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -214,11 +214,11 @@ TEST_F(modulus_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class pow_operator_unittest : public binary_operators_unittest_base {};
+class PowOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(pow_operator_unittest, TestWithIntegeralOperands)
+TEST_F(PowOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = 10000u;
   corevm::types::int64 oprd2 = 2;
@@ -232,7 +232,7 @@ TEST_F(pow_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(pow_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(PowOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 0.64f;
@@ -246,11 +246,11 @@ TEST_F(pow_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class bitwise_and_operator_unittest : public binary_operators_unittest_base {};
+class BitwiseAND_OperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_and_operator_unittest, TestWithIntegeralOperands)
+TEST_F(BitwiseAND_OperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 64;
@@ -263,7 +263,7 @@ TEST_F(bitwise_and_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(BitwiseAND_OperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 6.64f;
@@ -277,11 +277,11 @@ TEST_F(bitwise_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class bitwise_or_operator_unittest : public binary_operators_unittest_base {};
+class BitwiseOR_OperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_or_operator_unittest, TestWithIntegeralOperands)
+TEST_F(BitwiseOR_OperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 64;
@@ -294,7 +294,7 @@ TEST_F(bitwise_or_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(BitwiseOR_OperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 6.64f;
@@ -308,11 +308,11 @@ TEST_F(bitwise_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class bitwise_xor_operator_unittest : public binary_operators_unittest_base {};
+class BitwiseXOR_OperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralOperands)
+TEST_F(BitwiseXOR_OperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 64;
@@ -325,7 +325,7 @@ TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(BitwiseXOR_OperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 6.64f;
@@ -339,11 +339,11 @@ TEST_F(bitwise_xor_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class bitwise_left_shift_operator_unittest : public binary_operators_unittest_base {};
+class BitwiseLeftShiftOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralOperands)
+TEST_F(BitwiseLeftShiftOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 6;
@@ -357,7 +357,7 @@ TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(BitwiseLeftShiftOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 64;
   corevm::types::decimal oprd2 = 6.64f;
@@ -371,11 +371,11 @@ TEST_F(bitwise_left_shift_operator_unittest, TestWithIntegeralAndFloatingPointOp
 
 // -----------------------------------------------------------------------------
 
-class bitwise_right_shift_operator_unittest : public binary_operators_unittest_base {};
+class BitwiseRightShiftOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralOperands)
+TEST_F(BitwiseRightShiftOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 4;
@@ -388,7 +388,7 @@ TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(BitwiseRightShiftOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
   corevm::types::decimal oprd2 = 6.64f;
@@ -402,11 +402,11 @@ TEST_F(bitwise_right_shift_operator_unittest, TestWithIntegeralAndFloatingPointO
 
 // -----------------------------------------------------------------------------
 
-class logical_and_operator_unittest : public binary_operators_unittest_base {};
+class LogicalAND_OperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_and_operator_unittest, TestWithIntegeralOperands)
+TEST_F(LogicalAND_OperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 4;
@@ -419,7 +419,7 @@ TEST_F(logical_and_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(LogicalAND_OperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
   corevm::types::decimal oprd2 = 6.64f;
@@ -432,11 +432,11 @@ TEST_F(logical_and_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class logical_or_operator_unittest : public binary_operators_unittest_base {};
+class LogicalOR_OperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_or_operator_unittest, TestWithIntegeralOperands)
+TEST_F(LogicalOR_OperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = 4;
@@ -449,7 +449,7 @@ TEST_F(logical_or_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(LogicalOR_OperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = std::numeric_limits<corevm::types::int64>::max();
   corevm::types::decimal oprd2 = 6.64f;
@@ -462,11 +462,11 @@ TEST_F(logical_or_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class eq_operator_unittest : public binary_operators_unittest_base {};
+class EqOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(eq_operator_unittest, TestWithIntegeralOperands)
+TEST_F(EqOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -479,7 +479,7 @@ TEST_F(eq_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(eq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(EqOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;
@@ -493,11 +493,11 @@ TEST_F(eq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class neq_operator_unittest : public binary_operators_unittest_base {};
+class NeqOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(neq_operator_unittest, TestWithIntegeralOperands)
+TEST_F(NeqOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -510,7 +510,7 @@ TEST_F(neq_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(neq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(NeqOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;
@@ -524,11 +524,11 @@ TEST_F(neq_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class gt_operator_unittest : public binary_operators_unittest_base {};
+class GtOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(gt_operator_unittest, TestWithIntegeralOperands)
+TEST_F(GtOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -541,7 +541,7 @@ TEST_F(gt_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(gt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(GtOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;
@@ -555,11 +555,11 @@ TEST_F(gt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class lt_operator_unittest : public binary_operators_unittest_base {};
+class LtOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(lt_operator_unittest, TestWithIntegeralOperands)
+TEST_F(LtOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -572,7 +572,7 @@ TEST_F(lt_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(lt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(LtOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;
@@ -586,11 +586,11 @@ TEST_F(lt_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class gte_operator_unittest : public binary_operators_unittest_base {};
+class GteOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(gte_operator_unittest, TestWithIntegeralOperands)
+TEST_F(GteOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -603,7 +603,7 @@ TEST_F(gte_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(gte_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(GteOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;
@@ -617,11 +617,11 @@ TEST_F(gte_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
 
 // -----------------------------------------------------------------------------
 
-class lte_operator_unittest : public binary_operators_unittest_base {};
+class LteOperatorUnitTest : public BinaryOperatorsUnittestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(lte_operator_unittest, TestWithIntegeralOperands)
+TEST_F(LteOperatorUnitTest, TestWithIntegeralOperands)
 {
   corevm::types::uint32 oprd1 = std::numeric_limits<corevm::types::uint32>::max();
   corevm::types::int64 oprd2 = std::numeric_limits<corevm::types::uint32>::max();
@@ -634,7 +634,7 @@ TEST_F(lte_operator_unittest, TestWithIntegeralOperands)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(lte_operator_unittest, TestWithIntegeralAndFloatingPointOperands)
+TEST_F(LteOperatorUnitTest, TestWithIntegeralAndFloatingPointOperands)
 {
   corevm::types::int64 oprd1 = 6;
   corevm::types::decimal oprd2 = 6.64f;

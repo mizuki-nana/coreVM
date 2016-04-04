@@ -40,7 +40,7 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arylen handler;
@@ -64,7 +64,7 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryemp handler;
@@ -88,10 +88,10 @@ void BenchmarkInstrARYAT(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryat handler;
@@ -116,7 +116,7 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryfrt handler;
@@ -140,7 +140,7 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arybak handler;
@@ -164,13 +164,13 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
-  corevm::types::native_type_handle hndl3 =
+  corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint32(10);
 
   corevm::runtime::instr_handler_aryput handler;
@@ -196,10 +196,10 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryapnd handler;
@@ -224,10 +224,10 @@ void BenchmarkInstrARYERS(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
   corevm::runtime::instr_handler_aryers handler;
@@ -252,7 +252,7 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_arypop handler;
@@ -276,10 +276,10 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_array { 3, 2, 1 };
 
   corevm::runtime::instr_handler_aryswp handler;
@@ -304,7 +304,7 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
   corevm::runtime::instr_handler_aryclr handler;
@@ -329,10 +329,10 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
 {
   instr_benchmarks_fixture fixture;
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::types::native_type_handle hndl2 =
+  corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_array { 4, 5, 6 };
 
   corevm::runtime::instr_handler_arymrg handler;

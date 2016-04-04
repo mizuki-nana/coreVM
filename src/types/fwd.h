@@ -58,7 +58,7 @@ typedef variant::variant<
   string,
   array,
   map
-> native_type_handle;
+> NativeTypeHandle;
 
 
 } /* end namespace types */

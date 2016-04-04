@@ -37,7 +37,7 @@ const char* HELLO_WORLD = "Hello world";
 
 // -----------------------------------------------------------------------------
 
-class variant_unittest : public ::testing::Test
+class VariantUnitTest : public ::testing::Test
 {
 protected:
   using VariantType =
@@ -46,7 +46,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestEmptyInitialization)
+TEST_F(VariantUnitTest, TestEmptyInitialization)
 {
   VariantType v;
 
@@ -75,7 +75,7 @@ TEST_F(variant_unittest, TestEmptyInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestSameTypeCopyConstructor)
+TEST_F(VariantUnitTest, TestSameTypeCopyConstructor)
 {
   const std::string s(HELLO_WORLD);
 
@@ -104,7 +104,7 @@ TEST_F(variant_unittest, TestSameTypeCopyConstructor)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestSameTypeMoveConstructor)
+TEST_F(VariantUnitTest, TestSameTypeMoveConstructor)
 {
   const std::string s(HELLO_WORLD);
 
@@ -137,7 +137,7 @@ TEST_F(variant_unittest, TestSameTypeMoveConstructor)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestTypeSpecificMoveConstructor)
+TEST_F(VariantUnitTest, TestTypeSpecificMoveConstructor)
 {
   const std::string s(HELLO_WORLD);
 
@@ -166,7 +166,7 @@ TEST_F(variant_unittest, TestTypeSpecificMoveConstructor)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestAssignmentInitialization)
+TEST_F(VariantUnitTest, TestAssignmentInitialization)
 {
   std::vector<int> nums = {1, 2, 3};
 
@@ -193,7 +193,7 @@ TEST_F(variant_unittest, TestAssignmentInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestAssignmentInitializationWithSpecificTypeByValue)
+TEST_F(VariantUnitTest, TestAssignmentInitializationWithSpecificTypeByValue)
 {
   VariantType v = (int)1;
 
@@ -217,7 +217,7 @@ TEST_F(variant_unittest, TestAssignmentInitializationWithSpecificTypeByValue)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestAssignmentInitializationWithSpecificTypeByRvalue)
+TEST_F(VariantUnitTest, TestAssignmentInitializationWithSpecificTypeByRvalue)
 {
   const std::string s(HELLO_WORLD);
 
@@ -245,7 +245,7 @@ TEST_F(variant_unittest, TestAssignmentInitializationWithSpecificTypeByRvalue)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestEqualityOperatorOnSameType)
+TEST_F(VariantUnitTest, TestEqualityOperatorOnSameType)
 {
   const std::string s(HELLO_WORLD);
 
@@ -266,7 +266,7 @@ TEST_F(variant_unittest, TestEqualityOperatorOnSameType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestEqualityOperatorOnDifferentTypes)
+TEST_F(VariantUnitTest, TestEqualityOperatorOnDifferentTypes)
 {
   typedef corevm::types::variant::variant<int, double> VariantType1;
   typedef corevm::types::variant::variant<int, float> VariantType2;
@@ -280,7 +280,7 @@ TEST_F(variant_unittest, TestEqualityOperatorOnDifferentTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestLessThanOperatorOnSameType)
+TEST_F(VariantUnitTest, TestLessThanOperatorOnSameType)
 {
   VariantType v1 = 1;
   VariantType v2 = 2;
@@ -290,7 +290,7 @@ TEST_F(variant_unittest, TestLessThanOperatorOnSameType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unittest, TestLessThanOperatorOnDifferentTypes)
+TEST_F(VariantUnitTest, TestLessThanOperatorOnDifferentTypes)
 {
   VariantType v1 = 100;
   VariantType v2 = 3.14;
@@ -304,7 +304,7 @@ TEST_F(variant_unittest, TestLessThanOperatorOnDifferentTypes)
 
 // -----------------------------------------------------------------------------
 
-class variant_unary_visitation_unittest : public variant_unittest
+class VariantUnaryVisitationUnitTest : public VariantUnitTest
 {
 protected:
   struct tostring_visitor : public corevm::types::variant::static_visitor<std::string>
@@ -351,7 +351,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_unary_visitation_unittest, TestVisitation)
+TEST_F(VariantUnaryVisitationUnitTest, TestVisitation)
 {
   VariantType v1 = (int)1;
   VariantType v2 = (double)3.14;
@@ -373,7 +373,7 @@ TEST_F(variant_unary_visitation_unittest, TestVisitation)
 
 // -----------------------------------------------------------------------------
 
-class variant_binary_visitation_unittest : public variant_unittest
+class VariantBinaryVisitationUnitTest : public VariantUnitTest
 {
 protected:
   struct equality_visitor : public corevm::types::variant::static_visitor<bool>
@@ -394,7 +394,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(variant_binary_visitation_unittest, TestVisitation)
+TEST_F(VariantBinaryVisitationUnitTest, TestVisitation)
 {
   VariantType v1_int = (int)1;
   VariantType v2_int = (int)2;

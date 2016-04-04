@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void Benchmark_InterfaceStringGetSize(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
 
   while (state.KeepRunning())
   {
@@ -44,7 +44,7 @@ void Benchmark_InterfaceStringGetSize(benchmark::State& state)
 static
 void Benchmark_InterfaceStringClear(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
 
   while (state.KeepRunning())
   {
@@ -57,8 +57,8 @@ void Benchmark_InterfaceStringClear(benchmark::State& state)
 static
 void Benchmark_InterfaceStringAt(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((3));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((3));
 
   while (state.KeepRunning())
   {
@@ -71,8 +71,8 @@ void Benchmark_InterfaceStringAt(benchmark::State& state)
 static
 void Benchmark_InterfaceStringAt2(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((3));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((3));
 
   while (state.KeepRunning())
   {
@@ -85,8 +85,8 @@ void Benchmark_InterfaceStringAt2(benchmark::State& state)
 static
 void Benchmark_InterfaceStringAppend(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string(" !!! ")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string(" !!! ")));
 
   while (state.KeepRunning())
   {
@@ -99,8 +99,8 @@ void Benchmark_InterfaceStringAppend(benchmark::State& state)
 static
 void Benchmark_InterfaceStringPushback(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32('c')));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32('c')));
 
   while (state.KeepRunning())
   {
@@ -113,9 +113,9 @@ void Benchmark_InterfaceStringPushback(benchmark::State& state)
 static
 void Benchmark_InterfaceStringInsertStr(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
-  corevm::types::native_type_handle oprd3((corevm::types::native_string(" --- ")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::native_string(" --- ")));
 
   while (state.KeepRunning())
   {
@@ -128,9 +128,9 @@ void Benchmark_InterfaceStringInsertStr(benchmark::State& state)
 static
 void Benchmark_InterfaceStringInsertChar(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
-  corevm::types::native_type_handle oprd3((corevm::types::uint8('-')));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint8('-')));
 
   while (state.KeepRunning())
   {
@@ -143,11 +143,11 @@ void Benchmark_InterfaceStringInsertChar(benchmark::State& state)
 static
 void Benchmark_InterfaceStringErase(benchmark::State& state)
 {
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
 
   while (state.KeepRunning())
   {
-    corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+    corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
     corevm::types::interface_string_erase(hndl, oprd2);
   }
 }
@@ -157,12 +157,12 @@ void Benchmark_InterfaceStringErase(benchmark::State& state)
 static
 void Benchmark_InterfaceStringErase2(benchmark::State& state)
 {
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
-    corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
+    corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
     corevm::types::interface_string_erase2(hndl, oprd2, oprd3);
   }
 }
@@ -172,10 +172,10 @@ void Benchmark_InterfaceStringErase2(benchmark::State& state)
 static
 void Benchmark_InterfaceStringReplaceStr(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
-  corevm::types::native_type_handle oprd4((corevm::types::native_string("abc")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd4((corevm::types::native_string("abc")));
 
   while (state.KeepRunning())
   {
@@ -188,8 +188,8 @@ void Benchmark_InterfaceStringReplaceStr(benchmark::State& state)
 static
 void Benchmark_InterfaceStringSwap(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string("Byte world")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string("Byte world")));
 
   while (state.KeepRunning())
   {
@@ -202,8 +202,8 @@ void Benchmark_InterfaceStringSwap(benchmark::State& state)
 static
 void Benchmark_InterfaceStringSubstr(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
 
   while (state.KeepRunning())
   {
@@ -216,9 +216,9 @@ void Benchmark_InterfaceStringSubstr(benchmark::State& state)
 static
 void Benchmark_InterfaceStringSubstr2(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(5)));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(5)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
@@ -231,8 +231,8 @@ void Benchmark_InterfaceStringSubstr2(benchmark::State& state)
 static
 void Benchmark_InterfaceStringFind(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string("world")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string("world")));
 
   while (state.KeepRunning())
   {
@@ -245,9 +245,9 @@ void Benchmark_InterfaceStringFind(benchmark::State& state)
 static
 void Benchmark_InterfaceStringFind2(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string("world")));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string("world")));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
@@ -260,8 +260,8 @@ void Benchmark_InterfaceStringFind2(benchmark::State& state)
 static
 void Benchmark_InterfaceStringRFind(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string("world")));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string("world")));
 
   while (state.KeepRunning())
   {
@@ -274,9 +274,9 @@ void Benchmark_InterfaceStringRFind(benchmark::State& state)
 static
 void Benchmark_InterfaceStringRFind2(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_string("Hello world")));
-  corevm::types::native_type_handle oprd2((corevm::types::native_string("world")));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_string("Hello world")));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_string("world")));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {

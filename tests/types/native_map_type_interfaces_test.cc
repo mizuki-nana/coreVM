@@ -25,11 +25,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class native_map_type_interfaces_test : public native_type_interfaces_test_base {};
+class NativeMapTypeInterfacesTest : public NativeTypeInterfacesTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestSize)
+TEST_F(NativeMapTypeInterfacesTest, TestSize)
 {
   corevm::types::native_map map {
     { 1, 1 },
@@ -37,7 +37,7 @@ TEST_F(native_map_type_interfaces_test, TestSize)
     { 3, 3 },
   };
 
-  corevm::types::native_type_handle operand = map;
+  corevm::types::NativeTypeHandle operand = map;
 
   size_t expected_result = 3;
 
@@ -50,13 +50,13 @@ TEST_F(native_map_type_interfaces_test, TestSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestEmpty)
+TEST_F(NativeMapTypeInterfacesTest, TestEmpty)
 {
   corevm::types::native_map map {
     { 1, 1 }
   };
 
-  corevm::types::native_type_handle operand = map;
+  corevm::types::NativeTypeHandle operand = map;
 
   bool expected_result = false;
 
@@ -69,14 +69,14 @@ TEST_F(native_map_type_interfaces_test, TestEmpty)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestAt)
+TEST_F(NativeMapTypeInterfacesTest, TestAt)
 {
   corevm::types::native_map map {
     { 1, 101 }
   };
 
-  corevm::types::native_type_handle operand = map;
-  corevm::types::native_type_handle key = corevm::types::uint64(1);
+  corevm::types::NativeTypeHandle operand = map;
+  corevm::types::NativeTypeHandle key = corevm::types::uint64(1);
 
   corevm::types::native_map::mapped_type expected_result = 101;
 
@@ -90,12 +90,12 @@ TEST_F(native_map_type_interfaces_test, TestAt)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestPut)
+TEST_F(NativeMapTypeInterfacesTest, TestPut)
 {
   corevm::types::native_map map;
-  corevm::types::native_type_handle operand = map;
-  corevm::types::native_type_handle key = corevm::types::uint64(1);
-  corevm::types::native_type_handle value = corevm::types::uint64(101);
+  corevm::types::NativeTypeHandle operand = map;
+  corevm::types::NativeTypeHandle key = corevm::types::uint64(1);
+  corevm::types::NativeTypeHandle value = corevm::types::uint64(101);
 
   corevm::types::native_map expected_result {
     { 1, 101 }
@@ -112,15 +112,15 @@ TEST_F(native_map_type_interfaces_test, TestPut)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestErase)
+TEST_F(NativeMapTypeInterfacesTest, TestErase)
 {
   corevm::types::native_map map {
     { 1, 101 },
     { 2, 2002 },
   };
 
-  corevm::types::native_type_handle operand = map;
-  corevm::types::native_type_handle key = corevm::types::uint64(1);
+  corevm::types::NativeTypeHandle operand = map;
+  corevm::types::NativeTypeHandle key = corevm::types::uint64(1);
   corevm::types::native_map expected_result {
     { 2, 2002 }
   };
@@ -135,14 +135,14 @@ TEST_F(native_map_type_interfaces_test, TestErase)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestClear)
+TEST_F(NativeMapTypeInterfacesTest, TestClear)
 {
   corevm::types::native_map map {
     { 1, 101 },
     { 2, 2002 },
   };
 
-  corevm::types::native_type_handle operand = map;
+  corevm::types::NativeTypeHandle operand = map;
   corevm::types::native_map expected_result;
 
   apply_interface_on_single_operand_in_place_and_assert_result<corevm::types::native_map>(
@@ -154,15 +154,15 @@ TEST_F(native_map_type_interfaces_test, TestClear)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_map_type_interfaces_test, TestSwap)
+TEST_F(NativeMapTypeInterfacesTest, TestSwap)
 {
   corevm::types::native_map map;
   corevm::types::native_map other_map {
     { 1001, 2002 }
   };
 
-  corevm::types::native_type_handle operand = map;
-  corevm::types::native_type_handle other_operand = other_map;
+  corevm::types::NativeTypeHandle operand = map;
+  corevm::types::NativeTypeHandle other_operand = other_map;
   corevm::types::native_map expected_result = other_map;
 
   this->apply_interface_on_two_operands_in_place_and_assert_result<corevm::types::native_map>(

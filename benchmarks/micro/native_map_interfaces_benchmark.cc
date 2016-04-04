@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void Benchmark_InterfaceMapSize(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -48,7 +48,7 @@ void Benchmark_InterfaceMapSize(benchmark::State& state)
 static
 void Benchmark_InterfaceMapEmpty(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -65,12 +65,12 @@ void Benchmark_InterfaceMapEmpty(benchmark::State& state)
 static
 void Benchmark_InterfaceMapFind(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
@@ -83,12 +83,12 @@ void Benchmark_InterfaceMapFind(benchmark::State& state)
 static
 void Benchmark_InterfaceMapAt(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
@@ -101,13 +101,13 @@ void Benchmark_InterfaceMapAt(benchmark::State& state)
 static
 void Benchmark_InterfaceMapPut(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(2)));
-  corevm::types::native_type_handle oprd3((corevm::types::uint32(200)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(200)));
 
   while (state.KeepRunning())
   {
@@ -120,12 +120,12 @@ void Benchmark_InterfaceMapPut(benchmark::State& state)
 static
 void Benchmark_InterfaceMapErase(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::native_type_handle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
@@ -138,7 +138,7 @@ void Benchmark_InterfaceMapErase(benchmark::State& state)
 static
 void Benchmark_InterfaceMapClear(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -155,13 +155,13 @@ void Benchmark_InterfaceMapClear(benchmark::State& state)
 static
 void Benchmark_InterfaceMapSwap(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
 
-  corevm::types::native_type_handle oprd2((corevm::types::native_map({
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_map({
     { 100, 1 },
     { 200, 2 },
     { 300, 3 }
@@ -178,7 +178,7 @@ void Benchmark_InterfaceMapSwap(benchmark::State& state)
 static
 void Benchmark_InterfaceMapKeys(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -195,7 +195,7 @@ void Benchmark_InterfaceMapKeys(benchmark::State& state)
 static
 void Benchmark_InterfaceMapVals(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }

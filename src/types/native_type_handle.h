@@ -37,7 +37,7 @@ namespace types {
 
 template<typename T>
 T
-get_value_from_handle(native_type_handle& handle)
+get_value_from_handle(NativeTypeHandle& handle)
 {
   return variant::apply_visitor(
     native_type_value_visitor<T>(), handle
@@ -48,7 +48,7 @@ get_value_from_handle(native_type_handle& handle)
 
 template<typename T>
 T&
-get_value_ref_from_handle(native_type_handle& handle)
+get_value_ref_from_handle(NativeTypeHandle& handle)
 {
   return handle.get<T>();
 }
@@ -56,8 +56,8 @@ get_value_ref_from_handle(native_type_handle& handle)
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-native_type_handle
-apply_unary_visitor(native_type_handle& handle)
+NativeTypeHandle
+apply_unary_visitor(NativeTypeHandle& handle)
 {
   return variant::apply_visitor(operator_visitor(), handle);
 }
@@ -65,8 +65,8 @@ apply_unary_visitor(native_type_handle& handle)
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor, typename... Arguments>
-native_type_handle
-apply_unary_visitor_parameterized(native_type_handle& handle, Arguments... args)
+NativeTypeHandle
+apply_unary_visitor_parameterized(NativeTypeHandle& handle, Arguments... args)
 {
   return variant::apply_visitor(operator_visitor(args...), handle);
 }
@@ -74,9 +74,9 @@ apply_unary_visitor_parameterized(native_type_handle& handle, Arguments... args)
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-native_type_handle
+NativeTypeHandle
 apply_binary_visitor(
-  native_type_handle& lhs, native_type_handle& rhs)
+  NativeTypeHandle& lhs, NativeTypeHandle& rhs)
 {
   return variant::apply_visitor(operator_visitor(), lhs, rhs);
 }

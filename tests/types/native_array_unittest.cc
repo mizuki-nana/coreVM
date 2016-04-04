@@ -29,7 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdexcept>
 
 
-class native_array_unittest : public ::testing::Test
+class NativeArrayUnitTest : public ::testing::Test
 {
 protected:
   const corevm::types::uint64 fixture_element1 = static_cast<corevm::types::uint64>(1);
@@ -39,7 +39,7 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestEmptyInitialization)
+TEST_F(NativeArrayUnitTest, TestEmptyInitialization)
 {
   const corevm::types::native_array array;
 
@@ -49,7 +49,7 @@ TEST_F(native_array_unittest, TestEmptyInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestCopyConstructor)
+TEST_F(NativeArrayUnitTest, TestCopyConstructor)
 {
   const corevm::types::native_array array1 {
     fixture_element1,
@@ -69,7 +69,7 @@ TEST_F(native_array_unittest, TestCopyConstructor)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestCopyConstructorOnIntegerType)
+TEST_F(NativeArrayUnitTest, TestCopyConstructorOnIntegerType)
 {
   ASSERT_THROW(
     {
@@ -81,7 +81,7 @@ TEST_F(native_array_unittest, TestCopyConstructorOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestConvertingToIntegerType)
+TEST_F(NativeArrayUnitTest, TestConvertingToIntegerType)
 {
   ASSERT_THROW(
     {
@@ -94,7 +94,7 @@ TEST_F(native_array_unittest, TestConvertingToIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestAssignmentOperator)
+TEST_F(NativeArrayUnitTest, TestAssignmentOperator)
 {
   const corevm::types::native_array array1 {
     fixture_element1,
@@ -115,7 +115,7 @@ TEST_F(native_array_unittest, TestAssignmentOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestEqualityBetweenEmptyArrays)
+TEST_F(NativeArrayUnitTest, TestEqualityBetweenEmptyArrays)
 {
   const corevm::types::native_array array1;
   const corevm::types::native_array array2;
@@ -128,7 +128,7 @@ TEST_F(native_array_unittest, TestEqualityBetweenEmptyArrays)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestEqualityBetweenNonEmptyArrays)
+TEST_F(NativeArrayUnitTest, TestEqualityBetweenNonEmptyArrays)
 {
   const corevm::types::native_array array1 {
     fixture_element1,
@@ -143,7 +143,7 @@ TEST_F(native_array_unittest, TestEqualityBetweenNonEmptyArrays)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unittest, TestEqualityBetweenIdenticalArrays)
+TEST_F(NativeArrayUnitTest, TestEqualityBetweenIdenticalArrays)
 {
   const corevm::types::native_array array1 {
     fixture_element1,
@@ -164,11 +164,11 @@ TEST_F(native_array_unittest, TestEqualityBetweenIdenticalArrays)
 
 // -----------------------------------------------------------------------------
 
-class native_array_functionality_unittest : public native_array_unittest {};
+class NativeArrayFunctionalityUnitTest : public NativeArrayUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_functionality_unittest, TestPushBack)
+TEST_F(NativeArrayFunctionalityUnitTest, TestPushBack)
 {
   corevm::types::native_array array;
 
@@ -197,7 +197,7 @@ TEST_F(native_array_functionality_unittest, TestPushBack)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_functionality_unittest, TestAtSuccessful)
+TEST_F(NativeArrayFunctionalityUnitTest, TestAtSuccessful)
 {
   const corevm::types::native_array array {1, 2, 3};
 
@@ -209,7 +209,7 @@ TEST_F(native_array_functionality_unittest, TestAtSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_functionality_unittest, TestAtFailure)
+TEST_F(NativeArrayFunctionalityUnitTest, TestAtFailure)
 {
   const corevm::types::native_array array {1, 2, 3};
 
@@ -223,7 +223,7 @@ TEST_F(native_array_functionality_unittest, TestAtFailure)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_functionality_unittest, TestEraseSuccessful)
+TEST_F(NativeArrayFunctionalityUnitTest, TestEraseSuccessful)
 {
   corevm::types::native_array array {1, 2, 3, 4, 5};
 
@@ -240,7 +240,7 @@ TEST_F(native_array_functionality_unittest, TestEraseSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_functionality_unittest, TestEraseFailure)
+TEST_F(NativeArrayFunctionalityUnitTest, TestEraseFailure)
 {
   corevm::types::native_array array {1, 2, 3, 4, 5};
 
@@ -254,15 +254,15 @@ TEST_F(native_array_functionality_unittest, TestEraseFailure)
 
 // -----------------------------------------------------------------------------
 
-class native_array_operator_unittest : public native_array_unittest {};
+class NativeArrayOperatorUnitTest : public NativeArrayUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-class native_array_unary_operator_unittest : public native_array_operator_unittest {};
+class NativeArrayUnaryOperatorUnitTest : public NativeArrayOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestPositiveOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestPositiveOperator)
 {
   ASSERT_THROW(
     {
@@ -275,7 +275,7 @@ TEST_F(native_array_unary_operator_unittest, TestPositiveOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestNegationOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestNegationOperator)
 {
   ASSERT_THROW(
     {
@@ -288,7 +288,7 @@ TEST_F(native_array_unary_operator_unittest, TestNegationOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestIncrementOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestIncrementOperator)
 {
   ASSERT_THROW(
     {
@@ -301,7 +301,7 @@ TEST_F(native_array_unary_operator_unittest, TestIncrementOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestDecrementOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestDecrementOperator)
 {
   ASSERT_THROW(
     {
@@ -314,7 +314,7 @@ TEST_F(native_array_unary_operator_unittest, TestDecrementOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestLogicalNotOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestLogicalNotOperator)
 {
   ASSERT_THROW(
     {
@@ -327,7 +327,7 @@ TEST_F(native_array_unary_operator_unittest, TestLogicalNotOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_unary_operator_unittest, TestBitwiseNotOperator)
+TEST_F(NativeArrayUnaryOperatorUnitTest, TestBitwiseNotOperator)
 {
   ASSERT_THROW(
     {
@@ -340,7 +340,7 @@ TEST_F(native_array_unary_operator_unittest, TestBitwiseNotOperator)
 
 // -----------------------------------------------------------------------------
 
-class native_array_binary_operator_unittest : public native_array_operator_unittest
+class NativeArrayBinaryOperatorUnitTest : public NativeArrayOperatorUnitTest
 {
 public:
   static void F(bool)
@@ -350,7 +350,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestAdditionOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestAdditionOperator)
 {
   ASSERT_THROW(
     {
@@ -364,7 +364,7 @@ TEST_F(native_array_binary_operator_unittest, TestAdditionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestSubtractionOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestSubtractionOperator)
 {
   ASSERT_THROW(
     {
@@ -378,7 +378,7 @@ TEST_F(native_array_binary_operator_unittest, TestSubtractionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestMultiplicationOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestMultiplicationOperator)
 {
   ASSERT_THROW(
     {
@@ -392,7 +392,7 @@ TEST_F(native_array_binary_operator_unittest, TestMultiplicationOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestDivisionOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestDivisionOperator)
 {
   ASSERT_THROW(
     {
@@ -406,7 +406,7 @@ TEST_F(native_array_binary_operator_unittest, TestDivisionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestLogicalANDOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestLogicalANDOperator)
 {
   ASSERT_THROW(
     {
@@ -420,7 +420,7 @@ TEST_F(native_array_binary_operator_unittest, TestLogicalANDOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestLogicalOROperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestLogicalOROperator)
 {
   ASSERT_THROW(
     {
@@ -434,7 +434,7 @@ TEST_F(native_array_binary_operator_unittest, TestLogicalOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestBitwiseANDOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseANDOperator)
 {
   ASSERT_THROW(
     {
@@ -448,7 +448,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseANDOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestBitwiseOROperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseOROperator)
 {
   ASSERT_THROW(
     {
@@ -462,7 +462,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestBitwiseXOROperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseXOROperator)
 {
   ASSERT_THROW(
     {
@@ -476,7 +476,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseXOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestBitwiseLeftShiftOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseLeftShiftOperator)
 {
   ASSERT_THROW(
     {
@@ -490,7 +490,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestBitwiseRightShiftOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseRightShiftOperator)
 {
   ASSERT_THROW(
     {
@@ -504,7 +504,7 @@ TEST_F(native_array_binary_operator_unittest, TestBitwiseRightShiftOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestEQOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestEQOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -517,7 +517,7 @@ TEST_F(native_array_binary_operator_unittest, TestEQOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestNEQOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestNEQOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -530,7 +530,7 @@ TEST_F(native_array_binary_operator_unittest, TestNEQOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestGTOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestGTOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -543,7 +543,7 @@ TEST_F(native_array_binary_operator_unittest, TestGTOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestLTOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestLTOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -556,7 +556,7 @@ TEST_F(native_array_binary_operator_unittest, TestLTOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestGTEOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestGTEOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -569,7 +569,7 @@ TEST_F(native_array_binary_operator_unittest, TestGTEOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_binary_operator_unittest, TestLTEOperator)
+TEST_F(NativeArrayBinaryOperatorUnitTest, TestLTEOperator)
 {
   ASSERT_NO_THROW(
     {

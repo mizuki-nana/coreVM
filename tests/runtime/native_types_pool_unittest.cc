@@ -52,12 +52,12 @@ TEST_F(NativeTypesPoolUnitTest, TestCreateAndAccess)
 
   ASSERT_EQ(1, pool.size());
 
-  corevm::types::native_type_handle& hndl = pool.at(key);
+  corevm::types::NativeTypeHandle& hndl = pool.at(key);
 
   int value = 8;
   hndl = corevm::types::int8(value);
 
-  corevm::types::native_type_handle& hndl2 = pool.at(key);
+  corevm::types::NativeTypeHandle& hndl2 = pool.at(key);
 
   int actual_value = corevm::types::get_value_from_handle<int8_t>(hndl2);
 

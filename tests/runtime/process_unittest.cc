@@ -362,7 +362,7 @@ TEST_F(ProcessUnitTest, TestInsertAndAccessNativeTypeHandle)
   corevm::runtime::Process process;
   int value = 8;
 
-  corevm::types::native_type_handle hndl = corevm::types::int8(value);
+  corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
 
   auto key = process.insert_ntvhndl(hndl);
 
@@ -382,7 +382,7 @@ TEST_F(ProcessUnitTest, TestInsertAndEraseNativeTypeHandle)
   corevm::runtime::Process process;
   int value = 8;
 
-  corevm::types::native_type_handle hndl = corevm::types::int8(value);
+  corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
 
   auto key = process.insert_ntvhndl(hndl);
 
@@ -906,10 +906,10 @@ TEST_F(ProcessSignalHandlingUnitTest, TestHandleSIGFPE)
   corevm::runtime::Process process;
   corevm::runtime::Frame frame;
   corevm::runtime::SigHandlerRegistrar::init(&process);
-  corevm::types::native_type_handle oprd4 = corevm::types::int8(0);
-  corevm::types::native_type_handle oprd3 = corevm::types::int8(10);
-  corevm::types::native_type_handle oprd2 = corevm::types::int8(0);
-  corevm::types::native_type_handle oprd1 = corevm::types::int8(10);
+  corevm::types::NativeTypeHandle oprd4 = corevm::types::int8(0);
+  corevm::types::NativeTypeHandle oprd3 = corevm::types::int8(10);
+  corevm::types::NativeTypeHandle oprd2 = corevm::types::int8(0);
+  corevm::types::NativeTypeHandle oprd1 = corevm::types::int8(10);
 
   frame.push_eval_stack(oprd4);
   frame.push_eval_stack(oprd3);

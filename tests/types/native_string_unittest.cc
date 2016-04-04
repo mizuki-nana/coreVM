@@ -26,11 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class native_string_unittest : public ::testing::Test {};
+class NativeStringUnitTest : public ::testing::Test {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestEmptyInitialization)
+TEST_F(NativeStringUnitTest, TestEmptyInitialization)
 {
   const corevm::types::native_string str;
 
@@ -41,7 +41,7 @@ TEST_F(native_string_unittest, TestEmptyInitialization)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestInitializationWithCString)
+TEST_F(NativeStringUnitTest, TestInitializationWithCString)
 {
   const char* s = "Hello world!";
   const corevm::types::native_string str(s);
@@ -55,7 +55,7 @@ TEST_F(native_string_unittest, TestInitializationWithCString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestInitialziationWithStdString)
+TEST_F(NativeStringUnitTest, TestInitialziationWithStdString)
 {
   const std::string s("Hello world!");
   const corevm::types::native_string str(s);
@@ -69,7 +69,7 @@ TEST_F(native_string_unittest, TestInitialziationWithStdString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestCopyConstructor)
+TEST_F(NativeStringUnitTest, TestCopyConstructor)
 {
   const corevm::types::native_string s("Hello world!");
   const corevm::types::native_string str = s;
@@ -83,7 +83,7 @@ TEST_F(native_string_unittest, TestCopyConstructor)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestCopyConstructorOnStdString)
+TEST_F(NativeStringUnitTest, TestCopyConstructorOnStdString)
 {
   const std::string s("Hello world!");
   const corevm::types::native_string str = s;
@@ -97,7 +97,7 @@ TEST_F(native_string_unittest, TestCopyConstructorOnStdString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestCopyConstructorOnCString)
+TEST_F(NativeStringUnitTest, TestCopyConstructorOnCString)
 {
   const char* s = "Hello world!";
   const corevm::types::native_string str = s;
@@ -111,7 +111,7 @@ TEST_F(native_string_unittest, TestCopyConstructorOnCString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestCopyConstructorOnIntegerType)
+TEST_F(NativeStringUnitTest, TestCopyConstructorOnIntegerType)
 {
   ASSERT_THROW(
     {
@@ -123,7 +123,7 @@ TEST_F(native_string_unittest, TestCopyConstructorOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestConvertingToIntegerType)
+TEST_F(NativeStringUnitTest, TestConvertingToIntegerType)
 {
   ASSERT_THROW(
     {
@@ -136,7 +136,7 @@ TEST_F(native_string_unittest, TestConvertingToIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestAssignmentOperator)
+TEST_F(NativeStringUnitTest, TestAssignmentOperator)
 {
   const corevm::types::native_string s("Hello world!");
   corevm::types::native_string str;
@@ -151,7 +151,7 @@ TEST_F(native_string_unittest, TestAssignmentOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestAssignmentOperatorOnStdString)
+TEST_F(NativeStringUnitTest, TestAssignmentOperatorOnStdString)
 {
   const std::string s("Hello world!");
   corevm::types::native_string str;
@@ -166,7 +166,7 @@ TEST_F(native_string_unittest, TestAssignmentOperatorOnStdString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestAssignmentOperatorOnCString)
+TEST_F(NativeStringUnitTest, TestAssignmentOperatorOnCString)
 {
   const char* s ="Hello world!";
   corevm::types::native_string str;
@@ -180,7 +180,7 @@ TEST_F(native_string_unittest, TestAssignmentOperatorOnCString)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestEqualityBetweenEmptyStrings)
+TEST_F(NativeStringUnitTest, TestEqualityBetweenEmptyStrings)
 {
   corevm::types::native_string str1;
   corevm::types::native_string str2;
@@ -193,7 +193,7 @@ TEST_F(native_string_unittest, TestEqualityBetweenEmptyStrings)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestEqualityBetweenNonEmptyStrings)
+TEST_F(NativeStringUnitTest, TestEqualityBetweenNonEmptyStrings)
 {
   corevm::types::native_string str1("Hello world!");
   corevm::types::native_string str2("Hello");
@@ -204,7 +204,7 @@ TEST_F(native_string_unittest, TestEqualityBetweenNonEmptyStrings)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unittest, TestEqualityBetweenIdenticalStrings)
+TEST_F(NativeStringUnitTest, TestEqualityBetweenIdenticalStrings)
 {
   corevm::types::native_string str1("Hello world!");
   corevm::types::native_string str2("Hello world!");
@@ -217,15 +217,15 @@ TEST_F(native_string_unittest, TestEqualityBetweenIdenticalStrings)
 
 // -----------------------------------------------------------------------------
 
-class native_string_operator_unittest : public native_string_unittest {};
+class NativeStringOperatorUnitTest : public NativeStringUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-class native_string_unary_operator_unittest : public native_string_operator_unittest {};
+class NativeStringUnaryOperatorUnitTest : public NativeStringOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestPositiveOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestPositiveOperator)
 {
   ASSERT_THROW(
     {
@@ -238,7 +238,7 @@ TEST_F(native_string_unary_operator_unittest, TestPositiveOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestNegationOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestNegationOperator)
 {
   ASSERT_THROW(
     {
@@ -251,7 +251,7 @@ TEST_F(native_string_unary_operator_unittest, TestNegationOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestIncrementOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestIncrementOperator)
 {
   ASSERT_THROW(
     {
@@ -264,7 +264,7 @@ TEST_F(native_string_unary_operator_unittest, TestIncrementOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestDecrementOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestDecrementOperator)
 {
   ASSERT_THROW(
     {
@@ -277,7 +277,7 @@ TEST_F(native_string_unary_operator_unittest, TestDecrementOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestLogicalNotOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestLogicalNotOperator)
 {
   ASSERT_THROW(
     {
@@ -290,7 +290,7 @@ TEST_F(native_string_unary_operator_unittest, TestLogicalNotOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_unary_operator_unittest, TestBitwiseNotOperator)
+TEST_F(NativeStringUnaryOperatorUnitTest, TestBitwiseNotOperator)
 {
   ASSERT_THROW(
     {
@@ -303,7 +303,7 @@ TEST_F(native_string_unary_operator_unittest, TestBitwiseNotOperator)
 
 // -----------------------------------------------------------------------------
 
-class native_string_binary_operator_unittest : public native_string_operator_unittest
+class NativeStringBinaryOperatorUnitTest : public NativeStringOperatorUnitTest
 {
 public:
   static void F(bool)
@@ -313,7 +313,7 @@ public:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestAdditionOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestAdditionOperator)
 {
   ASSERT_THROW(
     {
@@ -327,7 +327,7 @@ TEST_F(native_string_binary_operator_unittest, TestAdditionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestSubtractionOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestSubtractionOperator)
 {
   ASSERT_THROW(
     {
@@ -341,7 +341,7 @@ TEST_F(native_string_binary_operator_unittest, TestSubtractionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestMultiplicationOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestMultiplicationOperator)
 {
   ASSERT_THROW(
     {
@@ -355,7 +355,7 @@ TEST_F(native_string_binary_operator_unittest, TestMultiplicationOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestDivisionOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestDivisionOperator)
 {
   ASSERT_THROW(
     {
@@ -369,7 +369,7 @@ TEST_F(native_string_binary_operator_unittest, TestDivisionOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestLogicalANDOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestLogicalANDOperator)
 {
   ASSERT_THROW(
     {
@@ -383,7 +383,7 @@ TEST_F(native_string_binary_operator_unittest, TestLogicalANDOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestLogicalOROperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestLogicalOROperator)
 {
   ASSERT_THROW(
     {
@@ -397,7 +397,7 @@ TEST_F(native_string_binary_operator_unittest, TestLogicalOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestBitwiseANDOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseANDOperator)
 {
   ASSERT_THROW(
     {
@@ -411,7 +411,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseANDOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestBitwiseOROperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseOROperator)
 {
   ASSERT_THROW(
     {
@@ -425,7 +425,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestBitwiseXOROperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseXOROperator)
 {
   ASSERT_THROW(
     {
@@ -439,7 +439,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseXOROperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestBitwiseLeftShiftOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseLeftShiftOperator)
 {
   ASSERT_THROW(
     {
@@ -453,7 +453,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseLeftShiftOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestBitwiseRightShiftOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseRightShiftOperator)
 {
   ASSERT_THROW(
     {
@@ -467,7 +467,7 @@ TEST_F(native_string_binary_operator_unittest, TestBitwiseRightShiftOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestEQOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestEQOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -480,7 +480,7 @@ TEST_F(native_string_binary_operator_unittest, TestEQOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestNEQOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestNEQOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -493,7 +493,7 @@ TEST_F(native_string_binary_operator_unittest, TestNEQOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestGTOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestGTOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -506,7 +506,7 @@ TEST_F(native_string_binary_operator_unittest, TestGTOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestLTOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestLTOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -519,7 +519,7 @@ TEST_F(native_string_binary_operator_unittest, TestLTOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestGTEOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestGTEOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -532,7 +532,7 @@ TEST_F(native_string_binary_operator_unittest, TestGTEOperator)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_binary_operator_unittest, TestLTEOperator)
+TEST_F(NativeStringBinaryOperatorUnitTest, TestLTEOperator)
 {
   ASSERT_NO_THROW(
     {
@@ -545,11 +545,11 @@ TEST_F(native_string_binary_operator_unittest, TestLTEOperator)
 
 // -----------------------------------------------------------------------------
 
-class native_string_functionality_unittest : public native_string_unittest {};
+class NativeStringFunctionalityUnitTest : public NativeStringUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestAtSuccessful)
+TEST_F(NativeStringFunctionalityUnitTest, TestAtSuccessful)
 {
   const corevm::types::native_string str("Hello world!");
 
@@ -561,7 +561,7 @@ TEST_F(native_string_functionality_unittest, TestAtSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestAtFailure)
+TEST_F(NativeStringFunctionalityUnitTest, TestAtFailure)
 {
   const corevm::types::native_string str("Hello world!");
 
@@ -575,7 +575,7 @@ TEST_F(native_string_functionality_unittest, TestAtFailure)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestInsertSuccessful)
+TEST_F(NativeStringFunctionalityUnitTest, TestInsertSuccessful)
 {
   corevm::types::native_string str1("Hello ");
   const corevm::types::native_string str2("world!");
@@ -588,7 +588,7 @@ TEST_F(native_string_functionality_unittest, TestInsertSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestInsertFailure)
+TEST_F(NativeStringFunctionalityUnitTest, TestInsertFailure)
 {
   corevm::types::native_string str1("Hello ");
   const corevm::types::native_string str2("world!");
@@ -603,7 +603,7 @@ TEST_F(native_string_functionality_unittest, TestInsertFailure)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestEraseSuccessful)
+TEST_F(NativeStringFunctionalityUnitTest, TestEraseSuccessful)
 {
   corevm::types::native_string str("Hello world");
 
@@ -615,7 +615,7 @@ TEST_F(native_string_functionality_unittest, TestEraseSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestEraseFailure)
+TEST_F(NativeStringFunctionalityUnitTest, TestEraseFailure)
 {
   corevm::types::native_string str("Hello world");
 
@@ -629,7 +629,7 @@ TEST_F(native_string_functionality_unittest, TestEraseFailure)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestReplaceSuccessful)
+TEST_F(NativeStringFunctionalityUnitTest, TestReplaceSuccessful)
 {
   corevm::types::native_string str1("this is a test string");
   corevm::types::native_string str2("n example");
@@ -642,7 +642,7 @@ TEST_F(native_string_functionality_unittest, TestReplaceSuccessful)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_functionality_unittest, TestReplaceFailure)
+TEST_F(NativeStringFunctionalityUnitTest, TestReplaceFailure)
 {
   corevm::types::native_string str1("Hello world");
   corevm::types::native_string str2("!!!");

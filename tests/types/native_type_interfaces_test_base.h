@@ -26,21 +26,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <gtest/gtest.h>
 
 
-class native_type_interfaces_test_base : public ::testing::Test
+class NativeTypeInterfacesTestBase : public ::testing::Test
 {
 public:
   template<typename T, typename F>
   void apply_interface_on_single_operand_and_assert_result(
-    corevm::types::native_type_handle& operand, F func, T expected_value)
+    corevm::types::NativeTypeHandle& operand, F func, T expected_value)
   {
-    corevm::types::native_type_handle result = func(operand);
+    corevm::types::NativeTypeHandle result = func(operand);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_value, actual_result);
   }
 
   template<typename T, typename F>
   void apply_interface_on_single_operand_in_place_and_assert_result(
-    corevm::types::native_type_handle& operand, F func, T expected_value)
+    corevm::types::NativeTypeHandle& operand, F func, T expected_value)
   {
     func(operand);
     T& actual_result = corevm::types::get_value_ref_from_handle<T>(operand);
@@ -49,20 +49,20 @@ public:
 
   template<typename T, typename F>
   void apply_interface_on_two_operands_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& other_operand,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& other_operand,
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result = func(operand, other_operand);
+    corevm::types::NativeTypeHandle result = func(operand, other_operand);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
   }
 
   template<typename T, typename F>
   void apply_interface_on_two_operands_in_place_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& other_operand,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& other_operand,
     F func,
     T expected_result)
   {
@@ -73,13 +73,13 @@ public:
 
   template<typename T, typename F>
   void apply_interface_on_three_operands_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& operand2,
-    corevm::types::native_type_handle& operand3,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& operand2,
+    corevm::types::NativeTypeHandle& operand3,
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result =
+    corevm::types::NativeTypeHandle result =
       func(operand, operand2, operand3);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
@@ -87,9 +87,9 @@ public:
 
   template<typename T, typename F>
   void apply_interface_on_three_operands_in_place_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& operand2,
-    corevm::types::native_type_handle& operand3,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& operand2,
+    corevm::types::NativeTypeHandle& operand3,
     F func,
     T expected_result)
   {
@@ -100,14 +100,14 @@ public:
 
   template<typename T, typename F>
   void apply_interface_on_four_operands_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& operand2,
-    corevm::types::native_type_handle& operand3,
-    corevm::types::native_type_handle& operand4,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& operand2,
+    corevm::types::NativeTypeHandle& operand3,
+    corevm::types::NativeTypeHandle& operand4,
     F func,
     T expected_result)
   {
-    corevm::types::native_type_handle result =
+    corevm::types::NativeTypeHandle result =
       func(operand, operand2, operand3, operand4);
     T actual_result = corevm::types::get_value_from_handle<T>(result);
     ASSERT_EQ(expected_result, actual_result);
@@ -115,10 +115,10 @@ public:
 
   template<typename T, typename F>
   void apply_interface_on_four_operands_in_place_and_assert_result(
-    corevm::types::native_type_handle& operand,
-    corevm::types::native_type_handle& operand2,
-    corevm::types::native_type_handle& operand3,
-    corevm::types::native_type_handle& operand4,
+    corevm::types::NativeTypeHandle& operand,
+    corevm::types::NativeTypeHandle& operand2,
+    corevm::types::NativeTypeHandle& operand3,
+    corevm::types::NativeTypeHandle& operand4,
     F func,
     T expected_result)
   {

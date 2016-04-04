@@ -637,7 +637,7 @@ Process::has_ntvhndl(dyobj::ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-types::native_type_handle&
+types::NativeTypeHandle&
 Process::get_ntvhndl(dyobj::ntvhndl_key key)
   throw(NativeTypeHandleNotFoundError)
 {
@@ -647,7 +647,7 @@ Process::get_ntvhndl(dyobj::ntvhndl_key key)
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-Process::insert_ntvhndl(types::native_type_handle& hndl)
+Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
   throw(NativeTypeHandleInsertionError)
 {
   return m_ntvhndl_pool.create(hndl);

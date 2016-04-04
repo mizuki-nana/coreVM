@@ -89,7 +89,7 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 
   corevm::runtime::Process process(opts);
 
-  corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
+  corevm::types::NativeTypeHandle hndl = corevm::types::string("Hello world");
 
   while (state.KeepRunning())
   {
@@ -105,7 +105,7 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 {
   corevm::runtime::Process process;
 
-  corevm::types::native_type_handle hndl = corevm::types::string("Hello world");
+  corevm::types::NativeTypeHandle hndl = corevm::types::string("Hello world");
   auto key = process.insert_ntvhndl(hndl);
 
   while (state.KeepRunning())

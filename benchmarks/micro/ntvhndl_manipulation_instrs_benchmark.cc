@@ -39,7 +39,7 @@ static void BenchmarkNtvhndlManipulationInstrs(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle hndl = IntrinsicType();
+  corevm::types::NativeTypeHandle hndl = IntrinsicType();
 
   instr_benchmarks_fixture fixture;
   fixture.process().top_frame().push_eval_stack(hndl);

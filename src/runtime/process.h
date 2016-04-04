@@ -177,10 +177,10 @@ public:
 
   bool has_ntvhndl(dyobj::ntvhndl_key&);
 
-  types::native_type_handle& get_ntvhndl(dyobj::ntvhndl_key)
+  types::NativeTypeHandle& get_ntvhndl(dyobj::ntvhndl_key)
     throw(NativeTypeHandleNotFoundError);
 
-  dyobj::ntvhndl_key insert_ntvhndl(types::native_type_handle&)
+  dyobj::ntvhndl_key insert_ntvhndl(types::NativeTypeHandle&)
     throw(NativeTypeHandleInsertionError);
 
   void erase_ntvhndl(dyobj::ntvhndl_key)

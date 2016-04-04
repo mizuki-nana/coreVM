@@ -36,7 +36,7 @@ void BenchmarkPushEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("hello world");
 
   while (state.KeepRunning())
@@ -55,7 +55,7 @@ void BenchmarkPushEvalStack2(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("hello world");
 
   while (state.KeepRunning())
@@ -74,7 +74,7 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::native_type_handle hndl =
+  corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("hello world");
 
   for (size_t i = 0; i < state.max_iterations; ++i)
@@ -162,8 +162,8 @@ void BenchmarkSwapEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::native_type_handle hndl1((corevm::types::native_string("Hello world I'm FAT")));
-  corevm::types::native_type_handle hndl2((corevm::types::native_map({
+  corevm::types::NativeTypeHandle hndl1((corevm::types::native_string("Hello world I'm FAT")));
+  corevm::types::NativeTypeHandle hndl2((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 },

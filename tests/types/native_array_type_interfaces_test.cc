@@ -27,14 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class native_array_type_interfaces_test : public native_type_interfaces_test_base {};
+class NativeArrayTypeInterfacesTest : public NativeTypeInterfacesTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestGetSize)
+TEST_F(NativeArrayTypeInterfacesTest, TestGetSize)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   size_t expected_result = 3;
 
@@ -47,10 +47,10 @@ TEST_F(native_array_type_interfaces_test, TestGetSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestEmpty)
+TEST_F(NativeArrayTypeInterfacesTest, TestEmpty)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   bool expected_result = false;
 
@@ -63,11 +63,11 @@ TEST_F(native_array_type_interfaces_test, TestEmpty)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestAt)
+TEST_F(NativeArrayTypeInterfacesTest, TestAt)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
-  corevm::types::native_type_handle index = corevm::types::uint32(1);
+  corevm::types::NativeTypeHandle operand = array;
+  corevm::types::NativeTypeHandle index = corevm::types::uint32(1);
 
   corevm::types::native_array::value_type expected_result = 2;
 
@@ -81,10 +81,10 @@ TEST_F(native_array_type_interfaces_test, TestAt)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestFront)
+TEST_F(NativeArrayTypeInterfacesTest, TestFront)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   corevm::types::native_array::value_type expected_result = 1;
 
@@ -97,10 +97,10 @@ TEST_F(native_array_type_interfaces_test, TestFront)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestBack)
+TEST_F(NativeArrayTypeInterfacesTest, TestBack)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   corevm::types::native_array::value_type expected_result = 3;
 
@@ -113,12 +113,12 @@ TEST_F(native_array_type_interfaces_test, TestBack)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestPut)
+TEST_F(NativeArrayTypeInterfacesTest, TestPut)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
-  corevm::types::native_type_handle index = corevm::types::uint32(2);
-  corevm::types::native_type_handle value = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle operand = array;
+  corevm::types::NativeTypeHandle index = corevm::types::uint32(2);
+  corevm::types::NativeTypeHandle value = corevm::types::uint32(5);
 
   corevm::types::native_array expected_result { 1, 2, 5 };
 
@@ -133,11 +133,11 @@ TEST_F(native_array_type_interfaces_test, TestPut)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestAppend)
+TEST_F(NativeArrayTypeInterfacesTest, TestAppend)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
-  corevm::types::native_type_handle data = corevm::types::uint64(4);
+  corevm::types::NativeTypeHandle operand = array;
+  corevm::types::NativeTypeHandle data = corevm::types::uint64(4);
 
   corevm::types::native_array expected_result {1, 2, 3, 4};
 
@@ -151,11 +151,11 @@ TEST_F(native_array_type_interfaces_test, TestAppend)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestErase)
+TEST_F(NativeArrayTypeInterfacesTest, TestErase)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
-  corevm::types::native_type_handle index = corevm::types::uint64(1);
+  corevm::types::NativeTypeHandle operand = array;
+  corevm::types::NativeTypeHandle index = corevm::types::uint64(1);
 
   corevm::types::native_array expected_result {1, 3};
 
@@ -169,11 +169,11 @@ TEST_F(native_array_type_interfaces_test, TestErase)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestEraseOnInvalidIndex)
+TEST_F(NativeArrayTypeInterfacesTest, TestEraseOnInvalidIndex)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
-  corevm::types::native_type_handle index = corevm::types::uint64(3);
+  corevm::types::NativeTypeHandle operand = array;
+  corevm::types::NativeTypeHandle index = corevm::types::uint64(3);
 
   ASSERT_THROW(
     {
@@ -185,10 +185,10 @@ TEST_F(native_array_type_interfaces_test, TestEraseOnInvalidIndex)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestPop)
+TEST_F(NativeArrayTypeInterfacesTest, TestPop)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   corevm::types::native_array expected_result {1, 2};
 
@@ -201,12 +201,12 @@ TEST_F(native_array_type_interfaces_test, TestPop)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestSwap)
+TEST_F(NativeArrayTypeInterfacesTest, TestSwap)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
   corevm::types::native_array other_array {4, 5, 6};
-  corevm::types::native_type_handle other_operand = other_array;
+  corevm::types::NativeTypeHandle other_operand = other_array;
 
   corevm::types::native_array expected_result {4, 5, 6};
 
@@ -220,10 +220,10 @@ TEST_F(native_array_type_interfaces_test, TestSwap)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_array_type_interfaces_test, TestClear)
+TEST_F(NativeArrayTypeInterfacesTest, TestClear)
 {
   corevm::types::native_array array {1, 2, 3};
-  corevm::types::native_type_handle operand = array;
+  corevm::types::NativeTypeHandle operand = array;
 
   corevm::types::native_array expected_result;
 

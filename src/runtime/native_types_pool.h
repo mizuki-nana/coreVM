@@ -52,7 +52,7 @@ using sneaker::allocator::object_traits;
 class NativeTypesPool
 {
 public:
-  typedef types::native_type_handle value_type;
+  typedef types::NativeTypeHandle value_type;
 
   template<typename T>
   class allocator : public memory::AllocationPolicy<T, memory::BlockAllocator<value_type>>, public object_traits<T>
@@ -78,7 +78,7 @@ public:
 
   typedef allocator<value_type> allocator_type;
 
-  using container_type = typename memory::ObjectContainer<types::native_type_handle, allocator_type>;
+  using container_type = typename memory::ObjectContainer<types::NativeTypeHandle, allocator_type>;
 
   typedef value_type& reference;
   typedef value_type* pointer;
@@ -104,7 +104,7 @@ public:
   dyobj::ntvhndl_key create()
     throw(NativeTypeHandleInsertionError);
 
-  dyobj::ntvhndl_key create(types::native_type_handle& hndl)
+  dyobj::ntvhndl_key create(types::NativeTypeHandle& hndl)
     throw(NativeTypeHandleInsertionError);
 
   void erase(const dyobj::ntvhndl_key&)

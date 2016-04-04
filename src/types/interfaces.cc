@@ -37,14 +37,14 @@ namespace types {
 
 
 template<typename native_type_visitor_type>
-inline void __interface_apply_unary_operator(native_type_handle& operand)
+inline void __interface_apply_unary_operator(NativeTypeHandle& operand)
 {
   operand = std::move(apply_unary_visitor<native_type_visitor_type>(operand));
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_positive_operator(native_type_handle& operand)
+void interface_apply_positive_operator(NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_positive_visitor>(operand);
@@ -52,7 +52,7 @@ void interface_apply_positive_operator(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_negation_operator(native_type_handle& operand)
+void interface_apply_negation_operator(NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_negation_visitor>(operand);
@@ -61,7 +61,7 @@ void interface_apply_negation_operator(native_type_handle& operand)
 // -----------------------------------------------------------------------------
 
 void interface_apply_increment_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_increment_visitor>(operand);
@@ -70,7 +70,7 @@ void interface_apply_increment_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_decrement_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_decrement_visitor>(operand);
@@ -79,7 +79,7 @@ void interface_apply_decrement_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_logical_not_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_logical_not_visitor>(operand);
@@ -88,7 +88,7 @@ void interface_apply_logical_not_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_bitwise_not_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_bitwise_not_visitor>(operand);
@@ -97,7 +97,7 @@ void interface_apply_bitwise_not_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_abs_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_abs_visitor>(operand);
@@ -106,7 +106,7 @@ void interface_apply_abs_operator(
 // -----------------------------------------------------------------------------
 
 void interface_apply_sqrt_operator(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_unary_operator<
     native_type_sqrt_visitor>(operand);
@@ -122,17 +122,17 @@ void interface_apply_sqrt_operator(
 
 template<typename native_type_visitor_type>
 inline
-native_type_handle
-__interface_apply_binary_operator(native_type_handle& lhs, native_type_handle& rhs)
+NativeTypeHandle
+__interface_apply_binary_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs)
 {
   return apply_binary_visitor<native_type_visitor_type>(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_addition_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_addition_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_addition_visitor>(lhs, rhs);
@@ -140,9 +140,9 @@ interface_apply_addition_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_subtraction_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_subtraction_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_subtraction_visitor>(lhs, rhs);
@@ -150,9 +150,9 @@ interface_apply_subtraction_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_multiplication_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_multiplication_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_multiplication_visitor>(lhs, rhs);
@@ -160,9 +160,9 @@ interface_apply_multiplication_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_division_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_division_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_division_visitor>(lhs, rhs);
@@ -170,9 +170,9 @@ interface_apply_division_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_modulus_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_modulus_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_modulus_visitor>(lhs, rhs);
@@ -180,9 +180,9 @@ interface_apply_modulus_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_pow_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_pow_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_pow_visitor>(lhs, rhs);
@@ -190,9 +190,9 @@ interface_apply_pow_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_logical_and_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_logical_and_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_logical_and_visitor>(lhs, rhs);
@@ -200,9 +200,9 @@ interface_apply_logical_and_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_logical_or_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_logical_or_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_logical_or_visitor>(lhs, rhs);
@@ -210,9 +210,9 @@ interface_apply_logical_or_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_bitwise_and_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_bitwise_and_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_bitwise_and_visitor>(lhs, rhs);
@@ -220,9 +220,9 @@ interface_apply_bitwise_and_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_bitwise_or_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_bitwise_or_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_bitwise_or_visitor>(lhs, rhs);
@@ -230,9 +230,9 @@ interface_apply_bitwise_or_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_bitwise_xor_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_bitwise_xor_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_bitwise_xor_visitor>(lhs, rhs);
@@ -240,9 +240,9 @@ interface_apply_bitwise_xor_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+NativeTypeHandle
 interface_apply_bitwise_left_shift_operator(
-  native_type_handle& lhs, native_type_handle& rhs)
+  NativeTypeHandle& lhs, NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_bitwise_left_shift_visitor>(lhs, rhs);
@@ -250,9 +250,9 @@ interface_apply_bitwise_left_shift_operator(
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+NativeTypeHandle
 interface_apply_bitwise_right_shift_operator(
-  native_type_handle& lhs, native_type_handle& rhs)
+  NativeTypeHandle& lhs, NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_bitwise_right_shift_visitor>(lhs, rhs);
@@ -260,9 +260,9 @@ interface_apply_bitwise_right_shift_operator(
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_eq_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_eq_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_eq_visitor>(lhs, rhs);
@@ -270,9 +270,9 @@ interface_apply_eq_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_neq_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_neq_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_neq_visitor>(lhs, rhs);
@@ -280,9 +280,9 @@ interface_apply_neq_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_lt_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_lt_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_lt_visitor>(lhs, rhs);
@@ -290,9 +290,9 @@ interface_apply_lt_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_gt_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_gt_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_gt_visitor>(lhs, rhs);
@@ -300,9 +300,9 @@ interface_apply_gt_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_lte_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_lte_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_lte_visitor>(lhs, rhs);
@@ -310,9 +310,9 @@ interface_apply_lte_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_gte_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_gte_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_gte_visitor>(lhs, rhs);
@@ -320,9 +320,9 @@ interface_apply_gte_operator(native_type_handle& lhs,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_apply_cmp_operator(native_type_handle& lhs,
-  native_type_handle& rhs)
+NativeTypeHandle
+interface_apply_cmp_operator(NativeTypeHandle& lhs,
+  NativeTypeHandle& rhs)
 {
   return __interface_apply_binary_operator<
     native_type_cmp_visitor>(lhs, rhs);
@@ -337,7 +337,7 @@ interface_apply_cmp_operator(native_type_handle& lhs,
 // -----------------------------------------------------------------------------
 
 template<typename DstType>
-void __interface_apply_conversion(native_type_handle& operand)
+void __interface_apply_conversion(NativeTypeHandle& operand)
 {
   DstType original_value =
     get_value_from_handle<DstType>(operand);
@@ -347,7 +347,7 @@ void __interface_apply_conversion(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int8(native_type_handle& operand)
+void interface_to_int8(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<int8>(operand);
 }
@@ -355,7 +355,7 @@ void interface_to_int8(native_type_handle& operand)
 // -----------------------------------------------------------------------------
 
 void interface_to_uint8(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_conversion<uint8>(operand);
 }
@@ -363,84 +363,84 @@ void interface_to_uint8(
 // -----------------------------------------------------------------------------
 
 void interface_to_int16(
-  native_type_handle& operand)
+  NativeTypeHandle& operand)
 {
   __interface_apply_conversion<int16>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint16(native_type_handle& operand)
+void interface_to_uint16(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<uint16>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int32(native_type_handle& operand)
+void interface_to_int32(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<int32>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint32(native_type_handle& operand)
+void interface_to_uint32(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<uint32>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int64(native_type_handle& operand)
+void interface_to_int64(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<int64>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint64(native_type_handle& operand)
+void interface_to_uint64(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<uint64>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_bool(native_type_handle& operand)
+void interface_to_bool(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<boolean>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec1(native_type_handle& operand)
+void interface_to_dec1(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<decimal>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec2(native_type_handle& operand)
+void interface_to_dec2(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<decimal2>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_str(native_type_handle& operand)
+void interface_to_str(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<string>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_ary(native_type_handle& operand)
+void interface_to_ary(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<array>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-void interface_to_map(native_type_handle& operand)
+void interface_to_map(NativeTypeHandle& operand)
 {
   __interface_apply_conversion<map>(operand);
 }
@@ -452,34 +452,34 @@ void interface_to_map(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_compute_truthy_value(
-  native_type_handle& operand)
+NativeTypeHandle interface_compute_truthy_value(
+  NativeTypeHandle& operand)
 {
   return apply_unary_visitor<native_type_truthy_visitor>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_compute_repr_value(
-  native_type_handle& operand)
+NativeTypeHandle interface_compute_repr_value(
+  NativeTypeHandle& operand)
 {
   return apply_unary_visitor<native_type_repr_visitor>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_compute_hash_value(native_type_handle& operand)
+NativeTypeHandle
+interface_compute_hash_value(NativeTypeHandle& operand)
 {
   return apply_unary_visitor<native_type_hash_visitor>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_compute_slice(
-  native_type_handle& operand,
-  native_type_handle& start,
-  native_type_handle& stop)
+NativeTypeHandle interface_compute_slice(
+  NativeTypeHandle& operand,
+  NativeTypeHandle& start,
+  NativeTypeHandle& stop)
 {
   uint32_t start_value = get_value_from_handle<uint32_t>(start);
   uint32_t stop_value = get_value_from_handle<uint32_t>(stop);
@@ -490,8 +490,8 @@ native_type_handle interface_compute_slice(
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_compute_stride(
-  native_type_handle& operand, native_type_handle& stride)
+NativeTypeHandle interface_compute_stride(
+  NativeTypeHandle& operand, NativeTypeHandle& stride)
 {
   int32_t stride_value = get_value_from_handle<int32_t>(stride);
 
@@ -501,8 +501,8 @@ native_type_handle interface_compute_stride(
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_compute_reverse(native_type_handle& operand)
+NativeTypeHandle
+interface_compute_reverse(NativeTypeHandle& operand)
 {
   return apply_unary_visitor<
     native_type_reverse_visitor>(operand);
@@ -510,8 +510,8 @@ interface_compute_reverse(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-native_type_handle interface_apply_rounding(
-  native_type_handle& operand, native_type_handle& ndigits)
+NativeTypeHandle interface_apply_rounding(
+  NativeTypeHandle& operand, NativeTypeHandle& ndigits)
 {
   const auto operand_val =
     get_value_from_handle<decimal2>(operand);
@@ -525,7 +525,7 @@ native_type_handle interface_apply_rounding(
 
   result_val = atof(buff);
 
-  return native_type_handle(decimal2(result_val));
+  return NativeTypeHandle(decimal2(result_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -536,21 +536,21 @@ native_type_handle interface_apply_rounding(
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_get_size(native_type_handle& operand)
+NativeTypeHandle
+interface_string_get_size(NativeTypeHandle& operand)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
 
   uint64 result_value = string_value.size();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_clear(native_type_handle& operand)
+interface_string_clear(NativeTypeHandle& operand)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -560,9 +560,9 @@ interface_string_clear(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_at(native_type_handle& operand,
-  native_type_handle& index)
+NativeTypeHandle
+interface_string_at(NativeTypeHandle& operand,
+  NativeTypeHandle& index)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -573,14 +573,14 @@ interface_string_at(native_type_handle& operand,
   char char_value = string_value.at(static_cast<size_t>(index_value));
   int8 result_value = char_value;
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_at_2(native_type_handle& operand,
-  native_type_handle& index)
+NativeTypeHandle
+interface_string_at_2(NativeTypeHandle& operand,
+  NativeTypeHandle& index)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -590,14 +590,14 @@ interface_string_at_2(native_type_handle& operand,
   char char_value = string_value.at(static_cast<size_t>(index_value));
   string result_value(1, char_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_append(native_type_handle& operand,
-  native_type_handle& str)
+interface_string_append(NativeTypeHandle& operand,
+  NativeTypeHandle& str)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -611,8 +611,8 @@ interface_string_append(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_pushback(native_type_handle& operand,
-  native_type_handle& c)
+interface_string_pushback(NativeTypeHandle& operand,
+  NativeTypeHandle& c)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -625,8 +625,8 @@ interface_string_pushback(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_insert_str(native_type_handle& operand,
-  native_type_handle& pos, native_type_handle& str)
+interface_string_insert_str(NativeTypeHandle& operand,
+  NativeTypeHandle& pos, NativeTypeHandle& str)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -642,8 +642,8 @@ interface_string_insert_str(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_insert_char(native_type_handle& operand,
-  native_type_handle& pos, native_type_handle& c)
+interface_string_insert_char(NativeTypeHandle& operand,
+  NativeTypeHandle& pos, NativeTypeHandle& c)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -657,8 +657,8 @@ interface_string_insert_char(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_erase(native_type_handle& operand,
-  native_type_handle& pos)
+interface_string_erase(NativeTypeHandle& operand,
+  NativeTypeHandle& pos)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -671,8 +671,8 @@ interface_string_erase(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_erase2(native_type_handle& operand,
-  native_type_handle& pos, native_type_handle& len)
+interface_string_erase2(NativeTypeHandle& operand,
+  NativeTypeHandle& pos, NativeTypeHandle& len)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -686,8 +686,8 @@ interface_string_erase2(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_replace_str(native_type_handle& operand,
-  native_type_handle& pos, native_type_handle& len, native_type_handle& str)
+interface_string_replace_str(NativeTypeHandle& operand,
+  NativeTypeHandle& pos, NativeTypeHandle& len, NativeTypeHandle& str)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -704,8 +704,8 @@ interface_string_replace_str(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_string_swap(native_type_handle& operand,
-  native_type_handle& str)
+interface_string_swap(NativeTypeHandle& operand,
+  NativeTypeHandle& str)
 {
   auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -718,9 +718,9 @@ interface_string_swap(native_type_handle& operand,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_substr(native_type_handle& operand,
-  native_type_handle& pos)
+NativeTypeHandle
+interface_string_substr(NativeTypeHandle& operand,
+  NativeTypeHandle& pos)
 {
   native_string string_value =
     get_value_from_handle<native_string>(operand);
@@ -729,14 +729,14 @@ interface_string_substr(native_type_handle& operand,
 
   native_string result_value = string_value.substr(pos_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_substr2(native_type_handle& operand,
-  native_type_handle& pos, native_type_handle& len)
+NativeTypeHandle
+interface_string_substr2(NativeTypeHandle& operand,
+  NativeTypeHandle& pos, NativeTypeHandle& len)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -747,14 +747,14 @@ interface_string_substr2(native_type_handle& operand,
   native_string result_value =
     string_value.substr(pos_value, len_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
+NativeTypeHandle
 interface_string_find(
-  native_type_handle& operand, native_type_handle& str)
+  NativeTypeHandle& operand, NativeTypeHandle& str)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -764,14 +764,14 @@ interface_string_find(
 
   uint64 result_value = string_value.find(other_string_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_find2(native_type_handle& operand,
-  native_type_handle& str, native_type_handle& pos)
+NativeTypeHandle
+interface_string_find2(NativeTypeHandle& operand,
+  NativeTypeHandle& str, NativeTypeHandle& pos)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -784,14 +784,14 @@ interface_string_find2(native_type_handle& operand,
   uint64 result_value =
     string_value.find(other_string_value, pos_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_rfind(native_type_handle& operand,
-  native_type_handle& str)
+NativeTypeHandle
+interface_string_rfind(NativeTypeHandle& operand,
+  NativeTypeHandle& str)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -801,14 +801,14 @@ interface_string_rfind(native_type_handle& operand,
 
   uint64 result_value = string_value.rfind(other_string_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_string_rfind2(native_type_handle& operand,
-  native_type_handle& str, native_type_handle& pos)
+NativeTypeHandle
+interface_string_rfind2(NativeTypeHandle& operand,
+  NativeTypeHandle& str, NativeTypeHandle& pos)
 {
   const auto& string_value =
     get_value_ref_from_handle<native_string>(operand);
@@ -821,7 +821,7 @@ interface_string_rfind2(native_type_handle& operand,
   uint64 result_value =
     string_value.rfind(other_string_value, pos_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -832,35 +832,35 @@ interface_string_rfind2(native_type_handle& operand,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_size(native_type_handle& operand)
+NativeTypeHandle
+interface_array_size(NativeTypeHandle& operand)
 {
   const auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
 
   uint64 result_value = array_value.size();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_empty(native_type_handle& operand)
+NativeTypeHandle
+interface_array_empty(NativeTypeHandle& operand)
 {
   const auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
 
   boolean result_value = array_value.empty();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_at(native_type_handle& operand,
-  native_type_handle& index)
+NativeTypeHandle
+interface_array_at(NativeTypeHandle& operand,
+  NativeTypeHandle& index)
 {
   const auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -869,40 +869,40 @@ interface_array_at(native_type_handle& operand,
 
   uint64 result_value = array_value.at(index_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_front(native_type_handle& operand)
+NativeTypeHandle
+interface_array_front(NativeTypeHandle& operand)
 {
   const auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
 
   uint64 result_value = array_value.front();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_back(native_type_handle& operand)
+NativeTypeHandle
+interface_array_back(NativeTypeHandle& operand)
 {
   const auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
 
   uint64 result_value = array_value.back();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-interface_array_put(native_type_handle& operand,
-  native_type_handle& index, native_type_handle& value)
+interface_array_put(NativeTypeHandle& operand,
+  NativeTypeHandle& index, NativeTypeHandle& value)
 {
   auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -919,8 +919,8 @@ interface_array_put(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_array_append(native_type_handle& operand,
-  native_type_handle& data)
+interface_array_append(NativeTypeHandle& operand,
+  NativeTypeHandle& data)
 {
   auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -934,8 +934,8 @@ interface_array_append(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_array_erase(native_type_handle& operand,
-  native_type_handle& index)
+interface_array_erase(NativeTypeHandle& operand,
+  NativeTypeHandle& index)
 {
   auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -948,22 +948,22 @@ interface_array_erase(native_type_handle& operand,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_pop(native_type_handle& operand)
+NativeTypeHandle
+interface_array_pop(NativeTypeHandle& operand)
 {
   native_array array_value =
     get_value_from_handle<native_array>(operand);
 
   array_value.pop_back();
 
-  return native_type_handle(array_value);
+  return NativeTypeHandle(array_value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-interface_array_swap(native_type_handle& operand,
-  native_type_handle& other_operand)
+interface_array_swap(NativeTypeHandle& operand,
+  NativeTypeHandle& other_operand)
 {
   auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -977,7 +977,7 @@ interface_array_swap(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_array_clear(native_type_handle& operand)
+interface_array_clear(NativeTypeHandle& operand)
 {
   auto& array_value =
     get_value_ref_from_handle<native_array>(operand);
@@ -987,9 +987,9 @@ interface_array_clear(native_type_handle& operand)
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_array_merge(native_type_handle& operand,
-  native_type_handle& other_operand)
+NativeTypeHandle
+interface_array_merge(NativeTypeHandle& operand,
+  NativeTypeHandle& other_operand)
 {
   native_array array_value =
     get_value_from_handle<native_array>(operand);
@@ -1000,7 +1000,7 @@ interface_array_merge(native_type_handle& operand,
   array_value.insert(
     array_value.end(), other_array_value.begin(), other_array_value.end());
 
-  return native_type_handle(array_value);
+  return NativeTypeHandle(array_value);
 }
 
 // -----------------------------------------------------------------------------
@@ -1011,35 +1011,35 @@ interface_array_merge(native_type_handle& operand,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_size(native_type_handle& operand)
+NativeTypeHandle
+interface_map_size(NativeTypeHandle& operand)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
 
   uint64 result_value = map_value.size();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_empty(native_type_handle& operand)
+NativeTypeHandle
+interface_map_empty(NativeTypeHandle& operand)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
 
   boolean result_value = map_value.empty();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_find(native_type_handle& operand,
-  native_type_handle& key)
+NativeTypeHandle
+interface_map_find(NativeTypeHandle& operand,
+  NativeTypeHandle& key)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1049,14 +1049,14 @@ interface_map_find(native_type_handle& operand,
 
   boolean result_value = map_value.find(key_value) != map_value.end();
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_at(native_type_handle& operand,
-  native_type_handle& key)
+NativeTypeHandle
+interface_map_at(NativeTypeHandle& operand,
+  NativeTypeHandle& key)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1066,14 +1066,14 @@ interface_map_at(native_type_handle& operand,
 
   uint64 result_value = map_value.at(key_value);
 
-  return native_type_handle(result_value);
+  return NativeTypeHandle(result_value);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-interface_map_put(native_type_handle& operand,
-  native_type_handle& key, native_type_handle& data)
+interface_map_put(NativeTypeHandle& operand,
+  NativeTypeHandle& key, NativeTypeHandle& data)
 {
   auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1090,8 +1090,8 @@ interface_map_put(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_map_erase(native_type_handle& operand,
-  native_type_handle& key)
+interface_map_erase(NativeTypeHandle& operand,
+  NativeTypeHandle& key)
 {
   auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1105,7 +1105,7 @@ interface_map_erase(native_type_handle& operand,
 // -----------------------------------------------------------------------------
 
 void
-interface_map_clear(native_type_handle& operand)
+interface_map_clear(NativeTypeHandle& operand)
 {
   auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1116,8 +1116,8 @@ interface_map_clear(native_type_handle& operand)
 // -----------------------------------------------------------------------------
 
 void
-interface_map_swap(native_type_handle& operand,
-  native_type_handle& other_operand)
+interface_map_swap(NativeTypeHandle& operand,
+  NativeTypeHandle& other_operand)
 {
   auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1130,8 +1130,8 @@ interface_map_swap(native_type_handle& operand,
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_keys(native_type_handle& operand)
+NativeTypeHandle
+interface_map_keys(NativeTypeHandle& operand)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1149,13 +1149,13 @@ interface_map_keys(native_type_handle& operand)
     array_value.push_back(element);
   }
 
-  return native_type_handle(array_value);
+  return NativeTypeHandle(array_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_vals(native_type_handle& operand)
+NativeTypeHandle
+interface_map_vals(NativeTypeHandle& operand)
 {
   const auto& map_value =
     get_value_ref_from_handle<native_map>(operand);
@@ -1173,14 +1173,14 @@ interface_map_vals(native_type_handle& operand)
     array_value.push_back(element);
   }
 
-  return native_type_handle(array_value);
+  return NativeTypeHandle(array_value);
 }
 
 // -----------------------------------------------------------------------------
 
-native_type_handle
-interface_map_merge(native_type_handle& operand,
-  native_type_handle& other_operand)
+NativeTypeHandle
+interface_map_merge(NativeTypeHandle& operand,
+  NativeTypeHandle& other_operand)
 {
   native_map map_value =
     get_value_from_handle<native_map>(operand);
@@ -1190,7 +1190,7 @@ interface_map_merge(native_type_handle& operand,
 
   map_value.insert(other_map_value.begin(), other_map_value.end());
 
-  return native_type_handle(map_value);
+  return NativeTypeHandle(map_value);
 }
 
 // -----------------------------------------------------------------------------

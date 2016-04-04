@@ -88,10 +88,10 @@ TEST_F(FrameUnitTest, TestGetAndSetReturnAddr)
 TEST_F(FrameUnitTest, TestPushAndPopEvalStack)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::types::native_type_handle handle = corevm::types::uint8(5);
+  corevm::types::NativeTypeHandle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(handle);
-  corevm::types::native_type_handle popped_handle = frame.pop_eval_stack();
+  corevm::types::NativeTypeHandle popped_handle = frame.pop_eval_stack();
 
   ASSERT_THROW(
     {
@@ -106,10 +106,10 @@ TEST_F(FrameUnitTest, TestPushAndPopEvalStack)
 TEST_F(FrameUnitTest, TestMovePushAndPopEvalStack)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::types::native_type_handle handle = corevm::types::uint8(5);
+  corevm::types::NativeTypeHandle handle = corevm::types::uint8(5);
 
   frame.push_eval_stack(std::move(handle));
-  corevm::types::native_type_handle popped_handle = frame.pop_eval_stack();
+  corevm::types::NativeTypeHandle popped_handle = frame.pop_eval_stack();
 
   ASSERT_THROW(
     {

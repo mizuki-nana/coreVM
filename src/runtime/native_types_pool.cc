@@ -137,7 +137,7 @@ NativeTypesPool::create()
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-NativeTypesPool::create(types::native_type_handle& hndl)
+NativeTypesPool::create(types::NativeTypeHandle& hndl)
   throw(NativeTypeHandleInsertionError)
 {
   auto ptr = m_container.create(hndl);

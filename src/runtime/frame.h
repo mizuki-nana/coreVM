@@ -78,21 +78,21 @@ public:
 
   void set_return_addr(const instr_addr);
 
-  void push_eval_stack(types::native_type_handle&);
+  void push_eval_stack(types::NativeTypeHandle&);
 
-  void push_eval_stack(types::native_type_handle&&);
+  void push_eval_stack(types::NativeTypeHandle&&);
 
-  types::native_type_handle pop_eval_stack()
+  types::NativeTypeHandle pop_eval_stack()
     throw(EvaluationStackEmptyError);
 
-  types::native_type_handle& top_eval_stack()
+  types::NativeTypeHandle& top_eval_stack()
     throw(EvaluationStackEmptyError);
 
   void swap_eval_stack();
 
-  const std::vector<types::native_type_handle>& eval_stack() const;
+  const std::vector<types::NativeTypeHandle>& eval_stack() const;
 
-  types::native_type_handle& eval_stack_element(size_t i);
+  types::NativeTypeHandle& eval_stack_element(size_t i);
 
   size_t visible_var_count() const;
 
@@ -159,7 +159,7 @@ protected:
   instr_addr m_return_addr;
   std::unordered_map<variable_key, dyobj::dyobj_id> m_visible_vars;
   std::unordered_map<variable_key, dyobj::dyobj_id> m_invisible_vars;
-  std::vector<types::native_type_handle> m_eval_stack;
+  std::vector<types::NativeTypeHandle> m_eval_stack;
   dyobj::dyobj_id m_exc_obj;
 };
 

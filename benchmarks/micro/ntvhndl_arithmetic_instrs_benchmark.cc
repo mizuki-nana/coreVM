@@ -39,7 +39,7 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle oprd = corevm::types::uint32(666);
+  corevm::types::NativeTypeHandle oprd = corevm::types::uint32(666);
 
   instr_benchmarks_fixture fixture;
   fixture.process().top_frame().push_eval_stack(oprd);
@@ -61,8 +61,8 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
   corevm::runtime::Instr instr(0, 0, 0);
   instr_handler_cls handler;
 
-  corevm::types::native_type_handle oprd1 = FirstOperandType(1);
-  corevm::types::native_type_handle oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeHandle oprd1 = FirstOperandType(1);
+  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
 
   instr_benchmarks_fixture fixture;
 

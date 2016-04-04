@@ -117,7 +117,7 @@ Frame::set_return_addr(
 
 void
 Frame::push_eval_stack(
-  types::native_type_handle& operand)
+  types::NativeTypeHandle& operand)
 {
   m_eval_stack.push_back(operand);
 }
@@ -126,14 +126,14 @@ Frame::push_eval_stack(
 
 void
 Frame::push_eval_stack(
-  types::native_type_handle&& operand)
+  types::NativeTypeHandle&& operand)
 {
   m_eval_stack.push_back(
-    std::forward<types::native_type_handle>(operand));
+    std::forward<types::NativeTypeHandle>(operand));
 }
 
 // -----------------------------------------------------------------------------
-types::native_type_handle
+types::NativeTypeHandle
 Frame::pop_eval_stack()
   throw(EvaluationStackEmptyError)
 {
@@ -142,14 +142,14 @@ Frame::pop_eval_stack()
     THROW(EvaluationStackEmptyError());
   }
 
-  types::native_type_handle operand = m_eval_stack.back();
+  types::NativeTypeHandle operand = m_eval_stack.back();
   m_eval_stack.pop_back();
   return operand;
 }
 
 // -----------------------------------------------------------------------------
 
-types::native_type_handle&
+types::NativeTypeHandle&
 Frame::top_eval_stack()
   throw(EvaluationStackEmptyError)
 {
@@ -181,7 +181,7 @@ Frame::swap_eval_stack()
 
 // -----------------------------------------------------------------------------
 
-const std::vector<types::native_type_handle>&
+const std::vector<types::NativeTypeHandle>&
 Frame::eval_stack() const
 {
   return m_eval_stack;
@@ -189,7 +189,7 @@ Frame::eval_stack() const
 
 // -----------------------------------------------------------------------------
 
-types::native_type_handle&
+types::NativeTypeHandle&
 Frame::eval_stack_element(size_t i)
 {
   return m_eval_stack[i];

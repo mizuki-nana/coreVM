@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void Benchmark_InterfaceArraySize(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -44,7 +44,7 @@ void Benchmark_InterfaceArraySize(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayEmpty(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -57,8 +57,8 @@ void Benchmark_InterfaceArrayEmpty(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayAt(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((2));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((2));
 
   while (state.KeepRunning())
   {
@@ -71,7 +71,7 @@ void Benchmark_InterfaceArrayAt(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayFront(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -84,7 +84,7 @@ void Benchmark_InterfaceArrayFront(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayBack(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -97,9 +97,9 @@ void Benchmark_InterfaceArrayBack(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayPut(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((2));
-  corevm::types::native_type_handle oprd3((0));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((2));
+  corevm::types::NativeTypeHandle oprd3((0));
 
   while (state.KeepRunning())
   {
@@ -112,8 +112,8 @@ void Benchmark_InterfaceArrayPut(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayAppend(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((4));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((4));
 
   while (state.KeepRunning())
   {
@@ -126,8 +126,8 @@ void Benchmark_InterfaceArrayAppend(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayErase(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((2));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((2));
 
   while (state.KeepRunning())
   {
@@ -141,7 +141,7 @@ void Benchmark_InterfaceArrayErase(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayPop(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -154,8 +154,8 @@ void Benchmark_InterfaceArrayPop(benchmark::State& state)
 static
 void Benchmark_InterfaceArraySwap(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((corevm::types::native_array({ 4, 5, 6 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_array({ 4, 5, 6 })));
 
   while (state.KeepRunning())
   {
@@ -168,7 +168,7 @@ void Benchmark_InterfaceArraySwap(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayClear(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
 
   while (state.KeepRunning())
   {
@@ -181,8 +181,8 @@ void Benchmark_InterfaceArrayClear(benchmark::State& state)
 static
 void Benchmark_InterfaceArrayMerge(benchmark::State& state)
 {
-  corevm::types::native_type_handle hndl((corevm::types::native_array({ 1, 2, 3 })));
-  corevm::types::native_type_handle oprd2((corevm::types::native_array({ 4, 5, 6 })));
+  corevm::types::NativeTypeHandle hndl((corevm::types::native_array({ 1, 2, 3 })));
+  corevm::types::NativeTypeHandle oprd2((corevm::types::native_array({ 4, 5, 6 })));
 
   while (state.KeepRunning())
   {

@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class unary_operators_unittest_base : public ::testing::Test
+class UnaryOperatorsUnitTestBase : public ::testing::Test
 {
 protected:
   template<class op, class ResultType, class T>
@@ -62,11 +62,11 @@ protected:
 
 // -----------------------------------------------------------------------------
 
-class positive_operator_unittest : public unary_operators_unittest_base {};
+class PositiveOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(positive_operator_unittest, TestWithIntegeralOperand)
+TEST_F(PositiveOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
@@ -78,7 +78,7 @@ TEST_F(positive_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(positive_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(PositiveOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.1415f;
 
@@ -90,11 +90,11 @@ TEST_F(positive_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class negation_operator_unittest : public unary_operators_unittest_base {};
+class NegationOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(negation_operator_unittest, TestWithIntegeralOperand)
+TEST_F(NegationOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
@@ -106,7 +106,7 @@ TEST_F(negation_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(negation_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(NegationOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.1415f;
 
@@ -118,11 +118,11 @@ TEST_F(negation_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class increment_operator_unittest : public unary_operators_unittest_base {};
+class IncrementOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(increment_operator_unittest, TestWithIntegeralOperand)
+TEST_F(IncrementOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
@@ -134,7 +134,7 @@ TEST_F(increment_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(increment_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(IncrementOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.1415f;
 
@@ -146,11 +146,11 @@ TEST_F(increment_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class decrement_operator_unittest : public unary_operators_unittest_base {};
+class DecrementOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(decrement_operator_unittest, TestWithIntegeralOperand)
+TEST_F(DecrementOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
@@ -162,7 +162,7 @@ TEST_F(decrement_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(decrement_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(DecrementOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.1415f;
 
@@ -174,11 +174,11 @@ TEST_F(decrement_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class bitwise_not_operator_unittest : public unary_operators_unittest_base {};
+class BitwiseNotOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(bitwise_not_operator_unittest, TestWithIntegeralOperand)
+TEST_F(BitwiseNotOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = std::numeric_limits<corevm::types::int64>::max();
 
@@ -190,11 +190,11 @@ TEST_F(bitwise_not_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-class reverse_operator_unittest : public unary_operators_unittest_base {};
+class ReverseOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(reverse_operator_unittest, TestWithStringOperand)
+TEST_F(ReverseOperatorUnitTest, TestWithStringOperand)
 {
   corevm::types::string oprd("hello");
   corevm::types::string expected_result("olleh");
@@ -205,7 +205,7 @@ TEST_F(reverse_operator_unittest, TestWithStringOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(reverse_operator_unittest, TestWithArrayOperand)
+TEST_F(ReverseOperatorUnitTest, TestWithArrayOperand)
 {
   corevm::types::array oprd { 1, 2, 3 };
   corevm::types::array expected_result { 3, 2, 1 };
@@ -216,11 +216,11 @@ TEST_F(reverse_operator_unittest, TestWithArrayOperand)
 
 // -----------------------------------------------------------------------------
 
-class absolute_operator_unittest : public unary_operators_unittest_base {};
+class AbsoluteOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(absolute_operator_unittest, TestWithIntegeralOperand)
+TEST_F(AbsoluteOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int32 oprd = -std::numeric_limits<corevm::types::int32>::max();
 
@@ -232,7 +232,7 @@ TEST_F(absolute_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(absolute_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(AbsoluteOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = -3.1415f;
 
@@ -244,7 +244,7 @@ TEST_F(absolute_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class sqrt_operator_unittest : public unary_operators_unittest_base {};
+class sqrt_operator_unittest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
@@ -274,11 +274,11 @@ TEST_F(sqrt_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class repr_operator_unittest : public unary_operators_unittest_base {};
+class ReprOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(repr_operator_unittest, TestWithIntegeralOperand)
+TEST_F(ReprOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = 123456789;
 
@@ -290,7 +290,7 @@ TEST_F(repr_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(repr_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(ReprOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.141593f;
 
@@ -302,11 +302,11 @@ TEST_F(repr_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class logical_not_operator_unittest : public unary_operators_unittest_base {};
+class LogicalNotOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_not_operator_unittest, TestWithIntegeralOperand)
+TEST_F(LogicalNotOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = 123456789;
 
@@ -318,7 +318,7 @@ TEST_F(logical_not_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(logical_not_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(LogicalNotOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 3.1415926f;
 
@@ -330,11 +330,11 @@ TEST_F(logical_not_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class truthy_operator_unittest : public unary_operators_unittest_base {};
+class TruthyOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(truthy_operator_unittest, TestWithIntegeralOperand)
+TEST_F(TruthyOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = 123456789;
 
@@ -346,7 +346,7 @@ TEST_F(truthy_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(truthy_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(TruthyOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 0.1415926f;
 
@@ -358,11 +358,11 @@ TEST_F(truthy_operator_unittest, TestWithFloatingPointOperand)
 
 // -----------------------------------------------------------------------------
 
-class hash_operator_unittest : public unary_operators_unittest_base {};
+class HashOperatorUnitTest : public UnaryOperatorsUnitTestBase {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(hash_operator_unittest, TestWithIntegeralOperand)
+TEST_F(HashOperatorUnitTest, TestWithIntegeralOperand)
 {
   corevm::types::int64 oprd = 123456789;
 
@@ -371,7 +371,7 @@ TEST_F(hash_operator_unittest, TestWithIntegeralOperand)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(hash_operator_unittest, TestWithFloatingPointOperand)
+TEST_F(HashOperatorUnitTest, TestWithFloatingPointOperand)
 {
   corevm::types::decimal oprd = 0.1415926f;
 

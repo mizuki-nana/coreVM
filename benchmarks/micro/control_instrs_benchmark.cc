@@ -165,7 +165,7 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
   corevm::runtime::instr_handler_jmpif handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
-  corevm::types::native_type_handle hndl = corevm::types::boolean(true);
+  corevm::types::NativeTypeHandle hndl = corevm::types::boolean(true);
   fixture.process().top_frame().push_eval_stack(hndl);
 
   auto frame = &fixture.process().top_frame();

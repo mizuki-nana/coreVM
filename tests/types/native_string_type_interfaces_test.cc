@@ -27,16 +27,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class native_string_type_interfaces_test : public native_type_interfaces_test_base
+class NativeStringTypeInterfacesTest : public NativeTypeInterfacesTestBase
 {
 public:
   template<typename F>
   void apply_interface_and_assert_string_result(
-    corevm::types::native_type_handle& operand,
+    corevm::types::NativeTypeHandle& operand,
     F func,
     corevm::types::native_string& expected_result)
   {
-    corevm::types::native_type_handle result = func(operand);
+    corevm::types::NativeTypeHandle result = func(operand);
     corevm::types::native_string actual_result =
       corevm::types::get_value_from_handle<corevm::types::native_string>(result);
 
@@ -49,9 +49,9 @@ public:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestGetSize)
+TEST_F(NativeStringTypeInterfacesTest, TestGetSize)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
 
   size_t expected_value = strlen("Hello world!");
 
@@ -64,9 +64,9 @@ TEST_F(native_string_type_interfaces_test, TestGetSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestClear)
+TEST_F(NativeStringTypeInterfacesTest, TestClear)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
 
   corevm::types::native_string expected_result = "";
 
@@ -79,10 +79,10 @@ TEST_F(native_string_type_interfaces_test, TestClear)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestAt)
+TEST_F(NativeStringTypeInterfacesTest, TestAt)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle other_operand = corevm::types::uint32(4);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle other_operand = corevm::types::uint32(4);
 
   char expected_value = 'o';
 
@@ -96,10 +96,10 @@ TEST_F(native_string_type_interfaces_test, TestAt)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestAt2)
+TEST_F(NativeStringTypeInterfacesTest, TestAt2)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle other_operand = corevm::types::uint32(6);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle other_operand = corevm::types::uint32(6);
 
   corevm::types::string expected_value("w");
 
@@ -113,10 +113,10 @@ TEST_F(native_string_type_interfaces_test, TestAt2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestAppend)
+TEST_F(NativeStringTypeInterfacesTest, TestAppend)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello ");
-  corevm::types::native_type_handle str = corevm::types::string("world!");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello ");
+  corevm::types::NativeTypeHandle str = corevm::types::string("world!");
 
   corevm::types::native_string expected_result = "Hello world!";
 
@@ -130,10 +130,10 @@ TEST_F(native_string_type_interfaces_test, TestAppend)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestPushBack)
+TEST_F(NativeStringTypeInterfacesTest, TestPushBack)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world");
-  corevm::types::native_type_handle c = corevm::types::int8('!');
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world");
+  corevm::types::NativeTypeHandle c = corevm::types::int8('!');
 
   corevm::types::native_string expected_result = "Hello world!";
 
@@ -147,11 +147,11 @@ TEST_F(native_string_type_interfaces_test, TestPushBack)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestInsertStr)
+TEST_F(NativeStringTypeInterfacesTest, TestInsertStr)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Helloworld!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
-  corevm::types::native_type_handle str = corevm::types::string(" ");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Helloworld!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle str = corevm::types::string(" ");
 
   corevm::types::native_string expected_result = "Hello world!";
 
@@ -166,11 +166,11 @@ TEST_F(native_string_type_interfaces_test, TestInsertStr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestInsertChar)
+TEST_F(NativeStringTypeInterfacesTest, TestInsertChar)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Helloworld!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
-  corevm::types::native_type_handle c = corevm::types::int8(' ');
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Helloworld!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle c = corevm::types::int8(' ');
 
   corevm::types::native_string expected_result = "Hello world!";
 
@@ -185,10 +185,10 @@ TEST_F(native_string_type_interfaces_test, TestInsertChar)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestErase)
+TEST_F(NativeStringTypeInterfacesTest, TestErase)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello  world!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello  world!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
 
   corevm::types::native_string expected_result = "Hello";
 
@@ -202,11 +202,11 @@ TEST_F(native_string_type_interfaces_test, TestErase)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestErase2)
+TEST_F(NativeStringTypeInterfacesTest, TestErase2)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello  world!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
-  corevm::types::native_type_handle len = corevm::types::uint32(1);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello  world!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle len = corevm::types::uint32(1);
 
   corevm::types::native_string expected_result = "Hello world!";
 
@@ -221,12 +221,12 @@ TEST_F(native_string_type_interfaces_test, TestErase2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestReplaceStr)
+TEST_F(NativeStringTypeInterfacesTest, TestReplaceStr)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
-  corevm::types::native_type_handle len = corevm::types::uint32(1);
-  corevm::types::native_type_handle str = corevm::types::string("-");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle len = corevm::types::uint32(1);
+  corevm::types::NativeTypeHandle str = corevm::types::string("-");
 
   corevm::types::native_string expected_result = "Hello-world!";
 
@@ -242,10 +242,10 @@ TEST_F(native_string_type_interfaces_test, TestReplaceStr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestSwap)
+TEST_F(NativeStringTypeInterfacesTest, TestSwap)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle str = corevm::types::string("Nice to meet you!");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle str = corevm::types::string("Nice to meet you!");
 
   corevm::types::native_string expected_result = "Nice to meet you!";
 
@@ -259,10 +259,10 @@ TEST_F(native_string_type_interfaces_test, TestSwap)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestSubstr)
+TEST_F(NativeStringTypeInterfacesTest, TestSubstr)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(6);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(6);
 
   corevm::types::native_string expected_result = "world!";
 
@@ -276,11 +276,11 @@ TEST_F(native_string_type_interfaces_test, TestSubstr)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestSubstr2)
+TEST_F(NativeStringTypeInterfacesTest, TestSubstr2)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle pos = corevm::types::uint32(6);
-  corevm::types::native_type_handle len = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(6);
+  corevm::types::NativeTypeHandle len = corevm::types::uint32(5);
 
   corevm::types::native_string expected_result = "world";
 
@@ -295,10 +295,10 @@ TEST_F(native_string_type_interfaces_test, TestSubstr2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestFind)
+TEST_F(NativeStringTypeInterfacesTest, TestFind)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle str = corevm::types::string("world");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle str = corevm::types::string("world");
 
   size_t expected_result = 6;
 
@@ -312,11 +312,11 @@ TEST_F(native_string_type_interfaces_test, TestFind)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestFind2)
+TEST_F(NativeStringTypeInterfacesTest, TestFind2)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle str = corevm::types::string("o");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle str = corevm::types::string("o");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
 
   size_t expected_result = 7;
 
@@ -331,10 +331,10 @@ TEST_F(native_string_type_interfaces_test, TestFind2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestRFind)
+TEST_F(NativeStringTypeInterfacesTest, TestRFind)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle str = corevm::types::string("world");
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle str = corevm::types::string("world");
 
   size_t expected_result = 6;
 
@@ -348,11 +348,11 @@ TEST_F(native_string_type_interfaces_test, TestRFind)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(native_string_type_interfaces_test, TestRFind2)
+TEST_F(NativeStringTypeInterfacesTest, TestRFind2)
 {
-  corevm::types::native_type_handle operand = corevm::types::string("Hello world!");
-  corevm::types::native_type_handle str = corevm::types::string("o");
-  corevm::types::native_type_handle pos = corevm::types::uint32(5);
+  corevm::types::NativeTypeHandle operand = corevm::types::string("Hello world!");
+  corevm::types::NativeTypeHandle str = corevm::types::string("o");
+  corevm::types::NativeTypeHandle pos = corevm::types::uint32(5);
 
   size_t expected_result = 4;
 
