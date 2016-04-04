@@ -33,12 +33,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 
-class extract_metadata : public sneaker::utility::cmdline_program
+class ExtractMetadata : public sneaker::utility::cmdline_program
 {
 public:
-  extract_metadata();
+  ExtractMetadata();
 
-  virtual ~extract_metadata();
+  virtual ~ExtractMetadata();
 
 protected:
   virtual int do_run();
@@ -62,7 +62,7 @@ const std::string DYOBJ_FLAG_STR_TO_VALUE_MAP = "DYOBJ_FLAG_STR_TO_VALUE_MAP";
 
 // -----------------------------------------------------------------------------
 
-extract_metadata::extract_metadata()
+ExtractMetadata::ExtractMetadata()
   :
   sneaker::utility::cmdline_program("Extract coreVM info"),
   m_output()
@@ -74,7 +74,7 @@ extract_metadata::extract_metadata()
 // -----------------------------------------------------------------------------
 
 /* virtual */
-extract_metadata::~extract_metadata()
+ExtractMetadata::~ExtractMetadata()
 {
   // Do nothing here.
 }
@@ -82,7 +82,7 @@ extract_metadata::~extract_metadata()
 // -----------------------------------------------------------------------------
 
 bool
-extract_metadata::check_parameters() const
+ExtractMetadata::check_parameters() const
 {
   return true;
 }
@@ -90,7 +90,7 @@ extract_metadata::check_parameters() const
 // -----------------------------------------------------------------------------
 
 int
-extract_metadata::do_run()
+ExtractMetadata::do_run()
 {
   std::ofstream fd(m_output.c_str(), std::ios::out);
 
@@ -121,7 +121,7 @@ extract_metadata::do_run()
 // -----------------------------------------------------------------------------
 
 const std::string
-extract_metadata::extract_instr_info() const
+ExtractMetadata::extract_instr_info() const
 {
   std::stringstream ss;
 
@@ -152,7 +152,7 @@ extract_metadata::extract_instr_info() const
 // -----------------------------------------------------------------------------
 
 const std::string
-extract_metadata::extract_flags_info() const
+ExtractMetadata::extract_flags_info() const
 {
   std::stringstream ss;
 
@@ -185,7 +185,7 @@ extract_metadata::extract_flags_info() const
 
 int main(int argc, char** argv)
 {
-  extract_metadata program;
+  ExtractMetadata program;
   return program.run(argc, argv);
 }
 
