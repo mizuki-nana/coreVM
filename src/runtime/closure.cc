@@ -42,9 +42,7 @@ static_assert(
 
 // -----------------------------------------------------------------------------
 
-ClosurePrinter::ClosurePrinter(
-  const Closure& closure,
-  uint32_t opts)
+ClosurePrinter::ClosurePrinter(const Closure& closure, uint32_t opts)
   :
   m_closure(closure),
   m_opts(opts)

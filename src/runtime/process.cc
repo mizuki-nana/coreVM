@@ -66,7 +66,7 @@ namespace internal {
 
 // -----------------------------------------------------------------------------
 
-class ntvhndl_collector_gc_callback :
+class NtvhndlCollectorGcCallback :
   public gc::GarbageCollector<Process::garbage_collection_scheme>::Callback
 {
 public:
@@ -85,7 +85,7 @@ private:
 
 /* virtual */
 void
-ntvhndl_collector_gc_callback::operator()(const dynamic_object_type& obj)
+NtvhndlCollectorGcCallback::operator()(const dynamic_object_type& obj)
 {
   m_ntvhndl_keys.push_back(obj.ntvhndl_key());
 }
@@ -301,8 +301,7 @@ Process::top_frame(Frame** frame_ptr)
 // -----------------------------------------------------------------------------
 
 Frame&
-Process::top_nth_frame(size_t n)
-  throw(FrameNotFoundError)
+Process::top_nth_frame(size_t n) throw(FrameNotFoundError)
 {
   if (n >= m_call_stack.size())
   {
@@ -315,8 +314,7 @@ Process::top_nth_frame(size_t n)
 // -----------------------------------------------------------------------------
 
 void
-Process::pop_frame()
-  throw(FrameNotFoundError)
+Process::pop_frame() throw(FrameNotFoundError)
 {
   Frame& frame = this->top_frame();
 
@@ -398,9 +396,7 @@ Process::push_frame(Frame& frame)
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_frame(
-  const ClosureCtx& ctx,
-  Compartment* compartment_ptr,
+Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
   Closure* closure_ptr)
 {
   ASSERT(compartment_ptr);
@@ -414,9 +410,7 @@ Process::emplace_frame(
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_frame(
-  const ClosureCtx& ctx,
-  Compartment* compartment_ptr,
+Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
   Closure* closure_ptr, instr_addr return_addr)
 {
   ASSERT(compartment_ptr);
@@ -450,8 +444,7 @@ Process::stack_size() const
 // -----------------------------------------------------------------------------
 
 InvocationCtx&
-Process::top_invocation_ctx()
-  throw(InvocationCtxNotFoundError)
+Process::top_invocation_ctx() throw(InvocationCtxNotFoundError)
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -464,8 +457,7 @@ Process::top_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 void
-Process::top_invocation_ctx(
-  InvocationCtx** invk_ctx_ptr)
+Process::top_invocation_ctx(InvocationCtx** invk_ctx_ptr)
 {
   *invk_ctx_ptr = &m_invocation_ctx_stack.back();
 }
@@ -498,8 +490,7 @@ Process::push_invocation_ctx(const InvocationCtx& invk_ctx)
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_invocation_ctx(
-  const ClosureCtx& ctx,
+Process::emplace_invocation_ctx(const ClosureCtx& ctx,
   Compartment* compartment_ptr,
   Closure* closure_ptr)
 {
@@ -512,8 +503,7 @@ Process::emplace_invocation_ctx(
 // -----------------------------------------------------------------------------
 
 void
-Process::pop_invocation_ctx()
-  throw(InvocationCtxNotFoundError)
+Process::pop_invocation_ctx() throw(InvocationCtxNotFoundError)
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -526,8 +516,7 @@ Process::pop_invocation_ctx()
 // -----------------------------------------------------------------------------
 
 const dyobj::dyobj_id&
-Process::top_stack()
-  throw(ObjectStackEmptyError)
+Process::top_stack() throw(ObjectStackEmptyError)
 {
   if (m_dyobj_stack.empty())
   {
@@ -557,8 +546,7 @@ Process::push_stack(dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-Process::pop_stack()
-  throw(ObjectStackEmptyError)
+Process::pop_stack() throw(ObjectStackEmptyError)
 {
   if (m_dyobj_stack.empty())
   {
@@ -638,8 +626,7 @@ Process::has_ntvhndl(dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 types::NativeTypeHandle&
-Process::get_ntvhndl(dyobj::ntvhndl_key key)
-  throw(NativeTypeHandleNotFoundError)
+Process::get_ntvhndl(dyobj::ntvhndl_key key) throw(NativeTypeHandleNotFoundError)
 {
   return m_ntvhndl_pool.at(key);
 }
@@ -656,8 +643,7 @@ Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
 // -----------------------------------------------------------------------------
 
 void
-Process::erase_ntvhndl(dyobj::ntvhndl_key key)
-  throw(NativeTypeHandleDeletionError)
+Process::erase_ntvhndl(dyobj::ntvhndl_key key) throw(NativeTypeHandleDeletionError)
 {
   if (key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -851,7 +837,7 @@ Process::do_gc()
   gc::GarbageCollector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
 
-  internal::ntvhndl_collector_gc_callback callback;
+  internal::NtvhndlCollectorGcCallback callback;
   garbage_collector.gc(&callback);
 
   std::for_each(
@@ -884,8 +870,7 @@ Process::pc() const
 // -----------------------------------------------------------------------------
 
 void
-Process::set_pc(const instr_addr addr)
-  throw(InvalidInstrAddrError)
+Process::set_pc(const instr_addr addr) throw(InvalidInstrAddrError)
 {
   if ( (uint64_t)addr >= m_instrs.size() )
   {
@@ -919,8 +904,7 @@ Process::insert_vector(const vector& vector)
 // -----------------------------------------------------------------------------
 
 bool
-Process::get_frame_by_closure_ctx(
-  ClosureCtx& closure_ctx, Frame** frame_ptr)
+Process::get_frame_by_closure_ctx(ClosureCtx& closure_ctx, Frame** frame_ptr)
 {
   auto itr = std::find_if(
     m_call_stack.begin(),
@@ -958,8 +942,7 @@ Process::should_gc() const
 // -----------------------------------------------------------------------------
 
 void
-Process::set_sig_vector(
-  sig_atomic_t sig, vector& vector)
+Process::set_sig_vector(sig_atomic_t sig, vector& vector)
 {
   m_sig_instr_map.insert({sig, vector});
 }
@@ -967,8 +950,7 @@ Process::set_sig_vector(
 // -----------------------------------------------------------------------------
 
 void
-Process::handle_signal(
-  sig_atomic_t sig, SigHandler* handler)
+Process::handle_signal(sig_atomic_t sig, SigHandler* handler)
 {
   auto itr = m_sig_instr_map.find(sig);
 
@@ -996,8 +978,7 @@ Process::compartment_count() const
 // -----------------------------------------------------------------------------
 
 compartment_id
-Process::insert_compartment(
-  const Compartment& compartment)
+Process::insert_compartment(const Compartment& compartment)
 {
   m_compartments.push_back(compartment);
   return static_cast<compartment_id>(m_compartments.size() - 1);
@@ -1006,8 +987,7 @@ Process::insert_compartment(
 // -----------------------------------------------------------------------------
 
 compartment_id
-Process::insert_compartment(
-  const Compartment&& compartment)
+Process::insert_compartment(const Compartment&& compartment)
 {
   m_compartments.push_back(
     std::forward<const runtime::Compartment>(compartment));
@@ -1018,8 +998,7 @@ Process::insert_compartment(
 // -----------------------------------------------------------------------------
 
 void
-Process::get_compartment(
-  compartment_id id, Compartment** ptr)
+Process::get_compartment(compartment_id id, Compartment** ptr)
 {
   if (id < static_cast<compartment_id>(m_compartments.size()))
   {
@@ -1044,9 +1023,7 @@ Process::reset()
 // -----------------------------------------------------------------------------
 
 Frame*
-Process::find_frame_by_ctx(
-  ClosureCtx ctx,
-  Compartment* compartment,
+Process::find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment,
   Process& process)
 {
 #if __DEBUG__
@@ -1091,9 +1068,7 @@ Process::find_frame_by_ctx(
 // -----------------------------------------------------------------------------
 
 Frame*
-Process::find_parent_frame_in_process(
-  Frame* frame_ptr,
-  Process& process)
+Process::find_parent_frame_in_process(Frame* frame_ptr, Process& process)
 {
 #if __DEBUG__
   ASSERT(frame_ptr);
@@ -1129,8 +1104,7 @@ Process::find_parent_frame_in_process(
 // -----------------------------------------------------------------------------
 
 void
-Process::unwind_stack(
-  Process& process, size_t limit)
+Process::unwind_stack(Process& process, size_t limit)
 {
   size_t unwind_count = 0;
   std::vector<std::string> output_lines;

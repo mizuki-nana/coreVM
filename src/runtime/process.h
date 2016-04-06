@@ -113,8 +113,7 @@ public:
 
   bool has_frame() const;
 
-  Frame& top_frame()
-    throw(FrameNotFoundError);
+  Frame& top_frame() throw(FrameNotFoundError);
 
   /**
    * Gets the top frame, only when the call stack is not empty.
@@ -126,19 +125,13 @@ public:
    * Gets the `n`th frame from the top of the call stack.
    * A value of 0 means the top frame.
    */
-  Frame& top_nth_frame(size_t n)
-    throw(FrameNotFoundError);
+  Frame& top_nth_frame(size_t n) throw(FrameNotFoundError);
 
   void push_frame(Frame&);
 
-  void emplace_frame(
-    const ClosureCtx&,
-    Compartment*, Closure*);
+  void emplace_frame(const ClosureCtx&, Compartment*, Closure*);
 
-  void emplace_frame(
-    const ClosureCtx&,
-    Compartment*,
-    Closure*, instr_addr);
+  void emplace_frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
 
   void pop_frame() throw(FrameNotFoundError);
 
@@ -146,8 +139,7 @@ public:
 
   uint64_t stack_size() const;
 
-  InvocationCtx& top_invocation_ctx()
-    throw(InvocationCtxNotFoundError);
+  InvocationCtx& top_invocation_ctx() throw(InvocationCtxNotFoundError);
 
   /**
    * Gets the top invocation context, only when the invocation stack
@@ -158,18 +150,13 @@ public:
 
   void push_invocation_ctx(const InvocationCtx&);
 
-  void emplace_invocation_ctx(
-    const ClosureCtx&,
-    Compartment*, Closure*);
+  void emplace_invocation_ctx(const ClosureCtx&, Compartment*, Closure*);
 
-  void pop_invocation_ctx()
-    throw(InvocationCtxNotFoundError);
+  void pop_invocation_ctx() throw(InvocationCtxNotFoundError);
 
-  const dyobj::dyobj_id& top_stack()
-    throw(ObjectStackEmptyError);
+  const dyobj::dyobj_id& top_stack() throw(ObjectStackEmptyError);
 
-  dyobj::dyobj_id pop_stack()
-    throw(ObjectStackEmptyError);
+  dyobj::dyobj_id pop_stack() throw(ObjectStackEmptyError);
 
   void swap_stack();
 
@@ -183,20 +170,17 @@ public:
   dyobj::ntvhndl_key insert_ntvhndl(types::NativeTypeHandle&)
     throw(NativeTypeHandleInsertionError);
 
-  void erase_ntvhndl(dyobj::ntvhndl_key)
-    throw(NativeTypeHandleDeletionError);
+  void erase_ntvhndl(dyobj::ntvhndl_key) throw(NativeTypeHandleDeletionError);
 
   instr_addr pc() const;
 
-  void set_pc(const instr_addr)
-    throw(InvalidInstrAddrError);
+  void set_pc(const instr_addr) throw(InvalidInstrAddrError);
 
   void append_vector(const vector&);
 
   void insert_vector(const vector& vector);
 
-  bool get_frame_by_closure_ctx(
-    ClosureCtx&, Frame**);
+  bool get_frame_by_closure_ctx(ClosureCtx&, Frame**);
 
   void start();
 
@@ -228,14 +212,11 @@ public:
 
   size_t compartment_count() const;
 
-  compartment_id insert_compartment(
-    const Compartment&);
+  compartment_id insert_compartment(const Compartment&);
 
-  compartment_id insert_compartment(
-    const Compartment&&);
+  compartment_id insert_compartment(const Compartment&&);
 
-  void get_compartment(
-    compartment_id, Compartment**);
+  void get_compartment(compartment_id, Compartment**);
 
   void reset();
 
@@ -247,9 +228,7 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  Frame* find_frame_by_ctx(
-    ClosureCtx ctx,
-    Compartment* compartment,
+  Frame* find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment,
     Process& process);
 
   /**
@@ -260,17 +239,15 @@ public:
    * Returns a null pointer otherwise.
    */
   static
-  Frame* find_parent_frame_in_process(
-    Frame* frame_ptr,
-    Process& process);
+  Frame* find_parent_frame_in_process(Frame* frame_ptr, Process& process);
 
   // A few things to note:
   //
   // 1. Once the stack is unwinded, the action cannot be undone.
   // 2. This function has to be exception safe because there are no catch
   //    blocks to catch exceptions from it.
-  static void unwind_stack(
-    Process&, size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
+  static void unwind_stack(Process&,
+    size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
   friend class ProcessPrinter;
 

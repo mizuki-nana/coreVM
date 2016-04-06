@@ -29,11 +29,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 
 
-class runtime_error
+class RuntimeError
 {
 public:
-  explicit runtime_error(const std::string& what_arg);
-  explicit runtime_error(const char* what_arg);
+  explicit RuntimeError(const std::string& what_arg);
+  explicit RuntimeError(const char* what_arg);
 
   const char* what() const noexcept;
 

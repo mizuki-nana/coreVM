@@ -33,8 +33,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-CompartmentPrinter::CompartmentPrinter(
-  const Compartment& compartment,
+CompartmentPrinter::CompartmentPrinter(const Compartment& compartment,
   uint32_t opts)
   :
   m_compartment(compartment),

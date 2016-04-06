@@ -269,8 +269,8 @@ NativeTypeHandle interface_compute_slice(NativeTypeHandle& operand,
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_stride(
-  NativeTypeHandle& operand, NativeTypeHandle& stride);
+NativeTypeHandle interface_compute_stride(NativeTypeHandle& operand,
+  NativeTypeHandle& stride);
 
 // -----------------------------------------------------------------------------
 
@@ -278,8 +278,8 @@ NativeTypeHandle interface_compute_reverse(NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_apply_rounding(
-  NativeTypeHandle& operand, NativeTypeHandle& ndigits);
+NativeTypeHandle interface_apply_rounding(NativeTypeHandle& operand,
+  NativeTypeHandle& ndigits);
 
 // -----------------------------------------------------------------------------
 
@@ -435,8 +435,7 @@ NativeTypeHandle interface_array_pop(NativeTypeHandle& operand);
 // -----------------------------------------------------------------------------
 
 void
-interface_array_swap(NativeTypeHandle& operand,
-  NativeTypeHandle& other_operand);
+interface_array_swap(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
 
 // -----------------------------------------------------------------------------
 
@@ -490,8 +489,7 @@ void interface_map_clear(NativeTypeHandle& operand);
 // -----------------------------------------------------------------------------
 
 void
-interface_map_swap(NativeTypeHandle& operand,
-  NativeTypeHandle& other_operand);
+interface_map_swap(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
 
 // -----------------------------------------------------------------------------
 
@@ -504,8 +502,7 @@ NativeTypeHandle interface_map_vals(NativeTypeHandle& operand);
 // -----------------------------------------------------------------------------
 
 NativeTypeHandle
-interface_map_merge(NativeTypeHandle& operand,
-  NativeTypeHandle& other_operand);
+interface_map_merge(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
 
 // -----------------------------------------------------------------------------
 

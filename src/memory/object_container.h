@@ -119,8 +119,7 @@ ObjectContainer<T, AllocatorType>::ObjectContainer()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename AllocatorType>
-ObjectContainer<T, AllocatorType>::ObjectContainer(
-  uint64_t total_size)
+ObjectContainer<T, AllocatorType>::ObjectContainer(uint64_t total_size)
   :
   m_allocator(total_size)
 {
@@ -354,8 +353,7 @@ ObjectContainer<T, AllocatorType>::erase(iterator& itr)
 
 template<typename T, typename AllocatorType>
 std::ostream&
-operator<<(
-  std::ostream& ost,
+operator<<(std::ostream& ost,
   const ObjectContainer<T, AllocatorType>& container)
 {
   ost << "object container: ";

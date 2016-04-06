@@ -213,8 +213,7 @@ Configuration::load_config(const std::string& path)
 // -----------------------------------------------------------------------------
 
 void
-Configuration::set_values(
-  Configuration& configuration, const JSON& config_json)
+Configuration::set_values(Configuration& configuration, const JSON& config_json)
 {
 #if __DEBUG__
   ASSERT(config_json.is_object());

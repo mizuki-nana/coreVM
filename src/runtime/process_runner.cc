@@ -43,15 +43,13 @@ const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
 
 // -----------------------------------------------------------------------------
 
-ProcessRunner::ProcessRunner(
-  Process& process)
+ProcessRunner::ProcessRunner(Process& process)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     COREVM_DEFAULT_GC_INTERVAL,
     ProcessRunner::tick_handler,
     false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
-  ),
+    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS),
   m_process(process)
 {
   // Do nothing here.
@@ -59,16 +57,13 @@ ProcessRunner::ProcessRunner(
 
 // -----------------------------------------------------------------------------
 
-ProcessRunner::ProcessRunner(
-  Process& process,
-  uint32_t gc_interval)
+ProcessRunner::ProcessRunner(Process& process, uint32_t gc_interval)
   :
   sneaker::threading::fixed_time_interval_daemon_service(
     gc_interval,
     ProcessRunner::tick_handler,
     false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS
-  ),
+    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS),
   m_process(process)
 {
   // Do nothing here.

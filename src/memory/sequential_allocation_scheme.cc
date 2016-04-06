@@ -56,8 +56,7 @@ typedef SequentialBlockDescriptor block_descriptor_type;
 
 // -----------------------------------------------------------------------------
 
-SequentialAllocationScheme::SequentialAllocationScheme(
-  size_t total_size)
+SequentialAllocationScheme::SequentialAllocationScheme(size_t total_size)
   :
   m_total_size(total_size)
 {
@@ -325,13 +324,12 @@ SequentialAllocationScheme::free(size_t offset) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* -------------- FirstFitAllocationScheme --------------- */
+/*                         FirstFitAllocationScheme                           */
 
 
 // -----------------------------------------------------------------------------
 
-FirstFitAllocationScheme::FirstFitAllocationScheme(
-  size_t total_size)
+FirstFitAllocationScheme::FirstFitAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
@@ -360,8 +358,7 @@ FirstFitAllocationScheme::find_fit(size_t size) noexcept
 
 // -----------------------------------------------------------------------------
 
-BestFitAllocationScheme::BestFitAllocationScheme(
-  size_t total_size)
+BestFitAllocationScheme::BestFitAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
@@ -410,7 +407,7 @@ BestFitAllocationScheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* ------------- WorstFitAllocationScheme ---------------- */
+/*                          WorstFitAllocationScheme                          */
 
 
 // -----------------------------------------------------------------------------
@@ -465,13 +462,12 @@ WorstFitAllocationScheme::find_fit(size_t size) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* -------------- NextFitAllocationScheme ---------------- */
+/*                            NextFitAllocationScheme                         */
 
 
 // -----------------------------------------------------------------------------
 
-NextFitAllocationScheme::NextFitAllocationScheme(
-  size_t total_size)
+NextFitAllocationScheme::NextFitAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
@@ -526,7 +522,7 @@ NextFitAllocationScheme::free(size_t offset) noexcept
 // -----------------------------------------------------------------------------
 
 
-/* ---------------- BuddyAllocationScheme ----------------- */
+/*                            BuddyAllocationScheme                           */
 
 
 // -----------------------------------------------------------------------------
@@ -539,8 +535,7 @@ const uint8_t BuddyAllocationScheme::FLAG_PARENT_SPLIT = 2;
 
 // -----------------------------------------------------------------------------
 
-BuddyAllocationScheme::BuddyAllocationScheme(
-  size_t total_size)
+BuddyAllocationScheme::BuddyAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {

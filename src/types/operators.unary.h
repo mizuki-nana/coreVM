@@ -112,7 +112,7 @@ inline
 boolean
 decrement::operator()(const boolean& /* handle */)
 {
-  THROW(invalid_operator_error("--", "boolean"));
+  THROW(InvalidOperatorError("--", "boolean"));
 }
 
 // -----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ inline
 decimal
 bitwise_not::operator()(const decimal& /* handle */)
 {
-  THROW(invalid_operator_error("~", "decimal"));
+  THROW(InvalidOperatorError("~", "decimal"));
 }
 
 // -----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ inline
 decimal2
 bitwise_not::operator()(const decimal2& /* handle */)
 {
-  THROW(invalid_operator_error("~", "decimal2"));
+  THROW(InvalidOperatorError("~", "decimal2"));
 }
 
 // -----------------------------------------------------------------------------

@@ -82,8 +82,7 @@ GCRuleMeta::get_gc_rule(GCBitfields bit)
 // -----------------------------------------------------------------------------
 
 bool
-GCRuleAlways::should_gc(
-  const Process& /* process */) const
+GCRuleAlways::should_gc(const Process& /* process */) const
 {
   return true;
 }
@@ -91,8 +90,7 @@ GCRuleAlways::should_gc(
 // -----------------------------------------------------------------------------
 
 bool
-GCRuleByHeapSize::should_gc(
-  const Process& process) const
+GCRuleByHeapSize::should_gc(const Process& process) const
 {
   return process.heap_size() > (
     process.max_heap_size() * GCRuleByHeapSize::DEFAULT_CUTOFF
@@ -102,8 +100,7 @@ GCRuleByHeapSize::should_gc(
 // -----------------------------------------------------------------------------
 
 bool
-GCRuleByNtvhndlPoolSize::should_gc(
-  const Process& process) const
+GCRuleByNtvhndlPoolSize::should_gc(const Process& process) const
 {
   return process.ntvhndl_pool_size() > (
     process.max_ntvhndl_pool_size() * GCRuleByNtvhndlPoolSize::DEFAULT_CUTOFF

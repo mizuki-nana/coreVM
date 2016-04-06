@@ -39,6 +39,8 @@ namespace corevm {
 namespace runtime {
 
 
+// -----------------------------------------------------------------------------
+
 /** Forward declaration of `corevm::runtime::Process` */
 class Process;
 

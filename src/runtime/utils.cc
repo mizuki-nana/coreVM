@@ -38,9 +38,7 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 dyobj::attr_key
-get_attr_key(
-  Compartment* compartment,
-  encoding_key str_key,
+get_attr_key(Compartment* compartment, encoding_key str_key,
   std::string* attr_str)
 {
   compartment->get_encoding_string(str_key, attr_str);
@@ -53,8 +51,7 @@ get_attr_key(
 // -----------------------------------------------------------------------------
 
 dyobj::attr_key
-get_attr_key(
-  Compartment* compartment, encoding_key str_key)
+get_attr_key(Compartment* compartment, encoding_key str_key)
 {
   std::string attr_str;
   return get_attr_key(compartment, str_key, &attr_str);

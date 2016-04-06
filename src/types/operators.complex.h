@@ -348,7 +348,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(runtime_error("Calling 'slice' operator on invalid type"));
+    THROW(RuntimeError("Calling 'slice' operator on invalid type"));
   }
 
   uint32_t m_start;
@@ -404,7 +404,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(runtime_error("Calling 'stride' operator on invalid type"));
+    THROW(RuntimeError("Calling 'stride' operator on invalid type"));
   }
 
 private:
@@ -464,7 +464,7 @@ public:
   template<typename T>
   T operator()(const T& /* handle */) const
   {
-    THROW(runtime_error("Calling 'reverse' operator on invalid type"));
+    THROW(RuntimeError("Calling 'reverse' operator on invalid type"));
   }
 
 private:
@@ -554,7 +554,7 @@ cmp::result_type
 cmp::operator()<array>(
   const array& /* lhs */, const array& /* rhs */)
 {
-  THROW(runtime_error("Calling 'cmp' operator on invalid type"));
+  THROW(RuntimeError("Calling 'cmp' operator on invalid type"));
 }
 
 // -----------------------------------------------------------------------------
@@ -565,7 +565,7 @@ cmp::result_type
 cmp::operator()<map>(
   const map& /* lhs */, const map& /* rhs */)
 {
-  THROW(runtime_error("Calling 'cmp' operator on invalid type"));
+  THROW(RuntimeError("Calling 'cmp' operator on invalid type"));
 }
 
 // -----------------------------------------------------------------------------

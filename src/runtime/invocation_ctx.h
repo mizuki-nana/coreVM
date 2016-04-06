@@ -45,15 +45,14 @@ struct Closure;
 class Compartment;
 
 
-typedef std::vector<dyobj::dyobj_id> param_list_type;
-typedef std::unordered_map<variable_key, dyobj::dyobj_id> param_value_map_type;
-
-
 class InvocationCtx
 {
+private:
+  typedef std::vector<dyobj::dyobj_id> param_list_type;
+  typedef std::unordered_map<variable_key, dyobj::dyobj_id> param_value_map_type;
+
 public:
-  InvocationCtx(const ClosureCtx&,
-    Compartment*, Closure*);
+  InvocationCtx(const ClosureCtx&, Compartment*, Closure*);
 
   const ClosureCtx& closure_ctx() const;
 

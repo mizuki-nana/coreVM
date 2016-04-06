@@ -82,14 +82,14 @@ native_string::native_string(int8_t)
   :
   native_string_base()
 {
-  THROW(conversion_error("int8", "string"));
+  THROW(ConversionError("int8", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_string::operator int8_t() const
 {
-  THROW(conversion_error("string", "int8"));
+  THROW(ConversionError("string", "int8"));
 }
 
 // -----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ native_string::operator int8_t() const
 native_string&
 native_string::operator+() const
 {
-  THROW(invalid_operator_error("+", "string"));
+  THROW(InvalidOperatorError("+", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ native_string::operator+() const
 native_string&
 native_string::operator-() const
 {
-  THROW(invalid_operator_error("-", "string"));
+  THROW(InvalidOperatorError("-", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ native_string::operator-() const
 native_string&
 native_string::operator++() const
 {
-  THROW(invalid_operator_error("++", "string"));
+  THROW(InvalidOperatorError("++", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ native_string::operator++() const
 native_string&
 native_string::operator--() const
 {
-  THROW(invalid_operator_error("--", "string"));
+  THROW(InvalidOperatorError("--", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ native_string::operator--() const
 native_string&
 native_string::operator!() const
 {
-  THROW(invalid_operator_error("!", "string"));
+  THROW(InvalidOperatorError("!", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ native_string::operator!() const
 native_string&
 native_string::operator~() const
 {
-  THROW(invalid_operator_error("~", "string"));
+  THROW(InvalidOperatorError("~", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ native_string::operator~() const
 native_string&
 native_string::operator+(const native_string&) const
 {
-  THROW(invalid_operator_error("+", "string"));
+  THROW(InvalidOperatorError("+", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ native_string::operator+(const native_string&) const
 native_string&
 native_string::operator-(const native_string&) const
 {
-  THROW(invalid_operator_error("-", "string"));
+  THROW(InvalidOperatorError("-", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -161,7 +161,7 @@ native_string::operator-(const native_string&) const
 native_string&
 native_string::operator*(const native_string&) const
 {
-  THROW(invalid_operator_error("*", "string"));
+  THROW(InvalidOperatorError("*", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ native_string::operator*(const native_string&) const
 native_string&
 native_string::operator/(const native_string&) const
 {
-  THROW(invalid_operator_error("/", "string"));
+  THROW(InvalidOperatorError("/", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ native_string::operator/(const native_string&) const
 native_string&
 native_string::operator%(const native_string&) const
 {
-  THROW(invalid_operator_error("%", "string"));
+  THROW(InvalidOperatorError("%", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ native_string::operator%(const native_string&) const
 native_string&
 native_string::operator&&(const native_string&) const
 {
-  THROW(invalid_operator_error("&&", "string"));
+  THROW(InvalidOperatorError("&&", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -193,7 +193,7 @@ native_string::operator&&(const native_string&) const
 native_string&
 native_string::operator||(const native_string&) const
 {
-  THROW(invalid_operator_error("||", "string"));
+  THROW(InvalidOperatorError("||", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ native_string::operator||(const native_string&) const
 native_string&
 native_string::operator&(const native_string&) const
 {
-  THROW(invalid_operator_error("&", "string"));
+  THROW(InvalidOperatorError("&", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ native_string::operator&(const native_string&) const
 native_string&
 native_string::operator|(const native_string&) const
 {
-  THROW(invalid_operator_error("|", "string"));
+  THROW(InvalidOperatorError("|", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ native_string::operator|(const native_string&) const
 native_string&
 native_string::operator^(const native_string&) const
 {
-  THROW(invalid_operator_error("^", "string"));
+  THROW(InvalidOperatorError("^", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ native_string::operator^(const native_string&) const
 native_string&
 native_string::operator<<(const native_string&) const
 {
-  THROW(invalid_operator_error("<<", "string"));
+  THROW(InvalidOperatorError("<<", "string"));
 }
 
 // -----------------------------------------------------------------------------
@@ -233,14 +233,13 @@ native_string::operator<<(const native_string&) const
 native_string&
 native_string::operator>>(const native_string&) const
 {
-  THROW(invalid_operator_error(">>", "string"));
+  THROW(InvalidOperatorError(">>", "string"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_string::reference
-native_string::at(size_type n)
-  throw(out_of_range_error)
+native_string::at(size_type n) throw(OutOfRangeError)
 {
   try
   {
@@ -248,15 +247,14 @@ native_string::at(size_type n)
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_string::const_reference
-native_string::at(size_type n) const
-  throw(out_of_range_error)
+native_string::at(size_type n) const throw(OutOfRangeError)
 {
   try
   {
@@ -264,16 +262,15 @@ native_string::at(size_type n) const
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::insert(
-  size_type pos, const native_string& str)
-  throw(out_of_range_error)
+native_string::insert(size_type pos, const native_string& str)
+  throw(OutOfRangeError)
 {
   try
   {
@@ -282,7 +279,7 @@ native_string::insert(
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
@@ -290,7 +287,7 @@ native_string::insert(
 
 native_string&
 native_string::insert(size_type pos, size_type n, value_type c)
-  throw(out_of_range_error)
+  throw(OutOfRangeError)
 {
   try
   {
@@ -299,15 +296,14 @@ native_string::insert(size_type pos, size_type n, value_type c)
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::erase(size_type pos)
-  throw(out_of_range_error)
+native_string::erase(size_type pos) throw(OutOfRangeError)
 {
   try
   {
@@ -316,15 +312,14 @@ native_string::erase(size_type pos)
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::erase(size_type pos, size_type len)
-  throw(out_of_range_error)
+native_string::erase(size_type pos, size_type len) throw(OutOfRangeError)
 {
   try
   {
@@ -333,15 +328,15 @@ native_string::erase(size_type pos, size_type len)
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::replace(size_type pos, size_type len,
-  const native_string& str) throw(out_of_range_error)
+native_string::replace(size_type pos, size_type len, const native_string& str)
+  throw(OutOfRangeError)
 {
   try
   {
@@ -350,7 +345,7 @@ native_string::replace(size_type pos, size_type len,
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("String index out of range"));
+    THROW(OutOfRangeError("String index out of range"));
   }
 }
 

@@ -78,8 +78,7 @@ HeapAllocator<T, CoreAllocatorType>::HeapAllocator()
 // -----------------------------------------------------------------------------
 
 template<typename T, typename CoreAllocatorType>
-HeapAllocator<T, CoreAllocatorType>::HeapAllocator(
-  uint64_t total_size)
+HeapAllocator<T, CoreAllocatorType>::HeapAllocator(uint64_t total_size)
   :
   AllocationPolicyType(total_size)
 {

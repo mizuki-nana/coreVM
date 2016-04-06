@@ -168,7 +168,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestInvalidOperator)
         0
       );
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -556,7 +556,7 @@ TEST_F(NativeTypeInvalidBinaryOperatorInterfacesTest, TestInvalidOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::array();
   corevm::types::NativeTypeHandle rhs = corevm::types::map();
 
-  this->apply_binary_operator_and_assert_result<corevm::types::conversion_error>(
+  this->apply_binary_operator_and_assert_result<corevm::types::ConversionError>(
     lhs,
     rhs,
     corevm::types::interface_apply_addition_operator
@@ -961,7 +961,7 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithInvalidType)
     {
       auto result = corevm::types::interface_compute_slice(oprd1, oprd2, oprd3);
     },
-    corevm::types::runtime_error
+    corevm::types::RuntimeError
   );
 }
 
@@ -1231,7 +1231,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithInvalidTypeOperand)
     {
       auto result = corevm::types::interface_compute_reverse(oprd);
     },
-    corevm::types::runtime_error
+    corevm::types::RuntimeError
   );
 }
 
@@ -1330,7 +1330,7 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithInvalidFirstOperand)
     {
       auto result = corevm::types::interface_apply_rounding(oprd, oprd2);
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 

@@ -75,7 +75,7 @@ TEST_F(NativeArrayUnitTest, TestCopyConstructorOnIntegerType)
     {
       const corevm::types::native_array array = 123;
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -88,7 +88,7 @@ TEST_F(NativeArrayUnitTest, TestConvertingToIntegerType)
       int i = corevm::types::native_array();
       i++;
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -191,7 +191,7 @@ TEST_F(NativeArrayFunctionalityUnitTest, TestPushBack)
     {
       array.at(3);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -217,7 +217,7 @@ TEST_F(NativeArrayFunctionalityUnitTest, TestAtFailure)
     {
       array.at(100);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -248,7 +248,7 @@ TEST_F(NativeArrayFunctionalityUnitTest, TestEraseFailure)
     {
       array.erase(5);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -269,7 +269,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestPositiveOperator)
       const corevm::types::native_array array;
       +array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -282,7 +282,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestNegationOperator)
       const corevm::types::native_array array;
       -array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -295,7 +295,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestIncrementOperator)
       const corevm::types::native_array array;
       ++array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -308,7 +308,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestDecrementOperator)
       const corevm::types::native_array array;
       --array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -321,7 +321,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestLogicalNotOperator)
       const corevm::types::native_array array;
       !array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -334,7 +334,7 @@ TEST_F(NativeArrayUnaryOperatorUnitTest, TestBitwiseNotOperator)
       const corevm::types::native_array array;
       ~array;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -358,7 +358,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestAdditionOperator)
       const corevm::types::native_array array2;
       array1 + array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -372,7 +372,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestSubtractionOperator)
       const corevm::types::native_array array2;
       array1 - array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -386,7 +386,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestMultiplicationOperator)
       const corevm::types::native_array array2;
       array1 * array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -400,7 +400,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestDivisionOperator)
       const corevm::types::native_array array2;
       array1 / array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -414,7 +414,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestLogicalANDOperator)
       const corevm::types::native_array array2;
       array1 && array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -428,7 +428,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestLogicalOROperator)
       const corevm::types::native_array array2;
       array1 || array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -442,7 +442,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseANDOperator)
       const corevm::types::native_array array2;
       array1 & array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -456,7 +456,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseOROperator)
       const corevm::types::native_array array2;
       array1 | array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -470,7 +470,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseXOROperator)
       const corevm::types::native_array array2;
       array1 ^ array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -484,7 +484,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseLeftShiftOperator)
       const corevm::types::native_array array2;
       array1 << array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -498,7 +498,7 @@ TEST_F(NativeArrayBinaryOperatorUnitTest, TestBitwiseRightShiftOperator)
       const corevm::types::native_array array2;
       array1 >> array2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 

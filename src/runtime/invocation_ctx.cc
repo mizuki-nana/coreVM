@@ -39,8 +39,7 @@ const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
-InvocationCtx::InvocationCtx(
-  const runtime::ClosureCtx& ctx,
+InvocationCtx::InvocationCtx(const runtime::ClosureCtx& ctx,
   Compartment* compartment_ptr,
   Closure* closure_ptr)
   :
@@ -80,7 +79,7 @@ InvocationCtx::closure_ptr() const
 
 // -----------------------------------------------------------------------------
 
-const param_list_type&
+const InvocationCtx::param_list_type&
 InvocationCtx::params_list() const
 {
   return m_params_list;
@@ -88,7 +87,7 @@ InvocationCtx::params_list() const
 
 // -----------------------------------------------------------------------------
 
-const param_value_map_type&
+const InvocationCtx::param_value_map_type&
 InvocationCtx::param_value_map() const
 {
   return m_param_value_map;
@@ -113,8 +112,7 @@ InvocationCtx::put_param(const dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-InvocationCtx::pop_param()
-  throw(MissingParameterError)
+InvocationCtx::pop_param() throw(MissingParameterError)
 {
   if (m_params_list_pop_index >= m_params_list.size())
   {
@@ -153,8 +151,7 @@ InvocationCtx::put_param_value_pair(
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-InvocationCtx::pop_param_value_pair(
-  const variable_key& key)
+InvocationCtx::pop_param_value_pair(const variable_key& key)
   throw(MissingParameterError)
 {
   auto itr = m_param_value_map.find(key);

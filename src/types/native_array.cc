@@ -75,14 +75,14 @@ native_array::native_array(int8_t)
   :
   native_array_base()
 {
-  THROW(conversion_error("int8", "array"));
+  THROW(ConversionError("int8", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::operator int8_t() const
 {
-  THROW(conversion_error("array", "int8"));
+  THROW(ConversionError("array", "int8"));
 }
 
 // -----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ native_array::operator int8_t() const
 native_array&
 native_array::operator+() const
 {
-  THROW(invalid_operator_error("+", "array"));
+  THROW(InvalidOperatorError("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ native_array::operator+() const
 native_array&
 native_array::operator-() const
 {
-  THROW(invalid_operator_error("-", "array"));
+  THROW(InvalidOperatorError("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ native_array::operator-() const
 native_array&
 native_array::operator++() const
 {
-  THROW(invalid_operator_error("++", "array"));
+  THROW(InvalidOperatorError("++", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ native_array::operator++() const
 native_array&
 native_array::operator--() const
 {
-  THROW(invalid_operator_error("--", "array"));
+  THROW(InvalidOperatorError("--", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ native_array::operator--() const
 native_array&
 native_array::operator!() const
 {
-  THROW(invalid_operator_error("!", "array"));
+  THROW(InvalidOperatorError("!", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ native_array::operator!() const
 native_array&
 native_array::operator~() const
 {
-  THROW(invalid_operator_error("~", "array"));
+  THROW(InvalidOperatorError("~", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ native_array::operator~() const
 native_array&
 native_array::operator+(const native_array&) const
 {
-  THROW(invalid_operator_error("+", "array"));
+  THROW(InvalidOperatorError("+", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ native_array::operator+(const native_array&) const
 native_array&
 native_array::operator-(const native_array&) const
 {
-  THROW(invalid_operator_error("-", "array"));
+  THROW(InvalidOperatorError("-", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ native_array::operator-(const native_array&) const
 native_array&
 native_array::operator*(const native_array&) const
 {
-  THROW(invalid_operator_error("*", "array"));
+  THROW(InvalidOperatorError("*", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -162,7 +162,7 @@ native_array::operator*(const native_array&) const
 native_array&
 native_array::operator/(const native_array&) const
 {
-  THROW(invalid_operator_error("/", "array"));
+  THROW(InvalidOperatorError("/", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -170,7 +170,7 @@ native_array::operator/(const native_array&) const
 native_array&
 native_array::operator%(const native_array&) const
 {
-  THROW(invalid_operator_error("%", "array"));
+  THROW(InvalidOperatorError("%", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -178,7 +178,7 @@ native_array::operator%(const native_array&) const
 native_array&
 native_array::operator&&(const native_array&) const
 {
-  THROW(invalid_operator_error("&&", "array"));
+  THROW(InvalidOperatorError("&&", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -186,7 +186,7 @@ native_array::operator&&(const native_array&) const
 native_array&
 native_array::operator||(const native_array&) const
 {
-  THROW(invalid_operator_error("||", "array"));
+  THROW(InvalidOperatorError("||", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -194,7 +194,7 @@ native_array::operator||(const native_array&) const
 native_array&
 native_array::operator&(const native_array&) const
 {
-  THROW(invalid_operator_error("&", "array"));
+  THROW(InvalidOperatorError("&", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -202,7 +202,7 @@ native_array::operator&(const native_array&) const
 native_array&
 native_array::operator|(const native_array&) const
 {
-  THROW(invalid_operator_error("|", "array"));
+  THROW(InvalidOperatorError("|", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -210,7 +210,7 @@ native_array::operator|(const native_array&) const
 native_array&
 native_array::operator^(const native_array&) const
 {
-  THROW(invalid_operator_error("^", "array"));
+  THROW(InvalidOperatorError("^", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -218,7 +218,7 @@ native_array::operator^(const native_array&) const
 native_array&
 native_array::operator<<(const native_array&) const
 {
-  THROW(invalid_operator_error("<<", "array"));
+  THROW(InvalidOperatorError("<<", "array"));
 }
 
 // -----------------------------------------------------------------------------
@@ -226,14 +226,13 @@ native_array::operator<<(const native_array&) const
 native_array&
 native_array::operator>>(const native_array&) const
 {
-  THROW(invalid_operator_error(">>", "array"));
+  THROW(InvalidOperatorError(">>", "array"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::reference
-native_array::at(size_type n)
-  throw(out_of_range_error)
+native_array::at(size_type n) throw(OutOfRangeError)
 {
   try
   {
@@ -241,15 +240,14 @@ native_array::at(size_type n)
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("Array index out of range"));
+    THROW(OutOfRangeError("Array index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 native_array::const_reference
-native_array::at(size_type n) const
-  throw(out_of_range_error)
+native_array::at(size_type n) const throw(OutOfRangeError)
 {
   try
   {
@@ -257,19 +255,18 @@ native_array::at(size_type n) const
   }
   catch (const std::out_of_range&)
   {
-    THROW(out_of_range_error("Array index out of range"));
+    THROW(OutOfRangeError("Array index out of range"));
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-native_array::erase(size_t n)
-  throw (out_of_range_error)
+native_array::erase(size_t n) throw (OutOfRangeError)
 {
   if (n >= this->size())
   {
-    THROW(out_of_range_error("Array index out of range"));
+    THROW(OutOfRangeError("Array index out of range"));
   }
 
   auto itr = begin();

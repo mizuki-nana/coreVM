@@ -74,14 +74,14 @@ native_map::native_map(int8_t)
   :
   native_map_base()
 {
-  THROW(conversion_error("int8", "map"));
+  THROW(ConversionError("int8", "map"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_map::operator int8_t() const
 {
-  THROW(conversion_error("map", "int8"));
+  THROW(ConversionError("map", "int8"));
 }
 
 // -----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ native_map::operator int8_t() const
 native_map&
 native_map::operator+() const
 {
-  THROW(invalid_operator_error("+", "map"));
+  THROW(InvalidOperatorError("+", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ native_map::operator+() const
 native_map&
 native_map::operator-() const
 {
-  THROW(invalid_operator_error("-", "map"));
+  THROW(InvalidOperatorError("-", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -105,7 +105,7 @@ native_map::operator-() const
 native_map&
 native_map::operator++() const
 {
-  THROW(invalid_operator_error("++", "map"));
+  THROW(InvalidOperatorError("++", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ native_map::operator++() const
 native_map&
 native_map::operator--() const
 {
-  THROW(invalid_operator_error("--", "map"));
+  THROW(InvalidOperatorError("--", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ native_map::operator--() const
 native_map&
 native_map::operator!() const
 {
-  THROW(invalid_operator_error("!", "map"));
+  THROW(InvalidOperatorError("!", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ native_map::operator!() const
 native_map&
 native_map::operator~() const
 {
-  THROW(invalid_operator_error("~", "map"));
+  THROW(InvalidOperatorError("~", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ native_map::operator~() const
 native_map&
 native_map::operator+(const native_map&) const
 {
-  THROW(invalid_operator_error("+", "map"));
+  THROW(InvalidOperatorError("+", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ native_map::operator+(const native_map&) const
 native_map&
 native_map::operator-(const native_map&) const
 {
-  THROW(invalid_operator_error("-", "map"));
+  THROW(InvalidOperatorError("-", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ native_map::operator-(const native_map&) const
 native_map&
 native_map::operator*(const native_map&) const
 {
-  THROW(invalid_operator_error("*", "map"));
+  THROW(InvalidOperatorError("*", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -161,7 +161,7 @@ native_map::operator*(const native_map&) const
 native_map&
 native_map::operator/(const native_map&) const
 {
-  THROW(invalid_operator_error("/", "map"));
+  THROW(InvalidOperatorError("/", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -169,7 +169,7 @@ native_map::operator/(const native_map&) const
 native_map&
 native_map::operator%(const native_map&) const
 {
-  THROW(invalid_operator_error("%", "map"));
+  THROW(InvalidOperatorError("%", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ native_map::operator%(const native_map&) const
 native_map&
 native_map::operator&&(const native_map&) const
 {
-  THROW(invalid_operator_error("&&", "map"));
+  THROW(InvalidOperatorError("&&", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ native_map::operator&&(const native_map&) const
 native_map&
 native_map::operator||(const native_map&) const
 {
-  THROW(invalid_operator_error("||", "map"));
+  THROW(InvalidOperatorError("||", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -193,7 +193,7 @@ native_map::operator||(const native_map&) const
 native_map&
 native_map::operator&(const native_map&) const
 {
-  THROW(invalid_operator_error("&", "map"));
+  THROW(InvalidOperatorError("&", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -201,7 +201,7 @@ native_map::operator&(const native_map&) const
 native_map&
 native_map::operator|(const native_map&) const
 {
-  THROW(invalid_operator_error("|", "map"));
+  THROW(InvalidOperatorError("|", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -209,7 +209,7 @@ native_map::operator|(const native_map&) const
 native_map&
 native_map::operator^(const native_map&) const
 {
-  THROW(invalid_operator_error("^", "map"));
+  THROW(InvalidOperatorError("^", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ native_map::operator^(const native_map&) const
 native_map&
 native_map::operator<<(const native_map&) const
 {
-  THROW(invalid_operator_error("<<", "map"));
+  THROW(InvalidOperatorError("<<", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ native_map::operator<<(const native_map&) const
 native_map&
 native_map::operator>>(const native_map&) const
 {
-  THROW(invalid_operator_error(">>", "map"));
+  THROW(InvalidOperatorError(">>", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -233,7 +233,7 @@ native_map::operator>>(const native_map&) const
 native_map&
 native_map::operator<(const native_map&) const
 {
-  THROW(invalid_operator_error("<", "map"));
+  THROW(InvalidOperatorError("<", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ native_map::operator<(const native_map&) const
 native_map&
 native_map::operator<=(const native_map&) const
 {
-  THROW(invalid_operator_error("<=", "map"));
+  THROW(InvalidOperatorError("<=", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ native_map::operator<=(const native_map&) const
 native_map&
 native_map::operator>(const native_map&) const
 {
-  THROW(invalid_operator_error(">", "map"));
+  THROW(InvalidOperatorError(">", "map"));
 }
 
 // -----------------------------------------------------------------------------
@@ -257,14 +257,13 @@ native_map::operator>(const native_map&) const
 native_map&
 native_map::operator>=(const native_map&) const
 {
-  THROW(invalid_operator_error(">=", "map"));
+  THROW(InvalidOperatorError(">=", "map"));
 }
 
 // -----------------------------------------------------------------------------
 
 native_map::mapped_type&
-native_map::at(const key_type& k)
-  throw(out_of_range_error)
+native_map::at(const key_type& k) throw(OutOfRangeError)
 {
   return const_cast<mapped_type&>(
     static_cast<const native_map&>(*this).at(k));
@@ -273,14 +272,13 @@ native_map::at(const key_type& k)
 // -----------------------------------------------------------------------------
 
 const native_map::mapped_type&
-native_map::at(const key_type& k) const
-  throw(out_of_range_error)
+native_map::at(const key_type& k) const throw(OutOfRangeError)
 {
   auto itr = find(k);
 
   if (itr == end())
   {
-    THROW(out_of_range_error("Map key out of range"));
+    THROW(OutOfRangeError("Map key out of range"));
   }
 
   return itr->second;

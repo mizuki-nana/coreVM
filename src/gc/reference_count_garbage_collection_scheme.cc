@@ -194,7 +194,7 @@ RefCountGarbageCollectionScheme::resolve_self_reference_cycles(
 // -----------------------------------------------------------------------------
 
 template<typename dynamic_object_heap_type>
-struct object_graph_builder
+struct ObjectGraphBuilder
 {
 public:
   using dynamic_object_type = typename dynamic_object_heap_type::dynamic_object_type;
@@ -204,8 +204,7 @@ public:
   using neighbor_set_type = typename std::set<dyobj_id_type>;
 
 public:
-  object_graph_builder(
-    vertices_map_type& vertices_map,
+  ObjectGraphBuilder(vertices_map_type& vertices_map,
     neighbor_set_type& non_garbage_collectible_neighbors)
     :
     m_non_garbage_collectible_neighbors(non_garbage_collectible_neighbors),
@@ -259,7 +258,7 @@ private:
   neighbor_set_type& m_non_garbage_collectible_neighbors;
   vertices_map_type& m_vertices_map;
 
-}; /* end of `object_graph_builder` */
+}; /* end of `ObjectGraphBuilder` */
 
 // -----------------------------------------------------------------------------
 
@@ -270,7 +269,7 @@ RefCountGarbageCollectionScheme::remove_cycles(
   using _dynamic_object_heap_type = typename
     RefCountGarbageCollectionScheme::dynamic_object_heap_type;
 
-  typedef object_graph_builder<_dynamic_object_heap_type> object_graph_builder_type;
+  typedef ObjectGraphBuilder<_dynamic_object_heap_type> object_graph_builder_type;
 
   using vertex_type = typename object_graph_builder_type::vertex_type;
   using dyobj_id_type = typename object_graph_builder_type::dyobj_id_type;

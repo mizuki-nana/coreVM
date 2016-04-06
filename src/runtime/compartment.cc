@@ -53,8 +53,7 @@ Compartment::path() const
 // -----------------------------------------------------------------------------
 
 void
-Compartment::set_encoding_map(
-  const EncodingMap& encoding_map)
+Compartment::set_encoding_map(const EncodingMap& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -62,8 +61,7 @@ Compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 void
-Compartment::set_encoding_map(
-  const EncodingMap&& encoding_map)
+Compartment::set_encoding_map(const EncodingMap&& encoding_map)
 {
   m_encoding_map = encoding_map;
 }
@@ -71,8 +69,7 @@ Compartment::set_encoding_map(
 // -----------------------------------------------------------------------------
 
 std::string
-Compartment::get_encoding_string(
-  encoding_key key) const
+Compartment::get_encoding_string(encoding_key key) const
   throw(EncodingStringNotFoundError)
 {
   if (key >= m_encoding_map.size())
@@ -86,8 +83,7 @@ Compartment::get_encoding_string(
 // -----------------------------------------------------------------------------
 
 void
-Compartment::get_encoding_string(
-  encoding_key key, std::string* str) const
+Compartment::get_encoding_string(encoding_key key, std::string* str) const
 {
   if (!str)
   {
@@ -111,8 +107,7 @@ Compartment::closure_count() const
 // -----------------------------------------------------------------------------
 
 void
-Compartment::set_closure_table(
-  const ClosureTable&& closure_table)
+Compartment::set_closure_table(const ClosureTable&& closure_table)
 {
   m_closure_table = closure_table;
 }
@@ -120,8 +115,7 @@ Compartment::set_closure_table(
 // -----------------------------------------------------------------------------
 
 const Closure
-Compartment::get_closure_by_id(closure_id id)
-  const throw(ClosureNotFoundError)
+Compartment::get_closure_by_id(closure_id id) const throw(ClosureNotFoundError)
 {
   if (id < static_cast<closure_id>(m_closure_table.size()))
   {
@@ -134,8 +128,7 @@ Compartment::get_closure_by_id(closure_id id)
 // -----------------------------------------------------------------------------
 
 void
-Compartment::get_closure_by_id(
-  closure_id id, Closure** closure_ptr)
+Compartment::get_closure_by_id(closure_id id, Closure** closure_ptr)
 {
   if (id < static_cast<closure_id>(m_closure_table.size()))
   {
@@ -146,8 +139,7 @@ Compartment::get_closure_by_id(
 // -----------------------------------------------------------------------------
 
 bool
-Compartment::get_starting_closure(
-  Closure** closure)
+Compartment::get_starting_closure(Closure** closure)
 {
   for (size_t i = 0; i < m_closure_table.size(); ++i)
   {

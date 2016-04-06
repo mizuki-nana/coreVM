@@ -101,11 +101,11 @@ public:
 
   native_array& operator>>(const native_array&) const;
 
-  reference at(size_type n) throw(out_of_range_error);
+  reference at(size_type n) throw(OutOfRangeError);
 
-  const_reference at(size_type n) const throw(out_of_range_error);
+  const_reference at(size_type n) const throw(OutOfRangeError);
 
-  void erase(size_type n) throw(out_of_range_error);
+  void erase(size_type n) throw(OutOfRangeError);
 };
 
 

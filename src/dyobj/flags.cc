@@ -34,7 +34,7 @@ namespace dyobj {
 bool
 is_valid_flag_bit(char bit)
 {
-  return (0 < bit) && (static_cast<flags>(bit) < DYOBJ_MAX_VALUE);
+  return (0 < bit) && (static_cast<DynamicObjectFlagBits>(bit) < DYOBJ_MAX_VALUE);
 }
 
 // -----------------------------------------------------------------------------

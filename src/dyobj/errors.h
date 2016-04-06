@@ -38,39 +38,44 @@ namespace corevm {
 namespace dyobj {
 
 
-class runtime_error : public corevm::runtime_error
+// -----------------------------------------------------------------------------
+
+class RuntimeError : public corevm::RuntimeError
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
-    corevm::runtime_error(what_arg)
+  explicit RuntimeError(const std::string& what_arg)
+    :
+    corevm::RuntimeError(what_arg)
   {
   }
 
-  explicit runtime_error(const char* what_arg):
-    corevm::runtime_error(what_arg)
+  explicit RuntimeError(const char* what_arg)
+    :
+    corevm::RuntimeError(what_arg)
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class ObjectNotFoundError : public corevm::dyobj::runtime_error
+class ObjectNotFoundError : public dyobj::RuntimeError
 {
 public:
-  explicit ObjectNotFoundError(const std::string& what_arg):
-    corevm::dyobj::runtime_error(what_arg)
+  explicit ObjectNotFoundError(const std::string& what_arg)
+    :
+    dyobj::RuntimeError(what_arg)
   {
   }
 
-  explicit ObjectNotFoundError(const char* what_arg):
-    corevm::dyobj::runtime_error(what_arg)
+  explicit ObjectNotFoundError(const char* what_arg)
+    :
+    dyobj::RuntimeError(what_arg)
   {
   }
 
-  explicit ObjectNotFoundError(corevm::dyobj::dyobj_id id_):
-    corevm::dyobj::runtime_error(
-      str(boost::format("Object %#x not found") % id_)
-    ),
+  explicit ObjectNotFoundError(corevm::dyobj::dyobj_id id_)
+    :
+    dyobj::RuntimeError(str(boost::format("Object %#x not found") % id_)),
     id(id_)
   {
   }
@@ -80,23 +85,24 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectAttributeNotFoundError : public corevm::dyobj::runtime_error
+class ObjectAttributeNotFoundError : public dyobj::RuntimeError
 {
 public:
-  explicit ObjectAttributeNotFoundError(const std::string& what_arg):
-    corevm::dyobj::runtime_error(what_arg)
-  {
-  }
-
-  explicit ObjectAttributeNotFoundError(const char* what_arg):
-    corevm::dyobj::runtime_error(what_arg)
-  {
-  }
-
-  ObjectAttributeNotFoundError(
-    attr_key attr_key_, dyobj_id id_)
+  explicit ObjectAttributeNotFoundError(const std::string& what_arg)
     :
-    corevm::dyobj::runtime_error(
+    dyobj::RuntimeError(what_arg)
+  {
+  }
+
+  explicit ObjectAttributeNotFoundError(const char* what_arg)
+    :
+    dyobj::RuntimeError(what_arg)
+  {
+  }
+
+  ObjectAttributeNotFoundError(attr_key attr_key_, dyobj_id id_)
+    :
+    dyobj::RuntimeError(
       str(boost::format(
         "Attribute %#x in object %#x not found") % attr_key_ % id_)),
     attr_key(attr_key_),
@@ -107,7 +113,7 @@ public:
   ObjectAttributeNotFoundError(attr_key attr_key_,
     dyobj_id id_, const std::string& attr_name)
     :
-    corevm::dyobj::runtime_error(
+    dyobj::RuntimeError(
       str(boost::format(
         "Attribute '%s' in object %#x not found") % attr_name % id_)),
     attr_key(attr_key_),
@@ -121,22 +127,24 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectCreationError : public corevm::dyobj::runtime_error
+class ObjectCreationError : public dyobj::RuntimeError
 {
 public:
-  explicit ObjectCreationError():
-    corevm::dyobj::runtime_error("Failed to create dynamic object")
+  explicit ObjectCreationError()
+    :
+    dyobj::RuntimeError("Failed to create dynamic object")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvalidFlagBitError : public corevm::dyobj::runtime_error
+class InvalidFlagBitError : public dyobj::RuntimeError
 {
 public:
-  explicit InvalidFlagBitError():
-    corevm::dyobj::runtime_error("Invalid flag bit provided")
+  explicit InvalidFlagBitError()
+    :
+    dyobj::RuntimeError("Invalid flag bit provided")
   {
   }
 };

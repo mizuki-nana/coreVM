@@ -179,7 +179,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestEraseOnInvalidIndex)
     {
       corevm::types::interface_array_erase(operand, index);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 

@@ -119,9 +119,9 @@ public:
 private:
   void check_flag_bit(char) const throw(InvalidFlagBitError);
 
-  struct attr_key_pred
+  struct AttributeKeyPred
   {
-    explicit attr_key_pred(attr_key key)
+    explicit AttributeKeyPred(attr_key key)
       :
       m_key(key)
     {
@@ -136,9 +136,9 @@ private:
     attr_key m_key;
   };
 
-  struct attr_value_pred
+  struct AttributeValuePred
   {
-    explicit attr_value_pred(dyobj_id value)
+    explicit AttributeValuePred(dyobj_id value)
       :
       m_value(value)
     {
@@ -172,7 +172,8 @@ static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-DynamicObject<DynamicObjectManager>::DynamicObject():
+DynamicObject<DynamicObjectManager>::DynamicObject()
+  :
   m_id(0u),
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
@@ -363,7 +364,7 @@ bool
 DynamicObject<DynamicObjectManager>::is_garbage_collectible() const noexcept
 {
   return (
-    get_flag(flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) == false &&
+    get_flag(DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE) == false &&
     m_manager.garbage_collectible()
   );
 }
@@ -384,7 +385,7 @@ bool
 DynamicObject<DynamicObjectManager>::hasattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const noexcept
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
   return itr != m_attrs.end();
 }
 
@@ -396,7 +397,7 @@ DynamicObject<DynamicObjectManager>::delattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key)
   throw(ObjectAttributeNotFoundError)
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
   if (itr == m_attrs.end())
   {
     THROW(ObjectAttributeNotFoundError(attr_key, id()));
@@ -431,7 +432,9 @@ DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
   dyobj_id_type* attr_id) const
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
+    AttributeKeyPred(attr_key));
+
   bool res = itr != m_attrs.end();
 
   if (res)
@@ -450,7 +453,9 @@ DynamicObject<DynamicObjectManager>::putattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
   DynamicObject<DynamicObjectManager>::dyobj_id_type obj_id) noexcept
 {
-  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), attr_key_pred(attr_key));
+  auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
+    AttributeKeyPred(attr_key));
+
   if (itr == m_attrs.end())
   {
     m_attrs.emplace_back(attr_key, obj_id);
@@ -486,7 +491,7 @@ template<class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::has_ref(dyobj_id_type id) const noexcept
 {
-  return std::find_if(cbegin(), cend(), attr_value_pred(id)) != cend();
+  return std::find_if(cbegin(), cend(), AttributeValuePred(id)) != cend();
 }
 
 // -----------------------------------------------------------------------------
@@ -496,9 +501,7 @@ template<typename Function>
 void
 DynamicObject<DynamicObjectManager>::iterate(Function func) noexcept
 {
-  std::for_each(
-    begin(),
-    end(),
+  std::for_each(begin(), end(),
     [&func](DynamicObject<DynamicObjectManager>::attr_key_value_pair& pair) {
       func(
         static_cast<DynamicObject<DynamicObjectManager>::attr_key_type>(pair.first),

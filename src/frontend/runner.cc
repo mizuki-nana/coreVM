@@ -59,9 +59,7 @@ print_stack_trace()
 
 // -----------------------------------------------------------------------------
 
-Runner::Runner(
-  const std::string& path,
-  Configuration& configuration)
+Runner::Runner(const std::string& path, Configuration& configuration)
   :
   m_path(path),
   m_configuration(configuration)
@@ -116,7 +114,7 @@ Runner::run() const noexcept
       return -1;
     }
   }
-  catch (const corevm::runtime_error& ex)
+  catch (const corevm::RuntimeError& ex)
   {
     std::cerr << "Runtime error: " << ex.what() << std::endl;
     std::cerr << "Abort" << std::endl;

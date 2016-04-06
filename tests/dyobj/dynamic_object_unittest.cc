@@ -58,8 +58,8 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
 
   ASSERT_EQ(0, obj.flags());
 
-  char flag1 = corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
-  char flag2 = corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE;
+  char flag1 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
+  char flag2 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE;
 
   ASSERT_FALSE(obj.get_flag(flag1));
   ASSERT_FALSE(obj.get_flag(flag2));
@@ -76,7 +76,7 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
   ASSERT_FALSE(obj.get_flag(flag1));
   ASSERT_FALSE(obj.get_flag(flag2));
 
-  char invalid_flag = corevm::dyobj::flags::DYOBJ_MAX_VALUE;
+  char invalid_flag = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_MAX_VALUE;
 
   ASSERT_THROW(
     {
@@ -286,8 +286,8 @@ TEST_F(DynamicObjectUnitTest, TestCopyFrom)
   obj.putattr(key2, attr_id2);
   obj.putattr(key3, attr_id3);
 
-  char flag1 = corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
-  char flag2 = corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE;
+  char flag1 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
+  char flag2 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE;
 
   obj.set_flag(flag1);
   obj.set_flag(flag2);

@@ -63,12 +63,9 @@ class Compartment;
 class Frame
 {
 public:
-  Frame(const ClosureCtx&,
-    Compartment*, Closure*);
+  Frame(const ClosureCtx&, Compartment*, Closure*);
 
-  Frame(const ClosureCtx&,
-    Compartment*,
-    Closure*, instr_addr);
+  Frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
 
   ~Frame();
 

@@ -117,7 +117,7 @@ TEST_F(NativeStringUnitTest, TestCopyConstructorOnIntegerType)
     {
       const corevm::types::native_string str = 123;
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -130,7 +130,7 @@ TEST_F(NativeStringUnitTest, TestConvertingToIntegerType)
       int i = corevm::types::native_string("123");
       i++;
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -232,7 +232,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestPositiveOperator)
       const corevm::types::native_string str("123");
       +str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -245,7 +245,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestNegationOperator)
       const corevm::types::native_string str("123");
       -str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -258,7 +258,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestIncrementOperator)
       const corevm::types::native_string str("123");
       ++str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -271,7 +271,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestDecrementOperator)
       const corevm::types::native_string str("123");
       --str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -284,7 +284,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestLogicalNotOperator)
       const corevm::types::native_string str("123");
       !str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -297,7 +297,7 @@ TEST_F(NativeStringUnaryOperatorUnitTest, TestBitwiseNotOperator)
       const corevm::types::native_string str("123");
       ~str;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -321,7 +321,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestAdditionOperator)
       const corevm::types::native_string str2("world!");
       str1 + str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -335,7 +335,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestSubtractionOperator)
       const corevm::types::native_string str2("world!");
       str1 - str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -349,7 +349,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestMultiplicationOperator)
       const corevm::types::native_string str2("world!");
       str1 * str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -363,7 +363,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestDivisionOperator)
       const corevm::types::native_string str2("world!");
       str1 / str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -377,7 +377,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestLogicalANDOperator)
       const corevm::types::native_string str2("world!");
       str1 && str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -391,7 +391,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestLogicalOROperator)
       const corevm::types::native_string str2("world!");
       str1 || str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -405,7 +405,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseANDOperator)
       const corevm::types::native_string str2("world!");
       str1 & str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -419,7 +419,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseOROperator)
       const corevm::types::native_string str2("world!");
       str1 | str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -433,7 +433,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseXOROperator)
       const corevm::types::native_string str2("world!");
       str1 ^ str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -447,7 +447,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseLeftShiftOperator)
       const corevm::types::native_string str2("world!");
       str1 << str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -461,7 +461,7 @@ TEST_F(NativeStringBinaryOperatorUnitTest, TestBitwiseRightShiftOperator)
       const corevm::types::native_string str2("world!");
       str1 >> str2;
     },
-    corevm::types::invalid_operator_error
+    corevm::types::InvalidOperatorError
   );
 }
 
@@ -569,7 +569,7 @@ TEST_F(NativeStringFunctionalityUnitTest, TestAtFailure)
     {
       str.at(100);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -597,7 +597,7 @@ TEST_F(NativeStringFunctionalityUnitTest, TestInsertFailure)
     {
       str1.insert(100, str2);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -623,7 +623,7 @@ TEST_F(NativeStringFunctionalityUnitTest, TestEraseFailure)
     {
       str.erase(100);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 
@@ -651,7 +651,7 @@ TEST_F(NativeStringFunctionalityUnitTest, TestReplaceFailure)
     {
       str1.replace(100, 1, str2);
     },
-    corevm::types::out_of_range_error
+    corevm::types::OutOfRangeError
   );
 }
 

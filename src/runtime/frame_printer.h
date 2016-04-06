@@ -43,8 +43,7 @@ public:
   std::ostream& operator()(std::ostream&) const;
 private:
   template<typename V>
-  void print_variables(std::ostream&,
-    const Compartment*, const V& vars) const;
+  void print_variables(std::ostream&, const Compartment*, const V& vars) const;
 
   const Frame& m_frame;
   const uint32_t m_opts;

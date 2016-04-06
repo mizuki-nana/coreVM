@@ -38,7 +38,7 @@ namespace dyobj {
  * These flag bits are defined so that the default value of 0 would be the
  * appropriate value for most objects.
  */
-enum flags : uint32_t
+enum DynamicObjectFlagBits : uint32_t
 {
 
   /* ------------ Bits that pertain to the lifespan of objects -------------- */

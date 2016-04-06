@@ -58,12 +58,10 @@ public:
 
   size_t closure_count() const;
 
-  const Closure
-    get_closure_by_id(closure_id) const
+  const Closure get_closure_by_id(closure_id) const
     throw(ClosureNotFoundError);
 
-  void get_closure_by_id(
-    closure_id, Closure** closure);
+  void get_closure_by_id(closure_id, Closure** closure);
 
   void set_closure_table(const ClosureTable&&);
 

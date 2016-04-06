@@ -151,8 +151,7 @@ SignalVectorLoader::schema() const
 
 // -----------------------------------------------------------------------------
 
-SignalVectorLoader::SignalVectorLoader(
-  const std::string& path)
+SignalVectorLoader::SignalVectorLoader(const std::string& path)
   :
   m_path(path)
 {
@@ -162,8 +161,7 @@ SignalVectorLoader::SignalVectorLoader(
 // -----------------------------------------------------------------------------
 
 void
-SignalVectorLoader::load(runtime::Process& process)
-  throw(FileLoadingError)
+SignalVectorLoader::load(runtime::Process& process) throw(FileLoadingError)
 {
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;

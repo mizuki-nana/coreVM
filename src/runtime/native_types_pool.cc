@@ -120,8 +120,7 @@ NativeTypesPool::at(const dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-NativeTypesPool::create()
-  throw(NativeTypeHandleInsertionError)
+NativeTypesPool::create() throw(NativeTypeHandleInsertionError)
 {
   auto ptr = m_container.create();
 

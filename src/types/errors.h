@@ -36,38 +36,43 @@ namespace corevm {
 namespace types {
 
 
-class runtime_error : public corevm::runtime_error
+// -----------------------------------------------------------------------------
+
+class RuntimeError : public corevm::RuntimeError
 {
 public:
-  explicit runtime_error(const std::string& what_arg):
-    corevm::runtime_error(what_arg)
+  explicit RuntimeError(const std::string& what_arg)
+    :
+    corevm::RuntimeError(what_arg)
   {
   }
 
-  explicit runtime_error(const char* what_arg):
-    corevm::runtime_error(what_arg)
+  explicit RuntimeError(const char* what_arg)
+    :
+    corevm::RuntimeError(what_arg)
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class conversion_error : public corevm::types::runtime_error
+class ConversionError : public corevm::types::RuntimeError
 {
 public:
-  explicit conversion_error(const std::string& src_type_, const std::string& dst_type_):
-    corevm::types::runtime_error(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)
-    ),
+  explicit ConversionError(const std::string& src_type_,
+    const std::string& dst_type_)
+    :
+    corevm::types::RuntimeError(
+      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
     src_type(src_type_),
     dst_type(dst_type_)
   {
   }
 
-  explicit conversion_error(const char* src_type_, const char* dst_type_):
-    corevm::types::runtime_error(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)
-    ),
+  explicit ConversionError(const char* src_type_, const char* dst_type_)
+    :
+    corevm::types::RuntimeError(
+      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
     src_type(src_type_),
     dst_type(dst_type_)
   {
@@ -79,22 +84,22 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class invalid_operator_error : public corevm::types::runtime_error
+class InvalidOperatorError : public corevm::types::RuntimeError
 {
 public:
-  explicit invalid_operator_error(const std::string& op_, const std::string& type_):
-    corevm::types::runtime_error(
-      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)
-    ),
+  explicit InvalidOperatorError(const std::string& op_, const std::string& type_)
+    :
+    corevm::types::RuntimeError(
+      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)),
     op(op_),
     type(type_)
   {
   }
 
-  explicit invalid_operator_error(const char* op_, const char* type_):
-    corevm::types::runtime_error(
-      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)
-    ),
+  explicit InvalidOperatorError(const char* op_, const char* type_)
+    :
+    corevm::types::RuntimeError(
+      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)),
     op(op_),
     type(type_)
   {
@@ -106,14 +111,18 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class out_of_range_error : public corevm::types::runtime_error
+class OutOfRangeError : public corevm::types::RuntimeError
 {
 public:
-  explicit out_of_range_error(const std::string& what_arg): corevm::types::runtime_error(what_arg)
+  explicit OutOfRangeError(const std::string& what_arg)
+    :
+    types::RuntimeError(what_arg)
   {
   }
 
-  explicit out_of_range_error(const char* what_arg): corevm::types::runtime_error(what_arg)
+  explicit OutOfRangeError(const char* what_arg)
+    :
+    types::RuntimeError(what_arg)
   {
   }
 };

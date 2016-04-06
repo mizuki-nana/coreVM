@@ -1306,7 +1306,7 @@ protected:
   }
 
   template<class InstrHandlerCls>
-  void execute_instr_and_assert_result(const corevm::dyobj::flags flag)
+  void execute_instr_and_assert_result(const corevm::dyobj::DynamicObjectFlagBits flag)
   {
     execute_instr_with_toggle_on<InstrHandlerCls>(flag);
     execute_instr_with_toggle_off<InstrHandlerCls>(flag);
@@ -1314,14 +1314,14 @@ protected:
 
 private:
   template<class InstrHandlerCls>
-  void execute_instr_with_toggle_on(const corevm::dyobj::flags flag)
+  void execute_instr_with_toggle_on(const corevm::dyobj::DynamicObjectFlagBits flag)
   {
     corevm::runtime::Instr instr(0, 1, 0);
     _execute_and_assert_result<InstrHandlerCls>(instr, flag);
   }
 
   template<class InstrHandlerCls>
-  void execute_instr_with_toggle_off(const corevm::dyobj::flags flag)
+  void execute_instr_with_toggle_off(const corevm::dyobj::DynamicObjectFlagBits flag)
   {
     corevm::runtime::Instr instr(0, 0, 0);
     _execute_and_assert_result<InstrHandlerCls>(instr, flag);
@@ -1329,7 +1329,7 @@ private:
 
   template<class InstrHandlerCls>
   void _execute_and_assert_result(
-    const corevm::runtime::Instr& instr, const corevm::dyobj::flags flag)
+    const corevm::runtime::Instr& instr, const corevm::dyobj::DynamicObjectFlagBits flag)
   {
     execute_instr<InstrHandlerCls>(instr);
 
@@ -1347,7 +1347,7 @@ private:
 TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLGC)
 {
   execute_instr_and_assert_result<corevm::runtime::instr_handler_setflgc>(
-    corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+    corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -1355,7 +1355,7 @@ TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLGC)
 TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLDEL)
 {
   execute_instr_and_assert_result<corevm::runtime::instr_handler_setfldel>(
-    corevm::dyobj::flags::DYOBJ_IS_INDELIBLE);
+    corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -1363,7 +1363,7 @@ TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLDEL)
 TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLCALL)
 {
   execute_instr_and_assert_result<corevm::runtime::instr_handler_setflcall>(
-    corevm::dyobj::flags::DYOBJ_IS_NON_CALLABLE);
+    corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -1371,7 +1371,7 @@ TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLCALL)
 TEST_F(InstrsObjFlagUnitTest, TestInstrSETFLMUTE)
 {
   execute_instr_and_assert_result<corevm::runtime::instr_handler_setflmute>(
-    corevm::dyobj::flags::DYOBJ_IS_IMMUTABLE);
+    corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE);
 }
 
 // -----------------------------------------------------------------------------
@@ -2772,7 +2772,7 @@ TEST_F(InstrsNativeTypeConversionInstrsTest, TestInstr2STR)
     {
       test();
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -2793,7 +2793,7 @@ TEST_F(InstrsNativeTypeConversionInstrsTest, TestInstr2ARY)
     {
       test();
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
@@ -2814,7 +2814,7 @@ TEST_F(InstrsNativeTypeConversionInstrsTest, TestInstr2MAP)
     {
       test();
     },
-    corevm::types::conversion_error
+    corevm::types::ConversionError
   );
 }
 
