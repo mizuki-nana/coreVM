@@ -161,7 +161,7 @@ SignalVectorLoader::SignalVectorLoader(const std::string& path)
 // -----------------------------------------------------------------------------
 
 void
-SignalVectorLoader::load(runtime::Process& process) throw(FileLoadingError)
+SignalVectorLoader::load(runtime::Process& process)
 {
   std::ifstream f(m_path, std::ios::binary);
   std::stringstream buffer;

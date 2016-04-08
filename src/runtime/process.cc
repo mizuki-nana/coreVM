@@ -280,7 +280,6 @@ Process::has_frame() const
 
 Frame&
 Process::top_frame()
-  throw(FrameNotFoundError)
 {
   if (m_call_stack.empty())
   {
@@ -301,7 +300,7 @@ Process::top_frame(Frame** frame_ptr)
 // -----------------------------------------------------------------------------
 
 Frame&
-Process::top_nth_frame(size_t n) throw(FrameNotFoundError)
+Process::top_nth_frame(size_t n)
 {
   if (n >= m_call_stack.size())
   {
@@ -314,7 +313,7 @@ Process::top_nth_frame(size_t n) throw(FrameNotFoundError)
 // -----------------------------------------------------------------------------
 
 void
-Process::pop_frame() throw(FrameNotFoundError)
+Process::pop_frame()
 {
   Frame& frame = this->top_frame();
 
@@ -444,7 +443,7 @@ Process::stack_size() const
 // -----------------------------------------------------------------------------
 
 InvocationCtx&
-Process::top_invocation_ctx() throw(InvocationCtxNotFoundError)
+Process::top_invocation_ctx()
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -503,7 +502,7 @@ Process::emplace_invocation_ctx(const ClosureCtx& ctx,
 // -----------------------------------------------------------------------------
 
 void
-Process::pop_invocation_ctx() throw(InvocationCtxNotFoundError)
+Process::pop_invocation_ctx()
 {
   if (m_invocation_ctx_stack.empty())
   {
@@ -516,7 +515,7 @@ Process::pop_invocation_ctx() throw(InvocationCtxNotFoundError)
 // -----------------------------------------------------------------------------
 
 const dyobj::dyobj_id&
-Process::top_stack() throw(ObjectStackEmptyError)
+Process::top_stack()
 {
   if (m_dyobj_stack.empty())
   {
@@ -546,7 +545,7 @@ Process::push_stack(dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-Process::pop_stack() throw(ObjectStackEmptyError)
+Process::pop_stack()
 {
   if (m_dyobj_stack.empty())
   {
@@ -626,7 +625,7 @@ Process::has_ntvhndl(dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 types::NativeTypeHandle&
-Process::get_ntvhndl(dyobj::ntvhndl_key key) throw(NativeTypeHandleNotFoundError)
+Process::get_ntvhndl(dyobj::ntvhndl_key key)
 {
   return m_ntvhndl_pool.at(key);
 }
@@ -635,7 +634,6 @@ Process::get_ntvhndl(dyobj::ntvhndl_key key) throw(NativeTypeHandleNotFoundError
 
 dyobj::ntvhndl_key
 Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
-  throw(NativeTypeHandleInsertionError)
 {
   return m_ntvhndl_pool.create(hndl);
 }
@@ -643,7 +641,7 @@ Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
 // -----------------------------------------------------------------------------
 
 void
-Process::erase_ntvhndl(dyobj::ntvhndl_key key) throw(NativeTypeHandleDeletionError)
+Process::erase_ntvhndl(dyobj::ntvhndl_key key)
 {
   if (key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -870,7 +868,7 @@ Process::pc() const
 // -----------------------------------------------------------------------------
 
 void
-Process::set_pc(const instr_addr addr) throw(InvalidInstrAddrError)
+Process::set_pc(const instr_addr addr)
 {
   if ( (uint64_t)addr >= m_instrs.size() )
   {

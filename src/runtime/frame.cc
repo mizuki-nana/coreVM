@@ -130,7 +130,7 @@ Frame::push_eval_stack(types::NativeTypeHandle&& operand)
 // -----------------------------------------------------------------------------
 
 types::NativeTypeHandle
-Frame::pop_eval_stack() throw(EvaluationStackEmptyError)
+Frame::pop_eval_stack()
 {
   if (m_eval_stack.empty())
   {
@@ -145,7 +145,7 @@ Frame::pop_eval_stack() throw(EvaluationStackEmptyError)
 // -----------------------------------------------------------------------------
 
 types::NativeTypeHandle&
-Frame::top_eval_stack() throw(EvaluationStackEmptyError)
+Frame::top_eval_stack()
 {
   if (m_eval_stack.empty())
   {
@@ -209,7 +209,6 @@ Frame::has_visible_var(const variable_key var_key) const
 
 dyobj::dyobj_id
 Frame::get_visible_var(const variable_key var_key) const
-  throw(NameNotFoundError)
 {
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
@@ -240,7 +239,7 @@ Frame::get_visible_var_fast(const variable_key var_key,
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-Frame::pop_visible_var(const variable_key var_key) throw(NameNotFoundError)
+Frame::pop_visible_var(const variable_key var_key)
 {
   dyobj::dyobj_id obj_id = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
@@ -275,7 +274,6 @@ Frame::has_invisible_var(const variable_key var_key) const
 
 dyobj::dyobj_id
 Frame::get_invisible_var(const variable_key var_key) const
-  throw(NameNotFoundError)
 {
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
@@ -305,7 +303,7 @@ Frame::get_invisible_var_fast(const variable_key var_key, dyobj::dyobj_id* id) c
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-Frame::pop_invisible_var(const variable_key var_key) throw(NameNotFoundError)
+Frame::pop_invisible_var(const variable_key var_key)
 {
   dyobj::dyobj_id obj_id = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);

@@ -97,11 +97,9 @@ public:
 
   void putattr(attr_key_type, dyobj_id_type) noexcept;
 
-  void delattr(attr_key_type)
-    throw(ObjectAttributeNotFoundError);
+  void delattr(attr_key_type);
 
-  dyobj_id_type getattr(attr_key_type) const
-    throw(ObjectAttributeNotFoundError);
+  dyobj_id_type getattr(attr_key_type) const;
 
   bool getattr(attr_key_type, dyobj_id_type*) const;
 
@@ -117,7 +115,7 @@ public:
   void copy_from(const DynamicObject<DynamicObjectManager>&);
 
 private:
-  void check_flag_bit(char) const throw(InvalidFlagBitError);
+  void check_flag_bit(char) const;
 
   struct AttributeKeyPred
   {
@@ -319,7 +317,6 @@ DynamicObject<DynamicObjectManager>::clear_ntvhndl_key() noexcept
 template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::check_flag_bit(char bit) const
-  throw(InvalidFlagBitError)
 {
   if (!is_valid_flag_bit(bit))
   {
@@ -395,7 +392,6 @@ template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::delattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key)
-  throw(ObjectAttributeNotFoundError)
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(), AttributeKeyPred(attr_key));
   if (itr == m_attrs.end())
@@ -411,7 +407,6 @@ template<class DynamicObjectManager>
 dyobj_id
 DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const
-  throw(ObjectAttributeNotFoundError)
 {
   dyobj_id attr_id = 0;
 

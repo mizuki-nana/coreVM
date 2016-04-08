@@ -263,7 +263,7 @@ native_map::operator>=(const native_map&) const
 // -----------------------------------------------------------------------------
 
 native_map::mapped_type&
-native_map::at(const key_type& k) throw(OutOfRangeError)
+native_map::at(const key_type& k)
 {
   return const_cast<mapped_type&>(
     static_cast<const native_map&>(*this).at(k));
@@ -272,7 +272,7 @@ native_map::at(const key_type& k) throw(OutOfRangeError)
 // -----------------------------------------------------------------------------
 
 const native_map::mapped_type&
-native_map::at(const key_type& k) const throw(OutOfRangeError)
+native_map::at(const key_type& k) const
 {
   auto itr = find(k);
 

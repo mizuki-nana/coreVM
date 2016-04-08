@@ -99,22 +99,19 @@ public:
 
   native_string& operator>>(const native_string&) const;
 
-  reference at(size_type n) throw(OutOfRangeError);
+  reference at(size_type n);
 
-  const_reference at(size_type n) const throw(OutOfRangeError);
+  const_reference at(size_type n) const;
 
-  native_string& insert(size_type pos, const native_string& str)
-    throw(OutOfRangeError);
+  native_string& insert(size_type pos, const native_string& str);
 
-  native_string& insert(size_type pos, size_type n, value_type c)
-    throw(OutOfRangeError);
+  native_string& insert(size_type pos, size_type n, value_type c);
 
-  native_string& erase(size_type pos) throw(OutOfRangeError);
+  native_string& erase(size_type pos);
 
-  native_string& erase(size_type pos, size_type len) throw(OutOfRangeError);
+  native_string& erase(size_type pos, size_type len);
 
-  native_string& replace(size_type pos, size_type len, const native_string& str)
-    throw(OutOfRangeError);
+  native_string& replace(size_type pos, size_type len, const native_string& str);
 };
 
 

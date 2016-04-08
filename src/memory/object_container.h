@@ -93,8 +93,8 @@ public:
   pointer operator[](pointer);
   const_pointer operator[](const_pointer) const;
 
-  pointer at(pointer) throw(corevm::memory::InvalidAddressError);
-  const_pointer at(const_pointer) const throw(corevm::memory::InvalidAddressError);
+  pointer at(pointer);
+  const_pointer at(const_pointer) const;
 
   void destroy(pointer);
 
@@ -294,7 +294,6 @@ ObjectContainer<T, AllocatorType>::operator[](const_pointer p) const
 template<typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::pointer
 ObjectContainer<T, AllocatorType>::at(pointer p)
-  throw(corevm::memory::InvalidAddressError)
 {
   if (!check_ptr(p))
   {
@@ -309,7 +308,6 @@ ObjectContainer<T, AllocatorType>::at(pointer p)
 template<typename T, typename AllocatorType>
 typename ObjectContainer<T, AllocatorType>::const_pointer
 ObjectContainer<T, AllocatorType>::at(const_pointer p) const
-  throw(corevm::memory::InvalidAddressError)
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {

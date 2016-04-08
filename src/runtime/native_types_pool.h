@@ -98,17 +98,13 @@ public:
 
   size_type total_size() const;
 
-  reference at(const dyobj::ntvhndl_key&)
-    throw(NativeTypeHandleNotFoundError);
+  reference at(const dyobj::ntvhndl_key&);
 
-  dyobj::ntvhndl_key create()
-    throw(NativeTypeHandleInsertionError);
+  dyobj::ntvhndl_key create();
 
-  dyobj::ntvhndl_key create(types::NativeTypeHandle& hndl)
-    throw(NativeTypeHandleInsertionError);
+  dyobj::ntvhndl_key create(types::NativeTypeHandle& hndl);
 
-  void erase(const dyobj::ntvhndl_key&)
-    throw(NativeTypeHandleNotFoundError);
+  void erase(const dyobj::ntvhndl_key&);
 
   friend std::ostream& operator<<(std::ostream&, const NativeTypesPool&);
 

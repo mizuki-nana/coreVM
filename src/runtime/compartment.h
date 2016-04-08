@@ -51,15 +51,13 @@ public:
 
   void set_encoding_map(const EncodingMap&&);
 
-  std::string get_encoding_string(encoding_key) const
-    throw(EncodingStringNotFoundError);
+  std::string get_encoding_string(encoding_key) const;
 
   void get_encoding_string(encoding_key, std::string*) const;
 
   size_t closure_count() const;
 
-  const Closure get_closure_by_id(closure_id) const
-    throw(ClosureNotFoundError);
+  const Closure get_closure_by_id(closure_id) const;
 
   void get_closure_by_id(closure_id, Closure** closure);
 

@@ -232,7 +232,7 @@ native_array::operator>>(const native_array&) const
 // -----------------------------------------------------------------------------
 
 native_array::reference
-native_array::at(size_type n) throw(OutOfRangeError)
+native_array::at(size_type n)
 {
   try
   {
@@ -247,7 +247,7 @@ native_array::at(size_type n) throw(OutOfRangeError)
 // -----------------------------------------------------------------------------
 
 native_array::const_reference
-native_array::at(size_type n) const throw(OutOfRangeError)
+native_array::at(size_type n) const
 {
   try
   {
@@ -262,7 +262,7 @@ native_array::at(size_type n) const throw(OutOfRangeError)
 // -----------------------------------------------------------------------------
 
 void
-native_array::erase(size_t n) throw (OutOfRangeError)
+native_array::erase(size_t n)
 {
   if (n >= this->size())
   {

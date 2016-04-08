@@ -68,8 +68,7 @@ public:
 
   void put_param(const dyobj::dyobj_id&);
 
-  dyobj::dyobj_id pop_param()
-    throw(MissingParameterError);
+  dyobj::dyobj_id pop_param();
 
   bool has_param_value_pairs() const;
 
@@ -78,8 +77,7 @@ public:
   void put_param_value_pair(
     const variable_key&, const dyobj::dyobj_id&);
 
-  dyobj::dyobj_id pop_param_value_pair(const variable_key&)
-    throw(MissingParameterError);
+  dyobj::dyobj_id pop_param_value_pair(const variable_key&);
 
   std::vector<variable_key> param_value_pair_keys() const;
 

@@ -102,14 +102,11 @@ public:
   template<typename Function>
   void iterate(Function) noexcept;
 
-  dynamic_object_type& at(const dynamic_object_id_type)
-    throw(ObjectNotFoundError);
+  dynamic_object_type& at(const dynamic_object_id_type);
 
-  dynamic_object_id_type create_dyobj()
-    throw(ObjectCreationError);
+  dynamic_object_id_type create_dyobj();
 
-  dynamic_object_type* create_dyobjs(size_t n)
-    throw(ObjectCreationError);
+  dynamic_object_type* create_dyobjs(size_t n);
 
 private:
   dynamic_object_container_type m_container;
@@ -266,7 +263,6 @@ template<class DynamicObjectManager>
 typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type&
 DynamicObjectHeap<DynamicObjectManager>::at(
   const DynamicObjectHeap<DynamicObjectManager>::dynamic_object_id_type id)
-  throw(ObjectNotFoundError)
 {
   void* raw_ptr = obj_id_to_ptr(id);
   dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
@@ -286,7 +282,6 @@ DynamicObjectHeap<DynamicObjectManager>::at(
 template<class DynamicObjectManager>
 typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_id_type
 DynamicObjectHeap<DynamicObjectManager>::create_dyobj()
-  throw(ObjectCreationError)
 {
   auto obj_ptr = m_container.create();
 
@@ -307,7 +302,6 @@ DynamicObjectHeap<DynamicObjectManager>::create_dyobj()
 template<class DynamicObjectManager>
 typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type*
 DynamicObjectHeap<DynamicObjectManager>::create_dyobjs(size_t n)
-  throw(ObjectCreationError)
 {
   auto ptr = m_container.create(n);
 

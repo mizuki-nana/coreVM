@@ -45,8 +45,7 @@ class Configuration
 public:
   Configuration();
 
-  static Configuration load_config(const std::string&)
-    throw(ConfigurationLoadingError);
+  static Configuration load_config(const std::string&);
 
 public:
   /* Value accessors. */

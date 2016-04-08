@@ -70,7 +70,6 @@ Compartment::set_encoding_map(const EncodingMap&& encoding_map)
 
 std::string
 Compartment::get_encoding_string(encoding_key key) const
-  throw(EncodingStringNotFoundError)
 {
   if (key >= m_encoding_map.size())
   {
@@ -115,7 +114,7 @@ Compartment::set_closure_table(const ClosureTable&& closure_table)
 // -----------------------------------------------------------------------------
 
 const Closure
-Compartment::get_closure_by_id(closure_id id) const throw(ClosureNotFoundError)
+Compartment::get_closure_by_id(closure_id id) const
 {
   if (id < static_cast<closure_id>(m_closure_table.size()))
   {

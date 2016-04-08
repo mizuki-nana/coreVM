@@ -113,7 +113,7 @@ public:
 
   bool has_frame() const;
 
-  Frame& top_frame() throw(FrameNotFoundError);
+  Frame& top_frame();
 
   /**
    * Gets the top frame, only when the call stack is not empty.
@@ -125,7 +125,7 @@ public:
    * Gets the `n`th frame from the top of the call stack.
    * A value of 0 means the top frame.
    */
-  Frame& top_nth_frame(size_t n) throw(FrameNotFoundError);
+  Frame& top_nth_frame(size_t n);
 
   void push_frame(Frame&);
 
@@ -133,13 +133,13 @@ public:
 
   void emplace_frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
 
-  void pop_frame() throw(FrameNotFoundError);
+  void pop_frame();
 
   void pop_frame_safe();
 
   uint64_t stack_size() const;
 
-  InvocationCtx& top_invocation_ctx() throw(InvocationCtxNotFoundError);
+  InvocationCtx& top_invocation_ctx();
 
   /**
    * Gets the top invocation context, only when the invocation stack
@@ -152,11 +152,11 @@ public:
 
   void emplace_invocation_ctx(const ClosureCtx&, Compartment*, Closure*);
 
-  void pop_invocation_ctx() throw(InvocationCtxNotFoundError);
+  void pop_invocation_ctx();
 
-  const dyobj::dyobj_id& top_stack() throw(ObjectStackEmptyError);
+  const dyobj::dyobj_id& top_stack();
 
-  dyobj::dyobj_id pop_stack() throw(ObjectStackEmptyError);
+  dyobj::dyobj_id pop_stack();
 
   void swap_stack();
 
@@ -164,17 +164,15 @@ public:
 
   bool has_ntvhndl(dyobj::ntvhndl_key&);
 
-  types::NativeTypeHandle& get_ntvhndl(dyobj::ntvhndl_key)
-    throw(NativeTypeHandleNotFoundError);
+  types::NativeTypeHandle& get_ntvhndl(dyobj::ntvhndl_key);
 
-  dyobj::ntvhndl_key insert_ntvhndl(types::NativeTypeHandle&)
-    throw(NativeTypeHandleInsertionError);
+  dyobj::ntvhndl_key insert_ntvhndl(types::NativeTypeHandle&);
 
-  void erase_ntvhndl(dyobj::ntvhndl_key) throw(NativeTypeHandleDeletionError);
+  void erase_ntvhndl(dyobj::ntvhndl_key);
 
   instr_addr pc() const;
 
-  void set_pc(const instr_addr) throw(InvalidInstrAddrError);
+  void set_pc(const instr_addr);
 
   void append_vector(const vector&);
 

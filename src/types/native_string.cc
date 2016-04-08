@@ -239,7 +239,7 @@ native_string::operator>>(const native_string&) const
 // -----------------------------------------------------------------------------
 
 native_string::reference
-native_string::at(size_type n) throw(OutOfRangeError)
+native_string::at(size_type n)
 {
   try
   {
@@ -254,7 +254,7 @@ native_string::at(size_type n) throw(OutOfRangeError)
 // -----------------------------------------------------------------------------
 
 native_string::const_reference
-native_string::at(size_type n) const throw(OutOfRangeError)
+native_string::at(size_type n) const
 {
   try
   {
@@ -270,7 +270,6 @@ native_string::at(size_type n) const throw(OutOfRangeError)
 
 native_string&
 native_string::insert(size_type pos, const native_string& str)
-  throw(OutOfRangeError)
 {
   try
   {
@@ -287,7 +286,6 @@ native_string::insert(size_type pos, const native_string& str)
 
 native_string&
 native_string::insert(size_type pos, size_type n, value_type c)
-  throw(OutOfRangeError)
 {
   try
   {
@@ -303,7 +301,7 @@ native_string::insert(size_type pos, size_type n, value_type c)
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::erase(size_type pos) throw(OutOfRangeError)
+native_string::erase(size_type pos)
 {
   try
   {
@@ -319,7 +317,7 @@ native_string::erase(size_type pos) throw(OutOfRangeError)
 // -----------------------------------------------------------------------------
 
 native_string&
-native_string::erase(size_type pos, size_type len) throw(OutOfRangeError)
+native_string::erase(size_type pos, size_type len)
 {
   try
   {
@@ -336,7 +334,6 @@ native_string::erase(size_type pos, size_type len) throw(OutOfRangeError)
 
 native_string&
 native_string::replace(size_type pos, size_type len, const native_string& str)
-  throw(OutOfRangeError)
 {
   try
   {

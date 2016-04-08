@@ -79,11 +79,9 @@ public:
 
   void push_eval_stack(types::NativeTypeHandle&&);
 
-  types::NativeTypeHandle pop_eval_stack()
-    throw(EvaluationStackEmptyError);
+  types::NativeTypeHandle pop_eval_stack();
 
-  types::NativeTypeHandle& top_eval_stack()
-    throw(EvaluationStackEmptyError);
+  types::NativeTypeHandle& top_eval_stack();
 
   void swap_eval_stack();
 
@@ -95,14 +93,12 @@ public:
 
   bool has_visible_var(const variable_key) const;
 
-  dyobj::dyobj_id get_visible_var(const variable_key)
-    const throw(NameNotFoundError);
+  dyobj::dyobj_id get_visible_var(const variable_key) const;
 
   bool get_visible_var_fast(
     const variable_key, dyobj::dyobj_id*) const;
 
-  dyobj::dyobj_id pop_visible_var(const variable_key)
-    throw(NameNotFoundError);
+  dyobj::dyobj_id pop_visible_var(const variable_key);
 
   void set_visible_var(variable_key, dyobj::dyobj_id);
 
@@ -110,14 +106,12 @@ public:
 
   bool has_invisible_var(const variable_key) const;
 
-  dyobj::dyobj_id get_invisible_var(const variable_key)
-    const throw(NameNotFoundError);
+  dyobj::dyobj_id get_invisible_var(const variable_key) const;
 
   bool get_invisible_var_fast(
     const variable_key, dyobj::dyobj_id*) const;
 
-  dyobj::dyobj_id pop_invisible_var(const variable_key)
-    throw(NameNotFoundError);
+  dyobj::dyobj_id pop_invisible_var(const variable_key);
 
   void set_invisible_var(variable_key, dyobj::dyobj_id);
 

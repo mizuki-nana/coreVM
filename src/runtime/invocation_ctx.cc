@@ -112,7 +112,7 @@ InvocationCtx::put_param(const dyobj::dyobj_id& id)
 // -----------------------------------------------------------------------------
 
 dyobj::dyobj_id
-InvocationCtx::pop_param() throw(MissingParameterError)
+InvocationCtx::pop_param()
 {
   if (m_params_list_pop_index >= m_params_list.size())
   {
@@ -152,7 +152,6 @@ InvocationCtx::put_param_value_pair(
 
 dyobj::dyobj_id
 InvocationCtx::pop_param_value_pair(const variable_key& key)
-  throw(MissingParameterError)
 {
   auto itr = m_param_value_map.find(key);
 

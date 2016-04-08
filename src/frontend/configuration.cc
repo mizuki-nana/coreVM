@@ -145,7 +145,6 @@ Configuration::set_gc_flag(uint8_t gc_flag)
 
 Configuration
 Configuration::load_config(const std::string& path)
-  throw(ConfigurationLoadingError)
 {
   std::ifstream fs(path, std::ios::binary);
   std::stringstream buffer;

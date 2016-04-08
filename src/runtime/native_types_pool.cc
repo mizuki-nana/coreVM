@@ -102,7 +102,6 @@ NativeTypesPool::total_size() const
 
 _MyType::reference
 NativeTypesPool::at(const dyobj::ntvhndl_key& key)
-  throw(NativeTypeHandleNotFoundError)
 {
   void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
@@ -120,7 +119,7 @@ NativeTypesPool::at(const dyobj::ntvhndl_key& key)
 // -----------------------------------------------------------------------------
 
 dyobj::ntvhndl_key
-NativeTypesPool::create() throw(NativeTypeHandleInsertionError)
+NativeTypesPool::create()
 {
   auto ptr = m_container.create();
 
@@ -137,7 +136,6 @@ NativeTypesPool::create() throw(NativeTypeHandleInsertionError)
 
 dyobj::ntvhndl_key
 NativeTypesPool::create(types::NativeTypeHandle& hndl)
-  throw(NativeTypeHandleInsertionError)
 {
   auto ptr = m_container.create(hndl);
 
@@ -154,7 +152,6 @@ NativeTypesPool::create(types::NativeTypeHandle& hndl)
 
 void
 NativeTypesPool::erase(const dyobj::ntvhndl_key& key)
-  throw(NativeTypeHandleNotFoundError)
 {
   void* raw_ptr = ntvhndl_key_to_ptr(key);
   _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
