@@ -129,7 +129,7 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
   // require copying the underlying container elements, in this case
   // `dynamic_object_type`, which does not support explicit copy semantics.
 
-  std::vector<dyobj::dyobj_id> objs_to_delete;
+  std::vector<dynamic_object_type*> objs_to_delete;
   objs_to_delete.reserve(m_heap.size());
 
   for (auto itr = m_heap.begin(); itr != m_heap.end(); ++itr)
@@ -138,7 +138,7 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
 
     if (obj.is_garbage_collectible())
     {
-      objs_to_delete.push_back(obj.id());
+      objs_to_delete.push_back(&obj);
 
       if (f)
       {
@@ -147,9 +147,9 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
     }
   }
 
-  for (const auto& dyobj_id: objs_to_delete)
+  for (const auto obj : objs_to_delete)
   {
-    m_heap.erase(dyobj_id);
+    m_heap.erase(obj);
   }
 }
 

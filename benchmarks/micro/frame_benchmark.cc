@@ -99,9 +99,9 @@ void BenchmarkGetVisibleVariable1(benchmark::State& state)
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = 2;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
-  frame.set_visible_var(key, id);
+  frame.set_visible_var(key, &obj);
 
   while (state.KeepRunning())
   {
@@ -133,11 +133,11 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
   frame2.set_parent(&frame3);
 
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = 2;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
-  frame1.set_visible_var(key + 1, id);
-  frame2.set_visible_var(key + 2, id);
-  frame3.set_visible_var(key, id);
+  frame1.set_visible_var(key + 1, &obj);
+  frame2.set_visible_var(key + 2, &obj);
+  frame3.set_visible_var(key, &obj);
 
   while (state.KeepRunning())
   {

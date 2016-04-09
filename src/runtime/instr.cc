@@ -542,9 +542,9 @@ instr_handler_new::execute(
   const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  auto id = process.create_dyobj();
+  auto obj = process.create_dyobj();
 
-  process.push_stack(id);
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -557,9 +557,9 @@ instr_handler_ldobj::execute(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id id = 0;
+  Process::dyobj_ptr obj = NULL;
 
-  while (!frame->get_visible_var_fast(key, &id))
+  while (!frame->get_visible_var_fast(key, &obj))
   {
     frame = frame->parent();
 
@@ -570,10 +570,10 @@ instr_handler_ldobj::execute(const Instr& instr, Process& process,
   }
 
 #if __DEBUG__
-  ASSERT(id);
+  ASSERT(obj);
 #endif
 
-  process.push_stack(id);
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -584,14 +584,13 @@ instr_handler_stobj::execute(const Instr& instr, Process& process,
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  Frame* frame= *frame_ptr;
+  Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id id = process.pop_stack();
+  auto obj = process.pop_stack();
 
-  auto& obj = process.get_dyobj(id);
-  obj.manager().on_setattr();
+  obj->manager().on_setattr();
 
-  frame->set_visible_var(key, id);
+  frame->set_visible_var(key, obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -605,12 +604,11 @@ instr_handler_stobjn::execute(const Instr& instr, Process& process,
 
   Frame& frame = process.top_nth_frame(n);
 
-  dyobj::dyobj_id id = process.pop_stack();
+  auto obj = process.pop_stack();
 
-  auto& obj = process.get_dyobj(id);
-  obj.manager().on_setattr();
+  obj->manager().on_setattr();
 
-  frame.set_visible_var(key, id);
+  frame.set_visible_var(key, obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -622,13 +620,11 @@ instr_handler_getattr::execute(const Instr& instr, Process& process,
   auto str_key = static_cast<encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
 
-  dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.pop_stack();
 
-  dyobj::dyobj_id attr_id = getattr(
-    obj, frame->compartment_ptr(), str_key);
+  auto attr_obj = getattr(obj, frame->compartment_ptr(), str_key);
 
-  process.push_stack(attr_id);
+  process.push_stack(attr_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -639,23 +635,19 @@ instr_handler_setattr::execute(const Instr& instr, Process& process,
 {
   auto str_key = static_cast<encoding_key>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key attr_key = get_attr_key(
-    frame->compartment_ptr(), str_key);
+  dyobj::attr_key attr_key = get_attr_key(frame->compartment_ptr(), str_key);
 
-  dyobj::dyobj_id attr_id= process.pop_stack();
-  dyobj::dyobj_id target_id = process.top_stack();
+  auto attr_obj = process.pop_stack();
+  auto target_obj = process.top_stack();
 
-  auto &obj = process.get_dyobj(target_id);
-
-  if (obj.get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
+  if (target_obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
   {
     THROW(InvalidOperationError(
-      str(format("cannot mutate immutable object 0x%08x") % target_id)));
+      str(format("cannot mutate immutable object 0x%08x") % target_obj->id())));
   }
 
-  auto &attr_obj = process.get_dyobj(attr_id);
-  obj.putattr(attr_key, attr_id);
-  attr_obj.manager().on_setattr();
+  target_obj->putattr(attr_key, attr_obj);
+  attr_obj->manager().on_setattr();
 }
 
 // -----------------------------------------------------------------------------
@@ -666,21 +658,19 @@ instr_handler_delattr::execute(const Instr& instr, Process& process,
 {
   dyobj::attr_key attr_key = static_cast<dyobj::attr_key>(instr.oprd1);
 
-  dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.pop_stack();
 
-  if (obj.get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
+  if (obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
   {
     THROW(InvalidOperationError(
-      str(format("cannot mutate immutable object 0x%08x") % id)));
+      str(format("cannot mutate immutable object 0x%08x") % obj->id())));
   }
 
-  dyobj::dyobj_id attr_id = obj.getattr(attr_key);
-  auto &attr_obj = process.get_dyobj(attr_id);
-  attr_obj.manager().on_delattr();
-  obj.delattr(attr_key);
+  auto attr_obj = obj->getattr(attr_key);
+  attr_obj->manager().on_delattr();
+  obj->delattr(attr_key);
 
-  process.push_stack(id);
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -689,8 +679,7 @@ void
 instr_handler_hasattr2::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   const auto frame = *frame_ptr;
   types::NativeTypeHandle hndl = frame->top_eval_stack();
@@ -700,7 +689,7 @@ instr_handler_hasattr2::execute(const Instr& /* instr */, Process& process,
 
   dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
 
-  const bool res_value = obj.hasattr(attr_key);
+  const bool res_value = obj->hasattr(attr_key);
 
   types::NativeTypeHandle res( (types::boolean(res_value)) );
 
@@ -713,8 +702,7 @@ void
 instr_handler_getattr2::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.pop_stack();
 
   const auto frame = *frame_ptr;
   types::NativeTypeHandle hndl = frame->top_eval_stack();
@@ -722,9 +710,9 @@ instr_handler_getattr2::execute(const Instr& /* instr */, Process& process,
   auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
-  dyobj::dyobj_id attr_id = getattr(obj, attr_str_value);
+  auto attr_obj = getattr(obj, attr_str_value);
 
-  process.push_stack(attr_id);
+  process.push_stack(attr_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -733,10 +721,8 @@ void
 instr_handler_setattr2::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id attr_value = process.pop_stack();
-
-  dyobj::dyobj_id target_obj_id = process.top_stack();
-  auto &target_obj = process.get_dyobj(target_obj_id);
+  auto attr_obj = process.pop_stack();
+  auto target_obj = process.top_stack();
 
   const auto frame = *frame_ptr;
   types::NativeTypeHandle hndl = frame->top_eval_stack();
@@ -746,10 +732,9 @@ instr_handler_setattr2::execute(const Instr& /* instr */, Process& process,
 
   dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
 
-  target_obj.putattr(attr_key, attr_value);
+  target_obj->putattr(attr_key, attr_obj);
 
-  auto& attr_obj = process.get_dyobj(attr_value);
-  attr_obj.manager().on_setattr();
+  attr_obj->manager().on_setattr();
 }
 
 // -----------------------------------------------------------------------------
@@ -758,8 +743,7 @@ void
 instr_handler_delattr2::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   const auto frame = *frame_ptr;
   types::NativeTypeHandle hndl = frame->top_eval_stack();
@@ -769,7 +753,7 @@ instr_handler_delattr2::execute(const Instr& /* instr */, Process& process,
 
   dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
 
-  obj.delattr(attr_key);
+  obj->delattr(attr_key);
 }
 
 // -----------------------------------------------------------------------------
@@ -791,9 +775,9 @@ instr_handler_ldobj2::execute(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id id = 0;
+  Process::dyobj_ptr obj = 0;
 
-  while (!frame->get_invisible_var_fast(key, &id))
+  while (!frame->get_invisible_var_fast(key, &obj))
   {
     frame = frame->parent();
 
@@ -804,10 +788,10 @@ instr_handler_ldobj2::execute(const Instr& instr, Process& process,
   }
 
 #if __DEBUG__
-  ASSERT(id);
+  ASSERT(obj);
 #endif
 
-  process.push_stack(id);
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -819,49 +803,47 @@ instr_handler_stobj2::execute(const Instr& instr, Process& process,
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
-  dyobj::dyobj_id id = process.pop_stack();
+  auto obj = process.pop_stack();
 
-  frame->set_invisible_var(key, id);
+  frame->set_invisible_var(key, obj);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delobj::execute(const Instr& instr, Process& process,
+instr_handler_delobj::execute(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
   Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id id = frame->pop_visible_var(key);
-  auto &obj = process.get_dyobj(id);
+  auto obj = frame->pop_visible_var(key);
 
-  if (obj.get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE))
+  if (obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE))
   {
-    THROW(ObjectDeletionError(id));
+    THROW(ObjectDeletionError(obj->id()));
   }
 
-  obj.manager().on_delete();
+  obj->manager().on_delete();
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delobj2::execute(const Instr& instr, Process& process,
+instr_handler_delobj2::execute(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
   Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id id = frame->pop_invisible_var(key);
-  auto &obj = process.get_dyobj(id);
+  auto obj = frame->pop_invisible_var(key);
 
-  if (obj.get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE))
+  if (obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE))
   {
-    THROW(ObjectDeletionError(id));
+    THROW(ObjectDeletionError(obj->id()));
   }
 
-  obj.manager().on_delete();
+  obj->manager().on_delete();
 }
 
 // -----------------------------------------------------------------------------
@@ -871,10 +853,9 @@ instr_handler_gethndl::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -896,16 +877,15 @@ instr_handler_sethndl::execute(const Instr& /* instr */, Process& process,
 
   types::NativeTypeHandle hndl(std::move(frame->pop_eval_stack()));
 
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key key = obj->ntvhndl_key();
 
   if (key == dyobj::NONESET_NTVHNDL_KEY)
   {
     dyobj::ntvhndl_key new_ntvhndl_key = process.insert_ntvhndl(hndl);
 
-    obj.set_ntvhndl_key(new_ntvhndl_key);
+    obj->set_ntvhndl_key(new_ntvhndl_key);
   }
   else
   {
@@ -922,10 +902,9 @@ instr_handler_gethndl2::execute(const Instr& instr, Process& process,
   Frame* frame = *frame_ptr;
   variable_key key = static_cast<variable_key>(instr.oprd1);
 
-  auto id = frame->get_visible_var(key);
-  auto &obj = process.get_dyobj(id);
+  auto obj = frame->get_visible_var(key);
 
-  dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -943,10 +922,9 @@ void
 instr_handler_clrhndl::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -954,7 +932,7 @@ instr_handler_clrhndl::execute(const Instr& /* instr */, Process& process,
   }
 
   process.erase_ntvhndl(ntvhndl_key);
-  obj.clear_ntvhndl_key();
+  obj->clear_ntvhndl_key();
 }
 
 // -----------------------------------------------------------------------------
@@ -963,13 +941,10 @@ void
 instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id src_obj_id= process.pop_stack();
-  dyobj::dyobj_id target_obj_id = process.pop_stack();
+  auto src_obj = process.pop_stack();
+  auto target_obj = process.pop_stack();
 
-  auto &src_obj = process.get_dyobj(src_obj_id);
-  auto &target_obj = process.get_dyobj(target_obj_id);
-
-  dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = src_obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -1059,7 +1034,7 @@ instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
   }
 
   auto new_key = process.insert_ntvhndl(res);
-  target_obj.set_ntvhndl_key(new_key);
+  target_obj->set_ntvhndl_key(new_key);
 }
 
 // -----------------------------------------------------------------------------
@@ -1068,13 +1043,10 @@ void
 instr_handler_cpyrepr::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id src_obj_id= process.pop_stack();
-  dyobj::dyobj_id target_obj_id = process.pop_stack();
+  Process::dyobj_ptr src_obj = process.pop_stack();
+  Process::dyobj_ptr target_obj = process.pop_stack();
 
-  auto &src_obj = process.get_dyobj(src_obj_id);
-  auto &target_obj = process.get_dyobj(target_obj_id);
-
-  dyobj::ntvhndl_key ntvhndl_key = src_obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = src_obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -1086,7 +1058,7 @@ instr_handler_cpyrepr::execute(const Instr& /* instr */, Process& process,
     types::interface_compute_repr_value(hndl);
 
   auto new_key = process.insert_ntvhndl(res);
-  target_obj.set_ntvhndl_key(new_key);
+  target_obj->set_ntvhndl_key(new_key);
 }
 
 // -----------------------------------------------------------------------------
@@ -1097,10 +1069,9 @@ instr_handler_istruthy::execute(const Instr& /* instr */, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id obj_id= process.top_stack();
-  auto &obj = process.get_dyobj(obj_id);
+  auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -1121,10 +1092,10 @@ void
 instr_handler_objeq::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id1 = process.pop_stack();
-  dyobj::dyobj_id id2 = process.pop_stack();
+  auto obj1 = process.pop_stack();
+  auto obj2 = process.pop_stack();
 
-  types::NativeTypeHandle hndl(types::boolean(id1 == id2));
+  types::NativeTypeHandle hndl(types::boolean(obj1 == obj2));
 
   Frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
@@ -1136,10 +1107,10 @@ void
 instr_handler_objneq::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id1 = process.pop_stack();
-  dyobj::dyobj_id id2 = process.pop_stack();
+  auto obj1 = process.pop_stack();
+  auto obj2 = process.pop_stack();
 
-  types::NativeTypeHandle hndl(types::boolean(id1 != id2));
+  types::NativeTypeHandle hndl(types::boolean(obj1 != obj2));
 
   Frame* frame = *frame_ptr;
   frame->push_eval_stack(std::move(hndl));
@@ -1151,17 +1122,14 @@ void
 instr_handler_setctx::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   Frame* frame = *frame_ptr;
   ClosureCtx frame_cls = frame->closure_ctx();
 
-  ClosureCtx ctx(
-    frame_cls.compartment_id,
-    static_cast<closure_id>(instr.oprd1));
+  ClosureCtx ctx(frame_cls.compartment_id, static_cast<closure_id>(instr.oprd1));
 
-  obj.set_closure_ctx(ctx);
+  obj->set_closure_ctx(ctx);
 }
 
 // -----------------------------------------------------------------------------
@@ -1181,9 +1149,9 @@ instr_handler_cldobj::execute(const Instr& instr, Process& process,
 
   variable_key key = value ? key1 : key2;
 
-  dyobj::dyobj_id id = 0;
+  Process::dyobj_ptr obj = NULL;
 
-  while (!frame->get_visible_var_fast(key, &id))
+  while (!frame->get_visible_var_fast(key, &obj))
   {
     frame = frame->parent();
 
@@ -1194,10 +1162,10 @@ instr_handler_cldobj::execute(const Instr& instr, Process& process,
   }
 
 #if __DEBUG__
-  ASSERT(id);
+  ASSERT(obj);
 #endif
 
-  process.push_stack(id);
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1206,25 +1174,22 @@ void
 instr_handler_setattrs::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id src_id = process.pop_stack();
-  auto& src_obj = process.get_dyobj(src_id);
+  auto src_obj = process.pop_stack();
 
-  dyobj::dyobj_id id = process.top_stack();
-  auto& obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(src_obj.ntvhndl_key());
+  types::NativeTypeHandle& hndl = process.get_ntvhndl(src_obj->ntvhndl_key());
   types::NativeTypeHandle res = hndl;
 
-  types::native_map map = types::get_value_from_handle<
-    types::native_map>(res);
+  types::native_map map = types::get_value_from_handle<types::native_map>(res);
 
   // If we should clone each mapped object before setting it.
   bool should_clone = static_cast<bool>(instr.oprd1);
   bool should_override_map_values = static_cast<bool>(instr.oprd2);
 
-  auto compartment_id = src_obj.closure_ctx().compartment_id;
+  auto compartment_id = src_obj->closure_ctx().compartment_id;
 
   Compartment* compartment = nullptr;
   process.get_compartment(compartment_id, &compartment);
@@ -1246,22 +1211,21 @@ instr_handler_setattrs::execute(const Instr& instr, Process& process,
 
     if (should_clone)
     {
-      auto cloned_attr_id = process.create_dyobj();
-      auto& cloned_attr_obj = process.get_dyobj(cloned_attr_id);
+      auto cloned_attr_obj = process.create_dyobj();
 
-      cloned_attr_obj.copy_from(attr_obj);
-      cloned_attr_obj.manager().on_setattr();
-      obj.putattr(attr_key, cloned_attr_id);
+      cloned_attr_obj->copy_from(attr_obj);
+      cloned_attr_obj->manager().on_setattr();
+      obj->putattr(attr_key, cloned_attr_obj);
 
       if (should_override_map_values)
       {
-        itr->second = static_cast<types::native_map_mapped_type>(cloned_attr_id);
+        itr->second = static_cast<types::native_map_mapped_type>(cloned_attr_obj->id());
       }
     }
     else
     {
       attr_obj.manager().on_setattr();
-      obj.putattr(attr_key, attr_id);
+      obj->putattr(attr_key, &attr_obj);
     }
   }
 
@@ -1282,8 +1246,7 @@ instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
   dyobj::attr_key attr_key = get_attr_key(
     frame->compartment_ptr(), str_key);
 
-  dyobj::dyobj_id attr_id = process.top_stack();
-  auto& attr_obj = process.get_dyobj(attr_id);
+  auto attr_obj = process.top_stack();
 
   types::NativeTypeHandle& hndl = frame->top_eval_stack();
 
@@ -1295,8 +1258,8 @@ instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
     dyobj::dyobj_id id = static_cast<dyobj::dyobj_id>(itr->second);
 
     auto &obj = process.get_dyobj(id);
-    attr_obj.manager().on_setattr();
-    obj.putattr(attr_key, attr_id);
+    attr_obj->manager().on_setattr();
+    obj.putattr(attr_key, attr_obj);
   }
 }
 
@@ -1311,30 +1274,26 @@ instr_handler_setattrs2::execute(const Instr& instr, Process& process,
   dyobj::attr_key self_attr_key = get_attr_key(
     frame->compartment_ptr(), self_str_key);
 
-  dyobj::dyobj_id src_id = process.pop_stack();
-  auto& src_obj = process.get_dyobj(src_id);
+  auto src_obj = process.pop_stack();
 
-  dyobj::dyobj_id target_id = process.top_stack();
-  auto& target_obj = process.get_dyobj(target_id);
+  auto target_obj = process.top_stack();
 
-  auto * objects = process.create_dyobjs(src_obj.attr_count());
+  auto * objects = process.create_dyobjs(src_obj->attr_count());
 
   size_t i = 0;
-  for (auto itr = src_obj.begin(); itr != src_obj.end(); ++itr, ++i)
+  for (auto itr = src_obj->begin(); itr != src_obj->end(); ++itr, ++i)
   {
     dyobj::attr_key attr_key = static_cast<dyobj::attr_key>(itr->first);
 
-    dyobj::dyobj_id attr_id = static_cast<dyobj::dyobj_id>(itr->second);
-
-    auto &attr_obj = process.get_dyobj(attr_id);
+    auto attr_obj = itr->second;
 
     auto& cloned_attr_obj = objects[i];
 
-    cloned_attr_obj.copy_from(attr_obj);
+    cloned_attr_obj.copy_from(*attr_obj);
     cloned_attr_obj.manager().on_setattr();
-    cloned_attr_obj.putattr(self_attr_key, target_id);
+    cloned_attr_obj.putattr(self_attr_key, target_obj);
 
-    target_obj.putattr(attr_key, cloned_attr_obj.id());
+    target_obj->putattr(attr_key, &cloned_attr_obj);
   }
 }
 
@@ -1344,10 +1303,10 @@ void
 instr_handler_putobj::execute(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
+  auto ptr = process.top_stack();
   Frame* frame = *frame_ptr;
 
-  types::uint64 value(id);
+  types::uint64 value(ptr->id());
   types::NativeTypeHandle hndl(value);
 
   frame->push_eval_stack(std::move(hndl));
@@ -1362,10 +1321,9 @@ instr_handler_getobj::execute(const Instr& /* instr */, Process& process,
   Frame* frame = *frame_ptr;
   auto hndl = frame->pop_eval_stack();
 
-  dyobj::dyobj_id id = types::get_value_from_handle<
-    dyobj::dyobj_id>(hndl);
+  dyobj::dyobj_id id = types::get_value_from_handle<dyobj::dyobj_id>(hndl);
 
-  process.push_stack(id);
+  process.push_stack(&process.get_dyobj(id));
 }
 
 // -----------------------------------------------------------------------------
@@ -1383,18 +1341,17 @@ void
 instr_handler_setflgc::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
   if (on_off)
   {
-    obj.set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+    obj->set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
   }
   else
   {
-    obj.clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+    obj->clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
   }
 }
 
@@ -1404,18 +1361,17 @@ void
 instr_handler_setfldel::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
   if (on_off)
   {
-    obj.set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE);
+    obj->set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE);
   }
   else
   {
-    obj.clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE);
+    obj->clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_INDELIBLE);
   }
 }
 
@@ -1425,18 +1381,17 @@ void
 instr_handler_setflcall::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
   if (on_off)
   {
-    obj.set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE);
+    obj->set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE);
   }
   else
   {
-    obj.clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE);
+    obj->clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE);
   }
 }
 
@@ -1446,18 +1401,17 @@ void
 instr_handler_setflmute::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
   bool on_off = static_cast<bool>(instr.oprd1);
 
   if (on_off)
   {
-    obj.set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE);
+    obj->set_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE);
   }
   else
   {
-    obj.clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE);
+    obj->clear_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE);
   }
 }
 
@@ -1467,15 +1421,14 @@ void
 instr_handler_pinvk::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto& obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
-  if (obj.get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE))
+  if (obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_NON_CALLABLE))
   {
-    THROW(InvocationError(id));
+    THROW(InvocationError(obj->id()));
   }
 
-  const ClosureCtx& ctx = obj.closure_ctx();
+  const ClosureCtx& ctx = obj->closure_ctx();
 
   if (ctx.compartment_id == NONESET_COMPARTMENT_ID)
   {
@@ -1545,9 +1498,8 @@ instr_handler_rtrn::execute(const Instr& /* instr */, Process& process,
 
   if (process.stack_size() > 0)
   {
-    auto obj_id = process.top_stack();
-    auto& obj = process.get_dyobj(obj_id);
-    obj.manager().on_setattr();
+    auto obj = process.top_stack();
+    obj->manager().on_setattr();
   }
 }
 
@@ -1643,7 +1595,7 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
   while (process.has_frame())
   {
     Frame& frame = process.top_frame();
-    dyobj::dyobj_id exc_obj_id = process.pop_stack();
+    auto exc_obj = process.pop_stack();
     instr_addr starting_addr = frame.return_addr() + 1;
     uint32_t dst = 0;
 
@@ -1681,7 +1633,7 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
     if (dst)
     {
       // A catch site found in the current frame. Jump to its destination.
-      frame.set_exc_obj(exc_obj_id);
+      frame.set_exc_obj(exc_obj);
 
       instr_addr addr =
         starting_addr + static_cast<instr_addr>(dst);
@@ -1703,9 +1655,9 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
         *frame_ptr = &previous_frame;
         *invk_ctx_ptr = &process.top_invocation_ctx();
 
-        previous_frame.set_exc_obj(exc_obj_id);
+        previous_frame.set_exc_obj(exc_obj);
 
-        process.push_stack(exc_obj_id);
+        process.push_stack(exc_obj);
 
         // Need to search catch sites in the other frames.
         search_catch_sites = true;
@@ -1722,15 +1674,15 @@ instr_handler_excobj::execute(const Instr& /* instr */, Process& process,
 {
   const Frame* frame = *frame_ptr;
 
-  dyobj::dyobj_id exc_obj_id = frame->exc_obj();
+  auto exc_obj = frame->exc_obj();
 
-  if (!exc_obj_id)
+  if (!exc_obj)
   {
     THROW(InvalidOperationError("No exception raised"));
   }
   else
   {
-    process.push_stack(exc_obj_id);
+    process.push_stack(exc_obj);
   }
 }
 
@@ -1751,11 +1703,11 @@ instr_handler_jmpexc::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   const Frame* frame = *frame_ptr;
-  dyobj::dyobj_id exc_obj_id = frame->exc_obj();
+  auto exc_obj = frame->exc_obj();
 
   bool jump_on_exc = static_cast<bool>(instr.oprd2);
 
-  bool jump = jump_on_exc ? static_cast<bool>(exc_obj_id) : exc_obj_id == 0;
+  bool jump = jump_on_exc ? static_cast<bool>(exc_obj) : exc_obj == NULL;
 
   if (jump)
   {
@@ -1793,11 +1745,10 @@ void
 instr_handler_putarg::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  dyobj::dyobj_id id = process.pop_stack();
-  auto& obj = process.get_dyobj(id);
-  obj.manager().on_setattr();
+  auto obj = process.pop_stack();
+  obj->manager().on_setattr();
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  invk_ctx->put_param(id);
+  invk_ctx->put_param(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1807,12 +1758,11 @@ instr_handler_putkwarg::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   variable_key key = static_cast<variable_key>(instr.oprd1);
-  dyobj::dyobj_id id = process.pop_stack();
-
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  auto& obj = process.get_dyobj(id);
-  obj.manager().on_setattr();
-  invk_ctx->put_param_value_pair(key, id);
+
+  auto obj = process.pop_stack();
+  obj->manager().on_setattr();
+  invk_ctx->put_param_value_pair(key, obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1822,10 +1772,9 @@ instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.pop_stack();
 
-  dyobj::ntvhndl_key key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key key = obj->ntvhndl_key();
   types::NativeTypeHandle& hndl = process.get_ntvhndl(key);
 
   types::native_array array =
@@ -1836,7 +1785,7 @@ instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
     dyobj::dyobj_id arg_id = static_cast<dyobj::dyobj_id>(*itr);
     auto& arg_obj = process.get_dyobj(arg_id);
     arg_obj.manager().on_setattr();
-    invk_ctx->put_param(arg_id);
+    invk_ctx->put_param(&arg_obj);
   }
 }
 
@@ -1847,10 +1796,9 @@ instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  dyobj::dyobj_id id = process.pop_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.pop_stack();
 
-  dyobj::ntvhndl_key key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key key = obj->ntvhndl_key();
   types::NativeTypeHandle result = process.get_ntvhndl(key);
 
   types::native_map map =
@@ -1864,7 +1812,7 @@ instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
     auto& arg_obj = process.get_dyobj(arg_id);
     arg_obj.manager().on_setattr();
 
-    invk_ctx->put_param_value_pair(arg_key, arg_id);
+    invk_ctx->put_param_value_pair(arg_key, &arg_obj);
   }
 }
 
@@ -1875,8 +1823,8 @@ instr_handler_getarg::execute(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  dyobj::dyobj_id id = invk_ctx->pop_param();
-  process.push_stack(id);
+  auto obj = invk_ctx->pop_param();
+  process.push_stack(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1890,10 +1838,10 @@ instr_handler_getkwarg::execute(const Instr& instr, Process& process,
 
   if (invk_ctx->has_param_value_pair_with_key(key))
   {
-    dyobj::dyobj_id id = invk_ctx->pop_param_value_pair(key);
+    auto obj = invk_ctx->pop_param_value_pair(key);
 
     Frame* frame = *frame_ptr;
-    frame->set_visible_var(key, id);
+    frame->set_visible_var(key, obj);
 
     instr_addr relative_addr = static_cast<instr_addr>(instr.oprd2);
     process.set_pc(process.pc() + relative_addr);
@@ -1913,8 +1861,8 @@ instr_handler_getargs::execute(const Instr& /* instr */, Process& /* process */,
 
   while (invk_ctx->has_params())
   {
-    dyobj::dyobj_id id = invk_ctx->pop_param();
-    array.push_back(id);
+    auto obj = invk_ctx->pop_param();
+    array.push_back(obj->id());
   }
 
   types::NativeTypeHandle hndl(std::move(array));
@@ -1938,10 +1886,10 @@ instr_handler_getkwargs::execute(const Instr& /* instr */, Process& /* process *
   for (auto itr = params.begin(); itr != params.end(); ++itr)
   {
     variable_key key = static_cast<variable_key>(*itr);
-    dyobj::dyobj_id id = invk_ctx->pop_param_value_pair(key);
+    auto obj = invk_ctx->pop_param_value_pair(key);
 
     auto key_val = static_cast<typename types::native_map::key_type>(key);
-    map[key_val] = id;
+    map[key_val] = obj->id();
   }
 
   types::NativeTypeHandle hndl(std::move(map));
@@ -2015,10 +1963,9 @@ void
 instr_handler_print::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::dyobj_id id = process.top_stack();
-  auto &obj = process.get_dyobj(id);
+  auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj.ntvhndl_key();
+  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
 
   if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
   {
@@ -3249,16 +3196,15 @@ instr_handler_mapset::execute(const Instr& instr, Process& process,
   types::native_map_key_type key = static_cast<
     types::native_map_key_type>(instr.oprd1);
 
-  dyobj::dyobj_id id = process.top_stack();
+  auto ptr = process.top_stack();
 
   Frame* frame = *frame_ptr;
 
   types::NativeTypeHandle& res = frame->top_eval_stack();
 
-  types::native_map map = types::get_value_from_handle<
-    types::native_map>(res);
+  types::native_map map = types::get_value_from_handle<types::native_map>(res);
 
-  map[key] = id;
+  map[key] = ptr->id();
 
   res = map;
 }

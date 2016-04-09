@@ -26,11 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
-#include "dyobj/dyobj_id.h"
+#include "runtime_types.h"
+#include "dyobj/common.h"
 #include "types/fwd.h"
 
 #include <cstdint>
-#include <list>
 #include <unordered_map>
 #include <vector>
 
@@ -63,6 +63,8 @@ class Compartment;
 class Frame
 {
 public:
+  typedef RuntimeTypes::dyobj_ptr_type dyobj_ptr;
+
   Frame(const ClosureCtx&, Compartment*, Closure*);
 
   Frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
@@ -93,35 +95,33 @@ public:
 
   bool has_visible_var(const variable_key) const;
 
-  dyobj::dyobj_id get_visible_var(const variable_key) const;
+  dyobj_ptr get_visible_var(const variable_key) const;
 
-  bool get_visible_var_fast(
-    const variable_key, dyobj::dyobj_id*) const;
+  bool get_visible_var_fast(const variable_key, dyobj_ptr*) const;
 
-  dyobj::dyobj_id pop_visible_var(const variable_key);
+  dyobj_ptr pop_visible_var(const variable_key);
 
-  void set_visible_var(variable_key, dyobj::dyobj_id);
+  void set_visible_var(variable_key, dyobj_ptr);
 
   size_t invisible_var_count() const;
 
   bool has_invisible_var(const variable_key) const;
 
-  dyobj::dyobj_id get_invisible_var(const variable_key) const;
+  dyobj_ptr get_invisible_var(const variable_key) const;
 
-  bool get_invisible_var_fast(
-    const variable_key, dyobj::dyobj_id*) const;
+  bool get_invisible_var_fast(const variable_key, dyobj_ptr*) const;
 
-  dyobj::dyobj_id pop_invisible_var(const variable_key);
+  dyobj_ptr pop_invisible_var(const variable_key);
 
-  void set_invisible_var(variable_key, dyobj::dyobj_id);
+  void set_invisible_var(variable_key, dyobj_ptr);
 
   std::vector<variable_key> visible_var_keys() const;
 
   std::vector<variable_key> invisible_var_keys() const;
 
-  std::list<dyobj::dyobj_id> get_visible_objs() const;
+  std::vector<dyobj_ptr> get_visible_objs() const;
 
-  std::list<dyobj::dyobj_id> get_invisible_objs() const;
+  std::vector<dyobj_ptr> get_invisible_objs() const;
 
   ClosureCtx closure_ctx() const;
 
@@ -136,9 +136,9 @@ public:
    */
   void set_parent(Frame*);
 
-  dyobj::dyobj_id exc_obj() const;
+  dyobj_ptr exc_obj() const;
 
-  void set_exc_obj(dyobj::dyobj_id exc_obj);
+  void set_exc_obj(dyobj_ptr);
 
   void clear_exc_obj();
 
@@ -148,10 +148,10 @@ protected:
   Closure* m_closure_ptr;
   Frame* m_parent;
   instr_addr m_return_addr;
-  std::unordered_map<variable_key, dyobj::dyobj_id> m_visible_vars;
-  std::unordered_map<variable_key, dyobj::dyobj_id> m_invisible_vars;
+  std::unordered_map<variable_key, dyobj_ptr> m_visible_vars;
+  std::unordered_map<variable_key, dyobj_ptr> m_invisible_vars;
   std::vector<types::NativeTypeHandle> m_eval_stack;
-  dyobj::dyobj_id m_exc_obj;
+  dyobj_ptr m_exc_obj;
 };
 
 

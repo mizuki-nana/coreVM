@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
-#include "dyobj/dyobj_id.h"
+#include "runtime_types.h"
 
 #include <unordered_map>
 #include <vector>
@@ -47,9 +47,12 @@ class Compartment;
 
 class InvocationCtx
 {
+public:
+  typedef RuntimeTypes::dynamic_object_type* param_type;
+
 private:
-  typedef std::vector<dyobj::dyobj_id> param_list_type;
-  typedef std::unordered_map<variable_key, dyobj::dyobj_id> param_value_map_type;
+  typedef std::vector<param_type> param_list_type;
+  typedef std::unordered_map<variable_key, param_type> param_value_map_type;
 
 public:
   InvocationCtx(const ClosureCtx&, Compartment*, Closure*);
@@ -66,18 +69,17 @@ public:
 
   bool has_params() const;
 
-  void put_param(const dyobj::dyobj_id&);
+  void put_param(const param_type);
 
-  dyobj::dyobj_id pop_param();
+  param_type pop_param();
 
   bool has_param_value_pairs() const;
 
-  bool has_param_value_pair_with_key(const variable_key&) const;
+  bool has_param_value_pair_with_key(variable_key) const;
 
-  void put_param_value_pair(
-    const variable_key&, const dyobj::dyobj_id&);
+  void put_param_value_pair(variable_key, param_type);
 
-  dyobj::dyobj_id pop_param_value_pair(const variable_key&);
+  param_type pop_param_value_pair(variable_key);
 
   std::vector<variable_key> param_value_pair_keys() const;
 

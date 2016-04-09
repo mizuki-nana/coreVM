@@ -144,7 +144,7 @@ Process::Options::Options()
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Process::dyobj_ptr
 Process::create_dyobj()
 {
   return m_dynamic_object_heap.create_dyobj();
@@ -152,7 +152,7 @@ Process::create_dyobj()
 
 // -----------------------------------------------------------------------------
 
-Process::dynamic_object_type*
+Process::dyobj_ptr
 Process::create_dyobjs(size_t n)
 {
   return m_dynamic_object_heap.create_dyobjs(n);
@@ -188,8 +188,7 @@ Process::Process()
 
 // -----------------------------------------------------------------------------
 
-Process::Process(
-  uint64_t heap_alloc_size, uint64_t pool_alloc_size)
+Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
   m_pause_exec(false),
   m_do_gc(false),
@@ -317,24 +316,18 @@ Process::pop_frame()
 {
   Frame& frame = this->top_frame();
 
-  std::list<dyobj::dyobj_id> visible_objs = frame.get_visible_objs();
-  std::list<dyobj::dyobj_id> invisible_objs = frame.get_invisible_objs();
+  auto visible_objs = frame.get_visible_objs();
+  auto invisible_objs = frame.get_invisible_objs();
 
-  std::for_each(
-    visible_objs.begin(),
-    visible_objs.end(),
-    [this](dyobj::dyobj_id id) {
-      auto &obj = this->get_dyobj(id);
-      obj.manager().on_exit();
+  std::for_each(visible_objs.begin(), visible_objs.end(),
+    [this](Process::dyobj_ptr ptr) {
+      ptr->manager().on_exit();
     }
   );
 
-  std::for_each(
-    invisible_objs.begin(),
-    invisible_objs.end(),
-    [this](dyobj::dyobj_id id) {
-      auto &obj = this->get_dyobj(id);
-      obj.manager().on_exit();
+  std::for_each(invisible_objs.begin(), invisible_objs.end(),
+    [this](Process::dyobj_ptr ptr) {
+      ptr->manager().on_exit();
     }
   );
 
@@ -514,7 +507,7 @@ Process::pop_invocation_ctx()
 
 // -----------------------------------------------------------------------------
 
-const dyobj::dyobj_id&
+Process::dyobj_ptr
 Process::top_stack()
 {
   if (m_dyobj_stack.empty())
@@ -528,7 +521,7 @@ Process::top_stack()
 // -----------------------------------------------------------------------------
 
 void
-Process::push_stack(dyobj::dyobj_id& id)
+Process::push_stack(dyobj_ptr ptr)
 {
   size_t current_size = m_dyobj_stack.size();
   if (current_size == m_dyobj_stack.capacity())
@@ -539,12 +532,12 @@ Process::push_stack(dyobj::dyobj_id& id)
       m_dyobj_stack.reserve(new_size);
     }
   }
-  m_dyobj_stack.push_back(id);
+  m_dyobj_stack.push_back(ptr);
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Process::dyobj_ptr
 Process::pop_stack()
 {
   if (m_dyobj_stack.empty())
@@ -552,9 +545,9 @@ Process::pop_stack()
     THROW(ObjectStackEmptyError());
   }
 
-  dyobj::dyobj_id id = m_dyobj_stack.back();
+  auto ptr = m_dyobj_stack.back();
   m_dyobj_stack.pop_back();
-  return id;
+  return ptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -591,7 +584,7 @@ Process::max_heap_size() const
 
 // -----------------------------------------------------------------------------
 
-Process::native_types_pool_type::size_type
+NativeTypesPool::size_type
 Process::ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.size();
@@ -599,7 +592,7 @@ Process::ntvhndl_pool_size() const
 
 // -----------------------------------------------------------------------------
 
-Process::native_types_pool_type::size_type
+NativeTypesPool::size_type
 Process::max_ntvhndl_pool_size() const
 {
   return m_ntvhndl_pool.max_size();

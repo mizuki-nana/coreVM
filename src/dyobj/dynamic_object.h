@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 #include "dyobj/common.h"
-#include "dyobj/dyobj_id.h"
 #include "dyobj/flags.h"
 #include "dyobj/errors.h"
 #include "runtime/closure_ctx.h"
@@ -49,12 +48,13 @@ class DynamicObject
 public:
   typedef attr_key attr_key_type;
   typedef dyobj_id dyobj_id_type;
+  typedef DynamicObject<DynamicObjectManager>* dyobj_ptr;
 
-  typedef std::pair<attr_key_type, dyobj_id_type> attr_key_value_pair;
+  typedef std::pair<attr_key_type, dyobj_ptr> attr_key_value_pair;
   typedef std::vector<attr_key_value_pair> attr_map_type;
 
-  typedef attr_map_type::iterator iterator;
-  typedef attr_map_type::const_iterator const_iterator;
+  typedef typename attr_map_type::iterator iterator;
+  typedef typename attr_map_type::const_iterator const_iterator;
 
   DynamicObject();
 
@@ -66,8 +66,6 @@ public:
 
   bool operator==(const DynamicObject<DynamicObjectManager>&);
   bool operator!=(const DynamicObject<DynamicObjectManager>&);
-
-  void set_id(dyobj_id id) noexcept;
 
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
@@ -95,19 +93,19 @@ public:
 
   bool hasattr(attr_key_type) const noexcept;
 
-  void putattr(attr_key_type, dyobj_id_type) noexcept;
+  void putattr(attr_key_type, dyobj_ptr) noexcept;
 
   void delattr(attr_key_type);
 
-  dyobj_id_type getattr(attr_key_type) const;
+  dyobj_ptr getattr(attr_key_type) const;
 
-  bool getattr(attr_key_type, dyobj_id_type*) const;
+  bool getattr(attr_key_type, dyobj_ptr*) const;
 
   const runtime::ClosureCtx& closure_ctx() const;
 
   void set_closure_ctx(const runtime::ClosureCtx&);
 
-  bool has_ref(dyobj_id_type) const noexcept;
+  bool has_ref(dyobj_ptr) const noexcept;
 
   template<typename Function>
   void iterate(Function) noexcept;
@@ -136,7 +134,7 @@ private:
 
   struct AttributeValuePred
   {
-    explicit AttributeValuePred(dyobj_id value)
+    explicit AttributeValuePred(dyobj_ptr value)
       :
       m_value(value)
     {
@@ -148,10 +146,9 @@ private:
     }
 
   private:
-    dyobj_id m_value;
+    dyobj_ptr m_value;
   };
 
-  dyobj_id_type m_id;
   flag m_flags;
   attr_map_type m_attrs;
   DynamicObjectManager m_manager;
@@ -172,7 +169,6 @@ static const size_t COREVM_DYNAMIC_OBJECT_DEFAULT_ATTRIBUTE_COUNT = 10u;
 template<class DynamicObjectManager>
 DynamicObject<DynamicObjectManager>::DynamicObject()
   :
-  m_id(0u),
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
   m_manager(),
@@ -198,7 +194,7 @@ bool
 DynamicObject<DynamicObjectManager>::operator==(
   const DynamicObject<DynamicObjectManager>& rhs)
 {
-  return this->id() == rhs.id();
+  return id() == rhs.id();
 }
 
 // -----------------------------------------------------------------------------
@@ -209,16 +205,6 @@ DynamicObject<DynamicObjectManager>::operator!=(
   const DynamicObject<DynamicObjectManager>& rhs)
 {
   return !((*this) == rhs);
-}
-
-// -----------------------------------------------------------------------------
-
-template<class DynamicObjectManager>
-void
-DynamicObject<DynamicObjectManager>::set_id(
-  dyobj_id id) noexcept
-{
-  m_id = id;
 }
 
 // -----------------------------------------------------------------------------
@@ -263,7 +249,8 @@ template<class DynamicObjectManager>
 dyobj_id
 DynamicObject<DynamicObjectManager>::id() const noexcept
 {
-  return m_id;
+  return static_cast<dyobj_id>(
+    reinterpret_cast<const uint8_t*>(this) - reinterpret_cast<uint8_t*>(0));
 }
 
 // -----------------------------------------------------------------------------
@@ -404,19 +391,19 @@ DynamicObject<DynamicObjectManager>::delattr(
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-dyobj_id
+typename DynamicObject<DynamicObjectManager>::dyobj_ptr
 DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key) const
 {
-  dyobj_id attr_id = 0;
+  DynamicObject<DynamicObjectManager>::dyobj_ptr attr_ptr = NULL;
 
-  bool res = getattr(attr_key, &attr_id);
+  bool res = getattr(attr_key, &attr_ptr);
   if (!res)
   {
     THROW(ObjectAttributeNotFoundError(attr_key, id()));
   }
 
-  return attr_id;
+  return attr_ptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -425,7 +412,7 @@ template<class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::getattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
-  dyobj_id_type* attr_id) const
+  dyobj_ptr* attr_ptr) const
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
     AttributeKeyPred(attr_key));
@@ -434,7 +421,7 @@ DynamicObject<DynamicObjectManager>::getattr(
 
   if (res)
   {
-    *attr_id = itr->second;
+    *attr_ptr = itr->second;
   }
 
   return res;
@@ -446,18 +433,18 @@ template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::putattr(
   DynamicObject<DynamicObjectManager>::attr_key_type attr_key,
-  DynamicObject<DynamicObjectManager>::dyobj_id_type obj_id) noexcept
+  DynamicObject<DynamicObjectManager>::dyobj_ptr obj_ptr) noexcept
 {
   auto itr = std::find_if(m_attrs.begin(), m_attrs.end(),
     AttributeKeyPred(attr_key));
 
   if (itr == m_attrs.end())
   {
-    m_attrs.emplace_back(attr_key, obj_id);
+    m_attrs.emplace_back(attr_key, obj_ptr);
   }
   else
   {
-    (*itr).second = obj_id;
+    (*itr).second = obj_ptr;
   }
 }
 
@@ -484,9 +471,9 @@ DynamicObject<DynamicObjectManager>::set_closure_ctx(
 
 template<class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::has_ref(dyobj_id_type id) const noexcept
+DynamicObject<DynamicObjectManager>::has_ref(dyobj_ptr ref_ptr) const noexcept
 {
-  return std::find_if(cbegin(), cend(), AttributeValuePred(id)) != cend();
+  return std::find_if(cbegin(), cend(), AttributeValuePred(ref_ptr)) != cend();
 }
 
 // -----------------------------------------------------------------------------
@@ -500,7 +487,7 @@ DynamicObject<DynamicObjectManager>::iterate(Function func) noexcept
     [&func](DynamicObject<DynamicObjectManager>::attr_key_value_pair& pair) {
       func(
         static_cast<DynamicObject<DynamicObjectManager>::attr_key_type>(pair.first),
-        static_cast<DynamicObject<DynamicObjectManager>::dyobj_id_type>(pair.second)
+        static_cast<DynamicObject<DynamicObjectManager>::dyobj_ptr>(pair.second)
       );
     }
   );

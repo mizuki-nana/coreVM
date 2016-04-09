@@ -66,32 +66,35 @@ protected:
   {
   }
 
-  corevm::dyobj::DynamicObjectHeap<DummyDynamicObjectManager> m_heap;
+  typedef corevm::dyobj::DynamicObjectHeap<DummyDynamicObjectManager> heap_type;
+  typedef heap_type::dynamic_object_type dyobj_type;
+
+  heap_type m_heap;
 };
 
 // -----------------------------------------------------------------------------
 
 TEST_F(DynamicObjectHeapUnitTest, TestCreateDyobj)
 {
-  corevm::dyobj::dyobj_id id1 = m_heap.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_heap.create_dyobj();
+  auto obj1_ptr = m_heap.create_dyobj();
+  auto obj2_ptr = m_heap.create_dyobj();
 
-  ASSERT_NE(0, id1);
-  ASSERT_NE(0, id2);
+  ASSERT_NE(nullptr, obj1_ptr);
+  ASSERT_NE(nullptr, obj2_ptr);
 
   // This assumption is true for now, but might change in the future.
-  ASSERT_LT(id1, id2);
+  ASSERT_LT(obj1_ptr, obj2_ptr);
 
   // Tests that we can get the objects by those ids and they are equivalent.
-  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj1 = m_heap.at(id1);
-  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj2 = m_heap.at(id2);
+  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj1 = m_heap.at(obj1_ptr->id());
+  corevm::dyobj::DynamicObject<DummyDynamicObjectManager>& obj2 = m_heap.at(obj2_ptr->id());
 
-  ASSERT_EQ(id1, obj1.id());
-  ASSERT_EQ(id2, obj2.id());
+  ASSERT_EQ(obj1_ptr->id(), obj1.id());
+  ASSERT_EQ(obj2_ptr->id(), obj2.id());
 
   // Clean up.
-  m_heap.erase(id1);
-  m_heap.erase(id2);
+  m_heap.erase(obj1_ptr);
+  m_heap.erase(obj2_ptr);
 }
 
 // -----------------------------------------------------------------------------
@@ -116,7 +119,7 @@ TEST_F(DynamicObjectHeapUnitTest, TestBulkCreate)
   // Clean up.
   for (size_t i = 0; i < N; ++i)
   {
-    m_heap.erase(p[i].id());
+    m_heap.erase(&p[i]);
   }
 }
 
@@ -138,11 +141,11 @@ TEST_F(DynamicObjectHeapUnitTest, TestAllocationOverMaxSize)
   /* NOTE: This test may not work if using buddy allocation for the heap. */
 
   auto max_size = m_heap.max_size();
-  std::vector<corevm::dyobj::dyobj_id> ids;
+  std::vector<dyobj_type*> objs;
 
   for (size_t i = 1; i <= max_size; ++i)
   {
-    ids.push_back(m_heap.create_dyobj());
+    objs.push_back(m_heap.create_dyobj());
   }
 
   ASSERT_THROW(
@@ -153,9 +156,9 @@ TEST_F(DynamicObjectHeapUnitTest, TestAllocationOverMaxSize)
   );
 
   // Clean up.
-  for (size_t i = 0; i < ids.size(); ++i)
+  for (size_t i = 0; i < objs.size(); ++i)
   {
-    m_heap.erase(ids[i]);
+    m_heap.erase(objs[i]);
   }
 }
 
@@ -163,22 +166,22 @@ TEST_F(DynamicObjectHeapUnitTest, TestAllocationOverMaxSize)
 
 TEST_F(DynamicObjectHeapUnitTest, TestOutputStream)
 {
-  corevm::dyobj::dyobj_id id1 = m_heap.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_heap.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_heap.create_dyobj();
+  auto obj1 = m_heap.create_dyobj();
+  auto obj2 = m_heap.create_dyobj();
+  auto obj3 = m_heap.create_dyobj();
 
-  ASSERT_NE(0, id1);
-  ASSERT_NE(0, id2);
-  ASSERT_NE(0, id3);
+  ASSERT_NE(nullptr, obj1);
+  ASSERT_NE(nullptr, obj2);
+  ASSERT_NE(nullptr, obj3);
 
   std::stringstream ss;
   ss << m_heap;
 
   ASSERT_NE(0, ss.str().size());
 
-  m_heap.erase(id1);
-  m_heap.erase(id2);
-  m_heap.erase(id3);
+  m_heap.erase(obj1);
+  m_heap.erase(obj2);
+  m_heap.erase(obj3);
 }
 
 // -----------------------------------------------------------------------------

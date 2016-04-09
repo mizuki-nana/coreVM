@@ -163,9 +163,9 @@ TEST_F(InstrsObjUnitTest, TestInstrLDOBJ)
   m_process.insert_compartment(compartment);
 
   corevm::runtime::variable_key key = 123;
-  corevm::dyobj::dyobj_id id = 456;
+  auto obj = m_process.create_dyobj();
 
-  parent_frame.set_visible_var(key, id);
+  parent_frame.set_visible_var(key, obj);
 
   m_process.push_frame(parent_frame);
   m_process.push_frame(frame);
@@ -175,7 +175,7 @@ TEST_F(InstrsObjUnitTest, TestInstrLDOBJ)
 
   execute_instr<corevm::runtime::instr_handler_ldobj>(instr, 1);
 
-  ASSERT_EQ(id, m_process.top_stack());
+  ASSERT_EQ(obj, m_process.top_stack());
 }
 
 // -----------------------------------------------------------------------------
@@ -187,8 +187,8 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ)
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   execute_instr<corevm::runtime::instr_handler_stobj>(instr, 0);
 
@@ -196,9 +196,9 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ)
 
   ASSERT_TRUE(actual_frame.has_visible_var(1));
 
-  corevm::dyobj::dyobj_id actual_id = actual_frame.get_visible_var(1);
+  auto actual_obj = actual_frame.get_visible_var(1);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -218,8 +218,8 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJN)
   m_process.push_frame(frame);
   m_process.push_frame(frame2);
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   execute_instr<corevm::runtime::instr_handler_stobjn>(instr, 0);
 
@@ -227,9 +227,9 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJN)
 
   ASSERT_TRUE(actual_frame.has_visible_var(key));
 
-  corevm::dyobj::dyobj_id actual_id = actual_frame.get_visible_var(key);
+  auto actual_obj = actual_frame.get_visible_var(key);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -270,20 +270,19 @@ TEST_F(InstrsObjUnitTest, TestInstrGETATTR)
 
   corevm::runtime::Instr instr(0, attr_str_key, 0);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  auto &obj = m_process.get_dyobj(id1);
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
-  obj.putattr(attr_key, id2);
-  m_process.push_stack(id1);
+  obj1->putattr(attr_key, obj2);
+  m_process.push_stack(obj1);
 
   execute_instr<corevm::runtime::instr_handler_getattr>(instr, 1);
 
-  corevm::dyobj::dyobj_id expected_id = id2;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto expected_obj = obj2;
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(expected_id, actual_id);
+  ASSERT_EQ(expected_obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -325,26 +324,24 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTR)
 
   corevm::runtime::Instr instr(0, attr_str_key, 0);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  m_process.push_stack(id1);
-  m_process.push_stack(id2);
+  m_process.push_stack(obj1);
+  m_process.push_stack(obj2);
 
   execute_instr<corevm::runtime::instr_handler_setattr>(instr, 1);
 
-  corevm::dyobj::dyobj_id expected_id = id1;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto expected_obj = obj1;
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(expected_id, actual_id);
-
-  auto &obj = m_process.get_dyobj(actual_id);
+  ASSERT_EQ(expected_obj, actual_obj);
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
-  ASSERT_TRUE(obj.hasattr(attr_key));
+  ASSERT_TRUE(actual_obj->hasattr(attr_key));
 
-  ASSERT_EQ(id2, obj.getattr(attr_key));
+  ASSERT_EQ(obj2, actual_obj->getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
@@ -354,26 +351,23 @@ TEST_F(InstrsObjUnitTest, TestInstrDELATTR)
   corevm::dyobj::attr_key attr_key = 777;
   corevm::runtime::Instr instr(0, attr_key, 0);
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id attr_id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
+  auto attr_obj = m_process.create_dyobj();
 
-  auto& obj = m_process.get_dyobj(id);
-  obj.putattr(attr_key, attr_id);
+  obj->putattr(attr_key, attr_obj);
 
-  ASSERT_TRUE(obj.hasattr(attr_key));
+  ASSERT_TRUE(obj->hasattr(attr_key));
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   execute_instr<corevm::runtime::instr_handler_delattr>(instr, 1);
 
-  corevm::dyobj::dyobj_id expected_id = id;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto expected_obj = obj;
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(expected_id, actual_id);
+  ASSERT_EQ(expected_obj, actual_obj);
 
-  auto &actual_obj = m_process.get_dyobj(actual_id);
-
-  ASSERT_FALSE(actual_obj.hasattr(attr_key));
+  ASSERT_FALSE(actual_obj->hasattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
@@ -388,12 +382,11 @@ TEST_F(InstrsObjUnitTest, TestInstrHASATTR2)
   corevm::runtime::Frame& frame = m_process.top_frame();
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  auto &obj = m_process.get_dyobj(id1);
-  obj.putattr(attr_key, id2);
-  m_process.push_stack(id1);
+  obj1->putattr(attr_key, obj2);
+  m_process.push_stack(obj1);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_hasattr2>(instr, 1);
@@ -419,19 +412,18 @@ TEST_F(InstrsObjUnitTest, TestInstrGETATTR2)
   corevm::runtime::Frame& frame = m_process.top_frame();
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  auto &obj = m_process.get_dyobj(id1);
-  obj.putattr(attr_key, id2);
-  m_process.push_stack(id1);
+  obj1->putattr(attr_key, obj2);
+  m_process.push_stack(obj1);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getattr2>(instr, 1);
 
-  corevm::dyobj::dyobj_id attr_id = m_process.top_stack();
+  auto attr_obj = m_process.top_stack();
 
-  ASSERT_EQ(id2, attr_id);
+  ASSERT_EQ(obj2, attr_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -446,24 +438,22 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTR2)
   corevm::runtime::Frame& frame = m_process.top_frame();
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  m_process.push_stack(id1);
-  m_process.push_stack(id2);
+  m_process.push_stack(obj1);
+  m_process.push_stack(obj2);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_setattr2>(instr, 1);
 
-  corevm::dyobj::dyobj_id expected_id = id1;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto expected_obj = obj1;
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(expected_id, actual_id);
+  ASSERT_EQ(expected_obj, actual_obj);
 
-  auto& target_obj = m_process.get_dyobj(actual_id);
-
-  ASSERT_EQ(true, target_obj.hasattr(attr_key));
-  ASSERT_EQ(id2, target_obj.getattr(attr_key));
+  ASSERT_EQ(true, actual_obj->hasattr(attr_key));
+  ASSERT_EQ(obj2, actual_obj->getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
@@ -478,32 +468,29 @@ TEST_F(InstrsObjUnitTest, TestInstrDELATTR2)
   corevm::runtime::Frame& frame = m_process.top_frame();
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  auto &obj = m_process.get_dyobj(id1);
-  obj.putattr(attr_key, id2);
-  m_process.push_stack(id1);
+  obj1->putattr(attr_key, obj2);
+  m_process.push_stack(obj1);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_delattr2>(instr, 1);
 
-  corevm::dyobj::dyobj_id expected_id = id1;
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto expected_obj = obj1;
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(expected_id, actual_id);
+  ASSERT_EQ(expected_obj, actual_obj);
 
-  auto& target_obj = m_process.get_dyobj(actual_id);
-
-  ASSERT_EQ(false, target_obj.hasattr(attr_key));
+  ASSERT_EQ(false, actual_obj->hasattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsObjUnitTest, TestInstrPOP)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_pop>(instr, 0);
@@ -560,9 +547,9 @@ TEST_F(InstrsObjUnitTest, TestInstrLDOBJ2)
   m_process.insert_compartment(compartment);
 
   corevm::runtime::variable_key key = 123;
-  corevm::dyobj::dyobj_id id = 456;
+  auto obj = m_process.create_dyobj();
 
-  parent_frame.set_invisible_var(key, id);
+  parent_frame.set_invisible_var(key, obj);
 
   m_process.push_frame(parent_frame);
   m_process.push_frame(frame);
@@ -572,7 +559,7 @@ TEST_F(InstrsObjUnitTest, TestInstrLDOBJ2)
 
   execute_instr<corevm::runtime::instr_handler_ldobj2>(instr, 1);
 
-  ASSERT_EQ(id, m_process.top_stack());
+  ASSERT_EQ(obj, m_process.top_stack());
 }
 
 // -----------------------------------------------------------------------------
@@ -584,8 +571,8 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ2)
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
 
-  corevm::dyobj::dyobj_id id = 1;
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   execute_instr<corevm::runtime::instr_handler_stobj2>(instr, 0);
 
@@ -593,9 +580,9 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ2)
 
   ASSERT_TRUE(actual_frame.has_invisible_var(1));
 
-  corevm::dyobj::dyobj_id actual_id = actual_frame.get_invisible_var(1);
+  auto actual_obj = actual_frame.get_invisible_var(1);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -603,13 +590,13 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ2)
 TEST_F(InstrsObjUnitTest, TestInstrDELOBJ)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
-  frame.set_visible_var(key, id);
+  frame.set_visible_var(key, obj);
   m_process.push_frame(frame);
 
   execute_instr<corevm::runtime::instr_handler_delobj>(instr, 0);
@@ -624,13 +611,13 @@ TEST_F(InstrsObjUnitTest, TestInstrDELOBJ)
 TEST_F(InstrsObjUnitTest, TestInstrDELOBJ2)
 {
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd>(key), 0);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
-  frame.set_invisible_var(key, id);
+  frame.set_invisible_var(key, obj);
   m_process.push_frame(frame);
 
   execute_instr<corevm::runtime::instr_handler_delobj2>(instr, 0);
@@ -646,8 +633,8 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -655,8 +642,7 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(expected_value);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = m_process.get_dyobj(id);
-  obj.set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
@@ -677,8 +663,8 @@ TEST_F(InstrsObjUnitTest, TestInstrSETHNDL)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(expected_value);
@@ -688,9 +674,7 @@ TEST_F(InstrsObjUnitTest, TestInstrSETHNDL)
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
-  auto &obj = m_process.get_dyobj(id);
-
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj.ntvhndl_key());
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj->ntvhndl_key());
 }
 
 // -----------------------------------------------------------------------------
@@ -699,18 +683,17 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
 {
   uint32_t expected_value = 123;
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key key = 1;
-  frame.set_visible_var(key, id);
+  frame.set_visible_var(key, obj);
   m_process.push_frame(frame);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(expected_value);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = m_process.get_dyobj(id);
-  obj.set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd>(key), 0);
@@ -731,20 +714,18 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
 
 TEST_F(InstrsObjUnitTest, TestInstrCLRHNDL)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &obj = m_process.get_dyobj(id);
-  obj.set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
-  auto &obj2 = m_process.get_dyobj(id);
-  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj2.ntvhndl_key());
+  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj->ntvhndl_key());
 
   ASSERT_FALSE(m_process.has_ntvhndl(ntvhndl_key));
 }
@@ -753,25 +734,23 @@ TEST_F(InstrsObjUnitTest, TestInstrCLRHNDL)
 
 TEST_F(InstrsObjUnitTest, TestInstrCPYHNDL)
 {
-  corevm::dyobj::dyobj_id target_obj_id = m_process.create_dyobj();
-  m_process.push_stack(target_obj_id);
+  auto target_obj = m_process.create_dyobj();
+  m_process.push_stack(target_obj);
 
-  corevm::dyobj::dyobj_id src_obj_id = m_process.create_dyobj();
-  m_process.push_stack(src_obj_id);
+  auto src_obj = m_process.create_dyobj();
+  m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &src_obj = m_process.get_dyobj(src_obj_id);
-  src_obj.set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(0, 6, 0);
   execute_instr<corevm::runtime::instr_handler_cpyhndl>(instr, 0);
 
-  auto &target_obj = m_process.get_dyobj(target_obj_id);
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj.ntvhndl_key());
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj->ntvhndl_key());
 
-  auto& res_hndl = m_process.get_ntvhndl(target_obj.ntvhndl_key());
+  auto& res_hndl = m_process.get_ntvhndl(target_obj->ntvhndl_key());
 
   uint32_t res_value = corevm::types::get_value_from_handle<uint32_t>(res_hndl);
 
@@ -782,25 +761,23 @@ TEST_F(InstrsObjUnitTest, TestInstrCPYHNDL)
 
 TEST_F(InstrsObjUnitTest, TestInstrCPYREPR)
 {
-  corevm::dyobj::dyobj_id target_obj_id = m_process.create_dyobj();
-  m_process.push_stack(target_obj_id);
+  auto target_obj = m_process.create_dyobj();
+  m_process.push_stack(target_obj);
 
-  corevm::dyobj::dyobj_id src_obj_id = m_process.create_dyobj();
-  m_process.push_stack(src_obj_id);
+  auto src_obj = m_process.create_dyobj();
+  m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &src_obj = m_process.get_dyobj(src_obj_id);
-  src_obj.set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_cpyrepr>(instr, 0);
 
-  auto &target_obj = m_process.get_dyobj(target_obj_id);
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj.ntvhndl_key());
+  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj->ntvhndl_key());
 
-  auto& res_hndl = m_process.get_ntvhndl(target_obj.ntvhndl_key());
+  auto& res_hndl = m_process.get_ntvhndl(target_obj->ntvhndl_key());
 
   const corevm::types::native_string res_value =
     corevm::types::get_value_from_handle<corevm::types::native_string>(res_hndl);
@@ -812,14 +789,13 @@ TEST_F(InstrsObjUnitTest, TestInstrCPYREPR)
 
 TEST_F(InstrsObjUnitTest, TestInstrISTRUTHY)
 {
-  corevm::dyobj::dyobj_id src_obj_id = m_process.create_dyobj();
-  m_process.push_stack(src_obj_id);
+  auto src_obj = m_process.create_dyobj();
+  m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
   corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
 
-  auto &src_obj = m_process.get_dyobj(src_obj_id);
-  src_obj.set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl_key(ntvhndl_key);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_istruthy>(instr, 1);
@@ -837,11 +813,11 @@ TEST_F(InstrsObjUnitTest, TestInstrISTRUTHY)
 
 TEST_F(InstrsObjUnitTest, TestInstrOBJEQ)
 {
-  corevm::dyobj::dyobj_id id1 = 1;
-  corevm::dyobj::dyobj_id id2 = 1;
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = obj1;
 
-  m_process.push_stack(id1);
-  m_process.push_stack(id2);
+  m_process.push_stack(obj1);
+  m_process.push_stack(obj2);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -864,11 +840,11 @@ TEST_F(InstrsObjUnitTest, TestInstrOBJEQ)
 
 TEST_F(InstrsObjUnitTest, TestInstrOBJNEQ)
 {
-  corevm::dyobj::dyobj_id id1 = 1;
-  corevm::dyobj::dyobj_id id2 = 2;
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
-  m_process.push_stack(id1);
-  m_process.push_stack(id2);
+  m_process.push_stack(obj1);
+  m_process.push_stack(obj2);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -891,9 +867,9 @@ TEST_F(InstrsObjUnitTest, TestInstrOBJNEQ)
 
 TEST_F(InstrsObjUnitTest, TestInstrSETCXT)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   corevm::runtime::Frame frame(m_ctx, m_compartment, &m_closure);
   m_process.push_frame(frame);
@@ -905,13 +881,11 @@ TEST_F(InstrsObjUnitTest, TestInstrSETCXT)
 
   execute_instr<corevm::runtime::instr_handler_setctx>(instr);
 
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 
-  auto &obj = m_process.get_dyobj(actual_id);
-
-  const corevm::runtime::ClosureCtx& ctx = obj.closure_ctx();
+  const corevm::runtime::ClosureCtx& ctx = actual_obj->closure_ctx();
 
   ASSERT_EQ(m_ctx.compartment_id, ctx.compartment_id);
   ASSERT_EQ(m_ctx.closure_id, ctx.closure_id);
@@ -960,12 +934,12 @@ TEST_F(InstrsObjUnitTest, TestInstrCLDOBJ)
   m_process.insert_compartment(compartment);
 
   corevm::runtime::variable_key key1 = 123;
-  corevm::dyobj::dyobj_id id1 = 456;
-  frame.set_visible_var(key1, id1);
+  auto obj1 = m_process.create_dyobj();
+  frame.set_visible_var(key1, obj1);
 
   corevm::runtime::variable_key key2 = 321;
-  corevm::dyobj::dyobj_id id2 = 654;
-  parent_frame.set_visible_var(key2, id2);
+  auto obj2 = m_process.create_dyobj();
+  parent_frame.set_visible_var(key2, obj2);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::boolean(false);
   frame.push_eval_stack(hndl);
@@ -979,21 +953,21 @@ TEST_F(InstrsObjUnitTest, TestInstrCLDOBJ)
 
   execute_instr<corevm::runtime::instr_handler_cldobj>(instr, 1);
 
-  ASSERT_EQ(id2, m_process.top_stack());
+  ASSERT_EQ(obj2, m_process.top_stack());
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
 {
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
-    { 0, static_cast<corevm::types::native_map_mapped_type>(id1) },
-    { 1, static_cast<corevm::types::native_map_mapped_type>(id2) },
-    { 2, static_cast<corevm::types::native_map_mapped_type>(id3) },
+    { 0, static_cast<corevm::types::native_map_mapped_type>(obj1->id()) },
+    { 1, static_cast<corevm::types::native_map_mapped_type>(obj2->id()) },
+    { 2, static_cast<corevm::types::native_map_mapped_type>(obj3->id()) },
   };
 
   auto ntvhndl_key = m_process.insert_ntvhndl(hndl);
@@ -1022,43 +996,40 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
 
   corevm::runtime::ClosureCtx ctx(compartment_id, closure_id);
 
-  corevm::dyobj::dyobj_id dst_id = m_process.create_dyobj();
-  m_process.push_stack(dst_id);
+  auto dst_obj = m_process.create_dyobj();
+  m_process.push_stack(dst_obj);
 
-  corevm::dyobj::dyobj_id src_id = m_process.create_dyobj();
-  auto& src_obj = m_process.get_dyobj(src_id);
-  src_obj.set_ntvhndl_key(ntvhndl_key);
-  src_obj.set_closure_ctx(ctx);
+  auto src_obj = m_process.create_dyobj();
+  src_obj->set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_closure_ctx(ctx);
 
-  m_process.push_stack(src_id);
+  m_process.push_stack(src_obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
 
   execute_instr<corevm::runtime::instr_handler_setattrs>(instr, 1);
 
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(dst_id, actual_id);
+  ASSERT_EQ(dst_obj, actual_obj);
 
-  auto& obj = m_process.get_dyobj(actual_id);
-
-  ASSERT_EQ(id1, obj.getattr(attr_key1));
-  ASSERT_EQ(id2, obj.getattr(attr_key2));
-  ASSERT_EQ(id3, obj.getattr(attr_key3));
+  ASSERT_EQ(obj1, actual_obj->getattr(attr_key1));
+  ASSERT_EQ(obj2, actual_obj->getattr(attr_key2));
+  ASSERT_EQ(obj3, actual_obj->getattr(attr_key3));
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
 {
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
-    { 1, static_cast<corevm::types::native_map_mapped_type>(id1) },
-    { 2, static_cast<corevm::types::native_map_mapped_type>(id2) },
-    { 3, static_cast<corevm::types::native_map_mapped_type>(id3) },
+    { 1, static_cast<corevm::types::native_map_mapped_type>(obj1->id()) },
+    { 2, static_cast<corevm::types::native_map_mapped_type>(obj2->id()) },
+    { 3, static_cast<corevm::types::native_map_mapped_type>(obj3->id()) },
   };
 
   corevm::runtime::compartment_id compartment_id = 0;
@@ -1078,8 +1049,8 @@ TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
   corevm::runtime::Frame frame(ctx, &compartment, &m_closure);
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   m_process.push_frame(frame);
 
@@ -1090,13 +1061,9 @@ TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
 
   execute_instr<corevm::runtime::instr_handler_rsetattrs>(instr, 1);
 
-  auto& obj1 = m_process.get_dyobj(id1);
-  auto& obj2 = m_process.get_dyobj(id3);
-  auto& obj3 = m_process.get_dyobj(id3);
-
-  ASSERT_EQ(id, obj1.getattr(attr_key));
-  ASSERT_EQ(id, obj2.getattr(attr_key));
-  ASSERT_EQ(id, obj3.getattr(attr_key));
+  ASSERT_EQ(obj, obj1->getattr(attr_key));
+  ASSERT_EQ(obj, obj2->getattr(attr_key));
+  ASSERT_EQ(obj, obj3->getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
@@ -1107,22 +1074,21 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS2)
   const std::string attr_str2 = "__len__";
   const std::string attr_str3 = "__iter__";
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::dyobj::attr_key attr_key1 = corevm::dyobj::hash_attr_str(attr_str1);
   corevm::dyobj::attr_key attr_key2 = corevm::dyobj::hash_attr_str(attr_str2);
   corevm::dyobj::attr_key attr_key3 = corevm::dyobj::hash_attr_str(attr_str3);
 
-  corevm::dyobj::dyobj_id dst_id = m_process.create_dyobj();
-  m_process.push_stack(dst_id);
+  auto dst_obj = m_process.create_dyobj();
+  m_process.push_stack(dst_obj);
 
-  corevm::dyobj::dyobj_id src_id = m_process.create_dyobj();
-  auto& src_obj = m_process.get_dyobj(src_id);
-  src_obj.putattr(attr_key1, id1);
-  src_obj.putattr(attr_key2, id2);
-  src_obj.putattr(attr_key3, id3);
+  auto src_obj = m_process.create_dyobj();
+  src_obj->putattr(attr_key1, obj1);
+  src_obj->putattr(attr_key2, obj2);
+  src_obj->putattr(attr_key3, obj3);
 
   corevm::runtime::compartment_id compartment_id = 0;
 
@@ -1153,44 +1119,38 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS2)
 
   m_process.emplace_frame(ctx, &compartment, &closure);
 
-  m_process.push_stack(dst_id);
-  m_process.push_stack(src_id);
+  m_process.push_stack(dst_obj);
+  m_process.push_stack(src_obj);
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd>(attr_str_key), 0);
 
   execute_instr<corevm::runtime::instr_handler_setattrs2>(instr, 2);
 
-  corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(dst_id, actual_id);
+  ASSERT_EQ(dst_obj, actual_obj);
 
-  auto& obj = m_process.get_dyobj(actual_id);
+  ASSERT_EQ(true, actual_obj->hasattr(attr_key1));
+  ASSERT_EQ(true, actual_obj->hasattr(attr_key2));
+  ASSERT_EQ(true, actual_obj->hasattr(attr_key3));
 
-  ASSERT_EQ(true, obj.hasattr(attr_key1));
-  ASSERT_EQ(true, obj.hasattr(attr_key2));
-  ASSERT_EQ(true, obj.hasattr(attr_key3));
+  auto attr_obj1 = actual_obj->getattr(attr_key1);
+  auto attr_obj2 = actual_obj->getattr(attr_key1);
+  auto attr_obj3 = actual_obj->getattr(attr_key1);
 
-  auto new_id1 = obj.getattr(attr_key1);
-  auto new_id2 = obj.getattr(attr_key2);
-  auto new_id3 = obj.getattr(attr_key3);
-
-  auto& attr_obj1 = m_process.get_dyobj(new_id1);
-  auto& attr_obj2 = m_process.get_dyobj(new_id2);
-  auto& attr_obj3 = m_process.get_dyobj(new_id3);
-
-  ASSERT_EQ(dst_id, attr_obj1.getattr(attr_key));
-  ASSERT_EQ(dst_id, attr_obj2.getattr(attr_key));
-  ASSERT_EQ(dst_id, attr_obj3.getattr(attr_key));
+  ASSERT_EQ(dst_obj, attr_obj1->getattr(attr_key));
+  ASSERT_EQ(dst_obj, attr_obj2->getattr(attr_key));
+  ASSERT_EQ(dst_obj, attr_obj3->getattr(attr_key));
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsObjUnitTest, TestInstrPUTOBJ)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   corevm::runtime::compartment_id compartment_id = 0;
   corevm::runtime::closure_id closure_id = 0;
@@ -1229,7 +1189,7 @@ TEST_F(InstrsObjUnitTest, TestInstrPUTOBJ)
   corevm::dyobj::dyobj_id actual_id =
     corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(hndl);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj->id(), actual_id);
 }
 
 // -----------------------------------------------------------------------------
@@ -1243,7 +1203,8 @@ TEST_F(InstrsObjUnitTest, TestInstrGETOBJ)
 
   corevm::runtime::Frame frame(ctx, m_compartment, &m_closure);
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::uint64(10);
+  auto obj = m_process.create_dyobj();
+  corevm::types::NativeTypeHandle hndl = corevm::types::uint64(obj->id());
 
   frame.push_eval_stack(hndl);
 
@@ -1253,17 +1214,17 @@ TEST_F(InstrsObjUnitTest, TestInstrGETOBJ)
 
   execute_instr<corevm::runtime::instr_handler_getobj>(instr, 1);
 
-  corevm::dyobj::dyobj_id id = m_process.top_stack();
+  auto actual_obj = m_process.top_stack();
 
-  ASSERT_EQ(10, id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsObjUnitTest, TestInstrSWAP)
 {
-  corevm::dyobj::dyobj_id id1 = 1;
-  corevm::dyobj::dyobj_id id2 = 2;
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
 
   corevm::runtime::Instr instr(0, 0, 0);
 
@@ -1274,16 +1235,16 @@ TEST_F(InstrsObjUnitTest, TestInstrSWAP)
     corevm::runtime::InvalidOperationError
   );
 
-  m_process.push_stack(id2);
-  m_process.push_stack(id1);
+  m_process.push_stack(obj2);
+  m_process.push_stack(obj1);
 
-  ASSERT_EQ(id1, m_process.top_stack());
+  ASSERT_EQ(obj1, m_process.top_stack());
 
   execute_instr<corevm::runtime::instr_handler_swap>(instr, 2);
 
-  corevm::dyobj::dyobj_id top_id = m_process.top_stack();
+  auto top_obj = m_process.top_stack();
 
-  ASSERT_EQ(id2, top_id);
+  ASSERT_EQ(obj2, top_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1295,8 +1256,8 @@ protected:
   {
     InstrsObjUnitTest::SetUp();
 
-    corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-    m_process.push_stack(id);
+    auto obj = m_process.create_dyobj();
+    m_process.push_stack(obj);
   }
 
   virtual void TearDown()
@@ -1333,12 +1294,11 @@ private:
   {
     execute_instr<InstrHandlerCls>(instr);
 
-    corevm::dyobj::dyobj_id actual_id = m_process.top_stack();
-    auto &actual_obj = m_process.get_dyobj(actual_id);
+    auto actual_obj = m_process.top_stack();
 
     bool on_off = static_cast<bool>(instr.oprd1);
 
-    ASSERT_EQ(on_off, actual_obj.get_flag(flag));
+    ASSERT_EQ(on_off, actual_obj->get_flag(flag));
   }
 };
 
@@ -1382,8 +1342,8 @@ class InstrsFunctionsInstrsTest : public InstrsUnitTest {};
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTARG)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::runtime::InvocationCtx& actual_invk_ctx = m_process.top_invocation_ctx();
 
@@ -1397,9 +1357,9 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTARG)
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putarg>(instr);
 
-  corevm::dyobj::dyobj_id actual_id = actual_invk_ctx.pop_param();
+  auto actual_obj = actual_invk_ctx.pop_param();
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1407,8 +1367,8 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTARG)
 TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTKWARG)
 {
   corevm::runtime::variable_key key = 3;
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   corevm::runtime::InvocationCtx& actual_invk_ctx = m_process.top_invocation_ctx();
 
@@ -1424,104 +1384,102 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTKWARG)
 
   execute_instr<corevm::runtime::instr_handler_putkwarg>(instr);
 
-  corevm::dyobj::dyobj_id actual_id = actual_invk_ctx.pop_param_value_pair(key);
+  auto actual_obj = actual_invk_ctx.pop_param_value_pair(key);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTARGS)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  auto& obj = m_process.get_dyobj(id);
+  auto obj = m_process.create_dyobj();
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_array {
-    id1,
-    id2,
-    id3
+    obj1->id(),
+    obj2->id(),
+    obj3->id()
   };
 
   auto key = m_process.insert_ntvhndl(hndl);
-  obj.set_ntvhndl_key(key);
+  obj->set_ntvhndl_key(key);
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   corevm::runtime::InvocationCtx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putargs>(instr);
 
-  corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param();
-  corevm::dyobj::dyobj_id arg_id2 = actual_invk_ctx.pop_param();
-  corevm::dyobj::dyobj_id arg_id3 = actual_invk_ctx.pop_param();
+  auto arg_obj1 = actual_invk_ctx.pop_param();
+  auto arg_obj2 = actual_invk_ctx.pop_param();
+  auto arg_obj3 = actual_invk_ctx.pop_param();
 
-  ASSERT_EQ(id1, arg_id1);
-  ASSERT_EQ(id2, arg_id2);
-  ASSERT_EQ(id3, arg_id3);
+  ASSERT_EQ(obj1, arg_obj1);
+  ASSERT_EQ(obj2, arg_obj2);
+  ASSERT_EQ(obj3, arg_obj3);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTKWARGS)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  auto& obj = m_process.get_dyobj(id);
+  auto obj = m_process.create_dyobj();
 
-  corevm::dyobj::dyobj_id id1 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id2 = m_process.create_dyobj();
-  corevm::dyobj::dyobj_id id3 = m_process.create_dyobj();
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::runtime::variable_key key1 = 1;
   corevm::runtime::variable_key key2 = 2;
   corevm::runtime::variable_key key3 = 3;
 
   corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
-    { key1, id1 },
-    { key2, id2 },
-    { key3, id3 }
+    { key1, obj1->id() },
+    { key2, obj2->id() },
+    { key3, obj3->id() }
   };
 
   auto key = m_process.insert_ntvhndl(hndl);
-  obj.set_ntvhndl_key(key);
+  obj->set_ntvhndl_key(key);
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   corevm::runtime::InvocationCtx& actual_invk_ctx = m_process.top_invocation_ctx();
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_putkwargs>(instr);
 
-  corevm::dyobj::dyobj_id arg_id1 = actual_invk_ctx.pop_param_value_pair(key1);
-  ASSERT_EQ(id1, arg_id1);
+  auto arg_obj1 = actual_invk_ctx.pop_param_value_pair(key1);
+  ASSERT_EQ(obj1, arg_obj1);
 
-  corevm::dyobj::dyobj_id arg_id2 = actual_invk_ctx.pop_param_value_pair(key2);
-  ASSERT_EQ(id2, arg_id2);
+  auto arg_obj2 = actual_invk_ctx.pop_param_value_pair(key2);
+  ASSERT_EQ(obj2, arg_obj2);
 
-  corevm::dyobj::dyobj_id arg_id3 = actual_invk_ctx.pop_param_value_pair(key3);
-  ASSERT_EQ(id3, arg_id3);
+  auto arg_obj3 = actual_invk_ctx.pop_param_value_pair(key3);
+  ASSERT_EQ(obj3, arg_obj3);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARG)
 {
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = m_process.create_dyobj();
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
-  invk_ctx.put_param(id);
+  invk_ctx.put_param(obj);
 
   m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_getarg>(instr);
 
-  corevm::dyobj::dyobj_id actual_id = m_process.pop_stack();
+  auto actual_obj = m_process.pop_stack();
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1529,10 +1487,10 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARG)
 TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARG)
 {
   corevm::runtime::variable_key key = 22;
-  corevm::dyobj::dyobj_id id = 100;
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
-  invk_ctx.put_param_value_pair(key, id);
+  invk_ctx.put_param_value_pair(key, obj);
   m_process.push_invocation_ctx(invk_ctx);
 
   corevm::runtime::vector vector {
@@ -1557,9 +1515,9 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARG)
 
   ASSERT_EQ(true, frame.has_visible_var(key));
 
-  corevm::dyobj::dyobj_id actual_id = frame.get_visible_var(key);
+  auto actual_obj = frame.get_visible_var(key);
 
-  ASSERT_EQ(id, actual_id);
+  ASSERT_EQ(obj, actual_obj);
 
   ASSERT_EQ(relative_addr, m_process.pc());
 }
@@ -1568,14 +1526,14 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARG)
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARGS)
 {
-  corevm::dyobj::dyobj_id id1 = 100;
-  corevm::dyobj::dyobj_id id2 = 200;
-  corevm::dyobj::dyobj_id id3 = 300;
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
-  invk_ctx.put_param(id1);
-  invk_ctx.put_param(id2);
-  invk_ctx.put_param(id3);
+  invk_ctx.put_param(obj1);
+  invk_ctx.put_param(obj2);
+  invk_ctx.put_param(obj3);
   m_process.push_invocation_ctx(invk_ctx);
   m_process.emplace_frame(m_ctx, m_compartment, &m_closure);
 
@@ -1604,9 +1562,9 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARGS)
   auto actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
   auto actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
 
-  ASSERT_EQ(id1, actual_id1);
-  ASSERT_EQ(id2, actual_id2);
-  ASSERT_EQ(id3, actual_id3);
+  ASSERT_EQ(obj1->id(), actual_id1);
+  ASSERT_EQ(obj2->id(), actual_id2);
+  ASSERT_EQ(obj3->id(), actual_id3);
 }
 
 // -----------------------------------------------------------------------------
@@ -1617,14 +1575,14 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARGS)
   corevm::runtime::variable_key key2 = 22;
   corevm::runtime::variable_key key3 = 333;
 
-  corevm::dyobj::dyobj_id id1 = 100;
-  corevm::dyobj::dyobj_id id2 = 200;
-  corevm::dyobj::dyobj_id id3 = 300;
+  auto obj1 = m_process.create_dyobj();
+  auto obj2 = m_process.create_dyobj();
+  auto obj3 = m_process.create_dyobj();
 
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
-  invk_ctx.put_param_value_pair(key1, id1);
-  invk_ctx.put_param_value_pair(key2, id2);
-  invk_ctx.put_param_value_pair(key3, id3);
+  invk_ctx.put_param_value_pair(key1, obj1);
+  invk_ctx.put_param_value_pair(key2, obj2);
+  invk_ctx.put_param_value_pair(key3, obj3);
   m_process.push_invocation_ctx(invk_ctx);
   m_process.emplace_frame(m_ctx, m_compartment, &m_closure);
 
@@ -1652,19 +1610,19 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARGS)
   corevm::dyobj::dyobj_id actual_id2 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle2);
   corevm::dyobj::dyobj_id actual_id3 = corevm::types::get_value_from_handle<corevm::dyobj::dyobj_id>(result_handle3);
 
-  ASSERT_EQ(id1, actual_id1);
-  ASSERT_EQ(id2, actual_id2);
-  ASSERT_EQ(id3, actual_id3);
+  ASSERT_EQ(obj1->id(), actual_id1);
+  ASSERT_EQ(obj2->id(), actual_id2);
+  ASSERT_EQ(obj3->id(), actual_id3);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrHASARGS)
 {
-  corevm::dyobj::dyobj_id id = 100;
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
-  invk_ctx.put_param(id);
+  invk_ctx.put_param(obj);
   m_process.push_invocation_ctx(invk_ctx);
   m_process.emplace_frame(m_ctx, m_compartment, &m_closure);
 
@@ -1743,12 +1701,11 @@ protected:
 
 TEST_F(InstrsControlInstrsTest, TestInstrPINVK)
 {
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  auto& obj = m_process.get_dyobj(id);
+  auto obj = m_process.create_dyobj();
 
   m_ctx.compartment_id = 0;
   m_ctx.closure_id = 0;
-  obj.set_closure_ctx(m_ctx);
+  obj->set_closure_ctx(m_ctx);
 
   corevm::runtime::vector vector;
   corevm::runtime::loc_table locs;
@@ -1769,7 +1726,7 @@ TEST_F(InstrsControlInstrsTest, TestInstrPINVK)
 
   m_process.insert_compartment(compartment);
 
-  m_process.push_stack(id);
+  m_process.push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
 
@@ -1939,8 +1896,8 @@ TEST_F(InstrsControlInstrsTest, TestInstrEXC)
   compartment.set_closure_table(std::move(closure_table));
   m_process.insert_compartment(compartment);
 
-  corevm::dyobj::dyobj_id id = 1;
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   m_process.emplace_frame(ctx, &compartment, &closure_table[0], corevm::runtime::NONESET_INSTR_ADDR);
   m_process.emplace_invocation_ctx(ctx, &compartment, &closure_table[0]);
@@ -1968,11 +1925,11 @@ TEST_F(InstrsObjUnitTest, TestInstrEXCOBJ)
 
   ASSERT_EQ(0, frame.exc_obj());
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = m_process.create_dyobj();
 
-  frame.set_exc_obj(id);
+  frame.set_exc_obj(obj);
 
-  ASSERT_EQ(id, frame.exc_obj());
+  ASSERT_EQ(obj, frame.exc_obj());
 
   m_process.push_frame(frame);
 
@@ -1980,7 +1937,7 @@ TEST_F(InstrsObjUnitTest, TestInstrEXCOBJ)
 
   execute_instr<corevm::runtime::instr_handler_excobj>(instr);
 
-  ASSERT_EQ(id, m_process.top_stack());
+  ASSERT_EQ(obj, m_process.top_stack());
 }
 
 // -----------------------------------------------------------------------------
@@ -1991,13 +1948,13 @@ TEST_F(InstrsControlInstrsTest, TestInstrCLREXC)
 
   corevm::runtime::Frame frame(ctx, m_compartment, &m_closure);
 
-  ASSERT_EQ(0, frame.exc_obj());
+  ASSERT_EQ(NULL, frame.exc_obj());
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = m_process.create_dyobj();
 
-  frame.set_exc_obj(id);
+  frame.set_exc_obj(obj);
 
-  ASSERT_EQ(id, frame.exc_obj());
+  ASSERT_EQ(obj, frame.exc_obj());
 
   m_process.push_frame(frame);
 
@@ -2007,7 +1964,7 @@ TEST_F(InstrsControlInstrsTest, TestInstrCLREXC)
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_EQ(0, actual_frame.exc_obj());
+  ASSERT_EQ(NULL, actual_frame.exc_obj());
 }
 
 // -----------------------------------------------------------------------------
@@ -2029,10 +1986,10 @@ TEST_F(InstrsControlInstrsTest, TestInstrJMPEXC)
 
   corevm::runtime::ClosureCtx ctx(closure_id, compartment_id);
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = m_process.create_dyobj();
 
   corevm::runtime::Frame frame(ctx, m_compartment, &m_closure);
-  frame.set_exc_obj(id);
+  frame.set_exc_obj(obj);
   m_process.push_frame(frame);
 
   // Emulate process starting condition.
@@ -3604,14 +3561,14 @@ TEST_F(InstrsNativeMapTypeComplexInstrsTest, TestInstrMAPSET)
   corevm::runtime::Frame frame(ctx, m_compartment, &m_closure);
   frame.push_eval_stack(hndl);
 
-  corevm::dyobj::dyobj_id id = m_process.create_dyobj();
-  m_process.push_stack(id);
+  auto obj = m_process.create_dyobj();
+  m_process.push_stack(obj);
 
   m_process.push_frame(frame);
 
   corevm::types::native_map_key_type key = 4;
   corevm::types::native_map_mapped_type value =
-    static_cast<corevm::types::native_map_mapped_type>(id);
+    static_cast<corevm::types::native_map_mapped_type>(obj->id());
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd>(key), 0);

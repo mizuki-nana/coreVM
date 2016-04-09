@@ -198,9 +198,9 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
   };
 
   corevm::runtime::variable_key key = 4;
-  corevm::dyobj::dyobj_id id = 44;
 
-  fixture.process().push_stack(id);
+  auto obj = fixture.process().create_dyobj();
+  fixture.process().push_stack(obj);
 
   corevm::runtime::instr_handler_mapset handler;
   corevm::runtime::Instr instr(

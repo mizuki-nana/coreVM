@@ -52,7 +52,7 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   m_visible_vars(),
   m_invisible_vars(),
   m_eval_stack(),
-  m_exc_obj(0)
+  m_exc_obj(NULL)
 {
   // Do nothing here.
   m_eval_stack.reserve(100);
@@ -73,7 +73,7 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   m_visible_vars(),
   m_invisible_vars(),
   m_eval_stack(),
-  m_exc_obj(0)
+  m_exc_obj(NULL)
 {
   // Do nothing here.
   m_eval_stack.reserve(100);
@@ -207,7 +207,7 @@ Frame::has_visible_var(const variable_key var_key) const
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Frame::dyobj_ptr
 Frame::get_visible_var(const variable_key var_key) const
 {
   auto itr = m_visible_vars.find(var_key);
@@ -222,8 +222,7 @@ Frame::get_visible_var(const variable_key var_key) const
 // -----------------------------------------------------------------------------
 
 bool
-Frame::get_visible_var_fast(const variable_key var_key,
-  dyobj::dyobj_id* id) const
+Frame::get_visible_var_fast(const variable_key var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
@@ -231,27 +230,27 @@ Frame::get_visible_var_fast(const variable_key var_key,
     return false;
   }
 
-  *id = itr->second;
+  *obj_ptr = itr->second;
 
   return true;
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Frame::dyobj_ptr
 Frame::pop_visible_var(const variable_key var_key)
 {
-  dyobj::dyobj_id obj_id = get_visible_var(var_key);
+  auto ptr = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
-  return obj_id;
+  return ptr;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Frame::set_visible_var(variable_key var_key, dyobj::dyobj_id obj_id)
+Frame::set_visible_var(variable_key var_key, dyobj_ptr obj_ptr)
 {
-  m_visible_vars[var_key] = obj_id;
+  m_visible_vars[var_key] = obj_ptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -272,7 +271,7 @@ Frame::has_invisible_var(const variable_key var_key) const
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Frame::dyobj_ptr
 Frame::get_invisible_var(const variable_key var_key) const
 {
   auto itr = m_invisible_vars.find(var_key);
@@ -287,7 +286,7 @@ Frame::get_invisible_var(const variable_key var_key) const
 // -----------------------------------------------------------------------------
 
 bool
-Frame::get_invisible_var_fast(const variable_key var_key, dyobj::dyobj_id* id) const
+Frame::get_invisible_var_fast(const variable_key var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
@@ -295,27 +294,27 @@ Frame::get_invisible_var_fast(const variable_key var_key, dyobj::dyobj_id* id) c
     return false;
   }
 
-  *id = itr->second;
+  *obj_ptr = itr->second;
 
   return true;
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Frame::dyobj_ptr
 Frame::pop_invisible_var(const variable_key var_key)
 {
-  dyobj::dyobj_id obj_id = get_invisible_var(var_key);
+  auto obj_ptr = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);
-  return obj_id;
+  return obj_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Frame::set_invisible_var(variable_key var_key, dyobj::dyobj_id obj_id)
+Frame::set_invisible_var(variable_key var_key, dyobj_ptr obj_ptr)
 {
-  m_invisible_vars[var_key] = obj_id;
+  m_invisible_vars[var_key] = obj_ptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -352,34 +351,36 @@ Frame::invisible_var_keys() const
 
 // -----------------------------------------------------------------------------
 
-std::list<dyobj::dyobj_id>
+std::vector<Frame::dyobj_ptr>
 Frame::get_visible_objs() const
 {
-  std::list<dyobj::dyobj_id> ids;
+  std::vector<dyobj_ptr> obj_ptrs;
+  obj_ptrs.reserve(m_visible_vars.size());
 
   for (auto itr = m_visible_vars.begin(); itr != m_visible_vars.end(); ++itr)
   {
-    dyobj::dyobj_id id = itr->second;
-    ids.push_back(id);
+    auto obj_ptr = itr->second;
+    obj_ptrs.push_back(obj_ptr);
   }
 
-  return ids;
+  return obj_ptrs;
 }
 
 // -----------------------------------------------------------------------------
 
-std::list<dyobj::dyobj_id>
+std::vector<Frame::dyobj_ptr>
 Frame::get_invisible_objs() const
 {
-  std::list<dyobj::dyobj_id> ids;
+  std::vector<dyobj_ptr> obj_ptrs;
+  obj_ptrs.reserve(m_invisible_vars.size());
 
   for (auto itr = m_invisible_vars.begin(); itr != m_invisible_vars.end(); ++itr)
   {
-    dyobj::dyobj_id id = itr->second;
-    ids.push_back(id);
+    auto obj_ptr = itr->second;
+    obj_ptrs.push_back(obj_ptr);
   }
 
-  return ids;
+  return obj_ptrs;
 }
 
 // -----------------------------------------------------------------------------
@@ -424,7 +425,7 @@ Frame::set_parent(Frame* parent)
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+Frame::dyobj_ptr
 Frame::exc_obj() const
 {
   return m_exc_obj;
@@ -433,7 +434,7 @@ Frame::exc_obj() const
 // -----------------------------------------------------------------------------
 
 void
-Frame::set_exc_obj(dyobj::dyobj_id exc_obj)
+Frame::set_exc_obj(Frame::dyobj_ptr exc_obj)
 {
   m_exc_obj = exc_obj;
 }
@@ -443,7 +444,7 @@ Frame::set_exc_obj(dyobj::dyobj_id exc_obj)
 void
 Frame::clear_exc_obj()
 {
-  m_exc_obj = 0;
+  m_exc_obj = NULL;
 }
 
 // -----------------------------------------------------------------------------

@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 #include "dyobj/common.h"
-#include "dyobj/dyobj_id.h"
 #include "dyobj/dynamic_object.h"
 #include "dyobj/errors.h"
 #include "dyobj/heap_allocator.h"
@@ -91,7 +90,7 @@ public:
 
   void erase(iterator);
 
-  void erase(dynamic_object_id_type id);
+  void erase(dynamic_object_type*);
 
   iterator begin() noexcept;
   const_iterator cbegin() const noexcept;
@@ -104,7 +103,7 @@ public:
 
   dynamic_object_type& at(const dynamic_object_id_type);
 
-  dynamic_object_id_type create_dyobj();
+  dynamic_object_type* create_dyobj();
 
   dynamic_object_type* create_dyobjs(size_t n);
 
@@ -195,11 +194,8 @@ DynamicObjectHeap<DynamicObjectManager>::erase(iterator pos)
 
 template<class DynamicObjectManager>
 void
-DynamicObjectHeap<DynamicObjectManager>::erase(dynamic_object_id_type id)
+DynamicObjectHeap<DynamicObjectManager>::erase(dynamic_object_type* ptr)
 {
-  void* raw_ptr = obj_id_to_ptr(id);
-  dynamic_object_type* ptr = static_cast<dynamic_object_type*>(raw_ptr);
-
   ptr = m_container.at(ptr);
 
   m_container.destroy(ptr);
@@ -280,7 +276,7 @@ DynamicObjectHeap<DynamicObjectManager>::at(
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_id_type
+typename DynamicObjectHeap<DynamicObjectManager>::dynamic_object_type*
 DynamicObjectHeap<DynamicObjectManager>::create_dyobj()
 {
   auto obj_ptr = m_container.create();
@@ -290,11 +286,9 @@ DynamicObjectHeap<DynamicObjectManager>::create_dyobj()
     THROW(ObjectCreationError());
   }
 
-  auto id = obj_ptr_to_id(obj_ptr);
-  obj_ptr->set_id(id);
   obj_ptr->manager().on_create();
 
-  return id;
+  return obj_ptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -312,8 +306,6 @@ DynamicObjectHeap<DynamicObjectManager>::create_dyobjs(size_t n)
 
   for (size_t i = 0; i < n; ++i)
   {
-    auto id = obj_ptr_to_id(&ptr[i]);
-    ptr[i].set_id(id);
     ptr[i].manager().on_create();
   }
 

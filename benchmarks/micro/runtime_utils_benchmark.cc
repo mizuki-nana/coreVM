@@ -77,14 +77,14 @@ void BenchmarkGetattr(benchmark::State& state)
   const std::string attr_name("__str__");
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
-  corevm::dyobj::dyobj_id attr_id = 123;
 
   DynamicObjectType obj;
-  obj.putattr(attr_key, attr_id);
+  DynamicObjectType attr_obj;
+  obj.putattr(attr_key, &attr_obj);
 
   while (state.KeepRunning())
   {
-    corevm::runtime::getattr(obj, attr_name);
+    corevm::runtime::getattr(&obj, attr_name);
   }
 }
 
@@ -105,14 +105,14 @@ void BenchmarkGetattr2(benchmark::State& state)
   corevm::runtime::encoding_key attr_encoding_key = 0;
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
-  corevm::dyobj::dyobj_id attr_id = 123;
 
   DynamicObjectType obj;
-  obj.putattr(attr_key, attr_id);
+  DynamicObjectType attr_obj;
+  obj.putattr(attr_key, &attr_obj);
 
   while (state.KeepRunning())
   {
-    corevm::runtime::getattr(obj, &compartment, attr_encoding_key);
+    corevm::runtime::getattr(&obj, &compartment, attr_encoding_key);
   }
 }
 

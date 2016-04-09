@@ -44,14 +44,13 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::ClosureCtx ctx(0, 0);
 
-  obj.set_closure_ctx(ctx);
+  obj->set_closure_ctx(ctx);
 
-  fixture.process().push_stack(id);
+  fixture.process().push_stack(obj);
 
   corevm::runtime::instr_handler_pinvk handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -260,7 +259,8 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
   corevm::runtime::instr_handler_clrexc handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
-  fixture.process().top_frame().set_exc_obj(1);
+  auto obj = fixture.process().create_dyobj();
+  fixture.process().top_frame().set_exc_obj(obj);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();

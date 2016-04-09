@@ -98,8 +98,8 @@ TEST_F(ProcessUnitTest, TestPushAndPopStack)
 {
   corevm::runtime::Process process;
 
-  corevm::dyobj::dyobj_id id1 = 1;
-  corevm::dyobj::dyobj_id id2 = 2;
+  auto obj1 = process.create_dyobj();
+  auto obj2 = process.create_dyobj();
 
   ASSERT_THROW(
     {
@@ -115,17 +115,17 @@ TEST_F(ProcessUnitTest, TestPushAndPopStack)
     corevm::runtime::ObjectStackEmptyError
   );
 
-  process.push_stack(id1);
+  process.push_stack(obj1);
 
-  auto actual_id1 = process.top_stack();
+  auto actual_obj1 = process.top_stack();
 
-  ASSERT_EQ(id1, actual_id1);
+  ASSERT_EQ(obj1, actual_obj1);
 
-  process.push_stack(id2);
+  process.push_stack(obj2);
 
-  auto actual_id2 = process.top_stack();
+  auto actual_obj2 = process.top_stack();
 
-  ASSERT_EQ(id2, actual_id2);
+  ASSERT_EQ(obj2, actual_obj2);
 
   ASSERT_NO_THROW(
     {
@@ -133,7 +133,7 @@ TEST_F(ProcessUnitTest, TestPushAndPopStack)
     }
   );
 
-  ASSERT_EQ(id1, process.top_stack());
+  ASSERT_EQ(obj1, process.top_stack());
 
   ASSERT_NO_THROW(
     {
@@ -163,20 +163,20 @@ TEST_F(ProcessUnitTest, TestSwapStack)
 {
   corevm::runtime::Process process;
 
-  corevm::dyobj::dyobj_id id1 = 1;
-  corevm::dyobj::dyobj_id id2 = 2;
+  auto obj1 = process.create_dyobj();
+  auto obj2 = process.create_dyobj();
 
-  process.push_stack(id2);
-  process.push_stack(id1);
+  process.push_stack(obj2);
+  process.push_stack(obj1);
 
-  ASSERT_EQ(id1, process.top_stack());
+  ASSERT_EQ(obj1, process.top_stack());
 
   process.swap_stack();
 
-  ASSERT_EQ(id2, process.top_stack());
+  ASSERT_EQ(obj2, process.top_stack());
 
-  ASSERT_EQ(id2, process.pop_stack());
-  ASSERT_EQ(id1, process.pop_stack());
+  ASSERT_EQ(obj2, process.pop_stack());
+  ASSERT_EQ(obj1, process.pop_stack());
 }
 
 // -----------------------------------------------------------------------------

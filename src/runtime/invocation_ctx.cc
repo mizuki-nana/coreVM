@@ -104,14 +104,14 @@ InvocationCtx::has_params() const
 // -----------------------------------------------------------------------------
 
 void
-InvocationCtx::put_param(const dyobj::dyobj_id& id)
+InvocationCtx::put_param(param_type param)
 {
-  m_params_list.push_back(id);
+  m_params_list.push_back(param);
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
+InvocationCtx::param_type
 InvocationCtx::pop_param()
 {
   if (m_params_list_pop_index >= m_params_list.size())
@@ -133,8 +133,7 @@ InvocationCtx::has_param_value_pairs() const
 // -----------------------------------------------------------------------------
 
 bool
-InvocationCtx::has_param_value_pair_with_key(
-  const variable_key& key) const
+InvocationCtx::has_param_value_pair_with_key(variable_key key) const
 {
   return m_param_value_map.find(key) != m_param_value_map.end();
 }
@@ -142,16 +141,15 @@ InvocationCtx::has_param_value_pair_with_key(
 // -----------------------------------------------------------------------------
 
 void
-InvocationCtx::put_param_value_pair(
-  const variable_key& key, const dyobj::dyobj_id& id)
+InvocationCtx::put_param_value_pair(variable_key key, param_type param)
 {
-  m_param_value_map[key] = id;
+  m_param_value_map[key] = param;
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::dyobj_id
-InvocationCtx::pop_param_value_pair(const variable_key& key)
+InvocationCtx::param_type
+InvocationCtx::pop_param_value_pair(variable_key key)
 {
   auto itr = m_param_value_map.find(key);
 
@@ -160,11 +158,11 @@ InvocationCtx::pop_param_value_pair(const variable_key& key)
     THROW(MissingParameterError());
   }
 
-  dyobj::dyobj_id id = itr->second;
+  auto param = itr->second;
 
   m_param_value_map.erase(itr);
 
-  return id;
+  return param;
 }
 
 // -----------------------------------------------------------------------------
@@ -175,8 +173,7 @@ InvocationCtx::param_value_pair_keys() const
   std::vector<variable_key> keys;
   keys.reserve(m_param_value_map.size());
 
-  for (auto itr = m_param_value_map.begin();
-       itr != m_param_value_map.end(); ++itr)
+  for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
   {
     variable_key key = itr->first;
     keys.push_back(key);

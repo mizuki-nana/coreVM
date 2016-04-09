@@ -95,16 +95,16 @@ TEST_F(RuntimeUtilsUnitTest, TestGetattr)
   const std::string attr_name("__str__");
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
-  corevm::dyobj::dyobj_id attr_id = 123;
 
   DynamicObjectType obj;
-  obj.putattr(attr_key, attr_id);
+  DynamicObjectType attr_obj;
+  obj.putattr(attr_key, &attr_obj);
 
   ASSERT_EQ(true, obj.hasattr(attr_key));
 
-  auto actual_attr_id = corevm::runtime::getattr(obj, attr_name);
+  auto actual_attr_obj = corevm::runtime::getattr(&obj, attr_name);
 
-  ASSERT_EQ(attr_id, actual_attr_id);
+  ASSERT_EQ(&attr_obj, actual_attr_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -123,17 +123,17 @@ TEST_F(RuntimeUtilsUnitTest, TestGetattr2)
   corevm::runtime::encoding_key attr_encoding_key = 0;
 
   corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
-  corevm::dyobj::dyobj_id attr_id = 123;
 
   DynamicObjectType obj;
-  obj.putattr(attr_key, attr_id);
+  DynamicObjectType attr_obj;
+  obj.putattr(attr_key, &attr_obj);
 
   ASSERT_EQ(true, obj.hasattr(attr_key));
 
-  auto actual_attr_id = corevm::runtime::getattr(
-    obj, &compartment, attr_encoding_key);
+  auto actual_attr_obj = corevm::runtime::getattr(
+    &obj, &compartment, attr_encoding_key);
 
-  ASSERT_EQ(attr_id, actual_attr_id);
+  ASSERT_EQ(&attr_obj, actual_attr_obj);
 }
 
 // -----------------------------------------------------------------------------

@@ -138,14 +138,13 @@ void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    fixture.process().push_stack(id);
+    fixture.process().push_stack(obj);
   }
 
   auto frame = &fixture.process().top_frame();
@@ -173,19 +172,18 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
   corevm::runtime::EncodingMap encoding_map { attr_str };
   set_encoding_pair(fixture.process(), encoding_map);
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
-  obj.putattr(attr_key, id2);
+  obj->putattr(attr_key, obj2);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   while (state.KeepRunning())
   {
-    fixture.process().push_stack(id);
+    fixture.process().push_stack(obj);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -210,17 +208,16 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::St
   corevm::runtime::EncodingMap encoding_map { attr_str };
   set_encoding_pair(fixture.process(), encoding_map);
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   while (state.KeepRunning())
   {
-    fixture.process().push_stack(id);
-    obj.putattr(attr_key, id2);
+    fixture.process().push_stack(obj);
+    obj->putattr(attr_key, obj2);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -263,8 +260,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
 
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
 
   auto frame = &fixture.process().top_frame();
@@ -272,8 +268,8 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
 
   while (state.KeepRunning())
   {
-    fixture.process().push_stack(id);
-    obj.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+    fixture.process().push_stack(obj);
+    obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -290,17 +286,16 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
-  auto& obj2 = fixture.process().get_dyobj(id2);
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj2.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj2->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    fixture.process().push_stack(id);
-    fixture.process().push_stack(id2);
+    fixture.process().push_stack(obj);
+    fixture.process().push_stack(obj2);
   }
 
   auto frame = &fixture.process().top_frame();
@@ -405,15 +400,14 @@ void BenchmarkSWAPInstr(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
-  auto& obj2 = fixture.process().get_dyobj(id2);
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj2.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj2->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
-  fixture.process().push_stack(id);
-  fixture.process().push_stack(id2);
+  fixture.process().push_stack(obj);
+  fixture.process().push_stack(obj2);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -437,12 +431,11 @@ BenchmarkHASATTR2Instr(benchmark::State& state)
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
-  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
-  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
-  auto &obj = fixture.process().get_dyobj(id1);
-  obj.putattr(attr_key, id2);
-  fixture.process().push_stack(id1);
+  obj->putattr(attr_key, obj2);
+  fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_hasattr2 handler;
@@ -471,12 +464,11 @@ BenchmarkGETATTR2Instr(benchmark::State& state)
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
-  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
-  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
-  auto &obj = fixture.process().get_dyobj(id1);
-  obj.putattr(attr_key, id2);
-  fixture.process().push_stack(id1);
+  obj->putattr(attr_key, obj2);
+  fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_getattr2 handler;
@@ -488,7 +480,7 @@ BenchmarkGETATTR2Instr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    fixture.process().push_stack(id1);
+    fixture.process().push_stack(obj);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -505,8 +497,8 @@ BenchmarkSETATTR2Instr(benchmark::State& state)
   const std::string attr_str = "hello_world";
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
-  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
-  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+  auto obj1 = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_setattr2 handler;
@@ -518,8 +510,8 @@ BenchmarkSETATTR2Instr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    fixture.process().push_stack(id1);
-    fixture.process().push_stack(id2);
+    fixture.process().push_stack(obj1);
+    fixture.process().push_stack(obj2);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -538,11 +530,10 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
-  corevm::dyobj::dyobj_id id1 = fixture.process().create_dyobj();
-  corevm::dyobj::dyobj_id id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
-  auto &obj = fixture.process().get_dyobj(id1);
-  fixture.process().push_stack(id1);
+  fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_delattr2 handler;
@@ -554,7 +545,7 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    obj.putattr(attr_key, id2);
+    obj->putattr(attr_key, obj2);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -571,26 +562,25 @@ BenchmarkSETATTRSInstr(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   corevm::types::native_map attr_map {
-    { 1, id2 }
+    { 1, obj2->id() }
   };
 
   corevm::types::NativeTypeHandle hndl = attr_map;
-  auto& obj = fixture.process().get_dyobj(id);
-  obj.set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
 
   corevm::runtime::ClosureCtx ctx(0, 0);
 
-  obj.set_closure_ctx(ctx);
+  obj->set_closure_ctx(ctx);
 
-  fixture.process().push_stack(id2);
+  fixture.process().push_stack(obj2);
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    fixture.process().push_stack(id);
+    fixture.process().push_stack(obj);
   }
 
   auto frame = &fixture.process().top_frame();
@@ -618,16 +608,16 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
   corevm::runtime::EncodingMap encoding_map { attr_str };
   set_encoding_pair(fixture.process(), encoding_map);
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   corevm::types::native_map attr_map {
-    { attr_key, id2 }
+    { attr_key, obj2->id() }
   };
 
   corevm::types::NativeTypeHandle hndl = attr_map;
 
-  fixture.process().push_stack(id);
+  fixture.process().push_stack(obj);
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
@@ -656,18 +646,16 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  auto id = fixture.process().create_dyobj();
-  auto id2 = fixture.process().create_dyobj();
-
-  auto& obj = fixture.process().get_dyobj(id);
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
 
   corevm::runtime::ClosureCtx ctx(0, 0);
 
-  obj.set_closure_ctx(ctx);
+  obj->set_closure_ctx(ctx);
 
-  auto attr_obj_id1 = fixture.process().create_dyobj();
-  auto attr_obj_id2 = fixture.process().create_dyobj();
-  auto attr_obj_id3 = fixture.process().create_dyobj();
+  auto attr_obj1 = fixture.process().create_dyobj();
+  auto attr_obj2 = fixture.process().create_dyobj();
+  auto attr_obj3 = fixture.process().create_dyobj();
 
   corevm::dyobj::attr_key attr_key1 = 1;
   corevm::dyobj::attr_key attr_key2 = 2;
@@ -686,15 +674,15 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
   set_encoding_pair(fixture.process(), encoding_map);
 
-  obj.putattr(attr_key1, attr_obj_id1);
-  obj.putattr(attr_key2, attr_obj_id2);
-  obj.putattr(attr_key3, attr_obj_id3);
+  obj->putattr(attr_key1, attr_obj1);
+  obj->putattr(attr_key2, attr_obj2);
+  obj->putattr(attr_key3, attr_obj3);
 
-  fixture.process().push_stack(id2);
+  fixture.process().push_stack(obj2);
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    fixture.process().push_stack(id);
+    fixture.process().push_stack(obj);
   }
 
   auto frame = &fixture.process().top_frame();

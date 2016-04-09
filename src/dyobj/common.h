@@ -58,6 +58,22 @@ const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
 const int64_t NTVHNDL_LIMIT = LLONG_MAX;
 
 
+typedef uint64_t dyobj_id;
+
+
+const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
+
+
+// -----------------------------------------------------------------------------
+
+inline void* obj_id_to_ptr(dyobj_id id)
+{
+  return reinterpret_cast<void*>(id);
+}
+
+// -----------------------------------------------------------------------------
+
+
 } /* end namespace dyobj */
 
 

@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_DYOBJ_ERRORS_H_
 
 #include "common.h"
-#include "dyobj_id.h"
 #include "corevm/errors.h"
 
 #include <boost/format.hpp>

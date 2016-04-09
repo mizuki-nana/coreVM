@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -20,56 +20,35 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_DYOBJ_ID_H_
-#define COREVM_DYOBJ_ID_H_
+#ifndef COREVM_RUNTIME_TYPES_H_
+#define COREVM_RUNTIME_TYPES_H_
 
-#if defined(__clang__) and __clang__
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wc++98-compat-pedantic"
-#endif
-
-#include <climits>
-#include <cstdint>
+#include "dyobj/dynamic_object_heap.h"
+#include "gc/reference_count_garbage_collection_scheme.h"
 
 
 namespace corevm {
 
 
-namespace dyobj {
+namespace runtime {
 
 
-typedef uint64_t dyobj_id;
-
-
-const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
-
-
-// -----------------------------------------------------------------------------
-
-inline dyobj_id obj_ptr_to_id(void* ptr)
+/**
+ * Global declaration of types used in the runtime sub-system.
+ */
+struct RuntimeTypes
 {
-  return static_cast<dyobj_id>( (uint8_t*)(ptr) - (uint8_t*)(0) );
-}
-
-// -----------------------------------------------------------------------------
-
-inline void* obj_id_to_ptr(dyobj_id id)
-{
-  return reinterpret_cast<void*>(id);
-}
-
-// -----------------------------------------------------------------------------
+  typedef gc::RefCountGarbageCollectionScheme garbage_collection_scheme;
+  using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
+  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
+  typedef dynamic_object_type::dyobj_ptr dyobj_ptr_type;
+};
 
 
-} /* end namespace dyobj */
+} /* end namespace runtime */
 
 
 } /* end namespace corevm */
 
 
-#if defined(__clang__) and __clang__
-  #pragma clang diagnostic pop
-#endif
-
-
-#endif /* COREVM_DYOBJ_ID_H_ */
+#endif /* COREVM_RUNTIME_TYPES_H_ */

@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/common.h"
 #include "runtime/closure.h"
 #include "runtime/compartment.h"
+#include "runtime/runtime_types.h"
 #include "types/native_type_handle.h"
 
 #include <gtest/gtest.h>
@@ -125,7 +126,7 @@ TEST_F(FrameUnitTest, TestVisibleVars)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
-  corevm::dyobj::dyobj_id obj_id = 1;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   ASSERT_EQ(false, frame.has_visible_var(var_key));
 
@@ -136,11 +137,11 @@ TEST_F(FrameUnitTest, TestVisibleVars)
     corevm::runtime::NameNotFoundError
   );
 
-  frame.set_visible_var(var_key, obj_id);
+  frame.set_visible_var(var_key, &obj);
 
   ASSERT_EQ(true, frame.has_visible_var(var_key));
-  ASSERT_EQ(obj_id, frame.get_visible_var(var_key));
-  ASSERT_EQ(obj_id, frame.pop_visible_var(var_key));
+  ASSERT_EQ(&obj, frame.get_visible_var(var_key));
+  ASSERT_EQ(&obj, frame.pop_visible_var(var_key));
 
   ASSERT_THROW(
     {
@@ -156,7 +157,7 @@ TEST_F(FrameUnitTest, TestInvisibleVars)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   corevm::runtime::variable_key var_key = 1111;
-  corevm::dyobj::dyobj_id obj_id = 812;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   ASSERT_EQ(false, frame.has_invisible_var(var_key));
 
@@ -167,11 +168,11 @@ TEST_F(FrameUnitTest, TestInvisibleVars)
     corevm::runtime::NameNotFoundError
   );
 
-  frame.set_invisible_var(var_key, obj_id);
+  frame.set_invisible_var(var_key, &obj);
 
   ASSERT_EQ(true, frame.has_invisible_var(var_key));
-  ASSERT_EQ(obj_id, frame.get_invisible_var(var_key));
-  ASSERT_EQ(obj_id, frame.pop_invisible_var(var_key));
+  ASSERT_EQ(&obj, frame.get_invisible_var(var_key));
+  ASSERT_EQ(&obj, frame.pop_invisible_var(var_key));
 
   ASSERT_THROW(
     {
@@ -186,17 +187,17 @@ TEST_F(FrameUnitTest, TestInvisibleVars)
 TEST_F(FrameUnitTest, TestGetAndSetExcObj)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::dyobj::dyobj_id id = 1;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
-  ASSERT_NE(id, frame.exc_obj());
+  ASSERT_NE(&obj, frame.exc_obj());
 
-  frame.set_exc_obj(id);
+  frame.set_exc_obj(&obj);
 
-  ASSERT_EQ(id, frame.exc_obj());
+  ASSERT_EQ(&obj, frame.exc_obj());
 
   frame.clear_exc_obj();
 
-  ASSERT_EQ(0, frame.exc_obj());
+  ASSERT_EQ(NULL, frame.exc_obj());
 }
 
 // -----------------------------------------------------------------------------

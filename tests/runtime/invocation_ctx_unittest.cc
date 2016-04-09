@@ -26,7 +26,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/compartment.h"
 #include "runtime/errors.h"
 #include "runtime/invocation_ctx.h"
-#include "dyobj/dyobj_id.h"
+#include "runtime/runtime_types.h"
+#include "dyobj/common.h"
 
 #include <gtest/gtest.h>
 
@@ -76,16 +77,16 @@ TEST_F(InvocationCtxUnitTest, TestPutAndGetParams)
 
   ASSERT_EQ(false, invk_ctx.has_params());
 
-  corevm::dyobj::dyobj_id id1 = 1000;
-  corevm::dyobj::dyobj_id id2 = 200;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj1;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj2;
 
-  invk_ctx.put_param(id1);
-  invk_ctx.put_param(id2);
+  invk_ctx.put_param(&obj1);
+  invk_ctx.put_param(&obj2);
 
   ASSERT_EQ(true, invk_ctx.has_params());
 
-  ASSERT_EQ(id1, invk_ctx.pop_param());
-  ASSERT_EQ(id2, invk_ctx.pop_param());
+  ASSERT_EQ(&obj1, invk_ctx.pop_param());
+  ASSERT_EQ(&obj2, invk_ctx.pop_param());
 
   ASSERT_EQ(false, invk_ctx.has_params());
 
@@ -107,16 +108,17 @@ TEST_F(InvocationCtxUnitTest, TestPutAndGetParamValuePairs)
 
   corevm::runtime::variable_key key1 = 100;
   corevm::runtime::variable_key key2 = 2000;
-  corevm::dyobj::dyobj_id id1 = 200;
-  corevm::dyobj::dyobj_id id2 = 1000;
 
-  invk_ctx.put_param_value_pair(key1, id1);
-  invk_ctx.put_param_value_pair(key2, id2);
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj1;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj2;
+
+  invk_ctx.put_param_value_pair(key1, &obj1);
+  invk_ctx.put_param_value_pair(key2, &obj2);
 
   ASSERT_EQ(true, invk_ctx.has_param_value_pairs());
 
-  ASSERT_EQ(id1, invk_ctx.pop_param_value_pair(key1));
-  ASSERT_EQ(id2, invk_ctx.pop_param_value_pair(key2));
+  ASSERT_EQ(&obj1, invk_ctx.pop_param_value_pair(key1));
+  ASSERT_EQ(&obj2, invk_ctx.pop_param_value_pair(key2));
 
   ASSERT_THROW(
     {
@@ -141,11 +143,12 @@ TEST_F(InvocationCtxUnitTest, TestListParamValuePairKeys)
 
   corevm::runtime::variable_key key1 = 100;
   corevm::runtime::variable_key key2 = 2000;
-  corevm::dyobj::dyobj_id id1 = 200;
-  corevm::dyobj::dyobj_id id2 = 1000;
 
-  invk_ctx.put_param_value_pair(key1, id1);
-  invk_ctx.put_param_value_pair(key2, id2);
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj1;
+  corevm::runtime::RuntimeTypes::dynamic_object_type obj2;
+
+  invk_ctx.put_param_value_pair(key1, &obj1);
+  invk_ctx.put_param_value_pair(key2, &obj2);
 
   expected_keys = { key1, key2 };
   actual_keys = invk_ctx.param_value_pair_keys();

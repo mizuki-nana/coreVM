@@ -91,29 +91,28 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
 TEST_F(DynamicObjectUnitTest, TestGetattr)
 {
   dynamic_object_type obj;
+  dynamic_object_type attr_obj;
 
   corevm::dyobj::attr_key attr_key = 1;
 
-  corevm::dyobj::dyobj_id attr_id = 123;
-
   ASSERT_FALSE(obj.hasattr(attr_key));
 
-  obj.putattr(attr_key, attr_id);
+  obj.putattr(attr_key, &attr_obj);
 
-  corevm::dyobj::dyobj_id actual_attr_id = 0;
-  bool res = obj.getattr(attr_key, &actual_attr_id);
+  dynamic_object_type* actual_attr_obj = NULL;
+  bool res = obj.getattr(attr_key, &actual_attr_obj);
 
   ASSERT_EQ(true, res);
-  ASSERT_EQ(attr_id, actual_attr_id);
+  ASSERT_EQ(&attr_obj, actual_attr_obj);
 
   corevm::dyobj::attr_key invalid_attr_key = 2;
   ASSERT_FALSE(obj.hasattr(invalid_attr_key));
 
-  corevm::dyobj::dyobj_id invalid_attr_id = 0;
-  res = obj.getattr(invalid_attr_key, &invalid_attr_id);
+  dynamic_object_type* invalid_attr_obj = NULL;
+  res = obj.getattr(invalid_attr_key, &invalid_attr_obj);
 
   ASSERT_EQ(false, res);
-  ASSERT_EQ(0, invalid_attr_id);
+  ASSERT_EQ(NULL, invalid_attr_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -126,14 +125,14 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetAttrs)
   corevm::dyobj::attr_key key2 = 456;
   corevm::dyobj::attr_key key3 = 789;
 
-  corevm::dyobj::dyobj_id obj_id1 = 1;
-  corevm::dyobj::dyobj_id obj_id2 = 2;
-  corevm::dyobj::dyobj_id obj_id3 = 3;
+  dynamic_object_type obj1;
+  dynamic_object_type obj2;
+  dynamic_object_type obj3;
 
-  std::map<corevm::dyobj::attr_key, corevm::dyobj::dyobj_id> mock_attrs {
-    { key1, obj_id1 },
-    { key2, obj_id2 },
-    { key3, obj_id3 }
+  std::map<corevm::dyobj::attr_key, dynamic_object_type*> mock_attrs {
+    { key1, &obj1 },
+    { key2, &obj2 },
+    { key3, &obj3 }
   };
 
   ASSERT_FALSE(obj.hasattr(key1));
@@ -278,13 +277,13 @@ TEST_F(DynamicObjectUnitTest, TestCopyFrom)
   corevm::dyobj::attr_key key2 = 456;
   corevm::dyobj::attr_key key3 = 789;
 
-  corevm::dyobj::dyobj_id attr_id1 = 321;
-  corevm::dyobj::dyobj_id attr_id2 = 654;
-  corevm::dyobj::dyobj_id attr_id3 = 987;
+  dynamic_object_type attr_obj1;
+  dynamic_object_type attr_obj2;
+  dynamic_object_type attr_obj3;
 
-  obj.putattr(key1, attr_id1);
-  obj.putattr(key2, attr_id2);
-  obj.putattr(key3, attr_id3);
+  obj.putattr(key1, &attr_obj1);
+  obj.putattr(key2, &attr_obj2);
+  obj.putattr(key3, &attr_obj3);
 
   char flag1 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE;
   char flag2 = corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE;
@@ -322,14 +321,7 @@ TEST_F(DynamicObjectUnitTest, TestInequality)
   dynamic_object_type obj1;
   dynamic_object_type obj2;
 
-  // True before setting their IDs.
-  ASSERT_TRUE(obj1 == obj2);
-
-  obj1.set_id(1u);
-  obj2.set_id(2u);
-
   ASSERT_TRUE(obj1 != obj2);
-  ASSERT_FALSE(obj1 == obj2);
 }
 
 // -----------------------------------------------------------------------------

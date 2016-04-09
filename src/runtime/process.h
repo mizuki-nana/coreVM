@@ -31,11 +31,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr.h"
 #include "invocation_ctx.h"
 #include "native_types_pool.h"
+#include "runtime_types.h"
 #include "sighandler.h"
 #include "vector.h"
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
-#include "gc/reference_count_garbage_collection_scheme.h"
 
 #include <cstdint>
 #include <type_traits>
@@ -79,10 +79,10 @@ class ProcessPrinter;
 class Process
 {
 public:
-  typedef gc::RefCountGarbageCollectionScheme garbage_collection_scheme;
-  using dynamic_object_type = typename dyobj::DynamicObject<garbage_collection_scheme::DynamicObjectManager>;
-  using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager>;
-  typedef NativeTypesPool native_types_pool_type;
+  typedef RuntimeTypes::dynamic_object_type dynamic_object_type;
+  typedef RuntimeTypes::dynamic_object_heap_type dynamic_object_heap_type;
+  typedef RuntimeTypes::garbage_collection_scheme garbage_collection_scheme;
+  typedef RuntimeTypes::dyobj_ptr_type dyobj_ptr;
 
 public:
   struct Options
@@ -103,9 +103,9 @@ public:
   Process(const Process&) = delete;
   Process& operator=(const Process&) = delete;
 
-  dyobj::dyobj_id create_dyobj();
+  dyobj_ptr create_dyobj();
 
-  dynamic_object_type* create_dyobjs(size_t n);
+  dyobj_ptr create_dyobjs(size_t n);
 
   dynamic_object_type& get_dyobj(dyobj::dyobj_id id);
 
@@ -154,13 +154,13 @@ public:
 
   void pop_invocation_ctx();
 
-  const dyobj::dyobj_id& top_stack();
+  dyobj_ptr top_stack();
 
-  dyobj::dyobj_id pop_stack();
+  dyobj_ptr pop_stack();
 
   void swap_stack();
 
-  void push_stack(dyobj::dyobj_id&);
+  void push_stack(dyobj_ptr);
 
   bool has_ntvhndl(dyobj::ntvhndl_key&);
 
@@ -204,9 +204,9 @@ public:
 
   dynamic_object_heap_type::size_type max_heap_size() const;
 
-  native_types_pool_type::size_type ntvhndl_pool_size() const;
+  NativeTypesPool::size_type ntvhndl_pool_size() const;
 
-  native_types_pool_type::size_type max_ntvhndl_pool_size() const;
+  NativeTypesPool::size_type max_ntvhndl_pool_size() const;
 
   size_t compartment_count() const;
 
@@ -267,11 +267,11 @@ private:
   uint8_t m_gc_flag;
   instr_addr m_pc;
   vector m_instrs;
-  dyobj::DynamicObjectHeap<garbage_collection_scheme::DynamicObjectManager> m_dynamic_object_heap;
-  std::vector<dyobj::dyobj_id> m_dyobj_stack;
+  dynamic_object_heap_type m_dynamic_object_heap;
+  std::vector<dyobj_ptr> m_dyobj_stack;
   std::vector<Frame> m_call_stack;
   std::vector<InvocationCtx> m_invocation_ctx_stack;
-  native_types_pool_type m_ntvhndl_pool;
+  NativeTypesPool m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, vector> m_sig_instr_map;
   std::vector<Compartment> m_compartments;
   std::vector<GCRulePtr> m_gc_rules;

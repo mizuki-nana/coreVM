@@ -76,27 +76,27 @@ get_attr_key(
 
 // -----------------------------------------------------------------------------
 
-template<typename ObjType>
-dyobj::dyobj_id
-getattr(const ObjType& obj, dyobj::attr_key attr_key,
+template<typename ObjPtrType>
+ObjPtrType
+getattr(const ObjPtrType& obj, dyobj::attr_key attr_key,
   const std::string& attr_name)
 {
-  dyobj::dyobj_id attr_id = 0;
+  ObjPtrType attr_ptr = NULL;
 
-  if (!obj.getattr(attr_key, &attr_id))
+  if (!obj->getattr(attr_key, &attr_ptr))
   {
     THROW(dyobj::ObjectAttributeNotFoundError(
-      attr_key, obj.id(), attr_name));
+      attr_key, obj->id(), attr_name));
   }
 
-  return attr_id;
+  return attr_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-template<typename ObjType>
-dyobj::dyobj_id
-getattr(const ObjType& obj, const std::string& attr_name)
+template<typename ObjPtrType>
+ObjPtrType
+getattr(const ObjPtrType& obj, const std::string& attr_name)
 {
   dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_name);
 
@@ -105,11 +105,9 @@ getattr(const ObjType& obj, const std::string& attr_name)
 
 // -----------------------------------------------------------------------------
 
-template<typename ObjType>
-dyobj::dyobj_id
-getattr(const ObjType& obj,
-  Compartment* compartment,
-  encoding_key attr_encoding_key)
+template<typename ObjPtrType>
+ObjPtrType
+getattr(const ObjPtrType& obj, Compartment* compartment, encoding_key attr_encoding_key)
 {
   std::string attr_name;
   dyobj::attr_key attr_key = get_attr_key(

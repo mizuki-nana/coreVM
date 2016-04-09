@@ -51,7 +51,8 @@ void BenchmarkProcessGetDyobj(benchmark::State& state)
 {
   corevm::runtime::Process process;
 
-  auto id = process.create_dyobj();
+  auto obj = process.create_dyobj();
+  auto id = obj->id();
 
   while (state.KeepRunning())
   {
@@ -67,11 +68,11 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 {
   corevm::runtime::Process process;
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = process.create_dyobj();
 
   while (state.KeepRunning())
   {
-    process.push_stack(id);
+    process.push_stack(obj);
   }
 }
 #endif

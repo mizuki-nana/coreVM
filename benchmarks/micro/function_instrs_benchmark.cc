@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
-#include "dyobj/dyobj_id.h"
+#include "dyobj/common.h"
 #include "runtime/common.h"
 #include "runtime/instr.h"
 #include "runtime/process.h"
@@ -173,11 +173,11 @@ void BenchmarkInstrGETARG(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = fixture.process().create_dyobj();
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    fixture.process().top_invocation_ctx().put_param(id);
+    fixture.process().top_invocation_ctx().put_param(obj);
   }
 
   corevm::runtime::instr_handler_getarg handler;
@@ -200,7 +200,7 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
   InstrBenchmarksFixture fixture;
 
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::instr_handler_getkwarg handler;
   corevm::runtime::Instr instr(
@@ -211,7 +211,7 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    invk_ctx->put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, obj);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -224,7 +224,7 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::instr_handler_getargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -234,9 +234,9 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    invk_ctx->put_param(id);
-    invk_ctx->put_param(id);
-    invk_ctx->put_param(id);
+    invk_ctx->put_param(obj);
+    invk_ctx->put_param(obj);
+    invk_ctx->put_param(obj);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -250,7 +250,7 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
   InstrBenchmarksFixture fixture;
 
   corevm::runtime::variable_key key = 1;
-  corevm::dyobj::dyobj_id id = 1;
+  auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::instr_handler_getkwargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
@@ -260,9 +260,9 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    invk_ctx->put_param_value_pair(key, id);
-    invk_ctx->put_param_value_pair(key, id);
-    invk_ctx->put_param_value_pair(key, id);
+    invk_ctx->put_param_value_pair(key, obj);
+    invk_ctx->put_param_value_pair(key, obj);
+    invk_ctx->put_param_value_pair(key, obj);
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -277,8 +277,8 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
 
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  corevm::dyobj::dyobj_id id = 1;
-  invk_ctx->put_param(id);
+  auto obj = fixture.process().create_dyobj();
+  invk_ctx->put_param(obj);
 
   corevm::runtime::instr_handler_hasargs handler;
   corevm::runtime::Instr instr(0, 0, 0);

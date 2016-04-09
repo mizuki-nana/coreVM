@@ -124,8 +124,9 @@ MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::unmark() noexcept
 
 void
 MarkAndSweepGarbageCollectionScheme::gc(
-  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& heap) const
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& /* heap */) const
 {
+#if 0
   using _dynamic_object_heap_type = typename
     MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type;
 
@@ -140,6 +141,7 @@ MarkAndSweepGarbageCollectionScheme::gc(
       }
     }
   );
+#endif
 }
 
 // -----------------------------------------------------------------------------
@@ -156,9 +158,10 @@ MarkAndSweepGarbageCollectionScheme::is_root_object(
 
 void
 MarkAndSweepGarbageCollectionScheme::mark(
-  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& heap,
-  MarkAndSweepGarbageCollectionScheme::dynamic_object_type& object) const
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_heap_type& /* heap */,
+  MarkAndSweepGarbageCollectionScheme::dynamic_object_type& /* object */) const
 {
+#if 0
   using _dynamic_object_type = typename
     MarkAndSweepGarbageCollectionScheme::dynamic_object_type;
 
@@ -178,6 +181,7 @@ MarkAndSweepGarbageCollectionScheme::mark(
       this->mark(heap, referenced_object);
     }
   );
+#endif
 }
 
 // -----------------------------------------------------------------------------
