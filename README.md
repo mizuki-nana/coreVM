@@ -13,7 +13,7 @@ programming languages.
 * [Current State and Roadmap] (#current-state-and-roadmap)
 * [Focus Areas] (#focues-areas)
 * [Moonshots] (#moonshots)
-* [Compilation Environments] (#compilation-environments)
+* [Build Environments] (#build-environments)
 * [Dependencies] (#dependencies)
 * [License] (#license)
 * [Blog Posts] (#blog-posts)
@@ -294,16 +294,16 @@ and [Pyston](https://github.com/dropbox/pyston). Hopefully I will come up with
 a good name of my variant by then.
 
 
-## Compilation Environments
+## Build Environments
 
-### Debian
+### Development
 Operating System:<br/>
 `Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.4 LTS)`
 
 Compiler:<br/>
-`Ubuntu clang version 3.4-1ubuntu3 (tags/RELEASE_34/final) (based on LLVM 3.4)
-Target: x86_64-pc-linux-gnu
-Thread model: posix`
+`Ubuntu clang version 3.4-1ubuntu3 (tags/RELEASE_34/final) (based on LLVM 3.4)`
+`Target: x86_64-pc-linux-gnu`
+`Thread model: posix`
 
 Python:<br/>
 `Python 2.7.6 (default, Jun 22 2015, 17:58:13)`
@@ -321,20 +321,39 @@ Valgrind:<br/>
 Sphinx:<br/>
 `Sphinx v1.2.2`
 
-### OS X
+### Continuous Integration I
+Operating System:<br/>
+`Linux 3.13.0-63-generic #104~precise1-Ubuntu SMP x86_64 GNU/Linux`
+
+Compiler:<br/>
+`clang version 3.4 (tags/RELEASE_34/final)`
+`Target: x86_64-unknown-linux-gnu`
+`Thread model: posix`
+
+Python:<br/>
+`Python 2.7.3`
+
+CMake:<br/>
+`cmake version 2.8.7`
+
+Make:<br/>
+`GNU Make 3.81`
+`This program built for x86_64-pc-linux-gnu`
+
+### Continuous Integration II
 Operating System:<br/>
 `OS X 10.9.5 Darwin Kernel Version 13.4.0`
 
 Compiler:<br/>
-`Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)
-Target: x86_64-apple-darwin13.4.0
-Thread model: posix`
+`Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn)`
+`Target: x86_64-apple-darwin13.4.0`
+`Thread model: posix`
 
 Python:<br/>
 `Python 2.7.5`
 
 CMake:<br/>
-`cmake version 4.0.2`
+`cmake version 3.0.2`
 
 Make:<br/>
 `GNU Make 3.81`
