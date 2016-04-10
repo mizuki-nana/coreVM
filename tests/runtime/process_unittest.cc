@@ -190,13 +190,13 @@ TEST_F(ProcessUnitTest, TestPushAndPopFrames)
 
   corevm::runtime::Compartment compartment("./example.core");
 
-  corevm::runtime::vector vector {
+  corevm::runtime::Vector vector {
     corevm::runtime::Instr(100, 100, 100),
     corevm::runtime::Instr(100, 100, 100),
     corevm::runtime::Instr(100, 100, 100),
   };
 
-  corevm::runtime::loc_table locs;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(
@@ -262,8 +262,8 @@ TEST_F(ProcessUnitTest, TestEmplaceFrame)
 
   corevm::runtime::ClosureCtx ctx(0, 0);
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(
@@ -301,8 +301,8 @@ TEST_F(ProcessUnitTest, TestTopNthFrame)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::ClosureCtx ctx1(0, 1);
@@ -419,15 +419,15 @@ TEST_F(ProcessUnitTest, TestGetFrameByClosureCtx)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
-  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::compartment_id_t compartment_id = 0;
 
-  corevm::runtime::closure_id closure_id1 = 0;
-  corevm::runtime::closure_id closure_id2 = 1;
-  corevm::runtime::closure_id closure_id3 = 2;
+  corevm::runtime::closure_id_t closure_id1 = 0;
+  corevm::runtime::closure_id_t closure_id2 = 1;
+  corevm::runtime::closure_id_t closure_id3 = 2;
 
   corevm::runtime::ClosureCtx ctx1(compartment_id, closure_id1);
   corevm::runtime::ClosureCtx ctx2(compartment_id, closure_id2);
@@ -536,8 +536,8 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindFrameWithAssociatedCtx)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(
@@ -573,8 +573,8 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindFrameByTraverseClosureTree)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure1(
@@ -628,8 +628,8 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindMissingFrame)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure1(
@@ -687,8 +687,8 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameSuccessful)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure1(
@@ -746,8 +746,8 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameWithMissingIn
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure1(
@@ -804,8 +804,8 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameFails)
 {
   corevm::runtime::Process process;
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure1(
@@ -875,7 +875,7 @@ TEST_F(ProcessSignalHandlingUnitTest, TestHandleSignalWithUserAction)
 
   ASSERT_EQ(0, process.stack_size());
 
-  corevm::runtime::vector vector {
+  corevm::runtime::Vector vector {
     { .code=corevm::runtime::InstrEnum::NEW, .oprd1=0, .oprd2=0 },
   };
   process.set_sig_vector(sig, vector);
@@ -926,7 +926,7 @@ TEST_F(ProcessSignalHandlingUnitTest, TestHandleSIGFPE)
 
   process.append_instrs(instrs);
 
-  corevm::runtime::vector vector {
+  corevm::runtime::Vector vector {
     { .code=corevm::runtime::InstrEnum::NEW, .oprd1=0, .oprd2=0 },
   };
   process.set_sig_vector(sig, vector);

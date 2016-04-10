@@ -69,7 +69,7 @@ Compartment::set_encoding_map(const EncodingMap&& encoding_map)
 // -----------------------------------------------------------------------------
 
 std::string
-Compartment::get_encoding_string(encoding_key key) const
+Compartment::get_encoding_string(encoding_key_t key) const
 {
   if (key >= m_encoding_map.size())
   {
@@ -82,7 +82,7 @@ Compartment::get_encoding_string(encoding_key key) const
 // -----------------------------------------------------------------------------
 
 void
-Compartment::get_encoding_string(encoding_key key, std::string* str) const
+Compartment::get_encoding_string(encoding_key_t key, std::string* str) const
 {
   if (!str)
   {
@@ -114,9 +114,9 @@ Compartment::set_closure_table(const ClosureTable&& closure_table)
 // -----------------------------------------------------------------------------
 
 const Closure
-Compartment::get_closure_by_id(closure_id id) const
+Compartment::get_closure_by_id(closure_id_t id) const
 {
-  if (id < static_cast<closure_id>(m_closure_table.size()))
+  if (id < static_cast<closure_id_t>(m_closure_table.size()))
   {
     return m_closure_table[static_cast<size_t>(id)];
   }
@@ -127,9 +127,9 @@ Compartment::get_closure_by_id(closure_id id) const
 // -----------------------------------------------------------------------------
 
 void
-Compartment::get_closure_by_id(closure_id id, Closure** closure_ptr)
+Compartment::get_closure_by_id(closure_id_t id, Closure** closure_ptr)
 {
-  if (id < static_cast<closure_id>(m_closure_table.size()))
+  if (id < static_cast<closure_id_t>(m_closure_table.size()))
   {
     *closure_ptr = &m_closure_table[static_cast<size_t>(id)];
   }

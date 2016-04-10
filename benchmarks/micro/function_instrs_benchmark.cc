@@ -46,7 +46,7 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    corevm::dyobj::dyobj_id id = fixture.process().create_dyobj();
+    corevm::dyobj::dyobj_id_t id = fixture.process().create_dyobj();
     fixture.process().push_stack(id);
   }
 
@@ -72,7 +72,7 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::dyobj::dyobj_id id = 1;
+  corevm::dyobj::dyobj_id_t id = 1;
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
@@ -199,12 +199,12 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::variable_key key = 1;
+  corevm::runtime::variable_key_t key = 1;
   auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::instr_handler_getkwarg handler;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -249,7 +249,7 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::variable_key key = 1;
+  corevm::runtime::variable_key_t key = 1;
   auto obj = fixture.process().create_dyobj();
 
   corevm::runtime::instr_handler_getkwargs handler;

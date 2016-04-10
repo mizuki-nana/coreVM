@@ -56,10 +56,10 @@ typedef struct Closure
 
   Closure(
     std::string name_,
-    closure_id id_,
-    closure_id parent_id_,
-    vector vector_,
-    loc_table locs_,
+    closure_id_t id_,
+    closure_id_t parent_id_,
+    Vector vector_,
+    LocTable locs_,
     CatchSiteList catch_sites_)
     :
     name(name_),
@@ -72,10 +72,10 @@ typedef struct Closure
   }
 
   std::string name;
-  closure_id id;
-  closure_id parent_id;
-  vector vector;
-  loc_table locs;
+  closure_id_t id;
+  closure_id_t parent_id;
+  Vector vector;
+  LocTable locs;
   CatchSiteList catch_sites;
 } Closure;
 

@@ -59,7 +59,7 @@ set(sources
     runtime/sighandler.cc
     runtime/sighandler_registrar.cc
     runtime/utils.cc
-    frontend/bytecode_loader_binary.cc
+    frontend/binary_bytecode_loader.cc
     frontend/bytecode_loader.cc
     frontend/configuration.cc
     frontend/program.cc

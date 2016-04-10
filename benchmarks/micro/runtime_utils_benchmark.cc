@@ -44,7 +44,7 @@ using DynamicObjectType = typename corevm::dyobj::DynamicObject<DummyDynamicObje
 static
 void BenchmarkGetAttrKey(benchmark::State& state)
 {
-  corevm::runtime::encoding_key key = 0;
+  corevm::runtime::encoding_key_t key = 0;
   corevm::runtime::EncodingMap encoding_table { "hello_world" };
 
   corevm::runtime::Compartment compartment("");
@@ -76,7 +76,7 @@ void BenchmarkGetattr(benchmark::State& state)
 {
   const std::string attr_name("__str__");
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+  corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_name);
 
   DynamicObjectType obj;
   DynamicObjectType attr_obj;
@@ -102,9 +102,9 @@ void BenchmarkGetattr2(benchmark::State& state)
 
   compartment.set_encoding_map(std::move(encoding_map));
 
-  corevm::runtime::encoding_key attr_encoding_key = 0;
+  corevm::runtime::encoding_key_t attr_encoding_key = 0;
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+  corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_name);
 
   DynamicObjectType obj;
   DynamicObjectType attr_obj;

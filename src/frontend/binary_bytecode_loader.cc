@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "bytecode_loader_binary.h"
+#include "binary_bytecode_loader.h"
 
 #include "errors.h"
 #include "corevm/corevm_bytecode_schema.h" // Compiled.
@@ -44,7 +44,7 @@ namespace frontend {
 // -----------------------------------------------------------------------------
 
 void
-BytecodeLoaderBinary::load(const std::string& path, runtime::Process& process)
+BinaryBytecodeLoader::load(const std::string& path, runtime::Process& process)
 {
   // `avro::DataFileReader` documentation:
   // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
@@ -73,18 +73,18 @@ BytecodeLoaderBinary::load(const std::string& path, runtime::Process& process)
     const std::string& name = closure.name;
 
     // ID
-    const auto id = static_cast<runtime::closure_id>(closure.__id__);
+    const auto id = static_cast<runtime::closure_id_t>(closure.__id__);
 
     // Parent ID
-    runtime::closure_id parent_id = runtime::NONESET_CLOSURE_ID;
+    runtime::closure_id_t parent_id = runtime::NONESET_CLOSURE_ID;
     if (!closure.__parent__.is_null())
     {
       parent_id =
-        static_cast<runtime::closure_id>(closure.__parent__.get_long());
+        static_cast<runtime::closure_id_t>(closure.__parent__.get_long());
     }
 
     // Vector
-    runtime::vector vector;
+    runtime::Vector vector;
 
     for (auto vector_itr = closure.__vector__.cbegin();
          vector_itr != closure.__vector__.cend();
@@ -92,15 +92,15 @@ BytecodeLoaderBinary::load(const std::string& path, runtime::Process& process)
     {
       const auto& instr = *vector_itr;
 
-      const auto code = static_cast<runtime::instr_code>(instr.code);
-      const auto oprd1 = static_cast<runtime::instr_oprd>(instr.oprd1);
-      const auto oprd2 = static_cast<runtime::instr_oprd>(instr.oprd2);
+      const auto code = static_cast<runtime::instr_code_t>(instr.code);
+      const auto oprd1 = static_cast<runtime::instr_oprd_t>(instr.oprd1);
+      const auto oprd2 = static_cast<runtime::instr_oprd_t>(instr.oprd2);
 
       vector.emplace_back(code, oprd1, oprd2);
     }
 
     // Locs
-    runtime::loc_table locs_table;
+    runtime::LocTable locs_table;
     if (!closure.locs.is_null())
     {
       const auto& locs_array = closure.locs.get_array();

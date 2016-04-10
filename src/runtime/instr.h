@@ -56,7 +56,7 @@ class InvocationCtx;
 
 typedef struct Instr
 {
-  Instr(instr_code code_, instr_oprd oprd1_, instr_oprd oprd2_)
+  Instr(instr_code_t code_, instr_oprd_t oprd1_, instr_oprd_t oprd2_)
     :
     code(code_),
     oprd1(oprd1_),
@@ -64,9 +64,9 @@ typedef struct Instr
   {
   }
 
-  instr_code code;
-  instr_oprd oprd1;
-  instr_oprd oprd2;
+  instr_code_t code;
+  instr_oprd_t oprd1;
+  instr_oprd_t oprd2;
 } Instr;
 
 // -----------------------------------------------------------------------------

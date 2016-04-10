@@ -34,7 +34,7 @@ namespace runtime {
 
 typedef struct ClosureCtx
 {
-  ClosureCtx(compartment_id compartment_id_, closure_id closure_id_)
+  ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
     :
     compartment_id(compartment_id_),
     closure_id(closure_id_)
@@ -49,8 +49,8 @@ typedef struct ClosureCtx
     );
   }
 
-  compartment_id compartment_id;
-  closure_id closure_id;
+  compartment_id_t compartment_id;
+  closure_id_t closure_id;
 
 } ClosureCtx;
 

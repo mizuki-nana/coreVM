@@ -119,8 +119,8 @@ const size_t DEFAULT_VECTOR_CAPACITY = 1 << 14;
 // -----------------------------------------------------------------------------
 
 static_assert(
-  std::numeric_limits<runtime::vector::size_type>::max() >=
-  std::numeric_limits<instr_addr>::max(),
+  std::numeric_limits<runtime::Vector::size_type>::max() >=
+  std::numeric_limits<instr_addr_t>::max(),
   "Vector size incompatibility"
 );
 
@@ -128,7 +128,7 @@ static_assert(
 
 static_assert(
   std::numeric_limits<std::vector<Compartment>::size_type>::max() >=
-  std::numeric_limits<compartment_id>::max(),
+  std::numeric_limits<compartment_id_t>::max(),
   "Compartment ID incompatibility"
 );
 
@@ -161,7 +161,7 @@ Process::create_dyobjs(size_t n)
 // -----------------------------------------------------------------------------
 
 Process::dynamic_object_type&
-Process::get_dyobj(dyobj::dyobj_id id)
+Process::get_dyobj(dyobj::dyobj_id_t id)
 {
   return m_dynamic_object_heap.at(id);
 }
@@ -403,7 +403,7 @@ Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
 
 void
 Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
-  Closure* closure_ptr, instr_addr return_addr)
+  Closure* closure_ptr, instr_addr_t return_addr)
 {
   ASSERT(compartment_ptr);
   ASSERT(closure_ptr);
@@ -852,7 +852,7 @@ Process::set_gc_flag(uint8_t gc_flag)
 
 // -----------------------------------------------------------------------------
 
-instr_addr
+instr_addr_t
 Process::pc() const
 {
   return m_pc;
@@ -861,7 +861,7 @@ Process::pc() const
 // -----------------------------------------------------------------------------
 
 void
-Process::set_pc(const instr_addr addr)
+Process::set_pc(const instr_addr_t addr)
 {
   if ( (uint64_t)addr >= m_instrs.size() )
   {
@@ -874,7 +874,7 @@ Process::set_pc(const instr_addr addr)
 // -----------------------------------------------------------------------------
 
 void
-Process::append_vector(const vector& vector)
+Process::append_vector(const Vector& vector)
 {
   // Inserts the vector at the very end of the instr array.
   std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
@@ -883,7 +883,7 @@ Process::append_vector(const vector& vector)
 // -----------------------------------------------------------------------------
 
 void
-Process::insert_vector(const vector& vector)
+Process::insert_vector(const Vector& vector)
 {
   // We want to insert the vector right after the current pc().
   //
@@ -933,7 +933,7 @@ Process::should_gc() const
 // -----------------------------------------------------------------------------
 
 void
-Process::set_sig_vector(sig_atomic_t sig, vector& vector)
+Process::set_sig_vector(sig_atomic_t sig, Vector& vector)
 {
   m_sig_instr_map.insert({sig, vector});
 }
@@ -947,7 +947,7 @@ Process::handle_signal(sig_atomic_t sig, SigHandler* handler)
 
   if (itr != m_sig_instr_map.end())
   {
-    vector vector = itr->second;
+    Vector vector = itr->second;
     this->pause_exec();
     this->insert_vector(vector);
     this->resume_exec();
@@ -968,30 +968,30 @@ Process::compartment_count() const
 
 // -----------------------------------------------------------------------------
 
-compartment_id
+compartment_id_t
 Process::insert_compartment(const Compartment& compartment)
 {
   m_compartments.push_back(compartment);
-  return static_cast<compartment_id>(m_compartments.size() - 1);
+  return static_cast<compartment_id_t>(m_compartments.size() - 1);
 }
 
 // -----------------------------------------------------------------------------
 
-compartment_id
+compartment_id_t
 Process::insert_compartment(const Compartment&& compartment)
 {
   m_compartments.push_back(
     std::forward<const runtime::Compartment>(compartment));
 
-  return static_cast<compartment_id>(m_compartments.size() - 1);
+  return static_cast<compartment_id_t>(m_compartments.size() - 1);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Process::get_compartment(compartment_id id, Compartment** ptr)
+Process::get_compartment(compartment_id_t id, Compartment** ptr)
 {
-  if (id < static_cast<compartment_id>(m_compartments.size()))
+  if (id < static_cast<compartment_id_t>(m_compartments.size()))
   {
     *ptr = &m_compartments[static_cast<size_t>(id)];
   }
@@ -1071,7 +1071,7 @@ Process::find_parent_frame_in_process(Frame* frame_ptr, Process& process)
   ASSERT(closure);
 #endif
 
-  closure_id parent_closure_id = closure->parent_id;
+  closure_id_t parent_closure_id = closure->parent_id;
 
   if (parent_closure_id == NONESET_CLOSURE_ID)
   {
@@ -1117,7 +1117,7 @@ Process::unwind_stack(Process& process, size_t limit)
 
     const Closure* closure = frame.closure_ptr();
 
-    const loc_table& locs = closure->locs;
+    const LocTable& locs = closure->locs;
 
     int32_t index = process.pc() - frame.return_addr();
 

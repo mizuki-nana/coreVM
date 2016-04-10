@@ -72,14 +72,14 @@ public:
   {
   }
 
-  explicit ObjectNotFoundError(corevm::dyobj::dyobj_id id_)
+  explicit ObjectNotFoundError(corevm::dyobj::dyobj_id_t id_)
     :
     dyobj::RuntimeError(str(boost::format("Object %#x not found") % id_)),
     id(id_)
   {
   }
 
-  corevm::dyobj::dyobj_id id;
+  corevm::dyobj::dyobj_id_t id;
 };
 
 // -----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ public:
   {
   }
 
-  ObjectAttributeNotFoundError(attr_key attr_key_, dyobj_id id_)
+  ObjectAttributeNotFoundError(attr_key_t attr_key_, dyobj_id_t id_)
     :
     dyobj::RuntimeError(
       str(boost::format(
@@ -109,8 +109,8 @@ public:
   {
   }
 
-  ObjectAttributeNotFoundError(attr_key attr_key_,
-    dyobj_id id_, const std::string& attr_name)
+  ObjectAttributeNotFoundError(attr_key_t attr_key_,
+    dyobj_id_t id_, const std::string& attr_name)
     :
     dyobj::RuntimeError(
       str(boost::format(
@@ -120,8 +120,8 @@ public:
   {
   }
 
-  attr_key attr_key;
-  dyobj_id id;
+  attr_key_t attr_key;
+  dyobj_id_t id;
 };
 
 // -----------------------------------------------------------------------------

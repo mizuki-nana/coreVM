@@ -52,7 +52,7 @@ public:
 
 private:
   typedef std::vector<param_type> param_list_type;
-  typedef std::unordered_map<variable_key, param_type> param_value_map_type;
+  typedef std::unordered_map<variable_key_t, param_type> param_value_map_type;
 
 public:
   InvocationCtx(const ClosureCtx&, Compartment*, Closure*);
@@ -75,13 +75,13 @@ public:
 
   bool has_param_value_pairs() const;
 
-  bool has_param_value_pair_with_key(variable_key) const;
+  bool has_param_value_pair_with_key(variable_key_t) const;
 
-  void put_param_value_pair(variable_key, param_type);
+  void put_param_value_pair(variable_key_t, param_type);
 
-  param_type pop_param_value_pair(variable_key);
+  param_type pop_param_value_pair(variable_key_t);
 
-  std::vector<variable_key> param_value_pair_keys() const;
+  std::vector<variable_key_t> param_value_pair_keys() const;
 
 private:
   runtime::ClosureCtx m_closure_ctx;

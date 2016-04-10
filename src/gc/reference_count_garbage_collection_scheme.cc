@@ -108,9 +108,9 @@ public:
 
   void operator()(
     const typename dynamic_object_type::attr_key_type& /* attr_key */,
-    const typename dynamic_object_type::dyobj_id_type& dyobj_id)
+    const typename dynamic_object_type::dyobj_id_type& id)
   {
-    dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
+    dynamic_object_type& referenced_object = m_heap.at(id);
     referenced_object.manager().dec_ref_count();
   }
 
@@ -157,9 +157,9 @@ public:
 
   void operator()(
     const typename dynamic_object_type::attr_key_type& /* attr_key */,
-    const typename dynamic_object_type::dyobj_id_type& dyobj_id)
+    const typename dynamic_object_type::dyobj_id_type& id)
   {
-    dynamic_object_type& referenced_object = m_heap.at(dyobj_id);
+    dynamic_object_type& referenced_object = m_heap.at(id);
 
     auto ref_count1 = m_object.manager().ref_count();
     auto ref_count2 = referenced_object.manager().ref_count();

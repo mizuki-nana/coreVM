@@ -67,15 +67,15 @@ public:
 
   Frame(const ClosureCtx&, Compartment*, Closure*);
 
-  Frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
+  Frame(const ClosureCtx&, Compartment*, Closure*, instr_addr_t);
 
   ~Frame();
 
   size_t eval_stack_size() const;
 
-  instr_addr return_addr() const;
+  instr_addr_t return_addr() const;
 
-  void set_return_addr(const instr_addr);
+  void set_return_addr(const instr_addr_t);
 
   void push_eval_stack(types::NativeTypeHandle&);
 
@@ -93,31 +93,31 @@ public:
 
   size_t visible_var_count() const;
 
-  bool has_visible_var(const variable_key) const;
+  bool has_visible_var(const variable_key_t) const;
 
-  dyobj_ptr get_visible_var(const variable_key) const;
+  dyobj_ptr get_visible_var(const variable_key_t) const;
 
-  bool get_visible_var_fast(const variable_key, dyobj_ptr*) const;
+  bool get_visible_var_fast(const variable_key_t, dyobj_ptr*) const;
 
-  dyobj_ptr pop_visible_var(const variable_key);
+  dyobj_ptr pop_visible_var(const variable_key_t);
 
-  void set_visible_var(variable_key, dyobj_ptr);
+  void set_visible_var(variable_key_t, dyobj_ptr);
 
   size_t invisible_var_count() const;
 
-  bool has_invisible_var(const variable_key) const;
+  bool has_invisible_var(const variable_key_t) const;
 
-  dyobj_ptr get_invisible_var(const variable_key) const;
+  dyobj_ptr get_invisible_var(const variable_key_t) const;
 
-  bool get_invisible_var_fast(const variable_key, dyobj_ptr*) const;
+  bool get_invisible_var_fast(const variable_key_t, dyobj_ptr*) const;
 
-  dyobj_ptr pop_invisible_var(const variable_key);
+  dyobj_ptr pop_invisible_var(const variable_key_t);
 
-  void set_invisible_var(variable_key, dyobj_ptr);
+  void set_invisible_var(variable_key_t, dyobj_ptr);
 
-  std::vector<variable_key> visible_var_keys() const;
+  std::vector<variable_key_t> visible_var_keys() const;
 
-  std::vector<variable_key> invisible_var_keys() const;
+  std::vector<variable_key_t> invisible_var_keys() const;
 
   std::vector<dyobj_ptr> get_visible_objs() const;
 
@@ -147,9 +147,9 @@ protected:
   Compartment* m_compartment_ptr;
   Closure* m_closure_ptr;
   Frame* m_parent;
-  instr_addr m_return_addr;
-  std::unordered_map<variable_key, dyobj_ptr> m_visible_vars;
-  std::unordered_map<variable_key, dyobj_ptr> m_invisible_vars;
+  instr_addr_t m_return_addr;
+  std::unordered_map<variable_key_t, dyobj_ptr> m_visible_vars;
+  std::unordered_map<variable_key_t, dyobj_ptr> m_invisible_vars;
   std::vector<types::NativeTypeHandle> m_eval_stack;
   dyobj_ptr m_exc_obj;
 };

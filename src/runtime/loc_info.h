@@ -56,7 +56,7 @@ struct LocInfo
 
 // -----------------------------------------------------------------------------
 
-typedef std::unordered_map<int32_t, LocInfo> loc_table;
+typedef std::unordered_map<int32_t, LocInfo> LocTable;
 
 // -----------------------------------------------------------------------------
 

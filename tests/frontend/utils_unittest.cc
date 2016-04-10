@@ -50,7 +50,7 @@ TEST_F(UtilsUnitTest, TestGetVectorFromJson)
 
   const JSON vector_json = sneaker::json::parse(vector_str);
 
-  corevm::runtime::vector vector = corevm::frontend::get_vector_from_json(vector_json);
+  corevm::runtime::Vector vector = corevm::frontend::get_vector_from_json(vector_json);
 
   corevm::runtime::Instr instr1 = vector[0];
   corevm::runtime::Instr instr2 = vector[1];

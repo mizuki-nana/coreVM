@@ -40,7 +40,7 @@ using sneaker::json::JSON;
 
 // -----------------------------------------------------------------------------
 
-corevm::runtime::vector get_vector_from_json(const JSON&);
+corevm::runtime::Vector get_vector_from_json(const JSON&);
 
 // -----------------------------------------------------------------------------
 

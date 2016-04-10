@@ -43,13 +43,13 @@ namespace dyobj {
 const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
 
 
-typedef uint32_t attr_key;
+typedef uint32_t attr_key_t;
 
 
 typedef int64_t ntvhndl_key;
 
 
-typedef uint32_t flag;
+typedef uint32_t flag_t;
 
 
 const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
@@ -58,7 +58,7 @@ const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
 const int64_t NTVHNDL_LIMIT = LLONG_MAX;
 
 
-typedef uint64_t dyobj_id;
+typedef uint64_t dyobj_id_t;
 
 
 const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
@@ -66,7 +66,7 @@ const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
 
 // -----------------------------------------------------------------------------
 
-inline void* obj_id_to_ptr(dyobj_id id)
+inline void* obj_id_to_ptr(dyobj_id_t id)
 {
   return reinterpret_cast<void*>(id);
 }

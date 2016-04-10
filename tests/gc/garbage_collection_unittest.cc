@@ -43,7 +43,7 @@ protected:
   using _ObjectType = typename corevm::dyobj::DynamicObject<
     typename GarbageCollectionScheme::DynamicObjectManager>;
 
-  void do_gc_and_check_results(std::list<corevm::dyobj::dyobj_id> ids)
+  void do_gc_and_check_results(std::list<corevm::dyobj::dyobj_id_t> ids)
   {
     _GarbageCollectorType collector(m_heap);
     collector.gc();
@@ -52,7 +52,7 @@ protected:
 
     for (auto itr = ids.begin(); itr != ids.end(); ++itr)
     {
-      corevm::dyobj::dyobj_id id = static_cast<corevm::dyobj::dyobj_id>(*itr);
+      corevm::dyobj::dyobj_id_t id = static_cast<corevm::dyobj::dyobj_id_t>(*itr);
 
       ASSERT_NO_THROW(
         {
@@ -62,14 +62,14 @@ protected:
     }
   }
 
-  corevm::dyobj::dyobj_id help_create_obj()
+  corevm::dyobj::dyobj_id_t help_create_obj()
   {
-    corevm::dyobj::dyobj_id id = m_heap.create_dyobj();
+    corevm::dyobj::dyobj_id_t id = m_heap.create_dyobj();
     return id;
   }
 
   void help_setattr(
-    corevm::dyobj::dyobj_id src_id, corevm::dyobj::dyobj_id dst_id)
+    corevm::dyobj::dyobj_id_t src_id, corevm::dyobj::dyobj_id_t dst_id)
   {
     auto& src_obj = m_heap.at(src_id);
     auto& dst_obj = m_heap.at(dst_id);
@@ -77,7 +77,7 @@ protected:
     dst_obj.manager().on_setattr();
   }
 
-  void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id id)
+  void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id_t id)
   {
     auto& obj = m_heap.at(id);
     obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
@@ -126,7 +126,7 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSelfReferencedObject)
    *
    * will result in 0 object left on the heap.
    */
-  corevm::dyobj::dyobj_id id = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id = this->help_create_obj();
 
   this->help_setattr(id, id);
 
@@ -146,7 +146,7 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSelfReferenceOnNonGarbageCollectibleOb
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id id = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id = this->help_create_obj();
 
   this->help_setattr(id, id);
   this->help_set_as_non_garbage_collectible(id);
@@ -165,10 +165,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChain)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -188,10 +188,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChainWithNonGarbageCollectibleOb
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -213,10 +213,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChainWithNonGarbageCollectibleOb
    *
    * will result in 3 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -241,9 +241,9 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSingleCycle)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -267,10 +267,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestMultipleObjectsPointToOne)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id4);
   this->help_setattr(id2, id4);
@@ -296,10 +296,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestOnePointsToMultipleObjects)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id1, id3);
@@ -325,10 +325,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNonGarbageCollectibleObjectPointsToMul
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id1, id3);
@@ -356,10 +356,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id1, id3);
@@ -385,12 +385,12 @@ TYPED_TEST(GarbageCollectionUnitTest, TestTwoIsolatedCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id5 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id6 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id6 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -424,13 +424,13 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNestedCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id5 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id6 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id7 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id6 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id7 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id1, id3);
@@ -463,10 +463,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithInwardStub)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -489,10 +489,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithOutwardStub)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -515,10 +515,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithNonGarbageCollectibleInwardSt
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -543,11 +543,11 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithTwoInwardStubs)
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id5 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -573,10 +573,10 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithNonGarbageCollectibleOutwardS
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -601,11 +601,11 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithTwoOutwardStubs)
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id5 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);
@@ -631,9 +631,9 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSingleCycleWithNonGarbageCollectibleOb
    *
    * will result in 3 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id id3 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
+  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
 
   this->help_setattr(id1, id2);
   this->help_setattr(id2, id3);

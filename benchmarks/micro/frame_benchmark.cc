@@ -98,7 +98,7 @@ void BenchmarkGetVisibleVariable1(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::runtime::variable_key key = 1;
+  corevm::runtime::variable_key_t key = 1;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   frame.set_visible_var(key, &obj);
@@ -132,7 +132,7 @@ void BenchmarkGetVisibleVariable2(benchmark::State& state)
   frame1.set_parent(&frame2);
   frame2.set_parent(&frame3);
 
-  corevm::runtime::variable_key key = 1;
+  corevm::runtime::variable_key_t key = 1;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   frame1.set_visible_var(key + 1, &obj);

@@ -46,8 +46,7 @@ template<class DynamicObjectManager>
 class DynamicObject
 {
 public:
-  typedef attr_key attr_key_type;
-  typedef dyobj_id dyobj_id_type;
+  typedef attr_key_t attr_key_type;
   typedef DynamicObject<DynamicObjectManager>* dyobj_ptr;
 
   typedef std::pair<attr_key_type, dyobj_ptr> attr_key_value_pair;
@@ -73,9 +72,9 @@ public:
   iterator end() noexcept;
   const_iterator cend() const noexcept;
 
-  dyobj_id id() const noexcept;
+  dyobj_id_t id() const noexcept;
 
-  flag flags() const noexcept;
+  flag_t flags() const noexcept;
 
   DynamicObjectManager& manager() noexcept;
 
@@ -117,7 +116,7 @@ private:
 
   struct AttributeKeyPred
   {
-    explicit AttributeKeyPred(attr_key key)
+    explicit AttributeKeyPred(attr_key_t key)
       :
       m_key(key)
     {
@@ -129,7 +128,7 @@ private:
     }
 
   private:
-    attr_key m_key;
+    attr_key_t m_key;
   };
 
   struct AttributeValuePred
@@ -149,7 +148,7 @@ private:
     dyobj_ptr m_value;
   };
 
-  flag m_flags;
+  flag_t m_flags;
   attr_map_type m_attrs;
   DynamicObjectManager m_manager;
   dyobj::ntvhndl_key m_ntvhndl_key;
@@ -246,17 +245,17 @@ DynamicObject<DynamicObjectManager>::cend() const noexcept
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-dyobj_id
+dyobj_id_t
 DynamicObject<DynamicObjectManager>::id() const noexcept
 {
-  return static_cast<dyobj_id>(
+  return static_cast<dyobj_id_t>(
     reinterpret_cast<const uint8_t*>(this) - reinterpret_cast<uint8_t*>(0));
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-flag
+flag_t
 DynamicObject<DynamicObjectManager>::flags() const noexcept
 {
   return m_flags;

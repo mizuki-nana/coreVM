@@ -107,7 +107,7 @@ public:
 
   dyobj_ptr create_dyobjs(size_t n);
 
-  dynamic_object_type& get_dyobj(dyobj::dyobj_id id);
+  dynamic_object_type& get_dyobj(dyobj::dyobj_id_t id);
 
   uint64_t call_stack_size() const;
 
@@ -131,7 +131,7 @@ public:
 
   void emplace_frame(const ClosureCtx&, Compartment*, Closure*);
 
-  void emplace_frame(const ClosureCtx&, Compartment*, Closure*, instr_addr);
+  void emplace_frame(const ClosureCtx&, Compartment*, Closure*, instr_addr_t);
 
   void pop_frame();
 
@@ -170,13 +170,13 @@ public:
 
   void erase_ntvhndl(dyobj::ntvhndl_key);
 
-  instr_addr pc() const;
+  instr_addr_t pc() const;
 
-  void set_pc(const instr_addr);
+  void set_pc(const instr_addr_t);
 
-  void append_vector(const vector&);
+  void append_vector(const Vector&);
 
-  void insert_vector(const vector& vector);
+  void insert_vector(const Vector& vector);
 
   bool get_frame_by_closure_ctx(ClosureCtx&, Frame**);
 
@@ -196,7 +196,7 @@ public:
 
   void resume_exec();
 
-  void set_sig_vector(sig_atomic_t, vector&);
+  void set_sig_vector(sig_atomic_t, Vector&);
 
   void handle_signal(sig_atomic_t, SigHandler*);
 
@@ -210,11 +210,11 @@ public:
 
   size_t compartment_count() const;
 
-  compartment_id insert_compartment(const Compartment&);
+  compartment_id_t insert_compartment(const Compartment&);
 
-  compartment_id insert_compartment(const Compartment&&);
+  compartment_id_t insert_compartment(const Compartment&&);
 
-  void get_compartment(compartment_id, Compartment**);
+  void get_compartment(compartment_id_t, Compartment**);
 
   void reset();
 
@@ -265,14 +265,14 @@ private:
   bool m_pause_exec;
   bool m_do_gc;
   uint8_t m_gc_flag;
-  instr_addr m_pc;
-  vector m_instrs;
+  instr_addr_t m_pc;
+  Vector m_instrs;
   dynamic_object_heap_type m_dynamic_object_heap;
   std::vector<dyobj_ptr> m_dyobj_stack;
   std::vector<Frame> m_call_stack;
   std::vector<InvocationCtx> m_invocation_ctx_stack;
   NativeTypesPool m_ntvhndl_pool;
-  std::unordered_map<sig_atomic_t, vector> m_sig_instr_map;
+  std::unordered_map<sig_atomic_t, Vector> m_sig_instr_map;
   std::vector<Compartment> m_compartments;
   std::vector<GCRulePtr> m_gc_rules;
 };

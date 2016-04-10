@@ -33,7 +33,7 @@ namespace corevm {
 namespace dyobj {
 
 
-attr_key
+attr_key_t
 hash_attr_str(const std::string&);
 
 

@@ -66,7 +66,7 @@ TEST_F(FrameUnitTest, TestInitialization)
 
 TEST_F(FrameUnitTest, TestInitializationWithReturnAddr)
 {
-  corevm::runtime::instr_addr return_addr = 100;
+  corevm::runtime::instr_addr_t return_addr = 100;
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure, return_addr);
 
   ASSERT_EQ(return_addr, frame.return_addr());
@@ -79,7 +79,7 @@ TEST_F(FrameUnitTest, TestGetAndSetReturnAddr)
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
 
-  corevm::runtime::instr_addr expected_return_addr = 555;
+  corevm::runtime::instr_addr_t expected_return_addr = 555;
   frame.set_return_addr(expected_return_addr);
   ASSERT_EQ(expected_return_addr, frame.return_addr());
 }
@@ -125,7 +125,7 @@ TEST_F(FrameUnitTest, TestMovePushAndPopEvalStack)
 TEST_F(FrameUnitTest, TestVisibleVars)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::runtime::variable_key var_key = 1111;
+  corevm::runtime::variable_key_t var_key = 1111;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   ASSERT_EQ(false, frame.has_visible_var(var_key));
@@ -156,7 +156,7 @@ TEST_F(FrameUnitTest, TestVisibleVars)
 TEST_F(FrameUnitTest, TestInvisibleVars)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::runtime::variable_key var_key = 1111;
+  corevm::runtime::variable_key_t var_key = 1111;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
   ASSERT_EQ(false, frame.has_invisible_var(var_key));

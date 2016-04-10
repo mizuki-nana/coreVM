@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runner.h"
 
 #include "errors.h"
-#include "bytecode_loader_binary.h"
+#include "binary_bytecode_loader.h"
 #include "configuration.h"
 #include "corevm/macros.h"
 #include "dyobj/errors.h"
@@ -93,7 +93,7 @@ Runner::run() const noexcept
 
   runtime::Process process(options);
 
-  BytecodeLoaderBinary loader;
+  BinaryBytecodeLoader loader;
 
   try
   {

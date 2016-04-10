@@ -61,24 +61,24 @@ inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
 
 // -----------------------------------------------------------------------------
 
-dyobj::attr_key
+dyobj::attr_key_t
 get_attr_key(
   Compartment* compartment,
-  encoding_key str_key,
+  encoding_key_t str_key,
   std::string* attr_str);
 
 // -----------------------------------------------------------------------------
 
-dyobj::attr_key
+dyobj::attr_key_t
 get_attr_key(
   Compartment* compartment,
-  encoding_key str_key);
+  encoding_key_t str_key);
 
 // -----------------------------------------------------------------------------
 
 template<typename ObjPtrType>
 ObjPtrType
-getattr(const ObjPtrType& obj, dyobj::attr_key attr_key,
+getattr(const ObjPtrType& obj, dyobj::attr_key_t attr_key,
   const std::string& attr_name)
 {
   ObjPtrType attr_ptr = NULL;
@@ -98,7 +98,7 @@ template<typename ObjPtrType>
 ObjPtrType
 getattr(const ObjPtrType& obj, const std::string& attr_name)
 {
-  dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_name);
+  dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_name);
 
   return getattr(obj, attr_key, attr_name);
 }
@@ -107,10 +107,10 @@ getattr(const ObjPtrType& obj, const std::string& attr_name)
 
 template<typename ObjPtrType>
 ObjPtrType
-getattr(const ObjPtrType& obj, Compartment* compartment, encoding_key attr_encoding_key)
+getattr(const ObjPtrType& obj, Compartment* compartment, encoding_key_t attr_encoding_key)
 {
   std::string attr_name;
-  dyobj::attr_key attr_key = get_attr_key(
+  dyobj::attr_key_t attr_key = get_attr_key(
     compartment, attr_encoding_key, &attr_name);
 
   return getattr(obj, attr_key, attr_name);

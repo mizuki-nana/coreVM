@@ -127,8 +127,8 @@ TEST_F(DynamicObjectHeapUnitTest, TestBulkCreate)
 
 TEST_F(DynamicObjectHeapUnitTest, TestAtOnNonExistentKeys)
 {
-  corevm::dyobj::dyobj_id id1 = 0;
-  corevm::dyobj::dyobj_id id2 = 1;
+  corevm::dyobj::dyobj_id_t id1 = 0;
+  corevm::dyobj::dyobj_id_t id2 = 1;
 
   ASSERT_THROW(m_heap.at(id1), corevm::dyobj::ObjectNotFoundError);
   ASSERT_THROW(m_heap.at(id2), corevm::dyobj::ObjectNotFoundError);

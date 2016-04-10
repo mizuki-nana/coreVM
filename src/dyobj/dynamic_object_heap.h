@@ -52,14 +52,14 @@ class DynamicObjectHeap
 {
 public:
 
-  typedef dyobj_id dynamic_object_id_type;
+  typedef dyobj_id_t dynamic_object_id_type;
   using dynamic_object_type = typename dyobj::DynamicObject<DynamicObjectManager>;
   using allocator_type = typename dyobj::HeapAllocator<dynamic_object_type, corevm::memory::BlockAllocator<dynamic_object_type>>;
   using dynamic_object_container_type = typename corevm::memory::ObjectContainer<dynamic_object_type, allocator_type>;
 
   static_assert(
     std::numeric_limits<typename dynamic_object_container_type::size_type>::max() >=
-    std::numeric_limits<dyobj_id>::max(),
+    std::numeric_limits<dyobj_id_t>::max(),
     "Dynamic object heap incompatibility"
   );
 

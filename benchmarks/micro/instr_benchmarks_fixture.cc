@@ -78,14 +78,14 @@ InstrBenchmarksFixture::init()
 
   // Please note that setting this vector too long can cause runtime errors
   // in certain benchmarks.
-  corevm::runtime::vector vector {
+  corevm::runtime::Vector vector {
     corevm::runtime::Instr(0, 0, 0),
     corevm::runtime::Instr(0, 0, 0),
     corevm::runtime::Instr(0, 0, 0),
     corevm::runtime::Instr(0, 0, 0),
   };
 
-  corevm::runtime::loc_table locs;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(

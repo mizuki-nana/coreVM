@@ -30,9 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <ostream>
 
 
-#define PTR_TO_INT(p) (uint8_t*)( (p) ) - (uint8_t*)(NULL)
-
-
 namespace corevm {
 
 
@@ -297,7 +294,7 @@ ObjectContainer<T, AllocatorType>::at(pointer p)
 {
   if (!check_ptr(p))
   {
-    THROW(InvalidAddressError(static_cast<uint64_t>(PTR_TO_INT(p))));
+    THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
   return static_cast<pointer>((void*)p);
@@ -311,7 +308,7 @@ ObjectContainer<T, AllocatorType>::at(const_pointer p) const
 {
   if (!check_ptr(const_cast<pointer>(p)))
   {
-    THROW(InvalidAddressError(PTR_TO_INT(p)));
+    THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
   return static_cast<const_pointer>((void*)p);
@@ -325,7 +322,7 @@ ObjectContainer<T, AllocatorType>::destroy(pointer p)
 {
   if (!check_ptr(p))
   {
-    THROW(InvalidAddressError(static_cast<uint64_t>(PTR_TO_INT(p))));
+    THROW(InvalidAddressError(reinterpret_cast<uint64_t>(p)));
   }
 
   m_allocator.destroy(p);
@@ -351,8 +348,7 @@ ObjectContainer<T, AllocatorType>::erase(iterator& itr)
 
 template<typename T, typename AllocatorType>
 std::ostream&
-operator<<(std::ostream& ost,
-  const ObjectContainer<T, AllocatorType>& container)
+operator<<(std::ostream& ost, const ObjectContainer<T, AllocatorType>& container)
 {
   ost << "object container: ";
   ost << container.size() << "/" << container.max_size();

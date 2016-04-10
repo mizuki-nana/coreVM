@@ -93,7 +93,7 @@ TEST_F(DynamicObjectUnitTest, TestGetattr)
   dynamic_object_type obj;
   dynamic_object_type attr_obj;
 
-  corevm::dyobj::attr_key attr_key = 1;
+  corevm::dyobj::attr_key_t attr_key = 1;
 
   ASSERT_FALSE(obj.hasattr(attr_key));
 
@@ -105,7 +105,7 @@ TEST_F(DynamicObjectUnitTest, TestGetattr)
   ASSERT_EQ(true, res);
   ASSERT_EQ(&attr_obj, actual_attr_obj);
 
-  corevm::dyobj::attr_key invalid_attr_key = 2;
+  corevm::dyobj::attr_key_t invalid_attr_key = 2;
   ASSERT_FALSE(obj.hasattr(invalid_attr_key));
 
   dynamic_object_type* invalid_attr_obj = NULL;
@@ -121,15 +121,15 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetAttrs)
 {
   dynamic_object_type obj;
 
-  corevm::dyobj::attr_key key1 = 123;
-  corevm::dyobj::attr_key key2 = 456;
-  corevm::dyobj::attr_key key3 = 789;
+  corevm::dyobj::attr_key_t key1 = 123;
+  corevm::dyobj::attr_key_t key2 = 456;
+  corevm::dyobj::attr_key_t key3 = 789;
 
   dynamic_object_type obj1;
   dynamic_object_type obj2;
   dynamic_object_type obj3;
 
-  std::map<corevm::dyobj::attr_key, dynamic_object_type*> mock_attrs {
+  std::map<corevm::dyobj::attr_key_t, dynamic_object_type*> mock_attrs {
     { key1, &obj1 },
     { key2, &obj2 },
     { key3, &obj3 }
@@ -248,8 +248,8 @@ TEST_F(DynamicObjectUnitTest, TestSetAndGetClosureCtx)
   ASSERT_EQ(corevm::runtime::NONESET_COMPARTMENT_ID, ctx.compartment_id);
   ASSERT_EQ(corevm::runtime::NONESET_CLOSURE_ID, ctx.closure_id);
 
-  corevm::runtime::compartment_id compartment_id = 123;
-  corevm::runtime::closure_id closure_id = 456;
+  corevm::runtime::compartment_id_t compartment_id = 123;
+  corevm::runtime::closure_id_t closure_id = 456;
 
   corevm::runtime::ClosureCtx expected_ctx(compartment_id, closure_id);
 
@@ -267,15 +267,15 @@ TEST_F(DynamicObjectUnitTest, TestCopyFrom)
 {
   dynamic_object_type obj;
 
-  corevm::runtime::compartment_id compartment_id = 123;
-  corevm::runtime::closure_id closure_id = 456;
+  corevm::runtime::compartment_id_t compartment_id = 123;
+  corevm::runtime::closure_id_t closure_id = 456;
 
   corevm::runtime::ClosureCtx expected_ctx(compartment_id, closure_id);
   obj.set_closure_ctx(expected_ctx);
 
-  corevm::dyobj::attr_key key1 = 123;
-  corevm::dyobj::attr_key key2 = 456;
-  corevm::dyobj::attr_key key3 = 789;
+  corevm::dyobj::attr_key_t key1 = 123;
+  corevm::dyobj::attr_key_t key2 = 456;
+  corevm::dyobj::attr_key_t key3 = 789;
 
   dynamic_object_type attr_obj1;
   dynamic_object_type attr_obj2;

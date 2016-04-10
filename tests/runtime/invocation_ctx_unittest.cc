@@ -106,8 +106,8 @@ TEST_F(InvocationCtxUnitTest, TestPutAndGetParamValuePairs)
 
   ASSERT_EQ(false, invk_ctx.has_param_value_pairs());
 
-  corevm::runtime::variable_key key1 = 100;
-  corevm::runtime::variable_key key2 = 2000;
+  corevm::runtime::variable_key_t key1 = 100;
+  corevm::runtime::variable_key_t key2 = 2000;
 
   corevm::runtime::RuntimeTypes::dynamic_object_type obj1;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj2;
@@ -136,13 +136,13 @@ TEST_F(InvocationCtxUnitTest, TestListParamValuePairKeys)
 {
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
 
-  std::vector<corevm::runtime::variable_key> expected_keys {};
-  std::vector<corevm::runtime::variable_key> actual_keys = invk_ctx.param_value_pair_keys();
+  std::vector<corevm::runtime::variable_key_t> expected_keys {};
+  std::vector<corevm::runtime::variable_key_t> actual_keys = invk_ctx.param_value_pair_keys();
 
   ASSERT_EQ(expected_keys, actual_keys);
 
-  corevm::runtime::variable_key key1 = 100;
-  corevm::runtime::variable_key key2 = 2000;
+  corevm::runtime::variable_key_t key1 = 100;
+  corevm::runtime::variable_key_t key2 = 2000;
 
   corevm::runtime::RuntimeTypes::dynamic_object_type obj1;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj2;

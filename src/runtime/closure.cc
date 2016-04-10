@@ -37,7 +37,7 @@ namespace runtime {
 
 static_assert(
   std::numeric_limits<ClosureTable::size_type>::max() >=
-  std::numeric_limits<closure_id>::max(),
+  std::numeric_limits<closure_id_t>::max(),
   "Closure ID incompatibility");
 
 // -----------------------------------------------------------------------------

@@ -40,7 +40,7 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-runtime::vector
+runtime::Vector
 get_vector_from_json(const JSON& json)
 {
 #if __DEBUG__
@@ -48,7 +48,7 @@ get_vector_from_json(const JSON& json)
 #endif
 
   const JSON::array& vector_array = json.array_items();
-  runtime::vector vector;
+  runtime::Vector vector;
 
   for (auto itr = vector_array.begin(); itr != vector_array.end(); ++itr)
   {
@@ -63,12 +63,9 @@ get_vector_from_json(const JSON& json)
     const JSON& oprd1_raw = instr_tuple[1];
     const JSON& oprd2_raw = instr_tuple[2];
 
-    runtime::instr_code code =
-      static_cast<runtime::instr_code>(code_raw.int_value());
-    runtime::instr_oprd oprd1 =
-      static_cast<runtime::instr_oprd>(oprd1_raw.int_value());
-    runtime::instr_oprd oprd2 =
-      static_cast<runtime::instr_oprd>(oprd2_raw.int_value());
+    const auto code = static_cast<runtime::instr_code_t>(code_raw.int_value());
+    const auto oprd1 = static_cast<runtime::instr_oprd_t>(oprd1_raw.int_value());
+    const auto oprd2 = static_cast<runtime::instr_oprd_t>(oprd2_raw.int_value());
 
     vector.emplace_back(code, oprd1, oprd2);
   }
@@ -93,7 +90,7 @@ get_v0_1_instr_code_schema_definition()
 
   for (size_t i = 0; i < runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
-    const runtime::instr_code code = static_cast<runtime::instr_code>(i);
+    const runtime::instr_code_t code = static_cast<runtime::instr_code_t>(i);
 
     ss << code;
 

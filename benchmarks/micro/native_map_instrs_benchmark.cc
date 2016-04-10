@@ -197,14 +197,14 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
     { 3, 33 },
   };
 
-  corevm::runtime::variable_key key = 4;
+  corevm::runtime::variable_key_t key = 4;
 
   auto obj = fixture.process().create_dyobj();
   fixture.process().push_stack(obj);
 
   corevm::runtime::instr_handler_mapset handler;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();

@@ -212,7 +212,7 @@ SignalVectorLoader::load(runtime::Process& process)
     std::string signal_str = static_cast<std::string>(itr->first);
     const JSON& signal_json = static_cast<const JSON>(itr->second);
 
-    runtime::vector vector =
+    runtime::Vector vector =
       get_vector_from_json(signal_json);
 
     sig_atomic_t sig =

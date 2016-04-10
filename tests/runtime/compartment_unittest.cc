@@ -36,8 +36,8 @@ TEST_F(CompartmentUnitTest, TestGetClosureByID)
 {
   corevm::runtime::Compartment compartment("./example.core");
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(
@@ -64,7 +64,7 @@ TEST_F(CompartmentUnitTest, TestGetClosureByID)
   ASSERT_EQ(closure.parent_id, result->parent_id);
 
   corevm::runtime::Closure* result2 = nullptr;
-  corevm::runtime::closure_id invalid_id = 0xfff;
+  corevm::runtime::closure_id_t invalid_id = 0xfff;
 
   compartment.get_closure_by_id(invalid_id, &result2);
 
@@ -77,8 +77,8 @@ TEST_F(CompartmentUnitTest, TestGetClosureByID2)
 {
   corevm::runtime::Compartment compartment("./example.core");
 
-  corevm::runtime::vector vector;
-  corevm::runtime::loc_table locs;
+  corevm::runtime::Vector vector;
+  corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
   corevm::runtime::Closure closure(
@@ -100,7 +100,7 @@ TEST_F(CompartmentUnitTest, TestGetClosureByID2)
   ASSERT_EQ(closure.id, result.id);
   ASSERT_EQ(closure.parent_id, result.parent_id);
 
-  corevm::runtime::closure_id invalid_id = 0xfff;
+  corevm::runtime::closure_id_t invalid_id = 0xfff;
 
   ASSERT_THROW(
     {

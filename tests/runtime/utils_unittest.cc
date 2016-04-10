@@ -56,7 +56,7 @@ TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey)
 
   compartment.set_encoding_map(std::move(encoding_map));
 
-  corevm::runtime::encoding_key attr_key = 0;
+  corevm::runtime::encoding_key_t attr_key = 0;
 
   attr_key = corevm::runtime::get_attr_key(
     &compartment, attr_key);
@@ -77,7 +77,7 @@ TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey2)
 
   compartment.set_encoding_map(std::move(encoding_map));
 
-  corevm::runtime::encoding_key attr_key = 0;
+  corevm::runtime::encoding_key_t attr_key = 0;
 
   std::string actual_attr_name;
 
@@ -94,7 +94,7 @@ TEST_F(RuntimeUtilsUnitTest, TestGetattr)
 {
   const std::string attr_name("__str__");
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+  corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_name);
 
   DynamicObjectType obj;
   DynamicObjectType attr_obj;
@@ -120,9 +120,9 @@ TEST_F(RuntimeUtilsUnitTest, TestGetattr2)
 
   compartment.set_encoding_map(std::move(encoding_map));
 
-  corevm::runtime::encoding_key attr_encoding_key = 0;
+  corevm::runtime::encoding_key_t attr_encoding_key = 0;
 
-  corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_name);
+  corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_name);
 
   DynamicObjectType obj;
   DynamicObjectType attr_obj;

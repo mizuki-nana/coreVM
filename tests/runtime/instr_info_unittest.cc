@@ -34,7 +34,7 @@ class InstrInfoUnitTest : public ::testing::Test {};
 
 TEST_F(InstrInfoUnitTest, TestInstrInfo)
 {
-  corevm::runtime::instr_code code = corevm::runtime::InstrEnum::LDOBJ;
+  corevm::runtime::instr_code_t code = corevm::runtime::InstrEnum::LDOBJ;
   const corevm::runtime::InstrInfo& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
   ASSERT_STREQ("ldobj", info.name);

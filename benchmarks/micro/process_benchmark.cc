@@ -124,7 +124,7 @@ void BenchmarkProcessInsertVector(benchmark::State& state)
   corevm::runtime::Process process;
 
   // A vector of 100 instructions.
-  corevm::runtime::vector vector;
+  corevm::runtime::Vector vector;
   vector.reserve(100);
 
   for (size_t i = 0; i < 100; ++i)

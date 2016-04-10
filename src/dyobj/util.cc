@@ -33,11 +33,11 @@ namespace dyobj {
 
 // -----------------------------------------------------------------------------
 
-attr_key
+attr_key_t
 hash_attr_str(const std::string& attr_str)
 {
   static std::hash<std::string> hasher;
-  return static_cast<attr_key>(hasher(attr_str));
+  return static_cast<attr_key_t>(hasher(attr_str));
 }
 
 // -----------------------------------------------------------------------------

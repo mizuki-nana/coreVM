@@ -133,7 +133,7 @@ InvocationCtx::has_param_value_pairs() const
 // -----------------------------------------------------------------------------
 
 bool
-InvocationCtx::has_param_value_pair_with_key(variable_key key) const
+InvocationCtx::has_param_value_pair_with_key(variable_key_t key) const
 {
   return m_param_value_map.find(key) != m_param_value_map.end();
 }
@@ -141,7 +141,7 @@ InvocationCtx::has_param_value_pair_with_key(variable_key key) const
 // -----------------------------------------------------------------------------
 
 void
-InvocationCtx::put_param_value_pair(variable_key key, param_type param)
+InvocationCtx::put_param_value_pair(variable_key_t key, param_type param)
 {
   m_param_value_map[key] = param;
 }
@@ -149,7 +149,7 @@ InvocationCtx::put_param_value_pair(variable_key key, param_type param)
 // -----------------------------------------------------------------------------
 
 InvocationCtx::param_type
-InvocationCtx::pop_param_value_pair(variable_key key)
+InvocationCtx::pop_param_value_pair(variable_key_t key)
 {
   auto itr = m_param_value_map.find(key);
 
@@ -167,15 +167,15 @@ InvocationCtx::pop_param_value_pair(variable_key key)
 
 // -----------------------------------------------------------------------------
 
-std::vector<variable_key>
+std::vector<variable_key_t>
 InvocationCtx::param_value_pair_keys() const
 {
-  std::vector<variable_key> keys;
+  std::vector<variable_key_t> keys;
   keys.reserve(m_param_value_map.size());
 
   for (auto itr = m_param_value_map.begin(); itr != m_param_value_map.end(); ++itr)
   {
-    variable_key key = itr->first;
+    variable_key_t key = itr->first;
     keys.push_back(key);
   }
 

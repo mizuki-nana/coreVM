@@ -55,7 +55,7 @@ void set_encoding_pair(
   corevm::runtime::Process& process,
   const corevm::runtime::EncodingMap& encoding_map)
 {
-  corevm::runtime::compartment_id compartment_id = 0;
+  corevm::runtime::compartment_id_t compartment_id = 0;
   corevm::runtime::Compartment* compartment = nullptr;
   process.get_compartment(compartment_id, &compartment);
 
@@ -87,9 +87,9 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope(benchmark::State& state)
 {
-  corevm::runtime::variable_key var_key = 1;
+  corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(var_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
 
   instr_handler_cls handler;
 
@@ -110,9 +110,9 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope(benchmark::State& state)
 {
-  corevm::runtime::variable_key var_key = 1;
+  corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(var_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
 
   corevm::runtime::instr_handler_ldobj2 handler;
 
@@ -163,7 +163,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
   auto encoding_key = 0;
 
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(encoding_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(encoding_key), 0);
 
   instr_handler_cls handler;
 
@@ -195,9 +195,9 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::State& state)
 {
-  corevm::dyobj::attr_key attr_key = 0;
+  corevm::dyobj::attr_key_t attr_key = 0;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(attr_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
 
   instr_handler_cls handler;
 
@@ -310,9 +310,9 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration(benchmark::State& state)
 {
-  corevm::runtime::variable_key var_key = 1;
+  corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(var_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
 
   instr_handler_cls handler;
 
@@ -337,9 +337,9 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration(benchmark::State& state)
 {
-  corevm::runtime::variable_key var_key = 1;
+  corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(var_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
 
   corevm::runtime::instr_handler_ldobj2 handler;
 
@@ -365,10 +365,10 @@ template <class instr_handler_cls>
 static
 void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& state)
 {
-  corevm::runtime::variable_key var_key0 = 0;
-  corevm::runtime::variable_key var_key = 1;
+  corevm::runtime::variable_key_t var_key0 = 0;
+  corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(var_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
 
   instr_handler_cls handler;
 
@@ -427,7 +427,7 @@ BenchmarkHASATTR2Instr(benchmark::State& state)
   InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
-  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+  const corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
@@ -460,7 +460,7 @@ BenchmarkGETATTR2Instr(benchmark::State& state)
   InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
-  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+  const corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
@@ -526,7 +526,7 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
   InstrBenchmarksFixture fixture;
 
   const std::string attr_str = "hello_world";
-  const corevm::dyobj::attr_key attr_key = corevm::dyobj::hash_attr_str(attr_str);
+  const corevm::dyobj::attr_key_t attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
   corevm::types::NativeTypeHandle hndl( (corevm::types::native_string(attr_str)) );
 
@@ -599,7 +599,7 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
   auto attr_key = 0;
 
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(attr_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
 
   corevm::runtime::instr_handler_rsetattrs handler;
 
@@ -640,7 +640,7 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
   auto attr_key = 0;
 
   corevm::runtime::Instr instr(
-    0, static_cast<corevm::runtime::instr_oprd>(attr_key), 0);
+    0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
 
   corevm::runtime::instr_handler_setattrs2 handler;
 
@@ -657,9 +657,9 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
   auto attr_obj2 = fixture.process().create_dyobj();
   auto attr_obj3 = fixture.process().create_dyobj();
 
-  corevm::dyobj::attr_key attr_key1 = 1;
-  corevm::dyobj::attr_key attr_key2 = 2;
-  corevm::dyobj::attr_key attr_key3 = 3;
+  corevm::dyobj::attr_key_t attr_key1 = 1;
+  corevm::dyobj::attr_key_t attr_key2 = 2;
+  corevm::dyobj::attr_key_t attr_key3 = 3;
 
   const std::string attr_str1 = "attr1";
   const std::string attr_str2 = "attr2";

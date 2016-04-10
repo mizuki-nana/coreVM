@@ -553,7 +553,7 @@ void
 instr_handler_ldobj::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
 
@@ -582,7 +582,7 @@ void
 instr_handler_stobj::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
 
@@ -599,7 +599,7 @@ void
 instr_handler_stobjn::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   size_t n = static_cast<size_t>(instr.oprd2);
 
   Frame& frame = process.top_nth_frame(n);
@@ -617,7 +617,7 @@ void
 instr_handler_getattr::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  auto str_key = static_cast<encoding_key>(instr.oprd1);
+  auto str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
 
   auto obj = process.pop_stack();
@@ -633,9 +633,9 @@ void
 instr_handler_setattr::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  auto str_key = static_cast<encoding_key>(instr.oprd1);
+  auto str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key attr_key = get_attr_key(frame->compartment_ptr(), str_key);
+  dyobj::attr_key_t attr_key = get_attr_key(frame->compartment_ptr(), str_key);
 
   auto attr_obj = process.pop_stack();
   auto target_obj = process.top_stack();
@@ -656,7 +656,7 @@ void
 instr_handler_delattr::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  dyobj::attr_key attr_key = static_cast<dyobj::attr_key>(instr.oprd1);
+  dyobj::attr_key_t attr_key = static_cast<dyobj::attr_key_t>(instr.oprd1);
 
   auto obj = process.pop_stack();
 
@@ -687,7 +687,7 @@ instr_handler_hasattr2::execute(const Instr& /* instr */, Process& process,
   auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
-  dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
+  dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
 
   const bool res_value = obj->hasattr(attr_key);
 
@@ -730,7 +730,7 @@ instr_handler_setattr2::execute(const Instr& /* instr */, Process& process,
   auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
-  dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
+  dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
 
   target_obj->putattr(attr_key, attr_obj);
 
@@ -751,7 +751,7 @@ instr_handler_delattr2::execute(const Instr& /* instr */, Process& process,
   auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
-  dyobj::attr_key attr_key = dyobj::hash_attr_str(attr_str);
+  dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
 
   obj->delattr(attr_key);
 }
@@ -771,7 +771,7 @@ void
 instr_handler_ldobj2::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
 
@@ -800,7 +800,7 @@ void
 instr_handler_stobj2::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
   auto obj = process.pop_stack();
@@ -814,7 +814,7 @@ void
 instr_handler_delobj::execute(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   Frame* frame = *frame_ptr;
 
   auto obj = frame->pop_visible_var(key);
@@ -833,7 +833,7 @@ void
 instr_handler_delobj2::execute(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   Frame* frame = *frame_ptr;
 
   auto obj = frame->pop_invisible_var(key);
@@ -900,7 +900,7 @@ instr_handler_gethndl2::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   auto obj = frame->get_visible_var(key);
 
@@ -1127,7 +1127,7 @@ instr_handler_setctx::execute(const Instr& instr, Process& process,
   Frame* frame = *frame_ptr;
   ClosureCtx frame_cls = frame->closure_ctx();
 
-  ClosureCtx ctx(frame_cls.compartment_id, static_cast<closure_id>(instr.oprd1));
+  ClosureCtx ctx(frame_cls.compartment_id, static_cast<closure_id_t>(instr.oprd1));
 
   obj->set_closure_ctx(ctx);
 }
@@ -1144,10 +1144,10 @@ instr_handler_cldobj::execute(const Instr& instr, Process& process,
 
   bool value = types::get_value_from_handle<bool>(hndl);
 
-  variable_key key1 = static_cast<variable_key>(instr.oprd1);
-  variable_key key2 = static_cast<variable_key>(instr.oprd2);
+  variable_key_t key1 = static_cast<variable_key_t>(instr.oprd1);
+  variable_key_t key2 = static_cast<variable_key_t>(instr.oprd2);
 
-  variable_key key = value ? key1 : key2;
+  variable_key_t key = value ? key1 : key2;
 
   Process::dyobj_ptr obj = NULL;
 
@@ -1203,9 +1203,9 @@ instr_handler_setattrs::execute(const Instr& instr, Process& process,
   {
     uint64_t str_key = static_cast<uint64_t>(itr->first);
 
-    dyobj::attr_key attr_key = get_attr_key(compartment, str_key);
+    dyobj::attr_key_t attr_key = get_attr_key(compartment, str_key);
 
-    dyobj::dyobj_id attr_id = static_cast<dyobj::dyobj_id>(itr->second);
+    dyobj::dyobj_id_t attr_id = static_cast<dyobj::dyobj_id_t>(itr->second);
 
     auto &attr_obj = process.get_dyobj(attr_id);
 
@@ -1240,10 +1240,10 @@ void
 instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  auto str_key = static_cast<encoding_key>(instr.oprd1);
+  auto str_key = static_cast<encoding_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
-  dyobj::attr_key attr_key = get_attr_key(
+  dyobj::attr_key_t attr_key = get_attr_key(
     frame->compartment_ptr(), str_key);
 
   auto attr_obj = process.top_stack();
@@ -1255,7 +1255,7 @@ instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
-    dyobj::dyobj_id id = static_cast<dyobj::dyobj_id>(itr->second);
+    dyobj::dyobj_id_t id = static_cast<dyobj::dyobj_id_t>(itr->second);
 
     auto &obj = process.get_dyobj(id);
     attr_obj->manager().on_setattr();
@@ -1269,9 +1269,9 @@ void
 instr_handler_setattrs2::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  auto self_str_key = static_cast<encoding_key>(instr.oprd1);
+  auto self_str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key self_attr_key = get_attr_key(
+  dyobj::attr_key_t self_attr_key = get_attr_key(
     frame->compartment_ptr(), self_str_key);
 
   auto src_obj = process.pop_stack();
@@ -1283,7 +1283,7 @@ instr_handler_setattrs2::execute(const Instr& instr, Process& process,
   size_t i = 0;
   for (auto itr = src_obj->begin(); itr != src_obj->end(); ++itr, ++i)
   {
-    dyobj::attr_key attr_key = static_cast<dyobj::attr_key>(itr->first);
+    dyobj::attr_key_t attr_key = static_cast<dyobj::attr_key_t>(itr->first);
 
     auto attr_obj = itr->second;
 
@@ -1321,7 +1321,7 @@ instr_handler_getobj::execute(const Instr& /* instr */, Process& process,
   Frame* frame = *frame_ptr;
   auto hndl = frame->pop_eval_stack();
 
-  dyobj::dyobj_id id = types::get_value_from_handle<dyobj::dyobj_id>(hndl);
+  dyobj::dyobj_id_t id = types::get_value_from_handle<dyobj::dyobj_id_t>(hndl);
 
   process.push_stack(&process.get_dyobj(id));
 }
@@ -1481,7 +1481,7 @@ instr_handler_rtrn::execute(const Instr& /* instr */, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  instr_addr return_addr = frame->return_addr();
+  instr_addr_t return_addr = frame->return_addr();
 
   if (return_addr == NONESET_INSTR_ADDR)
   {
@@ -1509,10 +1509,10 @@ void
 instr_handler_jmp::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_addr starting_addr = process.pc();
-  instr_addr relative_addr = static_cast<instr_addr>(instr.oprd1);
+  instr_addr_t starting_addr = process.pc();
+  instr_addr_t relative_addr = static_cast<instr_addr_t>(instr.oprd1);
 
-  instr_addr addr = starting_addr + relative_addr;
+  instr_addr_t addr = starting_addr + relative_addr;
 
   if (addr == NONESET_INSTR_ADDR)
   {
@@ -1534,10 +1534,10 @@ instr_handler_jmpif::execute(const Instr& instr, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  instr_addr starting_addr = process.pc();
-  instr_addr relative_addr = static_cast<instr_addr>(instr.oprd1);
+  instr_addr_t starting_addr = process.pc();
+  instr_addr_t relative_addr = static_cast<instr_addr_t>(instr.oprd1);
 
-  instr_addr addr = starting_addr + relative_addr;
+  instr_addr_t addr = starting_addr + relative_addr;
 
   if (addr == NONESET_INSTR_ADDR)
   {
@@ -1565,12 +1565,11 @@ instr_handler_jmpr::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
-  instr_addr starting_addr = frame->return_addr() + 1;
+  const instr_addr_t starting_addr = frame->return_addr() + 1;
 
-  instr_addr relative_addr =
-    static_cast<instr_addr>(instr.oprd1);
+  auto relative_addr = static_cast<instr_addr_t>(instr.oprd1);
 
-  instr_addr addr = starting_addr + relative_addr;
+  const instr_addr_t addr = starting_addr + relative_addr;
 
   if (addr == NONESET_INSTR_ADDR)
   {
@@ -1596,7 +1595,7 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
   {
     Frame& frame = process.top_frame();
     auto exc_obj = process.pop_stack();
-    instr_addr starting_addr = frame.return_addr() + 1;
+    instr_addr_t starting_addr = frame.return_addr() + 1;
     uint32_t dst = 0;
 
     if (search_catch_sites)
@@ -1635,8 +1634,8 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
       // A catch site found in the current frame. Jump to its destination.
       frame.set_exc_obj(exc_obj);
 
-      instr_addr addr =
-        starting_addr + static_cast<instr_addr>(dst);
+      instr_addr_t addr =
+        starting_addr + static_cast<instr_addr_t>(dst);
 
       // Minus one so that it will be `addr` after this instruction finishes,
       // since the pc gets incremented after every instruction.
@@ -1711,11 +1710,11 @@ instr_handler_jmpexc::execute(const Instr& instr, Process& process,
 
   if (jump)
   {
-    instr_addr starting_addr = process.pc();
-    instr_addr relative_addr =
-      static_cast<instr_addr>(instr.oprd1);
+    instr_addr_t starting_addr = process.pc();
+    instr_addr_t relative_addr =
+      static_cast<instr_addr_t>(instr.oprd1);
 
-    instr_addr addr = starting_addr + relative_addr;
+    instr_addr_t addr = starting_addr + relative_addr;
 
     if (addr == NONESET_INSTR_ADDR)
     {
@@ -1757,7 +1756,7 @@ void
 instr_handler_putkwarg::execute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
   auto obj = process.pop_stack();
@@ -1782,7 +1781,7 @@ instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
 
   for (auto itr = array.begin(); itr != array.end(); ++itr)
   {
-    dyobj::dyobj_id arg_id = static_cast<dyobj::dyobj_id>(*itr);
+    dyobj::dyobj_id_t arg_id = static_cast<dyobj::dyobj_id_t>(*itr);
     auto& arg_obj = process.get_dyobj(arg_id);
     arg_obj.manager().on_setattr();
     invk_ctx->put_param(&arg_obj);
@@ -1806,8 +1805,8 @@ instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
-    variable_key arg_key = static_cast<variable_key>(itr->first);
-    dyobj::dyobj_id arg_id = static_cast<dyobj::dyobj_id>(itr->second);
+    variable_key_t arg_key = static_cast<variable_key_t>(itr->first);
+    dyobj::dyobj_id_t arg_id = static_cast<dyobj::dyobj_id_t>(itr->second);
 
     auto& arg_obj = process.get_dyobj(arg_id);
     arg_obj.manager().on_setattr();
@@ -1834,7 +1833,7 @@ instr_handler_getkwarg::execute(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
-  variable_key key = static_cast<variable_key>(instr.oprd1);
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
 
   if (invk_ctx->has_param_value_pair_with_key(key))
   {
@@ -1843,7 +1842,7 @@ instr_handler_getkwarg::execute(const Instr& instr, Process& process,
     Frame* frame = *frame_ptr;
     frame->set_visible_var(key, obj);
 
-    instr_addr relative_addr = static_cast<instr_addr>(instr.oprd2);
+    auto relative_addr = static_cast<instr_addr_t>(instr.oprd2);
     process.set_pc(process.pc() + relative_addr);
   }
 }
@@ -1881,11 +1880,11 @@ instr_handler_getkwargs::execute(const Instr& /* instr */, Process& /* process *
 
   types::native_map map;
 
-  std::vector<variable_key> params = invk_ctx->param_value_pair_keys();
+  std::vector<variable_key_t> params = invk_ctx->param_value_pair_keys();
 
   for (auto itr = params.begin(); itr != params.end(); ++itr)
   {
-    variable_key key = static_cast<variable_key>(*itr);
+    variable_key_t key = static_cast<variable_key_t>(*itr);
     auto obj = invk_ctx->pop_param_value_pair(key);
 
     auto key_val = static_cast<typename types::native_map::key_type>(key);
@@ -2479,7 +2478,7 @@ instr_handler_str::execute(const Instr& instr, Process& /* process */,
 
   if (instr.oprd1 > 0)
   {
-    auto encoding_key = static_cast<runtime::encoding_key>(instr.oprd1);
+    auto encoding_key = static_cast<runtime::encoding_key_t>(instr.oprd1);
 
     const Compartment* compartment = frame->compartment_ptr();
 

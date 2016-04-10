@@ -129,7 +129,7 @@ ExtractMetadata::extract_instr_info() const
 
   for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
-    const corevm::runtime::instr_code code = static_cast<corevm::runtime::instr_code>(i);
+    const auto code = static_cast<corevm::runtime::instr_code_t>(i);
     const corevm::runtime::InstrInfo& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
     ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
