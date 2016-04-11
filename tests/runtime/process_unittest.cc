@@ -364,11 +364,9 @@ TEST_F(ProcessUnitTest, TestInsertAndAccessNativeTypeHandle)
 
   corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
 
-  auto key = process.insert_ntvhndl(hndl);
+  auto saved_hndl = process.insert_ntvhndl(hndl);
 
-  ASSERT_EQ(true, process.has_ntvhndl(key));
-
-  auto actual_hndl = process.get_ntvhndl(key);
+  auto actual_hndl = process.get_ntvhndl(saved_hndl);
 
   int8_t actual_value = corevm::types::get_value_from_handle<int8_t>(actual_hndl);
 
@@ -384,22 +382,18 @@ TEST_F(ProcessUnitTest, TestInsertAndEraseNativeTypeHandle)
 
   corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
 
-  auto key = process.insert_ntvhndl(hndl);
-
-  ASSERT_EQ(true, process.has_ntvhndl(key));
+  auto saved_hndl = process.insert_ntvhndl(hndl);
 
   ASSERT_NO_THROW(
     {
-      process.erase_ntvhndl(key);
+      process.erase_ntvhndl(saved_hndl);
     }
   );
-
-  ASSERT_EQ(false, process.has_ntvhndl(key));
 
   // Try erase again
   ASSERT_THROW(
     {
-      process.erase_ntvhndl(key);
+      process.erase_ntvhndl(saved_hndl);
     },
     corevm::runtime::NativeTypeHandleDeletionError
   );
@@ -407,7 +401,7 @@ TEST_F(ProcessUnitTest, TestInsertAndEraseNativeTypeHandle)
   // Try access it
   ASSERT_THROW(
     {
-      process.get_ntvhndl(key);
+      process.get_ntvhndl(saved_hndl);
     },
     corevm::runtime::NativeTypeHandleNotFoundError
   );

@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dyobj/dynamic_object.h"
 #include "dyobj/flags.h"
+#include "types/native_type_handle.h"
 
 #include <gtest/gtest.h>
 
@@ -48,6 +49,7 @@ TEST_F(DynamicObjectUnitTest, TestInitialization)
   ASSERT_FALSE(obj.hasattr(0));
   ASSERT_FALSE(obj.hasattr(1));
   ASSERT_FALSE(obj.hasattr(123));
+  ASSERT_FALSE(obj.has_ntvhndl());
 }
 
 // -----------------------------------------------------------------------------
@@ -84,6 +86,27 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
     },
     corevm::dyobj::InvalidFlagBitError
   );
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(DynamicObjectUnitTest, TestGetAndSetNtvhndl)
+{
+  dynamic_object_type obj;
+
+  ASSERT_FALSE(obj.has_ntvhndl());
+
+  corevm::types::NativeTypeHandle hndl(corevm::types::uint32(32));
+
+  obj.set_ntvhndl(&hndl);
+
+  ASSERT_TRUE(obj.has_ntvhndl());
+
+  ASSERT_EQ(hndl, obj.ntvhndl());
+
+  obj.clear_ntvhndl();
+
+  ASSERT_FALSE(obj.has_ntvhndl());
 }
 
 // -----------------------------------------------------------------------------

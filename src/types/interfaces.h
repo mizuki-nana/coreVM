@@ -252,11 +252,11 @@ void interface_to_map(NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_truthy_value(NativeTypeHandle& operand);
+NativeTypeHandle interface_compute_truthy_value(const NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_repr_value(NativeTypeHandle& operand);
+NativeTypeHandle interface_compute_repr_value(const NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 

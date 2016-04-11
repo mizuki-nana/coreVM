@@ -443,14 +443,14 @@ void interface_to_map(NativeTypeHandle& operand)
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_truthy_value(NativeTypeHandle& operand)
+NativeTypeHandle interface_compute_truthy_value(const NativeTypeHandle& operand)
 {
   return apply_unary_visitor<native_type_truthy_visitor>(operand);
 }
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_repr_value(NativeTypeHandle& operand)
+NativeTypeHandle interface_compute_repr_value(const NativeTypeHandle& operand)
 {
   return apply_unary_visitor<native_type_repr_visitor>(operand);
 }

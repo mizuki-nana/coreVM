@@ -77,7 +77,7 @@ public:
 
   void set_return_addr(const instr_addr_t);
 
-  void push_eval_stack(types::NativeTypeHandle&);
+  void push_eval_stack(const types::NativeTypeHandle&);
 
   void push_eval_stack(types::NativeTypeHandle&&);
 

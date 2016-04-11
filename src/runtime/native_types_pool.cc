@@ -27,7 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 #include "types/native_type_handle.h"
 
-#include <limits>
 #include <ostream>
 
 
@@ -36,14 +35,6 @@ namespace {
 // -----------------------------------------------------------------------------
 
 typedef corevm::runtime::NativeTypesPool _MyType;
-
-// -----------------------------------------------------------------------------
-
-static_assert(
-  std::numeric_limits<_MyType::container_type::size_type>::max() >=
-  std::numeric_limits<corevm::dyobj::ntvhndl_key>::max(),
-  "Native tyeps pool incompatibility"
-);
 
 // -----------------------------------------------------------------------------
 
@@ -101,11 +92,8 @@ NativeTypesPool::total_size() const
 // -----------------------------------------------------------------------------
 
 _MyType::reference
-NativeTypesPool::at(const dyobj::ntvhndl_key& key)
+NativeTypesPool::at(_MyType::const_pointer ptr)
 {
-  void* raw_ptr = ntvhndl_key_to_ptr(key);
-  _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
-
   ptr = m_container[ptr];
 
   if (ptr == nullptr)
@@ -113,12 +101,12 @@ NativeTypesPool::at(const dyobj::ntvhndl_key& key)
     THROW(NativeTypeHandleNotFoundError());
   }
 
-  return *ptr;
+  return *const_cast<_MyType::pointer>(ptr);
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::ntvhndl_key
+types::NativeTypeHandle*
 NativeTypesPool::create()
 {
   auto ptr = m_container.create();
@@ -129,13 +117,13 @@ NativeTypesPool::create()
       "insufficient memory to store native type handle"));
   }
 
-  return ptr_to_ntvhndl_key(ptr);
+  return ptr;
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::ntvhndl_key
-NativeTypesPool::create(types::NativeTypeHandle& hndl)
+types::NativeTypeHandle*
+NativeTypesPool::create(const types::NativeTypeHandle& hndl)
 {
   auto ptr = m_container.create(hndl);
 
@@ -145,17 +133,14 @@ NativeTypesPool::create(types::NativeTypeHandle& hndl)
       "insufficient memory to store native type handle"));
   }
 
-  return ptr_to_ntvhndl_key(ptr);
+  return ptr;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-NativeTypesPool::erase(const dyobj::ntvhndl_key& key)
+NativeTypesPool::erase(_MyType::pointer ptr)
 {
-  void* raw_ptr = ntvhndl_key_to_ptr(key);
-  _MyType::pointer ptr = static_cast<_MyType::pointer>(raw_ptr);
-
   ptr = m_container[ptr];
 
   if (ptr == nullptr)

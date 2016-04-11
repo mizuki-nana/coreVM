@@ -72,13 +72,13 @@ class NtvhndlCollectorGcCallback :
 public:
   virtual void operator()(const dynamic_object_type& obj);
 
-  const std::vector<dyobj::ntvhndl_key>& list() const
+  const std::vector<const types::NativeTypeHandle*>& list() const
   {
-    return m_ntvhndl_keys;
+    return m_ntvhndls;
   }
 
 private:
-  std::vector<dyobj::ntvhndl_key> m_ntvhndl_keys;
+  std::vector<const types::NativeTypeHandle*> m_ntvhndls;
 };
 
 // -----------------------------------------------------------------------------
@@ -87,7 +87,10 @@ private:
 void
 NtvhndlCollectorGcCallback::operator()(const dynamic_object_type& obj)
 {
-  m_ntvhndl_keys.push_back(obj.ntvhndl_key());
+  if (obj.has_ntvhndl())
+  {
+    m_ntvhndls.push_back(&obj.ntvhndl());
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -600,33 +603,16 @@ Process::max_ntvhndl_pool_size() const
 
 // -----------------------------------------------------------------------------
 
-bool
-Process::has_ntvhndl(dyobj::ntvhndl_key& key)
-{
-  try
-  {
-    m_ntvhndl_pool.at(key);
-  }
-  catch(const NativeTypeHandleNotFoundError&)
-  {
-    return false;
-  }
-
-  return true;
-}
-
-// -----------------------------------------------------------------------------
-
 types::NativeTypeHandle&
-Process::get_ntvhndl(dyobj::ntvhndl_key key)
+Process::get_ntvhndl(const types::NativeTypeHandle* hndl)
 {
-  return m_ntvhndl_pool.at(key);
+  return m_ntvhndl_pool.at(hndl);
 }
 
 // -----------------------------------------------------------------------------
 
-dyobj::ntvhndl_key
-Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
+types::NativeTypeHandle*
+Process::insert_ntvhndl(const types::NativeTypeHandle& hndl)
 {
   return m_ntvhndl_pool.create(hndl);
 }
@@ -634,18 +620,13 @@ Process::insert_ntvhndl(types::NativeTypeHandle& hndl)
 // -----------------------------------------------------------------------------
 
 void
-Process::erase_ntvhndl(dyobj::ntvhndl_key key)
+Process::erase_ntvhndl(const types::NativeTypeHandle* ptr)
 {
-  if (key == dyobj::NONESET_NTVHNDL_KEY)
-  {
-    return;
-  }
-
   try
   {
-    m_ntvhndl_pool.erase(key);
+    m_ntvhndl_pool.erase(const_cast<types::NativeTypeHandle*>(ptr));
   }
-  catch(const NativeTypeHandleNotFoundError)
+  catch (const NativeTypeHandleNotFoundError)
   {
     THROW(NativeTypeHandleDeletionError());
   }
@@ -834,8 +815,8 @@ Process::do_gc()
   std::for_each(
     callback.list().begin(),
     callback.list().end(),
-    [&](dyobj::ntvhndl_key key) {
-      this->erase_ntvhndl(key);
+    [&](const types::NativeTypeHandle* ptr) {
+      this->erase_ntvhndl(ptr);
     }
   );
 

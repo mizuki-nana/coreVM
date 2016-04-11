@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/flags.h"
 #include "dyobj/errors.h"
 #include "runtime/closure_ctx.h"
+#include "types/fwd.h"
 
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
@@ -78,9 +79,10 @@ public:
 
   DynamicObjectManager& manager() noexcept;
 
-  ntvhndl_key ntvhndl_key() const noexcept;
-  void set_ntvhndl_key(dyobj::ntvhndl_key) noexcept;
-  void clear_ntvhndl_key() noexcept;
+  const types::NativeTypeHandle& ntvhndl() const noexcept;
+  void set_ntvhndl(types::NativeTypeHandle*) noexcept;
+  void clear_ntvhndl() noexcept;
+  bool has_ntvhndl() const noexcept;
 
   bool get_flag(char) const;
   void set_flag(char);
@@ -151,7 +153,7 @@ private:
   flag_t m_flags;
   attr_map_type m_attrs;
   DynamicObjectManager m_manager;
-  dyobj::ntvhndl_key m_ntvhndl_key;
+  types::NativeTypeHandle* m_ntvhndl;
   runtime::ClosureCtx m_closure_ctx;
 };
 
@@ -171,7 +173,7 @@ DynamicObject<DynamicObjectManager>::DynamicObject()
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
   m_manager(),
-  m_ntvhndl_key(NONESET_NTVHNDL_KEY),
+  m_ntvhndl(NULL),
   m_closure_ctx(runtime::ClosureCtx(
     runtime::NONESET_COMPARTMENT_ID, runtime::NONESET_CLOSURE_ID))
 {
@@ -273,29 +275,40 @@ DynamicObject<DynamicObjectManager>::manager() noexcept
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-ntvhndl_key
-DynamicObject<DynamicObjectManager>::ntvhndl_key() const noexcept
+const types::NativeTypeHandle&
+DynamicObject<DynamicObjectManager>::ntvhndl() const noexcept
 {
-  return m_ntvhndl_key;
+#if __DEBUG__
+  ASSERT(m_ntvhndl);
+#endif
+  return *m_ntvhndl;
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::set_ntvhndl_key(
-  dyobj::ntvhndl_key ntvhndl_key) noexcept
+DynamicObject<DynamicObjectManager>::set_ntvhndl(types::NativeTypeHandle* ntvhndl) noexcept
 {
-  m_ntvhndl_key = ntvhndl_key;
+  m_ntvhndl = ntvhndl;
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::clear_ntvhndl_key() noexcept
+DynamicObject<DynamicObjectManager>::clear_ntvhndl() noexcept
 {
-  m_ntvhndl_key = NONESET_NTVHNDL_KEY;
+  m_ntvhndl = NULL;
+}
+
+// -----------------------------------------------------------------------------
+
+template<class DynamicObjectManager>
+bool
+DynamicObject<DynamicObjectManager>::has_ntvhndl() const noexcept
+{
+  return m_ntvhndl != NULL;
 }
 
 // -----------------------------------------------------------------------------

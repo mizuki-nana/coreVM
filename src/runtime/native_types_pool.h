@@ -82,6 +82,7 @@ public:
 
   typedef value_type& reference;
   typedef value_type* pointer;
+  typedef const value_type* const_pointer;
 
   using size_type = typename container_type::size_type;
 
@@ -98,13 +99,13 @@ public:
 
   size_type total_size() const;
 
-  reference at(const dyobj::ntvhndl_key&);
+  reference at(const_pointer);
 
-  dyobj::ntvhndl_key create();
+  types::NativeTypeHandle* create();
 
-  dyobj::ntvhndl_key create(types::NativeTypeHandle& hndl);
+  types::NativeTypeHandle* create(const types::NativeTypeHandle& hndl);
 
-  void erase(const dyobj::ntvhndl_key&);
+  void erase(pointer);
 
   friend std::ostream& operator<<(std::ostream&, const NativeTypesPool&);
 

@@ -162,13 +162,11 @@ public:
 
   void push_stack(dyobj_ptr);
 
-  bool has_ntvhndl(dyobj::ntvhndl_key&);
+  types::NativeTypeHandle& get_ntvhndl(const types::NativeTypeHandle*);
 
-  types::NativeTypeHandle& get_ntvhndl(dyobj::ntvhndl_key);
+  types::NativeTypeHandle* insert_ntvhndl(const types::NativeTypeHandle&);
 
-  dyobj::ntvhndl_key insert_ntvhndl(types::NativeTypeHandle&);
-
-  void erase_ntvhndl(dyobj::ntvhndl_key);
+  void erase_ntvhndl(const types::NativeTypeHandle*);
 
   instr_addr_t pc() const;
 

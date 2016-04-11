@@ -43,36 +43,16 @@ namespace runtime {
 class Compartment;
 
 
-using dyobj::ntvhndl_key;
-
-// -----------------------------------------------------------------------------
-
-inline ntvhndl_key ptr_to_ntvhndl_key(void* ptr)
-{
-  return static_cast<ntvhndl_key>( (uint8_t*)(ptr) - (uint8_t*)(NULL) );
-}
-
-// -----------------------------------------------------------------------------
-
-inline void* ntvhndl_key_to_ptr(const ntvhndl_key& key)
-{
-  return reinterpret_cast<void*>(key);
-}
-
 // -----------------------------------------------------------------------------
 
 dyobj::attr_key_t
-get_attr_key(
-  Compartment* compartment,
-  encoding_key_t str_key,
+get_attr_key(Compartment* compartment, encoding_key_t str_key,
   std::string* attr_str);
 
 // -----------------------------------------------------------------------------
 
 dyobj::attr_key_t
-get_attr_key(
-  Compartment* compartment,
-  encoding_key_t str_key);
+get_attr_key(Compartment* compartment, encoding_key_t str_key);
 
 // -----------------------------------------------------------------------------
 

@@ -46,16 +46,7 @@ const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
 typedef uint32_t attr_key_t;
 
 
-typedef int64_t ntvhndl_key;
-
-
 typedef uint32_t flag_t;
-
-
-const ntvhndl_key NONESET_NTVHNDL_KEY = -1;
-
-
-const int64_t NTVHNDL_LIMIT = LLONG_MAX;
 
 
 typedef uint64_t dyobj_id_t;

@@ -140,7 +140,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
 
   auto obj = fixture.process().create_dyobj();
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
@@ -269,7 +269,7 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
   while (state.KeepRunning())
   {
     fixture.process().push_stack(obj);
-    obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+    obj->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
     handler.execute(instr, fixture.process(), &frame, &invk_ctx);
   }
@@ -290,7 +290,7 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
   auto obj2 = fixture.process().create_dyobj();
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj2->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj2->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
@@ -404,7 +404,7 @@ void BenchmarkSWAPInstr(benchmark::State& state)
   auto obj2 = fixture.process().create_dyobj();
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(1);
-  obj2->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj2->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
   fixture.process().push_stack(obj);
   fixture.process().push_stack(obj2);
@@ -570,7 +570,7 @@ BenchmarkSETATTRSInstr(benchmark::State& state)
   };
 
   corevm::types::NativeTypeHandle hndl = attr_map;
-  obj->set_ntvhndl_key(fixture.process().insert_ntvhndl(hndl));
+  obj->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
   corevm::runtime::ClosureCtx ctx(0, 0);
 

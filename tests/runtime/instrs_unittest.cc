@@ -640,9 +640,9 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
   m_process.push_frame(frame);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(expected_value);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  obj->set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_gethndl>(instr, 1);
@@ -674,7 +674,7 @@ TEST_F(InstrsObjUnitTest, TestInstrSETHNDL)
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_sethndl>(instr, 1);
 
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, obj->ntvhndl_key());
+  ASSERT_TRUE(obj->has_ntvhndl());
 }
 
 // -----------------------------------------------------------------------------
@@ -691,9 +691,9 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
   m_process.push_frame(frame);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(expected_value);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  obj->set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
@@ -718,16 +718,14 @@ TEST_F(InstrsObjUnitTest, TestInstrCLRHNDL)
   m_process.push_stack(obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  obj->set_ntvhndl_key(ntvhndl_key);
+  obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_clrhndl>(instr, 1);
 
-  ASSERT_EQ(corevm::dyobj::NONESET_NTVHNDL_KEY, obj->ntvhndl_key());
-
-  ASSERT_FALSE(m_process.has_ntvhndl(ntvhndl_key));
+  ASSERT_FALSE(obj->has_ntvhndl());
 }
 
 // -----------------------------------------------------------------------------
@@ -741,16 +739,16 @@ TEST_F(InstrsObjUnitTest, TestInstrCPYHNDL)
   m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  src_obj->set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(0, 6, 0);
   execute_instr<corevm::runtime::instr_handler_cpyhndl>(instr, 0);
 
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj->ntvhndl_key());
+  ASSERT_TRUE(target_obj->has_ntvhndl());
 
-  auto& res_hndl = m_process.get_ntvhndl(target_obj->ntvhndl_key());
+  auto& res_hndl = m_process.get_ntvhndl(&target_obj->ntvhndl());
 
   uint32_t res_value = corevm::types::get_value_from_handle<uint32_t>(res_hndl);
 
@@ -768,16 +766,16 @@ TEST_F(InstrsObjUnitTest, TestInstrCPYREPR)
   m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  src_obj->set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_cpyrepr>(instr, 0);
 
-  ASSERT_NE(corevm::dyobj::NONESET_NTVHNDL_KEY, target_obj->ntvhndl_key());
+  ASSERT_TRUE(target_obj->has_ntvhndl());
 
-  auto& res_hndl = m_process.get_ntvhndl(target_obj->ntvhndl_key());
+  auto& res_hndl = m_process.get_ntvhndl(&target_obj->ntvhndl());
 
   const corevm::types::native_string res_value =
     corevm::types::get_value_from_handle<corevm::types::native_string>(res_hndl);
@@ -793,9 +791,9 @@ TEST_F(InstrsObjUnitTest, TestInstrISTRUTHY)
   m_process.push_stack(src_obj);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::uint32(123);
-  corevm::dyobj::ntvhndl_key ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
-  src_obj->set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl(saved_hndl);
 
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr<corevm::runtime::instr_handler_istruthy>(instr, 1);
@@ -970,7 +968,7 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
     { 2, static_cast<corevm::types::native_map_mapped_type>(obj3->id()) },
   };
 
-  auto ntvhndl_key = m_process.insert_ntvhndl(hndl);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
 
   corevm::runtime::compartment_id_t compartment_id = 0;
   corevm::runtime::closure_id_t closure_id = 10;
@@ -1000,7 +998,7 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
   m_process.push_stack(dst_obj);
 
   auto src_obj = m_process.create_dyobj();
-  src_obj->set_ntvhndl_key(ntvhndl_key);
+  src_obj->set_ntvhndl(saved_hndl);
   src_obj->set_closure_ctx(ctx);
 
   m_process.push_stack(src_obj);
@@ -1405,8 +1403,8 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTARGS)
     obj3->id()
   };
 
-  auto key = m_process.insert_ntvhndl(hndl);
-  obj->set_ntvhndl_key(key);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
+  obj->set_ntvhndl(saved_hndl);
 
   m_process.push_stack(obj);
 
@@ -1444,8 +1442,8 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTKWARGS)
     { key3, obj3->id() }
   };
 
-  auto key = m_process.insert_ntvhndl(hndl);
-  obj->set_ntvhndl_key(key);
+  auto saved_hndl = m_process.insert_ntvhndl(hndl);
+  obj->set_ntvhndl(saved_hndl);
 
   m_process.push_stack(obj);
 

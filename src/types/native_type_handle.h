@@ -37,7 +37,7 @@ namespace types {
 
 template<typename T>
 T
-get_value_from_handle(NativeTypeHandle& handle)
+get_value_from_handle(const NativeTypeHandle& handle)
 {
   return variant::apply_visitor(
     native_type_value_visitor<T>(), handle
@@ -57,7 +57,7 @@ get_value_ref_from_handle(NativeTypeHandle& handle)
 
 template<class operator_visitor>
 NativeTypeHandle
-apply_unary_visitor(NativeTypeHandle& handle)
+apply_unary_visitor(const NativeTypeHandle& handle)
 {
   return variant::apply_visitor(operator_visitor(), handle);
 }

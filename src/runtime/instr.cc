@@ -855,16 +855,12 @@ instr_handler_gethndl::execute(const Instr& /* instr */, Process& process,
   Frame* frame = *frame_ptr;
   auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleNotFoundError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
-
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(obj->ntvhndl());
 }
 
 // -----------------------------------------------------------------------------
@@ -879,24 +875,22 @@ instr_handler_sethndl::execute(const Instr& /* instr */, Process& process,
 
   auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key key = obj->ntvhndl_key();
-
-  if (key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
-    dyobj::ntvhndl_key new_ntvhndl_key = process.insert_ntvhndl(hndl);
+    auto new_ntvhndl = process.insert_ntvhndl(hndl);
 
-    obj->set_ntvhndl_key(new_ntvhndl_key);
+    obj->set_ntvhndl(new_ntvhndl);
   }
   else
   {
-    process.get_ntvhndl(key) = std::move(hndl);
+    process.get_ntvhndl(&obj->ntvhndl()) = std::move(hndl);
   }
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gethndl2::execute(const Instr& instr, Process& process,
+instr_handler_gethndl2::execute(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -904,16 +898,12 @@ instr_handler_gethndl2::execute(const Instr& instr, Process& process,
 
   auto obj = frame->get_visible_var(key);
 
-  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleNotFoundError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
-
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(obj->ntvhndl());
 }
 
 // -----------------------------------------------------------------------------
@@ -924,15 +914,13 @@ instr_handler_clrhndl::execute(const Instr& /* instr */, Process& process,
 {
   auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleDeletionError());
   }
 
-  process.erase_ntvhndl(ntvhndl_key);
-  obj->clear_ntvhndl_key();
+  process.erase_ntvhndl(&obj->ntvhndl());
+  obj->clear_ntvhndl();
 }
 
 // -----------------------------------------------------------------------------
@@ -944,15 +932,12 @@ instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
   auto src_obj = process.pop_stack();
   auto target_obj = process.pop_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = src_obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!src_obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleDeletionError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
-  types::NativeTypeHandle res(hndl);
+  types::NativeTypeHandle res = src_obj->ntvhndl();
 
   uint32_t type = static_cast<uint32_t>(instr.oprd1);
 
@@ -1033,8 +1018,8 @@ instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
       break;
   }
 
-  auto new_key = process.insert_ntvhndl(res);
-  target_obj->set_ntvhndl_key(new_key);
+  auto new_ntvhndl = process.insert_ntvhndl(res);
+  target_obj->set_ntvhndl(new_ntvhndl);
 }
 
 // -----------------------------------------------------------------------------
@@ -1046,19 +1031,16 @@ instr_handler_cpyrepr::execute(const Instr& /* instr */, Process& process,
   Process::dyobj_ptr src_obj = process.pop_stack();
   Process::dyobj_ptr target_obj = process.pop_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = src_obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!src_obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleDeletionError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
-  types::NativeTypeHandle res =
-    types::interface_compute_repr_value(hndl);
+  const types::NativeTypeHandle& hndl = src_obj->ntvhndl();
+  auto res = types::interface_compute_repr_value(hndl);
 
-  auto new_key = process.insert_ntvhndl(res);
-  target_obj->set_ntvhndl_key(new_key);
+  auto new_ntvhndl = process.insert_ntvhndl(res);
+  target_obj->set_ntvhndl(new_ntvhndl);
 }
 
 // -----------------------------------------------------------------------------
@@ -1071,17 +1053,14 @@ instr_handler_istruthy::execute(const Instr& /* instr */, Process& process,
 
   auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleNotFoundError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
+  const types::NativeTypeHandle& hndl = obj->ntvhndl();
 
-  types::NativeTypeHandle res =
-    types::interface_compute_truthy_value(hndl);
+  auto res = types::interface_compute_truthy_value(hndl);
 
   frame->push_eval_stack(std::move(res));
 }
@@ -1180,10 +1159,9 @@ instr_handler_setattrs::execute(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(src_obj->ntvhndl_key());
-  types::NativeTypeHandle res = hndl;
+  const types::NativeTypeHandle& hndl = src_obj->ntvhndl();
 
-  types::native_map map = types::get_value_from_handle<types::native_map>(res);
+  types::native_map map = types::get_value_from_handle<types::native_map>(hndl);
 
   // If we should clone each mapped object before setting it.
   bool should_clone = static_cast<bool>(instr.oprd1);
@@ -1229,9 +1207,7 @@ instr_handler_setattrs::execute(const Instr& instr, Process& process,
     }
   }
 
-  res = map;
-
-  frame->push_eval_stack(res);
+  frame->push_eval_stack(std::move( types::NativeTypeHandle(map) ));
 }
 
 // -----------------------------------------------------------------------------
@@ -1773,8 +1749,7 @@ instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto obj = process.pop_stack();
 
-  dyobj::ntvhndl_key key = obj->ntvhndl_key();
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(key);
+  const types::NativeTypeHandle& hndl = obj->ntvhndl();
 
   types::native_array array =
     types::get_value_from_handle<types::native_array>(hndl);
@@ -1797,8 +1772,7 @@ instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto obj = process.pop_stack();
 
-  dyobj::ntvhndl_key key = obj->ntvhndl_key();
-  types::NativeTypeHandle result = process.get_ntvhndl(key);
+  const types::NativeTypeHandle& result = obj->ntvhndl();
 
   types::native_map map =
     types::get_value_from_handle<types::native_map>(result);
@@ -1964,14 +1938,12 @@ instr_handler_print::execute(const Instr& instr, Process& process,
 {
   auto obj = process.top_stack();
 
-  dyobj::ntvhndl_key ntvhndl_key = obj->ntvhndl_key();
-
-  if (ntvhndl_key == dyobj::NONESET_NTVHNDL_KEY)
+  if (!obj->has_ntvhndl())
   {
     THROW(NativeTypeHandleNotFoundError());
   }
 
-  types::NativeTypeHandle& hndl = process.get_ntvhndl(ntvhndl_key);
+  const types::NativeTypeHandle& hndl = obj->ntvhndl();
 
   types::native_string native_str =
     types::get_value_from_handle<types::native_string>(hndl);

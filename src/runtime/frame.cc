@@ -113,7 +113,7 @@ Frame::set_return_addr(const instr_addr_t return_addr)
 // -----------------------------------------------------------------------------
 
 void
-Frame::push_eval_stack(types::NativeTypeHandle& operand)
+Frame::push_eval_stack(const types::NativeTypeHandle& operand)
 {
   m_eval_stack.push_back(operand);
 }

@@ -46,18 +46,18 @@ TEST_F(NativeTypesPoolUnitTest, TestCreateAndAccess)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  auto key = pool.create();
+  auto created_hndl = pool.create();
 
-  ASSERT_NE(0, key);
+  ASSERT_NE(nullptr, created_hndl);
 
   ASSERT_EQ(1, pool.size());
 
-  corevm::types::NativeTypeHandle& hndl = pool.at(key);
+  corevm::types::NativeTypeHandle& hndl = pool.at(created_hndl);
 
   int value = 8;
   hndl = corevm::types::int8(value);
 
-  corevm::types::NativeTypeHandle& hndl2 = pool.at(key);
+  corevm::types::NativeTypeHandle& hndl2 = pool.at(created_hndl);
 
   int actual_value = corevm::types::get_value_from_handle<int8_t>(hndl2);
 
@@ -70,11 +70,11 @@ TEST_F(NativeTypesPoolUnitTest, TestInvalidAccess)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  corevm::dyobj::ntvhndl_key invalid_key = 1;
+  corevm::types::NativeTypeHandle hndl;
 
   ASSERT_THROW(
     {
-      pool.at(invalid_key);
+      pool.at(&hndl);
     },
     corevm::runtime::NativeTypeHandleNotFoundError
   );
@@ -86,27 +86,27 @@ TEST_F(NativeTypesPoolUnitTest, TestCreateAndErase)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  auto key = pool.create();
+  auto created_hndl = pool.create();
 
-  ASSERT_NE(0, key);
+  ASSERT_NE(nullptr, created_hndl);
 
   ASSERT_EQ(1, pool.size());
 
-  pool.erase(key);
+  pool.erase(created_hndl);
 
   ASSERT_EQ(0, pool.size());
 
   // Second time calling `.erase`
   ASSERT_THROW(
     {
-      pool.erase(key);
+      pool.erase(created_hndl);
     },
     corevm::runtime::NativeTypeHandleNotFoundError
   );
 
   ASSERT_THROW(
     {
-      pool.at(key);
+      pool.at(created_hndl);
     },
     corevm::runtime::NativeTypeHandleNotFoundError
   );
