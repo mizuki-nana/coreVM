@@ -34,6 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime_types.h"
 #include "sighandler.h"
 #include "vector.h"
+#include "corevm/logging.h"
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 
@@ -76,7 +77,7 @@ class ProcessPrinter;
  * - A pool of native type handles.
  * - A set of compartments.
  */
-class Process
+class Process : public Loggable
 {
 public:
   typedef RuntimeTypes::dynamic_object_type dynamic_object_type;

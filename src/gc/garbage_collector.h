@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_GARBAGE_COLLECTOR_H_
 #define COREVM_GARBAGE_COLLECTOR_H_
 
+#include "corevm/logging.h"
 #include "dyobj/dynamic_object_heap.h"
 
 #include <algorithm>
@@ -56,7 +57,7 @@ struct DyobjRemoveCriterion
 // -----------------------------------------------------------------------------
 
 template<class garbage_collection_scheme>
-class GarbageCollector
+class GarbageCollector : public Loggable
 {
 public:
   using dynamic_object_heap_type = typename dyobj::DynamicObjectHeap<
@@ -93,6 +94,7 @@ template<class garbage_collection_scheme>
 GarbageCollector<garbage_collection_scheme>::GarbageCollector(
   GarbageCollector<garbage_collection_scheme>::dynamic_object_heap_type& heap)
   :
+  Loggable(),
   m_gc_scheme(),
   m_heap(heap)
 {
@@ -115,6 +117,7 @@ template<class garbage_collection_scheme>
 void
 GarbageCollector<garbage_collection_scheme>::gc(Callback* f) noexcept
 {
+  m_gc_scheme.set_logger(m_logger);
   m_gc_scheme.gc(m_heap);
   this->free(f);
 }

@@ -31,6 +31,14 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
+GarbageCollectionScheme::GarbageCollectionScheme()
+  :
+  Loggable()
+{
+}
+
+// -----------------------------------------------------------------------------
+
 /* virtual */
 GarbageCollectionScheme::~GarbageCollectionScheme()
 {

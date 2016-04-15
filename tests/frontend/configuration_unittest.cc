@@ -55,7 +55,8 @@ protected:
         "\"pool-alloc-size\": 1024,"
         "\"gc-interval\": 100,"
         "\"gc-flag\": 1,"
-        "\"format\": \"binary\""
+        "\"format\": \"binary\","
+        "\"logging\": \"stdout\""
       "}"
     );
 
@@ -77,6 +78,7 @@ TEST_F(ConfigurationUnitTest, TestLoadSuccessful)
   ASSERT_EQ(1024, configuration.pool_alloc_size());
   ASSERT_EQ(100, configuration.gc_interval());
   ASSERT_EQ(1, configuration.gc_flag());
+  ASSERT_STREQ("stdout", configuration.log_mode().c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -101,21 +103,25 @@ TEST_F(ConfigurationUnitTest, TestGetAndSet)
   ASSERT_EQ(0, configuration.pool_alloc_size());
   ASSERT_EQ(0, configuration.gc_interval());
   ASSERT_EQ(0, configuration.gc_flag());
+  ASSERT_STREQ("", configuration.log_mode().c_str());
 
   uint64_t expected_heap_alloc_size = 2048;
   uint64_t expected_pool_alloc_size = 1024;
   uint32_t expected_gc_interval = 32;
   uint8_t expected_gc_flag = 1;
+  std::string expected_log_mode("stderr");
 
   configuration.set_heap_alloc_size(expected_heap_alloc_size);
   configuration.set_pool_alloc_size(expected_pool_alloc_size);
   configuration.set_gc_interval(expected_gc_interval);
   configuration.set_gc_flag(expected_gc_flag);
+  configuration.set_log_mode(expected_log_mode);
 
   ASSERT_EQ(expected_heap_alloc_size, configuration.heap_alloc_size());
   ASSERT_EQ(expected_pool_alloc_size, configuration.pool_alloc_size());
   ASSERT_EQ(expected_gc_interval, configuration.gc_interval());
   ASSERT_EQ(expected_gc_flag, configuration.gc_flag());
+  ASSERT_EQ(expected_log_mode, configuration.log_mode());
 }
 
 // -----------------------------------------------------------------------------

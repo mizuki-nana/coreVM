@@ -173,6 +173,7 @@ Process::get_dyobj(dyobj::dyobj_id_t id)
 
 Process::Process()
   :
+  Loggable(),
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(0),
@@ -193,6 +194,7 @@ Process::Process()
 
 Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
+  Loggable(),
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(0),
@@ -213,6 +215,7 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
 
 Process::Process(const Process::Options& options)
   :
+  Loggable(),
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(options.gc_flag),
@@ -808,6 +811,8 @@ Process::do_gc()
 
   gc::GarbageCollector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
+
+  garbage_collector.set_logger(m_logger);
 
   internal::NtvhndlCollectorGcCallback callback;
   garbage_collector.gc(&callback);

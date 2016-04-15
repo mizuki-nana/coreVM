@@ -91,7 +91,10 @@ Runner::run() const noexcept
     options.gc_flag = m_configuration.gc_flag();
   }
 
+  Logger logger(log_mode_to_scheme(m_configuration.log_mode()));
+
   runtime::Process process(options);
+  process.set_logger(&logger);
 
   BinaryBytecodeLoader loader;
 

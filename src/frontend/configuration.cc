@@ -62,6 +62,9 @@ const std::string Configuration::schema =
       "},"
       "\"gc-flag\": {"
         "\"type\": \"integer\""
+      "},"
+      "\"logging\": {"
+        "\"type\": \"string\""
       "}"
     "}"
   "}";
@@ -73,7 +76,8 @@ Configuration::Configuration()
   m_heap_alloc_size(0u),
   m_pool_alloc_size(0u),
   m_gc_interval(0u),
-  m_gc_flag(0u)
+  m_gc_flag(0u),
+  m_log_mode()
 {
 }
 
@@ -111,6 +115,14 @@ Configuration::gc_flag() const
 
 // -----------------------------------------------------------------------------
 
+const std::string&
+Configuration::log_mode() const
+{
+  return m_log_mode;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 Configuration::set_heap_alloc_size(uint64_t heap_alloc_size)
 {
@@ -139,6 +151,14 @@ void
 Configuration::set_gc_flag(uint8_t gc_flag)
 {
   m_gc_flag = gc_flag;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Configuration::set_log_mode(const std::string& log_mode)
+{
+  m_log_mode = log_mode;
 }
 
 // -----------------------------------------------------------------------------
@@ -254,6 +274,15 @@ Configuration::set_values(Configuration& configuration, const JSON& config_json)
     const uint8_t gc_flag =
       static_cast<uint8_t>(gc_flag_raw.int_value());
     configuration.set_gc_flag(gc_flag);
+  }
+
+  // Log mode.
+  if (config_obj.find("logging") != config_obj.end())
+  {
+    const JSON& log_mode_raw = config_obj.at("logging");
+    const std::string log_mode =
+      static_cast<std::string>(log_mode_raw.string_value());
+    configuration.set_log_mode(log_mode);
   }
 }
 

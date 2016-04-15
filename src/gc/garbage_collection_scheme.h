@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_GARBAGE_COLLECTION_SCHEME_H_
 #define COREVM_GARBAGE_COLLECTION_SCHEME_H_
 
+#include "corevm/logging.h"
+
 #include <cstdint>
 
 
@@ -32,9 +34,11 @@ namespace corevm {
 namespace gc {
 
 
-class GarbageCollectionScheme
+class GarbageCollectionScheme : public Loggable
 {
 public:
+  GarbageCollectionScheme();
+
   virtual ~GarbageCollectionScheme();
 };
 

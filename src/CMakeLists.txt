@@ -67,6 +67,7 @@ set(sources
     frontend/signal_vector_loader.cc
     frontend/utils.cc
     corevm/errors.cc
+    corevm/logging.cc
     corevm/corevm_bytecode_schema.h
     )
 

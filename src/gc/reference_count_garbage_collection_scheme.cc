@@ -62,6 +62,11 @@ void
 RefCountGarbageCollectionScheme::gc(
   RefCountGarbageCollectionScheme::dynamic_object_heap_type& /* heap */) const
 {
+#if __DEBUG__
+  m_logger->write(sneaker::logging::LogLevel::LOG_LEVEL_DEBUG,
+    "Running ref-count GC...");
+#endif
+
 #if COREVM_457
   using _dynamic_object_heap_type = typename
     RefCountGarbageCollectionScheme::dynamic_object_heap_type;

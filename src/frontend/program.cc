@@ -44,6 +44,7 @@ Program::Program()
   m_input_path(),
   m_config_path(),
   m_format(),
+  m_log_mode(),
   m_heap_alloc_size(0),
   m_pool_alloc_size(0),
   m_gc_interval(0)
@@ -55,6 +56,7 @@ Program::Program()
   add_uint64_parameter("heap-alloc-size", "Dynamic Object Heap allocation size (bytes)", &m_heap_alloc_size);
   add_uint64_parameter("pool-alloc-size", "Native Types Pool allocation size (bytes)", &m_pool_alloc_size);
   add_uint32_parameter("gc-interval", "GC interval (ms)", &m_gc_interval);
+  add_string_parameter("logging", "Optional logging mode (i.e. stdout, stderr, file path)", &m_log_mode);
 }
 
 // -----------------------------------------------------------------------------
@@ -102,6 +104,8 @@ Program::do_run()
   {
     configuration.set_gc_interval(m_gc_interval);
   }
+
+  configuration.set_log_mode(m_log_mode);
 
   return Runner(m_input_path, configuration).run();
 }

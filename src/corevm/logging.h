@@ -20,74 +20,43 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CONFIGURATION_H_
-#define COREVM_CONFIGURATION_H_
+#ifndef COREVM_LOGGING_H_
+#define COREVM_LOGGING_H_
 
-#include "errors.h"
+#include <sneaker/logging/logging.h>
 
-#include <sneaker/json/json.h>
-
-#include <cstdint>
 #include <string>
-
-
-using sneaker::json::JSON;
 
 
 namespace corevm {
 
 
-namespace frontend {
+// -----------------------------------------------------------------------------
 
+typedef sneaker::logging::logger<
+  sneaker::logging::thread_safe_tag, sneaker::logging::exception_safe_tag> Logger;
 
-class Configuration
+// -----------------------------------------------------------------------------
+
+sneaker::logging::log_scheme* log_mode_to_scheme(const std::string& mode);
+
+// -----------------------------------------------------------------------------
+
+class Loggable
 {
 public:
-  Configuration();
+  void set_logger(Logger*);
 
-  static Configuration load_config(const std::string&);
+protected:
+  Loggable();
 
-public:
-  /* Value accessors. */
-  uint64_t heap_alloc_size() const;
-
-  uint64_t pool_alloc_size() const;
-
-  uint32_t gc_interval() const;
-
-  uint8_t gc_flag() const;
-
-  const std::string& log_mode() const;
-
-  /* Value setters. */
-  void set_heap_alloc_size(uint64_t);
-
-  void set_pool_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
-
-  void set_gc_flag(uint8_t);
-
-  void set_log_mode(const std::string&);
-
-private:
-  static void set_values(Configuration&, const JSON&);
-
-  uint64_t m_heap_alloc_size;
-  uint64_t m_pool_alloc_size;
-  uint32_t m_gc_interval;
-  uint8_t m_gc_flag;
-  std::string m_log_mode;
-
-private:
-  static const std::string schema;
+  Logger* m_logger;
 };
 
-
-} /* end namespace frontend */
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace corevm */
 
 
-#endif /* COREVM_CONFIGURATION_H_ */
+#endif /* COREVM_LOGGING_H_ */

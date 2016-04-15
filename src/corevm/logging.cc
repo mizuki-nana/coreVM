@@ -20,74 +20,72 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CONFIGURATION_H_
-#define COREVM_CONFIGURATION_H_
-
-#include "errors.h"
-
-#include <sneaker/json/json.h>
-
-#include <cstdint>
-#include <string>
-
-
-using sneaker::json::JSON;
+#include "logging.h"
 
 
 namespace corevm {
 
 
-namespace frontend {
+// -----------------------------------------------------------------------------
 
-
-class Configuration
+class void_log_scheme : public sneaker::logging::log_scheme
 {
 public:
-  Configuration();
-
-  static Configuration load_config(const std::string&);
-
-public:
-  /* Value accessors. */
-  uint64_t heap_alloc_size() const;
-
-  uint64_t pool_alloc_size() const;
-
-  uint32_t gc_interval() const;
-
-  uint8_t gc_flag() const;
-
-  const std::string& log_mode() const;
-
-  /* Value setters. */
-  void set_heap_alloc_size(uint64_t);
-
-  void set_pool_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
-
-  void set_gc_flag(uint8_t);
-
-  void set_log_mode(const std::string&);
-
-private:
-  static void set_values(Configuration&, const JSON&);
-
-  uint64_t m_heap_alloc_size;
-  uint64_t m_pool_alloc_size;
-  uint32_t m_gc_interval;
-  uint8_t m_gc_flag;
-  std::string m_log_mode;
-
-private:
-  static const std::string schema;
+  virtual void write(const char* msg);
 };
 
+// -----------------------------------------------------------------------------
 
-} /* end namespace frontend */
+void
+void_log_scheme::write(const char* /* msg */)
+{
+  // Do nothing.
+}
+
+// -----------------------------------------------------------------------------
+
+sneaker::logging::log_scheme*
+log_mode_to_scheme(const std::string& mode)
+{
+  sneaker::logging::log_scheme* scheme = NULL;
+
+  if (mode == "")
+  {
+    scheme = new void_log_scheme();
+  }
+  else if (mode == "stdout")
+  {
+    scheme = new sneaker::logging::stdout_log_scheme();
+  }
+  else if (mode == "stderr")
+  {
+    scheme = new sneaker::logging::stderr_log_scheme();
+  }
+  else
+  {
+    scheme = new sneaker::logging::file_log_scheme(mode.c_str());
+  }
+
+  return scheme;
+}
+
+// -----------------------------------------------------------------------------
+
+Loggable::Loggable()
+  :
+  m_logger(nullptr)
+{
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Loggable::set_logger(Logger* logger)
+{
+  m_logger = logger;
+}
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace corevm */
-
-
-#endif /* COREVM_CONFIGURATION_H_ */
