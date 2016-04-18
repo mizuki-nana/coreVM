@@ -35,6 +35,7 @@ namespace gc {
 
 MarkAndSweepGarbageCollectionScheme::DynamicObjectManager::DynamicObjectManager()
   :
+  dyobj::DynamicObjectManager(),
   m_marked(false)
 {
 }

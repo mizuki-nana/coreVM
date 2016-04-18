@@ -527,7 +527,7 @@ Process::top_stack()
 // -----------------------------------------------------------------------------
 
 void
-Process::push_stack(dyobj_ptr ptr)
+Process::push_stack(dyobj_ptr obj)
 {
   size_t current_size = m_dyobj_stack.size();
   if (current_size == m_dyobj_stack.capacity())
@@ -538,7 +538,8 @@ Process::push_stack(dyobj_ptr ptr)
       m_dyobj_stack.reserve(new_size);
     }
   }
-  m_dyobj_stack.push_back(ptr);
+  obj->manager().lock();
+  m_dyobj_stack.push_back(obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -551,9 +552,10 @@ Process::pop_stack()
     THROW(ObjectStackEmptyError());
   }
 
-  auto ptr = m_dyobj_stack.back();
+  auto obj = m_dyobj_stack.back();
   m_dyobj_stack.pop_back();
-  return ptr;
+  obj->manager().unlock();
+  return obj;
 }
 
 // -----------------------------------------------------------------------------

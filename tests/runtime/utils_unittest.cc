@@ -21,6 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dyobj/dynamic_object.h"
+#include "dyobj/dynamic_object_manager.h"
 #include "runtime/compartment.h"
 #include "runtime/utils.h"
 
@@ -29,7 +30,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-class DummyDynamicObjectManager {};
+class DummyDynamicObjectManager : public corevm::dyobj::DynamicObjectManager
+{
+public:
+  DummyDynamicObjectManager() : corevm::dyobj::DynamicObjectManager() {}
+  virtual bool garbage_collectible() const noexcept { return false; }
+  virtual void on_create() noexcept {}
+  virtual void on_setattr() noexcept {}
+  virtual void on_delattr() noexcept {}
+  virtual void on_delete() noexcept {}
+  virtual void on_exit() noexcept {}
+};
 
 // -----------------------------------------------------------------------------
 

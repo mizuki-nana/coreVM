@@ -248,7 +248,7 @@ DynamicObjectHeap<DynamicObjectManager>::iterate(Function func) noexcept
     begin(),
     end(),
     [&func](dynamic_object_type& obj) {
-      func(obj.id(), obj);
+      func(&obj);
     }
   );
 }

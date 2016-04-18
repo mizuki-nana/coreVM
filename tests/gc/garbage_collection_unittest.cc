@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <gtest/gtest.h>
 
-#include <list>
-
-
-#if COREVM_457
+#include <vector>
 
 
 template<class GarbageCollectionScheme>
@@ -43,44 +40,45 @@ protected:
   using _ObjectType = typename corevm::dyobj::DynamicObject<
     typename GarbageCollectionScheme::DynamicObjectManager>;
 
-  void do_gc_and_check_results(std::list<corevm::dyobj::dyobj_id_t> ids)
+  void do_gc_and_check_results(const std::vector<_ObjectType*>& objs)
   {
     _GarbageCollectorType collector(m_heap);
     collector.gc();
 
-    ASSERT_EQ(m_heap.size(), ids.size());
+    ASSERT_EQ(m_heap.size(), objs.size());
 
-    for (auto itr = ids.begin(); itr != ids.end(); ++itr)
+    for (const auto obj : objs)
     {
-      corevm::dyobj::dyobj_id_t id = static_cast<corevm::dyobj::dyobj_id_t>(*itr);
-
       ASSERT_NO_THROW(
         {
-          m_heap.at(id);
+          m_heap.at(obj->id());
         }
       );
     }
   }
 
-  corevm::dyobj::dyobj_id_t help_create_obj()
+  void set_on_attached(_ObjectType* obj)
   {
-    corevm::dyobj::dyobj_id_t id = m_heap.create_dyobj();
-    return id;
+    obj->manager().on_setattr();
+    obj->manager().dec_ref_count();
   }
 
-  void help_setattr(
-    corevm::dyobj::dyobj_id_t src_id, corevm::dyobj::dyobj_id_t dst_id)
+  _ObjectType* help_create_obj()
   {
-    auto& src_obj = m_heap.at(src_id);
-    auto& dst_obj = m_heap.at(dst_id);
-    src_obj.putattr(static_cast<corevm::dyobj::attr_key>(dst_id), dst_id);
-    dst_obj.manager().on_setattr();
+    auto obj = m_heap.create_dyobj();
+    set_on_attached(obj);
+    return obj;
   }
 
-  void help_set_as_non_garbage_collectible(corevm::dyobj::dyobj_id_t id)
+  void help_setattr(_ObjectType* src_obj, _ObjectType* dst_obj)
   {
-    auto& obj = m_heap.at(id);
-    obj.set_flag(corevm::dyobj::flags::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
+    src_obj->putattr(static_cast<corevm::dyobj::attr_key_t>(dst_obj->id()), dst_obj);
+    dst_obj->manager().on_setattr();
+  }
+
+  void help_set_as_non_garbage_collectible(_ObjectType* obj)
+  {
+    obj->set_flag(corevm::dyobj::DynamicObjectFlagBits::DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE);
   }
 
   corevm::dyobj::DynamicObjectHeap<
@@ -126,9 +124,9 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSelfReferencedObject)
    *
    * will result in 0 object left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id = this->help_create_obj();
+  auto obj = this->help_create_obj();
 
-  this->help_setattr(id, id);
+  this->help_setattr(obj, obj);
 
   this->do_gc_and_check_results({});
 }
@@ -146,12 +144,12 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSelfReferenceOnNonGarbageCollectibleOb
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id = this->help_create_obj();
+  auto obj = this->help_create_obj();
 
-  this->help_setattr(id, id);
-  this->help_set_as_non_garbage_collectible(id);
+  this->help_setattr(obj, obj);
+  this->help_set_as_non_garbage_collectible(obj);
 
-  this->do_gc_and_check_results({id});
+  this->do_gc_and_check_results({obj});
 }
 
 // -----------------------------------------------------------------------------
@@ -165,14 +163,14 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChain)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj4);
 
   this->do_gc_and_check_results({});
 }
@@ -188,18 +186,18 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChainWithNonGarbageCollectibleOb
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj4);
 
-  this->help_set_as_non_garbage_collectible(id1);
+  this->help_set_as_non_garbage_collectible(obj1);
 
-  this->do_gc_and_check_results({id1, id2, id3, id4});
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -213,19 +211,19 @@ TYPED_TEST(GarbageCollectionUnitTest, TestLinearChainWithNonGarbageCollectibleOb
    *
    * will result in 3 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj4);
 
-  this->help_set_as_non_garbage_collectible(id2);
-  this->help_set_as_non_garbage_collectible(id3);
+  this->help_set_as_non_garbage_collectible(obj2);
+  this->help_set_as_non_garbage_collectible(obj3);
 
-  this->do_gc_and_check_results({id2, id3, id4});
+  this->do_gc_and_check_results({obj2, obj3, obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -241,13 +239,13 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSingleCycle)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
 
   this->do_gc_and_check_results({});
 }
@@ -267,14 +265,14 @@ TYPED_TEST(GarbageCollectionUnitTest, TestMultipleObjectsPointToOne)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id4);
-  this->help_setattr(id2, id4);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj4);
+  this->help_setattr(obj2, obj4);
+  this->help_setattr(obj3, obj4);
 
   this->do_gc_and_check_results({});
 }
@@ -296,14 +294,14 @@ TYPED_TEST(GarbageCollectionUnitTest, TestOnePointsToMultipleObjects)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id1, id3);
-  this->help_setattr(id1, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj1, obj3);
+  this->help_setattr(obj1, obj4);
 
   this->do_gc_and_check_results({});
 }
@@ -325,22 +323,23 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNonGarbageCollectibleObjectPointsToMul
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id1, id3);
-  this->help_setattr(id1, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj1, obj3);
+  this->help_setattr(obj1, obj4);
 
-  this->help_set_as_non_garbage_collectible(id1);
+  this->help_set_as_non_garbage_collectible(obj1);
 
-  this->do_gc_and_check_results({id1, id2, id3, id4});
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4});
 }
 
 // -----------------------------------------------------------------------------
 
+#ifndef COREVM_485
 TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles)
 {
   /**
@@ -356,21 +355,22 @@ TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id1, id3);
-  this->help_setattr(id1, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj1, obj3);
+  this->help_setattr(obj1, obj4);
 
-  this->help_setattr(id2, id1);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id4, id1);
+  this->help_setattr(obj2, obj1);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj4, obj1);
 
   this->do_gc_and_check_results({});
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -385,26 +385,27 @@ TYPED_TEST(GarbageCollectionUnitTest, TestTwoIsolatedCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id6 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
 
-  this->help_setattr(id4, id5);
-  this->help_setattr(id5, id6);
-  this->help_setattr(id6, id4);
+  this->help_setattr(obj4, obj5);
+  this->help_setattr(obj5, obj6);
+  this->help_setattr(obj6, obj4);
 
   this->do_gc_and_check_results({});
 }
 
 // -----------------------------------------------------------------------------
 
+#ifndef COREVM_485
 TYPED_TEST(GarbageCollectionUnitTest, TestNestedCycles)
 {
   /*
@@ -424,31 +425,32 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNestedCycles)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id6 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id7 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
+  auto obj7 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id1, id3);
-  this->help_setattr(id1, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj1, obj3);
+  this->help_setattr(obj1, obj4);
 
-  this->help_setattr(id2, id1);
-  this->help_setattr(id4, id1);
+  this->help_setattr(obj2, obj1);
+  this->help_setattr(obj4, obj1);
 
-  this->help_setattr(id3, id5);
-  this->help_setattr(id3, id6);
-  this->help_setattr(id3, id7);
+  this->help_setattr(obj3, obj5);
+  this->help_setattr(obj3, obj6);
+  this->help_setattr(obj3, obj7);
 
-  this->help_setattr(id5, id1);
-  this->help_setattr(id6, id1);
-  this->help_setattr(id7, id1);
+  this->help_setattr(obj5, obj1);
+  this->help_setattr(obj6, obj1);
+  this->help_setattr(obj7, obj1);
 
   this->do_gc_and_check_results({});
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -463,15 +465,15 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithInwardStub)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id4, id3);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj4, obj3);
 
   this->do_gc_and_check_results({});
 }
@@ -489,17 +491,73 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithOutwardStub)
    *
    * will result in 0 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj3, obj4);
 
   this->do_gc_and_check_results({});
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithStronglyReferencedInwardStub)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj1 -> obj2 -> obj3 <- obj4**
+   *  ^                |
+   *  |________________|
+   *
+   * will result in 4 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj4, obj3);
+
+  obj4->manager().inc_ref_count();
+
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4});
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithStronglyReferencedOutwardStub)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj1 -> obj2 -> obj3 -> obj4**
+   *  ^                |
+   *  |________________|
+   *
+   * will result in 1 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj3, obj4);
+
+  obj4->manager().inc_ref_count();
+
+  this->do_gc_and_check_results({obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -515,19 +573,19 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithNonGarbageCollectibleInwardSt
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id4, id3);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj4, obj3);
 
-  this->help_set_as_non_garbage_collectible(id4);
+  this->help_set_as_non_garbage_collectible(obj4);
 
-  this->do_gc_and_check_results({id1, id2, id3, id4});
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -543,21 +601,21 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithTwoInwardStubs)
    *
    * will result in 4 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id4, id3);
-  this->help_setattr(id5, id1);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj4, obj3);
+  this->help_setattr(obj5, obj1);
 
-  this->help_set_as_non_garbage_collectible(id4);
+  this->help_set_as_non_garbage_collectible(obj4);
 
-  this->do_gc_and_check_results({id1, id2, id3, id4});
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -573,19 +631,19 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithNonGarbageCollectibleOutwardS
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id3, id4);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj3, obj4);
 
-  this->help_set_as_non_garbage_collectible(id4);
+  this->help_set_as_non_garbage_collectible(obj4);
 
-  this->do_gc_and_check_results({id4});
+  this->do_gc_and_check_results({obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -601,21 +659,21 @@ TYPED_TEST(GarbageCollectionUnitTest, TestCycleWithTwoOutwardStubs)
    *
    * will result in 1 object left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id4 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id5 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
-  this->help_setattr(id3, id4);
-  this->help_setattr(id1, id5);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
+  this->help_setattr(obj3, obj4);
+  this->help_setattr(obj1, obj5);
 
-  this->help_set_as_non_garbage_collectible(id4);
+  this->help_set_as_non_garbage_collectible(obj4);
 
-  this->do_gc_and_check_results({id4});
+  this->do_gc_and_check_results({obj4});
 }
 
 // -----------------------------------------------------------------------------
@@ -631,19 +689,17 @@ TYPED_TEST(GarbageCollectionUnitTest, TestSingleCycleWithNonGarbageCollectibleOb
    *
    * will result in 3 objects left on the heap.
    */
-  corevm::dyobj::dyobj_id_t id1 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id2 = this->help_create_obj();
-  corevm::dyobj::dyobj_id_t id3 = this->help_create_obj();
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
 
-  this->help_setattr(id1, id2);
-  this->help_setattr(id2, id3);
-  this->help_setattr(id3, id1);
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj1);
 
-  this->help_set_as_non_garbage_collectible(id2);
+  this->help_set_as_non_garbage_collectible(obj2);
 
-  this->do_gc_and_check_results({id1, id2, id3});
+  this->do_gc_and_check_results({obj1, obj2, obj3});
 }
 
 // -----------------------------------------------------------------------------
-
-#endif /* #if COREVM_457 */

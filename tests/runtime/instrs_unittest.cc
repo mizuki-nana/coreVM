@@ -1645,17 +1645,20 @@ class InstrsRuntimeInstrsTest : public InstrsUnitTest {};
 
 TEST_F(InstrsRuntimeInstrsTest, TestInstrGC)
 {
-#if COREVM_457
-  m_process.create_dyobj();
+  auto obj = m_process.create_dyobj();
 
   ASSERT_EQ(1, m_process.heap_size());
+
+  // Make object attached and referenced by zero objects.
+  // A.k.a. ready to be garbage collected.
+  obj->manager().on_setattr();
+  obj->manager().dec_ref_count();
 
   corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_gc handler;
   handler.execute(instr, m_process, &m_frame, &m_invk_ctx);
 
   ASSERT_EQ(0, m_process.heap_size());
-#endif /* #if COREVM_457 */
 }
 
 // -----------------------------------------------------------------------------

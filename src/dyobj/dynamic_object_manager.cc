@@ -31,10 +31,42 @@ namespace dyobj {
 
 // -----------------------------------------------------------------------------
 
+DynamicObjectManager::DynamicObjectManager()
+  :
+  m_locked(false)
+{
+}
+
+// -----------------------------------------------------------------------------
+
 /* virtual */
 DynamicObjectManager::~DynamicObjectManager()
 {
   // Do nothing here.
+}
+
+// -----------------------------------------------------------------------------
+
+void
+DynamicObjectManager::lock()
+{
+  m_locked = true;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+DynamicObjectManager::unlock()
+{
+  m_locked = false;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+DynamicObjectManager::locked() const
+{
+  return m_locked;
 }
 
 // -----------------------------------------------------------------------------

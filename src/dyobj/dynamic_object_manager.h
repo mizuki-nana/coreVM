@@ -63,8 +63,18 @@ public:
    */
   virtual void on_exit() noexcept = 0;
 
+  void lock();
+
+  void unlock();
+
+  bool locked() const;
+
 protected:
+  DynamicObjectManager();
+
   virtual ~DynamicObjectManager();
+
+  bool m_locked;
 };
 
 

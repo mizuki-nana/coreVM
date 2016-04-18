@@ -84,16 +84,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 /**
- * TODO: [COREVM-457] Improve reference-count GC scheme
+ * TODO: [COREVM-463] Design and implement forward iterator for sequential allocator
  */
-#define COREVM_457 0
+#define COREVM_463 0
 
 // -----------------------------------------------------------------------------
 
 /**
- * TODO: [COREVM-463] Design and implement forward iterator for sequential allocator
+ * TODO: [COREVM-485] Ref-count GC does not handle garbage collectible objects forming overlapping cycles
  */
-#define COREVM_463 0
+#define COREVM_485 1
 
 // -----------------------------------------------------------------------------
 

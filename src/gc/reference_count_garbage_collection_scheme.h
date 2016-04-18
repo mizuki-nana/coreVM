@@ -56,7 +56,7 @@ public:
          * placed in a frame. This will help make sure that temporary objects
          * sitting on the object stack not being garbage-collected.
          */
-        return m_count == 0 && m_attached;
+        return m_count == 0 && m_attached && !m_locked;
       }
 
       virtual inline void on_create() noexcept
@@ -111,41 +111,33 @@ public:
 
   virtual void gc(dynamic_object_heap_type&) const;
 
-#if COREVM_457
-  template<typename dynamic_object_heap_type>
-  class heap_iterator
+  class HeapIterator
   {
     public:
-      explicit heap_iterator(
-        dynamic_object_heap_type& heap,
-        const RefCountGarbageCollectionScheme& scheme)
+      HeapIterator(const RefCountGarbageCollectionScheme& scheme)
         :
-        m_heap(heap),
         m_scheme(scheme)
       {
       }
 
       void operator()(
-        typename dynamic_object_heap_type::dynamic_object_id_type /* id */,
-        typename dynamic_object_heap_type::dynamic_object_type& object)
+        typename dynamic_object_heap_type::dynamic_object_type* object)
       {
-        m_scheme.check_and_dec_ref_count(m_heap, object);
-        m_scheme.resolve_self_reference_cycles(m_heap, object);
+        m_scheme.check_and_dec_ref_count(object);
+        m_scheme.resolve_self_reference_cycles(object);
       }
 
     private:
-      dynamic_object_heap_type& m_heap;
       const RefCountGarbageCollectionScheme& m_scheme;
   };
 
-  friend class heap_iterator<dynamic_object_heap_type>;
+  friend class HeapIterator;
 
 protected:
-  void check_and_dec_ref_count(dynamic_object_heap_type&, dynamic_object_type&) const;
+  void check_and_dec_ref_count(dynamic_object_type*) const;
 
-  void resolve_self_reference_cycles(dynamic_object_heap_type&, dynamic_object_type&) const;
+  void resolve_self_reference_cycles(dynamic_object_type*) const;
   void remove_cycles(dynamic_object_heap_type&) const;
-#endif /* if COREVM_457 */
 };
 
 

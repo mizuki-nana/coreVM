@@ -45,6 +45,13 @@ INTERMEDIATE_EXTENSION = '.tmp.py'
 
 ## -----------------------------------------------------------------------------
 
+# TODO: [COREVM-486] Un-blacklist Python test `python/tests/chr.py`
+TESTS_BLACKLIST = [
+  './python/tests/chr.py'
+]
+
+## -----------------------------------------------------------------------------
+
 def pyta_cmdl_args(path, options):
     args = [PYTHON, PYTA_PATH, path]
 
@@ -70,6 +77,8 @@ def run(options):
     real_inputs = [
         path for path in inputs if not path.endswith(INTERMEDIATE_EXTENSION)
     ]
+
+    real_inputs = set(real_inputs) - set(TESTS_BLACKLIST)
 
     print 'Bootstrapping Python tests...'
     if options.python_only:
