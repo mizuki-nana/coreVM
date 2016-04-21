@@ -1,7 +1,5 @@
 ![logo](/resources/banners/v1/coreVM_banner_v1_RES_LOW.jpg)
 
-*Turn On, Boot Up, Jack In...*
-
 A virtual machine designed to revolutionize the development of modern dynamic
 programming languages and to refine the art of programming.
 
@@ -20,12 +18,12 @@ With the proliferation of dynamic programming languages being a dominating trend
 in the software industry, many developers have taken the endeavor to invent
 their own, in attempts to modernize the designs and implementations of many
 legacy systems, and how modern software systems can be developed. However, such
-a task would usually become a massive undertaking as the steps involved in
-developing a custom runtime for a dynamic programming language tend to be
-extremely complex, error prone and resource consuming, thus ending up being a
-very intimidating part in the process. Although there are candidates of generic
-runtimes for dynamic languages that are available, many of them lack the
-robustness, efficiency and versatility that can meet the language requirements.
+tasks are usually massive undertakings as the steps involved in developing a
+custom runtime for a dynamic programming language tend to be extremely complex,
+error prone and resource consuming, thus ending up being a very intimidating
+part in the process. Although there are candidates of generic runtimes for
+dynamic languages that are available, many of them lack the robustness,
+efficiency and versatility that can meet the language requirements.
 
 coreVM is a language-agnostic virtual machine designed to provide a runtime for
 dynamic programming languages. The design strives to achieve extremely versatile
@@ -36,16 +34,15 @@ can focus on the design and development of language features. coreVM strives to
 provide versatile capabilities that can meet the demands of most dynamic
 programming languages through the following:
 
-* An instruction set that is generic enough to cover most demands.
+* An instruction set that can broadly cover most demands.
 * A set of APIs for extensions, customizations, and optimizations for special needs.
 * A well thought and extensible architecture.
 
-The points above together form the core philosophy of the project that language
-developers should be able to use coreVM as a powerful platform for developing
-modern dynamic programming languages either by designing from scratch or
-synthesizing from existing ones, all in an intuitive and straightforward manner.
-And hopefully, it will help guide language developers to come up with
-unconventional language designs and implementations that define the next
+The points above together illustrate the core philosophy of the project that
+language developers should be able to use coreVM as a powerful platform for
+developing modern dynamic programming languages in an intuitive and
+straightforward manner. And hopefully, it will help guide language developers
+devise novel language designs and implementations that can shape the next
 generation of computing.
 
 
@@ -79,24 +76,24 @@ Here is a list of recommended steps to get started on the project:
 ## Moonshots
 While the ultimate goal of this project is to facilitate the design and
 development of modern dynamic programming languages for language developers,
-I personally have two ideas for the use of this project that I have envisioned
-for the foreseeable future.
+I personally have two use cases of the project that I have envisioned for the
+foreseeable future.
 
 ### Support the HEX programming language
 One is to use coreVM as the underlying runtime for the
 [HEX programming language](http://www.github.com/yanzhengli/hex) that I
-worked on a while ago. This was actually one of the initial goals of the project
-before its inception.
+worked on a while ago. This was actually one of the main motivations of the
+project before its inception.
 
 ### Python variant based on coreVM
 The second idea is to have a port of Python that runs on coreVM, as I've always
-wanted to join the Python family that's comprised of many flavors of the
-language. Currently the effort is codenamed _Pyta_, but hopefully I will come
-up with a good name of my variant by then.
+wanted to join the Python family that is comprised of many flavors of the
+language. Currently the effort is codenamed _[Project Pyta](https://github.com/yanzhengli/coreVM/wiki/Current-State-and-Roadmap#project-pyta)_,
+but hopefully I will come up with a good name of my variant by then.
 
 As of now, _Pyta_ implements a tiny subset of the core Python language. The
 implementation of the language lives under [python/src](python/src), and the
-corresponding test suite lives under [python/tests](python/tests). There is a
+corresponding test suite are under [python/tests](python/tests). There is a
 Python compiler that lives under [python/](python/), which compiles Python
 source code into coreVM bytecode. In addition, there is a command-line program
 [python/pyta.py](python/pyta.py) that can directly execute a given Python
@@ -104,8 +101,8 @@ program by invoking the compiler to generate coreVM bytecode, and feeds the
 output to the VM.
 
 The development of the VM and the language complements each other well, as the
-language serves as a great target to test and benchmark the VM, at the same time
-the VM provides more capabilities to facilitate the development of the language
+language serves as a great target to test and benchmark the VM, and at the same
+time the VM provides more capabilities to facilitate the growth of the language
 as it evolves. The parallel developments of the two forms a positive feedback
 loop that accelerates the growth of both.
 
@@ -116,9 +113,9 @@ To run an individual Python program, such as [python/tests/int.py](python/tests/
 run:
 > `python python/pyta.py python/tests/int.py`
 
-Over time, it will be interesting to compare the differences in stability,
-performance, and many other aspects across the major flavors of the language,
-such as [CPython](https://www.python.org/), [PyPy](http://pypy.org/),
+Over time, it will be interesting to compare _Pyta_'s stability, performance,
+and many other aspects with the major flavors of the language, such as
+[CPython](https://www.python.org/), [PyPy](http://pypy.org/),
 [Jython](http://www.jython.org/), [IronPython](http://ironpython.net/), and
 [Pyston](https://github.com/dropbox/pyston).
 
