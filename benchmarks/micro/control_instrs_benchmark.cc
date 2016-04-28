@@ -52,7 +52,6 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 
   fixture.process().push_stack(obj);
 
-  corevm::runtime::instr_handler_pinvk handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -60,7 +59,8 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_pinvk(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -73,7 +73,6 @@ void BenchmarkInstrINVK(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_invk handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -81,7 +80,8 @@ void BenchmarkInstrINVK(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_invk(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -97,7 +97,6 @@ void BenchmarkInstrRTRN(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_rtrn handler;
   corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
   corevm::runtime::closure* closure =
@@ -130,7 +129,7 @@ void BenchmarkInstrRTRN(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    corevm::runtime::instr_handler_rtrn(instr, fixture.process());
   }
 }
 */
@@ -142,7 +141,6 @@ void BenchmarkInstrJMP(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_jmp handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -150,7 +148,8 @@ void BenchmarkInstrJMP(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_jmp(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -161,7 +160,6 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_jmpif handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   corevm::types::NativeTypeHandle hndl = corevm::types::boolean(true);
@@ -172,7 +170,8 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_jmpif(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -183,7 +182,6 @@ void BenchmarkInstrJMPR(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_jmpr handler;
   corevm::runtime::Instr instr(0, 1, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -191,7 +189,8 @@ void BenchmarkInstrJMPR(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_jmpr(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -217,12 +216,11 @@ void BenchmarkInstrEXC(benchmark::State& state)
     }
   );
 
-  corevm::runtime::instr_handler_exc handler;
   corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process());
+    corevm::runtime::instr_handler_exc(instr, fixture.process());
   }
 }
 */
@@ -234,7 +232,6 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_excobj handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto id = fixture.process().create_dyobj();
@@ -245,7 +242,8 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_excobj(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -256,7 +254,6 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_clrexc handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto obj = fixture.process().create_dyobj();
@@ -267,7 +264,8 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_clrexc(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -278,7 +276,6 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::instr_handler_jmpexc handler;
   corevm::runtime::Instr instr(0, 0, 1);
 
   auto id = fixture.process().create_dyobj();
@@ -289,7 +286,8 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_jmpexc(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

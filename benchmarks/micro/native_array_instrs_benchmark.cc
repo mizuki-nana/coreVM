@@ -43,7 +43,6 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_arylen handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -53,7 +52,8 @@ void BenchmarkInstrARYLEN(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_arylen(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -67,7 +67,6 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_aryemp handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -77,7 +76,8 @@ void BenchmarkInstrARYEMP(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryemp(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -94,7 +94,6 @@ void BenchmarkInstrARYAT(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
-  corevm::runtime::instr_handler_aryat handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -105,7 +104,8 @@ void BenchmarkInstrARYAT(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryat(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -119,7 +119,6 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_aryfrt handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -129,7 +128,8 @@ void BenchmarkInstrARYFRT(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryfrt(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -143,7 +143,6 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_arybak handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -153,7 +152,8 @@ void BenchmarkInstrARYBAK(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_arybak(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -173,7 +173,6 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint32(10);
 
-  corevm::runtime::instr_handler_aryput handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -185,7 +184,8 @@ void BenchmarkInstrARYPUT(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryput(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -202,7 +202,6 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
-  corevm::runtime::instr_handler_aryapnd handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -213,7 +212,8 @@ void BenchmarkInstrARYAPND(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryapnd(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -230,7 +230,6 @@ void BenchmarkInstrARYERS(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint32(2);
 
-  corevm::runtime::instr_handler_aryers handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -241,7 +240,8 @@ void BenchmarkInstrARYERS(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryers(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -255,7 +255,6 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_arypop handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -265,7 +264,8 @@ void BenchmarkInstrARYPOP(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_arypop(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -282,7 +282,6 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_array { 3, 2, 1 };
 
-  corevm::runtime::instr_handler_aryswp handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -293,7 +292,8 @@ void BenchmarkInstrARYSWP(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryswp(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -307,7 +307,6 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_array { 1, 2, 3 };
 
-  corevm::runtime::instr_handler_aryclr handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -317,7 +316,8 @@ void BenchmarkInstrARYCLR(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_aryclr(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -335,7 +335,6 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_array { 4, 5, 6 };
 
-  corevm::runtime::instr_handler_arymrg handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -346,7 +345,8 @@ void BenchmarkInstrARYMRG(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_arymrg(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif

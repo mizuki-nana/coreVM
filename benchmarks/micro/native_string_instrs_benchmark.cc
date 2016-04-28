@@ -43,7 +43,6 @@ void BenchmarkInstrSTRLEN(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
 
-  corevm::runtime::instr_handler_strlen handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -53,7 +52,8 @@ void BenchmarkInstrSTRLEN(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strlen(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -67,7 +67,6 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl =
     corevm::types::native_string("Hello world");
 
-  corevm::runtime::instr_handler_strclr handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -77,7 +76,8 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strclr(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -94,7 +94,6 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_string("!!!");
 
-  corevm::runtime::instr_handler_strapd handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -105,7 +104,8 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strapd(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -122,7 +122,6 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint8(8);
 
-  corevm::runtime::instr_handler_strpsh handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -133,7 +132,8 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strpsh(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -153,7 +153,6 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::native_string(" ");
 
-  corevm::runtime::instr_handler_strist handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -165,7 +164,8 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strist(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -185,7 +185,6 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint8('!');
 
-  corevm::runtime::instr_handler_strist2 handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -197,7 +196,8 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strist2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -214,7 +214,6 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint8(4);
 
-  corevm::runtime::instr_handler_strers handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -225,7 +224,8 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strers(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -246,7 +246,6 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint8(1);
 
-  corevm::runtime::instr_handler_strers2 handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -258,7 +257,8 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strers2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -282,7 +282,6 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl4 =
     corevm::types::native_string(" ");
 
-  corevm::runtime::instr_handler_strrplc handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -295,7 +294,8 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strrplc(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -312,7 +312,6 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_string("Greetings!");
 
-  corevm::runtime::instr_handler_strswp handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -323,7 +322,8 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strswp(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -340,7 +340,6 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::uint8(4);
 
-  corevm::runtime::instr_handler_strsub handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -351,7 +350,8 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strsub(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -372,7 +372,6 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint8(5);
 
-  corevm::runtime::instr_handler_strsub2 handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -384,7 +383,8 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strsub2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -403,7 +403,6 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_string("world");
 
-  corevm::runtime::instr_handler_strfnd handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -414,7 +413,8 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strfnd(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -436,7 +436,6 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint8(4);
 
-  corevm::runtime::instr_handler_strfnd2 handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -448,7 +447,8 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strfnd2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -467,7 +467,6 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl2 =
     corevm::types::native_string("world");
 
-  corevm::runtime::instr_handler_strrfnd handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -478,7 +477,8 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strrfnd(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -500,7 +500,6 @@ void BenchmarkInstrSTRRFND2(benchmark::State& state)
   corevm::types::NativeTypeHandle hndl3 =
     corevm::types::uint8(4);
 
-  corevm::runtime::instr_handler_strrfnd2 handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -512,7 +511,8 @@ void BenchmarkInstrSTRRFND2(benchmark::State& state)
     frame->push_eval_stack(hndl2);
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_strrfnd2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif

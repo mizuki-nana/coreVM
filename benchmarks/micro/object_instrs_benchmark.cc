@@ -38,21 +38,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-#define STATE_RUN_LOOP()                                               \
-  while (state.KeepRunning())                                          \
-  {                                                                    \
-      handler.execute(instr, fixture.process(), &frame, &invk_ctx);    \
-  }
-
-// -----------------------------------------------------------------------------
-
 using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
 static
-void set_encoding_pair(
-  corevm::runtime::Process& process,
+void set_encoding_pair(corevm::runtime::Process& process,
   const corevm::runtime::EncodingMap& encoding_map)
 {
   corevm::runtime::compartment_id_t compartment_id = 0;
@@ -66,32 +57,30 @@ void set_encoding_pair(
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrs(benchmark::State& state)
+void BenchmarkNEWInstr(benchmark::State& state)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    instr_handler_new(instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope(benchmark::State& state)
+void BenchmarkLDOBJInstr(benchmark::State& state)
 {
   corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
-
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -101,20 +90,20 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope(benchmark::State& sta
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    instr_handler_ldobj(instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope(benchmark::State& state)
+void BenchmarkLDOBJ2Instr(benchmark::State& state)
 {
   corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
-
-  corevm::runtime::instr_handler_ldobj2 handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -124,17 +113,19 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope(benchmark::State& s
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    instr_handler_ldobj2(instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
+void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -150,22 +141,112 @@ void BenchmarkObjectInstrsWithOneObjectOnStack(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    handler(instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
+void BenchmarkSTOBJInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_stobj);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSTOBJ2Instr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_stobj2);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkGETHNDLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_gethndl);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkISTRUTHYInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_istruthy);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSETCTXInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_setctx);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSETFLGCInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_setflgc);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSETFLDELInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_setfldel);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSETFLCALLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_setflcall);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkSETFLMUTEInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_setflmute);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkPOPInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStack(state,
+    corevm::runtime::instr_handler_pop);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkGETATTRInstr(benchmark::State& state)
 {
   const std::string attr_str = "hello_world";
   auto encoding_key = 0;
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(encoding_key), 0);
-
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -185,21 +266,18 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttr(benchmark::State& state)
   {
     fixture.process().push_stack(obj);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    instr_handler_getattr(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::State& state)
+void BenchmarkDELATTRInstr(benchmark::State& state)
 {
   corevm::dyobj::attr_key_t attr_key = 0;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
-
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -219,18 +297,17 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration(benchmark::St
     fixture.process().push_stack(obj);
     obj->putattr(attr_key, obj2);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    instr_handler_delattr(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(benchmark::State& state)
+void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -245,18 +322,43 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(benchmark::State& stat
     fixture.process().push_stack(id);
     fixture.process().top_frame().push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    handler(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark::State& state)
+void BenchmarkSETHNDLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(state,
+    corevm::runtime::instr_handler_sethndl);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkPUTOBJLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(state,
+    corevm::runtime::instr_handler_putobj);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkGETOBJLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(state,
+    corevm::runtime::instr_handler_getobj);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkCLRHNDLInstr(benchmark::State& state)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -271,18 +373,17 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration(benchmark:
     fixture.process().push_stack(obj);
     obj->set_ntvhndl(fixture.process().insert_ntvhndl(hndl));
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    instr_handler_clrhndl(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
+void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -301,20 +402,65 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    handler(instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration(benchmark::State& state)
+void BenchmarkSETATTRInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
+    corevm::runtime::instr_handler_setattr);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkCPYHNDLInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
+    corevm::runtime::instr_handler_cpyhndl);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkCPYREPRInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
+    corevm::runtime::instr_handler_cpyrepr);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkOBJEQInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
+    corevm::runtime::instr_handler_objeq);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkOBJNEQInstr(benchmark::State& state)
+{
+  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
+    corevm::runtime::instr_handler_objneq);
+}
+
+// -----------------------------------------------------------------------------
+
+static
+void BenchmarkDELOBJInstr(benchmark::State& state)
 {
   corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
-
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -327,21 +473,19 @@ void BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration(benchmark
   {
     fixture.process().top_frame().set_visible_var(var_key, id);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_delobj(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration(benchmark::State& state)
+void BenchmarkDELOBJ2Instr(benchmark::State& state)
 {
   corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
-
-  corevm::runtime::instr_handler_ldobj2 handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -355,22 +499,20 @@ void BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration(benchma
   {
     fixture.process().top_frame().set_visible_var(var_key, id);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_delobj2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
 static
-void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& state)
+void BenchmarkCLDOBJInstr(benchmark::State& state)
 {
   corevm::runtime::variable_key_t var_key0 = 0;
   corevm::runtime::variable_key_t var_key = 1;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(var_key), 0);
-
-  instr_handler_cls handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -390,7 +532,13 @@ void BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope(benchmark::State& st
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    fixture.process().top_frame().set_visible_var(var_key, id);
+
+    corevm::runtime::instr_handler_cldobj(
+      instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -413,9 +561,12 @@ void BenchmarkSWAPInstr(benchmark::State& state)
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
   corevm::runtime::Instr instr(0, 0, 0);
-  corevm::runtime::instr_handler_swap handler;
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    corevm::runtime::instr_handler_swap(
+      instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -438,7 +589,6 @@ BenchmarkHASATTR2Instr(benchmark::State& state)
   fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  corevm::runtime::instr_handler_hasattr2 handler;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -447,7 +597,8 @@ BenchmarkHASATTR2Instr(benchmark::State& state)
   {
     frame->push_eval_stack(hndl);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_hasattr2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -471,7 +622,6 @@ BenchmarkGETATTR2Instr(benchmark::State& state)
   fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  corevm::runtime::instr_handler_getattr2 handler;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -482,7 +632,8 @@ BenchmarkGETATTR2Instr(benchmark::State& state)
   {
     fixture.process().push_stack(obj);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_getattr2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -501,7 +652,6 @@ BenchmarkSETATTR2Instr(benchmark::State& state)
   auto obj2 = fixture.process().create_dyobj();
 
   corevm::runtime::Instr instr(0, 0, 0);
-  corevm::runtime::instr_handler_setattr2 handler;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -513,7 +663,8 @@ BenchmarkSETATTR2Instr(benchmark::State& state)
     fixture.process().push_stack(obj1);
     fixture.process().push_stack(obj2);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_setattr2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -536,7 +687,6 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
   fixture.process().push_stack(obj);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  corevm::runtime::instr_handler_delattr2 handler;
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -547,7 +697,8 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
   {
     obj->putattr(attr_key, obj2);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_delattr2(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -558,7 +709,6 @@ void
 BenchmarkSETATTRSInstr(benchmark::State& state)
 {
   corevm::runtime::Instr instr(0, 1, 1);
-  corevm::runtime::instr_handler_setattrs handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -586,7 +736,11 @@ BenchmarkSETATTRSInstr(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    corevm::runtime::instr_handler_setattrs(
+      instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -600,8 +754,6 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
-
-  corevm::runtime::instr_handler_rsetattrs handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -627,7 +779,11 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    corevm::runtime::instr_handler_rsetattrs(
+      instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -641,8 +797,6 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(attr_key), 0);
-
-  corevm::runtime::instr_handler_setattrs2 handler;
 
   InstrBenchmarksFixture fixture;
 
@@ -688,31 +842,29 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  STATE_RUN_LOOP();
+  while (state.KeepRunning())
+  {
+    corevm::runtime::instr_handler_setattrs2(
+      instr, fixture.process(), &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrs, corevm::runtime::instr_handler_new);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInVisibleScope, corevm::runtime::instr_handler_ldobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_stobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithAttr, corevm::runtime::instr_handler_getattr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_setattr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithAttrPerIteration, corevm::runtime::instr_handler_delattr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScope, corevm::runtime::instr_handler_ldobj2);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_stobj2);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInVisibleScopePerIteration, corevm::runtime::instr_handler_delobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithOneObjectInInvisibleScopePerIteration, corevm::runtime::instr_handler_delobj2);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_gethndl);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_sethndl);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_cpyhndl);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_cpyrepr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_istruthy);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndlPerIteration, corevm::runtime::instr_handler_clrhndl);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_objeq);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithTwoObjectsOnStack, corevm::runtime::instr_handler_objneq);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setctx);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsInstrWithTwoObjectsInVisibleScope, corevm::runtime::instr_handler_cldobj);
+BENCHMARK(BenchmarkLDOBJ2Instr);
+BENCHMARK(BenchmarkDELOBJInstr);
+BENCHMARK(BenchmarkDELOBJ2Instr);
+BENCHMARK(BenchmarkCLRHNDLInstr);
+BENCHMARK(BenchmarkCLDOBJInstr);
+BENCHMARK(BenchmarkNEWInstr);
+BENCHMARK(BenchmarkLDOBJInstr);
+BENCHMARK(BenchmarkSTOBJInstr);
+BENCHMARK(BenchmarkSTOBJ2Instr);
+BENCHMARK(BenchmarkGETATTRInstr);
+BENCHMARK(BenchmarkDELATTRInstr);
+BENCHMARK(BenchmarkGETHNDLInstr);
+BENCHMARK(BenchmarkISTRUTHYInstr);
+BENCHMARK(BenchmarkSETCTXInstr);
 BENCHMARK(BenchmarkSWAPInstr);
 BENCHMARK(BenchmarkHASATTR2Instr);
 BENCHMARK(BenchmarkGETATTR2Instr);
@@ -721,13 +873,19 @@ BENCHMARK(BenchmarkDELATTR2Instr);
 BENCHMARK(BenchmarkSETATTRSInstr);
 BENCHMARK(BenchmarkRSETATTRSInstr);
 BENCHMARK(BenchmarkSETATTRS2Instr);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_putobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl, corevm::runtime::instr_handler_getobj);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflgc);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setfldel);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflcall);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_setflmute);
-BENCHMARK_TEMPLATE(BenchmarkObjectInstrsWithOneObjectOnStack, corevm::runtime::instr_handler_pop);
+BENCHMARK(BenchmarkSETFLGCInstr);
+BENCHMARK(BenchmarkSETFLDELInstr);
+BENCHMARK(BenchmarkSETFLCALLInstr);
+BENCHMARK(BenchmarkSETFLMUTEInstr);
+BENCHMARK(BenchmarkPOPInstr);
+BENCHMARK(BenchmarkSETHNDLInstr);
+BENCHMARK(BenchmarkPUTOBJLInstr);
+BENCHMARK(BenchmarkGETOBJLInstr);
+BENCHMARK(BenchmarkSETATTRInstr);
+BENCHMARK(BenchmarkCPYHNDLInstr);
+BENCHMARK(BenchmarkCPYREPRInstr);
+BENCHMARK(BenchmarkOBJEQInstr);
+BENCHMARK(BenchmarkOBJNEQInstr);
 
 #endif /* #ifdef BUILD_BENCHMARKS_STRICT */
 

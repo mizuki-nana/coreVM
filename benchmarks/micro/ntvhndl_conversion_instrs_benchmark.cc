@@ -33,13 +33,13 @@ using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls, class IntrinsicType=corevm::types::int64>
-static void BenchmarkNtvhndlConversionInstrs(benchmark::State& state)
+static void
+BenchmarkNtvhndlConversionInstrs(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
-  corevm::types::NativeTypeHandle hndl((IntrinsicType()));
+  corevm::types::NativeTypeHandle hndl(corevm::types::int64(1));
 
   InstrBenchmarksFixture fixture;
   fixture.process().top_frame().push_eval_stack(hndl);
@@ -49,23 +49,30 @@ static void BenchmarkNtvhndlConversionInstrs(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    handler(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2int8);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2uint8);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2int16);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2uint16);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2int32);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2uint32);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2int64);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2uint64);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2bool);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2str, corevm::types::string);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2ary, corevm::types::array);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlConversionInstrs, corevm::runtime::instr_handler_2map, corevm::types::map);
+#define BENCHMARK_NTVHNDL_CONVERSION_INSTR(name, handler)      \
+static void                                                    \
+Benchmark##name##Instr(benchmark::State& state)                \
+{                                                              \
+  BenchmarkNtvhndlConversionInstrs(state, (handler));          \
+}                                                              \
+BENCHMARK(Benchmark##name##Instr)
+
+// -----------------------------------------------------------------------------
+
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT8, corevm::runtime::instr_handler_2int8);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT8, corevm::runtime::instr_handler_2uint8);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT16, corevm::runtime::instr_handler_2int16);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT16, corevm::runtime::instr_handler_2uint16);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT32, corevm::runtime::instr_handler_2int32);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT32, corevm::runtime::instr_handler_2uint32);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT64, corevm::runtime::instr_handler_2int64);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT64, corevm::runtime::instr_handler_2uint64);
+BENCHMARK_NTVHNDL_CONVERSION_INSTR(2BOOL, corevm::runtime::instr_handler_2bool);
 
 // -----------------------------------------------------------------------------

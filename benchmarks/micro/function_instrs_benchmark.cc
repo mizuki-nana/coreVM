@@ -50,7 +50,6 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
     fixture.process().push_stack(id);
   }
 
-  corevm::runtime::instr_handler_putarg handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -58,7 +57,8 @@ void BenchmarkInstrPUTARG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_putarg(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -79,7 +79,6 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
     fixture.process().push_stack(id);
   }
 
-  corevm::runtime::instr_handler_putkwarg handler;
   corevm::runtime::Instr instr(0, 1, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -87,7 +86,8 @@ void BenchmarkInstrPUTKWARG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_putkwarg(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -114,7 +114,6 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
 
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr_handler_putargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -122,7 +121,8 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_putargs(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -153,7 +153,6 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 
   obj.set_ntvhndl_key(ntvhndl_key);
 
-  corevm::runtime::instr_handler_putkwargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -161,7 +160,8 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_putkwargs(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 #endif
@@ -180,7 +180,6 @@ void BenchmarkInstrGETARG(benchmark::State& state)
     fixture.process().top_invocation_ctx().put_param(obj);
   }
 
-  corevm::runtime::instr_handler_getarg handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -188,7 +187,8 @@ void BenchmarkInstrGETARG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_getarg(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -202,7 +202,6 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
   corevm::runtime::variable_key_t key = 1;
   auto obj = fixture.process().create_dyobj();
 
-  corevm::runtime::instr_handler_getkwarg handler;
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
 
@@ -213,7 +212,8 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
   {
     invk_ctx->put_param_value_pair(key, obj);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_getkwarg(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -226,7 +226,6 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
 
   auto obj = fixture.process().create_dyobj();
 
-  corevm::runtime::instr_handler_getargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -238,7 +237,8 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
     invk_ctx->put_param(obj);
     invk_ctx->put_param(obj);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_getargs(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -252,7 +252,6 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
   corevm::runtime::variable_key_t key = 1;
   auto obj = fixture.process().create_dyobj();
 
-  corevm::runtime::instr_handler_getkwargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
@@ -264,7 +263,8 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
     invk_ctx->put_param_value_pair(key, obj);
     invk_ctx->put_param_value_pair(key, obj);
 
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_getkwargs(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -280,14 +280,14 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
   auto obj = fixture.process().create_dyobj();
   invk_ctx->put_param(obj);
 
-  corevm::runtime::instr_handler_hasargs handler;
   corevm::runtime::Instr instr(0, 0, 0);
 
   auto frame = &fixture.process().top_frame();
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    corevm::runtime::instr_handler_hasargs(
+      instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 

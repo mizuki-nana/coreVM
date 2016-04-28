@@ -33,11 +33,10 @@ using corevm::benchmarks::InstrBenchmarksFixture;
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls>
-static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
+static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
   corevm::types::NativeTypeHandle oprd = corevm::types::uint32(666);
 
@@ -49,19 +48,29 @@ static void BenchmarkNtvhndlArithmeticUnaryInstrs(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    handler(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-template <class instr_handler_cls, class FirstOperandType=corevm::types::int64>
-static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
+#define BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(name, handler)       \
+static void                                                           \
+Benchmark##name##Instr(benchmark::State& state)                       \
+{                                                                     \
+  BenchmarkNtvhndlArithmeticUnaryInstrs(state, (handler));            \
+}                                                                     \
+BENCHMARK(Benchmark##name##Instr)
+
+// -----------------------------------------------------------------------------
+
+static void
+BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state,
+  corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
-  instr_handler_cls handler;
 
-  corevm::types::NativeTypeHandle oprd1 = FirstOperandType(1);
+  corevm::types::NativeTypeHandle oprd1 = corevm::types::int64(1);
   corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
 
   InstrBenchmarksFixture fixture;
@@ -74,41 +83,51 @@ static void BenchmarkNtvhndlArithmeticBinaryInstrs(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    handler.execute(instr, fixture.process(), &frame, &invk_ctx);
+    handler(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_pos);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_neg);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_inc);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_dec);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_abs);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_sqrt);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_add);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_sub);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mul);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_div);
+#define BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(name, handler)        \
+static void                                                             \
+Benchmark##name##Instr(benchmark::State& state)                         \
+{                                                                       \
+  BenchmarkNtvhndlArithmeticBinaryInstrs(state, (handler));             \
+}                                                                       \
+BENCHMARK(Benchmark##name##Instr)
+
+// -----------------------------------------------------------------------------
+
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(POS, corevm::runtime::instr_handler_pos);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(NEG, corevm::runtime::instr_handler_neg);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(INC, corevm::runtime::instr_handler_inc);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(DEC, corevm::runtime::instr_handler_dec);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(ABS, corevm::runtime::instr_handler_abs);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(SQRT, corevm::runtime::instr_handler_sqrt);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(BNOT, corevm::runtime::instr_handler_bnot);
+BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(LNOT, corevm::runtime::instr_handler_lnot);
 // TODO: enable test
-//BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_mod);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_pow);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_bnot);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_band);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_bor);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_bxor);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_bls);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_brs);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_eq);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_neq);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_gt);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_lt);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_gte);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_lte);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_cmp);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticUnaryInstrs, corevm::runtime::instr_handler_lnot);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_land);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_lor);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlArithmeticBinaryInstrs, corevm::runtime::instr_handler_round, corevm::types::decimal2);
+//BENCHMARK_NTVHNDL_ARITHMETIC_UNARY_INSTR(MOD, corevm::runtime::instr_handler_mod);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(ADD, corevm::runtime::instr_handler_add);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(SUB, corevm::runtime::instr_handler_sub);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(MUL, corevm::runtime::instr_handler_mul);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(DIV, corevm::runtime::instr_handler_div);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(POW, corevm::runtime::instr_handler_pow);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(BAND, corevm::runtime::instr_handler_band);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(BOR, corevm::runtime::instr_handler_bor);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(BXOR, corevm::runtime::instr_handler_bxor);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(BLS, corevm::runtime::instr_handler_bls);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(BRS, corevm::runtime::instr_handler_brs);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(EQ, corevm::runtime::instr_handler_eq);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(NEQ, corevm::runtime::instr_handler_neq);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(GT, corevm::runtime::instr_handler_gt);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(LT, corevm::runtime::instr_handler_lt);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(GTE, corevm::runtime::instr_handler_gte);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(LTE, corevm::runtime::instr_handler_lte);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(CMP, corevm::runtime::instr_handler_cmp);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(LAND, corevm::runtime::instr_handler_land);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(LOR, corevm::runtime::instr_handler_lor);
+BENCHMARK_NTVHNDL_ARITHMETIC_BINARY_INSTR(ROUND, corevm::runtime::instr_handler_round);
 
 // -----------------------------------------------------------------------------

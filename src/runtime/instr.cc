@@ -58,208 +58,208 @@ namespace runtime {
   #pragma clang diagnostic ignored "-Wc99-extensions"
 #endif
 
-const instr_handler_wrapper
-instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
+InstrHandler*
+InstrHandlerMeta::instr_handlers[INSTR_CODE_MAX] {
 
   /* -------------------------- Object instructions ------------------------- */
 
-  /* NEW       */    { .handler=std::make_shared<instr_handler_new>()       },
-  /* LDOBJ     */    { .handler=std::make_shared<instr_handler_ldobj>()     },
-  /* STOBJ     */    { .handler=std::make_shared<instr_handler_stobj>()     },
-  /* STOBJN    */    { .handler=std::make_shared<instr_handler_stobjn>()    },
-  /* GETATTR   */    { .handler=std::make_shared<instr_handler_getattr>()   },
-  /* SETATTR   */    { .handler=std::make_shared<instr_handler_setattr>()   },
-  /* DELATTR   */    { .handler=std::make_shared<instr_handler_delattr>()   },
-  /* HASATTR2  */    { .handler=std::make_shared<instr_handler_hasattr2>()  },
-  /* GETATTR2  */    { .handler=std::make_shared<instr_handler_getattr2>()  },
-  /* SETATTR2  */    { .handler=std::make_shared<instr_handler_setattr2>()  },
-  /* DELATTR2  */    { .handler=std::make_shared<instr_handler_delattr2>()  },
-  /* POP       */    { .handler=std::make_shared<instr_handler_pop>()       },
-  /* LDOBJ2    */    { .handler=std::make_shared<instr_handler_ldobj2>()    },
-  /* STOBJ2    */    { .handler=std::make_shared<instr_handler_stobj2>()    },
-  /* DELOBJ    */    { .handler=std::make_shared<instr_handler_delobj>()    },
-  /* DELOBJ2   */    { .handler=std::make_shared<instr_handler_delobj2>()   },
-  /* GETHNDL   */    { .handler=std::make_shared<instr_handler_gethndl>()   },
-  /* SETHNDL   */    { .handler=std::make_shared<instr_handler_sethndl>()   },
-  /* GETHNDL2  */    { .handler=std::make_shared<instr_handler_gethndl2>()  },
-  /* CLRHNDL   */    { .handler=std::make_shared<instr_handler_clrhndl>()   },
-  /* CPYHNDL   */    { .handler=std::make_shared<instr_handler_cpyhndl>()   },
-  /* CPYREPR   */    { .handler=std::make_shared<instr_handler_cpyrepr>()   },
-  /* ISTRUTHY  */    { .handler=std::make_shared<instr_handler_istruthy>()  },
-  /* OBJEQ     */    { .handler=std::make_shared<instr_handler_objeq>()     },
-  /* OBJNEQ    */    { .handler=std::make_shared<instr_handler_objneq>()    },
-  /* SETCTX    */    { .handler=std::make_shared<instr_handler_setctx>()    },
-  /* CLDOBJ    */    { .handler=std::make_shared<instr_handler_cldobj>()    },
-  /* SETATTRS  */    { .handler=std::make_shared<instr_handler_setattrs>()  },
-  /* RSETATTRS */    { .handler=std::make_shared<instr_handler_rsetattrs>() },
-  /* SETATTRS2  */   { .handler=std::make_shared<instr_handler_setattrs2>() },
-  /* PUTOBJ    */    { .handler=std::make_shared<instr_handler_putobj>()    },
-  /* GETOBJ    */    { .handler=std::make_shared<instr_handler_getobj>()    },
-  /* SWAP      */    { .handler=std::make_shared<instr_handler_swap>()      },
-  /* SETFLGC   */    { .handler=std::make_shared<instr_handler_setflgc>()   },
-  /* SETFLDEL  */    { .handler=std::make_shared<instr_handler_setfldel>()  },
-  /* SETFLCALL */    { .handler=std::make_shared<instr_handler_setflcall>() },
-  /* SETFLMUTE */    { .handler=std::make_shared<instr_handler_setflmute>() },
+  /* NEW       */    instr_handler_new       ,
+  /* LDOBJ     */    instr_handler_ldobj     ,
+  /* STOBJ     */    instr_handler_stobj     ,
+  /* STOBJN    */    instr_handler_stobjn    ,
+  /* GETATTR   */    instr_handler_getattr   ,
+  /* SETATTR   */    instr_handler_setattr   ,
+  /* DELATTR   */    instr_handler_delattr   ,
+  /* HASATTR2  */    instr_handler_hasattr2  ,
+  /* GETATTR2  */    instr_handler_getattr2  ,
+  /* SETATTR2  */    instr_handler_setattr2  ,
+  /* DELATTR2  */    instr_handler_delattr2  ,
+  /* POP       */    instr_handler_pop       ,
+  /* LDOBJ2    */    instr_handler_ldobj2    ,
+  /* STOBJ2    */    instr_handler_stobj2    ,
+  /* DELOBJ    */    instr_handler_delobj    ,
+  /* DELOBJ2   */    instr_handler_delobj2   ,
+  /* GETHNDL   */    instr_handler_gethndl   ,
+  /* SETHNDL   */    instr_handler_sethndl   ,
+  /* GETHNDL2  */    instr_handler_gethndl2  ,
+  /* CLRHNDL   */    instr_handler_clrhndl   ,
+  /* CPYHNDL   */    instr_handler_cpyhndl   ,
+  /* CPYREPR   */    instr_handler_cpyrepr   ,
+  /* ISTRUTHY  */    instr_handler_istruthy  ,
+  /* OBJEQ     */    instr_handler_objeq     ,
+  /* OBJNEQ    */    instr_handler_objneq    ,
+  /* SETCTX    */    instr_handler_setctx    ,
+  /* CLDOBJ    */    instr_handler_cldobj    ,
+  /* SETATTRS  */    instr_handler_setattrs  ,
+  /* RSETATTRS */    instr_handler_rsetattrs ,
+  /* SETATTRS2  */   instr_handler_setattrs2 ,
+  /* PUTOBJ    */    instr_handler_putobj    ,
+  /* GETOBJ    */    instr_handler_getobj    ,
+  /* SWAP      */    instr_handler_swap      ,
+  /* SETFLGC   */    instr_handler_setflgc   ,
+  /* SETFLDEL  */    instr_handler_setfldel  ,
+  /* SETFLCALL */    instr_handler_setflcall ,
+  /* SETFLMUTE */    instr_handler_setflmute ,
 
   /* -------------------------- Control instructions ------------------------ */
 
-  /* PINVK     */    { .handler=std::make_shared<instr_handler_pinvk>()     },
-  /* INVK      */    { .handler=std::make_shared<instr_handler_invk>()      },
-  /* RTRN      */    { .handler=std::make_shared<instr_handler_rtrn>()      },
-  /* JMP       */    { .handler=std::make_shared<instr_handler_jmp>()       },
-  /* JMPIF     */    { .handler=std::make_shared<instr_handler_jmpif>()     },
-  /* JMPR      */    { .handler=std::make_shared<instr_handler_jmpr>()      },
-  /* EXC       */    { .handler=std::make_shared<instr_handler_exc>()       },
-  /* EXCOBJ    */    { .handler=std::make_shared<instr_handler_excobj>()    },
-  /* CLREXC    */    { .handler=std::make_shared<instr_handler_clrexc>()    },
-  /* JMPEXC    */    { .handler=std::make_shared<instr_handler_jmpexc>()    },
-  /* EXIT      */    { .handler=std::make_shared<instr_handler_exit>()      },
+  /* PINVK     */    instr_handler_pinvk     ,
+  /* INVK      */    instr_handler_invk      ,
+  /* RTRN      */    instr_handler_rtrn      ,
+  /* JMP       */    instr_handler_jmp       ,
+  /* JMPIF     */    instr_handler_jmpif     ,
+  /* JMPR      */    instr_handler_jmpr      ,
+  /* EXC       */    instr_handler_exc       ,
+  /* EXCOBJ    */    instr_handler_excobj    ,
+  /* CLREXC    */    instr_handler_clrexc    ,
+  /* JMPEXC    */    instr_handler_jmpexc    ,
+  /* EXIT      */    instr_handler_exit      ,
 
   /* ------------------------- Function instructions ------------------------ */
 
-  /* PUTARG    */    { .handler=std::make_shared<instr_handler_putarg>()    },
-  /* PUTKWARG  */    { .handler=std::make_shared<instr_handler_putkwarg>()  },
-  /* PUTARGS   */    { .handler=std::make_shared<instr_handler_putargs>()   },
-  /* PUTKWARGS */    { .handler=std::make_shared<instr_handler_putkwargs>() },
-  /* GETARG    */    { .handler=std::make_shared<instr_handler_getarg>()    },
-  /* GETKWARG  */    { .handler=std::make_shared<instr_handler_getkwarg>()  },
-  /* GETARGS   */    { .handler=std::make_shared<instr_handler_getargs>()   },
-  /* GETKWARGS */    { .handler=std::make_shared<instr_handler_getkwargs>() },
-  /* HASARGS   */    { .handler=std::make_shared<instr_handler_hasargs>()   },
+  /* PUTARG    */    instr_handler_putarg    ,
+  /* PUTKWARG  */    instr_handler_putkwarg  ,
+  /* PUTARGS   */    instr_handler_putargs   ,
+  /* PUTKWARGS */    instr_handler_putkwargs ,
+  /* GETARG    */    instr_handler_getarg    ,
+  /* GETKWARG  */    instr_handler_getkwarg  ,
+  /* GETARGS   */    instr_handler_getargs   ,
+  /* GETKWARGS */    instr_handler_getkwargs ,
+  /* HASARGS   */    instr_handler_hasargs   ,
 
   /* ------------------------- Runtime instructions ------------------------- */
 
-  /* GC        */    { .handler=std::make_shared<instr_handler_gc>()        },
-  /* DEBUG     */    { .handler=std::make_shared<instr_handler_debug>()     },
-  /* DBGFRM    */    { .handler=std::make_shared<instr_handler_dbgfrm>()    },
-  /* DBGMEM    */    { .handler=std::make_shared<instr_handler_dbgmem>()    },
-  /* PRINT     */    { .handler=std::make_shared<instr_handler_print>()     },
-  /* SWAP2     */    { .handler=std::make_shared<instr_handler_swap2>()     },
+  /* GC        */    instr_handler_gc        ,
+  /* DEBUG     */    instr_handler_debug     ,
+  /* DBGFRM    */    instr_handler_dbgfrm    ,
+  /* DBGMEM    */    instr_handler_dbgmem    ,
+  /* PRINT     */    instr_handler_print     ,
+  /* SWAP2     */    instr_handler_swap2     ,
 
   /* ---------------- Arithmetic and logic instructions --------------------- */
 
-  /* POS      */     { .handler=std::make_shared<instr_handler_pos>()       },
-  /* NEG      */     { .handler=std::make_shared<instr_handler_neg>()       },
-  /* INC      */     { .handler=std::make_shared<instr_handler_inc>()       },
-  /* DEC      */     { .handler=std::make_shared<instr_handler_dec>()       },
-  /* ABS      */     { .handler=std::make_shared<instr_handler_abs>()       },
-  /* SQRT     */     { .handler=std::make_shared<instr_handler_sqrt>()      },
-  /* ADD      */     { .handler=std::make_shared<instr_handler_add>()       },
-  /* SUB      */     { .handler=std::make_shared<instr_handler_sub>()       },
-  /* MUL      */     { .handler=std::make_shared<instr_handler_mul>()       },
-  /* DIV      */     { .handler=std::make_shared<instr_handler_div>()       },
-  /* MOD      */     { .handler=std::make_shared<instr_handler_mod>()       },
-  /* POW      */     { .handler=std::make_shared<instr_handler_pow>()       },
-  /* BNOT     */     { .handler=std::make_shared<instr_handler_bnot>()      },
-  /* BAND     */     { .handler=std::make_shared<instr_handler_band>()      },
-  /* BOR      */     { .handler=std::make_shared<instr_handler_bor>()       },
-  /* BXOR     */     { .handler=std::make_shared<instr_handler_bxor>()      },
-  /* BLS      */     { .handler=std::make_shared<instr_handler_bls>()       },
-  /* BRS      */     { .handler=std::make_shared<instr_handler_brs>()       },
-  /* EQ       */     { .handler=std::make_shared<instr_handler_eq>()        },
-  /* NEQ      */     { .handler=std::make_shared<instr_handler_neq>()       },
-  /* GT       */     { .handler=std::make_shared<instr_handler_gt>()        },
-  /* LT       */     { .handler=std::make_shared<instr_handler_lt>()        },
-  /* GTE      */     { .handler=std::make_shared<instr_handler_gte>()       },
-  /* LTE      */     { .handler=std::make_shared<instr_handler_lte>()       },
-  /* LNOT     */     { .handler=std::make_shared<instr_handler_lnot>()      },
-  /* LAND     */     { .handler=std::make_shared<instr_handler_land>()      },
-  /* LOR      */     { .handler=std::make_shared<instr_handler_lor>()       },
-  /* CMP      */     { .handler=std::make_shared<instr_handler_cmp>()       },
+  /* POS      */     instr_handler_pos       ,
+  /* NEG      */     instr_handler_neg       ,
+  /* INC      */     instr_handler_inc       ,
+  /* DEC      */     instr_handler_dec       ,
+  /* ABS      */     instr_handler_abs       ,
+  /* SQRT     */     instr_handler_sqrt      ,
+  /* ADD      */     instr_handler_add       ,
+  /* SUB      */     instr_handler_sub       ,
+  /* MUL      */     instr_handler_mul       ,
+  /* DIV      */     instr_handler_div       ,
+  /* MOD      */     instr_handler_mod       ,
+  /* POW      */     instr_handler_pow       ,
+  /* BNOT     */     instr_handler_bnot      ,
+  /* BAND     */     instr_handler_band      ,
+  /* BOR      */     instr_handler_bor       ,
+  /* BXOR     */     instr_handler_bxor      ,
+  /* BLS      */     instr_handler_bls       ,
+  /* BRS      */     instr_handler_brs       ,
+  /* EQ       */     instr_handler_eq        ,
+  /* NEQ      */     instr_handler_neq       ,
+  /* GT       */     instr_handler_gt        ,
+  /* LT       */     instr_handler_lt        ,
+  /* GTE      */     instr_handler_gte       ,
+  /* LTE      */     instr_handler_lte       ,
+  /* LNOT     */     instr_handler_lnot      ,
+  /* LAND     */     instr_handler_land      ,
+  /* LOR      */     instr_handler_lor       ,
+  /* CMP      */     instr_handler_cmp       ,
 
   /* ----------------- Native type creation instructions -------------------- */
 
-  /* INT8     */     { .handler=std::make_shared<instr_handler_int8>()      },
-  /* UINT8    */     { .handler=std::make_shared<instr_handler_uint8>()     },
-  /* INT16    */     { .handler=std::make_shared<instr_handler_int16>()     },
-  /* UINT16   */     { .handler=std::make_shared<instr_handler_uint16>()    },
-  /* INT32    */     { .handler=std::make_shared<instr_handler_int32>()     },
-  /* UINT32   */     { .handler=std::make_shared<instr_handler_uint32>()    },
-  /* INT64    */     { .handler=std::make_shared<instr_handler_int64>()     },
-  /* UINT64   */     { .handler=std::make_shared<instr_handler_uint64>()    },
-  /* BOOL     */     { .handler=std::make_shared<instr_handler_bool>()      },
-  /* DEC1     */     { .handler=std::make_shared<instr_handler_dec1>()      },
-  /* DEC2     */     { .handler=std::make_shared<instr_handler_dec2>()      },
-  /* STR      */     { .handler=std::make_shared<instr_handler_str>()       },
-  /* ARY      */     { .handler=std::make_shared<instr_handler_ary>()       },
-  /* MAP      */     { .handler=std::make_shared<instr_handler_map>()       },
+  /* INT8     */     instr_handler_int8      ,
+  /* UINT8    */     instr_handler_uint8     ,
+  /* INT16    */     instr_handler_int16     ,
+  /* UINT16   */     instr_handler_uint16    ,
+  /* INT32    */     instr_handler_int32     ,
+  /* UINT32   */     instr_handler_uint32    ,
+  /* INT64    */     instr_handler_int64     ,
+  /* UINT64   */     instr_handler_uint64    ,
+  /* BOOL     */     instr_handler_bool      ,
+  /* DEC1     */     instr_handler_dec1      ,
+  /* DEC2     */     instr_handler_dec2      ,
+  /* STR      */     instr_handler_str       ,
+  /* ARY      */     instr_handler_ary       ,
+  /* MAP      */     instr_handler_map       ,
 
   /* ----------------- Native type conversion instructions ------------------ */
 
-  /* TOINT8   */     { .handler=std::make_shared<instr_handler_2int8>()     },
-  /* TOUINT8  */     { .handler=std::make_shared<instr_handler_2uint8>()    },
-  /* TOINT16  */     { .handler=std::make_shared<instr_handler_2int16>()    },
-  /* TOUINT16 */     { .handler=std::make_shared<instr_handler_2uint16>()   },
-  /* TOINT32  */     { .handler=std::make_shared<instr_handler_2int32>()    },
-  /* TOUINT32 */     { .handler=std::make_shared<instr_handler_2uint32>()   },
-  /* TOINT64  */     { .handler=std::make_shared<instr_handler_2int64>()    },
-  /* TOUINT64 */     { .handler=std::make_shared<instr_handler_2uint64>()   },
-  /* TOBOOL   */     { .handler=std::make_shared<instr_handler_2bool>()     },
-  /* TODEC1   */     { .handler=std::make_shared<instr_handler_2dec1>()     },
-  /* TODEC2   */     { .handler=std::make_shared<instr_handler_2dec2>()     },
-  /* TOSTR    */     { .handler=std::make_shared<instr_handler_2str>()      },
-  /* TOARY    */     { .handler=std::make_shared<instr_handler_2ary>()      },
-  /* TOMAP    */     { .handler=std::make_shared<instr_handler_2map>()      },
+  /* TOINT8   */     instr_handler_2int8     ,
+  /* TOUINT8  */     instr_handler_2uint8    ,
+  /* TOINT16  */     instr_handler_2int16    ,
+  /* TOUINT16 */     instr_handler_2uint16   ,
+  /* TOINT32  */     instr_handler_2int32    ,
+  /* TOUINT32 */     instr_handler_2uint32   ,
+  /* TOINT64  */     instr_handler_2int64    ,
+  /* TOUINT64 */     instr_handler_2uint64   ,
+  /* TOBOOL   */     instr_handler_2bool     ,
+  /* TODEC1   */     instr_handler_2dec1     ,
+  /* TODEC2   */     instr_handler_2dec2     ,
+  /* TOSTR    */     instr_handler_2str      ,
+  /* TOARY    */     instr_handler_2ary      ,
+  /* TOMAP    */     instr_handler_2map      ,
 
   /* ----------------- Native type manipulation instructions ---------------- */
 
-  /* TRUTHY   */     { .handler=std::make_shared<instr_handler_truthy>()    },
-  /* REPR     */     { .handler=std::make_shared<instr_handler_repr>()      },
-  /* HASH     */     { .handler=std::make_shared<instr_handler_hash>()      },
-  /* SLICE    */     { .handler=std::make_shared<instr_handler_slice>()     },
-  /* STRIDE   */     { .handler=std::make_shared<instr_handler_stride>()    },
-  /* REVERSE  */     { .handler=std::make_shared<instr_handler_reverse>()   },
-  /* ROUND    */     { .handler=std::make_shared<instr_handler_round>()     },
+  /* TRUTHY   */     instr_handler_truthy    ,
+  /* REPR     */     instr_handler_repr      ,
+  /* HASH     */     instr_handler_hash      ,
+  /* SLICE    */     instr_handler_slice     ,
+  /* STRIDE   */     instr_handler_stride    ,
+  /* REVERSE  */     instr_handler_reverse   ,
+  /* ROUND    */     instr_handler_round     ,
 
   /* --------------------- String type instructions ------------------------- */
 
-  /* STRLEN   */     { .handler=std::make_shared<instr_handler_strlen>()    },
-  /* STRAT    */     { .handler=std::make_shared<instr_handler_strat>()     },
-  /* STRCLR   */     { .handler=std::make_shared<instr_handler_strclr>()    },
-  /* STRAPD   */     { .handler=std::make_shared<instr_handler_strapd>()    },
-  /* STRPSH   */     { .handler=std::make_shared<instr_handler_strpsh>()    },
-  /* STRIST   */     { .handler=std::make_shared<instr_handler_strist>()    },
-  /* STRIST2  */     { .handler=std::make_shared<instr_handler_strist2>()   },
-  /* STRERS   */     { .handler=std::make_shared<instr_handler_strers>()    },
-  /* STRERS2  */     { .handler=std::make_shared<instr_handler_strers2>()   },
-  /* STRRPLC  */     { .handler=std::make_shared<instr_handler_strrplc>()   },
-  /* STRSWP   */     { .handler=std::make_shared<instr_handler_strswp>()    },
-  /* STRSUB   */     { .handler=std::make_shared<instr_handler_strsub>()    },
-  /* STRSUB2  */     { .handler=std::make_shared<instr_handler_strsub2>()   },
-  /* STRFND   */     { .handler=std::make_shared<instr_handler_strfnd>()    },
-  /* STRFND2  */     { .handler=std::make_shared<instr_handler_strfnd2>()   },
-  /* STRRFND  */     { .handler=std::make_shared<instr_handler_strrfnd>()   },
-  /* STRRFND2 */     { .handler=std::make_shared<instr_handler_strrfnd2>()  },
+  /* STRLEN   */     instr_handler_strlen    ,
+  /* STRAT    */     instr_handler_strat     ,
+  /* STRCLR   */     instr_handler_strclr    ,
+  /* STRAPD   */     instr_handler_strapd    ,
+  /* STRPSH   */     instr_handler_strpsh    ,
+  /* STRIST   */     instr_handler_strist    ,
+  /* STRIST2  */     instr_handler_strist2   ,
+  /* STRERS   */     instr_handler_strers    ,
+  /* STRERS2  */     instr_handler_strers2   ,
+  /* STRRPLC  */     instr_handler_strrplc   ,
+  /* STRSWP   */     instr_handler_strswp    ,
+  /* STRSUB   */     instr_handler_strsub    ,
+  /* STRSUB2  */     instr_handler_strsub2   ,
+  /* STRFND   */     instr_handler_strfnd    ,
+  /* STRFND2  */     instr_handler_strfnd2   ,
+  /* STRRFND  */     instr_handler_strrfnd   ,
+  /* STRRFND2 */     instr_handler_strrfnd2  ,
 
   /* --------------------- Array type instructions -------------------------- */
 
-  /* ARYLEN   */     { .handler=std::make_shared<instr_handler_arylen>()    },
-  /* ARYEMP   */     { .handler=std::make_shared<instr_handler_aryemp>()    },
-  /* ARYAT    */     { .handler=std::make_shared<instr_handler_aryat>()     },
-  /* ARYFRT   */     { .handler=std::make_shared<instr_handler_aryfrt>()    },
-  /* ARYBAK   */     { .handler=std::make_shared<instr_handler_arybak>()    },
-  /* ARYPUT   */     { .handler=std::make_shared<instr_handler_aryput>()    },
-  /* ARYAPND  */     { .handler=std::make_shared<instr_handler_aryapnd>()   },
-  /* ARYERS   */     { .handler=std::make_shared<instr_handler_aryers>()    },
-  /* ARYPOP   */     { .handler=std::make_shared<instr_handler_arypop>()    },
-  /* ARYSWP   */     { .handler=std::make_shared<instr_handler_aryswp>()    },
-  /* ARYCLR   */     { .handler=std::make_shared<instr_handler_aryclr>()    },
-  /* ARYMRG   */     { .handler=std::make_shared<instr_handler_arymrg>()    },
+  /* ARYLEN   */     instr_handler_arylen    ,
+  /* ARYEMP   */     instr_handler_aryemp    ,
+  /* ARYAT    */     instr_handler_aryat     ,
+  /* ARYFRT   */     instr_handler_aryfrt    ,
+  /* ARYBAK   */     instr_handler_arybak    ,
+  /* ARYPUT   */     instr_handler_aryput    ,
+  /* ARYAPND  */     instr_handler_aryapnd   ,
+  /* ARYERS   */     instr_handler_aryers    ,
+  /* ARYPOP   */     instr_handler_arypop    ,
+  /* ARYSWP   */     instr_handler_aryswp    ,
+  /* ARYCLR   */     instr_handler_aryclr    ,
+  /* ARYMRG   */     instr_handler_arymrg    ,
 
   /* --------------------- Map type instructions ---------------------------- */
 
-  /* MAPLEN   */     { .handler=std::make_shared<instr_handler_maplen>()    },
-  /* MAPEMP   */     { .handler=std::make_shared<instr_handler_mapemp>()    },
-  /* MAPFIND  */     { .handler=std::make_shared<instr_handler_mapfind>()   },
-  /* MAPAT    */     { .handler=std::make_shared<instr_handler_mapat>()     },
-  /* MAPPUT   */     { .handler=std::make_shared<instr_handler_mapput>()    },
-  /* MAPSET   */     { .handler=std::make_shared<instr_handler_mapset>()    },
-  /* MAPERS   */     { .handler=std::make_shared<instr_handler_mapers>()    },
-  /* MAPCLR   */     { .handler=std::make_shared<instr_handler_mapclr>()    },
-  /* MAPSWP   */     { .handler=std::make_shared<instr_handler_mapswp>()    },
-  /* MAPKEYS  */     { .handler=std::make_shared<instr_handler_mapkeys>()   },
-  /* MAPVALS  */     { .handler=std::make_shared<instr_handler_mapvals>()   },
-  /* MAPMRG   */     { .handler=std::make_shared<instr_handler_mapmrg>()    },
+  /* MAPLEN   */     instr_handler_maplen    ,
+  /* MAPEMP   */     instr_handler_mapemp    ,
+  /* MAPFIND  */     instr_handler_mapfind   ,
+  /* MAPAT    */     instr_handler_mapat     ,
+  /* MAPPUT   */     instr_handler_mapput    ,
+  /* MAPSET   */     instr_handler_mapset    ,
+  /* MAPERS   */     instr_handler_mapers    ,
+  /* MAPCLR   */     instr_handler_mapclr    ,
+  /* MAPSWP   */     instr_handler_mapswp    ,
+  /* MAPKEYS  */     instr_handler_mapkeys   ,
+  /* MAPVALS  */     instr_handler_mapvals   ,
+  /* MAPMRG   */     instr_handler_mapmrg
 
 };
 
@@ -275,19 +275,10 @@ instr_handler_meta::instr_handlers[INSTR_CODE_MAX] {
 
 // -----------------------------------------------------------------------------
 
-/* virtual */
-instr_handler::~instr_handler()
-{
-  // Do nothing here.
-}
-
-// -----------------------------------------------------------------------------
-
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_unary_operator_instr(Frame* frame,
-  InterfaceFunc interface_func)
+execute_unary_operator_instr(Frame* frame, InterfaceFunc interface_func)
 {
   types::NativeTypeHandle& oprd = frame->top_eval_stack();
 
@@ -297,10 +288,9 @@ instr_handler::execute_unary_operator_instr(Frame* frame,
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_binary_operator_instr(Frame* frame,
-  InterfaceFunc interface_func)
+execute_binary_operator_instr(Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -318,10 +308,9 @@ instr_handler::execute_binary_operator_instr(Frame* frame,
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
-/* static */
+static
 void
-instr_handler::execute_native_integer_type_creation_instr(const Instr& instr,
-  Frame* frame)
+execute_native_integer_type_creation_instr(const Instr& instr, Frame* frame)
 {
   types::NativeTypeHandle hndl(NativeType(instr.oprd1));
 
@@ -331,10 +320,9 @@ instr_handler::execute_native_integer_type_creation_instr(const Instr& instr,
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
-/* static */
+static
 void
-instr_handler::execute_native_floating_type_creation_instr(const Instr& instr,
-  Frame* frame)
+execute_native_floating_type_creation_instr(const Instr& instr, Frame* frame)
 {
   std::stringstream oprd2_ss;
   oprd2_ss << instr.oprd2;
@@ -353,9 +341,9 @@ instr_handler::execute_native_floating_type_creation_instr(const Instr& instr,
 // -----------------------------------------------------------------------------
 
 template<typename NativeType>
-/* static */
+static
 void
-instr_handler::execute_native_complex_type_creation_instr(
+execute_native_complex_type_creation_instr(
   const Instr& /* instr */, Frame* frame)
 {
   NativeType value;
@@ -367,10 +355,9 @@ instr_handler::execute_native_complex_type_creation_instr(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_conversion_instr(Frame* frame,
-  InterfaceFunc interface_func)
+execute_native_type_conversion_instr(Frame* frame, InterfaceFunc interface_func)
 {
   types::NativeTypeHandle& oprd = frame->top_eval_stack();
 
@@ -380,9 +367,9 @@ instr_handler::execute_native_type_conversion_instr(Frame* frame,
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_single_operand(
+execute_native_type_complex_instr_with_single_operand(
   Frame* frame, InterfaceFunc interface_func)
 {
   types::NativeTypeHandle& oprd = frame->top_eval_stack();
@@ -393,9 +380,9 @@ instr_handler::execute_native_type_complex_instr_with_single_operand(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
+execute_native_type_complex_instr_with_single_operand_in_place(
   Frame* frame, InterfaceFunc interface_func)
 {
   types::NativeTypeHandle& oprd = frame->top_eval_stack();
@@ -406,9 +393,9 @@ instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_two_operands(
+execute_native_type_complex_instr_with_two_operands(
   Frame* frame, InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
@@ -427,10 +414,10 @@ instr_handler::execute_native_type_complex_instr_with_two_operands(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-  Frame* frame, InterfaceFunc interface_func)
+execute_native_type_complex_instr_with_two_operands_in_place(Frame* frame,
+  InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -448,10 +435,10 @@ instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_three_operands(
-  Frame* frame, InterfaceFunc interface_func)
+execute_native_type_complex_instr_with_three_operands(Frame* frame,
+  InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -470,10 +457,10 @@ instr_handler::execute_native_type_complex_instr_with_three_operands(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-  Frame* frame, InterfaceFunc interface_func)
+execute_native_type_complex_instr_with_three_operands_in_place(Frame* frame,
+  InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -492,10 +479,10 @@ instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_four_operands(
-  Frame* frame, InterfaceFunc interface_func)
+execute_native_type_complex_instr_with_four_operands(Frame* frame,
+  InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -515,10 +502,10 @@ instr_handler::execute_native_type_complex_instr_with_four_operands(
 // -----------------------------------------------------------------------------
 
 template<typename InterfaceFunc>
-/* static */
+static
 void
-instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
-  Frame* frame, InterfaceFunc interface_func)
+execute_native_type_complex_instr_with_four_operands_in_place(Frame* frame,
+  InterfaceFunc interface_func)
 {
   size_t eval_stack_size = frame->eval_stack_size();
 
@@ -538,7 +525,7 @@ instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_new::execute(
+instr_handler_new(
   const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
@@ -550,7 +537,7 @@ instr_handler_new::execute(
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_ldobj::execute(const Instr& instr, Process& process,
+instr_handler_ldobj(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -579,7 +566,7 @@ instr_handler_ldobj::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_stobj::execute(const Instr& instr, Process& process,
+instr_handler_stobj(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -596,7 +583,7 @@ instr_handler_stobj::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_stobjn::execute(const Instr& instr, Process& process,
+instr_handler_stobjn(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -614,7 +601,7 @@ instr_handler_stobjn::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getattr::execute(const Instr& instr, Process& process,
+instr_handler_getattr(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
@@ -630,7 +617,7 @@ instr_handler_getattr::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattr::execute(const Instr& instr, Process& process,
+instr_handler_setattr(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
@@ -653,7 +640,7 @@ instr_handler_setattr::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delattr::execute(const Instr& instr, Process& process,
+instr_handler_delattr(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   dyobj::attr_key_t attr_key = static_cast<dyobj::attr_key_t>(instr.oprd1);
@@ -676,7 +663,7 @@ instr_handler_delattr::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_hasattr2::execute(const Instr& /* instr */, Process& process,
+instr_handler_hasattr2(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -699,7 +686,7 @@ instr_handler_hasattr2::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getattr2::execute(const Instr& /* instr */, Process& process,
+instr_handler_getattr2(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.pop_stack();
@@ -718,7 +705,7 @@ instr_handler_getattr2::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattr2::execute(const Instr& /* instr */, Process& process,
+instr_handler_setattr2(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto attr_obj = process.pop_stack();
@@ -740,7 +727,7 @@ instr_handler_setattr2::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delattr2::execute(const Instr& /* instr */, Process& process,
+instr_handler_delattr2(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -759,7 +746,7 @@ instr_handler_delattr2::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_pop::execute(const Instr& /* instr */, Process& process,
+instr_handler_pop(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.pop_stack();
@@ -768,7 +755,7 @@ instr_handler_pop::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_ldobj2::execute(const Instr& instr, Process& process,
+instr_handler_ldobj2(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -797,7 +784,7 @@ instr_handler_ldobj2::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_stobj2::execute(const Instr& instr, Process& process,
+instr_handler_stobj2(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -811,7 +798,7 @@ instr_handler_stobj2::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delobj::execute(const Instr& instr, Process& /* process */,
+instr_handler_delobj(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -830,7 +817,7 @@ instr_handler_delobj::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_delobj2::execute(const Instr& instr, Process& /* process */,
+instr_handler_delobj2(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -849,7 +836,7 @@ instr_handler_delobj2::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gethndl::execute(const Instr& /* instr */, Process& process,
+instr_handler_gethndl(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -866,7 +853,7 @@ instr_handler_gethndl::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_sethndl::execute(const Instr& /* instr */, Process& process,
+instr_handler_sethndl(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -890,7 +877,7 @@ instr_handler_sethndl::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gethndl2::execute(const Instr& instr, Process& /* process */,
+instr_handler_gethndl2(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -909,7 +896,7 @@ instr_handler_gethndl2::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_clrhndl::execute(const Instr& /* instr */, Process& process,
+instr_handler_clrhndl(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -926,7 +913,7 @@ instr_handler_clrhndl::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
+instr_handler_cpyhndl(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto src_obj = process.pop_stack();
@@ -1025,7 +1012,7 @@ instr_handler_cpyhndl::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_cpyrepr::execute(const Instr& /* instr */, Process& process,
+instr_handler_cpyrepr(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   Process::dyobj_ptr src_obj = process.pop_stack();
@@ -1046,7 +1033,7 @@ instr_handler_cpyrepr::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_istruthy::execute(const Instr& /* instr */, Process& process,
+instr_handler_istruthy(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1068,7 +1055,7 @@ instr_handler_istruthy::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_objeq::execute(const Instr& /* instr */, Process& process,
+instr_handler_objeq(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj1 = process.pop_stack();
@@ -1083,7 +1070,7 @@ instr_handler_objeq::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_objneq::execute(const Instr& /* instr */, Process& process,
+instr_handler_objneq(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj1 = process.pop_stack();
@@ -1098,7 +1085,7 @@ instr_handler_objneq::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setctx::execute(const Instr& instr, Process& process,
+instr_handler_setctx(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1114,7 +1101,7 @@ instr_handler_setctx::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_cldobj::execute(const Instr& instr, Process& process,
+instr_handler_cldobj(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1150,7 +1137,7 @@ instr_handler_cldobj::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattrs::execute(const Instr& instr, Process& process,
+instr_handler_setattrs(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto src_obj = process.pop_stack();
@@ -1213,7 +1200,7 @@ instr_handler_setattrs::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
+instr_handler_rsetattrs(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
@@ -1242,7 +1229,7 @@ instr_handler_rsetattrs::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattrs2::execute(const Instr& instr, Process& process,
+instr_handler_setattrs2(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto self_str_key = static_cast<encoding_key_t>(instr.oprd1);
@@ -1276,7 +1263,7 @@ instr_handler_setattrs2::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_putobj::execute(const Instr& /* instr */, Process& process,
+instr_handler_putobj(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto ptr = process.top_stack();
@@ -1291,7 +1278,7 @@ instr_handler_putobj::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getobj::execute(const Instr& /* instr */, Process& process,
+instr_handler_getobj(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1305,7 +1292,7 @@ instr_handler_getobj::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_swap::execute(const Instr& /* instr */, Process& process,
+instr_handler_swap(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.swap_stack();
@@ -1314,7 +1301,7 @@ instr_handler_swap::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setflgc::execute(const Instr& instr, Process& process,
+instr_handler_setflgc(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1334,7 +1321,7 @@ instr_handler_setflgc::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setfldel::execute(const Instr& instr, Process& process,
+instr_handler_setfldel(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1354,7 +1341,7 @@ instr_handler_setfldel::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setflcall::execute(const Instr& instr, Process& process,
+instr_handler_setflcall(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1374,7 +1361,7 @@ instr_handler_setflcall::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setflmute::execute(const Instr& instr, Process& process,
+instr_handler_setflmute(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1394,7 +1381,7 @@ instr_handler_setflmute::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_pinvk::execute(const Instr& /* instr */, Process& process,
+instr_handler_pinvk(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   auto obj = process.top_stack();
@@ -1434,7 +1421,7 @@ instr_handler_pinvk::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_invk::execute(const Instr& /* instr */, Process& process,
+instr_handler_invk(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
@@ -1452,7 +1439,7 @@ instr_handler_invk::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_rtrn::execute(const Instr& /* instr */, Process& process,
+instr_handler_rtrn(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   Frame* frame = *frame_ptr;
@@ -1482,7 +1469,7 @@ instr_handler_rtrn::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_jmp::execute(const Instr& instr, Process& process,
+instr_handler_jmp(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   instr_addr_t starting_addr = process.pc();
@@ -1505,7 +1492,7 @@ instr_handler_jmp::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_jmpif::execute(const Instr& instr, Process& process,
+instr_handler_jmpif(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1537,7 +1524,7 @@ instr_handler_jmpif::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_jmpr::execute(const Instr& instr, Process& process,
+instr_handler_jmpr(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1562,7 +1549,7 @@ instr_handler_jmpr::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_exc::execute(const Instr& instr, Process& process,
+instr_handler_exc(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   bool search_catch_sites = static_cast<bool>(instr.oprd1);
@@ -1644,7 +1631,7 @@ instr_handler_exc::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_excobj::execute(const Instr& /* instr */, Process& process,
+instr_handler_excobj(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   const Frame* frame = *frame_ptr;
@@ -1664,7 +1651,7 @@ instr_handler_excobj::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_clrexc::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_clrexc(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1674,7 +1661,7 @@ instr_handler_clrexc::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_jmpexc::execute(const Instr& instr, Process& process,
+instr_handler_jmpexc(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   const Frame* frame = *frame_ptr;
@@ -1708,7 +1695,7 @@ instr_handler_jmpexc::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_exit::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_exit(const Instr& /* instr */, Process& /* process */,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   raise(SIGTERM);
@@ -1717,7 +1704,7 @@ instr_handler_exit::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_putarg::execute(const Instr& /* instr */, Process& process,
+instr_handler_putarg(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   auto obj = process.pop_stack();
@@ -1729,7 +1716,7 @@ instr_handler_putarg::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_putkwarg::execute(const Instr& instr, Process& process,
+instr_handler_putkwarg(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
@@ -1743,7 +1730,7 @@ instr_handler_putkwarg::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
+instr_handler_putargs(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
@@ -1766,7 +1753,7 @@ instr_handler_putargs::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
+instr_handler_putkwargs(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
@@ -1792,7 +1779,7 @@ instr_handler_putkwargs::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getarg::execute(const Instr& /* instr */, Process& process,
+instr_handler_getarg(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
@@ -1803,7 +1790,7 @@ instr_handler_getarg::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getkwarg::execute(const Instr& instr, Process& process,
+instr_handler_getkwarg(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
@@ -1824,7 +1811,7 @@ instr_handler_getkwarg::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getargs::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_getargs(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   Frame* frame = *frame_ptr;
@@ -1846,7 +1833,7 @@ instr_handler_getargs::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getkwargs::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_getkwargs(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   Frame* frame = *frame_ptr;
@@ -1873,7 +1860,7 @@ instr_handler_getkwargs::execute(const Instr& /* instr */, Process& /* process *
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_hasargs::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_hasargs(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   Frame* frame = *frame_ptr;
@@ -1889,7 +1876,7 @@ instr_handler_hasargs::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gc::execute(const Instr& /* instr */, Process& process,
+instr_handler_gc(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   process.do_gc();
@@ -1898,7 +1885,7 @@ instr_handler_gc::execute(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_debug::execute(const Instr& instr, Process& process,
+instr_handler_debug(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
@@ -1909,7 +1896,7 @@ instr_handler_debug::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dbgfrm::execute(const Instr& instr, Process& /* process */,
+instr_handler_dbgfrm(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto& frame = *frame_ptr;
@@ -1922,7 +1909,7 @@ instr_handler_dbgfrm::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dbgmem::execute(const Instr& instr, Process& /* process */,
+instr_handler_dbgmem(const Instr& instr, Process& /* process */,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
@@ -1933,7 +1920,7 @@ instr_handler_dbgmem::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_print::execute(const Instr& instr, Process& process,
+instr_handler_print(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -1961,7 +1948,7 @@ instr_handler_print::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_swap2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_swap2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -1971,476 +1958,359 @@ instr_handler_swap2::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_pos::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_pos(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_positive_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_positive_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_neg::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_neg(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_negation_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_negation_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_inc::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_inc(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_increment_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_increment_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dec::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_dec(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_decrement_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_decrement_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_abs::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_abs(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_abs_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_abs_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_sqrt::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_sqrt(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_sqrt_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_sqrt_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_add::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_add(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_addition_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_addition_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_sub::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_sub(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_subtraction_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_subtraction_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mul::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mul(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_multiplication_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_multiplication_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_div::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_div(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_division_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_division_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mod::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mod(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_modulus_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_modulus_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_pow::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_pow(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_pow_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_pow_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_bnot::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_bnot(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_not_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_bitwise_not_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_band::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_band(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_and_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_bitwise_and_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_bor::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_bor(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_or_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_bitwise_or_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_bxor::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_bxor(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_xor_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_bitwise_xor_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_bls::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_bls(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_left_shift_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_bitwise_left_shift_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_brs::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_brs(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_bitwise_right_shift_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_bitwise_right_shift_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_eq::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_eq(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_eq_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_eq_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_neq::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_neq(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_neq_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_neq_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gt::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_gt(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_gt_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_gt_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_lt::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_lt(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_lt_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_lt_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gte::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_gte(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_gte_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_gte_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_lte::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_lte(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_lte_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_lte_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_lnot::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_lnot(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_unary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_logical_not_operator
-  );
+  execute_unary_operator_instr(*frame_ptr, types::interface_apply_logical_not_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_land::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_land(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_logical_and_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_logical_and_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_lor::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_lor(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_logical_or_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_logical_or_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_cmp::execute(
+instr_handler_cmp(
   const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_binary_operator_instr(
-    *frame_ptr,
-    types::interface_apply_cmp_operator
-  );
+  execute_binary_operator_instr(*frame_ptr, types::interface_apply_cmp_operator);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_int8::execute(const Instr& instr, Process& /* process */,
+instr_handler_int8(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::int8>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::int8>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_uint8::execute(const Instr& instr, Process& /* process */,
+instr_handler_uint8(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::uint8>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::uint8>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_int16::execute(const Instr& instr, Process& /* process */,
+instr_handler_int16(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::int16>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::int16>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_uint16::execute(const Instr& instr, Process& /* process */,
+instr_handler_uint16(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::uint16>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::uint16>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_int32::execute(const Instr& instr, Process& /* process */,
+instr_handler_int32(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::int32>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::int32>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_uint32::execute(const Instr& instr, Process& /* process */,
+instr_handler_uint32(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::uint32>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::uint32>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_int64::execute(const Instr& instr, Process& /* process */,
+instr_handler_int64(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::int64>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::int64>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_uint64::execute(const Instr& instr, Process& /* process */,
+instr_handler_uint64(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::uint64>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::uint64>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_bool::execute(const Instr& instr, Process& /* process */,
+instr_handler_bool(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_integer_type_creation_instr<types::boolean>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_integer_type_creation_instr<types::boolean>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dec1::execute(const Instr& instr, Process& /* process */,
+instr_handler_dec1(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_floating_type_creation_instr<types::decimal>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_floating_type_creation_instr<types::decimal>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dec2::execute(const Instr& instr, Process& /* process */,
+instr_handler_dec2(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_floating_type_creation_instr<types::decimal2>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_floating_type_creation_instr<types::decimal2>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_str::execute(const Instr& instr, Process& /* process */,
+instr_handler_str(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   // String type is different than other complex types.
@@ -2465,201 +2335,153 @@ instr_handler_str::execute(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_ary::execute(const Instr& instr, Process& /* process */,
+instr_handler_ary(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_complex_type_creation_instr<types::array>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_complex_type_creation_instr<types::array>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_map::execute(const Instr& instr, Process& /* process */,
+instr_handler_map(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_complex_type_creation_instr<types::map>(
-    instr,
-    *frame_ptr
-  );
+  execute_native_complex_type_creation_instr<types::map>(instr, *frame_ptr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2int8::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2int8(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_int8
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_int8);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2uint8::execute(
+instr_handler_2uint8(
   const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_uint8
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_uint8);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2int16::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2int16(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_int16
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_int16);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2uint16::execute(
+instr_handler_2uint16(
   const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_uint16
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_uint16);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2int32::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2int32(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_int32
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_int32);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2uint32::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2uint32(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_uint32
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_uint32);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2int64::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2int64(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_int64
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_int64);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2uint64::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2uint64(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_uint64
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_uint64);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2bool::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2bool(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_bool
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_bool);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2dec1::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2dec1(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_dec1
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_dec1);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2dec2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2dec2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_dec2
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_dec2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2str::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2str(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_str
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_str);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2ary::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2ary(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_ary
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_ary);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_2map::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_2map(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_conversion_instr(
-    *frame_ptr,
-    types::interface_to_map
-  );
+  execute_native_type_conversion_instr(*frame_ptr, types::interface_to_map);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_truthy::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_truthy(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -2674,7 +2496,7 @@ instr_handler_truthy::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_repr::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_repr(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -2689,7 +2511,7 @@ instr_handler_repr::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_hash::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_hash(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -2704,464 +2526,388 @@ instr_handler_hash::execute(const Instr& /* instr */, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_slice::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_slice(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands(
-    *frame_ptr,
-    types::interface_compute_slice
-  );
+  execute_native_type_complex_instr_with_three_operands(*frame_ptr,
+    types::interface_compute_slice);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_stride::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_stride(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_compute_stride
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_compute_stride);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_reverse::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_reverse(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_compute_reverse
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_compute_reverse);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_round::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_round(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_apply_rounding
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_apply_rounding);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strlen::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strlen(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_string_get_size
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_string_get_size);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strat::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strat(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_string_at_2
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_string_at_2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strclr::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strclr(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
-    *frame_ptr,
-    types::interface_string_clear
-  );
+  execute_native_type_complex_instr_with_single_operand_in_place(*frame_ptr,
+    types::interface_string_clear);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strapd::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strapd(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_string_append
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_string_append);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strpsh::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strpsh(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_string_pushback
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_string_pushback);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strist::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strist(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-    *frame_ptr,
-    types::interface_string_insert_str
-  );
+  execute_native_type_complex_instr_with_three_operands_in_place(*frame_ptr,
+    types::interface_string_insert_str);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strist2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strist2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-    *frame_ptr,
-    types::interface_string_insert_char
-  );
+  execute_native_type_complex_instr_with_three_operands_in_place(*frame_ptr,
+    types::interface_string_insert_char);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strers::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strers(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_string_erase
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_string_erase);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strers2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strers2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-    *frame_ptr,
-    types::interface_string_erase2
-  );
+  execute_native_type_complex_instr_with_three_operands_in_place(*frame_ptr,
+    types::interface_string_erase2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strrplc::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strrplc(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_four_operands_in_place(
-    *frame_ptr,
-    types::interface_string_replace_str
-  );
+  execute_native_type_complex_instr_with_four_operands_in_place(*frame_ptr,
+    types::interface_string_replace_str);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strswp::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strswp(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_string_swap
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_string_swap);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strsub::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strsub(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_string_substr
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_string_substr);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strsub2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strsub2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands(
-    *frame_ptr,
-    types::interface_string_substr2
-  );
+  execute_native_type_complex_instr_with_three_operands(*frame_ptr,
+    types::interface_string_substr2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strfnd::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strfnd(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_string_find
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_string_find);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strfnd2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strfnd2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands(
-    *frame_ptr,
-    types::interface_string_find2
-  );
+  execute_native_type_complex_instr_with_three_operands(*frame_ptr,
+    types::interface_string_find2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strrfnd::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strrfnd(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_string_rfind
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_string_rfind);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_strrfnd2::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_strrfnd2(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands(
-    *frame_ptr,
-    types::interface_string_rfind2
-  );
+  execute_native_type_complex_instr_with_three_operands(*frame_ptr,
+    types::interface_string_rfind2);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_arylen::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_arylen(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_array_size
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_array_size);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryemp::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryemp(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_array_empty
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_array_empty);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryat::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryat(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_array_at
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_array_at);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryfrt::execute(
+instr_handler_aryfrt(
   const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_array_front
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_array_front);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_arybak::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_arybak(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_array_back
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_array_back);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryput::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryput(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-    *frame_ptr,
-    types::interface_array_put
-  );
+  execute_native_type_complex_instr_with_three_operands_in_place(*frame_ptr,
+    types::interface_array_put);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryapnd::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryapnd(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_array_append
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_array_append);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryers::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryers(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_array_erase
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_array_erase);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_arypop::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_arypop(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_array_pop
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_array_pop);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryswp::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryswp(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_array_swap
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_array_swap);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_aryclr::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_aryclr(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
-    *frame_ptr,
-    types::interface_array_clear
-  );
+  execute_native_type_complex_instr_with_single_operand_in_place(*frame_ptr,
+    types::interface_array_clear);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_arymrg::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_arymrg(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_array_merge
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_array_merge);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_maplen::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_maplen(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_map_size
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_map_size);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapemp::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapemp(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_map_empty
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_map_empty);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapat::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapat(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_map_at
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_map_at);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapfind::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapfind(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_map_find
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_map_find);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapput::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapput(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_three_operands_in_place(
-    *frame_ptr,
-    types::interface_map_put
-  );
+  execute_native_type_complex_instr_with_three_operands_in_place(*frame_ptr,
+    types::interface_map_put);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapset::execute(const Instr& instr, Process& process,
+instr_handler_mapset(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   types::native_map_key_type key = static_cast<
@@ -3183,73 +2929,61 @@ instr_handler_mapset::execute(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapers::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapers(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_map_erase
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_map_erase);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapclr::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapclr(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand_in_place(
-    *frame_ptr,
-    types::interface_map_clear
-  );
+  execute_native_type_complex_instr_with_single_operand_in_place(*frame_ptr,
+    types::interface_map_clear);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapswp::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapswp(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands_in_place(
-    *frame_ptr,
-    types::interface_map_swap
-  );
+  execute_native_type_complex_instr_with_two_operands_in_place(*frame_ptr,
+    types::interface_map_swap);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapkeys::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapkeys(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_map_keys
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_map_keys);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapvals::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapvals(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_single_operand(
-    *frame_ptr,
-    types::interface_map_vals
-  );
+  execute_native_type_complex_instr_with_single_operand(*frame_ptr,
+    types::interface_map_vals);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_mapmrg::execute(const Instr& /* instr */, Process& /* process */,
+instr_handler_mapmrg(const Instr& /* instr */, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  instr_handler::execute_native_type_complex_instr_with_two_operands(
-    *frame_ptr,
-    types::interface_map_merge
-  );
+  execute_native_type_complex_instr_with_two_operands(*frame_ptr,
+    types::interface_map_merge);
 }
 
 // -----------------------------------------------------------------------------

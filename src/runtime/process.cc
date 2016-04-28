@@ -743,14 +743,12 @@ Process::start()
 
     const Instr& instr = m_instrs[static_cast<size_t>(m_pc)];
 
-    auto& handler =
-      instr_handler_meta::instr_handlers[instr.code].handler;
-
 #if __MEASURE_INSTRS__
     t.start();
 #endif
 
-    handler->execute(instr, *this, frame_ptr, invk_ctx_ptr);
+    InstrHandlerMeta::instr_handlers[instr.code](
+      instr, *this, frame_ptr, invk_ctx_ptr);
 
     if (m_do_gc)
     {
