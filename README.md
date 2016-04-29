@@ -94,11 +94,11 @@ but hopefully I will come up with a good name of my variant by then.
 As of now, _Pyta_ implements a tiny subset of the core Python language. The
 implementation of the language lives under [python/src](python/src), and the
 corresponding test suite are under [python/tests](python/tests). There is a
-Python compiler that lives under [python/](python/), which compiles Python
-source code into coreVM bytecode. In addition, there is a command-line program
-[python/pyta.py](python/pyta.py) that can directly execute a given Python
-program by invoking the compiler to generate coreVM bytecode, and feeds the
-output to the VM.
+Python compiler that lives under [python/compiler](python/compiler), which
+compiles Python source code into coreVM bytecode. In addition, there is a
+command-line program [python/pyta.py](python/pyta.py) that can directly execute
+a given Python program by invoking the compiler to generate coreVM bytecode,
+and feeds the output to the VM.
 
 The development of the VM and the language complements each other well, as the
 language serves as a great target to test and benchmark the VM, and at the same

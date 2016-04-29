@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2015 Yanzheng Li
+# Copyright (c) 2016 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,18 +26,15 @@ import subprocess
 import sys
 
 from colors import colors
+from compiler import compiler
 
 ## -----------------------------------------------------------------------------
 
 PYTHON = 'python'
-PYTHON_COMPILER = './python/python_compiler.py'
-PYTHON_CODE_TRANSFORMER = './python/code_transformer.py'
-METADATA_FILE = './build/artifacts/corevm_metadata.json'
+PYTHON_COMPILER = './python/compiler/compiler.py'
 COREVM = './build/src/coreVM'
 COREVM_DBG = './build/src/coreVM_dbg'
 COREVM_DBG_ASAN = './build/src/coreVM_dbg_asan'
-INTERMEDIATE_EXTENSION = '.tmp.py'
-BYTECODE_EXTENSION = '.core'
 
 ## -----------------------------------------------------------------------------
 
@@ -73,50 +70,31 @@ class Pyta(object):
         self.init_steps()
 
     def init_steps(self):
-        code_transformed_path = \
-            self.code_transformer_input_to_output_path(self.input_path)
         compiled_path = \
-            self.compiler_input_to_output_path(code_transformed_path)
+            compiler.Compiler.input_to_output_path(self.input_path)
 
-        self.steps = [
-            PytaStep(
-                [
-                    PYTHON,
-                    PYTHON_CODE_TRANSFORMER,
-                    '--input',
-                    self.input_path,
-                    '--output',
-                    code_transformed_path
-                ]
-            ),
-            PytaStep(
-                [
-                    PYTHON,
-                    PYTHON_COMPILER,
-                    '--input',
-                    code_transformed_path,
-                    '--metadata-file',
-                    METADATA_FILE,
-                    '--output',
-                    compiled_path
-                ]
-            ),
-        ]
+        compilation_step = PytaStep(
+            [
+                PYTHON,
+                PYTHON_COMPILER,
+                self.input_path,
+            ])
+
+        if self.options.verbose:
+            compilation_step.cmdl_args.append('--verbose')
+
+        run_step = None
 
         if self.options.sanity_test:
-            self.steps.append(
-                PytaStep(
+            run_step = PytaStep(
                     [
                         COREVM_DBG_ASAN,
                         compiled_path
                     ],
-                    is_severe=True
-                )
-            )
+                    is_severe=True)
         elif self.options.dynamic_analysis:
-            self.steps.append(
-                # Run coreVM with Valgrind's Memcheck.
-                PytaStep(
+            # Run coreVM with Valgrind's Memcheck.
+            run_step = PytaStep(
                     [
                         'valgrind',
                         '--tool=memcheck',
@@ -146,34 +124,25 @@ class Pyta(object):
                         COREVM_DBG,
                         compiled_path
                     ],
-                    is_severe=True
-                )
-            )
+                    is_severe=True)
         else:
-            self.steps.append(
-                PytaStep(
+            run_step = PytaStep(
                     [
                         COREVM,
                         compiled_path
                     ],
-                    is_severe=True
-                )
-            )
+                    is_severe=True)
 
-    def code_transformer_input_to_output_path(self, path):
-        return os.path.splitext(path)[0] + INTERMEDIATE_EXTENSION
-
-    def compiler_input_to_output_path(self, path):
-        return path + BYTECODE_EXTENSION
+        self.steps = (compilation_step, run_step)
 
     def run(self):
         for step in self.steps:
-            if self.options.debug_mode:
+            if self.options.verbose:
                 print subprocess.list2cmdline(step.cmdl_args)
 
             retcode, status = step.run()
 
-            if self.options.debug_mode or retcode != 0:
+            if self.options.verbose or retcode != 0:
                 print status + '\n'
 
             if retcode != 0:
@@ -187,11 +156,11 @@ def main():
         version='%prog v0.1')
 
     parser.add_option(
-        '-d',
-        '--debug',
+        '-v',
+        '--verbose',
         action='store_true',
-        dest='debug_mode',
-        help='Debug mode'
+        dest='verbose',
+        help='Verbose mode'
     )
 
     parser.add_option(
@@ -204,7 +173,7 @@ def main():
     )
 
     parser.add_option(
-        '-a',
+        '-d',
         '--dynamic-analysis',
         action='store_true',
         dest='dynamic_analysis',
