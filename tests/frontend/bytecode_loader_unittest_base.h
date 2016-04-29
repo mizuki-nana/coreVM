@@ -36,7 +36,7 @@ protected:
   virtual void SetUp()
   {
     std::ofstream f(PATH, std::ios::binary);
-    f << this->bytecode();
+    f << bytecode();
     f.close();
   }
 

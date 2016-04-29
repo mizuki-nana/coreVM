@@ -240,11 +240,11 @@ Process::init()
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
 
   // Initialize gc rules.
-  const size_t flag_size = sizeof(m_gc_flag) * sizeof(char);
+  m_gc_rules.reserve(GCRuleMeta::GC_RULE_MAX);
 
-  for (size_t i = 0; i < flag_size; ++i)
+  for (size_t i = 0; i < GCRuleMeta::GC_RULE_MAX; ++i)
   {
-    // Add 1 to bit since the gc flag values are 0 index based.
+    // Add 1 to bit since the gc flag values are 1-index based.
     if (is_bit_set(m_gc_flag, static_cast<char>(i) + 1))
     {
       GCRuleMeta::GCBitfields bit =
@@ -278,7 +278,7 @@ Process::call_stack_size() const
 bool
 Process::has_frame() const
 {
-  return !(this->m_call_stack.empty());
+  return !(m_call_stack.empty());
 }
 
 // -----------------------------------------------------------------------------
@@ -320,7 +320,7 @@ Process::top_nth_frame(size_t n)
 void
 Process::pop_frame()
 {
-  Frame& frame = this->top_frame();
+  Frame& frame = top_frame();
 
   auto visible_objs = frame.get_visible_objs();
   auto invisible_objs = frame.get_invisible_objs();
@@ -349,7 +349,7 @@ Process::pop_frame()
 
   m_call_stack.pop_back();
 
-  this->pop_invocation_ctx();
+  pop_invocation_ctx();
 }
 
 // -----------------------------------------------------------------------------
@@ -775,7 +775,7 @@ Process::start()
     }
     else
     {
-      if (!this->can_execute())
+      if (!can_execute())
       {
         break;
       }
@@ -807,7 +807,7 @@ Process::set_do_gc()
 void
 Process::do_gc()
 {
-  this->pause_exec();
+  pause_exec();
 
   gc::GarbageCollector<garbage_collection_scheme> garbage_collector(
     m_dynamic_object_heap);
@@ -825,7 +825,7 @@ Process::do_gc()
     }
   );
 
-  this->resume_exec();
+  resume_exec();
 }
 
 // -----------------------------------------------------------------------------
@@ -934,9 +934,9 @@ Process::handle_signal(sig_atomic_t sig, SigHandler* handler)
   if (itr != m_sig_instr_map.end())
   {
     Vector vector = itr->second;
-    this->pause_exec();
-    this->insert_vector(vector);
-    this->resume_exec();
+    pause_exec();
+    insert_vector(vector);
+    resume_exec();
   }
   else if (handler != nullptr)
   {

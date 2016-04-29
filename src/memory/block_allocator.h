@@ -198,7 +198,7 @@ private:
 
     typename std::iterator<std::forward_iterator_tag, T>::pointer operator->()
     {
-      return &(this->operator*());
+      return &(operator*());
     }
 
     friend bool operator==(const iterator_t& lhs, const iterator_t& rhs)

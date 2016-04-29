@@ -38,7 +38,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestGetSize)
 
   size_t expected_result = 3;
 
-  this->apply_interface_on_single_operand_and_assert_result<size_t>(
+  apply_interface_on_single_operand_and_assert_result<size_t>(
     operand,
     corevm::types::interface_array_size,
     expected_result
@@ -54,7 +54,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestEmpty)
 
   bool expected_result = false;
 
-  this->apply_interface_on_single_operand_and_assert_result<bool>(
+  apply_interface_on_single_operand_and_assert_result<bool>(
     operand,
     corevm::types::interface_array_empty,
     expected_result
@@ -71,7 +71,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestAt)
 
   corevm::types::native_array::value_type expected_result = 2;
 
-  this->apply_interface_on_two_operands_and_assert_result<corevm::types::native_array::value_type>(
+  apply_interface_on_two_operands_and_assert_result<corevm::types::native_array::value_type>(
     operand,
     index,
     corevm::types::interface_array_at,
@@ -88,7 +88,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestFront)
 
   corevm::types::native_array::value_type expected_result = 1;
 
-  this->apply_interface_on_single_operand_and_assert_result<corevm::types::native_array::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::native_array::value_type>(
     operand,
     corevm::types::interface_array_front,
     expected_result
@@ -104,7 +104,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestBack)
 
   corevm::types::native_array::value_type expected_result = 3;
 
-  this->apply_interface_on_single_operand_and_assert_result<corevm::types::native_array::value_type>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::native_array::value_type>(
     operand,
     corevm::types::interface_array_back,
     expected_result
@@ -192,7 +192,7 @@ TEST_F(NativeArrayTypeInterfacesTest, TestPop)
 
   corevm::types::native_array expected_result {1, 2};
 
-  this->apply_interface_on_single_operand_and_assert_result<corevm::types::native_array>(
+  apply_interface_on_single_operand_and_assert_result<corevm::types::native_array>(
     operand,
     corevm::types::interface_array_pop,
     expected_result

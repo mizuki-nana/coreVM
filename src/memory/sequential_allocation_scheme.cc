@@ -112,7 +112,7 @@ SequentialAllocationScheme::split(
   iterator_type itr, size_t size, uint64_t offset) noexcept
 {
   block_descriptor_type descriptor(size, 0u, offset, 0u);
-  this->m_blocks.insert(++itr, descriptor);
+  m_blocks.insert(++itr, descriptor);
 }
 
 // -----------------------------------------------------------------------------
@@ -160,7 +160,7 @@ SequentialAllocationScheme::malloc(size_t size) noexcept
   ssize_t res = -1;
   iterator_type itr;
 
-  itr = this->find_fit(size);
+  itr = find_fit(size);
 
   if (itr != m_blocks.end())
   {
@@ -169,8 +169,7 @@ SequentialAllocationScheme::malloc(size_t size) noexcept
 
     if (block_found.size > size)
     {
-      this->split(
-        itr, block_found.size - size,
+      split(itr, block_found.size - size,
         static_cast<uint64_t>(block_found.offset + size));
 
       block_found.size = size;
@@ -193,7 +192,7 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
   ssize_t res = -1;
   size_t alloc_size = size * num;
 
-  iterator_type itr = this->find_fit(alloc_size);
+  iterator_type itr = find_fit(alloc_size);
 
   if (itr != m_blocks.end())
   {
@@ -201,8 +200,7 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 
     if (block_found.size > alloc_size)
     {
-      this->split(
-        itr, block_found.size - alloc_size,
+      split(itr, block_found.size - alloc_size,
         static_cast<uint64_t>(block_found.offset + alloc_size));
     }
 
@@ -225,7 +223,7 @@ SequentialAllocationScheme::calloc(size_t num, size_t size) noexcept
 
         offset += (uint64_t)size;
       }
-      this->m_blocks.insert(++itr, descriptors.begin(), descriptors.end());
+      m_blocks.insert(++itr, descriptors.begin(), descriptors.end());
     }
   }
 
@@ -315,7 +313,7 @@ SequentialAllocationScheme::free(size_t offset) noexcept
     block_found.actual_size = 0;
     *itr = block_found;
 
-    this->combine_free_blocks();
+    combine_free_blocks();
   }
 
   return size_freed;
@@ -333,7 +331,7 @@ FirstFitAllocationScheme::FirstFitAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
-  this->m_blocks.push_back(this->default_block());
+  m_blocks.push_back(default_block());
 }
 
 // -----------------------------------------------------------------------------
@@ -362,7 +360,7 @@ BestFitAllocationScheme::BestFitAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
-  this->m_blocks.push_back(this->default_block());
+  m_blocks.push_back(default_block());
 }
 
 // -----------------------------------------------------------------------------
@@ -417,7 +415,7 @@ WorstFitAllocationScheme::WorstFitAllocationScheme(
   :
   SequentialAllocationScheme(total_size)
 {
-  this->m_blocks.push_back(this->default_block());
+  m_blocks.push_back(default_block());
 }
 
 // -----------------------------------------------------------------------------
@@ -472,7 +470,7 @@ NextFitAllocationScheme::NextFitAllocationScheme(size_t total_size)
   SequentialAllocationScheme(total_size)
 {
   m_last_itr = m_blocks.begin();
-  this->m_blocks.push_back(this->default_block());
+  m_blocks.push_back(default_block());
 }
 
 // -----------------------------------------------------------------------------
@@ -488,7 +486,7 @@ NextFitAllocationScheme::find_fit(size_t size) noexcept
 
   if (itr != m_blocks.end())
   {
-    this->m_last_itr = itr;
+    m_last_itr = itr;
     return itr;
   }
 
@@ -539,7 +537,7 @@ BuddyAllocationScheme::BuddyAllocationScheme(size_t total_size)
   :
   SequentialAllocationScheme(total_size)
 {
-  this->m_blocks.push_back(this->default_block());
+  m_blocks.push_back(default_block());
 }
 
 // -----------------------------------------------------------------------------
@@ -560,9 +558,7 @@ ssize_t
 BuddyAllocationScheme::malloc(size_t size) noexcept
 {
   ssize_t res = -1;
-  iterator_type itr;
-
-  itr = this->find_fit(size);
+  iterator_type itr = find_fit(size);
 
   if (itr != m_blocks.end())
   {
@@ -619,9 +615,7 @@ BuddyAllocationScheme::find_fit(size_t size) noexcept
       block_found.size = block_found.size / 2;
       set_nth_bit_uint8(&block_found.flags, FLAG_SPLIT);
       *itr = block_found;
-      this->split(
-        itr,
-        block_found.size,
+      split(itr, block_found.size,
         static_cast<uint64_t>(block_found.offset + block_found.size)
       );
     }

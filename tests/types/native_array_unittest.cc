@@ -172,9 +172,9 @@ TEST_F(NativeArrayFunctionalityUnitTest, TestPushBack)
 {
   corevm::types::native_array array;
 
-  array.push_back(this->fixture_element1);
-  array.push_back(this->fixture_element2);
-  array.push_back(this->fixture_element3);
+  array.push_back(fixture_element1);
+  array.push_back(fixture_element2);
+  array.push_back(fixture_element3);
 
   ASSERT_EQ(false, array.empty());
   ASSERT_EQ(3, array.size());

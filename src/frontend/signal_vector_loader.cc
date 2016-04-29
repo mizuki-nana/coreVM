@@ -202,7 +202,7 @@ SignalVectorLoader::load(runtime::Process& process)
     ));
   }
 
-  this->validate(content_json);
+  validate(content_json);
 
   const JSON::object json_object = content_json.object_items();
   const JSON::object& signals_object = json_object.at("signals").object_items();
@@ -227,11 +227,11 @@ SignalVectorLoader::load(runtime::Process& process)
 void
 SignalVectorLoader::validate(const JSON& content_json)
 {
-  const JSON schema = sneaker::json::parse(this->schema());
+  const JSON json_schema = sneaker::json::parse(schema());
 
   try
   {
-    sneaker::json::json_schema::validate(content_json, schema);
+    sneaker::json::json_schema::validate(content_json, json_schema);
   }
   catch (const sneaker::json::json_validation_error& ex)
   {

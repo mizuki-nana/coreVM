@@ -129,7 +129,7 @@ public:
 
   bool operator==(variant const& rhs) const
   {
-    if (this->type_index() != rhs.type_index())
+    if (type_index() != rhs.type_index())
     {
       return false;
     }
@@ -157,9 +157,9 @@ public:
 
   bool operator<(variant const& rhs) const
   {
-    if (this->which() != rhs.which())
+    if (which() != rhs.which())
     {
-      return this->which() < rhs.which();
+      return which() < rhs.which();
     }
 
     impl::comparer<variant, impl::less_than> visitor(*this);

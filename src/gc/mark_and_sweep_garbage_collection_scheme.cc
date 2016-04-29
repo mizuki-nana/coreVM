@@ -136,9 +136,9 @@ MarkAndSweepGarbageCollectionScheme::gc(
       _dynamic_object_heap_type::dynamic_object_id_type /* id */,
       _dynamic_object_heap_type::dynamic_object_type& object)
     {
-      if (this->is_root_object(object))
+      if (is_root_object(object))
       {
-        this->mark(heap, object);
+        mark(heap, object);
       }
     }
   );
@@ -179,7 +179,7 @@ MarkAndSweepGarbageCollectionScheme::mark(
       _dynamic_object_type::dyobj_id_type dyobj_id)
     {
       _dynamic_object_type& referenced_object = heap.at(dyobj_id);
-      this->mark(heap, referenced_object);
+      mark(heap, referenced_object);
     }
   );
 #endif

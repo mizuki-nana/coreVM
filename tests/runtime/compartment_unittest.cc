@@ -134,7 +134,7 @@ TEST_F(CompartmentUnitTest, TestGetFptLiteral)
 
   ASSERT_EQ(fpt_literal, actual_fpt_literal);
 
-  const double invalid_encoding_key = encoding_key + 1;
+  const corevm::runtime::encoding_key_t invalid_encoding_key = encoding_key + 1;
 
   ASSERT_THROW(
     {

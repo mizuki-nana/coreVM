@@ -55,7 +55,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestPositiveOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
 
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_positive_operator,
     5
@@ -68,7 +68,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestNegationOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
 
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_negation_operator,
     -5
@@ -80,7 +80,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestNegationOperator)
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestIncrementOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_increment_operator,
     6
@@ -93,7 +93,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestDecrementOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
 
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_decrement_operator,
     4
@@ -106,7 +106,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestLogicalNotOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
 
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_logical_not_operator,
     !5
@@ -119,7 +119,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestBitwiseNotOperator)
 {
   corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
 
-  this->apply_unary_operator_and_assert_result<int>(
+  apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_bitwise_not_operator,
     ~5
@@ -162,7 +162,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestInvalidOperator)
 
   ASSERT_THROW(
     {
-      this->apply_unary_operator_and_assert_result<int>(
+      apply_unary_operator_and_assert_result<int>(
         operand,
         corevm::types::interface_apply_decrement_operator,
         0
@@ -206,7 +206,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestAdditionOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_addition_operator,
@@ -221,7 +221,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestSubtractionOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_subtraction_operator,
@@ -236,7 +236,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestMultiplicationOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_multiplication_operator,
@@ -251,7 +251,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestDivisionOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_division_operator,
@@ -266,7 +266,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_modulus_operator,
@@ -281,7 +281,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPo
   corevm::types::NativeTypeHandle lhs = corevm::types::decimal2(100.000001);
   corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(33.000000);
 
-  this->apply_binary_operator_and_assert_result<double>(
+  apply_binary_operator_and_assert_result<double>(
     lhs,
     rhs,
     corevm::types::interface_apply_modulus_operator,
@@ -297,7 +297,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPo
   corevm::types::NativeTypeHandle lhs = corevm::types::decimal2(-180.0);
   corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(3.141592);
 
-  this->apply_binary_operator_and_assert_result<double>(
+  apply_binary_operator_and_assert_result<double>(
     lhs,
     rhs,
     corevm::types::interface_apply_modulus_operator,
@@ -313,7 +313,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestPowOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::decimal(2.3);
   corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(1.4);
 
-  this->apply_binary_operator_and_assert_result<double>(
+  apply_binary_operator_and_assert_result<double>(
     lhs,
     rhs,
     corevm::types::interface_apply_pow_operator,
@@ -329,7 +329,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalANDOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_logical_and_operator,
@@ -344,7 +344,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalOROperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_logical_or_operator,
@@ -359,7 +359,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseANDOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_bitwise_and_operator,
@@ -374,7 +374,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseOROperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_bitwise_or_operator,
@@ -389,7 +389,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseXOROperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_bitwise_xor_operator,
@@ -404,7 +404,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseLeftShiftOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(1);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_bitwise_left_shift_operator,
@@ -419,7 +419,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseRightShiftOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(1);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_bitwise_right_shift_operator,
@@ -434,7 +434,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestEqOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_eq_operator,
@@ -449,7 +449,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestNeqOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_neq_operator,
@@ -464,7 +464,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLtOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_lt_operator, 10 < 5
@@ -478,7 +478,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGtOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_gt_operator,
@@ -493,7 +493,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLteOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_lte_operator,
@@ -508,7 +508,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGteOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int>(
+  apply_binary_operator_and_assert_result<int>(
     lhs,
     rhs,
     corevm::types::interface_apply_gte_operator,
@@ -523,7 +523,7 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestCmpOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
   corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
 
-  this->apply_binary_operator_and_assert_result<int32_t>(
+  apply_binary_operator_and_assert_result<int32_t>(
     lhs,
     rhs,
     corevm::types::interface_apply_cmp_operator,
@@ -556,7 +556,7 @@ TEST_F(NativeTypeInvalidBinaryOperatorInterfacesTest, TestInvalidOperator)
   corevm::types::NativeTypeHandle lhs = corevm::types::array();
   corevm::types::NativeTypeHandle rhs = corevm::types::map();
 
-  this->apply_binary_operator_and_assert_result<corevm::types::ConversionError>(
+  apply_binary_operator_and_assert_result<corevm::types::ConversionError>(
     lhs,
     rhs,
     corevm::types::interface_apply_addition_operator

@@ -329,7 +329,7 @@ template<class DynamicObjectManager>
 bool
 DynamicObject<DynamicObjectManager>::get_flag(char bit) const
 {
-  this->check_flag_bit(bit);
+  check_flag_bit(bit);
   return static_cast<bool>(is_bit_set_uint32(m_flags, bit));
 }
 
@@ -339,7 +339,7 @@ template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::set_flag(char bit)
 {
-  this->check_flag_bit(bit);
+  check_flag_bit(bit);
   set_nth_bit_uint32(&m_flags, bit);
 }
 
@@ -349,7 +349,7 @@ template<class DynamicObjectManager>
 void
 DynamicObject<DynamicObjectManager>::clear_flag(char bit)
 {
-  this->check_flag_bit(bit);
+  check_flag_bit(bit);
   clear_nth_bit_uint32(&m_flags, bit);
 }
 

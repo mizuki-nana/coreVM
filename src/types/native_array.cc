@@ -264,7 +264,7 @@ native_array::at(size_type n) const
 void
 native_array::erase(size_t n)
 {
-  if (n >= this->size())
+  if (n >= size())
   {
     THROW(OutOfRangeError("Array index out of range"));
   }

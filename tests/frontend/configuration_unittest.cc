@@ -38,7 +38,7 @@ protected:
   virtual void SetUp()
   {
     std::ofstream f(PATH, std::ios::binary);
-    f << this->content();
+    f << content();
     f.close();
   }
 
