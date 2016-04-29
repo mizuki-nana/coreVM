@@ -57,8 +57,11 @@ BinaryBytecodeLoader::load(const std::string& path, runtime::Process& process)
 
   runtime::Compartment compartment(source_path);
 
-  // Load encoding map.
-  compartment.set_encoding_map(bytecode_data.encoding_map);
+  // Load string literal table.
+  compartment.set_string_literal_table(bytecode_data.string_literal_table);
+
+  // Load fpt literal table.
+  compartment.set_fpt_literal_table(bytecode_data.fpt_literal_table);
 
   // Load closures.
   runtime::ClosureTable closure_table;

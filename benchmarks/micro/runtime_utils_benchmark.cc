@@ -45,10 +45,10 @@ static
 void BenchmarkGetAttrKey(benchmark::State& state)
 {
   corevm::runtime::encoding_key_t key = 0;
-  corevm::runtime::EncodingMap encoding_table { "hello_world" };
+  corevm::runtime::StringLiteralTable str_literal_table { "hello_world" };
 
   corevm::runtime::Compartment compartment("");
-  compartment.set_encoding_map(encoding_table);
+  compartment.set_string_literal_table(str_literal_table);
 
   while (state.KeepRunning())
   {
@@ -97,10 +97,10 @@ void BenchmarkGetattr2(benchmark::State& state)
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::EncodingMap encoding_map;
-  encoding_map.emplace_back(attr_name);
+  corevm::runtime::StringLiteralTable str_literal_table;
+  str_literal_table.emplace_back(attr_name);
 
-  compartment.set_encoding_map(std::move(encoding_map));
+  compartment.set_string_literal_table(std::move(str_literal_table));
 
   corevm::runtime::encoding_key_t attr_encoding_key = 0;
 

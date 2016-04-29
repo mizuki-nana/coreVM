@@ -41,7 +41,7 @@ dyobj::attr_key_t
 get_attr_key(Compartment* compartment, encoding_key_t str_key,
   std::string* attr_str)
 {
-  compartment->get_encoding_string(str_key, attr_str);
+  compartment->get_string_literal(str_key, attr_str);
 
   dyobj::attr_key_t attr_key = dyobj::hash_attr_str(*attr_str);
 

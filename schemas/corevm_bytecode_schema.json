@@ -32,11 +32,20 @@
       "type": "string"
     },
     {
-      "name": "encoding_map",
+      "name": "string_literal_table",
       "type": {
         "type": "array",
         "items":  {
           "type": "string"
+        }
+      }
+    },
+    {
+      "name": "fpt_literal_table",
+      "type": {
+        "type": "array",
+        "items":  {
+          "type": "double"
         }
       }
     },

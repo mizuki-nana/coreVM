@@ -53,46 +53,75 @@ Compartment::path() const
 // -----------------------------------------------------------------------------
 
 void
-Compartment::set_encoding_map(const EncodingMap& encoding_map)
+Compartment::set_string_literal_table(const StringLiteralTable& table)
 {
-  m_encoding_map = encoding_map;
+  m_str_literal_table = table;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Compartment::set_encoding_map(const EncodingMap&& encoding_map)
+Compartment::set_string_literal_table(StringLiteralTable&& table)
 {
-  m_encoding_map = encoding_map;
+  m_str_literal_table = std::move(table);
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Compartment::set_fpt_literal_table(const FptLiteralTable& table)
+{
+  m_fpt_literal_table = table;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Compartment::set_fpt_literal_table(FptLiteralTable&& table)
+{
+  m_fpt_literal_table = std::move(table);
 }
 
 // -----------------------------------------------------------------------------
 
 std::string
-Compartment::get_encoding_string(encoding_key_t key) const
+Compartment::get_string_literal(encoding_key_t key) const
 {
-  if (key >= m_encoding_map.size())
+  if (key >= m_str_literal_table.size())
   {
-    THROW(EncodingStringNotFoundError(key));
+    THROW(StringLiteralNotFoundError(key));
   }
 
-  return m_encoding_map[key];
+  return m_str_literal_table[key];
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Compartment::get_encoding_string(encoding_key_t key, std::string* str) const
+Compartment::get_string_literal(encoding_key_t key, std::string* str) const
 {
   if (!str)
   {
     return;
   }
 
-  if (key < m_encoding_map.size())
+  if (key < m_str_literal_table.size())
   {
-    *str = m_encoding_map[key];
+    *str = m_str_literal_table[key];
   }
+}
+
+// -----------------------------------------------------------------------------
+
+double
+Compartment::get_fpt_literal(encoding_key_t key) const
+{
+  if (key >= m_fpt_literal_table.size())
+  {
+    THROW(FptLiteralNotFoundError(key));
+  }
+
+  return m_fpt_literal_table[key];
 }
 
 // -----------------------------------------------------------------------------

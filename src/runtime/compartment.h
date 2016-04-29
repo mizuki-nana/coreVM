@@ -47,13 +47,19 @@ public:
 
   const std::string& path() const;
 
-  void set_encoding_map(const EncodingMap&);
+  void set_string_literal_table(const StringLiteralTable&);
 
-  void set_encoding_map(const EncodingMap&&);
+  void set_string_literal_table(StringLiteralTable&&);
 
-  std::string get_encoding_string(encoding_key_t) const;
+  void set_fpt_literal_table(const FptLiteralTable&);
 
-  void get_encoding_string(encoding_key_t, std::string*) const;
+  void set_fpt_literal_table(FptLiteralTable&&);
+
+  std::string get_string_literal(encoding_key_t) const;
+
+  void get_string_literal(encoding_key_t, std::string*) const;
+
+  double get_fpt_literal(encoding_key_t) const;
 
   size_t closure_count() const;
 
@@ -69,7 +75,8 @@ public:
 
 private:
   const std::string m_path;
-  EncodingMap m_encoding_map;
+  StringLiteralTable m_str_literal_table;
+  FptLiteralTable m_fpt_literal_table;
   ClosureTable m_closure_table;
 };
 

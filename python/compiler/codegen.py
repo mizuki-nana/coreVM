@@ -208,6 +208,32 @@ class Closure(object):
 
 ## -----------------------------------------------------------------------------
 
+class EncodingMap(object):
+
+    def __init__(self):
+        self.encoding_id = 0
+        self.inner = dict()
+
+    def get_encoding_id(self, value):
+        if value not in self.inner:
+            self.inner[value] = self.encoding_id
+            self.encoding_id += 1
+
+        return self.inner[value]
+
+    def flatten_to_table(self):
+        flipped_encoding_map = dict((value, key)
+            for key, value in self.inner.iteritems())
+
+        if flipped_encoding_map:
+            assert flipped_encoding_map.keys()[0] == 0
+
+        return [
+            flipped_encoding_map[key] for key in sorted(flipped_encoding_map)
+        ]
+
+## -----------------------------------------------------------------------------
+
 class BytecodeValidationException(Exception):
     pass
 
@@ -376,12 +402,9 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.instr_str_to_code_map = info_json[INSTR_STR_TO_CODE_MAP]
         self.dyobj_flag_str_to_value_map = info_json[DYOBJ_FLAG_STR_TO_VALUE_MAP]
 
-        # encoding map
-        # NOTE: The encoding map will be flattened out into an array,
-        # where the ids will simply be indicies. Therefore the starting
-        # value has to be zero.
-        self.encoding_id = 0
-        self.encoding_map = dict()
+        # encoding maps
+        self.string_literal_encoding_map = EncodingMap()
+        self.fpt_literal_encoding_map = EncodingMap()
 
         # closure map
         self.current_closure_name = self.default_closure_name
@@ -416,13 +439,6 @@ class BytecodeGenerator(ast.NodeVisitor):
     def finalize_text(self):
         """Finalize textual format encoding."""
 
-        # Flatten encoding map into array.
-        flipped_encoding_map = dict(
-            (value, key) for key, value in self.encoding_map.iteritems())
-
-        if flipped_encoding_map:
-            assert flipped_encoding_map.keys()[0] == 0
-
         structured_bytecode = {
             'format': self.format,
             'format-version': self.format_version,
@@ -431,10 +447,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
             'encoding': self.encoding,
             'author': self.author,
-            'encoding_map': [
-                flipped_encoding_map[key]
-                for key in sorted(flipped_encoding_map)
-            ],
+            'string_literal_table': self.string_literal_encoding_map.flatten_to_table(),
+            'fpt_literal_table': self.fpt_literal_encoding_map.flatten_to_table(),
             '__MAIN__': self.__finalize_closure_table(binary=False)
         }
 
@@ -451,13 +465,6 @@ class BytecodeGenerator(ast.NodeVisitor):
         with open(COREVM_BYTECODE_SCHEMA, 'r') as schema_file:
             bytecode_schema = avro.schema.parse(schema_file.read())
 
-        # Flatten encoding map into array.
-        flipped_encoding_map = dict(
-            (value, key) for key, value in self.encoding_map.iteritems())
-
-        if flipped_encoding_map:
-            assert flipped_encoding_map.keys()[0] == 0
-
         structured_bytecode = {
             'format': self.format,
             'format_version': self.format_version,
@@ -466,10 +473,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             'timestamp': int(time.mktime(datetime.now().timetuple())),
             'encoding': self.encoding,
             'author': self.author,
-            'encoding_map': [
-                flipped_encoding_map[key]
-                for key in sorted(flipped_encoding_map)
-            ],
+            'string_literal_table': self.string_literal_encoding_map.flatten_to_table(),
+            'fpt_literal_table': self.fpt_literal_encoding_map.flatten_to_table(),
             '__MAIN__': self.__finalize_closure_table(binary=True)
         }
 
@@ -572,12 +577,11 @@ class BytecodeGenerator(ast.NodeVisitor):
         # TDOO: [COREVM-177] Add support for name mingling in Python compiler
         return self.current_class_name + '.' + name
 
-    def __get_encoding_id(self, name):
-        if name not in self.encoding_map:
-            self.encoding_map[name] = self.encoding_id
-            self.encoding_id += 1
+    def __get_string_literal_encoding_id(self, name):
+        return self.string_literal_encoding_map.get_encoding_id(name)
 
-        return self.encoding_map[name]
+    def __get_fpt_literal_encoding_id(self, fpt):
+        return self.fpt_literal_encoding_map.get_encoding_id(fpt)
 
     def __get_dyobj_flag(self, flags):
         value = 0
@@ -615,12 +619,12 @@ class BytecodeGenerator(ast.NodeVisitor):
         code = raw_code.strip()
 
         if raw_code in INSTRS_NEED_ENCODING_ID:
-            oprd1 = self.__get_encoding_id(raw_oprd1)
+            oprd1 = self.__get_string_literal_encoding_id(raw_oprd1)
         else:
             oprd1 = int(raw_oprd1)
 
         if raw_code in INSTRS_NEED_ENCODING_ID_2:
-            oprd2 = self.__get_encoding_id(raw_oprd2)
+            oprd2 = self.__get_string_literal_encoding_id(raw_oprd2)
         else:
             oprd2 = int(raw_oprd2)
 
@@ -628,29 +632,6 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def __get_random_name(self):
         return ''.join(random.choice(string.ascii_letters) for _ in xrange(5))
-
-    def __parse_floating_point_number(self, n):
-        """Returns a tuple of two elements that contains the integer part and
-        the decimal part of a floating point number, both in integers.
-
-        The floating point part is the reverse of how it's represented in the
-        original number, lexigraphically.
-
-        For example, given the floating point input 3.141526, this function
-        returns a tuple of:
-                            (3, 625141)
-        """
-
-        assert isinstance(n, float)
-
-        n_s = str(n)
-
-        if 'e' in n_s:
-            n_s = '%.16f' % n
-
-        integer_part = int(n)
-        decimal_part = int(str(n_s).split('.')[1][::-1])
-        return integer_part, decimal_part
 
     """ ----------------------------- stmt --------------------------------- """
 
@@ -698,15 +679,15 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[closure_name].closure_id, 0)
-        self.__add_instr('ldobj', self.__get_encoding_id('function'), 0)
-        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+        self.__add_instr('ldobj', self.__get_string_literal_encoding_id('function'), 0)
+        self.__add_instr('setattr', self.__get_string_literal_encoding_id('__class__'), 0)
 
         if not self.current_class_name:
             if node.name in self.__current_closure().globals:
                 n = self.__module_frame_lvl()
-                self.__add_instr('stobjn', self.__get_encoding_id(node.name), n)
+                self.__add_instr('stobjn', self.__get_string_literal_encoding_id(node.name), n)
             else:
-                self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+                self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.name), 0)
 
     def visit_ClassDef(self, node):
         # Step in.
@@ -716,41 +697,41 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         if node.name in self.__current_closure().globals:
             n = self.__module_frame_lvl()
-            self.__add_instr('stobjn', self.__get_encoding_id(node.name), n)
+            self.__add_instr('stobjn', self.__get_string_literal_encoding_id(node.name), n)
         else:
-            self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
-        self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
-        self.__add_instr('ldobj', self.__get_encoding_id('type'), 0)
-        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+            self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.name), 0)
+        self.__add_instr('ldobj', self.__get_string_literal_encoding_id(node.name), 0)
+        self.__add_instr('ldobj', self.__get_string_literal_encoding_id('type'), 0)
+        self.__add_instr('setattr', self.__get_string_literal_encoding_id('__class__'), 0)
 
         # Also store class object to an invisible variable.
-        self.__add_instr('ldobj', self.__get_encoding_id(node.name), 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(self.current_class_name), 0)
+        self.__add_instr('ldobj', self.__get_string_literal_encoding_id(node.name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(self.current_class_name), 0)
 
         for stmt in node.body:
             if isinstance(stmt, ast.FunctionDef):
                 tmp_name = self.__get_random_name()
                 self.visit(stmt)
-                self.__add_instr('ldobj', self.__get_encoding_id('MethodType'), 0)
-                self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
-                self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
-                self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
+                self.__add_instr('ldobj', self.__get_string_literal_encoding_id('MethodType'), 0)
+                self.__add_instr('setattr', self.__get_string_literal_encoding_id('__class__'), 0)
+                self.__add_instr('stobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(self.current_class_name), 0)
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+                self.__add_instr('setattr', self.__get_string_literal_encoding_id(stmt.name), 0)
             elif isinstance(stmt, ast.ClassDef):
                 tmp_name = self.__get_random_name()
                 self.visit(stmt)
-                self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
-                self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
-                self.__add_instr('setattr', self.__get_encoding_id(stmt.name), 0)
+                self.__add_instr('stobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(self.current_class_name), 0)
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+                self.__add_instr('setattr', self.__get_string_literal_encoding_id(stmt.name), 0)
             else:
                 self.visit(stmt)
 
         # Step out.
         # Restore class object in scope with its original name.
-        self.__add_instr('ldobj2', self.__get_encoding_id(self.current_class_name), 0)
-        self.__add_instr('stobj', self.__get_encoding_id(node.name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(self.current_class_name), 0)
+        self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.name), 0)
         self.__exit_scope()
         self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
 
@@ -766,7 +747,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             # function calls.
             assert isinstance(target, ast.Name)
 
-            self.__add_instr('delobj', self.__get_encoding_id(target.id), 0)
+            self.__add_instr('delobj', self.__get_string_literal_encoding_id(target.id), 0)
 
     def visit_Assign(self, node):
         res = self.visit(node.value)
@@ -794,18 +775,18 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', 0, 0)
         self.__add_instr('uint32', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(index_name), 0)
 
         # Store iter object into a variable.
         self.visit(node.iter)
-        self.__add_instr('stobj2', self.__get_encoding_id(iter_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(iter_name), 0)
 
         vector_length1 = len(self.__current_vector())
 
-        self.__add_instr('ldobj2', self.__get_encoding_id(iter_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(iter_name), 0)
         self.__add_instr('gethndl', 0, 0)
         self.__add_instr('arylen', 0, 0)
-        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(index_name), 0)
         self.__add_instr('gethndl', 0, 0)
         self.__add_instr('gte', 0, 0) # The opposite of `lt` check.
 
@@ -813,13 +794,13 @@ class BytecodeGenerator(ast.NodeVisitor):
         vector_length2 = len(self.__current_vector())
 
         # Get item from array, and load into target.
-        self.__add_instr('ldobj2', self.__get_encoding_id(iter_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(iter_name), 0)
         self.__add_instr('gethndl', 0, 0)
-        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(index_name), 0)
         self.__add_instr('gethndl', 0, 0)
         self.__add_instr('aryat', 0, 0)
         self.__add_instr('getobj', 0, 0)
-        self.__add_instr('stobj', self.__get_encoding_id(node.target.id), 0)
+        self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.target.id), 0)
 
         break_line_length = 0
 
@@ -836,11 +817,11 @@ class BytecodeGenerator(ast.NodeVisitor):
                 self.visit(stmt)
 
         # Increment index.
-        self.__add_instr('ldobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(index_name), 0)
         self.__add_instr('gethndl', 0, 0)
         self.__add_instr('inc', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(index_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(index_name), 0)
         self.__add_instr('jmpr', vector_length1 - 1, 0)
 
         vector_length3 = len(self.__current_vector())
@@ -1013,7 +994,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
             self.visit(handler.type)
             self.__add_instr('excobj', 0, 0)
-            self.__add_instr('getattr', self.__get_encoding_id('__class__'), 0)
+            self.__add_instr('getattr', self.__get_string_literal_encoding_id('__class__'), 0)
             self.__add_instr('swap', 0, 0)
             self.__add_instr('objeq', 0, 0)
 
@@ -1149,8 +1130,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         assert left_name != right_name
 
-        left_name_id = self.__get_encoding_id(left_name)
-        right_name_id = self.__get_encoding_id(right_name)
+        left_name_id = self.__get_string_literal_encoding_id(left_name)
+        right_name_id = self.__get_string_literal_encoding_id(right_name)
 
         self.visit(expr)
 
@@ -1170,7 +1151,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('truthy', 0, 0)
 
             self.__add_instr('cldobj',
-                self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+                self.__get_string_literal_encoding_id('True'), self.__get_string_literal_encoding_id('False'))
 
             self.__add_instr('lnot', 0, 0)
             self.__add_instr('jmpif', 0, 0)
@@ -1201,8 +1182,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         assert left_name != right_name
 
-        left_name_id = self.__get_encoding_id(left_name)
-        right_name_id = self.__get_encoding_id(right_name)
+        left_name_id = self.__get_string_literal_encoding_id(left_name)
+        right_name_id = self.__get_string_literal_encoding_id(right_name)
 
         assert isinstance(node.op, ast.And) or isinstance(node.op, ast.Or)
 
@@ -1236,7 +1217,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
             current_length = len(self.__current_vector())
             self.__add_instr('cldobj',
-                self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+                self.__get_string_literal_encoding_id('True'), self.__get_string_literal_encoding_id('False'))
 
             for jmp_length in jmp_lengths:
                 length_diff = current_length - jmp_length
@@ -1282,8 +1263,8 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
         self.__add_instr('setctx', self.closure_map[name].closure_id, 0)
-        self.__add_instr('ldobj', self.__get_encoding_id('object'), 0)
-        self.__add_instr('setattr', self.__get_encoding_id('__class__'), 0)
+        self.__add_instr('ldobj', self.__get_string_literal_encoding_id('object'), 0)
+        self.__add_instr('setattr', self.__get_string_literal_encoding_id('__class__'), 0)
 
         return name
 
@@ -1319,34 +1300,34 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', 0, 0)
         self.__add_instr('map', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(dict_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(dict_name), 0)
 
         for key, value in itertools.izip(node.keys, node.values):
             key_name = self.__get_random_name()
             self.visit(key)
-            self.__add_instr('stobj2', self.__get_encoding_id(key_name), 0)
+            self.__add_instr('stobj2', self.__get_string_literal_encoding_id(key_name), 0)
 
             value_name = self.__get_random_name()
             self.visit(value)
-            self.__add_instr('stobj2', self.__get_encoding_id(value_name), 0)
+            self.__add_instr('stobj2', self.__get_string_literal_encoding_id(value_name), 0)
 
             # Value.
-            self.__add_instr('ldobj2', self.__get_encoding_id(value_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(value_name), 0)
             self.__add_instr('putobj', 0, 0)
 
             # Key.
-            self.__add_instr('ldobj2', self.__get_encoding_id(key_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(key_name), 0)
             self.__add_instr('gethndl', 0, 0)
 
             # Dict.
-            self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(dict_name), 0)
             self.__add_instr('gethndl', 0, 0)
 
             self.__add_instr('mapput', 0, 0)
 
             self.__add_instr('sethndl', 0, 0)
 
-        self.__add_instr('ldobj2', self.__get_encoding_id(dict_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(dict_name), 0)
 
     def visit_Set(self, node):
         set_name = self.__get_random_name()
@@ -1354,33 +1335,33 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', 0, 0)
         self.__add_instr('map', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(set_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(set_name), 0)
 
         for elt in node.elts:
             item_name = self.__get_random_name()
 
             self.visit(elt)
-            self.__add_instr('stobj2', self.__get_encoding_id(item_name), 0)
+            self.__add_instr('stobj2', self.__get_string_literal_encoding_id(item_name), 0)
 
             # Value.
-            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
-            self.__add_instr('getattr', self.__get_encoding_id('value'), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(item_name), 0)
+            self.__add_instr('getattr', self.__get_string_literal_encoding_id('value'), 0)
             self.__add_instr('putobj', 0, 0)
 
             # Key.
-            self.__add_instr('ldobj2', self.__get_encoding_id(item_name), 0)
-            self.__add_instr('getattr', self.__get_encoding_id('hash'), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(item_name), 0)
+            self.__add_instr('getattr', self.__get_string_literal_encoding_id('hash'), 0)
             self.__add_instr('gethndl', 0, 0)
 
             # Set.
-            self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(set_name), 0)
             self.__add_instr('gethndl', 0, 0)
 
             self.__add_instr('mapput', 0, 0)
 
             self.__add_instr('sethndl', 0, 0)
 
-        self.__add_instr('ldobj2', self.__get_encoding_id(set_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(set_name), 0)
 
     def visit_ListComp(self, node):
         # Do nothing here.
@@ -1419,7 +1400,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         # keyword args
         for keyword in node.keywords:
             self.visit(keyword.value)
-            self.__add_instr('putkwarg', self.__get_encoding_id(keyword.arg), 0)
+            self.__add_instr('putkwarg', self.__get_string_literal_encoding_id(keyword.arg), 0)
 
         # implicit args
         if node.starargs:
@@ -1439,22 +1420,22 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', 0, 0)
         self.__add_instr('ary', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(random_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(random_name), 0)
 
         for item in node.elts:
             tmp_name = self.__get_random_name()
             self.visit(item)
-            self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('stobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
             self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
             self.__add_instr('putobj', 0, 0)
             self.__add_instr('swap2', 0, 0)
             self.__add_instr('aryapnd', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
             self.__add_instr('sethndl', 0, 0)
 
-        self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
 
     def visit_Tuple(self, node):
         random_name = self.__get_random_name()
@@ -1462,22 +1443,22 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('new', 0, 0)
         self.__add_instr('ary', 0, 0)
         self.__add_instr('sethndl', 0, 0)
-        self.__add_instr('stobj2', self.__get_encoding_id(random_name), 0)
+        self.__add_instr('stobj2', self.__get_string_literal_encoding_id(random_name), 0)
 
         for item in node.elts:
             tmp_name = self.__get_random_name()
             self.visit(item)
-            self.__add_instr('stobj2', self.__get_encoding_id(tmp_name), 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('stobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
             self.__add_instr('gethndl', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(tmp_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(tmp_name), 0)
             self.__add_instr('putobj', 0, 0)
             self.__add_instr('swap2', 0, 0)
             self.__add_instr('aryapnd', 0, 0)
-            self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+            self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
             self.__add_instr('sethndl', 0, 0)
 
-        self.__add_instr('ldobj2', self.__get_encoding_id(random_name), 0)
+        self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(random_name), 0)
 
     def visit_Num(self, node):
         num_type = 'dec2' if isinstance(node.n, float) else 'int64'
@@ -1487,8 +1468,8 @@ class BytecodeGenerator(ast.NodeVisitor):
         if isinstance(node.n, int):
             self.__add_instr(num_type, node.n, 0, loc=Loc.from_node(node))
         else:
-            integer_part, decimal_part = self.__parse_floating_point_number(node.n)
-            self.__add_instr(num_type, integer_part, decimal_part, loc=Loc.from_node(node))
+            encoding_id = self.__get_fpt_literal_encoding_id(node.n)
+            self.__add_instr(num_type, encoding_id, 0, loc=Loc.from_node(node))
 
         self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
 
@@ -1496,20 +1477,20 @@ class BytecodeGenerator(ast.NodeVisitor):
         name = node.id
 
         if isinstance(node.ctx, ast.Load):
-            self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Name):
-            self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Param):
             # For loading parameters
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
             self.__add_instr('getarg', 0, 0, loc=Loc.from_node(node))
-            self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Store):
             current_scope = self.__current_scope()
             if current_scope and current_scope.in_cls:
                 # In a class definition scope.
-                self.__add_instr('stobj', self.__get_encoding_id(name), 0)
+                self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0)
 
                 # Set the target name as the class's attribute as well.
                 #
@@ -1518,14 +1499,14 @@ class BytecodeGenerator(ast.NodeVisitor):
                 #   2. Load target name.
                 #   3. Set attribute.
                 assert current_scope.name, 'Expecting a class name'
-                self.__add_instr('ldobj2', self.__get_encoding_id(current_scope.name), 0, loc=Loc.from_node(node))
-                self.__add_instr('ldobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
-                self.__add_instr('setattr', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(current_scope.name), 0, loc=Loc.from_node(node))
+                self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('setattr', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
             elif name in self.__current_closure().globals:
                 n = self.__module_frame_lvl()
-                self.__add_instr('stobjn', self.__get_encoding_id(name), n, loc=Loc.from_node(node))
+                self.__add_instr('stobjn', self.__get_string_literal_encoding_id(name), n, loc=Loc.from_node(node))
             else:
-                self.__add_instr('stobj', self.__get_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass
@@ -1533,7 +1514,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Str(self, node):
         if not VectorString.is_vector_string(node.s):
             self.__add_instr('new', 0, 0, loc=Loc.from_node(node))
-            self.__add_instr('str', self.__get_encoding_id(node.s), 0, loc=Loc.from_node(node))
+            self.__add_instr('str', self.__get_string_literal_encoding_id(node.s), 0, loc=Loc.from_node(node))
             self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
         else:
             raw_vector = VectorString(node.s).to_raw_vector()
@@ -1549,10 +1530,10 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Attribute(self, node):
         self.visit(node.value)
         if isinstance(node.ctx, ast.Load):
-            self.__add_instr('getattr', self.__get_encoding_id(node.attr), 0, loc=Loc.from_node(node))
+            self.__add_instr('getattr', self.__get_string_literal_encoding_id(node.attr), 0, loc=Loc.from_node(node))
         elif isinstance(node.ctx, ast.Store):
             self.__add_instr('swap', 0, 0)
-            self.__add_instr('setattr', self.__get_encoding_id(node.attr), 0, loc=Loc.from_node(node))
+            self.__add_instr('setattr', self.__get_string_literal_encoding_id(node.attr), 0, loc=Loc.from_node(node))
         else:
             # NOTE: if this ever happens, then we have to take that type into
             # consideration.
@@ -1646,14 +1627,14 @@ class BytecodeGenerator(ast.NodeVisitor):
         # dynamic dispatching is supported.
         self.__add_instr('objeq', 0, 0)
         self.__add_instr('cldobj',
-            self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+            self.__get_string_literal_encoding_id('True'), self.__get_string_literal_encoding_id('False'))
 
     def visit_IsNot(self, node):
         # TODO: logic can be placed under `object.__eq__` once
         # dynamic dispatching is supported.
         self.__add_instr('objneq', 0, 0)
         self.__add_instr('cldobj',
-            self.__get_encoding_id('True'), self.__get_encoding_id('False'))
+            self.__get_string_literal_encoding_id('True'), self.__get_string_literal_encoding_id('False'))
 
     def visit_In(self, node):
         pass
@@ -1707,10 +1688,10 @@ class BytecodeGenerator(ast.NodeVisitor):
             default = closest_args_to_defaults.get(arg.col_offset)
             if default:
                 # This is a kwarg.
-                self.__add_instr('getkwarg', self.__get_encoding_id(arg.id), 0)
+                self.__add_instr('getkwarg', self.__get_string_literal_encoding_id(arg.id), 0)
                 vector_length1 = len(self.__current_vector())
                 self.visit(default)
-                self.__add_instr('stobj', self.__get_encoding_id(arg.id), 0)
+                self.__add_instr('stobj', self.__get_string_literal_encoding_id(arg.id), 0)
                 vector_length2 = len(self.__current_vector())
                 length_diff = vector_length2 - vector_length1
                 self.__current_vector()[vector_length1 - 1].oprd2 = length_diff
@@ -1723,14 +1704,14 @@ class BytecodeGenerator(ast.NodeVisitor):
             self.__add_instr('getargs', 0, 0)
             self.__add_instr('new', 0, 0)
             self.__add_instr('sethndl', 0, 0)
-            self.__add_instr('stobj', self.__get_encoding_id(node.vararg), 0)
+            self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.vararg), 0)
 
         # Pull out rest of the kwargs (**kwarg).
         if node.kwarg:
             self.__add_instr('getkwargs', 0, 0)
             self.__add_instr('new', 0, 0)
             self.__add_instr('sethndl', 0, 0)
-            self.__add_instr('stobj', self.__get_encoding_id(node.kwarg), 0)
+            self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.kwarg), 0)
 
 ## -----------------------------------------------------------------------------
 

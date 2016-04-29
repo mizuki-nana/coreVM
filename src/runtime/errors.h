@@ -235,13 +235,26 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class EncodingStringNotFoundError : public RuntimeError
+class StringLiteralNotFoundError : public RuntimeError
 {
 public:
-  explicit EncodingStringNotFoundError(encoding_key_t key)
+  explicit StringLiteralNotFoundError(encoding_key_t key)
     :
     corevm::runtime::RuntimeError(
-      str(boost::format("Cannot find encoding string for key: %llu") % key))
+      str(boost::format("Cannot find string literal for key: %llu") % key))
+  {
+  }
+};
+
+// -----------------------------------------------------------------------------
+
+class FptLiteralNotFoundError : public RuntimeError
+{
+public:
+  explicit FptLiteralNotFoundError(encoding_key_t key)
+    :
+    corevm::runtime::RuntimeError(
+      str(boost::format("Cannot find floating-point literal for key: %llu") % key))
   {
   }
 };

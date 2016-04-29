@@ -111,3 +111,37 @@ TEST_F(CompartmentUnitTest, TestGetClosureByID2)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(CompartmentUnitTest, TestGetFptLiteral)
+{
+  corevm::runtime::Compartment compartment("./example.core");
+  const corevm::runtime::encoding_key_t encoding_key = 0;
+
+  ASSERT_THROW(
+    {
+      compartment.get_fpt_literal(encoding_key);
+    },
+    corevm::runtime::FptLiteralNotFoundError
+  );
+
+  corevm::runtime::FptLiteralTable fpt_literal_table;
+  const double fpt_literal = 3.14;
+  fpt_literal_table.push_back(fpt_literal);
+
+  compartment.set_fpt_literal_table(fpt_literal_table);
+
+  const double actual_fpt_literal = compartment.get_fpt_literal(encoding_key);
+
+  ASSERT_EQ(fpt_literal, actual_fpt_literal);
+
+  const double invalid_encoding_key = encoding_key + 1;
+
+  ASSERT_THROW(
+    {
+      compartment.get_fpt_literal(invalid_encoding_key);
+    },
+    corevm::runtime::FptLiteralNotFoundError
+  );
+}
+
+// -----------------------------------------------------------------------------

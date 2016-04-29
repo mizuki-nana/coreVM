@@ -787,20 +787,18 @@ enum InstrEnum : uint32_t
   BOOL,
 
   /**
-   * <dec1, #, #>
+   * <dec1, #, 0>
    * Creates an instance of type `dec` and place it on top of eval stack.
-   * The first operand represents the whole number part, while the second
-   * operand represents the decimal part, expressed as integer in reverse
-   * order.
+   * The first operand represents the index of the floating-point literal
+   * stored in the corresponding compartment.
    */
   DEC1,
 
   /**
-   * <dec2, #, #>
+   * <dec2, #, 0>
    * Creates an instance of type `dec2` and place it on top of eval stack.
-   * The first operand represents the whole number part, while the second
-   * operand represents the decimal part, expressed as integer in reverse
-   * order.
+   * The first operand represents the index of the floating-point literal
+   * stored in the corresponding compartment.
    */
   DEC2,
 

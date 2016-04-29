@@ -240,9 +240,9 @@ TEST_F(InstrsObjUnitTest, TestInstrGETATTR)
   uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::EncodingMap encoding_table { attr_str };
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
 
-  compartment.set_encoding_map(encoding_table);
+  compartment.set_string_literal_table(str_literal_table);
 
   corevm::runtime::Vector vector;
   corevm::runtime::LocTable locs;
@@ -293,9 +293,9 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTR)
   uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::EncodingMap encoding_table { attr_str };
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
 
-  compartment.set_encoding_map(encoding_table);
+  compartment.set_string_literal_table(str_literal_table);
   m_process.insert_compartment(compartment);
 
   corevm::runtime::Vector vector;
@@ -977,13 +977,13 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
   const std::string attr_str2 = "__len__";
   const std::string attr_str3 = "__iter__";
 
-  corevm::runtime::EncodingMap encoding_map {
+  corevm::runtime::StringLiteralTable encoding_map {
     attr_str1,
     attr_str2,
     attr_str3,
   };
 
-  compartment.set_encoding_map(encoding_map);
+  compartment.set_string_literal_table(encoding_map);
   m_process.insert_compartment(compartment);
 
   corevm::dyobj::attr_key_t attr_key1 = corevm::dyobj::hash_attr_str(attr_str1);
@@ -1033,10 +1033,10 @@ TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
   uint64_t attr_str_key = 0;
   const std::string attr_str = "Hello world";
 
-  corevm::runtime::EncodingMap encoding_table { attr_str };
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
 
   corevm::runtime::Compartment compartment(DUMMY_PATH);
-  compartment.set_encoding_map(encoding_table);
+  compartment.set_string_literal_table(str_literal_table);
   m_process.insert_compartment(compartment);
 
   corevm::runtime::ClosureCtx ctx(
@@ -1093,10 +1093,10 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS2)
 
   auto attr_key = corevm::dyobj::hash_attr_str(attr_str);
 
-  corevm::runtime::EncodingMap encoding_table { attr_str };
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
 
   corevm::runtime::Compartment compartment(DUMMY_PATH);
-  compartment.set_encoding_map(encoding_table);
+  compartment.set_string_literal_table(str_literal_table);
   m_process.insert_compartment(compartment);
 
   corevm::runtime::ClosureCtx ctx(compartment_id, 0);
@@ -2545,22 +2545,28 @@ class InstrsNativeTypeCreationInstrsTest : public InstrsNativeTypesInstrsTest {}
 
 TEST_F(InstrsNativeTypeCreationInstrsTest, TestInstrDEC1)
 {
-  corevm::runtime::Instr instr(
-    corevm::runtime::InstrEnum::DEC1, 12345, 98760);
+  const float fpt_literal = 12345.98765;
+  corevm::runtime::FptLiteralTable fpt_literal_table { fpt_literal };
+  m_compartment->set_fpt_literal_table(fpt_literal_table);
+
+  corevm::runtime::Instr instr(corevm::runtime::InstrEnum::DEC1, 0, 0);
 
   execute_native_floating_type_creation_instr_and_assert_result<float>(
-    corevm::runtime::instr_handler_dec1, instr, 12345.06789f);
+    corevm::runtime::instr_handler_dec1, instr, fpt_literal);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(InstrsNativeTypeCreationInstrsTest, TestInstrDEC2)
 {
-  corevm::runtime::Instr instr(
-    corevm::runtime::InstrEnum::DEC2, 1234567890, 9876543210);
+  const double fpt_literal = 1234567890.0123456789;
+  corevm::runtime::FptLiteralTable fpt_literal_table { fpt_literal };
+  m_compartment->set_fpt_literal_table(fpt_literal_table);
+
+  corevm::runtime::Instr instr(corevm::runtime::InstrEnum::DEC2, 0, 0);
 
   execute_native_floating_type_creation_instr_and_assert_result<double>(
-    corevm::runtime::instr_handler_dec2, instr, 1234567890.0123456789);
+    corevm::runtime::instr_handler_dec2, instr, fpt_literal);
 }
 
 // -----------------------------------------------------------------------------

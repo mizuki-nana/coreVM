@@ -44,7 +44,7 @@ using corevm::benchmarks::InstrBenchmarksFixture;
 
 static
 void set_encoding_pair(corevm::runtime::Process& process,
-  const corevm::runtime::EncodingMap& encoding_map)
+  const corevm::runtime::StringLiteralTable& str_literal_table)
 {
   corevm::runtime::compartment_id_t compartment_id = 0;
   corevm::runtime::Compartment* compartment = nullptr;
@@ -52,7 +52,7 @@ void set_encoding_pair(corevm::runtime::Process& process,
 
   assert(compartment);
 
-  compartment->set_encoding_map(encoding_map);
+  compartment->set_string_literal_table(str_literal_table);
 }
 
 // -----------------------------------------------------------------------------
@@ -250,8 +250,8 @@ void BenchmarkGETATTRInstr(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::EncodingMap encoding_map { attr_str };
-  set_encoding_pair(fixture.process(), encoding_map);
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
+  set_encoding_pair(fixture.process(), str_literal_table);
 
   auto obj = fixture.process().create_dyobj();
   auto obj2 = fixture.process().create_dyobj();
@@ -283,8 +283,8 @@ void BenchmarkDELATTRInstr(benchmark::State& state)
 
   const std::string attr_str = "hello_world";
 
-  corevm::runtime::EncodingMap encoding_map { attr_str };
-  set_encoding_pair(fixture.process(), encoding_map);
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
+  set_encoding_pair(fixture.process(), str_literal_table);
 
   auto obj = fixture.process().create_dyobj();
   auto obj2 = fixture.process().create_dyobj();
@@ -757,8 +757,8 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::EncodingMap encoding_map { attr_str };
-  set_encoding_pair(fixture.process(), encoding_map);
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
+  set_encoding_pair(fixture.process(), str_literal_table);
 
   auto obj = fixture.process().create_dyobj();
   auto obj2 = fixture.process().create_dyobj();
@@ -819,14 +819,14 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
   const std::string attr_str2 = "attr2";
   const std::string attr_str3 = "attr3";
 
-  corevm::runtime::EncodingMap encoding_map {
+  corevm::runtime::StringLiteralTable str_literal_table {
     attr_str,
     attr_str1,
     attr_str2,
     attr_str3,
   };
 
-  set_encoding_pair(fixture.process(), encoding_map);
+  set_encoding_pair(fixture.process(), str_literal_table);
 
   obj->putattr(attr_key1, attr_obj1);
   obj->putattr(attr_key2, attr_obj2);

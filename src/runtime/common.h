@@ -58,7 +58,10 @@ typedef int64_t closure_id_t;
 typedef uint64_t encoding_key_t;
 
 
-typedef std::vector<std::string> EncodingMap;
+typedef std::vector<std::string> StringLiteralTable;
+
+
+typedef std::vector<double> FptLiteralTable;
 
 
 typedef int32_t compartment_id_t;

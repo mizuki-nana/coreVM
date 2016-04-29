@@ -58,10 +58,12 @@ class float(object):
         return __call_cls_builtin(int, res_)
 
     def __nonzero__(self):
+        CONST_FLOAT_0 = __call_cls_builtin(float, 0.0)
+
         """
         ### BEGIN VECTOR ###
         [gethndl2, self, 0]
-        [dec2, 0, 0]
+        [gethndl2, CONST_FLOAT_0, 0]
         [neq, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###

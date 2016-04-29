@@ -62,10 +62,10 @@ TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey)
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::EncodingMap encoding_map;
-  encoding_map.emplace_back(attr_name);
+  corevm::runtime::StringLiteralTable str_literal_table;
+  str_literal_table.emplace_back(attr_name);
 
-  compartment.set_encoding_map(std::move(encoding_map));
+  compartment.set_string_literal_table(std::move(str_literal_table));
 
   corevm::runtime::encoding_key_t attr_key = 0;
 
@@ -83,10 +83,10 @@ TEST_F(RuntimeUtilsUnitTest, TestGetAttrKey2)
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::EncodingMap encoding_map;
-  encoding_map.emplace_back(attr_name);
+  corevm::runtime::StringLiteralTable str_literal_table;
+  str_literal_table.emplace_back(attr_name);
 
-  compartment.set_encoding_map(std::move(encoding_map));
+  compartment.set_string_literal_table(std::move(str_literal_table));
 
   corevm::runtime::encoding_key_t attr_key = 0;
 
@@ -126,10 +126,10 @@ TEST_F(RuntimeUtilsUnitTest, TestGetattr2)
 
   const std::string attr_name("__str__");
 
-  corevm::runtime::EncodingMap encoding_map;
-  encoding_map.emplace_back(attr_name);
+  corevm::runtime::StringLiteralTable str_literal_table;
+  str_literal_table.emplace_back(attr_name);
 
-  compartment.set_encoding_map(std::move(encoding_map));
+  compartment.set_string_literal_table(std::move(str_literal_table));
 
   corevm::runtime::encoding_key_t attr_encoding_key = 0;
 

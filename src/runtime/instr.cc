@@ -324,16 +324,12 @@ static
 void
 execute_native_floating_type_creation_instr(const Instr& instr, Frame* frame)
 {
-  std::stringstream oprd2_ss;
-  oprd2_ss << instr.oprd2;
-  std::string oprd2_str = oprd2_ss.str();
+  const Compartment* compartment = frame->compartment_ptr();
 
-  std::reverse(oprd2_str.begin(), oprd2_str.end());
+  auto encoding_key = static_cast<encoding_key_t>(instr.oprd1);
+  auto fpt_literal = static_cast<NativeType>(compartment->get_fpt_literal(encoding_key));
 
-  std::stringstream ss;
-  ss << instr.oprd1 << "." << oprd2_str;
-
-  types::NativeTypeHandle hndl(NativeType(stod(ss.str())));
+  types::NativeTypeHandle hndl(fpt_literal);
 
   frame->push_eval_stack(std::move(hndl));
 }
@@ -2324,7 +2320,7 @@ instr_handler_str(const Instr& instr, Process& /* process */,
 
     const Compartment* compartment = frame->compartment_ptr();
 
-    str = compartment->get_encoding_string(encoding_key);
+    str = compartment->get_string_literal(encoding_key);
   }
 
   types::NativeTypeHandle hndl = types::string(str);
