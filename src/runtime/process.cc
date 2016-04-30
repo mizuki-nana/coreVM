@@ -184,8 +184,7 @@ Process::Process()
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(),
   m_sig_instr_map(),
-  m_compartments(),
-  m_gc_rules()
+  m_compartments()
 {
   init();
 }
@@ -205,8 +204,7 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(pool_alloc_size),
   m_sig_instr_map(),
-  m_compartments(),
-  m_gc_rules()
+  m_compartments()
 {
   init();
 }
@@ -226,8 +224,7 @@ Process::Process(const Process::Options& options)
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(options.pool_alloc_size),
   m_sig_instr_map(),
-  m_compartments(),
-  m_gc_rules()
+  m_compartments()
 {
   init();
 }
@@ -238,24 +235,6 @@ void
 Process::init()
 {
   m_compartments.reserve(DEFAULT_COMPARTMENTS_TABLE_CAPACITY);
-
-  // Initialize gc rules.
-  m_gc_rules.reserve(GCRuleMeta::GC_RULE_MAX);
-
-  for (size_t i = 0; i < GCRuleMeta::GC_RULE_MAX; ++i)
-  {
-    // Add 1 to bit since the gc flag values are 1-index based.
-    if (is_bit_set(m_gc_flag, static_cast<char>(i) + 1))
-    {
-      GCRuleMeta::GCBitfields bit =
-        static_cast<GCRuleMeta::GCBitfields>(i);
-
-      const GCRulePtr gc_rule =
-        GCRuleMeta::get_gc_rule(bit);
-
-      m_gc_rules.push_back(gc_rule);
-    }
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -905,9 +884,9 @@ Process::get_frame_by_closure_ctx(ClosureCtx& closure_ctx, Frame** frame_ptr)
 bool
 Process::should_gc() const
 {
-  for (const auto& gc_rule : m_gc_rules)
+  for (size_t i = 0; i < GCRuleMeta::GC_RULE_MAX; ++i)
   {
-    if (gc_rule->should_gc(*this))
+    if (m_gc_flag & (1 << i) && GCRuleMeta::gc_rules[i](*this))
     {
       return true;
     }
@@ -994,7 +973,6 @@ Process::reset()
   m_call_stack.clear();
   m_invocation_ctx_stack.clear();
   m_compartments.clear();
-  m_gc_rules.clear();
 }
 
 // -----------------------------------------------------------------------------

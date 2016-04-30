@@ -24,8 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "process.h"
 
-#include <memory>
-
 
 namespace corevm {
 
@@ -39,50 +37,17 @@ const uint8_t GCRuleMeta::DEFAULT_GC_FLAGS = 1 << GCRuleMeta::GC_ALWAYS;
 
 // -----------------------------------------------------------------------------
 
-const double GCRuleByHeapSize::DEFAULT_CUTOFF = 0.75f;
-
-// -----------------------------------------------------------------------------
-
-const double GCRuleByNtvhndlPoolSize::DEFAULT_CUTOFF = 0.75f;
-
-// -----------------------------------------------------------------------------
-
-/* virtual */
-GCRule::~GCRule()
-{
-  // Do nothing here.
-}
-
-// -----------------------------------------------------------------------------
-
-const GCRulePtr
+GCRule
 GCRuleMeta::gc_rules[GC_RULE_MAX] {
-  std::make_shared<GCRuleAlways>(),
-  std::make_shared<GCRuleByHeapSize>(),
-  std::make_shared<GCRuleByNtvhndlPoolSize>()
+  gc_rule_always,
+  gc_rule_by_heap_size,
+  gc_rule_by_ntvhndl_pool_size
 };
 
 // -----------------------------------------------------------------------------
 
-const GCRulePtr
-GCRuleMeta::get_gc_rule(GCBitfields bit)
-{
-  const uint8_t uint8_bit = static_cast<uint8_t>(bit);
-
-  GCRulePtr gc_rule;
-
-  if (uint8_bit < GC_RULE_MAX)
-  {
-    gc_rule = GCRuleMeta::gc_rules[uint8_bit];
-  }
-
-  return gc_rule;
-}
-
-// -----------------------------------------------------------------------------
-
 bool
-GCRuleAlways::should_gc(const Process& /* process */) const
+gc_rule_always(const Process& /* process */)
 {
   return true;
 }
@@ -90,20 +55,22 @@ GCRuleAlways::should_gc(const Process& /* process */) const
 // -----------------------------------------------------------------------------
 
 bool
-GCRuleByHeapSize::should_gc(const Process& process) const
+gc_rule_by_heap_size(const Process& process)
 {
+  static const double GC_RULE_BY_HEAP_SIZE_DEFAULT_CUTOFF = 0.75f;
   return process.heap_size() > (
-    process.max_heap_size() * GCRuleByHeapSize::DEFAULT_CUTOFF
+    process.max_heap_size() * GC_RULE_BY_HEAP_SIZE_DEFAULT_CUTOFF
   );
 }
 
 // -----------------------------------------------------------------------------
 
 bool
-GCRuleByNtvhndlPoolSize::should_gc(const Process& process) const
+gc_rule_by_ntvhndl_pool_size(const Process& process)
 {
+  static const double GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF = 0.75f;
   return process.ntvhndl_pool_size() > (
-    process.max_ntvhndl_pool_size() * GCRuleByNtvhndlPoolSize::DEFAULT_CUTOFF
+    process.max_ntvhndl_pool_size() * GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF
   );
 }
 

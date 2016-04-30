@@ -273,7 +273,6 @@ private:
   NativeTypesPool m_ntvhndl_pool;
   std::unordered_map<sig_atomic_t, Vector> m_sig_instr_map;
   std::vector<Compartment> m_compartments;
-  std::vector<GCRulePtr> m_gc_rules;
 };
 
 // -----------------------------------------------------------------------------

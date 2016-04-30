@@ -500,24 +500,21 @@ protected:
 
 TEST_F(ProcessGCRuleUnitTest, TestGCRuleAlways)
 {
-  corevm::runtime::GCRuleAlways gc_rule;
-  ASSERT_EQ(true, gc_rule.should_gc(_process));
+  ASSERT_EQ(true, corevm::runtime::gc_rule_always(_process));
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(ProcessGCRuleUnitTest, TestGCRuleByHeapSize)
 {
-  corevm::runtime::GCRuleByHeapSize gc_rule;
-  ASSERT_EQ(false, gc_rule.should_gc(_process));
+  ASSERT_EQ(false, corevm::runtime::gc_rule_by_heap_size(_process));
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(ProcessGCRuleUnitTest, TestGCRuleByNtvhndlPoolSize)
 {
-  corevm::runtime::GCRuleByNtvhndlPoolSize gc_rule;
-  ASSERT_EQ(false, gc_rule.should_gc(_process));
+  ASSERT_EQ(false, corevm::runtime::gc_rule_by_ntvhndl_pool_size(_process));
 }
 
 // -----------------------------------------------------------------------------

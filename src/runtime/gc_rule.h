@@ -42,45 +42,19 @@ class Process;
 
 // -----------------------------------------------------------------------------
 
-class GCRule
-{
-public:
-  virtual bool should_gc(const Process& process) const = 0;
-
-  virtual ~GCRule();
-};
+bool gc_rule_always(const Process&);
 
 // -----------------------------------------------------------------------------
 
-class GCRuleAlways : public GCRule
-{
-public:
-  virtual bool should_gc(const Process& process) const;
-};
+bool gc_rule_by_heap_size(const Process&);
 
 // -----------------------------------------------------------------------------
 
-class GCRuleByHeapSize : public GCRule
-{
-public:
-  virtual bool should_gc(const Process& process) const;
-
-  static const double DEFAULT_CUTOFF;
-};
+bool gc_rule_by_ntvhndl_pool_size(const Process&);
 
 // -----------------------------------------------------------------------------
 
-class GCRuleByNtvhndlPoolSize : public GCRule
-{
-public:
-  virtual bool should_gc(const Process& process) const;
-
-  static const double DEFAULT_CUTOFF;
-};
-
-// -----------------------------------------------------------------------------
-
-typedef std::shared_ptr<GCRule> GCRulePtr;
+typedef bool (*GCRule)(const Process&);
 
 // -----------------------------------------------------------------------------
 
@@ -95,12 +69,9 @@ public:
     GC_RULE_MAX
   };
 
-  static const GCRulePtr get_gc_rule(GCBitfields bit);
-
   static const uint8_t DEFAULT_GC_FLAGS;
 
-private:
-  static const GCRulePtr gc_rules[GC_RULE_MAX];
+  static GCRule gc_rules[GC_RULE_MAX];
 };
 
 // -----------------------------------------------------------------------------
