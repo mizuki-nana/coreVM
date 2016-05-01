@@ -215,22 +215,18 @@ TEST_F(ProcessUnitTest, TestPushAndPopFrames)
 
   // simulate `process::pre_start()`.
   auto compartment_id = process.insert_compartment(compartment);
-  process.append_vector(vector);
-  process.set_pc(0);
 
   corevm::runtime::ClosureCtx ctx(compartment_id, closure.id);
 
   process.emplace_invocation_ctx(ctx, &compartment, &closure_table[0]);
 
   corevm::runtime::Frame frame(ctx, &compartment, &closure_table[0]);
-  frame.set_return_addr(process.pc());
   process.push_frame(frame);
-  process.insert_vector(closure.vector);
+  process.set_pc(0);
+  frame.set_return_addr(process.pc());
 
   ASSERT_EQ(true, process.has_frame());
   ASSERT_EQ(1, process.call_stack_size());
-
-  auto original_pc = process.pc();
 
   ASSERT_NO_THROW(
     {
@@ -238,7 +234,7 @@ TEST_F(ProcessUnitTest, TestPushAndPopFrames)
     }
   );
 
-  ASSERT_EQ(original_pc, process.pc());
+  ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, process.pc());
 
   ASSERT_EQ(false, process.has_frame());
   ASSERT_EQ(0, process.call_stack_size());

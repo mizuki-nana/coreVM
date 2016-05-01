@@ -63,9 +63,6 @@ ProcessPrinter::operator()(std::ostream& ost) const
     printer(ost) << std::endl;
   }
 
-  ost << "Total Instructions: " << m_process.m_instrs.size() << std::endl;
-  ost << "Program counter: " << m_process.pc() << std::endl;
-
   ost << m_process.m_dynamic_object_heap << std::endl;
   ost << m_process.m_ntvhndl_pool << std::endl;
 

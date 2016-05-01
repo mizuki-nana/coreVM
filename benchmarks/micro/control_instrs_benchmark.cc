@@ -136,6 +136,7 @@ void BenchmarkInstrRTRN(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrJMP(benchmark::State& state)
 {
@@ -152,9 +153,11 @@ void BenchmarkInstrJMP(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrJMPIF(benchmark::State& state)
 {
@@ -174,9 +177,11 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrJMPR(benchmark::State& state)
 {
@@ -193,6 +198,7 @@ void BenchmarkInstrJMPR(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -227,6 +233,7 @@ void BenchmarkInstrEXC(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrEXCOBJ(benchmark::State& state)
 {
@@ -246,9 +253,11 @@ void BenchmarkInstrEXCOBJ(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrCLREXC(benchmark::State& state)
 {
@@ -268,9 +277,11 @@ void BenchmarkInstrCLREXC(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrJMPEXC(benchmark::State& state)
 {
@@ -290,6 +301,7 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -297,12 +309,15 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 BENCHMARK(BenchmarkInstrPINVK);
 BENCHMARK(BenchmarkInstrINVK);
 #endif
+
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkInstrJMP);
 BENCHMARK(BenchmarkInstrJMPIF);
 BENCHMARK(BenchmarkInstrJMPR);
 BENCHMARK(BenchmarkInstrEXCOBJ);
 BENCHMARK(BenchmarkInstrCLREXC);
 BENCHMARK(BenchmarkInstrJMPEXC);
+#endif
 
 // Skipping these benchmarks.
 //BENCHMARK(BenchmarkInstrRTRN);

@@ -117,10 +117,6 @@ const size_t DEFAULT_COMPARTMENTS_TABLE_CAPACITY = 10;
 
 // -----------------------------------------------------------------------------
 
-const size_t DEFAULT_VECTOR_CAPACITY = 1 << 14;
-
-// -----------------------------------------------------------------------------
-
 static_assert(
   std::numeric_limits<runtime::Vector::size_type>::max() >=
   std::numeric_limits<instr_addr_t>::max(),
@@ -177,7 +173,6 @@ Process::Process()
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(0),
-  m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(),
   m_dyobj_stack(),
   m_call_stack(),
@@ -197,7 +192,6 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(0),
-  m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(heap_alloc_size),
   m_dyobj_stack(),
   m_call_stack(),
@@ -217,7 +211,6 @@ Process::Process(const Process::Options& options)
   m_pause_exec(false),
   m_do_gc(false),
   m_gc_flag(options.gc_flag),
-  m_pc(NONESET_INSTR_ADDR),
   m_dynamic_object_heap(options.heap_alloc_size),
   m_dyobj_stack(),
   m_call_stack(),
@@ -315,16 +308,6 @@ Process::pop_frame()
       ptr->manager().on_exit();
     }
   );
-
-  set_pc(frame.return_addr());
-
-  const Closure* closure_ptr = frame.closure_ptr();
-
-  auto begin_itr = m_instrs.begin() + pc() + 1;
-  auto end_itr = begin_itr;
-  std::advance(end_itr, closure_ptr->vector.size());
-
-  m_instrs.erase(begin_itr, end_itr);
 
   m_call_stack.pop_back();
 
@@ -635,17 +618,9 @@ Process::resume_exec()
 // -----------------------------------------------------------------------------
 
 inline bool
-Process::is_valid_pc() const
-{
-  return (uint64_t)m_pc < m_instrs.size();
-}
-
-// -----------------------------------------------------------------------------
-
-inline bool
 Process::can_execute()
 {
-  return is_valid_pc();
+  return has_frame() && top_frame().can_execute();
 }
 
 // -----------------------------------------------------------------------------
@@ -671,20 +646,17 @@ Process::pre_start()
     ASSERT(closure);
 #endif
 
-    m_instrs.reserve(DEFAULT_VECTOR_CAPACITY);
-    append_vector(closure->vector);
-
     ClosureCtx ctx(0, closure->id);
 
     m_call_stack.reserve(DEFAULT_CALL_STACK_CAPACITY);
-    emplace_frame(ctx, compartment, closure, m_pc);
+    emplace_frame(ctx, compartment, closure, 0);
 
     m_invocation_ctx_stack.reserve(DEFAULT_INVOCATION_STACK_CAPACITY);
     emplace_invocation_ctx(ctx, compartment, closure);
 
     m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
 
-    m_pc = 0;
+    top_frame().set_pc_safe(0);
   }
 
   return res;
@@ -720,7 +692,7 @@ Process::start()
   {
     while (m_pause_exec) {}
 
-    const Instr& instr = m_instrs[static_cast<size_t>(m_pc)];
+    const Instr& instr = top_frame().current_instr();
 
 #if __MEASURE_INSTRS__
     t.start();
@@ -764,7 +736,7 @@ Process::start()
     *
     **/
 
-    ++m_pc;
+    top_frame().inc_pc();
 
   } /* end `while (can_execute())` */
 
@@ -820,41 +792,20 @@ Process::set_gc_flag(uint8_t gc_flag)
 instr_addr_t
 Process::pc() const
 {
-  return m_pc;
-}
-
-// -----------------------------------------------------------------------------
-
-void
-Process::set_pc(const instr_addr_t addr)
-{
-  if ( (uint64_t)addr >= m_instrs.size() )
+  if (!m_call_stack.empty())
   {
-    THROW(InvalidInstrAddrError());
+    return m_call_stack.back().pc();
   }
 
-  m_pc = addr;
+  return NONESET_INSTR_ADDR;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Process::append_vector(const Vector& vector)
+Process::set_pc(instr_addr_t addr)
 {
-  // Inserts the vector at the very end of the instr array.
-  std::copy(vector.begin(), vector.end(), std::back_inserter(m_instrs));
-}
-
-// -----------------------------------------------------------------------------
-
-void
-Process::insert_vector(const Vector& vector)
-{
-  // We want to insert the vector right after the current pc().
-  //
-  // NOTE: changes in the capacity of `m_instr` will result in AddressSanitizer
-  // report "heap-use-after-free".
-  m_instrs.insert(m_instrs.begin() + pc() + 1, vector.begin(), vector.end());
+  top_frame().set_pc(addr);
 }
 
 // -----------------------------------------------------------------------------
@@ -912,10 +863,12 @@ Process::handle_signal(sig_atomic_t sig, SigHandler* handler)
 
   if (itr != m_sig_instr_map.end())
   {
+    /*
+     * TODO: [COREVM-246] Enable support for signal handling mechanism
     Vector vector = itr->second;
     pause_exec();
-    insert_vector(vector);
     resume_exec();
+    */
   }
   else if (handler != nullptr)
   {
@@ -968,7 +921,6 @@ void
 Process::reset()
 {
   m_gc_flag = 0;
-  m_pc = NONESET_INSTR_ADDR;
   m_dyobj_stack.clear();
   m_call_stack.clear();
   m_invocation_ctx_stack.clear();
@@ -1102,7 +1054,7 @@ Process::unwind_stack(Process& process, size_t limit)
 
     const LocTable& locs = closure->locs;
 
-    int32_t index = process.pc() - frame.return_addr();
+    int64_t index = process.pc() - frame.return_addr();
 
     auto itr = std::find_if(locs.begin(), locs.end(), LocInfoPred(index));
     if (itr != locs.end())

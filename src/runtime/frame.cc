@@ -44,6 +44,7 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   Compartment* compartment_ptr,
   Closure* closure_ptr)
   :
+  m_pc(corevm::runtime::NONESET_INSTR_ADDR),
   m_closure_ctx(closure_ctx),
   m_compartment_ptr(compartment_ptr),
   m_closure_ptr(closure_ptr),
@@ -65,6 +66,7 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   Closure* closure_ptr,
   instr_addr_t return_addr)
   :
+  m_pc(corevm::runtime::NONESET_INSTR_ADDR),
   m_closure_ctx(closure_ctx),
   m_compartment_ptr(compartment_ptr),
   m_closure_ptr(closure_ptr),
@@ -92,6 +94,60 @@ size_t
 Frame::eval_stack_size() const
 {
   return m_eval_stack.size();
+}
+
+// -----------------------------------------------------------------------------
+
+instr_addr_t
+Frame::pc() const
+{
+  return m_pc;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Frame::set_pc(instr_addr_t addr)
+{
+  if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
+      (addr < 0 || static_cast<size_t>(addr) >= m_closure_ptr->vector.size()) )
+  {
+    THROW(InvalidInstrAddrError());
+  }
+
+  m_pc = addr;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Frame::set_pc_safe(instr_addr_t addr)
+{
+  m_pc = addr;
+}
+
+// -----------------------------------------------------------------------------
+
+const Instr&
+Frame::current_instr() const
+{
+  return m_closure_ptr->vector[m_pc];
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Frame::inc_pc()
+{
+  ++m_pc;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Frame::can_execute() const
+{
+  return m_pc >= 0 && static_cast<size_t>(m_pc) < m_closure_ptr->vector.size();
 }
 
 // -----------------------------------------------------------------------------

@@ -1428,8 +1428,6 @@ instr_handler_invk(const Instr& /* instr */, Process& process,
 
   process.emplace_frame(ctx, compartment, closure, process.pc());
   process.top_frame(frame_ptr);
-
-  process.insert_vector(closure->vector);
 }
 
 // -----------------------------------------------------------------------------
@@ -1521,10 +1519,9 @@ instr_handler_jmpif(const Instr& instr, Process& process,
 
 void
 instr_handler_jmpr(const Instr& instr, Process& process,
-  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
+  Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  Frame* frame = *frame_ptr;
-  const instr_addr_t starting_addr = frame->return_addr() + 1;
+  const instr_addr_t starting_addr = 0;
 
   auto relative_addr = static_cast<instr_addr_t>(instr.oprd1);
 
@@ -1554,7 +1551,7 @@ instr_handler_exc(const Instr& instr, Process& process,
   {
     Frame& frame = process.top_frame();
     auto exc_obj = process.pop_stack();
-    instr_addr_t starting_addr = frame.return_addr() + 1;
+    instr_addr_t starting_addr = 0;
     int64_t dst = 0;
 
     if (search_catch_sites)

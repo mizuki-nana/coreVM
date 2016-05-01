@@ -230,12 +230,14 @@ void BenchmarkSETFLMUTEInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkPOPInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithOneObjectOnStack(state,
     corevm::runtime::instr_handler_pop);
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -346,12 +348,14 @@ void BenchmarkPUTOBJLInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkGETOBJLInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(state,
     corevm::runtime::instr_handler_getobj);
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -419,12 +423,14 @@ void BenchmarkSETATTRInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkCPYHNDLInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
     corevm::runtime::instr_handler_cpyhndl);
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -480,6 +486,7 @@ void BenchmarkDELOBJInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkDELOBJ2Instr(benchmark::State& state)
 {
@@ -503,6 +510,7 @@ void BenchmarkDELOBJ2Instr(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -853,7 +861,9 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
 BENCHMARK(BenchmarkLDOBJ2Instr);
 BENCHMARK(BenchmarkDELOBJInstr);
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkDELOBJ2Instr);
+#endif
 BENCHMARK(BenchmarkCLRHNDLInstr);
 BENCHMARK(BenchmarkCLDOBJInstr);
 BENCHMARK(BenchmarkNEWInstr);
@@ -877,12 +887,18 @@ BENCHMARK(BenchmarkSETFLGCInstr);
 BENCHMARK(BenchmarkSETFLDELInstr);
 BENCHMARK(BenchmarkSETFLCALLInstr);
 BENCHMARK(BenchmarkSETFLMUTEInstr);
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkPOPInstr);
+#endif
 BENCHMARK(BenchmarkSETHNDLInstr);
 BENCHMARK(BenchmarkPUTOBJLInstr);
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkGETOBJLInstr);
+#endif
 BENCHMARK(BenchmarkSETATTRInstr);
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkCPYHNDLInstr);
+#endif
 BENCHMARK(BenchmarkCPYREPRInstr);
 BENCHMARK(BenchmarkOBJEQInstr);
 BENCHMARK(BenchmarkOBJNEQInstr);

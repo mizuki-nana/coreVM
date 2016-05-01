@@ -80,6 +80,7 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 #ifdef BUILD_BENCHMARKS_STRICT
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 {
@@ -97,6 +98,7 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
     process.insert_ntvhndl(hndl);
   }
 }
+#endif
 #endif
 
 // -----------------------------------------------------------------------------
@@ -117,37 +119,14 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#ifdef BUILD_BENCHMARKS_STRICT
-static
-void BenchmarkProcessInsertVector(benchmark::State& state)
-{
-  corevm::runtime::Process process;
-
-  // A vector of 100 instructions.
-  corevm::runtime::Vector vector;
-  vector.reserve(100);
-
-  for (size_t i = 0; i < 100; ++i)
-  {
-    vector.emplace_back(i, i, i);
-  }
-
-  while (state.KeepRunning())
-  {
-    process.insert_vector(vector);
-  }
-}
-#endif
-
-// -----------------------------------------------------------------------------
-
 BENCHMARK(BenchmarkProcessCreateDyobj);
 BENCHMARK(BenchmarkProcessGetDyobj);
 BENCHMARK(BenchmarkProcessGetNtvHndl);
 #ifdef BUILD_BENCHMARKS_STRICT
 BENCHMARK(BenchmarkProcessPushStack);
+#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkProcessInsertNtvHndl);
-BENCHMARK(BenchmarkProcessInsertVector);
+#endif
 #endif
 
 // -----------------------------------------------------------------------------

@@ -111,8 +111,6 @@ InstrBenchmarksFixture::init()
   m_process.emplace_frame(ctx, compartment_ptr, &closure_table.front());
   m_process.emplace_invocation_ctx(ctx, compartment_ptr, &closure_table.front());
 
-  m_process.insert_vector(vector);
-
   m_process.set_pc(0);
 }
 

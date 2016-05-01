@@ -70,6 +70,18 @@ public:
 
   size_t eval_stack_size() const;
 
+  instr_addr_t pc() const;
+
+  void set_pc(instr_addr_t);
+
+  void set_pc_safe(instr_addr_t);
+
+  const Instr& current_instr() const;
+
+  void inc_pc();
+
+  bool can_execute() const;
+
   instr_addr_t return_addr() const;
 
   void set_return_addr(const instr_addr_t);
@@ -140,6 +152,7 @@ public:
   void clear_exc_obj();
 
 protected:
+  instr_addr_t m_pc;
   const runtime::ClosureCtx m_closure_ctx;
   Compartment* m_compartment_ptr;
   Closure* m_closure_ptr;

@@ -168,11 +168,7 @@ public:
 
   instr_addr_t pc() const;
 
-  void set_pc(const instr_addr_t);
-
-  void append_vector(const Vector&);
-
-  void insert_vector(const Vector& vector);
+  void set_pc(instr_addr_t);
 
   bool get_frame_by_closure_ctx(ClosureCtx&, Frame**);
 
@@ -261,8 +257,6 @@ private:
   bool m_pause_exec;
   bool m_do_gc;
   uint8_t m_gc_flag;
-  instr_addr_t m_pc;
-  Vector m_instrs;
   dynamic_object_heap_type m_dynamic_object_heap;
   std::vector<dyobj_ptr> m_dyobj_stack;
   std::vector<Frame> m_call_stack;

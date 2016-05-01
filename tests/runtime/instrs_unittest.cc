@@ -1496,7 +1496,8 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARG)
     corevm::runtime::Instr(0, 0, 0),
     corevm::runtime::Instr(0, 0, 0),
   };
-  m_process.append_vector(vector);
+
+  m_closure.vector = std::move(vector);
 
   m_process.set_pc(0);
 
@@ -1689,7 +1690,7 @@ protected:
       corevm::runtime::Instr(0, 0, 0),
       corevm::runtime::Instr(0, 0, 0),
     };
-    m_process.append_vector(vector);
+    m_closure.vector = std::move(vector);
   }
 };
 
@@ -1745,7 +1746,11 @@ TEST_F(InstrsControlInstrsTest, TestInstrINVK)
   m_ctx.compartment_id = compartment_id;
   m_ctx.closure_id = closure_id;
 
-  corevm::runtime::Vector vector;
+  corevm::runtime::Vector vector {
+    corevm::runtime::Instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0),
+    corevm::runtime::Instr(0, 0, 0)
+  };
   corevm::runtime::LocTable locs;
   corevm::runtime::CatchSiteList catch_sites;
 
@@ -1770,13 +1775,14 @@ TEST_F(InstrsControlInstrsTest, TestInstrINVK)
 
   corevm::runtime::Instr instr(0, 0, 0);
 
-  m_process.set_pc(8);
+  const corevm::runtime::instr_addr_t expected_return_addr = 2;
+  m_process.set_pc(expected_return_addr);
 
   execute_instr(corevm::runtime::instr_handler_invk, instr);
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_EQ(m_process.pc(), actual_frame.return_addr());
+  ASSERT_EQ(expected_return_addr, actual_frame.return_addr());
 }
 
 // -----------------------------------------------------------------------------
@@ -1898,7 +1904,7 @@ TEST_F(InstrsControlInstrsTest, TestInstrEXC)
   m_process.emplace_invocation_ctx(ctx, &compartment, &closure_table[0]);
 
   // Emulate process starting condition.
-  m_process.insert_vector(vector);
+  closure.vector = std::move(vector);
   m_process.set_pc(0);
 
   corevm::runtime::Instr instr(0, 1, 0);
@@ -1988,7 +1994,7 @@ TEST_F(InstrsControlInstrsTest, TestInstrJMPEXC)
   m_process.push_frame(frame);
 
   // Emulate process starting condition.
-  m_process.insert_vector(vector);
+  m_closure.vector = std::move(vector);
   m_process.set_pc(0);
 
   corevm::runtime::Instr instr(0, 6, 1);
