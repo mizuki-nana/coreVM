@@ -2545,7 +2545,7 @@ class InstrsNativeTypeCreationInstrsTest : public InstrsNativeTypesInstrsTest {}
 
 TEST_F(InstrsNativeTypeCreationInstrsTest, TestInstrDEC1)
 {
-  const float fpt_literal = 12345.98765;
+  const float fpt_literal = 12345.98765f;
   corevm::runtime::FptLiteralTable fpt_literal_table { fpt_literal };
   m_compartment->set_fpt_literal_table(fpt_literal_table);
 

@@ -23,8 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_CATCH_SITE_H_
 #define COREVM_CATCH_SITE_H_
 
-#include <cstdint>
 #include <vector>
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
 
 
 namespace corevm {
@@ -35,20 +35,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct CatchSite
-{
-  CatchSite(uint32_t from_, uint32_t to_, uint32_t dst_)
-    :
-    from(from_),
-    to(to_),
-    dst(dst_)
-  {
-  }
-
-  uint32_t from;
-  uint32_t to;
-  uint32_t dst;
-};
+typedef corevm::catch_site CatchSite;
 
 // -----------------------------------------------------------------------------
 

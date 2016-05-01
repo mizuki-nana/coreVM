@@ -22,12 +22,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-add_custom_command(
-    OUTPUT ${CMAKE_SOURCE_DIR}/src/corevm/corevm_bytecode_schema.h
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMAND sh scripts/compile_bytecode_schema.sh)
-
-
 set(sources
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc

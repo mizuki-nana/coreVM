@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "loc_info.h"
 #include "vector.h"
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
 
 #include <iosfwd>
 #include <string>
@@ -41,43 +42,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-typedef struct Closure
-{
-  Closure()
-    :
-    name(),
-    id(NONESET_CLOSURE_ID),
-    parent_id(NONESET_CLOSURE_ID),
-    vector(),
-    locs(),
-    catch_sites()
-  {
-  }
-
-  Closure(
-    std::string name_,
-    closure_id_t id_,
-    closure_id_t parent_id_,
-    Vector vector_,
-    LocTable locs_,
-    CatchSiteList catch_sites_)
-    :
-    name(name_),
-    id(id_),
-    parent_id(parent_id_),
-    vector(vector_),
-    locs(locs_),
-    catch_sites(catch_sites_)
-  {
-  }
-
-  std::string name;
-  closure_id_t id;
-  closure_id_t parent_id;
-  Vector vector;
-  LocTable locs;
-  CatchSiteList catch_sites;
-} Closure;
+typedef corevm::closure Closure;
 
 // -----------------------------------------------------------------------------
 

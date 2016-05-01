@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
+#include "closure.h"
 #include "compartment.h"
 #include "common.h"
 #include "errors.h"
@@ -48,10 +49,6 @@ namespace corevm {
 
 
 namespace runtime {
-
-
-/** Forward declaration of `Closure` */
-struct Closure;
 
 
 /** Forward declaration of `ClosureCtx` */

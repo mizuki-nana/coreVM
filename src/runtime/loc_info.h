@@ -23,7 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_LOC_INFO_H_
 #define COREVM_LOC_INFO_H_
 
-#include <unordered_map>
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
+
+#include <vector>
 
 
 namespace corevm {
@@ -34,29 +36,11 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-struct LocInfo
-{
-  LocInfo(int32_t lineno_, int32_t col_offset_)
-    :
-    lineno(lineno_),
-    col_offset(col_offset_)
-  {
-  }
-
-  LocInfo()
-    :
-    lineno(-1),
-    col_offset(-1)
-  {
-  }
-
-  int32_t lineno;
-  int32_t col_offset;
-};
+typedef corevm::loc LocInfo;
 
 // -----------------------------------------------------------------------------
 
-typedef std::unordered_map<int32_t, LocInfo> LocTable;
+typedef std::vector<LocInfo> LocTable;
 
 // -----------------------------------------------------------------------------
 

@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 #include "instr_fwd.h"
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
 
 #include <iosfwd>
 #include <string>
@@ -53,20 +54,7 @@ class InvocationCtx;
 
 // -----------------------------------------------------------------------------
 
-typedef struct Instr
-{
-  Instr(instr_code_t code_, instr_oprd_t oprd1_, instr_oprd_t oprd2_)
-    :
-    code(code_),
-    oprd1(oprd1_),
-    oprd2(oprd2_)
-  {
-  }
-
-  instr_code_t code;
-  instr_oprd_t oprd1;
-  instr_oprd_t oprd2;
-} Instr;
+typedef corevm::instr Instr;
 
 // -----------------------------------------------------------------------------
 

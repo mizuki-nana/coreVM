@@ -37,13 +37,13 @@ namespace runtime {
 const uint32_t COREVM_DEFAULT_GC_INTERVAL = 10;
 
 
-typedef int32_t instr_addr_t;
+typedef int64_t instr_addr_t;
 
 
-typedef uint16_t instr_code_t;
+typedef int64_t instr_code_t;
 
 
-typedef uint64_t instr_oprd_t;
+typedef int64_t instr_oprd_t;
 
 
 typedef int32_t variable_key_t;
@@ -64,7 +64,7 @@ typedef std::vector<std::string> StringLiteralTable;
 typedef std::vector<double> FptLiteralTable;
 
 
-typedef int32_t compartment_id_t;
+typedef int64_t compartment_id_t;
 
 
 const compartment_id_t NONESET_COMPARTMENT_ID = -1;

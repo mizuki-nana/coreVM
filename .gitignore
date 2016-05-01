@@ -18,7 +18,6 @@
 # Outputs
 build/
 archives/
-src/corevm/corevm_bytecode_schema.h
 *.tmp.py
 *.out
 

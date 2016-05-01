@@ -1058,6 +1058,25 @@ Process::find_parent_frame_in_process(Frame* frame_ptr, Process& process)
 
 // -----------------------------------------------------------------------------
 
+struct LocInfoPred
+{
+  LocInfoPred(int64_t index)
+    :
+    m_index(index)
+  {
+  }
+
+  bool operator()(const LocInfo& loc_info) const
+  {
+    return loc_info.index == m_index;
+  }
+
+private:
+  int64_t m_index;
+};
+
+// -----------------------------------------------------------------------------
+
 void
 Process::unwind_stack(Process& process, size_t limit)
 {
@@ -1085,9 +1104,10 @@ Process::unwind_stack(Process& process, size_t limit)
 
     int32_t index = process.pc() - frame.return_addr();
 
-    if (locs.find(index) != locs.end())
+    auto itr = std::find_if(locs.begin(), locs.end(), LocInfoPred(index));
+    if (itr != locs.end())
     {
-      const LocInfo& loc = locs.at(index);
+      const LocInfo& loc = *itr;
 
       line_ss << " (" << "line " << loc.lineno << " col " << loc.col_offset << ')';
     }

@@ -62,15 +62,16 @@
               "type": "string"
             },
             {
-              "name": "__id__",
+              "name": "id",
               "type": "long"
             },
             {
-              "name": "__parent__",
-              "type": ["long", "null"]
+              "name": "parent_id",
+              "type": "long",
+              "default": -1
             },
             {
-              "name": "__vector__",
+              "name": "vector",
               "type": {
                 "type": "array",
                 "items": {
@@ -95,57 +96,51 @@
             },
             {
               "name": "locs",
-              "type": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "record",
-                    "name": "loc",
-                    "fields": [
-                      {
-                        "name": "index",
-                        "type": "long"
-                      },
-                      {
-                        "name": "lineno",
-                        "type": "long"
-                      },
-                      {
-                        "name": "col_offset",
-                        "type": "long"
-                      }
-                    ]
-                  }
-                },
-                "null"
-              ]
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "loc",
+                  "fields": [
+                    {
+                      "name": "index",
+                      "type": "long"
+                    },
+                    {
+                      "name": "lineno",
+                      "type": "long"
+                    },
+                    {
+                      "name": "col_offset",
+                      "type": "long"
+                    }
+                  ]
+                }
+              }
             },
             {
               "name": "catch_sites",
-              "type": [
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "record",
-                    "name": "catch_site",
-                    "fields": [
-                      {
-                        "name": "from",
-                        "type": "long"
-                      },
-                      {
-                        "name": "to",
-                        "type": "long"
-                      },
-                      {
-                        "name": "dst",
-                        "type": "long"
-                      }
-                    ]
-                  }
-                },
-                "null"
-              ]
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "catch_site",
+                  "fields": [
+                    {
+                      "name": "from",
+                      "type": "long"
+                    },
+                    {
+                      "name": "to",
+                      "type": "long"
+                    },
+                    {
+                      "name": "dst",
+                      "type": "long"
+                    }
+                  ]
+                }
+              }
             }
           ]
         }

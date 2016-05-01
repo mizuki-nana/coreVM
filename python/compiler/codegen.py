@@ -98,13 +98,26 @@ class Instr(object):
 
 class Loc(object):
 
-    def __init__(self, lineno, col_offset):
+    def __init__(self, index, lineno, col_offset):
+        self.index = index
         self.lineno = lineno
         self.col_offset = col_offset
 
-    @classmethod
-    def from_node(cls, node):
-        return Loc(node.lineno, node.col_offset)
+    def to_json(self, binary=False):
+        if binary:
+            return {
+                'index': self.index,
+                'lineno': self.lineno,
+                'col_offset': self.col_offset
+            }
+        else:
+            return {
+                'index': self.index,
+                'loc': {
+                    'lineno': self.lineno,
+                    'col_offset': self.col_offset
+                }
+            }
 
 ## -----------------------------------------------------------------------------
 
@@ -149,62 +162,41 @@ class Closure(object):
     # Closure IDs are zero-based indices.
     __closure_id = 0
 
+    # Default id for root closure.
+    NONESET_CLOSURE_ID = -1
+
+    required_fields = (
+        'name',
+        'id',
+        'parent_id',
+        'vector',
+        'locs'
+    )
+
     def __init__(self, original_name, name, parent_name, parent_id):
         self.original_name = original_name
         self.name = name
         self.parent_name = parent_name
         self.vector = []
-        self.locs = {} # mapping of instr index to loc info
+        self.locs = []
         self.catch_sites = []
         self.closure_id = Closure.__closure_id
         self.parent_id = parent_id
         self.globals = []
         Closure.__closure_id += 1
 
-    def add_loc(self, index, loc):
-        self.locs[index] = loc
+    def add_loc(self, loc):
+        self.locs.append(loc)
 
     def to_json(self, binary=False):
-        json_dict = {
+        return {
             'name': self.original_name,
-            '__id__': self.closure_id,
-            '__vector__': [
-                instr.to_json(binary=binary) for instr in self.vector
-            ]
+            'id': self.closure_id,
+            'parent_id': self.parent_id if self.parent_id is not None else self.NONESET_CLOSURE_ID,
+            'vector': [instr.to_json(binary=binary) for instr in self.vector],
+            'locs': [loc.to_json(binary=binary) for loc in self.locs],
+            'catch_sites': [catch_site.to_json() for catch_site in self.catch_sites]
         }
-
-        if self.parent_id is not None:
-            json_dict['__parent__'] = self.parent_id
-
-        if self.locs:
-            if binary:
-                json_dict['locs'] = [
-                    {
-                        'index': index,
-                        'lineno': loc.lineno,
-                        'col_offset': loc.col_offset
-                    }
-                    for index, loc in self.locs.iteritems()
-                ]
-            else:
-                json_dict['locs'] = [
-                    {
-                        'index': index,
-                        'loc': {
-                            'lineno': loc.lineno,
-                            'col_offset': loc.col_offset
-                        }
-                    }
-                    for index, loc in self.locs.iteritems()
-                ]
-
-        if self.catch_sites:
-            json_dict['catch_sites'] = [
-                catch_site.to_json()
-                for catch_site in self.catch_sites
-            ]
-
-        return json_dict
 
 ## -----------------------------------------------------------------------------
 
@@ -264,21 +256,21 @@ class ClosureTableValidator(StructuredBytecodeValidator):
         for closure in field_value:
             self.validate_required_fields(closure)
 
-        first_closure_id = field_value[0]['__id__']
+        first_closure_id = field_value[0]['id']
         if first_closure_id != 0:
-            raise BytecodeValidationException('Invalid value of field "__id__" in closure')
+            raise BytecodeValidationException('Invalid value of field "id" in closure')
 
         closures_count = len(field_value)
 
-        last_closure_id = field_value[-1]['__id__']
+        last_closure_id = field_value[-1]['id']
         if last_closure_id != closures_count - 1:
-            raise BytecodeValidationException('Invalid value of field "__id__" in closure')
+            raise BytecodeValidationException('Invalid value of field "id" in closure')
 
         # Check closures are stored in increasing order by their IDs.
         for i in xrange(1, closures_count):
             previous_closure = field_value[i - 1]
             next_closure = field_value[i]
-            if previous_closure['__id__'] + 1 != next_closure['__id__']:
+            if previous_closure['id'] + 1 != next_closure['id']:
                 raise BytecodeValidationException('Closures are not in order')
 
         # Check parent IDs.
@@ -294,28 +286,26 @@ class ClosureTableValidator(StructuredBytecodeValidator):
             self.validate_catch_sites(closure)
 
     def validate_required_fields(self, closure):
-        if 'name' not in closure:
-            raise BytecodeValidationException('Missing required field "name" in closure')
-
-        if '__id__' not in closure:
-            raise BytecodeValidationException('Missing required field "__id__" in closure')
-
-        if '__vector__' not in closure:
-            raise BytecodeValidationException('Missing required field "__vector__" in closure')
+        for required_field in Closure.required_fields:
+            if required_field not in closure:
+                raise BytecodeValidationException(
+                    'Missing required field "%s" in closure' % required_field)
 
     def validate_closure_parent(self, closure, closures_count):
-        parent_id = closure.get('__parent__')
+        parent_id = closure.get('parent_id')
 
-        if parent_id:
-            if parent_id < 0 or parent_id >= closures_count:
-                raise BytecodeValidationException(
-                    'Invalid value of field "__parent__" in closure')
+        if parent_id == Closure.NONESET_CLOSURE_ID:
+            return
+
+        if parent_id < 0 or parent_id >= closures_count:
+            raise BytecodeValidationException(
+                'Invalid value of field "parent_id" in closure')
 
     def validate_locs(self, closure):
         locs = closure.get('locs')
 
         if locs:
-            vector = closure['__vector__']
+            vector = closure['vector']
             vector_len = len(vector)
 
             for loc in locs:
@@ -558,7 +548,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     def __total_try_except_lvl(self):
         return len(self.try_except_states)
 
-    def __add_instr(self, code, oprd1, oprd2, loc=None):
+    def __add_instr(self, code, oprd1, oprd2, node=None):
         self.__current_vector().append(
             Instr(
                 self.instr_str_to_code_map[code],
@@ -567,8 +557,12 @@ class BytecodeGenerator(ast.NodeVisitor):
             )
         )
 
-        if loc:
-            self.__current_closure().add_loc(len(self.__current_vector()) - 1, loc)
+        if node:
+            self.__add_loc_from_node(node)
+
+    def __add_loc_from_node(self, node):
+        self.__current_closure().add_loc(
+            Loc(len(self.__current_vector()) - 1, node.lineno, node.col_offset))
 
     def __add_catch_site(self, catch_site):
         self.__current_closure().catch_sites.append(catch_site)
@@ -655,7 +649,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             # use the existing closure, but clears some of its members before
             # adding instructions.
             self.closure_map[closure_name].vector = []
-            self.closure_map[closure_name].locs = {}
+            self.closure_map[closure_name].locs = []
             self.closure_map[closure_name].catch_sites = []
 
         self.current_closure_name = closure_name
@@ -764,7 +758,7 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Print(self, node):
         assert len(node.values) == 1
         self.visit(node.values[0])
-        self.__add_instr('print', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('print', 0, 0, node=node)
 
     def visit_For(self, node):
         # TODO: Handle `orelse` here.
@@ -902,12 +896,12 @@ class BytecodeGenerator(ast.NodeVisitor):
             (4)
         """
         self.visit(node.test)
-        self.__add_instr('istruthy', 0, 0, loc=Loc.from_node(node))
-        self.__add_instr('lnot', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('istruthy', 0, 0, node=node)
+        self.__add_instr('lnot', 0, 0, node=node)
 
         # Add `jmpif` here.
         # `vector_length1` matches with `vector_length2` below.
-        self.__add_instr('jmpif', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('jmpif', 0, 0, node=node)
         vector_length1 = len(self.__current_vector())
 
         for stmt in node.body:
@@ -915,7 +909,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         if node.orelse:
             # `vector_length3` matches with `vector_length4` below.
-            self.__add_instr('jmp', 0, 0, loc=Loc.from_node(node))
+            self.__add_instr('jmp', 0, 0, node=node)
             vector_length3 = len(self.__current_vector())
 
         # Add `jmpif` here.
@@ -1463,29 +1457,29 @@ class BytecodeGenerator(ast.NodeVisitor):
     def visit_Num(self, node):
         num_type = 'dec2' if isinstance(node.n, float) else 'int64'
 
-        self.__add_instr('new', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('new', 0, 0, node=node)
 
         if isinstance(node.n, int):
-            self.__add_instr(num_type, node.n, 0, loc=Loc.from_node(node))
+            self.__add_instr(num_type, node.n, 0, node=node)
         else:
             encoding_id = self.__get_fpt_literal_encoding_id(node.n)
-            self.__add_instr(num_type, encoding_id, 0, loc=Loc.from_node(node))
+            self.__add_instr(num_type, encoding_id, 0, node=node)
 
-        self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
+        self.__add_instr('sethndl', 0, 0, node=node)
 
     def visit_Name(self, node):
         name = node.id
 
         if isinstance(node.ctx, ast.Load):
-            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, node=node)
         elif isinstance(node.ctx, ast.Name):
-            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, node=node)
         elif isinstance(node.ctx, ast.Param):
             # For loading parameters
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
-            self.__add_instr('getarg', 0, 0, loc=Loc.from_node(node))
-            self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+            self.__add_instr('getarg', 0, 0, node=node)
+            self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, node=node)
         elif isinstance(node.ctx, ast.Store):
             current_scope = self.__current_scope()
             if current_scope and current_scope.in_cls:
@@ -1499,23 +1493,23 @@ class BytecodeGenerator(ast.NodeVisitor):
                 #   2. Load target name.
                 #   3. Set attribute.
                 assert current_scope.name, 'Expecting a class name'
-                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(current_scope.name), 0, loc=Loc.from_node(node))
-                self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
-                self.__add_instr('setattr', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(current_scope.name), 0, node=node)
+                self.__add_instr('ldobj', self.__get_string_literal_encoding_id(name), 0, node=node)
+                self.__add_instr('setattr', self.__get_string_literal_encoding_id(name), 0, node=node)
             elif name in self.__current_closure().globals:
                 n = self.__module_frame_lvl()
-                self.__add_instr('stobjn', self.__get_string_literal_encoding_id(name), n, loc=Loc.from_node(node))
+                self.__add_instr('stobjn', self.__get_string_literal_encoding_id(name), n, node=node)
             else:
-                self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, loc=Loc.from_node(node))
+                self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, node=node)
         else:
             # TODO: Add support for other types of ctx of `Name` node.
             pass
 
     def visit_Str(self, node):
         if not VectorString.is_vector_string(node.s):
-            self.__add_instr('new', 0, 0, loc=Loc.from_node(node))
-            self.__add_instr('str', self.__get_string_literal_encoding_id(node.s), 0, loc=Loc.from_node(node))
-            self.__add_instr('sethndl', 0, 0, loc=Loc.from_node(node))
+            self.__add_instr('new', 0, 0, node=node)
+            self.__add_instr('str', self.__get_string_literal_encoding_id(node.s), 0, node=node)
+            self.__add_instr('sethndl', 0, 0, node=node)
         else:
             raw_vector = VectorString(node.s).to_raw_vector()
 
@@ -1525,15 +1519,15 @@ class BytecodeGenerator(ast.NodeVisitor):
 
                 code, oprd1, oprd2 = self.__process_raw_instr(raw_instr)
 
-                self.__add_instr(code, oprd1, oprd2, loc=Loc.from_node(node))
+                self.__add_instr(code, oprd1, oprd2, node=node)
 
     def visit_Attribute(self, node):
         self.visit(node.value)
         if isinstance(node.ctx, ast.Load):
-            self.__add_instr('getattr', self.__get_string_literal_encoding_id(node.attr), 0, loc=Loc.from_node(node))
+            self.__add_instr('getattr', self.__get_string_literal_encoding_id(node.attr), 0, node=node)
         elif isinstance(node.ctx, ast.Store):
             self.__add_instr('swap', 0, 0)
-            self.__add_instr('setattr', self.__get_string_literal_encoding_id(node.attr), 0, loc=Loc.from_node(node))
+            self.__add_instr('setattr', self.__get_string_literal_encoding_id(node.attr), 0, node=node)
         else:
             # NOTE: if this ever happens, then we have to take that type into
             # consideration.

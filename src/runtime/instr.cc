@@ -1555,7 +1555,7 @@ instr_handler_exc(const Instr& instr, Process& process,
     Frame& frame = process.top_frame();
     auto exc_obj = process.pop_stack();
     instr_addr_t starting_addr = frame.return_addr() + 1;
-    uint32_t dst = 0;
+    int64_t dst = 0;
 
     if (search_catch_sites)
     {
