@@ -86,7 +86,7 @@ Runner::run() const noexcept
     options.pool_alloc_size = m_configuration.pool_alloc_size();
   }
 
-  if (m_configuration.gc_flag())
+  if (m_configuration.has_gc_flag())
   {
     options.gc_flag = m_configuration.gc_flag();
   }

@@ -47,7 +47,8 @@ Program::Program()
   m_log_mode(),
   m_heap_alloc_size(0),
   m_pool_alloc_size(0),
-  m_gc_interval(0)
+  m_gc_interval(0),
+  m_gc_flag(0)
 {
   add_positional_parameter("input", 1);
   add_string_parameter("input", "Input file", &m_input_path);
@@ -56,6 +57,7 @@ Program::Program()
   add_uint64_parameter("heap-alloc-size", "Dynamic Object Heap allocation size (bytes)", &m_heap_alloc_size);
   add_uint64_parameter("pool-alloc-size", "Native Types Pool allocation size (bytes)", &m_pool_alloc_size);
   add_uint32_parameter("gc-interval", "GC interval (ms)", &m_gc_interval);
+  add_uint32_parameter("gc-flag", "GC flag", &m_gc_flag);
   add_string_parameter("logging", "Optional logging mode (i.e. stdout, stderr, file path)", &m_log_mode);
 }
 
@@ -103,6 +105,11 @@ Program::do_run()
   if (option_provided("gc-interval"))
   {
     configuration.set_gc_interval(m_gc_interval);
+  }
+
+  if (option_provided("gc-flag"))
+  {
+    configuration.set_gc_flag(static_cast<uint8_t>(m_gc_flag));
   }
 
   configuration.set_log_mode(m_log_mode);

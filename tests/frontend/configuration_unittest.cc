@@ -77,6 +77,7 @@ TEST_F(ConfigurationUnitTest, TestLoadSuccessful)
   ASSERT_EQ(2048, configuration.heap_alloc_size());
   ASSERT_EQ(1024, configuration.pool_alloc_size());
   ASSERT_EQ(100, configuration.gc_interval());
+  ASSERT_EQ(true, configuration.has_gc_flag());
   ASSERT_EQ(1, configuration.gc_flag());
   ASSERT_STREQ("stdout", configuration.log_mode().c_str());
 }
@@ -102,7 +103,7 @@ TEST_F(ConfigurationUnitTest, TestGetAndSet)
   ASSERT_EQ(0, configuration.heap_alloc_size());
   ASSERT_EQ(0, configuration.pool_alloc_size());
   ASSERT_EQ(0, configuration.gc_interval());
-  ASSERT_EQ(0, configuration.gc_flag());
+  ASSERT_EQ(false, configuration.has_gc_flag());
   ASSERT_STREQ("", configuration.log_mode().c_str());
 
   uint64_t expected_heap_alloc_size = 2048;
@@ -120,6 +121,7 @@ TEST_F(ConfigurationUnitTest, TestGetAndSet)
   ASSERT_EQ(expected_heap_alloc_size, configuration.heap_alloc_size());
   ASSERT_EQ(expected_pool_alloc_size, configuration.pool_alloc_size());
   ASSERT_EQ(expected_gc_interval, configuration.gc_interval());
+  ASSERT_EQ(true, configuration.has_gc_flag());
   ASSERT_EQ(expected_gc_flag, configuration.gc_flag());
   ASSERT_EQ(expected_log_mode, configuration.log_mode());
 }

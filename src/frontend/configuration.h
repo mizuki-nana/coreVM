@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 
+#include <boost/optional.hpp>
 #include <sneaker/json/json.h>
 
 #include <cstdint>
@@ -55,6 +56,8 @@ public:
 
   uint32_t gc_interval() const;
 
+  bool has_gc_flag() const;
+
   uint8_t gc_flag() const;
 
   const std::string& log_mode() const;
@@ -76,7 +79,7 @@ private:
   uint64_t m_heap_alloc_size;
   uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
-  uint8_t m_gc_flag;
+  boost::optional<uint8_t> m_gc_flag;
   std::string m_log_mode;
 
 private:

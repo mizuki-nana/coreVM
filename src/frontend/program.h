@@ -54,6 +54,7 @@ private:
   uint64_t m_heap_alloc_size;
   uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
+  uint32_t m_gc_flag;
 };
 
 

@@ -133,6 +133,9 @@ class Pyta(object):
                     ],
                     is_severe=True)
 
+        if self.options.args:
+            run_step.cmdl_args.append(self.options.args)
+
         self.steps = (compilation_step, run_step)
 
     def run(self):
@@ -179,6 +182,15 @@ def main():
         dest='dynamic_analysis',
         default=False,
         help='Enable dynamic analysis'
+    )
+
+    parser.add_option(
+        '-a',
+        '--args',
+        action='store',
+        dest='args',
+        default='',
+        help='Arguments passed to coreVM'
     )
 
     options, args = parser.parse_args()

@@ -76,7 +76,7 @@ Configuration::Configuration()
   m_heap_alloc_size(0u),
   m_pool_alloc_size(0u),
   m_gc_interval(0u),
-  m_gc_flag(0u),
+  m_gc_flag(),
   m_log_mode()
 {
 }
@@ -107,10 +107,18 @@ Configuration::gc_interval() const
 
 // -----------------------------------------------------------------------------
 
+bool
+Configuration::has_gc_flag() const
+{
+  return m_gc_flag.is_initialized();
+}
+
+// -----------------------------------------------------------------------------
+
 uint8_t
 Configuration::gc_flag() const
 {
-  return m_gc_flag;
+  return m_gc_flag.get();
 }
 
 // -----------------------------------------------------------------------------
