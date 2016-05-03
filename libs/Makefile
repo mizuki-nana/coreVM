@@ -30,14 +30,18 @@ BENCHMARK_DIR=$(TOP_DIR)/benchmark
 AVRO_DIR=$(TOP_DIR)/avro
 AVRO_CPP_DIR=$(AVRO_DIR)/lang/c++
 AVRO_PY_DIR=$(AVRO_DIR)/lang/py
+LLVM_TMP_DIR=llvm_tmp
+LLVM_BUILD_DIR=$(LLVM_TMP_DIR)/build
 BENCHMARK_HEADER_INSTALL_PATH=/usr/local/include/benchmark/
 
 ## -----------------------------------------------------------------------------
 
+# NOTE: llvm needs to be installed before sneaker. This is because both targets
+# will install libgtest, but the version we need is the one installed by sneaker.
+BASE_TARGETS=avro llvm sneaker
+
 ifeq ($(TRAVIS_OS_NAME), linux)
-BASE_TARGETS=cmake_target avro sneaker
-else
-BASE_TARGETS=avro sneaker
+	BASE_TARGETS:=cmake_target $(BASE_TARGETS)
 endif
 
 ## -----------------------------------------------------------------------------
@@ -93,5 +97,18 @@ endif
 	sudo mkdir -p /usr/local/include/avro
 	sudo cp -rf $(AVRO_CPP_DIR)/api/* /usr/local/include/avro/
 	cd $(AVRO_PY_DIR) && sudo python setup.py install
+
+## -----------------------------------------------------------------------------
+
+# LLVM Download Page: http://llvm.org/releases/download.html
+.PHONY: llvm
+llvm:
+	mkdir -p $(LLVM_TMP_DIR)
+	cd $(LLVM_TMP_DIR) && wget http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz
+	cd $(LLVM_TMP_DIR) && tar xfJ llvm-3.6.0.src.tar.xz
+	mkdir -p $(LLVM_BUILD_DIR)
+	cd $(LLVM_BUILD_DIR) && cmake ../llvm-3.6.0.src -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="X86"
+	cd $(LLVM_BUILD_DIR) && make && sudo make install
+	rm -rf $(LLVM_TMP_DIR)
 
 ## -----------------------------------------------------------------------------
