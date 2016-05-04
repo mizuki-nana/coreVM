@@ -50,12 +50,10 @@ add_executable(run_tests
     runtime/invocation_ctx_unittest.cc
     runtime/native_types_pool_unittest.cc
     runtime/process_unittest.cc
-    runtime/sighandler_registrar_unittest.cc
     runtime/utils_unittest.cc
     frontend/configuration_unittest.cc
     frontend/program_unittest.cc
     frontend/runner_unittest.cc
-    frontend/signal_vector_loader_unittest.cc
     frontend/utils_unittest.cc
     main.cc
     )

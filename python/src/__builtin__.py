@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2015 Yanzheng Li
+# Copyright (c) 2016 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1711,5 +1711,20 @@ def zip(*iterables):
         __call_method_1(i.__iadd__, CONST_INT_1)
 
     return res
+
+## -----------------------------------------------------------------------------
+
+def exit(code=None):
+    """Exits the program.
+
+    Reference:
+        https://docs.python.org/2/library/constants.html#exit
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [exit, 0, 0]
+    ### END VECTOR ###
+    """
 
 ## -----------------------------------------------------------------------------

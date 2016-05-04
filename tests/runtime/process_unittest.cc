@@ -26,7 +26,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/gc_rule.h"
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
-#include "runtime/sighandler_registrar.h"
 #include "runtime/vector.h"
 #include "types/native_type_handle.h"
 #include "types/types.h"
@@ -837,92 +836,6 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameFails)
     frame_ptr, process);
 
   ASSERT_EQ(nullptr, res);
-}
-
-// -----------------------------------------------------------------------------
-
-class ProcessSignalHandlingUnitTest : public ProcessUnitTest {};
-
-// -----------------------------------------------------------------------------
-
-TEST_F(ProcessSignalHandlingUnitTest, TestHandleSignalWithUserAction)
-{
-  /* This test currently does not work because our signal handling is only
-   * for signals that gets generated from individual instructions.
-   * Signal handling on the entire VM is currently not supported yet.
-   * The signal explicitly raised in this test will cause a crash and a
-   * core dump.
-   **/
-
-  /*
-  sig_atomic_t sig = SIGINT;
-
-  corevm::runtime::Process process;
-  corevm::runtime::SigHandlerRegistrar::init(&process);
-
-  ASSERT_EQ(0, process.stack_size());
-
-  corevm::runtime::Vector vector {
-    { .code=corevm::runtime::InstrEnum::NEW, .oprd1=0, .oprd2=0 },
-  };
-  process.set_sig_vector(sig, vector);
-
-  process.start();
-  raise(sig);
-
-  ASSERT_EQ(1, process.stack_size());
-  */
-}
-
-// -----------------------------------------------------------------------------
-
-TEST_F(ProcessSignalHandlingUnitTest, TestHandleSIGFPE)
-{
-  /* Tests that we are able to capture signals caused by individual
-   * instructions. In this case we are capturing the floating point error signal
-   * from the `div` instruction when the divisor is zero, and also
-   * we are able to catch it more than once.
-   **/
-
-  // TODO: [COREVM-117] Process start causes seg fault
-
-  /******************************** DISABLED ***********************************
-
-  sig_atomic_t sig = SIGFPE;
-
-  corevm::runtime::Process process;
-  corevm::runtime::Frame frame;
-  corevm::runtime::SigHandlerRegistrar::init(&process);
-  corevm::types::NativeTypeHandle oprd4 = corevm::types::int8(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::int8(10);
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::int8(0);
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::int8(10);
-
-  frame.push_eval_stack(oprd4);
-  frame.push_eval_stack(oprd3);
-  frame.push_eval_stack(oprd2);
-  frame.push_eval_stack(oprd1);
-  process.push_frame(frame);
-
-  ASSERT_EQ(0, process.stack_size());
-
-  std::vector<corevm::runtime::instr> instrs {
-    { .code=corevm::runtime::InstrEnum::DIV, .oprd1=0, .oprd2=0 },
-    { .code=corevm::runtime::InstrEnum::DIV, .oprd1=0, .oprd2=0 },
-  };
-
-  process.append_instrs(instrs);
-
-  corevm::runtime::Vector vector {
-    { .code=corevm::runtime::InstrEnum::NEW, .oprd1=0, .oprd2=0 },
-  };
-  process.set_sig_vector(sig, vector);
-
-  process.start();
-
-  ASSERT_EQ(2, process.stack_size());
-
-  ******************************** DISABLED ***********************************/
 }
 
 // -----------------------------------------------------------------------------

@@ -33,7 +33,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "invocation_ctx.h"
 #include "native_types_pool.h"
 #include "runtime_types.h"
-#include "sighandler.h"
 #include "vector.h"
 #include "corevm/logging.h"
 #include "dyobj/common.h"
@@ -41,7 +40,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cstdint>
 #include <type_traits>
-#include <unordered_map>
 #include <vector>
 
 
@@ -92,6 +90,14 @@ public:
     uint8_t gc_flag;
   };
 
+  enum ExecutionStatus : uint8_t
+  {
+    EXECUTION_STATUS_IDLE,
+    EXECUTION_STATUS_ACTIVE,
+    EXECUTION_STATUS_PAUSED,
+    EXECUTION_STATUS_TERMINATED
+  };
+
   Process();
   Process(uint64_t, uint64_t);
   explicit Process(const Process::Options&);
@@ -112,6 +118,8 @@ public:
   bool has_frame() const;
 
   Frame& top_frame();
+
+  const Frame& top_frame() const;
 
   /**
    * Gets the top frame, only when the call stack is not empty.
@@ -182,15 +190,13 @@ public:
 
   void set_gc_flag(uint8_t gc_flag);
 
-  bool can_execute();
+  ExecutionStatus execution_status() const;
 
   void pause_exec();
 
   void resume_exec();
 
-  void set_sig_vector(sig_atomic_t, Vector&);
-
-  void handle_signal(sig_atomic_t, SigHandler*);
+  void terminate_exec();
 
   dynamic_object_heap_type::size_type heap_size() const;
 
@@ -244,6 +250,8 @@ public:
 private:
   void init();
 
+  bool can_execute() const;
+
   bool is_valid_pc() const;
 
   bool pre_start();
@@ -254,7 +262,7 @@ private:
 
   void set_parent_for_top_frame();
 
-  bool m_pause_exec;
+  ExecutionStatus m_execution_status;
   bool m_do_gc;
   uint8_t m_gc_flag;
   dynamic_object_heap_type m_dynamic_object_heap;
@@ -262,7 +270,6 @@ private:
   std::vector<Frame> m_call_stack;
   std::vector<InvocationCtx> m_invocation_ctx_stack;
   NativeTypesPool m_ntvhndl_pool;
-  std::unordered_map<sig_atomic_t, Vector> m_sig_instr_map;
   std::vector<Compartment> m_compartments;
 };
 

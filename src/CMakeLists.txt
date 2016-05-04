@@ -50,15 +50,13 @@ set(sources
     runtime/process.cc
     runtime/process_printer.cc
     runtime/process_runner.cc
-    runtime/sighandler.cc
-    runtime/sighandler_registrar.cc
+    runtime/signal_handler.cc
     runtime/utils.cc
     frontend/binary_bytecode_loader.cc
     frontend/bytecode_loader.cc
     frontend/configuration.cc
     frontend/program.cc
     frontend/runner.cc
-    frontend/signal_vector_loader.cc
     frontend/utils.cc
     corevm/errors.cc
     corevm/logging.cc

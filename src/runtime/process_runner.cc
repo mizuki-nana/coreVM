@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "process.h"
+#include "signal_handler.h"
 #include "corevm/macros.h"
 
 #include <sneaker/threading/fixed_time_interval_daemon_service.h>
@@ -86,6 +87,7 @@ ProcessRunner::start()
 
   if (res)
   {
+    SignalHandler::register_process(&m_process);
     m_process.start();
   }
 

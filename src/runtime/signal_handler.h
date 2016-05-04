@@ -20,17 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_SIGHANDLER_REGISTRAR_H_
-#define COREVM_SIGHANDLER_REGISTRAR_H_
-
-#include "sighandler.h"
-
-#include <csignal>
-#include <memory>
-#include <string>
-#include <unordered_map>
-
-#include <setjmp.h>
+#ifndef COREVM_SIGNAL_HANDLER_H_
+#define COREVM_SIGNAL_HANDLER_H_
 
 
 namespace corevm {
@@ -39,48 +30,18 @@ namespace corevm {
 namespace runtime {
 
 
-// -----------------------------------------------------------------------------
-
-/** Forward declaration of `corevm::runtime::Process` */
 class Process;
 
-// -----------------------------------------------------------------------------
 
-typedef struct sighandler_wrapper
-{
-  const std::shared_ptr<corevm::runtime::SigHandler> handler;
-} sighandler_wrapper;
-
-// -----------------------------------------------------------------------------
-
-class SigHandlerRegistrar
+class SignalHandler
 {
 public:
-  static void init(corevm::runtime::Process*);
+  static void register_process(Process*);
 
-  static sigjmp_buf& get_sigjmp_env();
+private:
+  static Process* registered_process;
 
-  /**
-   * Initializes all signal handler registrations.
-   * Must be called after `init`.
-   */
-  static void ignore(sig_atomic_t);
-
-  [[ noreturn ]] /** Avoid compiler warning [-Wmissing-noreturn]. */
   static void handle_signal(int);
-
-  static bool is_sig_raised();
-
-  static void clear_sig_raised();
-
-  static sig_atomic_t get_sig_value_from_string(const std::string&);
-
-protected:
-  static bool sig_raised;
-
-  static corevm::runtime::Process* process;
-  static const std::unordered_map<sig_atomic_t, sighandler_wrapper> handler_map;
-  static const std::unordered_map<std::string, sig_atomic_t> sig_value_to_str_map;
 };
 
 
@@ -90,4 +51,4 @@ protected:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_SIGHANDLER_REGISTRAR_H_ */
+#endif /* COREVM_SIGNAL_HANDLER_H_ */

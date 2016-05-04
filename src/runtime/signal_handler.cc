@@ -20,20 +20,55 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "runtime/process.h"
-#include "runtime/sighandler_registrar.h"
+#include "signal_handler.h"
+#include "process.h"
 
-#include <gtest/gtest.h>
+#include <csignal>
 
 
-class SighandlerRegistrarTest : public ::testing::Test {};
+namespace corevm {
+
+
+namespace runtime {
+
 
 // -----------------------------------------------------------------------------
 
-TEST_F(SighandlerRegistrarTest, TestInit)
+Process* SignalHandler::registered_process = nullptr;
+
+// -----------------------------------------------------------------------------
+
+/* static */
+void
+SignalHandler::register_process(Process* process)
 {
-  corevm::runtime::Process process;
-  corevm::runtime::SigHandlerRegistrar::init(&process);
+  if (process)
+  {
+    registered_process = process;
+    signal(SIGTERM, handle_signal);
+  }
 }
 
 // -----------------------------------------------------------------------------
+
+/* static */
+void
+SignalHandler::handle_signal(int signum)
+{
+  switch (signum)
+  {
+    case SIGTERM:
+      registered_process->terminate_exec();
+      break;
+    default:
+      break;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+
+} /* end namespace runtime */
+
+
+} /* end namespace corevm */

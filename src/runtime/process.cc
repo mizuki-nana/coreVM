@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "gc_rule.h"
 #include "instr.h"
 #include "native_types_pool.h"
-#include "sighandler_registrar.h"
 #include "vector.h"
 #include "corevm/macros.h"
 #include "dyobj/common.h"
@@ -170,7 +169,7 @@ Process::get_dyobj(dyobj::dyobj_id_t id)
 Process::Process()
   :
   Loggable(),
-  m_pause_exec(false),
+  m_execution_status(EXECUTION_STATUS_IDLE),
   m_do_gc(false),
   m_gc_flag(0),
   m_dynamic_object_heap(),
@@ -178,7 +177,6 @@ Process::Process()
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(),
-  m_sig_instr_map(),
   m_compartments()
 {
   init();
@@ -189,7 +187,7 @@ Process::Process()
 Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   :
   Loggable(),
-  m_pause_exec(false),
+  m_execution_status(EXECUTION_STATUS_IDLE),
   m_do_gc(false),
   m_gc_flag(0),
   m_dynamic_object_heap(heap_alloc_size),
@@ -197,7 +195,6 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(pool_alloc_size),
-  m_sig_instr_map(),
   m_compartments()
 {
   init();
@@ -208,7 +205,7 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
 Process::Process(const Process::Options& options)
   :
   Loggable(),
-  m_pause_exec(false),
+  m_execution_status(EXECUTION_STATUS_IDLE),
   m_do_gc(false),
   m_gc_flag(options.gc_flag),
   m_dynamic_object_heap(options.heap_alloc_size),
@@ -216,7 +213,6 @@ Process::Process(const Process::Options& options)
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(options.pool_alloc_size),
-  m_sig_instr_map(),
   m_compartments()
 {
   init();
@@ -264,6 +260,14 @@ Process::top_frame()
   }
 
   return m_call_stack.back();
+}
+
+// -----------------------------------------------------------------------------
+
+const Frame&
+Process::top_frame() const
+{
+  return const_cast<Process*>(this)->top_frame();
 }
 
 // -----------------------------------------------------------------------------
@@ -601,10 +605,21 @@ Process::erase_ntvhndl(const types::NativeTypeHandle* ptr)
 
 // -----------------------------------------------------------------------------
 
+Process::ExecutionStatus
+Process::execution_status() const
+{
+  return m_execution_status;
+}
+
+// -----------------------------------------------------------------------------
+
 void
 Process::pause_exec()
 {
-  m_pause_exec = true;
+  if (m_execution_status == EXECUTION_STATUS_ACTIVE)
+  {
+    m_execution_status = EXECUTION_STATUS_PAUSED;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -612,15 +627,20 @@ Process::pause_exec()
 void
 Process::resume_exec()
 {
-  m_pause_exec = false;
+  if (m_execution_status == EXECUTION_STATUS_PAUSED)
+  {
+    m_execution_status = EXECUTION_STATUS_ACTIVE;
+  }
 }
 
 // -----------------------------------------------------------------------------
 
 inline bool
-Process::can_execute()
+Process::can_execute() const
 {
-  return has_frame() && top_frame().can_execute();
+  return (m_execution_status == EXECUTION_STATUS_ACTIVE ||
+          m_execution_status == EXECUTION_STATUS_PAUSED)
+    && has_frame() && top_frame().can_execute();
 }
 
 // -----------------------------------------------------------------------------
@@ -657,6 +677,8 @@ Process::pre_start()
     m_dyobj_stack.reserve(DEFAULT_OBJECT_STACK_CAPACITY);
 
     top_frame().set_pc_safe(0);
+
+    m_execution_status = EXECUTION_STATUS_ACTIVE;
   }
 
   return res;
@@ -690,7 +712,7 @@ Process::start()
 
   while (can_execute())
   {
-    while (m_pause_exec) {}
+    while (m_execution_status == EXECUTION_STATUS_PAUSED) {}
 
     const Instr& instr = top_frame().current_instr();
 
@@ -714,27 +736,6 @@ Process::start()
     measurements[instr.code].cumulative_wall_time += res.wall;
     ++measurements[instr.code].invocation_count;
 #endif
-
-    /**
-     * TODO: [COREVM-246] Enable support for signal handling mechanism
-     *
-    sigsetjmp(SigHandlerRegistrar::get_sigjmp_env(), 1);
-
-    if (!SigHandlerRegistrar::is_sig_raised())
-    {
-      handler->execute(instr, *this);
-    }
-    else
-    {
-      if (!can_execute())
-      {
-        break;
-      }
-    }
-
-    SigHandlerRegistrar::clear_sig_raised();
-    *
-    **/
 
     top_frame().inc_pc();
 
@@ -777,6 +778,14 @@ Process::do_gc()
   );
 
   resume_exec();
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Process::terminate_exec()
+{
+  m_execution_status = EXECUTION_STATUS_TERMINATED;
 }
 
 // -----------------------------------------------------------------------------
@@ -844,36 +853,6 @@ Process::should_gc() const
   }
 
   return false;
-}
-
-// -----------------------------------------------------------------------------
-
-void
-Process::set_sig_vector(sig_atomic_t sig, Vector& vector)
-{
-  m_sig_instr_map.insert({sig, vector});
-}
-
-// -----------------------------------------------------------------------------
-
-void
-Process::handle_signal(sig_atomic_t sig, SigHandler* handler)
-{
-  auto itr = m_sig_instr_map.find(sig);
-
-  if (itr != m_sig_instr_map.end())
-  {
-    /*
-     * TODO: [COREVM-246] Enable support for signal handling mechanism
-    Vector vector = itr->second;
-    pause_exec();
-    resume_exec();
-    */
-  }
-  else if (handler != nullptr)
-  {
-    handler->handle_signal(sig, *this);
-  }
 }
 
 // -----------------------------------------------------------------------------
