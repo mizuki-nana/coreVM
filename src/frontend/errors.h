@@ -27,8 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-#include <string>
-
 
 namespace corevm {
 
@@ -38,33 +36,9 @@ namespace frontend {
 
 // -----------------------------------------------------------------------------
 
-class RuntimeError : public corevm::RuntimeError
-{
-public:
-  explicit RuntimeError(const std::string& what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-
-  explicit RuntimeError(const char* what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
 class FileLoadingError : public RuntimeError
 {
 public:
-  explicit FileLoadingError(const std::string& what_arg)
-    :
-    RuntimeError(what_arg)
-  {
-  }
-
   explicit FileLoadingError(const char* what_arg)
     :
     RuntimeError(what_arg)
@@ -77,12 +51,6 @@ public:
 class ConfigurationLoadingError : public RuntimeError
 {
 public:
-  explicit ConfigurationLoadingError(const std::string& what_arg)
-    :
-    RuntimeError(what_arg)
-  {
-  }
-
   explicit ConfigurationLoadingError(const char* what_arg)
     :
     RuntimeError(what_arg)

@@ -2544,7 +2544,7 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestWithArrayTypes)
   typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_cmp_visitor, corevm::types::RuntimeError>(h1, h2);
+    corevm::types::native_type_cmp_visitor, corevm::RuntimeError>(h1, h2);
 }
 
 // -----------------------------------------------------------------------------
@@ -2555,7 +2555,7 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestWithMapTypes)
   typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
-    corevm::types::native_type_cmp_visitor, corevm::types::RuntimeError>(h1, h2);
+    corevm::types::native_type_cmp_visitor, corevm::RuntimeError>(h1, h2);
 }
 
 // -----------------------------------------------------------------------------

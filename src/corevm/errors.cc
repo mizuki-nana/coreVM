@@ -36,14 +36,6 @@ RuntimeError::RuntimeError(const std::string& what_arg)
 
 // -----------------------------------------------------------------------------
 
-RuntimeError::RuntimeError(const char* what_arg)
-  :
-  m_what_arg(what_arg)
-{
-}
-
-// -----------------------------------------------------------------------------
-
 const char*
 RuntimeError::what() const noexcept
 {

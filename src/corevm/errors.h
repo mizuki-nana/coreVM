@@ -33,7 +33,6 @@ class RuntimeError
 {
 public:
   explicit RuntimeError(const std::string& what_arg);
-  explicit RuntimeError(const char* what_arg);
 
   const char* what() const noexcept;
 

@@ -27,8 +27,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-#include <string>
-
 
 namespace corevm {
 
@@ -38,91 +36,48 @@ namespace types {
 
 // -----------------------------------------------------------------------------
 
-class RuntimeError : public corevm::RuntimeError
+class ConversionError : public RuntimeError
 {
 public:
-  explicit RuntimeError(const std::string& what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-
-  explicit RuntimeError(const char* what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
-class ConversionError : public corevm::types::RuntimeError
-{
-public:
-  explicit ConversionError(const std::string& src_type_,
-    const std::string& dst_type_)
-    :
-    corevm::types::RuntimeError(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
-    src_type(src_type_),
-    dst_type(dst_type_)
-  {
-  }
-
   explicit ConversionError(const char* src_type_, const char* dst_type_)
     :
-    corevm::types::RuntimeError(
-      str(boost::format("Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
+    RuntimeError(str(boost::format(
+      "Cannot convert between native types %s to %s") % src_type_ % dst_type_)),
     src_type(src_type_),
     dst_type(dst_type_)
   {
   }
 
-  const std::string src_type;
-  const std::string dst_type;
+  const char* src_type;
+  const char* dst_type;
 };
 
 // -----------------------------------------------------------------------------
 
-class InvalidOperatorError : public corevm::types::RuntimeError
+class InvalidOperatorError : public RuntimeError
 {
 public:
-  explicit InvalidOperatorError(const std::string& op_, const std::string& type_)
-    :
-    corevm::types::RuntimeError(
-      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)),
-    op(op_),
-    type(type_)
-  {
-  }
-
   explicit InvalidOperatorError(const char* op_, const char* type_)
     :
-    corevm::types::RuntimeError(
-      str(boost::format("Cannot perform operator %s on native type %s") % op_ % type_)),
+    RuntimeError(str(boost::format(
+      "Cannot perform operator %s on native type %s") % op_ % type_)),
     op(op_),
     type(type_)
   {
   }
 
-  const std::string op;
-  const std::string type;
+  const char* op;
+  const char* type;
 };
 
 // -----------------------------------------------------------------------------
 
-class OutOfRangeError : public corevm::types::RuntimeError
+class OutOfRangeError : public RuntimeError
 {
 public:
-  explicit OutOfRangeError(const std::string& what_arg)
-    :
-    types::RuntimeError(what_arg)
-  {
-  }
-
   explicit OutOfRangeError(const char* what_arg)
     :
-    types::RuntimeError(what_arg)
+    RuntimeError(what_arg)
   {
   }
 };

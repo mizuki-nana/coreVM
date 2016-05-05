@@ -185,13 +185,8 @@ Configuration::load_config(const std::string& path)
   }
   catch (const std::ios_base::failure& ex)
   {
-    THROW(ConfigurationLoadingError(
-      str(
-        boost::format(
-          "Error loading configuration file %s: %s"
-        ) % path % ex.what()
-      )
-    ));
+    THROW(ConfigurationLoadingError(str(boost::format(
+      "Error loading configuration file %s: %s") % path % ex.what()).c_str()));
   }
 
   std::string content = buffer.str();
@@ -204,13 +199,8 @@ Configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::invalid_json_error& ex)
   {
-    THROW(ConfigurationLoadingError(
-      str(
-        boost::format(
-          "Error parsing configuration file %s: %s"
-        ) % path % ex.what()
-      )
-    ));
+    THROW(ConfigurationLoadingError(str(boost::format(
+      "Error parsing configuration file %s: %s") % path % ex.what()).c_str()));
   }
 
   JSON schema_json = sneaker::json::parse(Configuration::schema);
@@ -221,13 +211,8 @@ Configuration::load_config(const std::string& path)
   }
   catch (const sneaker::json::json_validation_error& ex)
   {
-    THROW(ConfigurationLoadingError(
-      str(
-        boost::format(
-          "Invalid configuration file %s: %s"
-        ) % path % ex.what()
-      )
-    ));
+    THROW(ConfigurationLoadingError(str(boost::format(
+      "Invalid configuration file %s: %s") % path % ex.what()).c_str()));
   }
 
   Configuration configuration;

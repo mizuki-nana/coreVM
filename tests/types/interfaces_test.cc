@@ -961,7 +961,7 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithInvalidType)
     {
       auto result = corevm::types::interface_compute_slice(oprd1, oprd2, oprd3);
     },
-    corevm::types::RuntimeError
+    corevm::RuntimeError
   );
 }
 
@@ -1231,7 +1231,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithInvalidTypeOperand)
     {
       auto result = corevm::types::interface_compute_reverse(oprd);
     },
-    corevm::types::RuntimeError
+    corevm::RuntimeError
   );
 }
 

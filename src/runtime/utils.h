@@ -66,7 +66,7 @@ getattr(const ObjPtrType& obj, dyobj::attr_key_t attr_key,
   if (!obj->getattr(attr_key, &attr_ptr))
   {
     THROW(dyobj::ObjectAttributeNotFoundError(
-      attr_key, obj->id(), attr_name));
+      attr_key, obj->id(), attr_name.c_str()));
   }
 
   return attr_ptr;
@@ -87,7 +87,8 @@ getattr(const ObjPtrType& obj, const std::string& attr_name)
 
 template<typename ObjPtrType>
 ObjPtrType
-getattr(const ObjPtrType& obj, Compartment* compartment, encoding_key_t attr_encoding_key)
+getattr(const ObjPtrType& obj, Compartment* compartment,
+  encoding_key_t attr_encoding_key)
 {
   std::string attr_name;
   dyobj::attr_key_t attr_key = get_attr_key(

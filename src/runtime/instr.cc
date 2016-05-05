@@ -44,6 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 #include <vector>
 
+#include <boost/format.hpp>
+
 
 namespace corevm {
 
@@ -626,7 +628,7 @@ instr_handler_setattr(const Instr& instr, Process& process,
   if (target_obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
   {
     THROW(InvalidOperationError(
-      str(format("cannot mutate immutable object 0x%08x") % target_obj->id())));
+      str(boost::format("cannot mutate immutable object 0x%08x") % target_obj->id()).c_str()));
   }
 
   target_obj->putattr(attr_key, attr_obj);
@@ -646,7 +648,7 @@ instr_handler_delattr(const Instr& instr, Process& process,
   if (obj->get_flag(dyobj::DynamicObjectFlagBits::DYOBJ_IS_IMMUTABLE))
   {
     THROW(InvalidOperationError(
-      str(format("cannot mutate immutable object 0x%08x") % obj->id())));
+      str(boost::format("cannot mutate immutable object 0x%08x") % obj->id()).c_str()));
   }
 
   auto attr_obj = obj->getattr(attr_key);

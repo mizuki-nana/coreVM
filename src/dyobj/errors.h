@@ -28,8 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <boost/format.hpp>
 
-#include <string>
-
 
 namespace corevm {
 
@@ -39,42 +37,18 @@ namespace dyobj {
 
 // -----------------------------------------------------------------------------
 
-class RuntimeError : public corevm::RuntimeError
+class ObjectNotFoundError : public RuntimeError
 {
 public:
-  explicit RuntimeError(const std::string& what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-
-  explicit RuntimeError(const char* what_arg)
-    :
-    corevm::RuntimeError(what_arg)
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
-class ObjectNotFoundError : public dyobj::RuntimeError
-{
-public:
-  explicit ObjectNotFoundError(const std::string& what_arg)
-    :
-    dyobj::RuntimeError(what_arg)
-  {
-  }
-
   explicit ObjectNotFoundError(const char* what_arg)
     :
-    dyobj::RuntimeError(what_arg)
+    RuntimeError(what_arg)
   {
   }
 
   explicit ObjectNotFoundError(corevm::dyobj::dyobj_id_t id_)
     :
-    dyobj::RuntimeError(str(boost::format("Object %#x not found") % id_)),
+    RuntimeError(str(boost::format("Object %#x not found") % id_)),
     id(id_)
   {
   }
@@ -84,37 +58,29 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectAttributeNotFoundError : public dyobj::RuntimeError
+class ObjectAttributeNotFoundError : public RuntimeError
 {
 public:
-  explicit ObjectAttributeNotFoundError(const std::string& what_arg)
-    :
-    dyobj::RuntimeError(what_arg)
-  {
-  }
-
   explicit ObjectAttributeNotFoundError(const char* what_arg)
     :
-    dyobj::RuntimeError(what_arg)
+    RuntimeError(what_arg)
   {
   }
 
   ObjectAttributeNotFoundError(attr_key_t attr_key_, dyobj_id_t id_)
     :
-    dyobj::RuntimeError(
-      str(boost::format(
-        "Attribute %#x in object %#x not found") % attr_key_ % id_)),
+    RuntimeError(str(boost::format(
+      "Attribute %#x in object %#x not found") % attr_key_ % id_)),
     attr_key(attr_key_),
     id(id_)
   {
   }
 
-  ObjectAttributeNotFoundError(attr_key_t attr_key_,
-    dyobj_id_t id_, const std::string& attr_name)
+  ObjectAttributeNotFoundError(attr_key_t attr_key_, dyobj_id_t id_,
+    const char* attr_name)
     :
-    dyobj::RuntimeError(
-      str(boost::format(
-        "Attribute '%s' in object %#x not found") % attr_name % id_)),
+    RuntimeError(str(boost::format(
+      "Attribute '%s' in object %#x not found") % attr_name % id_)),
     attr_key(attr_key_),
     id(id_)
   {
@@ -126,24 +92,24 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ObjectCreationError : public dyobj::RuntimeError
+class ObjectCreationError : public RuntimeError
 {
 public:
   explicit ObjectCreationError()
     :
-    dyobj::RuntimeError("Failed to create dynamic object")
+    RuntimeError("Failed to create dynamic object")
   {
   }
 };
 
 // -----------------------------------------------------------------------------
 
-class InvalidFlagBitError : public dyobj::RuntimeError
+class InvalidFlagBitError : public RuntimeError
 {
 public:
   explicit InvalidFlagBitError()
     :
-    dyobj::RuntimeError("Invalid flag bit provided")
+    RuntimeError("Invalid flag bit provided")
   {
   }
 };

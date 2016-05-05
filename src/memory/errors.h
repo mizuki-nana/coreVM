@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/format.hpp>
 
 #include <cstdint>
-#include <string>
 
 
 namespace corevm {
@@ -37,13 +36,13 @@ namespace corevm {
 namespace memory {
 
 
-class InvalidAddressError : public corevm::RuntimeError
+class InvalidAddressError : public RuntimeError
 {
 public:
-  explicit InvalidAddressError(const uint64_t addr):
+  explicit InvalidAddressError(const uint64_t addr)
+    :
     corevm::RuntimeError(
-      str(boost::format("Invalid object address %lu encountered") % addr)
-    )
+      str(boost::format("Invalid object address %lu encountered") % addr))
   {
   }
 };
