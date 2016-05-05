@@ -46,9 +46,6 @@ COREVM_BYTECODE_SCHEMA_FILE = 'corevm_bytecode_schema.json'
 INSTR_STR_TO_CODE_MAP = 'INSTR_STR_TO_CODE_MAP'
 DYOBJ_FLAG_STR_TO_VALUE_MAP = 'DYOBJ_FLAG_STR_TO_VALUE_MAP'
 COREVM_BYTECODE_SCHEMA = os.path.join(SCHEMAS_DIR, COREVM_BYTECODE_SCHEMA_FILE)
-BYTECODE_BINARY_FORMAT = 'binary'
-BYTECODE_TEXT_FORMAT = 'text'
-BYTECODE_FORMATS = (BYTECODE_BINARY_FORMAT, BYTECODE_TEXT_FORMAT)
 
 ## -----------------------------------------------------------------------------
 
@@ -84,15 +81,12 @@ class Instr(object):
         self.oprd1 = oprd1
         self.oprd2 = oprd2
 
-    def to_json(self, binary=False):
-        if binary:
-            return {
-                'code': self.code,
-                'oprd1': self.oprd1,
-                'oprd2': self.oprd2
-            }
-        else:
-            return [self.code, self.oprd1, self.oprd2]
+    def to_json(self):
+        return {
+            'code': self.code,
+            'oprd1': self.oprd1,
+            'oprd2': self.oprd2
+        }
 
 ## -----------------------------------------------------------------------------
 
@@ -103,21 +97,12 @@ class Loc(object):
         self.lineno = lineno
         self.col_offset = col_offset
 
-    def to_json(self, binary=False):
-        if binary:
-            return {
-                'index': self.index,
-                'lineno': self.lineno,
-                'col_offset': self.col_offset
-            }
-        else:
-            return {
-                'index': self.index,
-                'loc': {
-                    'lineno': self.lineno,
-                    'col_offset': self.col_offset
-                }
-            }
+    def to_json(self):
+        return {
+            'index': self.index,
+            'lineno': self.lineno,
+            'col_offset': self.col_offset
+        }
 
 ## -----------------------------------------------------------------------------
 
@@ -188,13 +173,13 @@ class Closure(object):
     def add_loc(self, loc):
         self.locs.append(loc)
 
-    def to_json(self, binary=False):
+    def to_json(self):
         return {
             'name': self.original_name,
             'id': self.closure_id,
             'parent_id': self.parent_id if self.parent_id is not None else self.NONESET_CLOSURE_ID,
-            'vector': [instr.to_json(binary=binary) for instr in self.vector],
-            'locs': [loc.to_json(binary=binary) for loc in self.locs],
+            'vector': [instr.to_json() for instr in self.vector],
+            'locs': [loc.to_json() for loc in self.locs],
             'catch_sites': [catch_site.to_json() for catch_site in self.catch_sites]
         }
 
@@ -418,40 +403,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
         self.visit(tree)
 
-    def finalize(self, format):
-        if format == BYTECODE_BINARY_FORMAT:
-            self.finalize_binary()
-        elif format == BYTECODE_TEXT_FORMAT:
-            self.finalize_text()
-        else:
-            raise Exception('Invalid bytecode formats' % format)
-
-    def finalize_text(self):
-        """Finalize textual format encoding."""
-
-        structured_bytecode = {
-            'format': self.format,
-            'format-version': self.format_version,
-            'target-version': self.target_version,
-            'path': self.input_file,
-            'timestamp': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-            'encoding': self.encoding,
-            'author': self.author,
-            'string_literal_table': self.string_literal_encoding_map.flatten_to_table(),
-            'fpt_literal_table': self.fpt_literal_encoding_map.flatten_to_table(),
-            '__MAIN__': self.__finalize_closure_table(binary=False)
-        }
-
-        if self.debug_mode:
-            print 'Writing the following to %s' % self.output_file
-            pprint.pprint(structured_bytecode)
-
-        with open(self.output_file, 'w') as fd:
-            fd.write(json.dumps(structured_bytecode))
-
-    def finalize_binary(self):
-        """Finalize binary format encoding."""
-
+    def finalize(self):
         with open(COREVM_BYTECODE_SCHEMA, 'r') as schema_file:
             bytecode_schema = avro.schema.parse(schema_file.read())
 
@@ -465,7 +417,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             'author': self.author,
             'string_literal_table': self.string_literal_encoding_map.flatten_to_table(),
             'fpt_literal_table': self.fpt_literal_encoding_map.flatten_to_table(),
-            '__MAIN__': self.__finalize_closure_table(binary=True)
+            '__MAIN__': self.__finalize_closure_table()
         }
 
         self.__validate(structured_bytecode)
@@ -483,7 +435,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         for validator in self.structured_bytecode_validators:
             validator.validate(structured_bytecode)
 
-    def __finalize_closure_table(self, binary=False):
+    def __finalize_closure_table(self):
         closure_table = sorted(
             self.closure_map.values(),
             key = lambda closure: closure.closure_id)
@@ -501,7 +453,7 @@ class BytecodeGenerator(ast.NodeVisitor):
                 assert closure.parent_name == parent_closure.name, \
                     'Invalid hierarchical relation between closures'
 
-        return [closure.to_json(binary=binary) for closure in closure_table]
+        return [closure.to_json() for closure in closure_table]
 
     def __enter_scope(self, in_cls=False, name=None):
         self.scopes.append(Scope(in_cls=in_cls, name=name))
@@ -1738,15 +1690,6 @@ def main():
     )
 
     parser.add_option(
-        '-t',
-        '--format',
-        action='store',
-        dest='format',
-        default='binary',
-        help='Bytecode format (binary or text)'
-    )
-
-    parser.add_option(
         '-d',
         '--debug',
         action='store_true',
@@ -1766,10 +1709,6 @@ def main():
 
     if not options.output_file:
         sys.stderr.write('Output file not specified\n')
-        sys.exit(-1)
-
-    if options.format not in BYTECODE_FORMATS:
-        sys.stderr.write('Invalid bytecode format: %s\n' % options.format)
         sys.exit(-1)
 
     try:
@@ -1795,7 +1734,7 @@ def main():
 
         generator.read_from_source(options.input_file)
 
-        generator.finalize(format=options.format)
+        generator.finalize()
     except Exception as ex:
         sys.stderr.write('Failed to compile %s\n' % options.input_file)
         sys.stderr.write(str(ex))
