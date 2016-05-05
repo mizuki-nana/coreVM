@@ -98,7 +98,8 @@ Python compiler that lives under [python/compiler](python/compiler), which
 compiles Python source code into coreVM bytecode. In addition, there is a
 command-line program [python/pyta.py](python/pyta.py) that can directly execute
 a given Python program by invoking the compiler to generate coreVM bytecode,
-and feeds the output to the VM.
+and feeds the output to the VM. Click [here](python/README.md) to view the
+project summary page.
 
 The development of the VM and the language complements each other well, as the
 language serves as a great target to test and benchmark the VM, and at the same
