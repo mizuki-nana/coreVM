@@ -177,7 +177,8 @@ Process::Process()
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(),
-  m_compartments()
+  m_compartments(),
+  m_frame_cache()
 {
   init();
 }
@@ -195,7 +196,8 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(pool_alloc_size),
-  m_compartments()
+  m_compartments(),
+  m_frame_cache()
 {
   init();
 }
@@ -213,7 +215,8 @@ Process::Process(const Process::Options& options)
   m_call_stack(),
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(options.pool_alloc_size),
-  m_compartments()
+  m_compartments(),
+  m_frame_cache()
 {
   init();
 }
@@ -313,6 +316,8 @@ Process::pop_frame()
     }
   );
 
+  m_frame_cache.erase_parent_frame(&frame);
+
   m_call_stack.pop_back();
 
   pop_invocation_ctx();
@@ -360,13 +365,13 @@ Process::push_frame(Frame& frame)
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
-  Closure* closure_ptr)
+Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
+  Closure* closure)
 {
-  ASSERT(compartment_ptr);
-  ASSERT(closure_ptr);
+  ASSERT(compartment);
+  ASSERT(closure);
   check_call_stack_capacity();
-  m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
+  m_call_stack.emplace_back(ctx, compartment, closure);
 
   set_parent_for_top_frame();
 }
@@ -374,13 +379,13 @@ Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
 // -----------------------------------------------------------------------------
 
 void
-Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment_ptr,
-  Closure* closure_ptr, instr_addr_t return_addr)
+Process::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
+  Closure* closure, instr_addr_t return_addr)
 {
-  ASSERT(compartment_ptr);
-  ASSERT(closure_ptr);
+  ASSERT(compartment);
+  ASSERT(closure);
   check_call_stack_capacity();
-  m_call_stack.emplace_back(ctx, compartment_ptr, closure_ptr, return_addr);
+  m_call_stack.emplace_back(ctx, compartment, closure, return_addr);
 
   set_parent_for_top_frame();
 }
@@ -391,8 +396,19 @@ void
 Process::set_parent_for_top_frame()
 {
   Frame* frame = &m_call_stack.back();
-  runtime::Frame* parent =
-    Process::find_parent_frame_in_process(frame, *this);
+
+  Frame* parent = NULL;
+
+  parent = m_frame_cache.parent_frame_of(frame->closure_ctx());
+
+  if (!parent)
+  {
+    parent = Process::find_parent_frame_in_process(frame, *this);
+    if (parent)
+    {
+      m_frame_cache.insert_parent_frame(frame->closure_ctx(), parent);
+    }
+  }
 
   frame->set_parent(parent);
 }
@@ -455,13 +471,13 @@ Process::push_invocation_ctx(const InvocationCtx& invk_ctx)
 
 void
 Process::emplace_invocation_ctx(const ClosureCtx& ctx,
-  Compartment* compartment_ptr,
-  Closure* closure_ptr)
+  Compartment* compartment,
+  Closure* closure)
 {
-  ASSERT(compartment_ptr);
-  ASSERT(closure_ptr);
+  ASSERT(compartment);
+  ASSERT(closure);
   check_invk_ctx_stack_capacity();
-  m_invocation_ctx_stack.emplace_back(ctx, compartment_ptr, closure_ptr);
+  m_invocation_ctx_stack.emplace_back(ctx, compartment, closure);
 }
 
 // -----------------------------------------------------------------------------
@@ -960,7 +976,7 @@ Process::find_parent_frame_in_process(Frame* frame_ptr, Process& process)
   ASSERT(frame_ptr);
 #endif
 
-  const Closure* closure = frame_ptr->closure_ptr();
+  const Closure* closure = frame_ptr->closure();
 
 #if __DEBUG__
   ASSERT(closure);
@@ -975,7 +991,7 @@ Process::find_parent_frame_in_process(Frame* frame_ptr, Process& process)
 
   ClosureCtx ctx(frame_ptr->closure_ctx().compartment_id, parent_closure_id);
 
-  Compartment* compartment = frame_ptr->compartment_ptr();
+  Compartment* compartment = frame_ptr->compartment();
 
 #if __DEBUG__
   ASSERT(compartment);
@@ -1025,11 +1041,11 @@ Process::unwind_stack(Process& process, size_t limit)
 
     Frame& frame = process.top_frame();
 
-    const Compartment* compartment = frame.compartment_ptr();
+    const Compartment* compartment = frame.compartment();
 
     line_ss << "    " << "File " << '\"' << compartment->path() << '\"';
 
-    const Closure* closure = frame.closure_ptr();
+    const Closure* closure = frame.closure();
 
     const LocTable& locs = closure->locs;
 

@@ -65,8 +65,8 @@ TEST_F(InvocationCtxUnitTest, TestInitialization)
 {
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
   ASSERT_TRUE(m_ctx == invk_ctx.closure_ctx());
-  ASSERT_EQ(m_compartment, invk_ctx.compartment_ptr());
-  ASSERT_EQ(&m_closure, invk_ctx.closure_ptr());
+  ASSERT_EQ(m_compartment, invk_ctx.compartment());
+  ASSERT_EQ(&m_closure, invk_ctx.closure());
 }
 
 // -----------------------------------------------------------------------------

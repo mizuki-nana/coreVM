@@ -30,10 +30,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime_types.h"
 #include "dyobj/common.h"
 #include "types/fwd.h"
+#include "corevm/macros.h"
 
 #include <cstdint>
-#include <unordered_map>
 #include <vector>
+
+#if COREVM_USE_LINEAR_VARIABLE_TABLE
+  #include "linear_map.h"
+  #include "corevm/llvm_smallvector.h"
+#else
+  #include <unordered_map>
+#endif // COREVM_USE_LINEAR_VARIABLE_TABLE
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  #include "lru_cache.h"
+#endif
 
 
 namespace corevm {
@@ -108,6 +119,8 @@ public:
 
   bool get_visible_var_fast(const variable_key_t, dyobj_ptr*) const;
 
+  bool get_visible_var_through_ancestry(variable_key_t, dyobj_ptr*);
+
   dyobj_ptr pop_visible_var(const variable_key_t);
 
   void set_visible_var(variable_key_t, dyobj_ptr);
@@ -119,6 +132,8 @@ public:
   dyobj_ptr get_invisible_var(const variable_key_t) const;
 
   bool get_invisible_var_fast(const variable_key_t, dyobj_ptr*) const;
+
+  bool get_invisible_var_through_ancestry(variable_key_t, dyobj_ptr*);
 
   dyobj_ptr pop_invisible_var(const variable_key_t);
 
@@ -134,9 +149,9 @@ public:
 
   ClosureCtx closure_ctx() const;
 
-  Compartment* compartment_ptr() const;
+  Compartment* compartment() const;
 
-  Closure* closure_ptr() const;
+  Closure* closure() const;
 
   Frame* parent() const;
 
@@ -152,14 +167,30 @@ public:
   void clear_exc_obj();
 
 protected:
+
+#if COREVM_USE_LINEAR_VARIABLE_TABLE
+  typedef LinearMap<variable_key_t, dyobj_ptr,
+    llvm::SmallVector<std::pair<variable_key_t, dyobj_ptr>, 20>> VariableTable;
+#else
+  typedef std::unordered_map<variable_key_t, dyobj_ptr> VariableTable;
+#endif
+
   instr_addr_t m_pc;
   const runtime::ClosureCtx m_closure_ctx;
-  Compartment* m_compartment_ptr;
-  Closure* m_closure_ptr;
+  Compartment* m_compartment;
+  Closure* m_closure;
   Frame* m_parent;
   instr_addr_t m_return_addr;
-  std::unordered_map<variable_key_t, dyobj_ptr> m_visible_vars;
-  std::unordered_map<variable_key_t, dyobj_ptr> m_invisible_vars;
+  VariableTable m_visible_vars;
+  VariableTable m_invisible_vars;
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  typedef LruCache<variable_key_t, dyobj_ptr, 20>::type VariableTableCache;
+
+  VariableTableCache m_visible_vars_cache;
+  VariableTableCache m_invisible_vars_cache;
+#endif
+
   std::vector<types::NativeTypeHandle> m_eval_stack;
   dyobj_ptr m_exc_obj;
 };

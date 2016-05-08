@@ -33,8 +33,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/format.hpp>
 #include <sneaker/libc/utils.h>
 
+#if COREVM_USE_SMALL_ATTRIBUTE_TABLE
+  #include "corevm/llvm_smallvector.h"
+#else
+  #include <vector>
+#endif // COREVM_USE_SMALL_ATTRIBUTE_TABLE
+
 #include <algorithm>
-#include <vector>
 
 
 namespace corevm {
@@ -51,7 +56,12 @@ public:
   typedef DynamicObject<DynamicObjectManager>* dyobj_ptr;
 
   typedef std::pair<attr_key_type, dyobj_ptr> attr_key_value_pair;
+
+#if COREVM_USE_SMALL_ATTRIBUTE_TABLE
+  typedef llvm::SmallVector<attr_key_value_pair, 20> attr_map_type;
+#else
   typedef std::vector<attr_key_value_pair> attr_map_type;
+#endif
 
   typedef typename attr_map_type::iterator iterator;
   typedef typename attr_map_type::const_iterator const_iterator;
@@ -232,7 +242,7 @@ template<class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
 DynamicObject<DynamicObjectManager>::cbegin() const noexcept
 {
-  return m_attrs.cbegin();
+  return m_attrs.begin();
 }
 
 // -----------------------------------------------------------------------------
@@ -241,7 +251,7 @@ template<class DynamicObjectManager>
 typename DynamicObject<DynamicObjectManager>::const_iterator
 DynamicObject<DynamicObjectManager>::cend() const noexcept
 {
-  return m_attrs.cend();
+  return m_attrs.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -452,7 +462,7 @@ DynamicObject<DynamicObjectManager>::putattr(
 
   if (itr == m_attrs.end())
   {
-    m_attrs.emplace_back(attr_key, obj_ptr);
+    m_attrs.push_back(std::make_pair(attr_key, obj_ptr));
   }
   else
   {

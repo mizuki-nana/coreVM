@@ -283,24 +283,8 @@ class with_stmt_runner(object):
 
 ## -----------------------------------------------------------------------------
 
-def max(a, b):
-    if __call_method_1(a.__gte__, b):
-        return a
-
-    return b
-
-## -----------------------------------------------------------------------------
-
-def min(a, b):
-    if __call_method_1(a.__lte__, b):
-        return a
-
-    return b
-
-## -----------------------------------------------------------------------------
-
 def abs(x):
-    """Built-in functions.
+    """Built-in function.
 
     Reference:
         https://docs.python.org/2/library/functions.html#abs
@@ -733,6 +717,21 @@ def delattr(obj, name):
 
 ## -----------------------------------------------------------------------------
 
+def exit(code=None):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/constants.html#exit
+    """
+
+    """
+    ### BEGIN VECTOR ###
+    [exit, 0, 0]
+    ### END VECTOR ###
+    """
+
+## -----------------------------------------------------------------------------
+
 def filter(function_, iterable):
     """Built-in function.
 
@@ -961,10 +960,9 @@ def iter(o):
 
     [ldobj, None, 0]
     [stobj, sentinel, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, sentinel, 0]
+    [getarg, sentinel, 0]
     ### END VECTOR ###
     """
 
@@ -1101,6 +1099,32 @@ def map(function, iterable, *iterables):
 
 ## -----------------------------------------------------------------------------
 
+def max(a, b):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#max
+    """
+    if __call_method_1(a.__gte__, b):
+        return a
+
+    return b
+
+## -----------------------------------------------------------------------------
+
+def min(a, b):
+    """Built-in function.
+
+    Reference:
+        https://docs.python.org/2/library/functions.html#min
+    """
+    if __call_method_1(a.__lte__, b):
+        return a
+
+    return b
+
+## -----------------------------------------------------------------------------
+
 def next(iterator):
     """Built-in function.
 
@@ -1120,10 +1144,9 @@ def next(iterator):
 
     [ldobj, None, 0]
     [stobj, default, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, default, 0]
+    [getarg, default, 0]
     ### END VECTOR ###
     """
 
@@ -1216,10 +1239,9 @@ def pow(x, y):
 
     [ldobj, None, 0]
     [stobj, z, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, z, 0]
+    [getarg, z, 0]
     ### END VECTOR ###
     """
 
@@ -1292,10 +1314,9 @@ def range(arg):
 
     [ldobj, None, 0]
     [stobj, arg2, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, arg2, 0]
+    [getarg, arg2, 0]
     ### END VECTOR ###
     """
 
@@ -1311,10 +1332,9 @@ def range(arg):
 
     [ldobj, None, 0]
     [stobj, step, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, step, 0]
+    [getarg, step, 0]
     ### END VECTOR ###
     """
 
@@ -1382,10 +1402,9 @@ def reduce(function, iterable):
 
     [ldobj, None, 0]
     [stobj, initializer, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, initializer, 0]
+    [getarg, initializer, 0]
     ### END VECTOR ###
     """
 
@@ -1465,10 +1484,9 @@ def round(number):
 
     [ldobj, None, 0]
     [stobj, ndigits, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, ndigits, 0]
+    [getarg, ndigits, 0]
     ### END VECTOR ###
     """
 
@@ -1542,10 +1560,9 @@ def sorted(iterable, key=None, reverse=False):
     [hasargs, 0, 0]
     [jmpif, 1, 0]
 
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, cmp, 0]
+    [getarg, cmp, 0]
     ### END VECTOR ###
     """
 
@@ -1616,10 +1633,9 @@ def sum(iterable):
 
     [ldobj, None, 0]
     [stobj, start, 0]
-    [jmp, 2, 0]
+    [jmp, 1, 0]
 
-    [getarg, 0, 0]
-    [stobj, start, 0]
+    [getarg, start, 0]
     ### END VECTOR ###
     """
 
@@ -1711,20 +1727,5 @@ def zip(*iterables):
         __call_method_1(i.__iadd__, CONST_INT_1)
 
     return res
-
-## -----------------------------------------------------------------------------
-
-def exit(code=None):
-    """Exits the program.
-
-    Reference:
-        https://docs.python.org/2/library/constants.html#exit
-    """
-
-    """
-    ### BEGIN VECTOR ###
-    [exit, 0, 0]
-    ### END VECTOR ###
-    """
 
 ## -----------------------------------------------------------------------------

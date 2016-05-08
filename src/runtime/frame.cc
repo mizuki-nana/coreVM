@@ -41,17 +41,21 @@ namespace runtime {
 // -----------------------------------------------------------------------------
 
 Frame::Frame(const runtime::ClosureCtx& closure_ctx,
-  Compartment* compartment_ptr,
-  Closure* closure_ptr)
+  Compartment* compartment,
+  Closure* closure)
   :
   m_pc(corevm::runtime::NONESET_INSTR_ADDR),
   m_closure_ctx(closure_ctx),
-  m_compartment_ptr(compartment_ptr),
-  m_closure_ptr(closure_ptr),
+  m_compartment(compartment),
+  m_closure(closure),
   m_parent(nullptr),
   m_return_addr(NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  m_visible_vars_cache(),
+  m_invisible_vars_cache(),
+#endif
   m_eval_stack(),
   m_exc_obj(NULL)
 {
@@ -62,18 +66,22 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
 // -----------------------------------------------------------------------------
 
 Frame::Frame(const runtime::ClosureCtx& closure_ctx,
-  Compartment* compartment_ptr,
-  Closure* closure_ptr,
+  Compartment* compartment,
+  Closure* closure,
   instr_addr_t return_addr)
   :
   m_pc(corevm::runtime::NONESET_INSTR_ADDR),
   m_closure_ctx(closure_ctx),
-  m_compartment_ptr(compartment_ptr),
-  m_closure_ptr(closure_ptr),
+  m_compartment(compartment),
+  m_closure(closure),
   m_parent(nullptr),
   m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  m_visible_vars_cache(),
+  m_invisible_vars_cache(),
+#endif
   m_eval_stack(),
   m_exc_obj(NULL)
 {
@@ -110,7 +118,7 @@ void
 Frame::set_pc(instr_addr_t addr)
 {
   if ( addr != corevm::runtime::NONESET_INSTR_ADDR &&
-      (addr < 0 || static_cast<size_t>(addr) >= m_closure_ptr->vector.size()) )
+      (addr < 0 || static_cast<size_t>(addr) >= m_closure->vector.size()) )
   {
     THROW(InvalidInstrAddrError());
   }
@@ -131,7 +139,7 @@ Frame::set_pc_safe(instr_addr_t addr)
 const Instr&
 Frame::current_instr() const
 {
-  return m_closure_ptr->vector[m_pc];
+  return m_closure->vector[m_pc];
 }
 
 // -----------------------------------------------------------------------------
@@ -147,7 +155,7 @@ Frame::inc_pc()
 bool
 Frame::can_execute() const
 {
-  return m_pc >= 0 && static_cast<size_t>(m_pc) < m_closure_ptr->vector.size();
+  return m_pc >= 0 && static_cast<size_t>(m_pc) < m_closure->vector.size();
 }
 
 // -----------------------------------------------------------------------------
@@ -293,6 +301,52 @@ Frame::get_visible_var_fast(const variable_key_t var_key, dyobj_ptr* obj_ptr) co
 
 // -----------------------------------------------------------------------------
 
+bool
+Frame::get_visible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
+{
+  dyobj_ptr obj = NULL;
+
+  if (get_visible_var_fast(key, &obj))
+  {
+    *obj_ptr = obj;
+    return true;
+  }
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  if (m_visible_vars_cache.get(key, obj))
+  {
+    *obj_ptr = obj;
+    return true;
+  }
+#endif
+
+  Frame* frame = parent();
+  if (!frame)
+  {
+    return false;
+  }
+
+  while (!frame->get_visible_var_fast(key, &obj))
+  {
+    frame = frame->parent();
+
+    if (!frame)
+    {
+      return false;
+    }
+  }
+
+  *obj_ptr = obj;
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  m_visible_vars_cache.insert(key, obj);
+#endif
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
 Frame::dyobj_ptr
 Frame::pop_visible_var(const variable_key_t var_key)
 {
@@ -322,7 +376,7 @@ Frame::invisible_var_count() const
 bool
 Frame::has_invisible_var(const variable_key_t var_key) const
 {
-  return m_invisible_vars.find(var_key) != m_visible_vars.end();
+  return m_invisible_vars.find(var_key) != m_invisible_vars.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -351,6 +405,52 @@ Frame::get_invisible_var_fast(const variable_key_t var_key, dyobj_ptr* obj_ptr) 
   }
 
   *obj_ptr = itr->second;
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Frame::get_invisible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
+{
+  dyobj_ptr obj = NULL;
+
+  if (get_invisible_var_fast(key, &obj))
+  {
+    *obj_ptr = obj;
+    return true;
+  }
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  if (m_invisible_vars_cache.get(key, obj))
+  {
+    *obj_ptr = obj;
+    return true;
+  }
+#endif
+
+  Frame* frame = parent();
+  if (!frame)
+  {
+    return false;
+  }
+
+  while (!frame->get_invisible_var_fast(key, &obj))
+  {
+    frame = frame->parent();
+
+    if (!frame)
+    {
+      return false;
+    }
+  }
+
+  *obj_ptr = obj;
+
+#if COREVM_USE_LRU_CACHE_IN_FRAME
+  m_invisible_vars_cache.insert(key, obj);
+#endif
 
   return true;
 }
@@ -450,17 +550,17 @@ Frame::closure_ctx() const
 // -----------------------------------------------------------------------------
 
 Compartment*
-Frame::compartment_ptr() const
+Frame::compartment() const
 {
-  return m_compartment_ptr;
+  return m_compartment;
 }
 
 // -----------------------------------------------------------------------------
 
 Closure*
-Frame::closure_ptr() const
+Frame::closure() const
 {
-  return m_closure_ptr;
+  return m_closure;
 }
 
 // -----------------------------------------------------------------------------

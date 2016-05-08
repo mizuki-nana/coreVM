@@ -545,6 +545,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             'gethndl2',
             'setattr',
             'getattr',
+            'getarg',
             'putkwarg',
             'getkwarg',
             'rsetattrs',
@@ -1430,8 +1431,7 @@ class BytecodeGenerator(ast.NodeVisitor):
             # For loading parameters
             # Note: here we only want to handle args. kwargs are handled
             # differently in `visit_arguments`.
-            self.__add_instr('getarg', 0, 0, node=node)
-            self.__add_instr('stobj', self.__get_string_literal_encoding_id(name), 0, node=node)
+            self.__add_instr('getarg', self.__get_string_literal_encoding_id(name), 0, node=node)
         elif isinstance(node.ctx, ast.Store):
             current_scope = self.__current_scope()
             if current_scope and current_scope.in_cls:

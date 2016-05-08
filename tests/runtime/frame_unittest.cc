@@ -56,8 +56,8 @@ protected:
 TEST_F(FrameUnitTest, TestInitialization)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  ASSERT_EQ(m_compartment, frame.compartment_ptr());
-  ASSERT_EQ(&m_closure, frame.closure_ptr());
+  ASSERT_EQ(m_compartment, frame.compartment());
+  ASSERT_EQ(&m_closure, frame.closure());
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());
   ASSERT_EQ(0, frame.exc_obj());
 }

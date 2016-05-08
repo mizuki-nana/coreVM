@@ -67,7 +67,7 @@ void BenchmarkInstrPINVK(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#ifdef __linux__
+#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrINVK(benchmark::State& state)
 {
@@ -100,14 +100,14 @@ void BenchmarkInstrRTRN(benchmark::State& state)
   corevm::runtime::Instr instr { .code=0, .oprd1=0, .oprd2=0 };
 
   corevm::runtime::closure* closure =
-    fixture.process().top_frame().closure_ptr();
+    fixture.process().top_frame().closure();
 
   ASSERT(closure);
 
   closure->vector.clear();
 
   corevm::runtime::Compartment* compartment =
-    fixture.process().top_frame().compartment_ptr();
+    fixture.process().top_frame().compartment();
 
   ASSERT(compartment);
 
@@ -211,7 +211,7 @@ void BenchmarkInstrEXC(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::runtime::closure* closure = fixture.process().top_frame().closure_ptr();
+  corevm::runtime::closure* closure = fixture.process().top_frame().closure();
   ASSERT(closure);
 
   closure->catch_sites.push_back(
@@ -307,10 +307,10 @@ void BenchmarkInstrJMPEXC(benchmark::State& state)
 
 #ifdef __linux__
 BENCHMARK(BenchmarkInstrPINVK);
-BENCHMARK(BenchmarkInstrINVK);
 #endif
 
 #if 0 // [COREVM-498] Fix micro benchmark crash
+BENCHMARK(BenchmarkInstrINVK);
 BENCHMARK(BenchmarkInstrJMP);
 BENCHMARK(BenchmarkInstrJMPIF);
 BENCHMARK(BenchmarkInstrJMPR);

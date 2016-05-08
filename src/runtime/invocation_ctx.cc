@@ -40,12 +40,12 @@ const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
 // -----------------------------------------------------------------------------
 
 InvocationCtx::InvocationCtx(const runtime::ClosureCtx& ctx,
-  Compartment* compartment_ptr,
-  Closure* closure_ptr)
+  Compartment* compartment,
+  Closure* closure)
   :
   m_closure_ctx(ctx),
-  m_compartment_ptr(compartment_ptr),
-  m_closure_ptr(closure_ptr),
+  m_compartment(compartment),
+  m_closure(closure),
   m_params_list(),
   m_param_value_map(),
   m_params_list_pop_index(0)
@@ -64,17 +64,17 @@ InvocationCtx::closure_ctx() const
 // -----------------------------------------------------------------------------
 
 Compartment*
-InvocationCtx::compartment_ptr() const
+InvocationCtx::compartment() const
 {
-  return m_compartment_ptr;
+  return m_compartment;
 }
 
 // -----------------------------------------------------------------------------
 
 Closure*
-InvocationCtx::closure_ptr() const
+InvocationCtx::closure() const
 {
-  return m_closure_ptr;
+  return m_closure;
 }
 
 // -----------------------------------------------------------------------------

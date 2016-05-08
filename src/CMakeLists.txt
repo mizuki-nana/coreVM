@@ -40,6 +40,7 @@ set(sources
     runtime/compartment_printer.cc
     runtime/dbgmem_printer.cc
     runtime/frame.cc
+    runtime/frame_ptr_cache.cc
     runtime/frame_printer.cc
     runtime/gc_rule.cc
     runtime/instr.cc
@@ -89,7 +90,8 @@ target_link_libraries(coreVM
     boost_program_options
     pthread
     sneaker
-    avrocpp_s)
+    avrocpp_s
+    LLVMSupport)
 
 
 add_custom_command(TARGET coreVM POST_BUILD COMMAND ls -al ./coreVM)
@@ -122,6 +124,7 @@ target_link_libraries(coreVM_dbg
     pthread
     sneaker_dbg
     avrocpp_s
+    LLVMSupport
     -fno-inline
     -fno-omit-frame-pointer
     -fno-optimize-sibling-calls
@@ -160,6 +163,7 @@ target_link_libraries(coreVM_dbg_asan
     boost_program_options
     pthread
     sneaker_dbg
+    LLVMSupport
     avrocpp_s
     -fsanitize=address
     -fno-omit-frame-pointer

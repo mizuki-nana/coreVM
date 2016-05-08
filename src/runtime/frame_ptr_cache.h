@@ -20,10 +20,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_CTX_H_
-#define COREVM_CLOSURE_CTX_H_
+#ifndef COREVM_FRAME_PTR_CACHE_H_
+#define COREVM_FRAME_PTR_CACHE_H_
 
-#include "common.h"
+#include "closure_ctx.h"
+#include "frame.h"
+
+#include <unordered_map>
 
 
 namespace corevm {
@@ -32,27 +35,34 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct ClosureCtx
+// -----------------------------------------------------------------------------
+
+struct ClosureCtxHash
 {
-  ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
-    :
-    compartment_id(compartment_id_),
-    closure_id(closure_id_)
-  {
-  }
+  size_t operator()(const ClosureCtx& closure_ctx) const;
+};
 
-  bool operator==(const ClosureCtx& rhs) const
-  {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
-  }
+// -----------------------------------------------------------------------------
 
-  compartment_id_t compartment_id;
-  closure_id_t closure_id;
+typedef Frame* FramePtr;
 
-} ClosureCtx;
+// -----------------------------------------------------------------------------
+
+class FramePtrCache
+{
+public:
+  void insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame);
+
+  void erase_parent_frame(FramePtr parent_frame);
+
+  FramePtr parent_frame_of(const ClosureCtx& ctx);
+
+private:
+  std::unordered_map<ClosureCtx, FramePtr, ClosureCtxHash> m_cache;
+  std::unordered_map<FramePtr, ClosureCtx> m_reverse_cache;
+};
+
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */
@@ -61,4 +71,4 @@ typedef struct ClosureCtx
 } /* end namespace corevm */
 
 
-#endif /* COREVM_CLOSURE_CTX_H_ */
+#endif /* COREVM_FRAME_PTR_CACHE_H_ */

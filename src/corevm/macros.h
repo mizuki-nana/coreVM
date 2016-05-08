@@ -97,5 +97,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
+#define COREVM_USE_SMALL_ATTRIBUTE_TABLE 1
+
+// -----------------------------------------------------------------------------
+
+#define COREVM_USE_LINEAR_VARIABLE_TABLE 1
+
+// -----------------------------------------------------------------------------
+
+#define COREVM_USE_LRU_CACHE_IN_FRAME 0
+
+// -----------------------------------------------------------------------------
 
 #endif /* COREVM_MACROS_H_ */

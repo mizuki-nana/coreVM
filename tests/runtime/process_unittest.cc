@@ -283,8 +283,8 @@ TEST_F(ProcessUnitTest, TestEmplaceFrame)
 
   auto& frame = process.top_frame();
 
-  ASSERT_EQ(&compartment, frame.compartment_ptr());
-  ASSERT_EQ(&closure_table[0], frame.closure_ptr());
+  ASSERT_EQ(&compartment, frame.compartment());
+  ASSERT_EQ(&closure_table[0], frame.closure());
   ASSERT_EQ(ctx.compartment_id, frame.closure_ctx().compartment_id);
   ASSERT_EQ(ctx.closure_id, frame.closure_ctx().closure_id);
   ASSERT_EQ(corevm::runtime::NONESET_INSTR_ADDR, frame.return_addr());

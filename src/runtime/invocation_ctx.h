@@ -27,10 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
+#include "linear_map.h"
 #include "runtime_types.h"
-
-#include <unordered_map>
-#include <vector>
+#include "corevm/llvm_smallvector.h"
 
 
 namespace corevm {
@@ -49,17 +48,19 @@ public:
   typedef RuntimeTypes::dynamic_object_type* param_type;
 
 private:
-  typedef std::vector<param_type> param_list_type;
-  typedef std::unordered_map<variable_key_t, param_type> param_value_map_type;
+  typedef llvm::SmallVector<param_type, 20> param_list_type;
+
+  typedef LinearMap<variable_key_t, param_type,
+    llvm::SmallVector<std::pair<variable_key_t, param_type>, 20>> param_value_map_type;
 
 public:
   InvocationCtx(const ClosureCtx&, Compartment*, Closure*);
 
   const ClosureCtx& closure_ctx() const;
 
-  Compartment* compartment_ptr() const;
+  Compartment* compartment() const;
 
-  Closure* closure_ptr() const;
+  Closure* closure() const;
 
   const param_list_type& params_list() const;
 
@@ -83,8 +84,8 @@ public:
 
 private:
   runtime::ClosureCtx m_closure_ctx;
-  Compartment* m_compartment_ptr;
-  Closure* m_closure_ptr;
+  Compartment* m_compartment;
+  Closure* m_closure;
   param_list_type m_params_list;
   param_value_map_type m_param_value_map;
   size_t m_params_list_pop_index;

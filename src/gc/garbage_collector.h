@@ -23,10 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_GARBAGE_COLLECTOR_H_
 #define COREVM_GARBAGE_COLLECTOR_H_
 
+#include "corevm/llvm_smallvector.h"
 #include "corevm/logging.h"
 #include "dyobj/dynamic_object_heap.h"
-
-#include <algorithm>
 
 
 namespace corevm {
@@ -132,7 +131,7 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
   // require copying the underlying container elements, in this case
   // `dynamic_object_type`, which does not support explicit copy semantics.
 
-  std::vector<dynamic_object_type*> objs_to_delete;
+  llvm::SmallVector<dynamic_object_type*, 50> objs_to_delete;
   objs_to_delete.reserve(m_heap.size());
 
   for (auto itr = m_heap.begin(); itr != m_heap.end(); ++itr)

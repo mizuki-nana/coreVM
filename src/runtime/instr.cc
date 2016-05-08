@@ -326,7 +326,7 @@ static
 void
 execute_native_floating_type_creation_instr(const Instr& instr, Frame* frame)
 {
-  const Compartment* compartment = frame->compartment_ptr();
+  const Compartment* compartment = frame->compartment();
 
   auto encoding_key = static_cast<encoding_key_t>(instr.oprd1);
   auto fpt_literal = static_cast<NativeType>(compartment->get_fpt_literal(encoding_key));
@@ -523,12 +523,10 @@ execute_native_type_complex_instr_with_four_operands_in_place(Frame* frame,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_new(
-  const Instr& /* instr */, Process& process,
+instr_handler_new(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.create_dyobj();
-
   process.push_stack(obj);
 }
 
@@ -538,27 +536,22 @@ void
 instr_handler_ldobj(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
-
   Frame* frame = *frame_ptr;
-
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   Process::dyobj_ptr obj = NULL;
 
-  while (!frame->get_visible_var_fast(key, &obj))
+  if (frame->get_visible_var_through_ancestry(key, &obj))
   {
-    frame = frame->parent();
-
-    if (!frame)
-    {
-      THROW(NameNotFoundError());
-    }
-  }
-
 #if __DEBUG__
-  ASSERT(obj);
+    ASSERT(obj);
 #endif
 
-  process.push_stack(obj);
+    process.push_stack(obj);
+  }
+  else
+  {
+    THROW(NameNotFoundError());
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -607,7 +600,7 @@ instr_handler_getattr(const Instr& instr, Process& process,
 
   auto obj = process.pop_stack();
 
-  auto attr_obj = getattr(obj, frame->compartment_ptr(), str_key);
+  auto attr_obj = getattr(obj, frame->compartment(), str_key);
 
   process.push_stack(attr_obj);
 }
@@ -620,7 +613,7 @@ instr_handler_setattr(const Instr& instr, Process& process,
 {
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key_t attr_key = get_attr_key(frame->compartment_ptr(), str_key);
+  dyobj::attr_key_t attr_key = get_attr_key(frame->compartment(), str_key);
 
   auto attr_obj = process.pop_stack();
   auto target_obj = process.top_stack();
@@ -756,27 +749,22 @@ void
 instr_handler_ldobj2(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
-  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
-
   Frame* frame = *frame_ptr;
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
+  Process::dyobj_ptr obj = NULL;
 
-  Process::dyobj_ptr obj = 0;
-
-  while (!frame->get_invisible_var_fast(key, &obj))
+  if (frame->get_invisible_var_through_ancestry(key, &obj))
   {
-    frame = frame->parent();
-
-    if (!frame)
-    {
-      THROW(NameNotFoundError());
-    }
-  }
-
 #if __DEBUG__
-  ASSERT(obj);
+    ASSERT(obj);
 #endif
 
-  process.push_stack(obj);
+    process.push_stack(obj);
+  }
+  else
+  {
+    THROW(NameNotFoundError());
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -1205,7 +1193,7 @@ instr_handler_rsetattrs(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
   dyobj::attr_key_t attr_key = get_attr_key(
-    frame->compartment_ptr(), str_key);
+    frame->compartment(), str_key);
 
   auto attr_obj = process.top_stack();
 
@@ -1233,7 +1221,7 @@ instr_handler_setattrs2(const Instr& instr, Process& process,
   auto self_str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
   dyobj::attr_key_t self_attr_key = get_attr_key(
-    frame->compartment_ptr(), self_str_key);
+    frame->compartment(), self_str_key);
 
   auto src_obj = process.pop_stack();
 
@@ -1425,8 +1413,8 @@ instr_handler_invk(const Instr& /* instr */, Process& process,
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
 
   const ClosureCtx& ctx = invk_ctx->closure_ctx();
-  Compartment* compartment = invk_ctx->compartment_ptr();
-  Closure* closure = invk_ctx->closure_ptr();
+  Compartment* compartment = invk_ctx->compartment();
+  Closure* closure = invk_ctx->closure();
 
   process.emplace_frame(ctx, compartment, closure, process.pc());
   process.top_frame(frame_ptr);
@@ -1477,10 +1465,6 @@ instr_handler_jmp(const Instr& instr, Process& process,
   {
     THROW(InvalidInstrAddrError());
   }
-  else if (addr < starting_addr)
-  {
-    THROW(InvalidInstrAddrError());
-  }
 
   process.set_pc(addr);
 }
@@ -1499,10 +1483,6 @@ instr_handler_jmpif(const Instr& instr, Process& process,
   instr_addr_t addr = starting_addr + relative_addr;
 
   if (addr == NONESET_INSTR_ADDR)
-  {
-    THROW(InvalidInstrAddrError());
-  }
-  else if (addr < starting_addr)
   {
     THROW(InvalidInstrAddrError());
   }
@@ -1533,10 +1513,6 @@ instr_handler_jmpr(const Instr& instr, Process& process,
   {
     THROW(InvalidInstrAddrError());
   }
-  else if (addr < starting_addr)
-  {
-    THROW(InvalidInstrAddrError());
-  }
 
   process.set_pc(addr);
 }
@@ -1558,7 +1534,7 @@ instr_handler_exc(const Instr& instr, Process& process,
 
     if (search_catch_sites)
     {
-      const Closure *closure = frame.closure_ptr();
+      const Closure *closure = frame.closure();
 
 #if __DEBUG__
       ASSERT(closure);
@@ -1774,12 +1750,17 @@ instr_handler_putkwargs(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_getarg(const Instr& /* instr */, Process& process,
-  Frame** /* frame_ptr */, InvocationCtx** invk_ctx_ptr)
+instr_handler_getarg(const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** invk_ctx_ptr)
 {
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto obj = invk_ctx->pop_param();
-  process.push_stack(obj);
+  obj->manager().on_setattr();
+
+  variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
+
+  Frame* frame = *frame_ptr;
+  frame->set_visible_var(key, obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1930,14 +1911,11 @@ instr_handler_print(const Instr& instr, Process& process,
   types::native_string native_str =
     types::get_value_from_handle<types::native_string>(hndl);
 
-  const std::string& str = static_cast<std::string>(native_str);
-
   static const char* PRINT_FORMATS[2] = { "%s", "%s\n" };
 
-  bool trailing_new_line = static_cast<bool>(instr.oprd1);
-  size_t index = static_cast<size_t>(trailing_new_line) % 2;
+  const size_t index = static_cast<size_t>(instr.oprd1) % 2;
 
-  printf(PRINT_FORMATS[index], str.c_str());
+  printf(PRINT_FORMATS[index], native_str.c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -2317,7 +2295,7 @@ instr_handler_str(const Instr& instr, Process& /* process */,
   {
     auto encoding_key = static_cast<runtime::encoding_key_t>(instr.oprd1);
 
-    const Compartment* compartment = frame->compartment_ptr();
+    const Compartment* compartment = frame->compartment();
 
     str = compartment->get_string_literal(encoding_key);
   }

@@ -20,45 +20,28 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_CTX_H_
-#define COREVM_CLOSURE_CTX_H_
+#ifndef COREVM_LLVM_SMALLVECTOR_H_
+#define COREVM_LLVM_SMALLVECTOR_H_
 
-#include "common.h"
+/**
+ * Magic used to include LLVM's SmallVector.h (v3.4.0) hussle-free.
+ */
 
+#ifndef __STDC_LIMIT_MACROS
+  #define __STDC_LIMIT_MACROS 1
+#endif
+#ifndef __STDC_CONSTANT_MACROS
+  #define __STDC_CONSTANT_MACROS 1
+#endif
 
-namespace corevm {
+#include <llvm/ADT/SmallVector.h>
 
-
-namespace runtime {
-
-
-typedef struct ClosureCtx
-{
-  ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
-    :
-    compartment_id(compartment_id_),
-    closure_id(closure_id_)
-  {
-  }
-
-  bool operator==(const ClosureCtx& rhs) const
-  {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
-  }
-
-  compartment_id_t compartment_id;
-  closure_id_t closure_id;
-
-} ClosureCtx;
+#ifdef __STDC_LIMIT_MACROS
+  #undef __STDC_LIMIT_MACROS
+#endif
+#ifdef __STDC_CONSTANT_MACROS
+  #undef __STDC_CONSTANT_MACROS
+#endif
 
 
-} /* end namespace runtime */
-
-
-} /* end namespace corevm */
-
-
-#endif /* COREVM_CLOSURE_CTX_H_ */
+#endif /* COREVM_LLVM_SMALLVECTOR_H_ */

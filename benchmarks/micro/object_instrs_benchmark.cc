@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
+#include "corevm/macros.h"
 #include "dyobj/common.h"
 #include "dyobj/util.h"
 #include "runtime/instr.h"
@@ -57,6 +58,7 @@ void set_encoding_pair(corevm::runtime::Process& process,
 
 // -----------------------------------------------------------------------------
 
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 static
 void BenchmarkNEWInstr(benchmark::State& state)
 {
@@ -72,6 +74,7 @@ void BenchmarkNEWInstr(benchmark::State& state)
     instr_handler_new(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -796,6 +799,7 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 static
 void
 BenchmarkSETATTRS2Instr(benchmark::State& state)
@@ -856,6 +860,7 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -866,7 +871,9 @@ BENCHMARK(BenchmarkDELOBJ2Instr);
 #endif
 BENCHMARK(BenchmarkCLRHNDLInstr);
 BENCHMARK(BenchmarkCLDOBJInstr);
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 BENCHMARK(BenchmarkNEWInstr);
+#endif
 BENCHMARK(BenchmarkLDOBJInstr);
 BENCHMARK(BenchmarkSTOBJInstr);
 BENCHMARK(BenchmarkSTOBJ2Instr);
@@ -882,7 +889,9 @@ BENCHMARK(BenchmarkSETATTR2Instr);
 BENCHMARK(BenchmarkDELATTR2Instr);
 BENCHMARK(BenchmarkSETATTRSInstr);
 BENCHMARK(BenchmarkRSETATTRSInstr);
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 BENCHMARK(BenchmarkSETATTRS2Instr);
+#endif
 BENCHMARK(BenchmarkSETFLGCInstr);
 BENCHMARK(BenchmarkSETFLDELInstr);
 BENCHMARK(BenchmarkSETFLCALLInstr);

@@ -73,6 +73,7 @@ target_link_libraries(run_tests
     sneaker
     avrocpp_s
     gtest
+    LLVMSupport
     )
 
 

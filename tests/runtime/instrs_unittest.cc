@@ -1464,6 +1464,9 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrPUTKWARGS)
 
 TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARG)
 {
+  corevm::runtime::StringLiteralTable str_literal_table { "self" };
+  m_compartment->set_string_literal_table(std::move(str_literal_table));
+
   auto obj = m_process.create_dyobj();
   corevm::runtime::InvocationCtx invk_ctx(m_ctx, m_compartment, &m_closure);
   invk_ctx.put_param(obj);
@@ -1473,7 +1476,8 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETARG)
   corevm::runtime::Instr instr(0, 0, 0);
   execute_instr(corevm::runtime::instr_handler_getarg, instr);
 
-  auto actual_obj = m_process.pop_stack();
+  auto& frame = m_process.top_frame();
+  auto actual_obj = frame.get_visible_var(0);
 
   ASSERT_EQ(obj, actual_obj);
 }

@@ -38,7 +38,7 @@ BenchmarkNtvhndlCreationInstrs(benchmark::State& state,
   corevm::runtime::Instr instr(0, 0, 0);
 
   InstrBenchmarksFixture fixture;
-  auto compartment = fixture.process().top_frame().compartment_ptr();
+  auto compartment = fixture.process().top_frame().compartment();
   corevm::runtime::FptLiteralTable fpt_literal_table { 3.1415 };
   compartment->set_fpt_literal_table(fpt_literal_table);
 

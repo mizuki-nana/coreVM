@@ -454,9 +454,9 @@ enum InstrEnum : uint32_t
   PUTKWARGS,
 
   /**
-   * <getarg, _, _>
+   * <getarg, #, _>
    * Pops off the first argument for the current call and put it on
-   * top of the stack.
+   * the current frame using the encoding key specified in the first operand.
    */
   GETARG,
 

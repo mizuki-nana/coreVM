@@ -22,12 +22,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
+#include "corevm/macros.h"
 #include "runtime/process.h"
 #include "types/native_type_handle.h"
 
 
 // -----------------------------------------------------------------------------
 
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 static
 void BenchmarkProcessCreateDyobj(benchmark::State& state)
 {
@@ -43,6 +45,7 @@ void BenchmarkProcessCreateDyobj(benchmark::State& state)
     process.create_dyobj();
   }
 }
+#endif
 
 // -----------------------------------------------------------------------------
 
@@ -119,7 +122,9 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+#if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 BENCHMARK(BenchmarkProcessCreateDyobj);
+#endif
 BENCHMARK(BenchmarkProcessGetDyobj);
 BENCHMARK(BenchmarkProcessGetNtvHndl);
 #ifdef BUILD_BENCHMARKS_STRICT

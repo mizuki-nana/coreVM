@@ -66,5 +66,6 @@ target_link_libraries(run_benchmarks
     pthread
     sneaker
     avrocpp_s
+    LLVMSupport
     benchmark
     )

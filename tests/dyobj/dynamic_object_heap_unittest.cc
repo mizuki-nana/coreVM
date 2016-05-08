@@ -62,7 +62,7 @@ class DynamicObjectHeapUnitTest : public ::testing::Test
 protected:
   DynamicObjectHeapUnitTest()
     :
-    m_heap(1024)
+    m_heap(4096)
   {
   }
 

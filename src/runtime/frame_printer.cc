@@ -51,7 +51,7 @@ FramePrinter::FramePrinter(
 std::ostream&
 FramePrinter::operator()(std::ostream& ost) const
 {
-  const Closure& closure = *(m_frame.closure_ptr());
+  const Closure& closure = *(m_frame.closure());
   ost << "Frame info for: " << closure.name << std::endl;
 
   ost << std::endl;
@@ -61,7 +61,7 @@ FramePrinter::operator()(std::ostream& ost) const
   // Eval stack info.
   ost << "Eval stack size: " << m_frame.eval_stack_size() << std::endl;
 
-  Compartment* compartment = m_frame.compartment_ptr();
+  Compartment* compartment = m_frame.compartment();
 
   // Visible variables info.
   {

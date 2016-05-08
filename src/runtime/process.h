@@ -28,19 +28,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 #include "frame.h"
+#include "frame_ptr_cache.h"
 #include "gc_rule.h"
 #include "instr.h"
 #include "invocation_ctx.h"
 #include "native_types_pool.h"
 #include "runtime_types.h"
 #include "vector.h"
+#include "corevm/llvm_smallvector.h"
 #include "corevm/logging.h"
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 
 #include <cstdint>
 #include <type_traits>
-#include <vector>
 
 
 namespace corevm {
@@ -266,11 +267,12 @@ private:
   bool m_do_gc;
   uint8_t m_gc_flag;
   dynamic_object_heap_type m_dynamic_object_heap;
-  std::vector<dyobj_ptr> m_dyobj_stack;
-  std::vector<Frame> m_call_stack;
-  std::vector<InvocationCtx> m_invocation_ctx_stack;
+  llvm::SmallVector<dyobj_ptr, 20> m_dyobj_stack;
+  llvm::SmallVector<Frame, 20> m_call_stack;
+  llvm::SmallVector<InvocationCtx, 20> m_invocation_ctx_stack;
   NativeTypesPool m_ntvhndl_pool;
-  std::vector<Compartment> m_compartments;
+  llvm::SmallVector<Compartment, 5> m_compartments;
+  FramePtrCache m_frame_cache;
 };
 
 // -----------------------------------------------------------------------------

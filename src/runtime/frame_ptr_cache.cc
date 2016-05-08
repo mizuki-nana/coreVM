@@ -20,10 +20,9 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_CTX_H_
-#define COREVM_CLOSURE_CTX_H_
+#include "frame_ptr_cache.h"
 
-#include "common.h"
+#include <boost/functional/hash.hpp>
 
 
 namespace corevm {
@@ -32,33 +31,59 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct ClosureCtx
+// -----------------------------------------------------------------------------
+
+size_t
+ClosureCtxHash::operator()(const ClosureCtx& closure_ctx) const
 {
-  ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
-    :
-    compartment_id(compartment_id_),
-    closure_id(closure_id_)
+  std::size_t seed = 0;
+  boost::hash_combine(seed, closure_ctx.compartment_id);
+  boost::hash_combine(seed, closure_ctx.closure_id);
+  return seed;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+FramePtrCache::insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame)
+{
+  m_cache.insert(std::make_pair(ctx, parent_frame));
+  m_reverse_cache.insert(std::make_pair(parent_frame, ctx));
+}
+
+// -----------------------------------------------------------------------------
+
+void
+FramePtrCache::erase_parent_frame(FramePtr parent_frame)
+{
+  auto itr = m_reverse_cache.find(parent_frame);
+  if (itr != m_reverse_cache.end())
   {
+    m_reverse_cache.erase(itr);
+    m_cache.erase(itr->second);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+FramePtr
+FramePtrCache::parent_frame_of(const ClosureCtx& ctx)
+{
+  FramePtr parent = NULL;
+
+  auto itr = m_cache.find(ctx);
+  if (itr != m_cache.end())
+  {
+    parent = itr->second;
   }
 
-  bool operator==(const ClosureCtx& rhs) const
-  {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
-  }
+  return parent;
+}
 
-  compartment_id_t compartment_id;
-  closure_id_t closure_id;
-
-} ClosureCtx;
+// -----------------------------------------------------------------------------
 
 
 } /* end namespace runtime */
 
 
 } /* end namespace corevm */
-
-
-#endif /* COREVM_CLOSURE_CTX_H_ */

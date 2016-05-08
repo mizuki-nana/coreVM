@@ -20,10 +20,13 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_CLOSURE_CTX_H_
-#define COREVM_CLOSURE_CTX_H_
+#ifndef COREVM_LRU_CACHE_H_
+#define COREVM_LRU_CACHE_H_
 
-#include "common.h"
+#include <boost/bimap.hpp>
+#include <boost/bimap/list_of.hpp>
+#include <boost/bimap/set_of.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
 
 
 namespace corevm {
@@ -32,27 +35,59 @@ namespace corevm {
 namespace runtime {
 
 
-typedef struct ClosureCtx
+template <typename K, typename V, size_t N, template <typename...> class SetType>
+class LruCacheCore
 {
-  ClosureCtx(compartment_id_t compartment_id_, closure_id_t closure_id_)
-    :
-    compartment_id(compartment_id_),
-    closure_id(closure_id_)
+public:
+  typedef K key_type;
+  typedef V value_type;
+
+private:
+  typedef boost::bimaps::bimap<SetType<key_type>,
+    boost::bimaps::list_of<value_type>> container_type;
+
+public:
+  bool has(const key_type& k)
   {
+    return m_container.left.find(k) != m_container.left.end();
   }
 
-  bool operator==(const ClosureCtx& rhs) const
+  bool get(const key_type& k, value_type& res)
   {
-    return (
-      compartment_id == rhs.compartment_id &&
-      closure_id == rhs.closure_id
-    );
+    const typename container_type::left_iterator it = m_container.left.find(k);
+
+    if (it != m_container.left.end())
+    {
+      m_container.right.relocate(m_container.right.end(),
+        m_container.project_right(it));
+
+      res = it->second;
+
+      return true;
+    }
+
+    return false;
   }
 
-  compartment_id_t compartment_id;
-  closure_id_t closure_id;
+  void insert(const key_type& k, const value_type& v)
+  {
+    if (m_container.size() == N)
+    {
+      m_container.right.erase(m_container.right.begin());
+    }
 
-} ClosureCtx;
+    m_container.insert(typename container_type::value_type(k, v));
+  }
+
+private:
+  container_type m_container;
+};
+
+template <typename K, typename V, size_t N>
+struct LruCache
+{
+  typedef LruCacheCore<K, V, N, boost::bimaps::unordered_set_of> type;
+};
 
 
 } /* end namespace runtime */
@@ -61,4 +96,4 @@ typedef struct ClosureCtx
 } /* end namespace corevm */
 
 
-#endif /* COREVM_CLOSURE_CTX_H_ */
+#endif /* COREVM_LRU_CACHE_H_ */
