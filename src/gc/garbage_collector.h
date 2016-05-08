@@ -36,25 +36,6 @@ namespace gc {
 
 // -----------------------------------------------------------------------------
 
-template<typename DynamicObjectHeapType>
-struct DyobjRemoveCriterion
-{
-  DyobjRemoveCriterion()
-  {
-    // Do nothing here.
-  }
-
-  bool operator()(const typename DynamicObjectHeapType::iterator& itr) const
-  {
-    auto& object = static_cast<typename DynamicObjectHeapType::dynamic_object_type&>(
-      *const_cast<typename DynamicObjectHeapType::iterator&>(itr));
-
-    return object.is_garbage_collectible();
-  }
-};
-
-// -----------------------------------------------------------------------------
-
 template<class garbage_collection_scheme>
 class GarbageCollector : public Loggable
 {

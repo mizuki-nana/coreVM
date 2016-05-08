@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2015 Yanzheng Li
+Copyright (c) 2016 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -130,7 +130,7 @@ ExtractMetadata::extract_instr_info() const
   for (size_t i = 0; i < corevm::runtime::InstrEnum::INSTR_CODE_MAX; ++i)
   {
     const auto code = static_cast<corevm::runtime::instr_code_t>(i);
-    const corevm::runtime::InstrInfo& info = corevm::runtime::InstrSetInfo::instr_infos[code];
+    const auto& info = corevm::runtime::InstrSetInfo::instr_infos[code];
 
     ss << INDENTATION << INDENTATION << DOUBLE_QUOTE << info.name
       << DOUBLE_QUOTE << ": " << code;

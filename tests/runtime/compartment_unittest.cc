@@ -23,6 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/catch_site.h"
 #include "runtime/compartment.h"
 #include "runtime/closure.h"
+#include "runtime/loc_info.h"
 #include "runtime/vector.h"
 
 #include <gtest/gtest.h>

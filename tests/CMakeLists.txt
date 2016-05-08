@@ -54,7 +54,6 @@ add_executable(run_tests
     frontend/configuration_unittest.cc
     frontend/program_unittest.cc
     frontend/runner_unittest.cc
-    frontend/utils_unittest.cc
     main.cc
     )
 

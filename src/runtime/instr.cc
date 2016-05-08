@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "instr.h"
 
+#include "catch_site.h"
 #include "dbgmem_printer.h"
 #include "frame_printer.h"
 #include "process.h"
@@ -889,7 +890,7 @@ instr_handler_clrhndl(const Instr& /* instr */, Process& process,
 
   if (!obj->has_ntvhndl())
   {
-    THROW(NativeTypeHandleDeletionError());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   process.erase_ntvhndl(&obj->ntvhndl());
@@ -907,7 +908,7 @@ instr_handler_cpyhndl(const Instr& instr, Process& process,
 
   if (!src_obj->has_ntvhndl())
   {
-    THROW(NativeTypeHandleDeletionError());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   types::NativeTypeHandle res = src_obj->ntvhndl();
@@ -1006,7 +1007,7 @@ instr_handler_cpyrepr(const Instr& /* instr */, Process& process,
 
   if (!src_obj->has_ntvhndl())
   {
-    THROW(NativeTypeHandleDeletionError());
+    THROW(NativeTypeHandleNotFoundError());
   }
 
   const types::NativeTypeHandle& hndl = src_obj->ntvhndl();

@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
+#include "instr.h"
 #include "runtime_types.h"
 #include "dyobj/common.h"
 #include "types/fwd.h"
@@ -113,8 +114,6 @@ public:
 
   size_t visible_var_count() const;
 
-  bool has_visible_var(const variable_key_t) const;
-
   dyobj_ptr get_visible_var(const variable_key_t) const;
 
   bool get_visible_var_fast(const variable_key_t, dyobj_ptr*) const;
@@ -126,8 +125,6 @@ public:
   void set_visible_var(variable_key_t, dyobj_ptr);
 
   size_t invisible_var_count() const;
-
-  bool has_invisible_var(const variable_key_t) const;
 
   dyobj_ptr get_invisible_var(const variable_key_t) const;
 

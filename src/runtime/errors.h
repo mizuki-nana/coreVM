@@ -123,18 +123,6 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleDeletionError : public RuntimeError
-{
-public:
-  NativeTypeHandleDeletionError()
-    :
-    RuntimeError("Native type handle cannot be deleted")
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
 class ObjectDeletionError : public RuntimeError
 {
 public:

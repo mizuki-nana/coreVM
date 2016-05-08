@@ -128,8 +128,6 @@ TEST_F(FrameUnitTest, TestVisibleVars)
   corevm::runtime::variable_key_t var_key = 1111;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
-  ASSERT_EQ(false, frame.has_visible_var(var_key));
-
   ASSERT_THROW(
     {
       frame.get_visible_var(var_key);
@@ -139,7 +137,6 @@ TEST_F(FrameUnitTest, TestVisibleVars)
 
   frame.set_visible_var(var_key, &obj);
 
-  ASSERT_EQ(true, frame.has_visible_var(var_key));
   ASSERT_EQ(&obj, frame.get_visible_var(var_key));
   ASSERT_EQ(&obj, frame.pop_visible_var(var_key));
 
@@ -159,8 +156,6 @@ TEST_F(FrameUnitTest, TestInvisibleVars)
   corevm::runtime::variable_key_t var_key = 1111;
   corevm::runtime::RuntimeTypes::dynamic_object_type obj;
 
-  ASSERT_EQ(false, frame.has_invisible_var(var_key));
-
   ASSERT_THROW(
     {
       frame.get_invisible_var(var_key);
@@ -170,7 +165,6 @@ TEST_F(FrameUnitTest, TestInvisibleVars)
 
   frame.set_invisible_var(var_key, &obj);
 
-  ASSERT_EQ(true, frame.has_invisible_var(var_key));
   ASSERT_EQ(&obj, frame.get_invisible_var(var_key));
   ASSERT_EQ(&obj, frame.pop_invisible_var(var_key));
 

@@ -23,14 +23,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_CLOSURE_H_
 #define COREVM_CLOSURE_H_
 
-#include "catch_site.h"
-#include "common.h"
-#include "loc_info.h"
-#include "vector.h"
 #include "corevm/corevm_bytecode_schema.h" // Compiled.
 
 #include <iosfwd>
-#include <string>
 #include <vector>
 
 

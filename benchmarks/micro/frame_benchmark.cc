@@ -91,7 +91,7 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkGetVisibleVariable1(benchmark::State& state)
+void BenchmarkGetVisibleVariable(benchmark::State& state)
 {
   corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
     corevm::runtime::NONESET_CLOSURE_ID);
@@ -106,49 +106,6 @@ void BenchmarkGetVisibleVariable1(benchmark::State& state)
   while (state.KeepRunning())
   {
     frame.get_visible_var(key);
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-static
-void BenchmarkGetVisibleVariable2(benchmark::State& state)
-{
-  /**
-   * Similar to `BenchmarkGetVisibleVariable1` above,
-   * this benchmark demonstrates the speed of fetching a variable
-   * when traversing the frames hierarchy.
-   *
-   * NOTE: based on the results observed, it shows that the run time
-   * grows linearly as the number of frames have to traverse grows.
-   */
-  corevm::runtime::ClosureCtx ctx(corevm::runtime::NONESET_COMPARTMENT_ID,
-    corevm::runtime::NONESET_CLOSURE_ID);
-
-  corevm::runtime::Frame frame1(ctx, NULL, NULL);
-  corevm::runtime::Frame frame2(ctx, NULL, NULL);
-  corevm::runtime::Frame frame3(ctx, NULL, NULL);
-
-  frame1.set_parent(&frame2);
-  frame2.set_parent(&frame3);
-
-  corevm::runtime::variable_key_t key = 1;
-  corevm::runtime::RuntimeTypes::dynamic_object_type obj;
-
-  frame1.set_visible_var(key + 1, &obj);
-  frame2.set_visible_var(key + 2, &obj);
-  frame3.set_visible_var(key, &obj);
-
-  while (state.KeepRunning())
-  {
-    corevm::runtime::Frame* frame = &frame1;
-
-    while (!frame->has_visible_var(key))
-    {
-      frame = frame->parent();
-    }
-
-    frame->get_visible_var(key);
   }
 }
 
@@ -190,8 +147,7 @@ void BenchmarkSwapEvalStack(benchmark::State& state)
 BENCHMARK(BenchmarkPushEvalStack);
 BENCHMARK(BenchmarkPushEvalStack2);
 BENCHMARK(BenchmarkPopEvalStack);
-BENCHMARK(BenchmarkGetVisibleVariable1);
-BENCHMARK(BenchmarkGetVisibleVariable2);
+BENCHMARK(BenchmarkGetVisibleVariable);
 BENCHMARK(BenchmarkSwapEvalStack);
 
 // -----------------------------------------------------------------------------

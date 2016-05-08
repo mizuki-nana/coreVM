@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "frame.h"
 #include "gc_rule.h"
 #include "instr.h"
+#include "loc_info.h"
 #include "native_types_pool.h"
 #include "vector.h"
 #include "corevm/macros.h"
@@ -609,14 +610,7 @@ Process::insert_ntvhndl(const types::NativeTypeHandle& hndl)
 void
 Process::erase_ntvhndl(const types::NativeTypeHandle* ptr)
 {
-  try
-  {
-    m_ntvhndl_pool.erase(const_cast<types::NativeTypeHandle*>(ptr));
-  }
-  catch (const NativeTypeHandleNotFoundError)
-  {
-    THROW(NativeTypeHandleDeletionError());
-  }
+  m_ntvhndl_pool.erase(const_cast<types::NativeTypeHandle*>(ptr));
 }
 
 // -----------------------------------------------------------------------------

@@ -29,8 +29,7 @@ set(sources
     dyobj/flags.cc
     dyobj/util.cc
     gc/garbage_collection_scheme.cc
-    gc/mark_and_sweep_garbage_collection_scheme.cc
-    gc/reference_count_garbage_collection_scheme.cc
+    gc/refcount_gc_scheme.cc
     types/interfaces.cc
     types/native_array.cc
     types/native_map.cc
@@ -58,7 +57,6 @@ set(sources
     frontend/configuration.cc
     frontend/program.cc
     frontend/runner.cc
-    frontend/utils.cc
     corevm/errors.cc
     corevm/logging.cc
     corevm/corevm_bytecode_schema.h

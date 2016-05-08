@@ -263,14 +263,6 @@ Frame::visible_var_count() const
 
 // -----------------------------------------------------------------------------
 
-bool
-Frame::has_visible_var(const variable_key_t var_key) const
-{
-  return m_visible_vars.find(var_key) != m_visible_vars.end();
-}
-
-// -----------------------------------------------------------------------------
-
 Frame::dyobj_ptr
 Frame::get_visible_var(const variable_key_t var_key) const
 {
@@ -369,14 +361,6 @@ size_t
 Frame::invisible_var_count() const
 {
   return m_invisible_vars.size();
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-Frame::has_invisible_var(const variable_key_t var_key) const
-{
-  return m_invisible_vars.find(var_key) != m_invisible_vars.end();
 }
 
 // -----------------------------------------------------------------------------

@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/dynamic_object.h"
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/garbage_collector.h"
-#include "gc/reference_count_garbage_collection_scheme.h"
+#include "gc/refcount_gc_scheme.h"
 
 #include <gtest/gtest.h>
 

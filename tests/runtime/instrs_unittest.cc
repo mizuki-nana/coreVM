@@ -23,9 +23,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 #include "dyobj/flags.h"
 #include "dyobj/util.h"
+#include "runtime/catch_site.h"
 #include "runtime/closure.h"
 #include "runtime/common.h"
 #include "runtime/invocation_ctx.h"
+#include "runtime/loc_info.h"
 #include "runtime/process.h"
 #include "types/interfaces.h"
 #include "types/native_type_handle.h"
@@ -192,8 +194,6 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ)
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_TRUE(actual_frame.has_visible_var(1));
-
   auto actual_obj = actual_frame.get_visible_var(1);
 
   ASSERT_EQ(obj, actual_obj);
@@ -222,8 +222,6 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJN)
   execute_instr(corevm::runtime::instr_handler_stobjn, instr, 0);
 
   corevm::runtime::Frame& actual_frame = m_process.top_nth_frame(n);
-
-  ASSERT_TRUE(actual_frame.has_visible_var(key));
 
   auto actual_obj = actual_frame.get_visible_var(key);
 
@@ -576,8 +574,6 @@ TEST_F(InstrsObjUnitTest, TestInstrSTOBJ2)
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_TRUE(actual_frame.has_invisible_var(1));
-
   auto actual_obj = actual_frame.get_invisible_var(1);
 
   ASSERT_EQ(obj, actual_obj);
@@ -601,7 +597,9 @@ TEST_F(InstrsObjUnitTest, TestInstrDELOBJ)
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_FALSE(actual_frame.has_visible_var(key));
+  corevm::runtime::Frame::dyobj_ptr actual_obj = NULL;
+  actual_frame.get_visible_var_fast(key, &actual_obj);
+  ASSERT_EQ(NULL, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -622,7 +620,9 @@ TEST_F(InstrsObjUnitTest, TestInstrDELOBJ2)
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
 
-  ASSERT_FALSE(actual_frame.has_invisible_var(key));
+  corevm::runtime::Frame::dyobj_ptr actual_obj = NULL;
+  actual_frame.get_visible_var_fast(key, &actual_obj);
+  ASSERT_EQ(NULL, actual_obj);
 }
 
 // -----------------------------------------------------------------------------
@@ -1513,8 +1513,6 @@ TEST_F(InstrsFunctionsInstrsTest, TestInstrGETKWARG)
   execute_instr(corevm::runtime::instr_handler_getkwarg, instr);
 
   const corevm::runtime::Frame& frame = m_process.top_frame();
-
-  ASSERT_EQ(true, frame.has_visible_var(key));
 
   auto actual_obj = frame.get_visible_var(key);
 

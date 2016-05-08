@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_RUNTIME_TYPES_H_
 
 #include "dyobj/dynamic_object_heap.h"
-#include "gc/reference_count_garbage_collection_scheme.h"
+#include "gc/refcount_gc_scheme.h"
 
 
 namespace corevm {
