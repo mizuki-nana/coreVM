@@ -61,6 +61,7 @@ time of this writing:
   - `tuple`
   - `set`
   - `dict`
+  - `frozenset`
   - `NoneType`
   - `complex`
 - Builtin functions

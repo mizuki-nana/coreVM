@@ -1731,6 +1731,7 @@ def main():
         generator.read_from_source('python/src/tuple.py')
         generator.read_from_source('python/src/dict.py')
         generator.read_from_source('python/src/set.py')
+        generator.read_from_source('python/src/frozenset.py')
         generator.read_from_source('python/src/slice.py')
         generator.read_from_source('python/src/exceptions.py')
 
