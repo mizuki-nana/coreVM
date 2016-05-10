@@ -90,9 +90,9 @@ public:
 class NameNotFoundError : public RuntimeError
 {
 public:
-  NameNotFoundError()
+  NameNotFoundError(const char* name)
     :
-    RuntimeError("Local variable not found")
+    RuntimeError(str(boost::format("Local variable '%s' not found") % name))
   {
   }
 };

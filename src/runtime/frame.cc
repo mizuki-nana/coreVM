@@ -269,7 +269,9 @@ Frame::get_visible_var(const variable_key_t var_key) const
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
   {
-    THROW(NameNotFoundError());
+    std::string name;
+    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key), &name);
+    THROW(NameNotFoundError(name.c_str()));
   }
 
   return itr->second;
@@ -371,7 +373,9 @@ Frame::get_invisible_var(const variable_key_t var_key) const
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
   {
-    THROW(NameNotFoundError());
+    std::string name;
+    compartment()->get_string_literal(static_cast<encoding_key_t>(var_key), &name);
+    THROW(NameNotFoundError(name.c_str()));
   }
 
   return itr->second;

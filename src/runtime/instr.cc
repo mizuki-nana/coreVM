@@ -552,7 +552,10 @@ instr_handler_ldobj(const Instr& instr, Process& process,
   }
   else
   {
-    THROW(NameNotFoundError());
+    std::string name;
+    const auto encoding_key = static_cast<encoding_key_t>(key);
+    frame->compartment()->get_string_literal(encoding_key, &name);
+    THROW(NameNotFoundError(name.c_str()));
   }
 }
 
@@ -765,7 +768,10 @@ instr_handler_ldobj2(const Instr& instr, Process& process,
   }
   else
   {
-    THROW(NameNotFoundError());
+    std::string name;
+    const auto encoding_key = static_cast<encoding_key_t>(key);
+    frame->compartment()->get_string_literal(encoding_key, &name);
+    THROW(NameNotFoundError(name.c_str()));
   }
 }
 
@@ -1111,7 +1117,10 @@ instr_handler_cldobj(const Instr& instr, Process& process,
 
     if (!frame)
     {
-      THROW(NameNotFoundError());
+      std::string name;
+      const auto encoding_key = static_cast<encoding_key_t>(key);
+      (*frame_ptr)->compartment()->get_string_literal(encoding_key, &name);
+      THROW(NameNotFoundError(name.c_str()));
     }
   }
 
@@ -1918,7 +1927,9 @@ instr_handler_dbgvar(const Instr& instr, Process& /* process */,
   }
   else
   {
-    THROW(NameNotFoundError());
+    std::string name;
+    frame->compartment()->get_string_literal(encoding_key, &name);
+    THROW(NameNotFoundError(name.c_str()));
   }
 
   std::stringstream ss;
