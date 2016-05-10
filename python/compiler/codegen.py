@@ -550,7 +550,8 @@ class BytecodeGenerator(ast.NodeVisitor):
             'getkwarg',
             'rsetattrs',
             'setattrs2',
-            'str'
+            'str',
+            'dbgvar'
         )
 
         INSTRS_NEED_ENCODING_ID_2 = (
@@ -1719,6 +1720,7 @@ def main():
         # because it defines the names `True` and `False` that are needed in
         # the logic.
         generator.read_from_source('python/src/__builtin__.py')
+        generator.read_from_source('python/src/__debug__.py')
         generator.read_from_source('python/src/bool.py')
         generator.read_from_source('python/src/none.py')
         generator.read_from_source('python/src/int.py')

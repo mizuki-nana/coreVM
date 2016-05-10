@@ -57,7 +57,7 @@ public:
   InstrsUnitTest()
     :
     ::testing::Test(),
-    m_compartment(new corevm::runtime::Compartment("")),
+    m_compartment(new corevm::runtime::Compartment("test/sample.py")),
     m_ctx(corevm::runtime::ClosureCtx(corevm::runtime::NONESET_COMPARTMENT_ID, corevm::runtime::NONESET_CLOSURE_ID)),
     m_closure(),
     m_frame(new corevm::runtime::Frame(m_ctx, m_compartment, &m_closure)),
@@ -68,6 +68,7 @@ public:
 
   virtual void SetUp()
   {
+    m_closure.name = "test_func";
     m_process.push_frame(*m_frame);
     m_process.push_invocation_ctx(*m_invk_ctx);
   }
@@ -1669,6 +1670,26 @@ TEST_F(InstrsRuntimeInstrsTest, TestInstrDEBUG)
   corevm::runtime::instr_handler_debug(instr, m_process, &m_frame, &m_invk_ctx);
 
   std::cout << "(output above expected)" << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(InstrsRuntimeInstrsTest, TestInstrDBGVAR)
+{
+  corevm::runtime::StringLiteralTable str_literal_table { "name" };
+  m_compartment->set_string_literal_table(str_literal_table);
+
+  corevm::runtime::variable_key_t key = 0;
+  auto obj = m_process.create_dyobj();
+
+  m_frame->set_visible_var(key, obj);
+
+  corevm::runtime::Instr instr(
+    0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
+
+  corevm::runtime::instr_handler_dbgvar(instr, m_process, &m_frame, &m_invk_ctx);
+
+  std::cout << std::endl << "(output above expected)" << std::endl;
 }
 
 // -----------------------------------------------------------------------------

@@ -110,6 +110,7 @@ const InstrInfo InstrSetInfo::instr_infos[INSTR_CODE_MAX] {
   /* DEBUG     */    { .name="debug"     },
   /* DBGFRM    */    { .name="dbgfrm"    },
   /* DBGMEM    */    { .name="dbgmem"    },
+  /* DBGVAR    */    { .name="dbgvar"    },
   /* PRINT     */    { .name="print"     },
   /* SWAP2     */    { .name="swap2"     },
 

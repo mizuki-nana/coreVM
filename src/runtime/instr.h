@@ -331,6 +331,10 @@ void instr_handler_dbgmem(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
+void instr_handler_dbgvar(const Instr&, Process&, Frame**, InvocationCtx**);
+
+// -----------------------------------------------------------------------------
+
 void instr_handler_print(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------

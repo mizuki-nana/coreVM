@@ -45,9 +45,10 @@ INTERMEDIATE_EXTENSION = '.tmp.py'
 
 ## -----------------------------------------------------------------------------
 
-# TODO: [COREVM-486] Un-blacklist Python test `python/tests/chr.py`
 TESTS_BLACKLIST = [
-  './python/tests/chr.py'
+    './python/tests/debug_test.py',
+    # TODO: [COREVM-486] Un-blacklist Python test `python/tests/chr.py`
+    './python/tests/chr.py'
 ]
 
 ## -----------------------------------------------------------------------------

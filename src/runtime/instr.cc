@@ -136,6 +136,7 @@ InstrHandlerMeta::instr_handlers[INSTR_CODE_MAX] {
   /* DEBUG     */    instr_handler_debug     ,
   /* DBGFRM    */    instr_handler_dbgfrm    ,
   /* DBGMEM    */    instr_handler_dbgmem    ,
+  /* DBGVAR    */    instr_handler_dbgvar    ,
   /* PRINT     */    instr_handler_print     ,
   /* SWAP2     */    instr_handler_swap2     ,
 
@@ -1892,6 +1893,43 @@ instr_handler_dbgmem(const Instr& instr, Process& /* process */,
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
   DbgMemPrinter printer(opts);
   printer(std::cout) << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+instr_handler_dbgvar(const Instr& instr, Process& /* process */,
+  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
+{
+  const encoding_key_t encoding_key = static_cast<encoding_key_t>(instr.oprd1);
+
+  Frame* frame = *frame_ptr;
+  const std::string variable_name(
+    frame->compartment()->get_string_literal(encoding_key));
+
+  const variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
+  Process::dyobj_ptr obj = NULL;
+
+  if (frame->get_visible_var_through_ancestry(key, &obj))
+  {
+#if __DEBUG__
+    ASSERT(obj);
+#endif
+  }
+  else
+  {
+    THROW(NameNotFoundError());
+  }
+
+  std::stringstream ss;
+  ss << "------------------- DEBUG -------------------" << std::endl;
+  ss << std::setw(10) << "Module: " << frame->compartment()->path() << std::endl;
+  ss << std::setw(10) << "Frame: " << frame->closure()->name << std::endl;
+  ss << std::setw(10) << "Variable: " << variable_name << std::endl;
+  ss << "\tAttribute count: " << obj->attr_count() << std::endl;
+  ss << "\tFlags: " << obj->flags() << std::endl;
+  ss << "\tIs garbage collectible: " << obj->is_garbage_collectible() << std::endl;
+  std::cout << ss.str();
 }
 
 // -----------------------------------------------------------------------------

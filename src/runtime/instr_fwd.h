@@ -525,6 +525,12 @@ enum InstrEnum : uint32_t
   DBGMEM,
 
   /**
+   * <dbgvar, #, _>
+   * Show information of a variable.
+   */
+  DBGVAR,
+
+  /**
    * <print, <trailing_new_line>, _>
    * Converts the native type handle associated with the object on top of the
    * stack into a native string, and prints it to std output. The second operand
