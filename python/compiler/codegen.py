@@ -365,10 +365,15 @@ class BytecodeGenerator(ast.NodeVisitor):
         ClosureTableValidator('__MAIN__', required=True),
     )
 
+    class NameManglingMode:
+        NONE = 0x00
+        MANGLE_BUILTIN = 0x01
+
     def __init__(self, options):
         self.input_file = options.input_file
         self.output_file = options.output_file
         self.debug_mode = options.debug_mode
+        self.name_mangling_mode = self.NameManglingMode.NONE
 
         # Read info file
         with open(options.metadata_file, 'r') as fd:
@@ -402,6 +407,9 @@ class BytecodeGenerator(ast.NodeVisitor):
             tree = ast.parse(fd.read())
 
         self.visit(tree)
+
+    def set_name_mangling_mode(self, mode):
+        self.name_mangling_mode = mode
 
     def finalize(self):
         with open(COREVM_BYTECODE_SCHEMA, 'r') as schema_file:
@@ -454,6 +462,16 @@ class BytecodeGenerator(ast.NodeVisitor):
                     'Invalid hierarchical relation between closures'
 
         return [closure.to_json() for closure in closure_table]
+
+    def __mangle_class_name(self, name):
+        if self.name_mangling_mode == self.NameManglingMode.MANGLE_BUILTIN:
+            return '_builtin_cls_' + name
+        return name
+
+    def __mangle_function_name(self, name):
+        if self.name_mangling_mode == self.NameManglingMode.MANGLE_BUILTIN:
+            return '_builtin_func_' + name
+        return name
 
     def __enter_scope(self, in_cls=False, name=None):
         self.scopes.append(Scope(in_cls=in_cls, name=name))
@@ -519,10 +537,6 @@ class BytecodeGenerator(ast.NodeVisitor):
     def __add_catch_site(self, catch_site):
         self.__current_closure().catch_sites.append(catch_site)
 
-    def __mingle_name(self, name):
-        # TDOO: [COREVM-177] Add support for name mingling in Python compiler
-        return self.current_class_name + '.' + name
-
     def __get_string_literal_encoding_id(self, name):
         return self.string_literal_encoding_map.get_encoding_id(name)
 
@@ -581,13 +595,35 @@ class BytecodeGenerator(ast.NodeVisitor):
     def __get_random_name(self):
         return ''.join(random.choice(string.ascii_letters) for _ in xrange(5))
 
+    def __enter_class_name_mangling(self, name):
+        self.current_class_name = \
+            self.current_class_name + '::' + self.__mangle_class_name(name)
+
+    def __exit_class_name_mangling(self):
+        self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
+
+    def __enter_function_name_mangling(self, name):
+        self.current_function_name = \
+            self.current_function_name + '::' + self.__mangle_function_name(name)
+
+    def __exit_function_name_mangling(self):
+        self.current_function_name = '::'.join(self.current_function_name.split('::')[:-1])
+
+    def __enter_closure_in_function(self):
+        if self.current_class_name:
+            closure_name = self.current_class_name + '.' + self.current_function_name
+        else:
+            closure_name = self.current_function_name
+
+        return closure_name
+
     """ ----------------------------- stmt --------------------------------- """
 
     def visit_FunctionDef(self, node):
         # Step in.
         self.__enter_scope()
-        self.current_function_name = self.current_function_name + '::' + node.name
-        closure_name = self.current_class_name + '.' + self.current_function_name
+        self.__enter_function_name_mangling(node.name)
+        closure_name = self.__enter_closure_in_function()
 
         # Check if a function with the same name already exists under the same
         # scope. We don't want to create another closure if it already exists.
@@ -621,7 +657,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         # Step out.
         self.__exit_scope()
         self.current_closure_name = self.closure_map[self.current_closure_name].parent_name
-        self.current_function_name = '::'.join(self.current_function_name.split('::')[:-1])
+        self.__exit_function_name_mangling()
 
         # In the outer closure, set the closure id on the object
 
@@ -639,7 +675,7 @@ class BytecodeGenerator(ast.NodeVisitor):
 
     def visit_ClassDef(self, node):
         # Step in.
-        self.current_class_name = self.current_class_name + '::' + node.name
+        self.__enter_class_name_mangling(node.name)
         self.__enter_scope(in_cls=True, name=self.current_class_name)
 
         self.__add_instr('new', self.__get_dyobj_flag(['DYOBJ_IS_NOT_GARBAGE_COLLECTIBLE']), 0)
@@ -681,7 +717,7 @@ class BytecodeGenerator(ast.NodeVisitor):
         self.__add_instr('ldobj2', self.__get_string_literal_encoding_id(self.current_class_name), 0)
         self.__add_instr('stobj', self.__get_string_literal_encoding_id(node.name), 0)
         self.__exit_scope()
-        self.current_class_name = '::'.join(self.current_class_name.split('::')[:-1])
+        self.__exit_class_name_mangling()
 
     def visit_Return(self, node):
         # TODO: [COREVM-176] Support return value in Python
@@ -1719,6 +1755,9 @@ def main():
         # NOTE: The definition of `bool` has to come before all other types.
         # because it defines the names `True` and `False` that are needed in
         # the logic.
+
+        generator.set_name_mangling_mode(BytecodeGenerator.NameManglingMode.MANGLE_BUILTIN)
+
         generator.read_from_source('python/src/__builtin__.py')
         generator.read_from_source('python/src/__debug__.py')
         generator.read_from_source('python/src/bool.py')
@@ -1734,6 +1773,8 @@ def main():
         generator.read_from_source('python/src/frozenset.py')
         generator.read_from_source('python/src/slice.py')
         generator.read_from_source('python/src/exceptions.py')
+
+        generator.set_name_mangling_mode(BytecodeGenerator.NameManglingMode.NONE)
 
         generator.read_from_source(options.input_file)
 
