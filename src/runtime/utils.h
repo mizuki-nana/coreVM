@@ -76,6 +76,18 @@ getattr(const ObjPtrType& obj, dyobj::attr_key_t attr_key,
 
 template<typename ObjPtrType>
 ObjPtrType
+getattr(const ObjPtrType& obj, dyobj::attr_key_t attr_key)
+{
+  ObjPtrType attr_ptr = NULL;
+  obj->getattr(attr_key, &attr_ptr);
+
+  return attr_ptr;
+}
+
+// -----------------------------------------------------------------------------
+
+template<typename ObjPtrType>
+ObjPtrType
 getattr(const ObjPtrType& obj, const std::string& attr_name)
 {
   dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_name);

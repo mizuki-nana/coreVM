@@ -20,14 +20,14 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_COMPARTMENT_H_
-#define COREVM_COMPARTMENT_H_
+#ifndef COREVM_DBGVAR_PRINTER_H_
+#define COREVM_DBGVAR_PRINTER_H_
 
-#include "closure.h"
-#include "common.h"
-#include "errors.h"
+#include "frame.h"
+#include "process.h"
+#include "runtime_types.h"
 
-#include <string>
+#include <iosfwd>
 
 
 namespace corevm {
@@ -36,50 +36,19 @@ namespace corevm {
 namespace runtime {
 
 
-/** Forward declaration of `CompartmentPrinter` */
-class CompartmentPrinter;
-
-
-class Compartment
+class DbgvarPrinter
 {
 public:
-  explicit Compartment(const std::string&);
+  DbgvarPrinter(const Process& process, const Frame& frame,
+    const char* variable_name, RuntimeTypes::dyobj_ptr_type obj);
 
-  const std::string& path() const;
-
-  void set_string_literal_table(const StringLiteralTable&);
-
-  void set_string_literal_table(StringLiteralTable&&);
-
-  void set_fpt_literal_table(const FptLiteralTable&);
-
-  void set_fpt_literal_table(FptLiteralTable&&);
-
-  std::string get_string_literal(encoding_key_t) const;
-
-  void get_string_literal(encoding_key_t, std::string*) const;
-
-  void get_string_literal(encoding_key_t, const char**) const;
-
-  double get_fpt_literal(encoding_key_t) const;
-
-  size_t closure_count() const;
-
-  const Closure get_closure_by_id(closure_id_t) const;
-
-  void get_closure_by_id(closure_id_t, Closure** closure);
-
-  void set_closure_table(const ClosureTable&&);
-
-  bool get_starting_closure(Closure**);
-
-  friend class CompartmentPrinter;
+  std::ostream& operator()(std::ostream&) const;
 
 private:
-  const std::string m_path;
-  StringLiteralTable m_str_literal_table;
-  FptLiteralTable m_fpt_literal_table;
-  ClosureTable m_closure_table;
+  const Process& m_process;
+  const Frame& m_frame;
+  const char* m_variable_name;
+  RuntimeTypes::dyobj_ptr_type m_obj;
 };
 
 
@@ -89,4 +58,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_COMPARTMENT_H_ */
+#endif /* COREVM_DBGVAR_PRINTER_H_ */

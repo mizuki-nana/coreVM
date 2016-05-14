@@ -38,6 +38,7 @@ set(sources
     runtime/compartment.cc
     runtime/compartment_printer.cc
     runtime/dbgmem_printer.cc
+    runtime/dbgvar_printer.cc
     runtime/frame.cc
     runtime/frame_ptr_cache.cc
     runtime/frame_printer.cc

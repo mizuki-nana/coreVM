@@ -179,7 +179,8 @@ Process::Process()
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(),
   m_compartments(),
-  m_frame_cache()
+  m_frame_cache(),
+  m_attr_name_store()
 {
   init();
 }
@@ -198,7 +199,8 @@ Process::Process(uint64_t heap_alloc_size, uint64_t pool_alloc_size)
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(pool_alloc_size),
   m_compartments(),
-  m_frame_cache()
+  m_frame_cache(),
+  m_attr_name_store()
 {
   init();
 }
@@ -217,7 +219,8 @@ Process::Process(const Process::Options& options)
   m_invocation_ctx_stack(),
   m_ntvhndl_pool(options.pool_alloc_size),
   m_compartments(),
-  m_frame_cache()
+  m_frame_cache(),
+  m_attr_name_store()
 {
   init();
 }
@@ -611,6 +614,31 @@ void
 Process::erase_ntvhndl(const types::NativeTypeHandle* ptr)
 {
   m_ntvhndl_pool.erase(const_cast<types::NativeTypeHandle*>(ptr));
+}
+
+// -----------------------------------------------------------------------------
+
+void
+Process::insert_attr_name(dyobj::attr_key_t attr_key, const char* attr_name)
+{
+  m_attr_name_store.insert(std::make_pair(attr_key, AttributeNameType(attr_name)));
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Process::get_attr_name(dyobj::attr_key_t attr_key, const char** attr_name) const
+{
+  auto itr = m_attr_name_store.find(attr_key);
+
+  const bool key_found = itr != m_attr_name_store.end();
+
+  if (key_found)
+  {
+    *attr_name = const_cast<AttributeNameType&>(itr->second).c_str();
+  }
+
+  return key_found;
 }
 
 // -----------------------------------------------------------------------------

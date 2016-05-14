@@ -113,6 +113,17 @@ Compartment::get_string_literal(encoding_key_t key, std::string* str) const
 
 // -----------------------------------------------------------------------------
 
+void
+Compartment::get_string_literal(encoding_key_t key, const char** str) const
+{
+  if (key < m_str_literal_table.size())
+  {
+    *str = m_str_literal_table[key].c_str();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
 double
 Compartment::get_fpt_literal(encoding_key_t key) const
 {

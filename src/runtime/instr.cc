@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "catch_site.h"
 #include "dbgmem_printer.h"
+#include "dbgvar_printer.h"
 #include "frame_printer.h"
 #include "process.h"
 #include "process_printer.h"
@@ -618,7 +619,7 @@ instr_handler_setattr(const Instr& instr, Process& process,
 {
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key_t attr_key = get_attr_key(frame->compartment(), str_key);
+  auto attr_key = get_attr_key(frame->compartment(), str_key);
 
   auto attr_obj = process.pop_stack();
   auto target_obj = process.top_stack();
@@ -629,6 +630,9 @@ instr_handler_setattr(const Instr& instr, Process& process,
       str(boost::format("cannot mutate immutable object 0x%08x") % target_obj->id()).c_str()));
   }
 
+  const char* attr_name = NULL;
+  frame->compartment()->get_string_literal(str_key, &attr_name);
+  process.insert_attr_name(attr_key, attr_name);
   target_obj->putattr(attr_key, attr_obj);
   attr_obj->manager().on_setattr();
 }
@@ -718,6 +722,8 @@ instr_handler_setattr2(const Instr& /* instr */, Process& process,
   target_obj->putattr(attr_key, attr_obj);
 
   attr_obj->manager().on_setattr();
+
+  process.insert_attr_name(attr_key, attr_str_value.c_str());
 }
 
 // -----------------------------------------------------------------------------
@@ -768,10 +774,10 @@ instr_handler_ldobj2(const Instr& instr, Process& process,
   }
   else
   {
-    std::string name;
     const auto encoding_key = static_cast<encoding_key_t>(key);
+    const char* name = NULL;
     frame->compartment()->get_string_literal(encoding_key, &name);
-    THROW(NameNotFoundError(name.c_str()));
+    THROW(NameNotFoundError(name));
   }
 }
 
@@ -1117,10 +1123,10 @@ instr_handler_cldobj(const Instr& instr, Process& process,
 
     if (!frame)
     {
-      std::string name;
       const auto encoding_key = static_cast<encoding_key_t>(key);
+      const char* name = NULL;
       (*frame_ptr)->compartment()->get_string_literal(encoding_key, &name);
-      THROW(NameNotFoundError(name.c_str()));
+      THROW(NameNotFoundError(name));
     }
   }
 
@@ -1189,6 +1195,11 @@ instr_handler_setattrs(const Instr& instr, Process& process,
       attr_obj.manager().on_setattr();
       obj->putattr(attr_key, &attr_obj);
     }
+
+    std::string attr_name;
+    frame->compartment()->get_string_literal(
+      static_cast<encoding_key_t>(str_key), &attr_name);
+    process.insert_attr_name(attr_key, attr_name.c_str());
   }
 
   frame->push_eval_stack(std::move( types::NativeTypeHandle(map) ));
@@ -1203,8 +1214,7 @@ instr_handler_rsetattrs(const Instr& instr, Process& process,
   auto str_key = static_cast<encoding_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
-  dyobj::attr_key_t attr_key = get_attr_key(
-    frame->compartment(), str_key);
+  auto attr_key = get_attr_key(frame->compartment(), str_key);
 
   auto attr_obj = process.top_stack();
 
@@ -1221,6 +1231,11 @@ instr_handler_rsetattrs(const Instr& instr, Process& process,
     attr_obj->manager().on_setattr();
     obj.putattr(attr_key, attr_obj);
   }
+
+  const char* attr_name = NULL;
+  frame->compartment()->get_string_literal(static_cast<encoding_key_t>(str_key),
+    &attr_name);
+  process.insert_attr_name(attr_key, attr_name);
 }
 
 // -----------------------------------------------------------------------------
@@ -1231,14 +1246,16 @@ instr_handler_setattrs2(const Instr& instr, Process& process,
 {
   auto self_str_key = static_cast<encoding_key_t>(instr.oprd1);
   auto frame = *frame_ptr;
-  dyobj::attr_key_t self_attr_key = get_attr_key(
-    frame->compartment(), self_str_key);
+  auto self_attr_key = get_attr_key(frame->compartment(), self_str_key);
 
   auto src_obj = process.pop_stack();
 
   auto target_obj = process.top_stack();
 
   auto * objects = process.create_dyobjs(src_obj->attr_count());
+
+  const char* attr_name = NULL;
+  frame->compartment()->get_string_literal(self_str_key, &attr_name);
 
   size_t i = 0;
   for (auto itr = src_obj->begin(); itr != src_obj->end(); ++itr, ++i)
@@ -1254,6 +1271,8 @@ instr_handler_setattrs2(const Instr& instr, Process& process,
     cloned_attr_obj.putattr(self_attr_key, target_obj);
 
     target_obj->putattr(attr_key, &cloned_attr_obj);
+
+    process.insert_attr_name(attr_key, attr_name);
   }
 }
 
@@ -1907,14 +1926,14 @@ instr_handler_dbgmem(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_dbgvar(const Instr& instr, Process& /* process */,
+instr_handler_dbgvar(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   const encoding_key_t encoding_key = static_cast<encoding_key_t>(instr.oprd1);
 
   Frame* frame = *frame_ptr;
-  const std::string variable_name(
-    frame->compartment()->get_string_literal(encoding_key));
+  std::string variable_name;
+  frame->compartment()->get_string_literal(encoding_key, &variable_name);
 
   const variable_key_t key = static_cast<variable_key_t>(instr.oprd1);
   Process::dyobj_ptr obj = NULL;
@@ -1932,15 +1951,8 @@ instr_handler_dbgvar(const Instr& instr, Process& /* process */,
     THROW(NameNotFoundError(name.c_str()));
   }
 
-  std::stringstream ss;
-  ss << "------------------- DEBUG -------------------" << std::endl;
-  ss << std::setw(10) << "Module: " << frame->compartment()->path() << std::endl;
-  ss << std::setw(10) << "Frame: " << frame->closure()->name << std::endl;
-  ss << std::setw(10) << "Variable: " << variable_name << std::endl;
-  ss << "\tAttribute count: " << obj->attr_count() << std::endl;
-  ss << "\tFlags: " << obj->flags() << std::endl;
-  ss << "\tIs garbage collectible: " << obj->is_garbage_collectible() << std::endl;
-  std::cout << ss.str();
+  DbgvarPrinter printer(process, *frame, variable_name.c_str(), obj);
+  printer(std::cout);
 }
 
 // -----------------------------------------------------------------------------

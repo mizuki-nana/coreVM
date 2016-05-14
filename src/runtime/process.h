@@ -40,6 +40,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 
+#include <llvm/ADT/SmallString.h>
+
 #include <cstdint>
 #include <type_traits>
 
@@ -175,6 +177,10 @@ public:
 
   void erase_ntvhndl(const types::NativeTypeHandle*);
 
+  void insert_attr_name(dyobj::attr_key_t, const char*);
+
+  bool get_attr_name(dyobj::attr_key_t, const char**) const;
+
   instr_addr_t pc() const;
 
   void set_pc(instr_addr_t);
@@ -263,6 +269,9 @@ private:
 
   void set_parent_for_top_frame();
 
+  typedef llvm::SmallString<16> AttributeNameType;
+  typedef std::unordered_map<dyobj::attr_key_t, AttributeNameType> AttributeNameStore;
+
   ExecutionStatus m_execution_status;
   bool m_do_gc;
   uint8_t m_gc_flag;
@@ -273,6 +282,7 @@ private:
   NativeTypesPool m_ntvhndl_pool;
   llvm::SmallVector<Compartment, 5> m_compartments;
   FramePtrCache m_frame_cache;
+  AttributeNameStore m_attr_name_store;
 };
 
 // -----------------------------------------------------------------------------
