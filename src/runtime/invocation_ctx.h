@@ -68,7 +68,7 @@ public:
 
   bool has_params() const;
 
-  void put_param(const param_type);
+  void put_param(param_type);
 
   param_type pop_param();
 

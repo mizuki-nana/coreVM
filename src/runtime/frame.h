@@ -96,7 +96,7 @@ public:
 
   instr_addr_t return_addr() const;
 
-  void set_return_addr(const instr_addr_t);
+  void set_return_addr(instr_addr_t);
 
   void push_eval_stack(const types::NativeTypeHandle&);
 
@@ -114,25 +114,25 @@ public:
 
   size_t visible_var_count() const;
 
-  dyobj_ptr get_visible_var(const variable_key_t) const;
+  dyobj_ptr get_visible_var(variable_key_t) const;
 
-  bool get_visible_var_fast(const variable_key_t, dyobj_ptr*) const;
+  bool get_visible_var_fast(variable_key_t, dyobj_ptr*) const;
 
   bool get_visible_var_through_ancestry(variable_key_t, dyobj_ptr*);
 
-  dyobj_ptr pop_visible_var(const variable_key_t);
+  dyobj_ptr pop_visible_var(variable_key_t);
 
   void set_visible_var(variable_key_t, dyobj_ptr);
 
   size_t invisible_var_count() const;
 
-  dyobj_ptr get_invisible_var(const variable_key_t) const;
+  dyobj_ptr get_invisible_var(variable_key_t) const;
 
-  bool get_invisible_var_fast(const variable_key_t, dyobj_ptr*) const;
+  bool get_invisible_var_fast(variable_key_t, dyobj_ptr*) const;
 
   bool get_invisible_var_through_ancestry(variable_key_t, dyobj_ptr*);
 
-  dyobj_ptr pop_invisible_var(const variable_key_t);
+  dyobj_ptr pop_invisible_var(variable_key_t);
 
   void set_invisible_var(variable_key_t, dyobj_ptr);
 

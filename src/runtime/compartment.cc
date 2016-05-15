@@ -100,14 +100,12 @@ Compartment::get_string_literal(encoding_key_t key) const
 void
 Compartment::get_string_literal(encoding_key_t key, std::string* str) const
 {
-  if (!str)
-  {
-    return;
-  }
+  const char* str_ = NULL;
+  get_string_literal(key, &str_);
 
-  if (key < m_str_literal_table.size())
+  if (str_)
   {
-    *str = m_str_literal_table[key];
+    str->assign(str_);
   }
 }
 

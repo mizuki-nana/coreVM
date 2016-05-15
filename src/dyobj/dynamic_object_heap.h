@@ -60,8 +60,7 @@ public:
   static_assert(
     std::numeric_limits<typename dynamic_object_container_type::size_type>::max() >=
     std::numeric_limits<dyobj_id_t>::max(),
-    "Dynamic object heap incompatibility"
-  );
+    "Dynamic object heap incompatibility");
 
   using reference           = typename dynamic_object_container_type::reference;
   using const_reference     = typename dynamic_object_container_type::const_reference;

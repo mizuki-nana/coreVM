@@ -123,7 +123,7 @@ struct closure {
       }
 };
 
-struct bytecode {
+struct StructuredBytecode {
     std::string format;
     std::string format_version;
     std::string target_version;
@@ -134,7 +134,7 @@ struct bytecode {
     std::vector<std::string > string_literal_table;
     std::vector<double > fpt_literal_table;
     std::vector<closure > __MAIN__;
-    bytecode() :
+    StructuredBytecode() :
         format(std::string()),
         format_version(std::string()),
         target_version(std::string()),
@@ -301,8 +301,8 @@ template<> struct codec_traits<corevm::closure> {
     }
 };
 
-template<> struct codec_traits<corevm::bytecode> {
-    static void encode(Encoder& e, const corevm::bytecode& v) {
+template<> struct codec_traits<corevm::StructuredBytecode> {
+    static void encode(Encoder& e, const corevm::StructuredBytecode& v) {
         avro::encode(e, v.format);
         avro::encode(e, v.format_version);
         avro::encode(e, v.target_version);
@@ -314,7 +314,7 @@ template<> struct codec_traits<corevm::bytecode> {
         avro::encode(e, v.fpt_literal_table);
         avro::encode(e, v.__MAIN__);
     }
-    static void decode(Decoder& d, corevm::bytecode& v) {
+    static void decode(Decoder& d, corevm::StructuredBytecode& v) {
         if (avro::ResolvingDecoder *rd =
             dynamic_cast<avro::ResolvingDecoder *>(&d)) {
             const std::vector<size_t> fo = rd->fieldOrder();

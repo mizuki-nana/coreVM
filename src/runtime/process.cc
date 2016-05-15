@@ -684,7 +684,7 @@ Process::can_execute() const
 // -----------------------------------------------------------------------------
 
 bool
-Process::pre_start()
+Process::start()
 {
   if (m_compartments.empty())
   {
@@ -725,9 +725,9 @@ Process::pre_start()
 // -----------------------------------------------------------------------------
 
 void
-Process::start()
+Process::run()
 {
-  if (!pre_start())
+  if (!start())
   {
     return;
   }

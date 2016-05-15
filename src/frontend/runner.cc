@@ -102,7 +102,7 @@ Runner::run() const noexcept
   {
     loader.load(m_path, process);
 
-    const bool res = runtime::ProcessRunner(process, gc_interval).start();
+    const bool res = runtime::ProcessRunner(process, gc_interval).run();
 
     if (!res)
     {

@@ -47,7 +47,8 @@ private:
 
   struct KeyPred
   {
-    KeyPred(K key): m_value(key) {}
+    KeyPred(K key) : m_value(key) {}
+
     bool operator()(const value_type& pair) const
     {
       return pair.first == m_value;

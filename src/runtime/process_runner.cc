@@ -81,14 +81,14 @@ ProcessRunner::~ProcessRunner()
 // -----------------------------------------------------------------------------
 
 bool
-ProcessRunner::start()
+ProcessRunner::run()
 {
   bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
 
   if (res)
   {
     SignalHandler::register_process(&m_process);
-    m_process.start();
+    m_process.run();
   }
 
   return res;

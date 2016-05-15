@@ -214,7 +214,7 @@ TEST_F(ProcessUnitTest, TestPushAndPopFrames)
 
   compartment.set_closure_table(std::move(closure_table));
 
-  // simulate `process::pre_start()`.
+  // simulate `process::start()`.
   auto compartment_id = process.insert_compartment(compartment);
 
   corevm::runtime::ClosureCtx ctx(compartment_id, closure.id);

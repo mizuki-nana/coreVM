@@ -187,7 +187,7 @@ public:
 
   bool get_frame_by_closure_ctx(ClosureCtx&, Frame**);
 
-  void start();
+  void run();
 
   bool should_gc() const;
 
@@ -261,7 +261,7 @@ private:
 
   bool is_valid_pc() const;
 
-  bool pre_start();
+  bool start();
 
   void check_call_stack_capacity();
 
@@ -271,16 +271,20 @@ private:
 
   typedef llvm::SmallString<16> AttributeNameType;
   typedef std::unordered_map<dyobj::attr_key_t, AttributeNameType> AttributeNameStore;
+  typedef llvm::SmallVector<dyobj_ptr, 20> DynamicObjectStack;
+  typedef llvm::SmallVector<Frame, 20> CallStack;
+  typedef llvm::SmallVector<InvocationCtx, 20> InvocationCtxStack;
+  typedef llvm::SmallVector<Compartment, 5> CompartmentStore;
 
   ExecutionStatus m_execution_status;
   bool m_do_gc;
   uint8_t m_gc_flag;
   dynamic_object_heap_type m_dynamic_object_heap;
-  llvm::SmallVector<dyobj_ptr, 20> m_dyobj_stack;
-  llvm::SmallVector<Frame, 20> m_call_stack;
-  llvm::SmallVector<InvocationCtx, 20> m_invocation_ctx_stack;
+  DynamicObjectStack m_dyobj_stack;
+  CallStack m_call_stack;
+  InvocationCtxStack m_invocation_ctx_stack;
   NativeTypesPool m_ntvhndl_pool;
-  llvm::SmallVector<Compartment, 5> m_compartments;
+  CompartmentStore m_compartments;
   FramePtrCache m_frame_cache;
   AttributeNameStore m_attr_name_store;
 };

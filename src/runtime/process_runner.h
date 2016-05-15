@@ -48,7 +48,7 @@ public:
 
   virtual ~ProcessRunner();
 
-  bool start();
+  bool run();
 
 protected:
   static void tick_handler(void*);

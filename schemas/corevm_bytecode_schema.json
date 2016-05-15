@@ -1,7 +1,7 @@
 {
   "namespace": "corevm.avro",
   "type": "record",
-  "name": "bytecode",
+  "name": "StructuredBytecode",
   "fields": [
     {
       "name": "format",

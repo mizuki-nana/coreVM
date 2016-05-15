@@ -48,8 +48,8 @@ BinaryBytecodeLoader::load(const std::string& path, runtime::Process& process)
 {
   // `avro::DataFileReader` documentation:
   // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
-  corevm::bytecode bytecode_data;
-  avro::DataFileReader<corevm::bytecode> reader(path.c_str());
+  corevm::StructuredBytecode bytecode_data;
+  avro::DataFileReader<corevm::StructuredBytecode> reader(path.c_str());
   reader.read(bytecode_data);
 
   // Load source path.

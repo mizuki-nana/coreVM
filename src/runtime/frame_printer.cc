@@ -114,7 +114,7 @@ FramePrinter::print_variables(std::ostream& ost,
   ost << std::endl;
   for (const auto var : vars)
   {
-    std::string var_name;
+    const char* var_name = NULL;
     auto encoding_key = static_cast<runtime::encoding_key_t>(var);
     compartment->get_string_literal(encoding_key, &var_name);
     ost << "  - " << var_name << std::endl;

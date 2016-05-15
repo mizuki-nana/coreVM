@@ -169,7 +169,7 @@ Frame::return_addr() const
 // -----------------------------------------------------------------------------
 
 void
-Frame::set_return_addr(const instr_addr_t return_addr)
+Frame::set_return_addr(instr_addr_t return_addr)
 {
   m_return_addr = return_addr;
 }
@@ -264,7 +264,7 @@ Frame::visible_var_count() const
 // -----------------------------------------------------------------------------
 
 Frame::dyobj_ptr
-Frame::get_visible_var(const variable_key_t var_key) const
+Frame::get_visible_var(variable_key_t var_key) const
 {
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
@@ -280,7 +280,7 @@ Frame::get_visible_var(const variable_key_t var_key) const
 // -----------------------------------------------------------------------------
 
 bool
-Frame::get_visible_var_fast(const variable_key_t var_key, dyobj_ptr* obj_ptr) const
+Frame::get_visible_var_fast(variable_key_t var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_visible_vars.find(var_key);
   if (itr == m_visible_vars.end())
@@ -342,7 +342,7 @@ Frame::get_visible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
 // -----------------------------------------------------------------------------
 
 Frame::dyobj_ptr
-Frame::pop_visible_var(const variable_key_t var_key)
+Frame::pop_visible_var(variable_key_t var_key)
 {
   auto ptr = get_visible_var(var_key);
   m_visible_vars.erase(var_key);
@@ -368,7 +368,7 @@ Frame::invisible_var_count() const
 // -----------------------------------------------------------------------------
 
 Frame::dyobj_ptr
-Frame::get_invisible_var(const variable_key_t var_key) const
+Frame::get_invisible_var(variable_key_t var_key) const
 {
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
@@ -384,7 +384,7 @@ Frame::get_invisible_var(const variable_key_t var_key) const
 // -----------------------------------------------------------------------------
 
 bool
-Frame::get_invisible_var_fast(const variable_key_t var_key, dyobj_ptr* obj_ptr) const
+Frame::get_invisible_var_fast(variable_key_t var_key, dyobj_ptr* obj_ptr) const
 {
   auto itr = m_invisible_vars.find(var_key);
   if (itr == m_invisible_vars.end())
@@ -446,7 +446,7 @@ Frame::get_invisible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr
 // -----------------------------------------------------------------------------
 
 Frame::dyobj_ptr
-Frame::pop_invisible_var(const variable_key_t var_key)
+Frame::pop_invisible_var(variable_key_t var_key)
 {
   auto obj_ptr = get_invisible_var(var_key);
   m_invisible_vars.erase(var_key);

@@ -101,7 +101,7 @@ InstrBenchmarksFixture::init()
 
   auto compartment_id = m_process.insert_compartment(compartment);
 
-  // TODO: consolidate this code with `process::pre_start()`.
+  // TODO: consolidate this code with `process::start()`.
   corevm::runtime::ClosureCtx ctx(compartment_id, closure.id);
 
   corevm::runtime::Compartment* compartment_ptr = nullptr;
