@@ -72,7 +72,7 @@ int
 Runner::run() const noexcept
 {
   const uint32_t gc_interval = m_configuration.gc_interval() ? \
-    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL;
+    m_configuration.gc_interval() : corevm::runtime::COREVM_DEFAULT_GC_INTERVAL_MILLISECOND;
 
   runtime::Process::Options options;
 

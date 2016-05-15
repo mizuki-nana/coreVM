@@ -34,7 +34,7 @@ namespace corevm {
 namespace runtime {
 
 
-const uint32_t COREVM_DEFAULT_GC_INTERVAL = 10;
+const uint32_t COREVM_DEFAULT_GC_INTERVAL_MILLISECOND = 10;
 
 
 typedef int64_t instr_addr_t;

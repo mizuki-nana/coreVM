@@ -35,7 +35,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "types/native_type_handle.h"
 
 #include <algorithm>
-#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <memory>
@@ -1696,10 +1695,10 @@ instr_handler_jmpexc(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_exit(const Instr& /* instr */, Process& /* process */,
+instr_handler_exit(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
-  raise(SIGTERM);
+  process.terminate_exec();
 }
 
 // -----------------------------------------------------------------------------

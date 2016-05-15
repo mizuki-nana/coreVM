@@ -2029,51 +2029,16 @@ TEST_F(InstrsControlInstrsTest, TestInstrJMPEXC)
 
 // -----------------------------------------------------------------------------
 
-class InstrsControlInstrsWithSignalTest : public InstrsControlInstrsTest
+TEST_F(InstrsControlInstrsTest, TestInstrEXIT)
 {
-public:
-  static bool signal_fired()
-  {
-    return m_signal_fired;
-  }
+  ASSERT_NE(corevm::runtime::Process::EXECUTION_STATUS_TERMINATED,
+    m_process.execution_status());
 
-  static void set_signal_fired()
-  {
-    m_signal_fired = true;
-  }
-
-protected:
-  virtual void TearDown()
-  {
-    InstrsControlInstrsWithSignalTest::m_signal_fired = false;
-  }
-
-private:
-  static bool m_signal_fired;
-};
-
-// -----------------------------------------------------------------------------
-
-bool InstrsControlInstrsWithSignalTest::m_signal_fired = false;
-
-// -----------------------------------------------------------------------------
-
-TEST_F(InstrsControlInstrsWithSignalTest, TestInstrEXIT)
-{
-  auto sig_handler = [](int /* signum */) {
-    InstrsControlInstrsWithSignalTest::set_signal_fired();
-    signal(SIGTERM, SIG_IGN);
-  };
-
-  signal(SIGTERM, sig_handler);
-
-  ASSERT_EQ(false, InstrsControlInstrsWithSignalTest::signal_fired());
-
-  corevm::runtime::Instr instr(0, EXIT_SUCCESS, 0);
-
+  corevm::runtime::Instr instr(0, 0, 0);
   corevm::runtime::instr_handler_exit(instr, m_process, &m_frame, &m_invk_ctx);
 
-  ASSERT_EQ(true, InstrsControlInstrsWithSignalTest::signal_fired());
+  ASSERT_EQ(corevm::runtime::Process::EXECUTION_STATUS_TERMINATED,
+    m_process.execution_status());
 }
 
 // -----------------------------------------------------------------------------

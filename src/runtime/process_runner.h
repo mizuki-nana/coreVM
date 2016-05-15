@@ -23,11 +23,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_RUNNER_H_
 #define COREVM_PROCESS_RUNNER_H_
 
+#include "common.h"
 #include "corevm/macros.h"
 
-#include <sneaker/threading/fixed_time_interval_daemon_service.h>
-
 #include <cstdint>
+
+#include <sys/time.h>
 
 
 namespace corevm {
@@ -40,22 +41,31 @@ namespace runtime {
 class Process;
 
 
-class ProcessRunner : public sneaker::threading::fixed_time_interval_daemon_service
+class ProcessRunner
 {
 public:
-  explicit ProcessRunner(Process&);
-  ProcessRunner(Process&, uint32_t);
+  explicit ProcessRunner(Process& process);
 
-  virtual ~ProcessRunner();
+  ProcessRunner(Process& process,
+    uint32_t interval_millisec = COREVM_DEFAULT_GC_INTERVAL_MILLISECOND);
+
+  ~ProcessRunner();
 
   bool run();
 
-protected:
-  static void tick_handler(void*);
+  Process& process();
 
-  void gc();
+private:
+  void init(uint32_t interval_millisec);
+
+  static ProcessRunner* registered_instance;
+
+  bool set_timer();
+
+  static void tick_handler(int);
 
   Process& m_process;
+  struct itimerval m_interval;
 };
 
 

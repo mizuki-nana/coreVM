@@ -22,14 +22,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "process_runner.h"
 
-#include "common.h"
 #include "process.h"
-#include "signal_handler.h"
-#include "corevm/macros.h"
 
-#include <sneaker/threading/fixed_time_interval_daemon_service.h>
-
-#include <cstdint>
+#include <csignal>
 
 
 namespace corevm {
@@ -40,42 +35,35 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-const int COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS = -1;
+ProcessRunner* ProcessRunner::registered_instance = nullptr;
 
 // -----------------------------------------------------------------------------
 
-ProcessRunner::ProcessRunner(Process& process)
+ProcessRunner::ProcessRunner(Process& process, uint32_t interval_millisec)
   :
-  sneaker::threading::fixed_time_interval_daemon_service(
-    COREVM_DEFAULT_GC_INTERVAL,
-    ProcessRunner::tick_handler,
-    false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS),
   m_process(process)
 {
-  // Do nothing here.
+  init(interval_millisec);
 }
 
 // -----------------------------------------------------------------------------
 
-ProcessRunner::ProcessRunner(Process& process, uint32_t gc_interval)
-  :
-  sneaker::threading::fixed_time_interval_daemon_service(
-    gc_interval,
-    ProcessRunner::tick_handler,
-    false,
-    COREVM_PROCESS_DEFAULT_MAX_RUN_ITERATIONS),
-  m_process(process)
-{
-  // Do nothing here.
-}
-
-// -----------------------------------------------------------------------------
-
-/* virtual */
 ProcessRunner::~ProcessRunner()
 {
-  // Do nothing here.
+  registered_instance = nullptr;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+ProcessRunner::init(uint32_t interval_millisec)
+{
+  registered_instance = this;
+
+  m_interval.it_interval.tv_usec = interval_millisec * 1000;
+  m_interval.it_interval.tv_sec = 0;
+  m_interval.it_value.tv_usec = m_interval.it_interval.tv_usec;
+  m_interval.it_value.tv_sec = 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -83,40 +71,49 @@ ProcessRunner::~ProcessRunner()
 bool
 ProcessRunner::run()
 {
-  bool res = sneaker::threading::fixed_time_interval_daemon_service::start();
+  bool res = true;
 
-  if (res)
+  res = signal(SIGALRM, tick_handler) == 0;
+
+  if (!res)
   {
-    SignalHandler::register_process(&m_process);
-    m_process.run();
+    return res;
   }
+
+  res = set_timer();
+
+  m_process.run();
 
   return res;
 }
 
 // -----------------------------------------------------------------------------
 
-void
-ProcessRunner::tick_handler(void* arg)
+Process&
+ProcessRunner::process()
 {
-#if __DEBUG__
-  ASSERT(arg);
-#endif
+  return m_process;
+}
 
-  ProcessRunner* runner =
-    static_cast<ProcessRunner*>(arg);
+// -----------------------------------------------------------------------------
 
-  runner->gc();
+bool
+ProcessRunner::set_timer()
+{
+  return setitimer(ITIMER_REAL, &m_interval, NULL) == 0;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-ProcessRunner::gc()
+ProcessRunner::tick_handler(int)
 {
-  if (m_process.should_gc())
+  if (ProcessRunner::registered_instance)
   {
-    m_process.set_do_gc();
+    if (registered_instance->process().should_gc())
+    {
+      registered_instance->process().set_do_gc();
+    }
   }
 }
 
