@@ -83,13 +83,13 @@ set_target_properties(coreVM PROPERTIES COMPILE_FLAGS "-O3")
 
 target_link_libraries(coreVM
     libcorevm
+    avrocpp_s
+    sneaker
     boost_system
     boost_regex
     boost_iostreams
     boost_program_options
     pthread
-    sneaker
-    avrocpp_s
     LLVMSupport)
 
 
@@ -114,15 +114,14 @@ add_executable(coreVM_dbg corevm/main.cc)
 
 
 target_link_libraries(coreVM_dbg
-    libcorevm_dbg
+    libcorevm
+    avrocpp_s
+    sneaker
     boost_system
     boost_regex
     boost_iostreams
-    boost_timer
     boost_program_options
     pthread
-    sneaker_dbg
-    avrocpp_s
     LLVMSupport
     -fno-inline
     -fno-omit-frame-pointer
@@ -154,16 +153,15 @@ add_executable(coreVM_dbg_asan corevm/main.cc)
 
 
 target_link_libraries(coreVM_dbg_asan
-    libcorevm_dbg_asan
+    libcorevm
+    avrocpp_s
+    sneaker
     boost_system
     boost_regex
     boost_iostreams
-    boost_timer
     boost_program_options
     pthread
-    sneaker_dbg
     LLVMSupport
-    avrocpp_s
     -fsanitize=address
     -fno-omit-frame-pointer
     -fno-optimize-sibling-calls

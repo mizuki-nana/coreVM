@@ -17,6 +17,7 @@
 
 # Outputs
 build/
+build_gcc/
 archives/
 *.tmp.py
 *.out

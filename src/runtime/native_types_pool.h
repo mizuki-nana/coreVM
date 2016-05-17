@@ -55,10 +55,10 @@ public:
   typedef types::NativeTypeHandle value_type;
 
   template<typename T>
-  class allocator : public memory::AllocationPolicy<T, memory::BlockAllocator<value_type>>, public object_traits<T>
+  class allocator : public memory::AllocationPolicy<T, memory::BlockAllocator<T>>, public object_traits<T>
   {
     private:
-      using AllocationPolicyType = typename memory::AllocationPolicy<T, memory::BlockAllocator<value_type>>;
+      using AllocationPolicyType = typename memory::AllocationPolicy<T, memory::BlockAllocator<T>>;
 
     public:
       using value_type      = typename AllocationPolicyType::value_type;

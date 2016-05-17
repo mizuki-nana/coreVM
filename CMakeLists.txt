@@ -39,11 +39,15 @@ set(CMAKE_BUILD_TYPE Release ... FORCE)
 
 
 # Compiler.
-set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_COMPILER "clang++" CACHE string "")
 
 
 # General compiler flags.
-set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set (CMAKE_CXX_FLAGS "-std=c++11 -w")
+else ()
+  set (CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
 
 # Linker options.
@@ -77,9 +81,11 @@ set(BENCHMARKS_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
 
 # Sub-directories.
 ADD_SUBDIRECTORY(${SRC_DIR})
-ADD_SUBDIRECTORY(${TOOLS_DIR})
-ADD_SUBDIRECTORY(${TESTS_DIR})
+if (NOT CMAKE_COMPILER_IS_GNUCXX)
+    ADD_SUBDIRECTORY(${TOOLS_DIR})
+    ADD_SUBDIRECTORY(${TESTS_DIR})
 
-if(BUILD_BENCHMARKS)
-    ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
+    if(BUILD_BENCHMARKS)
+        ADD_SUBDIRECTORY(${BENCHMARKS_DIR})
+    endif()
 endif()

@@ -65,7 +65,7 @@ sneaker:
 .PHONY: benchmark
 benchmark:
 	cd $(BENCHMARK_DIR) && cmake -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_LTO=true
-	$(MAKE) -C benchmark
+	$(MAKE) -C benchmark --quiet
 	sudo cp -f $(BENCHMARK_DIR)/src/libbenchmark.a /usr/local/lib/
 	sudo mkdir -p $(BENCHMARK_HEADER_INSTALL_PATH)
 	sudo cp -vr $(BENCHMARK_DIR)/include/benchmark/* $(BENCHMARK_HEADER_INSTALL_PATH)
@@ -84,7 +84,7 @@ cmake_target:
 
 .PHONY: avro
 avro:
-	cd $(AVRO_CPP_DIR) && cmake -G "Unix Makefiles" && $(MAKE)
+	cd $(AVRO_CPP_DIR) && cmake -G "Unix Makefiles" && $(MAKE) --quiet >/dev/null
 	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp_s.a /usr/local/lib
 ifeq ($(TRAVIS_OS_NAME), linux)
 	sudo cp -f $(AVRO_CPP_DIR)/libavrocpp.so /usr/local/lib
@@ -108,7 +108,7 @@ llvm:
 	cd $(LLVM_TMP_DIR) && tar xfJ llvm-3.6.0.src.tar.xz
 	mkdir -p $(LLVM_BUILD_DIR)
 	cd $(LLVM_BUILD_DIR) && cmake ../llvm-3.6.0.src -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="X86"
-	cd $(LLVM_BUILD_DIR) && make && sudo make install
+	cd $(LLVM_BUILD_DIR) && make --quiet && sudo make install --quiet >/dev/null
 	rm -rf $(LLVM_TMP_DIR)
 
 ## -----------------------------------------------------------------------------

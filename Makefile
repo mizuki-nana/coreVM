@@ -27,6 +27,7 @@
 
 TOP_DIR=$(CURDIR)
 BUILD_DIR=$(TOP_DIR)/build
+BUILD_GCC_DIR=$(TOP_DIR)/build_gcc
 PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 BOOTSTRAP_TESTS=bootstrap_tests.py
@@ -54,6 +55,12 @@ ifeq ($(travis_ci), 1)
 	BUILD_TARGET_CMAKE_ARGS+=-DBUILD_BENCHMARKS_STRICT=OFF
 endif
 
+ifeq ($(build_gcc_target), 1)
+	BUILD_TARGETS+=build_gcc
+endif
+
+BUILD_GCC_TARGET_CMAKE_ARGS=-DCMAKE_CXX_COMPILER=g++
+
 ## -----------------------------------------------------------------------------
 
 .PHONY: all
@@ -65,6 +72,14 @@ all: $(BUILD_TARGETS)
 build:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make
+
+## -----------------------------------------------------------------------------
+
+.PHONY:
+build_gcc:
+	@echo "Compiling using GCC..."
+	mkdir -p $(BUILD_GCC_DIR)
+	cd $(BUILD_GCC_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) $(BUILD_GCC_TARGET_CMAKE_ARGS) ../ && make
 
 ## -----------------------------------------------------------------------------
 
@@ -96,6 +111,7 @@ benchmarks:
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_GCC_DIR)
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py.core
 
