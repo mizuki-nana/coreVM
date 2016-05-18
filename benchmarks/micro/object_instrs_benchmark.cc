@@ -233,17 +233,6 @@ void BenchmarkSETFLMUTEInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
-static
-void BenchmarkPOPInstr(benchmark::State& state)
-{
-  BenchmarkObjectInstrsWithOneObjectOnStack(state,
-    corevm::runtime::instr_handler_pop);
-}
-#endif
-
-// -----------------------------------------------------------------------------
-
 static
 void BenchmarkGETATTRInstr(benchmark::State& state)
 {
@@ -351,14 +340,25 @@ void BenchmarkPUTOBJLInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
-static
-void BenchmarkGETOBJLInstr(benchmark::State& state)
+void BenchmarkGETOBJInstr(benchmark::State& state)
 {
-  BenchmarkObjectInstrsWithOneObjectOnStackWithNtvhndl(state,
-    corevm::runtime::instr_handler_getobj);
+  corevm::runtime::Instr instr(0, 0, 0);
+
+  InstrBenchmarksFixture fixture;
+
+  auto obj = fixture.process().create_dyobj();
+  corevm::types::NativeTypeHandle hndl(corevm::types::uint64(obj->id()));
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  while (state.KeepRunning())
+  {
+    frame->push_eval_stack(hndl);
+    corevm::runtime::instr_handler_getobj(instr, fixture.process(),
+      &frame, &invk_ctx);
+  }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
@@ -420,20 +420,41 @@ void BenchmarkObjectInstrsWithTwoObjectsOnStack(benchmark::State& state,
 static
 void BenchmarkSETATTRInstr(benchmark::State& state)
 {
-  BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
-    corevm::runtime::instr_handler_setattr);
+  corevm::runtime::Instr instr(0, 0, 0);
+
+  InstrBenchmarksFixture fixture;
+
+  const std::string attr_str("__name__");
+  corevm::runtime::StringLiteralTable str_literal_table { attr_str };
+  set_encoding_pair(fixture.process(), str_literal_table);
+
+  auto obj = fixture.process().create_dyobj();
+  auto obj2 = fixture.process().create_dyobj();
+
+  for (size_t i = 0; i < state.max_iterations; ++i)
+  {
+    fixture.process().push_stack(obj);
+    fixture.process().push_stack(obj2);
+  }
+
+  auto frame = &fixture.process().top_frame();
+  auto invk_ctx = &fixture.process().top_invocation_ctx();
+
+  while (state.KeepRunning())
+  {
+    corevm::runtime::instr_handler_setattr(instr, fixture.process(),
+      &frame, &invk_ctx);
+  }
 }
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkCPYHNDLInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
     corevm::runtime::instr_handler_cpyhndl);
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
@@ -489,7 +510,6 @@ void BenchmarkDELOBJInstr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkDELOBJ2Instr(benchmark::State& state)
 {
@@ -507,13 +527,12 @@ void BenchmarkDELOBJ2Instr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    fixture.process().top_frame().set_visible_var(var_key, id);
+    fixture.process().top_frame().set_invisible_var(var_key, id);
 
     corevm::runtime::instr_handler_delobj2(
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
@@ -864,17 +883,15 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
+BENCHMARK(BenchmarkLDOBJInstr);
 BENCHMARK(BenchmarkLDOBJ2Instr);
 BENCHMARK(BenchmarkDELOBJInstr);
-#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkDELOBJ2Instr);
-#endif
 BENCHMARK(BenchmarkCLRHNDLInstr);
 BENCHMARK(BenchmarkCLDOBJInstr);
 #if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 BENCHMARK(BenchmarkNEWInstr);
 #endif
-BENCHMARK(BenchmarkLDOBJInstr);
 BENCHMARK(BenchmarkSTOBJInstr);
 BENCHMARK(BenchmarkSTOBJ2Instr);
 BENCHMARK(BenchmarkGETATTRInstr);
@@ -896,18 +913,11 @@ BENCHMARK(BenchmarkSETFLGCInstr);
 BENCHMARK(BenchmarkSETFLDELInstr);
 BENCHMARK(BenchmarkSETFLCALLInstr);
 BENCHMARK(BenchmarkSETFLMUTEInstr);
-#if 0 // [COREVM-498] Fix micro benchmark crash
-BENCHMARK(BenchmarkPOPInstr);
-#endif
 BENCHMARK(BenchmarkSETHNDLInstr);
 BENCHMARK(BenchmarkPUTOBJLInstr);
-#if 0 // [COREVM-498] Fix micro benchmark crash
-BENCHMARK(BenchmarkGETOBJLInstr);
-#endif
+BENCHMARK(BenchmarkGETOBJInstr);
 BENCHMARK(BenchmarkSETATTRInstr);
-#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkCPYHNDLInstr);
-#endif
 BENCHMARK(BenchmarkCPYREPRInstr);
 BENCHMARK(BenchmarkOBJEQInstr);
 BENCHMARK(BenchmarkOBJNEQInstr);

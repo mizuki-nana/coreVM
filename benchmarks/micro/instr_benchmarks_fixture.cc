@@ -47,8 +47,8 @@ static const char* DUMMY_PATH = "./example.core";
 
 // -----------------------------------------------------------------------------
 
-const uint64_t BENCHMARK_PROCESS_HEAP_SIZE = 1024 * 1024 * 512;
-const uint64_t BENCHMARK_PROCESS_POOL_SIZE = 1024 * 1024 * 512;
+const uint64_t BENCHMARK_PROCESS_HEAP_SIZE = 1024 * 1024 * 1024;
+const uint64_t BENCHMARK_PROCESS_POOL_SIZE = 1024 * 1024 * 1024;
 
 // -----------------------------------------------------------------------------
 
@@ -108,8 +108,12 @@ InstrBenchmarksFixture::init()
   m_process.get_compartment(compartment_id, &compartment_ptr);
   assert(compartment_ptr);
 
-  m_process.emplace_frame(ctx, compartment_ptr, &closure_table.front());
-  m_process.emplace_invocation_ctx(ctx, compartment_ptr, &closure_table.front());
+  corevm::runtime::Closure* starting_closure=nullptr;
+  compartment_ptr->get_closure_by_id(0, &starting_closure);
+  assert(starting_closure);
+
+  m_process.emplace_frame(ctx, compartment_ptr, starting_closure);
+  m_process.emplace_invocation_ctx(ctx, compartment_ptr, starting_closure);
 
   m_process.set_pc(0);
 }

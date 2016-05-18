@@ -100,6 +100,9 @@ add_custom_command(TARGET coreVM POST_BUILD COMMAND ls -al ./coreVM)
 
 
 # Library `libcorevm_dbg`.
+if (NOT CMAKE_COMPILER_IS_GNUCXX)
+
+
 add_library(libcorevm_dbg ${sources})
 
 
@@ -114,11 +117,12 @@ add_executable(coreVM_dbg corevm/main.cc)
 
 
 target_link_libraries(coreVM_dbg
-    libcorevm
+    libcorevm_dbg
     avrocpp_s
     sneaker
     boost_system
     boost_regex
+    boost_timer
     boost_iostreams
     boost_program_options
     pthread
@@ -132,10 +136,16 @@ target_link_libraries(coreVM_dbg
 add_custom_command(TARGET coreVM_dbg POST_BUILD COMMAND ls -al ./coreVM_dbg)
 
 
+endif() # if (NOT CMAKE_COMPILER_IS_GNUCXX)
+
+
 ### Debug version with Address Sanitizer support.
 
 
 # Library `libcorevm_dbg_asan`.
+if (NOT CMAKE_COMPILER_IS_GNUCXX)
+
+
 if(BUILD_SANITY_BIN)
 
 
@@ -172,3 +182,6 @@ add_custom_command(TARGET coreVM_dbg_asan POST_BUILD COMMAND ls -al ./coreVM_dbg
 
 
 endif() # if(BUILD_SANITY_BIN)
+
+
+endif() # if (NOT CMAKE_COMPILER_IS_GNUCXX)

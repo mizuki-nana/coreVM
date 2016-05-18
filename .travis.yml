@@ -18,12 +18,12 @@ compiler:
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test ; fi
-  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get update -qq ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get update ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install software-properties-common ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install -y make ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install libboost1.55-all-dev ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install python-sphinx ; fi
-  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install -qq gcc-4.8 g++-4.8 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo apt-get install gcc-4.8 g++-4.8 ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20 ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20 ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then sudo update-alternatives --config gcc ; fi
@@ -47,5 +47,4 @@ script:
   - g++ --version
   - python --version
   - make -C libs full=1
-  - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then make full=1 travis_ci=1 build_gcc_target=1; fi
-  - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then make full=1 travis_ci=1 ; fi
+  - make full=1 travis_ci=1

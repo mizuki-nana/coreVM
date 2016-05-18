@@ -168,7 +168,6 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrGETARG(benchmark::State& state)
 {
@@ -192,11 +191,9 @@ void BenchmarkInstrGETARG(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrGETKWARG(benchmark::State& state)
 {
@@ -219,11 +216,9 @@ void BenchmarkInstrGETKWARG(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrGETARGS(benchmark::State& state)
 {
@@ -246,11 +241,9 @@ void BenchmarkInstrGETARGS(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrGETKWARGS(benchmark::State& state)
 {
@@ -274,11 +267,9 @@ void BenchmarkInstrGETKWARGS(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkInstrHASARGS(benchmark::State& state)
 {
@@ -299,7 +290,6 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
@@ -308,11 +298,11 @@ void BenchmarkInstrHASARGS(benchmark::State& state)
 //BENCHMARK(BenchmarkInstrPUTKWARG);
 //BENCHMARK(BenchmarkInstrPUTARGS);
 //BENCHMARK(BenchmarkInstrPUTKWARGS);
-// TODO: [COREVM-498] Fix micro benchmark crash
-//BENCHMARK(BenchmarkInstrGETARG);
-//BENCHMARK(BenchmarkInstrGETKWARG);
-//BENCHMARK(BenchmarkInstrGETARGS);
-//BENCHMARK(BenchmarkInstrGETKWARGS);
-//BENCHMARK(BenchmarkInstrHASARGS);
+
+BENCHMARK(BenchmarkInstrGETARG);
+BENCHMARK(BenchmarkInstrGETKWARG);
+BENCHMARK(BenchmarkInstrGETARGS);
+BENCHMARK(BenchmarkInstrGETKWARGS);
+BENCHMARK(BenchmarkInstrHASARGS);
 
 // -----------------------------------------------------------------------------

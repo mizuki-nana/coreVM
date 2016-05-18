@@ -83,14 +83,13 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 #ifdef BUILD_BENCHMARKS_STRICT
-#if 0 // [COREVM-498] Fix micro benchmark crash
 static
 void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 {
   corevm::runtime::Process::Options opts;
 
-  opts.heap_alloc_size = 1024 * 1024 * 512;
-  opts.pool_alloc_size = 1024 * 1024 * 512;
+  opts.heap_alloc_size = 1024;
+  opts.pool_alloc_size = 1024 * 1024 * 1024;
 
   corevm::runtime::Process process(opts);
 
@@ -101,7 +100,6 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
     process.insert_ntvhndl(hndl);
   }
 }
-#endif
 #endif
 
 // -----------------------------------------------------------------------------
@@ -129,9 +127,7 @@ BENCHMARK(BenchmarkProcessGetDyobj);
 BENCHMARK(BenchmarkProcessGetNtvHndl);
 #ifdef BUILD_BENCHMARKS_STRICT
 BENCHMARK(BenchmarkProcessPushStack);
-#if 0 // [COREVM-498] Fix micro benchmark crash
 BENCHMARK(BenchmarkProcessInsertNtvHndl);
-#endif
 #endif
 
 // -----------------------------------------------------------------------------
