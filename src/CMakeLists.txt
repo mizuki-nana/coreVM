@@ -127,10 +127,10 @@ target_link_libraries(coreVM_dbg
     boost_program_options
     pthread
     LLVMSupport
-    -fno-inline
-    -fno-omit-frame-pointer
-    -fno-optimize-sibling-calls
     )
+
+
+set_target_properties(coreVM_dbg PROPERTIES LINK_FLAGS "-rdynamic -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 
 add_custom_command(TARGET coreVM_dbg POST_BUILD COMMAND ls -al ./coreVM_dbg)
@@ -172,10 +172,10 @@ target_link_libraries(coreVM_dbg_asan
     boost_program_options
     pthread
     LLVMSupport
-    -fsanitize=address
-    -fno-omit-frame-pointer
-    -fno-optimize-sibling-calls
     )
+
+
+set_target_properties(coreVM_dbg_asan PROPERTIES LINK_FLAGS "-rdynamic -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 
 add_custom_command(TARGET coreVM_dbg_asan POST_BUILD COMMAND ls -al ./coreVM_dbg_asan)

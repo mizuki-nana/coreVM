@@ -50,8 +50,6 @@ namespace frontend {
 static void
 print_stack_trace()
 {
-  // TODO: [SNEAKER-86] Print stack trace not working well
-
   static const unsigned int DEFAULT_STACK_LEVEL = 5;
   sneaker::utility::stack_trace::print_stack_trace(std::cerr, DEFAULT_STACK_LEVEL);
 }
