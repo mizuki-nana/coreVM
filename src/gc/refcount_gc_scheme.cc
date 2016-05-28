@@ -236,26 +236,6 @@ private:
 
 // -----------------------------------------------------------------------------
 
-template<typename CycleList>
-static bool
-is_pure_circular_chain(const CycleList& cycle)
-{
-  bool res = true;
-  for (auto itr = cycle.begin(); itr != cycle.end(); ++itr)
-  {
-    auto obj = static_cast<typename CycleList::value_type>(*itr);
-    if (obj->manager().ref_count() > 1)
-    {
-      res = false;
-      break;
-    }
-  }
-
-  return res;
-}
-
-// -----------------------------------------------------------------------------
-
 void
 RefCountGarbageCollectionScheme::remove_cycles(
   RefCountGarbageCollectionScheme::dynamic_object_heap_type& heap) const
@@ -284,10 +264,17 @@ RefCountGarbageCollectionScheme::remove_cycles(
     vertices.push_back(vertex_ptr);
   }
 
-  sneaker::algorithm::tarjan<dynamic_object_type*> algo;
+  typedef sneaker::algorithm::tarjan<dynamic_object_type*> AlgoType;
+
+  AlgoType algo;
   auto components = algo.get_components(vertices);
 
   const auto cycles = components.cycles();
+
+  std::vector<typename AlgoType::Enumerable> garbage_collectible_cycles;
+  garbage_collectible_cycles.reserve(cycles.size());
+
+  std::unordered_map<dynamic_object_type*, size_t> ref_table;
 
   for (auto itr = cycles.begin(); itr != cycles.end(); ++itr)
   {
@@ -295,10 +282,13 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
     std::set<dynamic_object_type*> cycle_set;
 
-    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_)
+    for (const auto& obj : cycle)
     {
-      auto obj_ = static_cast<dynamic_object_type*>(*itr_);
-      cycle_set.insert(obj_);
+      cycle_set.insert(obj);
+      for (const auto& attr : *obj)
+      {
+        ++ref_table[attr.second];
+      }
     }
 
     std::set<dynamic_object_type*> intersect;
@@ -310,20 +300,31 @@ RefCountGarbageCollectionScheme::remove_cycles(
       std::inserter(intersect, intersect.begin())
     );
 
-    if (!intersect.empty())
+    if (intersect.empty())
     {
-      continue;
+      garbage_collectible_cycles.push_back(cycle);
+    }
+  }
+
+  for (const auto& cycle : garbage_collectible_cycles)
+  {
+    bool res = true;
+    for (const auto& obj : cycle)
+    {
+      if (obj->manager().ref_count() != ref_table[obj])
+      {
+        res = false;
+        break;
+      }
     }
 
-    if (!is_pure_circular_chain(cycle))
+    if (res)
     {
-      continue;
-    }
-
-    for (auto itr_ = cycle.begin(); itr_ != cycle.end(); ++itr_)
-    {
-      auto obj_ = static_cast<dynamic_object_type*>(*itr_);
-      obj_->manager().dec_ref_count();
+      for (const auto& obj : cycle)
+      {
+        --ref_table[obj];
+        obj->manager().dec_ref_count();
+      }
     }
   }
 }

@@ -90,13 +90,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------------
 
-/**
- * TODO: [COREVM-485] Ref-count GC does not handle garbage collectible objects forming overlapping cycles
- */
-#define COREVM_485 1
-
-// -----------------------------------------------------------------------------
-
 #define COREVM_USE_SMALL_ATTRIBUTE_TABLE 1
 
 // -----------------------------------------------------------------------------

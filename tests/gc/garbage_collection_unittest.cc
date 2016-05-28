@@ -339,7 +339,6 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNonGarbageCollectibleObjectPointsToMul
 
 // -----------------------------------------------------------------------------
 
-#ifndef COREVM_485
 TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles)
 {
   /**
@@ -370,7 +369,152 @@ TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles)
 
   this->do_gc_and_check_results({});
 }
-#endif
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles2)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj4 --------> obj1 <-------- obj6
+   *  ^              |              ^
+   *  |              |              |
+   *  |              |              |
+   *  |              v              |
+   * obj3 <-------- obj2 --------> obj5
+   *
+   * will result in 0 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj4);
+  this->help_setattr(obj4, obj1);
+
+  this->help_setattr(obj2, obj5);
+  this->help_setattr(obj5, obj6);
+  this->help_setattr(obj6, obj1);
+
+  this->do_gc_and_check_results({});
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles3)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj4 <-------- obj1 <-------- obj6
+   *  |              ^|             ^
+   *  |              ||             |
+   *  |              ||             |
+   *  v              |v             |
+   * obj3 --------> obj2 --------> obj5
+   *
+   * will result in 0 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj4);
+  this->help_setattr(obj4, obj3);
+  this->help_setattr(obj3, obj2);
+  this->help_setattr(obj2, obj1);
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj5);
+  this->help_setattr(obj5, obj6);
+  this->help_setattr(obj6, obj1);
+
+  this->do_gc_and_check_results({});
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles4)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj4 --------> obj1 <-------- obj6*
+   *  ^              |              ^
+   *  |              |              |
+   *  |              |              |
+   *  |              v              |
+   * obj3 <-------- obj2 --------> obj5
+   *
+   * will result in 6 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj3);
+  this->help_setattr(obj3, obj4);
+  this->help_setattr(obj4, obj1);
+
+  this->help_setattr(obj2, obj5);
+  this->help_setattr(obj5, obj6);
+  this->help_setattr(obj6, obj1);
+
+  this->help_set_as_non_garbage_collectible(obj6);
+
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4, obj5, obj6});
+}
+
+// -----------------------------------------------------------------------------
+
+TYPED_TEST(GarbageCollectionUnitTest, TestAdjacentCycles5)
+{
+  /**
+   * Tests GC on the following object graph
+   *
+   * obj4 <-------- obj1 <-------- obj6*
+   *  |              ^|             ^
+   *  |              ||             |
+   *  |              ||             |
+   *  v              |v             |
+   * obj3 --------> obj2 --------> obj5
+   *
+   * will result in 6 objects left on the heap.
+   */
+  auto obj1 = this->help_create_obj();
+  auto obj2 = this->help_create_obj();
+  auto obj3 = this->help_create_obj();
+  auto obj4 = this->help_create_obj();
+  auto obj5 = this->help_create_obj();
+  auto obj6 = this->help_create_obj();
+
+  this->help_setattr(obj1, obj4);
+  this->help_setattr(obj4, obj3);
+  this->help_setattr(obj3, obj2);
+  this->help_setattr(obj2, obj1);
+
+  this->help_setattr(obj1, obj2);
+  this->help_setattr(obj2, obj5);
+  this->help_setattr(obj5, obj6);
+  this->help_setattr(obj6, obj1);
+
+  this->help_set_as_non_garbage_collectible(obj6);
+
+  this->do_gc_and_check_results({obj1, obj2, obj3, obj4, obj5, obj6});
+}
 
 // -----------------------------------------------------------------------------
 
@@ -405,7 +549,6 @@ TYPED_TEST(GarbageCollectionUnitTest, TestTwoIsolatedCycles)
 
 // -----------------------------------------------------------------------------
 
-#ifndef COREVM_485
 TYPED_TEST(GarbageCollectionUnitTest, TestNestedCycles)
 {
   /*
@@ -450,7 +593,6 @@ TYPED_TEST(GarbageCollectionUnitTest, TestNestedCycles)
 
   this->do_gc_and_check_results({});
 }
-#endif
 
 // -----------------------------------------------------------------------------
 
