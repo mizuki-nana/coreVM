@@ -172,14 +172,16 @@ class complex(object):
         return __call_cls_2(complex, res_real, res_imag)
 
     def __div__complex(self, other):
-        # TODO: [COREVM-413] Incorrect division results on complex types
         numerator = __call_method_1(self.__mul__, __call_method_0(other.conjugate))
         denominator_1 = __call_method_1(other.real.__mul__, other.real)
         denominator_2 = __call_method_1(other.imag.__mul__, other.imag)
-        denominator = __call_method_1(denominator_1.__add__, denominator_2)
+        denominator = __call_method_1(denominator_1.__add__, __call_method_0(denominator_2.__abs__))
 
-        res_real = __call_method_1(numerator.real.__div__, denominator)
-        res_imag = __call_method_1(numerator.imag.__div__, denominator)
+        numerator_real_float = __call_cls_1(float, numerator.real)
+        numerator_imag_float = __call_cls_1(float, numerator.imag)
+
+        res_real = __call_method_1(numerator_real_float.__div__, denominator)
+        res_imag = __call_method_1(numerator_imag_float.__div__, denominator)
 
         return __call_cls_2(complex, res_real, res_imag)
 

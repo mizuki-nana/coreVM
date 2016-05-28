@@ -96,11 +96,15 @@ def test_multiplications():
 ## -----------------------------------------------------------------------------
 
 def test_divisions():
-    # TODO: [COREVM-413] Incorrect division results on complex types
-    print c4 / c1
-    print complex(10, -5) / complex(5, 0)
+    def verify(expr, actual_result):
+        print abs(expr.real - actual_result.real) < 0.0001
+        print abs(expr.imag - actual_result.imag) < 0.0001
+
+    verify(c4 / c1, complex(-2, 0))
+    verify(complex(10, -5) / complex(5, 0), complex(2, -1))
+    verify(complex(10, -5) / complex(5, 1), complex(1.730769, -1.346154))
+    verify(5j / 1j, complex(5, 0))
     print c4 / -2
-    print 5j / 1j
 
     try:
         print c1 / 'Hello'
