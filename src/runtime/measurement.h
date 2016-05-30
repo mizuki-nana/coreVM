@@ -22,9 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "instr_info.h"
 
-#include <iomanip>
-
 #include <boost/timer/timer.hpp>
+#include <sneaker/utility/uniform_table.h>
 
 
 namespace corevm {
@@ -92,15 +91,9 @@ double _percantage(T n, T total)
 template<typename ContainerType>
 void pretty_print_measurements(const ContainerType& measurements)
 {
-  static const uint32_t INSTR_NAME_WIDTH = 10u;
-  static const uint32_t PERCENTAGE_WIDTH = 6u;
-  static const uint32_t INVOCATION_COUNT_WIDTH  = 11u;
-  static const uint32_t CUMULATIVE_WALL_TIME_WIDTH = 30u;
-  static const uint32_t AVG_CUMULATIVE_WALL_TIME_WIDTH = 24u;
-  static const char* BAR = " | ";
   static const char* LINE_SEPARATOR =
     "--------------------------------------------------------------------------"
-    "-------------------";
+    "-----------------------------";
 
   std::cout << LINE_SEPARATOR << std::endl;
   std::cout << "Instrumental instruction measurements:" << std::endl;
@@ -110,12 +103,22 @@ void pretty_print_measurements(const ContainerType& measurements)
   std::cout << "  Total elapsed CPU wall clock time (ns): " << total_wall_time << std::endl;
   std::cout << std::endl;
 
-  std::cout << std::setw(INSTR_NAME_WIDTH) << "Instr" << BAR;
-  std::cout << std::setw(PERCENTAGE_WIDTH) << "%" << BAR;
-  std::cout << std::setw(INVOCATION_COUNT_WIDTH) << "Invocations" << BAR;
-  std::cout << std::setw(CUMULATIVE_WALL_TIME_WIDTH) << "Cumulated wall clock time (ns)" << BAR;
-  std::cout << std::setw(AVG_CUMULATIVE_WALL_TIME_WIDTH) << "Avg wall clock time (ns) ";
-  std::cout << std::endl;
+  static const uint32_t INSTR_NAME_WIDTH = 10u;
+  static const uint32_t PERCENTAGE_WIDTH = 12u;
+  static const uint32_t INVOCATION_COUNT_WIDTH  = 11u;
+  static const uint32_t CUMULATIVE_WALL_TIME_WIDTH = 30u;
+  static const uint32_t AVG_CUMULATIVE_WALL_TIME_WIDTH = 24u;
+
+  sneaker::utility::uniform_table<
+    INSTR_NAME_WIDTH,
+    PERCENTAGE_WIDTH,
+    INVOCATION_COUNT_WIDTH,
+    CUMULATIVE_WALL_TIME_WIDTH,
+    AVG_CUMULATIVE_WALL_TIME_WIDTH> uniform_table;
+
+  uniform_table.write("Instr", "%", "Invocations",
+    "Cumulated wall clock time (ns)", "Avg wall clock time (ns)");
+  uniform_table.write_separator();
 
   for (size_t i = 0; i < INSTR_CODE_MAX; ++i)
   {
@@ -126,15 +129,12 @@ void pretty_print_measurements(const ContainerType& measurements)
     const auto invocation_count = measurement.invocation_count;
     const auto avg_wall_time = _avg(measurement);
 
-    std::cout << std::setw(INSTR_NAME_WIDTH) << InstrSetInfo::instr_infos[i].name << BAR;
-    std::cout << std::setw(PERCENTAGE_WIDTH) << std::setprecision(2) << cumulative_wall_time_percentage << std::fixed << BAR;
-    std::cout << std::setw(INVOCATION_COUNT_WIDTH) << invocation_count << BAR;
-    std::cout << std::setw(CUMULATIVE_WALL_TIME_WIDTH) << cumulative_wall_time << BAR;
-    std::cout << std::setw(AVG_CUMULATIVE_WALL_TIME_WIDTH) << avg_wall_time;
-    std::cout << std::endl;
+    uniform_table.write(InstrSetInfo::instr_infos[i].name,
+      cumulative_wall_time_percentage, invocation_count, cumulative_wall_time,
+      avg_wall_time);
   }
 
-  std::cout << std::endl;
+  std::cout << uniform_table.str();
   std::cout << LINE_SEPARATOR << std::endl;
 }
 
