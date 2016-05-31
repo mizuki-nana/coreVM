@@ -41,9 +41,14 @@ def test_cmp_on_builtin_types():
     print cmp('world', 'Hello')
     print cmp('Hello', 'Hello')
 
-    # TODO: [COREVM-362] Make `cmp` work for `list` and `dict` types.
-    #print cmp(list([1, 2, 3]), list([4, 5, 6]))
-    #print cmp(dict({1:1, 2:2}), dict({3:3, 4:4}))
+    print cmp(list([1, 2, 3]), list([4, 5, 6]))
+    print cmp(list([1, 2]), list([3]))
+    print cmp(list([3]), list([1, 2]))
+    print cmp(list([1, 2, 3]), list([1, 2, 3, 4]))
+
+    print cmp(dict({1:1}), dict({1:1}))
+    print cmp(dict({1:1}), dict({1:2}))
+    print cmp(dict({1:2}), dict({1:1}))
 
 ## -----------------------------------------------------------------------------
 

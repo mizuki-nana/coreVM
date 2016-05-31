@@ -632,18 +632,6 @@ def cmp(x, y):
     Reference:
         https://docs.python.org/2/library/functions.html#cmp
     """
-    def inner(x, y):
-        """
-        ### BEGIN VECTOR ###
-        [gethndl2, y, 0]
-        [gethndl2, x, 0]
-        [cmp, 0, 0]
-        [new, 0, 0]
-        [sethndl, 0, 0]
-        [stobj, res_, 0]
-        ### END VECTOR ###
-        """
-        return __call_cls_builtin(int, res_)
 
     # Unsupported types.
     if x.__class__ is set or x.__class__ is complex:
@@ -653,12 +641,80 @@ def cmp(x, y):
     if hasattr(x, '__cmp__'):
         return __call_method_1(x.__cmp__, y)
 
+    CONST_INT_N1 = __call_cls_1(int, -1)
+    CONST_INT_0 = __call_cls_1(int, 0)
+    CONST_INT_1 = __call_cls_1(int, 1)
+
+    # Special case where both arguments are of type `list`.
+    if x.__class__ is list and y.__class__ is list:
+        def __cmp_list(x, y):
+            x_len = __call_method_0(x.__len__)
+            y_len = __call_method_0(y.__len__)
+            min_len = min(x_len, y_len)
+
+            i = __call_cls_1(int, 0)
+            while __call_method_1(i.__lt__, min_len):
+                item_x = __call_method_1(x.__getitem__, i)
+                item_y = __call_method_1(y.__getitem__, i)
+                res = cmp(item_x, item_y)
+                if __call_method_1(res.__ne__, CONST_INT_0):
+                    return res
+
+                __call_method_1(i.__iadd__, 1)
+
+            if __call_method_1(x_len.__lt__, y_len):
+                return CONST_INT_N1
+            elif __call_method_1(x_len.__gt__, y_len):
+                return CONST_INT_1
+            else:
+                return CONST_INT_0
+
+        return __cmp_list(x, y)
+
+    # Special case where both arguments are of type `dict`.
+    if x.__class__ is dict and y.__class__ is dict:
+        def __cmp_dict(x, y):
+            x_items = __call_method_0(x.items)
+            x_items_len = __call_method_0(x_items.__len__)
+            i = __call_cls_1(int, 0)
+            while __call_method_1(i.__lt__, x_items_len):
+                x_item = __call_method_1(x_items.__getitem__, i)
+                if __call_method_1(y.__contains__, x_item.key):
+                    res = cmp(x_item.value, __call_method_1(y.__getitem__, x_item.key))
+                    if __call_method_1(res.__ne__, CONST_INT_0):
+                        return res
+                else:
+                    return CONST_INT_1
+
+                __call_method_1(i.__iadd__, 1)
+
+            return CONST_INT_0
+
+        res = __cmp_dict(x, y)
+        if __call_method_1(res.__ne__, CONST_INT_0):
+            return res
+
+        res = __cmp_dict(y, x)
+        if __call_method_1(res.__ne__, CONST_INT_0):
+            return __call_method_1(res.__mul__, CONST_INT_N1)
+
+        return CONST_INT_0
+
     # Special cases.
-    # TODO: [COREVM-362] Make `cmp` work for `list` and `dict` types.
-    #
-    # Reference:
-    #   http://www.tutorialspoint.com/python/list_cmp.htm
-    if x.__class__ is str or x.__class__ is list or x.__class__ is tuple or x.__class__ is dict:
+    if x.__class__ is str and y.__class__ is str:
+        def inner(x, y):
+            """
+            ### BEGIN VECTOR ###
+            [gethndl2, y, 0]
+            [gethndl2, x, 0]
+            [cmp, 0, 0]
+            [new, 0, 0]
+            [sethndl, 0, 0]
+            [stobj, res_, 0]
+            ### END VECTOR ###
+            """
+            return __call_cls_builtin(int, res_)
+
         return inner(x, y)
 
     return __call_cls_builtin(int, -1)
