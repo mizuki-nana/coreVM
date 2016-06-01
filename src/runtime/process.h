@@ -28,7 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "errors.h"
 #include "frame.h"
-#include "frame_ptr_cache.h"
+#include "frame_cache.h"
 #include "gc_rule.h"
 #include "instr.h"
 #include "invocation_ctx.h"
@@ -61,12 +61,11 @@ class ProcessPrinter;
 
 
 /**
- * A process is a unit for executing a sequence of instructions.
- * It's supposed to have the following:
+ * A process is a unit for managing the execution of a sequence of instructions.
+ * It's supposed to have the following at the very minimum:
  *
  * - A flag for pause/resume execution.
  * - A flag for GC.
- * - A sequence of instructions.
  * - A sequence of instruction blocks.
  * - A program counter.
  * - A heap for holding dynamic objects.
@@ -285,7 +284,7 @@ private:
   InvocationCtxStack m_invocation_ctx_stack;
   NativeTypesPool m_ntvhndl_pool;
   CompartmentStore m_compartments;
-  FramePtrCache m_frame_cache;
+  FrameCache m_frame_cache;
   AttributeNameStore m_attr_name_store;
 };
 

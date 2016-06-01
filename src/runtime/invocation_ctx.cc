@@ -35,7 +35,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-const size_t DEFAULT_PARAMS_LIST_CAPACITY = 10;
+const size_t DEFAULT_PARAMS_LIST_CAPACITY = 8;
 
 // -----------------------------------------------------------------------------
 

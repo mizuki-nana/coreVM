@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <cstdlib>
 #include <iterator>
+#include <type_traits>
 #include <vector>
 
 #include "corevm/macros.h"
@@ -152,14 +153,19 @@ private:
 private:
 
   /**
-   * An implementation of forward iterator for block allocator, with
-   * flattened inheritance hierarchy.
+   * An implementation of forward iterator for block allocator.
    */
-  class iterator_t : public std::iterator<std::forward_iterator_tag, T>
+  template<bool is_const_iterator = true>
+  class const_noconst_iterator : public std::iterator<std::forward_iterator_tag, T>
   {
   public:
-    iterator_t(BlockAllocator<T>& parent, int64_t descriptor_index,
-      int64_t slot_index)
+    typedef BlockAllocator<T>& ParentRefType;
+
+    typedef typename std::conditional<is_const_iterator, const T&, T&>::type ReferenceType;
+
+    typedef typename std::conditional<is_const_iterator, const T*, T*>::type PointerType;
+
+    const_noconst_iterator(ParentRefType parent, int64_t descriptor_index, int64_t slot_index)
       :
       m_parent(parent),
       m_descriptor_index(descriptor_index),
@@ -167,7 +173,7 @@ private:
     {
     }
 
-    iterator_t(const iterator_t& other)
+    const_noconst_iterator(const const_noconst_iterator<false>& other)
       :
       m_parent(other.m_parent),
       m_descriptor_index(other.m_descriptor_index),
@@ -175,14 +181,14 @@ private:
     {
     }
 
-    iterator_t& operator=(const iterator_t& other)
+    const_noconst_iterator& operator=(const const_noconst_iterator<false>& other)
     {
       m_descriptor_index = other.m_descriptor_index;
       m_slot_index = other.m_slot_index;
       return *this;
     }
 
-    typename std::iterator<std::forward_iterator_tag, T>::reference operator*()
+    ReferenceType operator*()
     {
       const auto desp_index = static_cast<size_t>(m_descriptor_index);
       const auto start_index = m_parent.m_free_lists[desp_index].start_index;
@@ -191,30 +197,25 @@ private:
       return heap_[slot_index];
     }
 
-    typename std::iterator<std::forward_iterator_tag, T>::value_type operator*() const
-    {
-      return const_cast<iterator_t>(this)->operator*();
-    }
-
-    typename std::iterator<std::forward_iterator_tag, T>::pointer operator->()
+    PointerType operator->()
     {
       return &(operator*());
     }
 
-    friend bool operator==(const iterator_t& lhs, const iterator_t& rhs)
+    friend bool operator==(const const_noconst_iterator& lhs, const const_noconst_iterator& rhs)
     {
       return &lhs.m_parent == &rhs.m_parent &&
         lhs.m_descriptor_index == rhs.m_descriptor_index &&
         lhs.m_slot_index == rhs.m_slot_index;
     }
 
-    friend bool operator!=(const iterator_t& lhs, const iterator_t& rhs)
+    friend bool operator!=(const const_noconst_iterator& lhs, const const_noconst_iterator& rhs)
     {
       return !(operator==(lhs, rhs));
     }
 
     /** Prefix increment. */
-    iterator_t& operator++()
+    const_noconst_iterator& operator++()
     {
       while (*this != m_parent.end())
       {
@@ -269,22 +270,24 @@ private:
     }
 
     /** Postfix iterator. */
-    iterator_t operator++(int)
+    const_noconst_iterator operator++(int)
     {
       auto copy(*this);
       operator++();
       return copy;
     }
 
+    friend class const_noconst_iterator<true>;
+
   protected:
-    BlockAllocator<T>& m_parent;
+    ParentRefType m_parent;
     int64_t m_descriptor_index;
     int64_t m_slot_index;
   };
 
 public:
-  typedef iterator_t iterator;
-  typedef iterator_t const_iterator;
+  typedef const_noconst_iterator<false> iterator;
+  typedef const_noconst_iterator<true> const_iterator;
 
   iterator begin();
   iterator end();
@@ -293,13 +296,15 @@ public:
   const_iterator cend() const;
 
   void* find(void*) const;
+
+private:
+  void begin_indices(int64_t* descriptor_index, int64_t* slot_index) const;
 };
 
 // -----------------------------------------------------------------------------
 
 template<class T>
-BlockAllocator<T>::BlockAllocator(
-  uint64_t total_size)
+BlockAllocator<T>::BlockAllocator(uint64_t total_size)
   :
   m_heap(nullptr),
   m_total_size(total_size),
@@ -620,24 +625,33 @@ BlockAllocator<T>::total_size() const noexcept
 // -----------------------------------------------------------------------------
 
 template<class T>
+void
+BlockAllocator<T>::begin_indices(int64_t* descriptor_index, int64_t* slot_index) const
+{
+  size_t i = 0;
+
+  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
+  {
+    const FreeListDescriptor& descriptor = *itr;
+
+    if (descriptor.current_index > descriptor.start_index)
+    {
+      *descriptor_index = static_cast<int64_t>(i);
+      *slot_index = 0;
+      break;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+template<class T>
 typename BlockAllocator<T>::iterator
 BlockAllocator<T>::begin()
 {
   int64_t descriptor_index = -1;
   int64_t slot_index = -1;
-  size_t i = 0;
-
-  for (auto itr = m_free_lists.begin(); itr != m_free_lists.end(); ++itr, ++i)
-  {
-    FreeListDescriptor& descriptor = *itr;
-
-    if (descriptor.current_index > descriptor.start_index)
-    {
-      descriptor_index = static_cast<int64_t>(i);
-      slot_index = 0;
-      break;
-    }
-  }
+  begin_indices(&descriptor_index, &slot_index);
 
   return BlockAllocator<T>::iterator(*this, descriptor_index, slot_index);
 }
@@ -657,7 +671,12 @@ template<class T>
 typename BlockAllocator<T>::const_iterator
 BlockAllocator<T>::cbegin() const
 {
-  return const_cast<BlockAllocator<T>*>(this)->begin();
+  int64_t descriptor_index = -1;
+  int64_t slot_index = -1;
+  begin_indices(&descriptor_index, &slot_index);
+
+  return BlockAllocator<T>::const_iterator(
+    const_cast<BlockAllocator<T>&>(*this), descriptor_index, slot_index);
 }
 
 // -----------------------------------------------------------------------------
@@ -666,7 +685,8 @@ template<class T>
 typename BlockAllocator<T>::const_iterator
 BlockAllocator<T>::cend() const
 {
-  return const_cast<BlockAllocator<T>*>(this)->end();
+  return BlockAllocator<T>::const_iterator(
+    const_cast<BlockAllocator<T>&>(*this), -1, -1);
 }
 
 // -----------------------------------------------------------------------------

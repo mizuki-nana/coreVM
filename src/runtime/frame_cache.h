@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_FRAME_PTR_CACHE_H_
-#define COREVM_FRAME_PTR_CACHE_H_
+#ifndef COREVM_FRAME_CACHE_H_
+#define COREVM_FRAME_CACHE_H_
 
 #include "closure_ctx.h"
 #include "frame.h"
@@ -48,7 +48,7 @@ typedef Frame* FramePtr;
 
 // -----------------------------------------------------------------------------
 
-class FramePtrCache
+class FrameCache
 {
 public:
   void insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame);
@@ -71,4 +71,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_FRAME_PTR_CACHE_H_ */
+#endif /* COREVM_FRAME_CACHE_H_ */

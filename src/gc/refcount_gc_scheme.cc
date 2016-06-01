@@ -271,15 +271,13 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
   const auto cycles = components.cycles();
 
-  std::vector<typename AlgoType::Enumerable> garbage_collectible_cycles;
+  std::vector<const typename AlgoType::Enumerable*> garbage_collectible_cycles;
   garbage_collectible_cycles.reserve(cycles.size());
 
   std::unordered_map<dynamic_object_type*, size_t> ref_table;
 
-  for (auto itr = cycles.begin(); itr != cycles.end(); ++itr)
+  for (const auto& cycle : cycles)
   {
-    const auto& cycle = static_cast<std::list<dynamic_object_type*>>(*itr);
-
     std::set<dynamic_object_type*> cycle_set;
 
     for (const auto& obj : cycle)
@@ -302,14 +300,14 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
     if (intersect.empty())
     {
-      garbage_collectible_cycles.push_back(cycle);
+      garbage_collectible_cycles.push_back(&cycle);
     }
   }
 
-  for (const auto& cycle : garbage_collectible_cycles)
+  for (const auto cycle : garbage_collectible_cycles)
   {
     bool res = true;
-    for (const auto& obj : cycle)
+    for (const auto obj : *cycle)
     {
       if (obj->manager().ref_count() != ref_table[obj])
       {
@@ -320,7 +318,7 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
     if (res)
     {
-      for (const auto& obj : cycle)
+      for (const auto obj : *cycle)
       {
         --ref_table[obj];
         obj->manager().dec_ref_count();

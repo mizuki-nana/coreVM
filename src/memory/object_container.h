@@ -37,8 +37,8 @@ namespace memory {
 
 
 /**
- * This is a generic container class responsible for storing and managing
- * objects allocated by an allocator. It creates instances of objects directly
+ * A generic container class responsible for storing and managing objects
+ * allocated by an allocator. It creates instances of objects directly
  * from memory allocated by the allocator, as well as destroying instances and
  * deallocates their memory.
  *

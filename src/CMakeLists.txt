@@ -40,7 +40,7 @@ set(sources
     runtime/dbgmem_printer.cc
     runtime/dbgvar_printer.cc
     runtime/frame.cc
-    runtime/frame_ptr_cache.cc
+    runtime/frame_cache.cc
     runtime/frame_printer.cc
     runtime/gc_rule.cc
     runtime/instr.cc

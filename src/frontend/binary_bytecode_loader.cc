@@ -46,25 +46,27 @@ namespace frontend {
 void
 BinaryBytecodeLoader::load(const std::string& path, runtime::Process& process)
 {
-  // `avro::DataFileReader` documentation:
-  // http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
-  corevm::StructuredBytecode bytecode_data;
+  /**
+   * `avro::DataFileReader` documentation:
+   * http://avro.apache.org/docs/1.6.3/api/cpp/html/classavro_1_1DataFileReader.html
+   */
+  corevm::StructuredBytecode structured_bytecode;
   avro::DataFileReader<corevm::StructuredBytecode> reader(path.c_str());
-  reader.read(bytecode_data);
+  reader.read(structured_bytecode);
 
-  // Load source path.
-  const std::string& source_path = bytecode_data.path;
-
-  runtime::Compartment compartment(source_path);
+  // Instantiate compartment.
+  runtime::Compartment compartment(structured_bytecode.path);
 
   // Load string literal table.
-  compartment.set_string_literal_table(std::move(bytecode_data.string_literal_table));
+  compartment.set_string_literal_table(
+    std::move(structured_bytecode.string_literal_table));
 
   // Load fpt literal table.
-  compartment.set_fpt_literal_table(std::move(bytecode_data.fpt_literal_table));
+  compartment.set_fpt_literal_table(
+    std::move(structured_bytecode.fpt_literal_table));
 
   // Load closures.
-  compartment.set_closure_table(std::move(bytecode_data.__MAIN__));
+  compartment.set_closure_table(std::move(structured_bytecode.__MAIN__));
 
   // Insert compartment.
   process.insert_compartment(std::move(compartment));

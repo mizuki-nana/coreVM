@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "frame_ptr_cache.h"
+#include "frame_cache.h"
 
 #include <boost/functional/hash.hpp>
 
@@ -45,7 +45,7 @@ ClosureCtxHash::operator()(const ClosureCtx& closure_ctx) const
 // -----------------------------------------------------------------------------
 
 void
-FramePtrCache::insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame)
+FrameCache::insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame)
 {
   m_cache.insert(std::make_pair(ctx, parent_frame));
   m_reverse_cache.insert(std::make_pair(parent_frame, ctx));
@@ -54,7 +54,7 @@ FramePtrCache::insert_parent_frame(const ClosureCtx& ctx, FramePtr parent_frame)
 // -----------------------------------------------------------------------------
 
 void
-FramePtrCache::erase_parent_frame(FramePtr parent_frame)
+FrameCache::erase_parent_frame(FramePtr parent_frame)
 {
   auto itr = m_reverse_cache.find(parent_frame);
   if (itr != m_reverse_cache.end())
@@ -67,7 +67,7 @@ FramePtrCache::erase_parent_frame(FramePtr parent_frame)
 // -----------------------------------------------------------------------------
 
 FramePtr
-FramePtrCache::parent_frame_of(const ClosureCtx& ctx)
+FrameCache::parent_frame_of(const ClosureCtx& ctx)
 {
   FramePtr parent = NULL;
 
