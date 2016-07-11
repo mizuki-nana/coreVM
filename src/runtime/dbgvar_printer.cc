@@ -21,6 +21,9 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "dbgvar_printer.h"
+#include "compartment.h"
+#include "frame.h"
+#include "process.h"
 
 #include <ostream>
 #include <sstream>

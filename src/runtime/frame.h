@@ -27,7 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "closure_ctx.h"
 #include "common.h"
 #include "errors.h"
-#include "instr.h"
+#include "fwd.h"
+#include "instr_fwd.h"
 #include "runtime_types.h"
 #include "dyobj/common.h"
 #include "types/fwd.h"
@@ -52,10 +53,6 @@ namespace corevm {
 
 
 namespace runtime {
-
-
-/** Forward declaration of `Compartment` */
-class Compartment;
 
 
 /**

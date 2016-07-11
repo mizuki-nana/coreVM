@@ -23,8 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_DBGVAR_PRINTER_H_
 #define COREVM_DBGVAR_PRINTER_H_
 
-#include "frame.h"
-#include "process.h"
+#include "fwd.h"
 #include "runtime_types.h"
 
 #include <iosfwd>

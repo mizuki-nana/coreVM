@@ -23,11 +23,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "instr.h"
 
 #include "catch_site.h"
+#include "compartment.h"
 #include "dbgmem_printer.h"
 #include "dbgvar_printer.h"
+#include "frame.h"
 #include "frame_printer.h"
+#include "invocation_ctx.h"
 #include "process.h"
-#include "process_printer.h"
 #include "utils.h"
 #include "corevm/macros.h"
 #include "dyobj/util.h"
@@ -1894,7 +1896,7 @@ instr_handler_debug(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   const uint32_t opts = static_cast<uint32_t>(instr.oprd1);
-  ProcessPrinter printer(process, opts);
+  Process::Printer printer(process, opts);
   printer(std::cout) << std::endl;
 }
 

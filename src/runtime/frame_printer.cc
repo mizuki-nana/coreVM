@@ -24,6 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "closure.h"
 #include "compartment.h"
+#include "frame.h"
 
 #include <iostream>
 
@@ -36,9 +37,7 @@ namespace runtime {
 
 // -----------------------------------------------------------------------------
 
-FramePrinter::FramePrinter(
-  const Frame& frame,
-  uint32_t opts)
+FramePrinter::FramePrinter(const Frame& frame, uint32_t opts)
   :
   m_frame(frame),
   m_opts(opts)

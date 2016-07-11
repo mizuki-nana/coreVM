@@ -25,8 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "common.h"
 #include "errors.h"
+#include "fwd.h"
 #include "instr_fwd.h"
-#include "corevm/corevm_bytecode_schema.h" // Compiled.
 
 #include <iosfwd>
 #include <string>
@@ -37,29 +37,6 @@ namespace corevm {
 
 namespace runtime {
 
-
-// -----------------------------------------------------------------------------
-
-/**
- * Forward declaration of `Frame`.
- */
-class Frame;
-
-// -----------------------------------------------------------------------------
-
-/**
- * Forward declaration of `InvocationCtx`.
- */
-class InvocationCtx;
-
-// -----------------------------------------------------------------------------
-
-typedef corevm::instr Instr;
-
-// -----------------------------------------------------------------------------
-
-// Forward declaration of `Process`.
-class Process;
 
 // -----------------------------------------------------------------------------
 

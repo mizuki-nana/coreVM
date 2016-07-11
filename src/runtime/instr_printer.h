@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_INSTR_PRINTER_H_
 #define COREVM_INSTR_PRINTER_H_
 
-#include "instr.h"
+#include "instr_fwd.h"
 
 #include <iosfwd>
 

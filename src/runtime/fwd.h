@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_RUNTIME_FWD_H_
 #define COREVM_RUNTIME_FWD_H_
 
+/** Forward declarations. */
+
 
 namespace corevm {
 
@@ -30,9 +32,12 @@ namespace corevm {
 namespace runtime {
 
 
-
+struct ClosureCtx;
+class Compartment;
+class Frame;
+class InvocationCtx;
+class NativeTypesPool;
 class Process;
-
 
 
 } /* end namespace runtime */

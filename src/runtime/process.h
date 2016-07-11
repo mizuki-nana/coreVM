@@ -23,26 +23,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_PROCESS_H_
 #define COREVM_PROCESS_H_
 
+#include "fwd.h"
 #include "closure.h"
-#include "compartment.h"
 #include "common.h"
-#include "errors.h"
-#include "frame.h"
-#include "frame_cache.h"
-#include "gc_rule.h"
-#include "instr.h"
-#include "invocation_ctx.h"
-#include "native_types_pool.h"
 #include "runtime_types.h"
-#include "vector.h"
-#include "corevm/llvm_smallvector.h"
-#include "corevm/logging.h"
 #include "dyobj/common.h"
-#include "dyobj/dynamic_object_heap.h"
-
-#include <llvm/ADT/SmallString.h>
+#include "corevm/logging.h"
 
 #include <cstdint>
+#include <iosfwd>
 #include <type_traits>
 
 
@@ -50,14 +39,6 @@ namespace corevm {
 
 
 namespace runtime {
-
-
-/** Forward declaration of `ClosureCtx` */
-struct ClosureCtx;
-
-
-/** Forward declaration of `ProcessPrinter` */
-class ProcessPrinter;
 
 
 /**
@@ -98,6 +79,18 @@ public:
     EXECUTION_STATUS_ACTIVE,
     EXECUTION_STATUS_PAUSED,
     EXECUTION_STATUS_TERMINATED
+  };
+
+  class Printer
+  {
+  public:
+    Printer(const Process&, uint32_t opts);
+
+    std::ostream& operator()(std::ostream&) const;
+
+  private:
+    const Process& m_process;
+    const uint32_t m_opts;
   };
 
   Process();
@@ -208,9 +201,9 @@ public:
 
   dynamic_object_heap_type::size_type max_heap_size() const;
 
-  NativeTypesPool::size_type ntvhndl_pool_size() const;
+  size_t ntvhndl_pool_size() const;
 
-  NativeTypesPool::size_type max_ntvhndl_pool_size() const;
+  size_t max_ntvhndl_pool_size() const;
 
   size_t compartment_count() const;
 
@@ -229,9 +222,7 @@ public:
    * Returns a pointer that points to the frame, if found.
    * Returns a null pointer otherwise.
    */
-  static
-  Frame* find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment,
-    Process& process);
+  Frame* find_frame_by_ctx(ClosureCtx ctx, Compartment* compartment);
 
   /**
    * Given a pointer to a starting frame, find the existing frame associated
@@ -240,52 +231,19 @@ public:
    * Returns a pointer that points to the frame, if found.
    * Returns a null pointer otherwise.
    */
-  static
-  Frame* find_parent_frame_in_process(Frame* frame_ptr, Process& process);
+  Frame* find_parent_frame_in_process(Frame* frame_ptr);
 
   // A few things to note:
   //
   // 1. Once the stack is unwinded, the action cannot be undone.
   // 2. This function has to be exception safe because there are no catch
   //    blocks to catch exceptions from it.
-  static void unwind_stack(Process&,
-    size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
-
-  friend class ProcessPrinter;
+  void unwind_stack(size_t limit=COREVM_DEFAULT_STACK_UNWIND_COUNT);
 
 private:
-  void init();
+  class Impl;
 
-  bool can_execute() const;
-
-  bool is_valid_pc() const;
-
-  bool start();
-
-  void check_call_stack_capacity();
-
-  void check_invk_ctx_stack_capacity();
-
-  void set_parent_for_top_frame();
-
-  typedef llvm::SmallString<16> AttributeNameType;
-  typedef std::unordered_map<dyobj::attr_key_t, AttributeNameType> AttributeNameStore;
-  typedef llvm::SmallVector<dyobj_ptr, 20> DynamicObjectStack;
-  typedef llvm::SmallVector<Frame, 20> CallStack;
-  typedef llvm::SmallVector<InvocationCtx, 20> InvocationCtxStack;
-  typedef llvm::SmallVector<Compartment, 5> CompartmentStore;
-
-  ExecutionStatus m_execution_status;
-  bool m_do_gc;
-  uint8_t m_gc_flag;
-  dynamic_object_heap_type m_dynamic_object_heap;
-  DynamicObjectStack m_dyobj_stack;
-  CallStack m_call_stack;
-  InvocationCtxStack m_invocation_ctx_stack;
-  NativeTypesPool m_ntvhndl_pool;
-  CompartmentStore m_compartments;
-  FrameCache m_frame_cache;
-  AttributeNameStore m_attr_name_store;
+  std::unique_ptr<Impl> m_impl;
 };
 
 // -----------------------------------------------------------------------------

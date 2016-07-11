@@ -49,7 +49,6 @@ set(sources
     runtime/invocation_ctx.cc
     runtime/native_types_pool.cc
     runtime/process.cc
-    runtime/process_printer.cc
     runtime/process_runner.cc
     runtime/signal_handler.cc
     runtime/utils.cc

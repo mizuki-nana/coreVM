@@ -24,7 +24,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_FRAME_CACHE_H_
 
 #include "closure_ctx.h"
-#include "frame.h"
 
 #include <unordered_map>
 
@@ -44,6 +43,7 @@ struct ClosureCtxHash
 
 // -----------------------------------------------------------------------------
 
+class Frame;
 typedef Frame* FramePtr;
 
 // -----------------------------------------------------------------------------

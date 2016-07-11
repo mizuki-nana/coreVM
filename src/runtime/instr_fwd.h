@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_INSTR_FWD_H_
 #define COREVM_INSTR_FWD_H_
 
+#include "corevm/corevm_bytecode_schema.h" // Compiled.
+
 #include <cstdint>
 
 
@@ -30,6 +32,9 @@ namespace corevm {
 
 
 namespace runtime {
+
+
+typedef corevm::instr Instr;
 
 
 // -----------------------------------------------------------------------------

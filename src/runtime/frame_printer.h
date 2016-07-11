@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef COREVM_FRAME_PRINTER_H_
 #define COREVM_FRAME_PRINTER_H_
 
-#include "frame.h"
+#include "fwd.h"
 
 #include <cstdint>
 #include <iosfwd>

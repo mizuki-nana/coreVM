@@ -110,7 +110,7 @@ Runner::run() const noexcept
       print_stack_trace();
 #endif
 
-      runtime::Process::unwind_stack(process);
+      process.unwind_stack();
 
       return -1;
     }
@@ -124,7 +124,7 @@ Runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::Process::unwind_stack(process);
+    process.unwind_stack();
 
     return -1;
   }
@@ -137,7 +137,7 @@ Runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::Process::unwind_stack(process);
+    process.unwind_stack();
 
     return -1;
   }
@@ -150,7 +150,7 @@ Runner::run() const noexcept
     print_stack_trace();
 #endif
 
-    runtime::Process::unwind_stack(process);
+    process.unwind_stack();
 
     return -1;
   }

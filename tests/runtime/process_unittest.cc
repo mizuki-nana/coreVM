@@ -24,6 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/closure.h"
 #include "runtime/closure_ctx.h"
 #include "runtime/common.h"
+#include "runtime/compartment.h"
+#include "runtime/frame.h"
 #include "runtime/gc_rule.h"
 #include "runtime/loc_info.h"
 #include "runtime/process.h"
@@ -548,8 +550,7 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindFrameWithAssociatedCtx)
 
   process.emplace_frame(ctx, &compartment, &closure_table[0]);
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_frame_by_ctx(
-    ctx, &compartment, process);
+  corevm::runtime::Frame* res = process.find_frame_by_ctx(ctx, &compartment);
 
   ASSERT_NE(nullptr, res);
   ASSERT_TRUE(ctx == res->closure_ctx());
@@ -603,8 +604,7 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindFrameByTraverseClosureTree)
 
   process.emplace_frame(ctx1, &compartment, &closure_table[0]);
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_frame_by_ctx(
-    ctx3, &compartment, process);
+  corevm::runtime::Frame* res = process.find_frame_by_ctx(ctx3, &compartment);
 
   ASSERT_NE(nullptr, res);
   ASSERT_TRUE(ctx1 == res->closure_ctx());
@@ -659,8 +659,7 @@ TEST_F(ProcessFindFrameByCtxUnitTest, TestFindMissingFrame)
   process.emplace_frame(ctx2, &compartment, &closure_table[1], 0);
   process.emplace_frame(ctx3, &compartment, &closure_table[2], 0);
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_frame_by_ctx(
-    ctx1, &compartment, process);
+  corevm::runtime::Frame* res = process.find_frame_by_ctx(ctx1, &compartment);
 
   ASSERT_EQ(nullptr, res);
 }
@@ -721,8 +720,7 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameSuccessful)
 
   corevm::runtime::Frame* frame_ptr = &process.top_frame();
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_parent_frame_in_process(
-    frame_ptr, process);
+  corevm::runtime::Frame* res = process.find_parent_frame_in_process(frame_ptr);
 
   ASSERT_NE(nullptr, res);
   ASSERT_TRUE(ctx2 == res->closure_ctx());
@@ -779,8 +777,7 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameWithMissingIn
 
   corevm::runtime::Frame* frame_ptr = &process.top_frame();
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_parent_frame_in_process(
-    frame_ptr, process);
+  corevm::runtime::Frame* res = process.find_parent_frame_in_process(frame_ptr);
 
   ASSERT_NE(nullptr, res);
   ASSERT_TRUE(ctx1 == res->closure_ctx());
@@ -834,8 +831,7 @@ TEST_F(ProcessFindParentFrameInProcessUnitTest, TestFindParentFrameFails)
 
   corevm::runtime::Frame* frame_ptr = &process.top_frame();
 
-  corevm::runtime::Frame* res = corevm::runtime::Process::find_parent_frame_in_process(
-    frame_ptr, process);
+  corevm::runtime::Frame* res = process.find_parent_frame_in_process(frame_ptr);
 
   ASSERT_EQ(nullptr, res);
 }
