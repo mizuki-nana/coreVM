@@ -3,7 +3,7 @@
 A virtual machine designed to revolutionize the development of modern dynamic
 programming languages and to refine the art of programming.
 
-[![Build status](https://api.travis-ci.org/yanzhengli/coreVM.png)](https://travis-ci.org/yanzhengli/coreVM)
+[![Build status](https://travis-ci.org/yanzhengli/coreVM.svg?branch=dev)](https://travis-ci.org/yanzhengli/coreVM)
 
 * [Overview] (#overview)
 * [Get Started] (#get-started)
