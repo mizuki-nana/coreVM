@@ -27,6 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <set>
 #include <unordered_map>
+#include <vector>
 
 
 namespace corevm {
@@ -256,7 +257,7 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
   heap.iterate(builder);
 
-  std::list<vertex_type*> vertices;
+  std::vector<vertex_type*> vertices;
 
   for (auto itr = vertices_map.begin(); itr != vertices_map.end(); ++itr)
   {

@@ -57,6 +57,7 @@ endif
 
 .PHONY: sneaker
 sneaker:
+	cd $(SNEAKER_DIR) && make gtest
 	$(MAKE) -C sneaker fast=1
 	$(MAKE) -C sneaker install
 
