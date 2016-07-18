@@ -32,13 +32,15 @@ PYTHON_DIR=python
 PYTHON_TESTS_DIR=$(PYTHON_DIR)/tests
 BOOTSTRAP_TESTS=bootstrap_tests.py
 BOOTSTRAP_TESTS_ARGS=
+DOCS_DIR=./docs
+DOCS_BUILD_DIR=$(DOCS_DIR)/build
 SANITY_TESTS_ARGS=--sanity-test
 DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
 PYTHON=`which python`
 
 ## -----------------------------------------------------------------------------
 
-BASE_TARGETS=build python_tests
+BASE_TARGETS=build python_tests docs
 
 ifeq ($(full), 1)
 	BUILD_TARGETS=$(BASE_TARGETS) benchmarks
@@ -89,6 +91,12 @@ python_tests:
 
 ## -----------------------------------------------------------------------------
 
+.PHONY: docs
+docs:
+	$(MAKE) -C docs html
+
+## -----------------------------------------------------------------------------
+
 .PHONY: sanity_tests
 sanity_tests:
 	export ASAN_SYMBOLIZER_PATH=$(which llvm-symbolizer-3.4)
@@ -114,5 +122,6 @@ clean:
 	rm -rf $(BUILD_GCC_DIR)
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py.core
+	rm -rf $(DOCS_BUILD_DIR)/*
 
 ## -----------------------------------------------------------------------------
