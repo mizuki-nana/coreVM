@@ -11,7 +11,7 @@ programming languages and to refine the art of programming.
 * [Moonshots] (#moonshots)
 * [Contribute](#contribute)
 * [License] (#license)
-* [Stay Updated] (#stay-updated)
+* [Updates] (#updates)
 * [Inquiries] (#inquiries)
 
 ## Overview
@@ -51,7 +51,8 @@ shape the next generation of computing.
 
 Here is a list of recommended steps to get started on the project:
 
-1. Get familiar with the project by checking out these useful wiki pages:
+1. Get familiar with the project by checking out these useful links:
+  * [Project Documentation](http://corevm.readthedocs.io/en/latest/)
   * [Design and Architecture](https://github.com/yanzhengli/coreVM/wiki/Design-and-Architecture)
   * [Dependencies and Build Environments](https://github.com/yanzhengli/coreVM/wiki/Dependencies-and-Build-Environments)
 
@@ -133,7 +134,7 @@ Please read the following wiki pages if you'd like to contribute to the project:
 coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 
-## Stay Updated
+## Updates
 Follow the latest news and updates on the project's [official site](http://www.corevm.org/)
 and the [coreVM Official Blog](https://medium.com/corevm-official-blog).
 
