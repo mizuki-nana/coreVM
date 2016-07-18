@@ -10,7 +10,7 @@ programming languages and to refine the art of programming.
 * [Moonshots] (#moonshots)
 * [Contribute](#contribute)
 * [License] (#license)
-* [Blog Posts] (#blog-posts)
+* [Stay Updated] (#stay-updated)
 * [Inquiries] (#inquiries)
 
 ## Overview
@@ -41,9 +41,9 @@ programming languages through the following:
 The points above together illustrate the core philosophy of the project that
 language developers should be able to use coreVM as a powerful platform for
 developing modern dynamic programming languages in an intuitive and
-straightforward manner. And hopefully, it will help guide language developers
-devise novel language designs and implementations that can shape the next
-generation of computing.
+straightforward manner. Hopefully, as the project evolves, it will help guide
+language developers devise novel language designs and implementations that can
+shape the next generation of computing.
 
 
 ## Get Started
@@ -54,21 +54,21 @@ Here is a list of recommended steps to get started on the project:
   * [Design and Architecture](https://github.com/yanzhengli/coreVM/wiki/Design-and-Architecture)
   * [Dependencies and Build Environments](https://github.com/yanzhengli/coreVM/wiki/Dependencies-and-Build-Environments)
 
-2. Build all dependency libraries:
-> `git submodule update --init && make -C libs full=1`
+2. Build from source and have fun:
 
-3. Build from source and have fun:
+  2.1 Build and install all dependencies:
+  > `git submodule update --init && make -C libs full=1`
 
-  3.1. Build binaries and run tests:
+  2.2. Build main binaries and run tests:
   > `make`
 
-  3.2. Build all, including benchmarks, sanity tests, and dynamic analysis tests (optional):
+  2.3. Build all, including benchmarks, sanity tests, and dynamic analysis tests (optional):
   > `make full=2`
 
-  3.3 Play around with the Python compiler and run individual Python tests ([more below](#python-variant-based-on-corevm)), for example:
+  2.4. Play around with the Python compiler and run individual Python tests ([more below](#python-variant-based-on-corevm)), for example:
   > `python python/pyta.py python/tests/int.py`
 
-4. Checkout more wiki pages if you are interested:
+3. Checkout more wiki pages if you are interested:
   * [Current State and Roadmap](https://github.com/yanzhengli/coreVM/wiki/Current-State-and-Roadmap)
   * [Focus Areas](https://github.com/yanzhengli/coreVM/wiki/Focus-Areas)
 
@@ -132,10 +132,11 @@ Please read the following wiki pages if you'd like to contribute to the project:
 coreVM is licensed under [The MIT License](http://opensource.org/licenses/MIT).
 
 
-## Blog Posts
-Follow the latest news and updates on the [coreVM Official Blog](https://medium.com/corevm-official-blog).
+## Stay Updated
+Follow the latest news and updates on the project's [official site](http://www.corevm.org/)
+and the [coreVM Official Blog](https://medium.com/corevm-official-blog).
 
 
 ## Inquiries
 For technical issues and bugs, please file issues [here](https://github.com/yanzhengli/coreVM/issues/new).
-For all other inquiries, please e-mail <a href="mailto:yanzheng819@gmail.com">yanzheng819@gmail.com</a>.
+For all other inquiries, please e-mail <a href="mailto:yli@corevm.org">yli@corevm.org</a>.
