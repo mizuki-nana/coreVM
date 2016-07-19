@@ -338,3 +338,110 @@ Map type instructions
   MAPVALS       166       0             Inserts the values of the map on top of the eval stack into an array, and place it on top of the eval stack.
   MAPMRG        167       0             Pops the top two elements on the eval stack, converts them to maps, merge them into one single map, and put it back to the eval stack.
   ============  ========  ============  ===============
+
+
+APIs
+----
+
+  The coreVM library provides a set of powerful APIs that offer additional
+  capabilities beyond the functionalities from the instruction set. They provide
+  greater flexibilities and more granular controls to the execution of bytecodes
+  to developers.
+
+  The library is consisted of the following APIs:
+
+    * :ref:`entry-api`
+    * Debugging and Profiling API (coming soon)
+    * Embedder API (coming soon)
+    * Extension API (coming soon)
+    * Threading API (coming soon)
+
+
+.. _entry-api:
+
+Entry API
+^^^^^^^^^
+
+**Bytecode execution configuration**
+
+Header: `corevm/api/configuration.h`
+
+.. cpp:class:: corevm::api::Configuration
+
+  An encapsulation of a set of configuration parameters for bytecode execution.
+
+  .. cpp:function:: Configuration()
+    :noindex:
+
+    Constructor.
+
+  .. cpp:function:: void set_heap_alloc_size(uint64_t)
+    :noindex:
+
+    Sets the size (number of bytes) of the object heap. A default value is set
+    if not specified.
+
+  .. cpp:function:: void set_pool_alloc_size(uint64_t)
+    :noindex:
+
+    Sets the size (number of bytes) of the native types pool. A default value
+    is set if not specified.
+
+  .. cpp:function:: void set_gc_interval(uint32_t)
+    :noindex:
+
+    Sets the duration of time interval (in milliseconds) for triggering
+    garbage collections. A default value is used if not specified.
+
+  .. cpp:function:: void set_gc_flag(uint8_t)
+    :noindex:
+
+    Sets a flag for garbage collection. This is optional.
+
+  .. cpp:function:: void set_log_mode(const std::string&)
+    :noindex:
+
+    Sets the logging mode. A default value is used if not specified.
+
+  .. cpp:function:: uint64_t heap_alloc_size() const
+    :noindex:
+
+    Gets the size (number of bytes) of the object heap.
+
+  .. cpp:function:: uint64_t pool_alloc_size() const
+    :noindex:
+
+    Gets the size (number of bytes) of the native types pool.
+
+  .. cpp:function:: uint32_t gc_interval() const
+    :noindex:
+
+    Gets the duration of time interval (in milliseconds) for triggering
+    garbage collections.
+
+  .. cpp:function:: bool has_gc_flag() const
+    :noindex:
+
+    Returns if the optional GC flag has been set.
+
+  .. cpp:function:: uint8_t gc_flag() const
+    :noindex:
+
+    Gets the optional flag for garbage collection.
+
+  .. cpp:function:: const std::string& log_mode() const
+    :noindex:
+
+    Gets the the logging mode.
+
+
+**Invoking bytecode execution**
+
+Header: `corevm/api/entry.h`
+
+.. cpp:function:: int corevm::api::invoke_from_file(const char* filepath, const Configuration& config)
+  
+  Executes the bytecode stored in `filepath`, along with the specified
+  configuration object.
+
+  Returns 0 on successful execution, non-zero values otherwise.
