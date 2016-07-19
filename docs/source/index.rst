@@ -24,6 +24,7 @@ Contents
    :maxdepth: 2
 
    design.rst
+   reference.rst
    roadmap.rst
    focus.rst
 
