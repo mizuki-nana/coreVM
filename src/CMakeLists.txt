@@ -55,10 +55,11 @@ set(sources
     frontend/binary_bytecode_loader.cc
     frontend/bytecode_loader.cc
     frontend/configuration.cc
-    frontend/program.cc
     frontend/runner.cc
     corevm/errors.cc
     corevm/logging.cc
+    api/configuration.cc
+    api/entry.cc
     corevm/corevm_bytecode_schema.h
     )
 
@@ -74,7 +75,13 @@ add_custom_command(TARGET libcorevm POST_BUILD COMMAND ls -al ./libcorevm.a)
 
 
 # Binary `coreVM`.
-add_executable(coreVM corevm/main.cc)
+set(coreVM_sources
+    corevm/program.cc
+    corevm/main.cc
+    )
+
+
+add_executable(coreVM ${coreVM_sources})
 
 
 set_target_properties(coreVM PROPERTIES COMPILE_FLAGS "-O3")
@@ -112,7 +119,7 @@ add_custom_command(TARGET libcorevm_dbg POST_BUILD COMMAND ls -al ./libcorevm_db
 
 
 # Binary `coreVM_dbg`.
-add_executable(coreVM_dbg corevm/main.cc)
+add_executable(coreVM_dbg ${coreVM_sources})
 
 
 target_link_libraries(coreVM_dbg
@@ -158,7 +165,7 @@ add_custom_command(TARGET libcorevm_dbg_asan POST_BUILD COMMAND ls -al ./libcore
 
 
 # Binary `coreVM_dbg_asan`.
-add_executable(coreVM_dbg_asan corevm/main.cc)
+add_executable(coreVM_dbg_asan ${coreVM_sources})
 
 
 target_link_libraries(coreVM_dbg_asan

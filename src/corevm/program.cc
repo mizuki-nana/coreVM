@@ -22,17 +22,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "program.h"
 
-#include "configuration.h"
-#include "runner.h"
+#include "api/configuration.h"
+#include "api/entry.h"
 #include "corevm/version.h"
 
 #include <boost/format.hpp>
 
 
 namespace corevm {
-
-
-namespace frontend {
 
 
 // -----------------------------------------------------------------------------
@@ -85,12 +82,15 @@ Program::check_parameters() const
 int
 Program::do_run()
 {
-  Configuration configuration;
+  api::Configuration configuration;
 
+  // TODO: [COREVM-525] Consolidate `api::Configuration` and `frontend::Configuration` classes
+#if 0
   if (option_provided("config"))
   {
     configuration = Configuration::load_config(m_config_path);
   }
+#endif
 
   if (option_provided("heap-alloc-size"))
   {
@@ -114,13 +114,10 @@ Program::do_run()
 
   configuration.set_log_mode(m_log_mode);
 
-  return Runner(m_input_path, configuration).run();
+  return api::invoke_from_file(m_input_path.c_str(), configuration);
 }
 
 // -----------------------------------------------------------------------------
-
-
-} /* end namespace frontend */
 
 
 } /* end namespace corevm */

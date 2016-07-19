@@ -20,10 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_PROGRAM_H_
-#define COREVM_PROGRAM_H_
+#ifndef COREVM_API_CONFIGURATION_H_
+#define COREVM_API_CONFIGURATION_H_
 
-#include <sneaker/utility/cmdline_program.h>
+#include <boost/optional.hpp>
 
 #include <cstdint>
 #include <string>
@@ -32,29 +32,47 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 
 
-namespace frontend {
+namespace api {
 
 
-class Program : public sneaker::utility::cmdline_program
+/**
+ * An encapsulation of a set of configuration parameters for bytecode execution.
+ */
+class Configuration
 {
 public:
-  Program();
+  Configuration();
 
-  virtual ~Program();
+  /* Value accessors. */
+  uint64_t heap_alloc_size() const;
+
+  uint64_t pool_alloc_size() const;
+
+  uint32_t gc_interval() const;
+
+  bool has_gc_flag() const;
+
+  uint8_t gc_flag() const;
+
+  const std::string& log_mode() const;
+
+  /* Value setters. */
+  void set_heap_alloc_size(uint64_t);
+
+  void set_pool_alloc_size(uint64_t);
+
+  void set_gc_interval(uint32_t);
+
+  void set_gc_flag(uint8_t);
+
+  void set_log_mode(const std::string&);
 
 private:
-  virtual int do_run();
-
-  virtual bool check_parameters() const;
-
-  std::string m_input_path;
-  std::string m_config_path;
-  std::string m_format;
-  std::string m_log_mode;
   uint64_t m_heap_alloc_size;
   uint64_t m_pool_alloc_size;
   uint32_t m_gc_interval;
-  uint32_t m_gc_flag;
+  boost::optional<uint8_t> m_gc_flag;
+  std::string m_log_mode;
 };
 
 
@@ -64,4 +82,4 @@ private:
 } /* end namespace corevm */
 
 
-#endif /* COREVM_PROGRAM_H_ */
+#endif /* COREVM_API_CONFIGURATION_H_ */

@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "frontend/program.h"
+#include "corevm/program.h"
 
 #include <gtest/gtest.h>
 
@@ -33,7 +33,7 @@ class ProgramUnitTest : public ::testing::Test {};
 
 TEST_F(ProgramUnitTest, TestRun)
 {
-  corevm::frontend::Program program;
+  corevm::Program program;
 
   int argc = 2;
   std::array<char*, 4> argv {{

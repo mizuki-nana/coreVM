@@ -20,11 +20,38 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "program.h"
+#include "entry.h"
+#include "configuration.h"
+#include "frontend/configuration.h"
+#include "frontend/runner.h"
 
 
-int main(int argc, char** argv)
+namespace corevm {
+
+
+namespace api {
+
+
+int invoke_from_file(const char* filepath, const Configuration& config)
 {
-  corevm::Program program;
-  return program.run(argc, argv);
+  // TODO: [COREVM-525] Consolidate `api::Configuration` and `frontend::Configuration` classes
+  frontend::Configuration frontend_config;
+
+  frontend_config.set_heap_alloc_size(config.heap_alloc_size());
+  frontend_config.set_pool_alloc_size(config.pool_alloc_size());
+  frontend_config.set_gc_interval(config.gc_interval());
+  frontend_config.set_log_mode(config.log_mode());
+
+  if (config.has_gc_flag())
+  {
+    frontend_config.set_gc_flag(config.gc_flag());
+  }
+
+  return frontend::Runner(filepath, frontend_config).run();
 }
+
+
+} /* end namespace api */
+
+
+} /* end namespace corevm */

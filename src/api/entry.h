@@ -20,11 +20,33 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "program.h"
+#ifndef COREVM_API_ENTRY_H_
+#define COREVM_API_ENTRY_H_
 
 
-int main(int argc, char** argv)
-{
-  corevm::Program program;
-  return program.run(argc, argv);
-}
+namespace corevm {
+
+
+namespace api {
+
+
+/** Forward declaration. */
+class Configuration;
+
+
+/**
+ * Executes the bytecode stored in `filepath`, along with the specified
+ * configuration.
+ *
+ * Returns 0 on successful execution, non-zero values otherwise.
+ */
+int invoke_from_file(const char* filepath, const Configuration& config);
+
+
+} /* end namespace api */
+
+
+} /* end namespace corevm */
+
+
+#endif /* COREVM_API_ENTRY_H_ */
