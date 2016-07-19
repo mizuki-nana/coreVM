@@ -10,9 +10,9 @@ With the proliferation of dynamic programming languages being a dominating trend
 
 coreVM is a language-agnostic virtual machine designed to provide a runtime platform for dynamic programming languages. Its design strives to achieve extremely versatile interfaces and modern runtime functionalities, which unfetters language developers from the burden of developing their own. Instead of re-inventing the wheel, developers can focus on the design and development of language features. coreVM strives to provide versatile capabilities that can meet the demands of most dynamic programming languages through the following:
 
-  * An instruction set that can broadly cover most demands.
-  * A set of APIs for extensions, customizations, and optimizations for special needs.
-  * A well thought and extensible architecture.
+  * An `instruction set <reference.html#instruction-set>`_ that can broadly cover most demands.
+  * A `set of APIs <reference.html#apis>`_ for extensions, customizations, and optimizations for special needs.
+  * A well thought and extensible `architecture <design.html#design-and-architecture>`_.
 
 The points above together illustrate the core philosophy of the project that language developers should be able to use coreVM as a powerful platform for developing modern dynamic programming languages in an intuitive and efficient manner. Hopefully, as the project evolves, it will help guide language developers devise novel language designs and implementations that can shape the next generation of computing.
 

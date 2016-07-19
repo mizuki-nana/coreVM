@@ -34,9 +34,9 @@ of re-inventing the wheel, developers can focus on the design and development of
 language features. coreVM strives to provide versatile capabilities that can
 meet the demands of most dynamic programming languages through the following:
 
-* An instruction set that can broadly cover most demands.
-* A set of APIs for extensions, customizations, and optimizations for special needs.
-* A well thought and extensible architecture.
+* An [instruction set](http://corevm.readthedocs.io/en/latest/reference.html#instruction-set) that can broadly cover most demands.
+* A [set of APIs](http://corevm.readthedocs.io/en/latest/reference.html#apis) for extensions, customizations, and optimizations for special needs.
+* A well thought and extensible [architecture](http://corevm.readthedocs.io/en/latest/design.html).
 
 The points above together illustrate the core philosophy of the project that
 language developers should be able to use coreVM as a powerful platform for
