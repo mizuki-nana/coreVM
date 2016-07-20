@@ -7,6 +7,313 @@ This reference manual contains useful information for developers who wish to
 make use of coreVM's functionalities.
 
 
+Bytecode Format and Encoding
+----------------------------
+
+coreVM employs a binary encoding format that is versioned and structured.
+Internally referred as "structured bytecode", the encoding scheme makes both
+encoding and decoding straightforward while aiming to encode bytecode data in an
+efficient manner.
+
+First of all, coreVM relies on the `Apache Avro data serialization system <https://avro.apache.org/docs/current/>`_
+for bytecode serialization and deserialization, which offers a diverse range of
+language supports, including C++, Java, and Python. This offers tremendous
+flexibilities to language developers. For example, the bytecode decoder in
+coreVM is written in C++, and the Python compiler in
+`Project Pya <roadmap.html#project-pyta>`_ is implemented in Python.
+
+Below is the coreVM bytecode schema:
+
+.. code-block:: json
+
+  {
+    "namespace": "corevm.avro",
+    "type": "record",
+    "name": "StructuredBytecode",
+    "fields": [
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "format_version",
+        "type": "string"
+      },
+      {
+        "name": "target_version",
+        "type": "string"
+      },
+      {
+        "name": "path",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "long"
+      },
+      {
+        "name": "encoding",
+        "type": "string"
+      },
+      {
+        "name": "author",
+        "type": "string"
+      },
+      {
+        "name": "string_literal_table",
+        "type": {
+          "type": "array",
+          "items":  {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "name": "fpt_literal_table",
+        "type": {
+          "type": "array",
+          "items":  {
+            "type": "double"
+          }
+        }
+      },
+      {
+        "name": "__MAIN__",
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "closure",
+            "fields": [
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "name": "id",
+                "type": "long"
+              },
+              {
+                "name": "parent_id",
+                "type": "long",
+                "default": -1
+              },
+              {
+                "name": "vector",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "instr",
+                    "fields": [
+                      {
+                        "name": "code",
+                        "type": "long"
+                      },
+                      {
+                        "name": "oprd1",
+                        "type": "long"
+                      },
+                      {
+                        "name": "oprd2",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "name": "locs",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "loc",
+                    "fields": [
+                      {
+                        "name": "index",
+                        "type": "long"
+                      },
+                      {
+                        "name": "lineno",
+                        "type": "long"
+                      },
+                      {
+                        "name": "col_offset",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "name": "catch_sites",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "catch_site",
+                    "fields": [
+                      {
+                        "name": "from",
+                        "type": "long"
+                      },
+                      {
+                        "name": "to",
+                        "type": "long"
+                      },
+                      {
+                        "name": "dst",
+                        "type": "long"
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+
+Below are explanations on the fields in the schema.
+
+**Field "format"**
+
+The format of the bytecode encoding format. Accepted values are "bytecode".
+
+
+**Field "format_version"**
+
+The version of the bytecode encoding format. Current version is `v0.0.1`.
+
+
+**Field "target_version"**
+
+The highest version of coreVM that this encoding format targets to. In other
+words, the highest version of coreVM that can accept this format. Current
+version is `v0.1.0`.
+
+
+**Field "path"**
+
+The absolute file path of this bytecode stored on disk.
+
+
+**Field "timestamp"**
+
+The UNIX timestamp of which this bytecode was created or updated.
+
+
+**Field "encoding"**
+
+String encoding used for the string literals in the bytecode
+(e.g. "utf-8", "ascii", etc).
+
+
+**Field "author"**
+
+The name of the author whom created this bytecode.
+
+
+**Field "string_literal_table"**
+
+An array of string literals used in this bytecode.
+
+
+**Field "fpt_literal_table"**
+
+An array of floating-point literals used in this bytecode.
+
+
+**Field "__MAIN__"**
+
+Highest level of bytecode execution related data. An array of "closures".
+
+
+**Field "__MAIN__.name"**
+
+Name of a closure.
+
+
+**Field "__MAIN__.id"**
+
+Integer identifier of a closure that uniquely identifies itself in the bytecode.
+
+
+**Field "__MAIN__.parent_id"**
+
+Optional integer identifier of a closure's parent in the bytecode.
+
+
+**Field "__MAIN__.vector"**
+
+An array of instructions of a code block.
+
+
+**Field "__MAIN__.vector.code"**
+
+Integer code of an instruction. Please see the "Instruction Set" section below
+for more details regarding the coreVM instruction set.
+
+
+**Field "__MAIN__.vector.oprd1"**
+
+First operand of an instruction.
+
+
+**Field "__MAIN__.vector.oprd2"**
+
+Second operand of an instruction.
+
+
+**Field "__MAIN__.locs"**
+
+An array of source code location records.
+
+
+**Field "__MAIN__.locs.lineno"**
+
+Source code line number of a location record.
+
+
+**Field "__MAIN__.locs.col_offset"**
+
+Source code column offset of a location record.
+
+
+**Field "__MAIN__.locs.index"**
+
+Zero-based index of this location record in the bytecode.
+
+
+**Field "__MAIN__.catch_sites"**
+
+An array of exception handling related data, referred as "catch site".
+
+
+**Field "__MAIN__.catch_sites.from"**
+
+Index of instruction of current code block's instruction vector at which
+exception handling should be enabled.
+
+
+**Field "__MAIN__.catch_sites.to"**
+
+Index of instruction of current code block's instruction vector at which
+exception handling should be disabled.
+
+
+**Field "__MAIN__.catch_sites.dst"**
+
+Index of instruction of current code block's instruction vector to jump to
+should an exception occurs between the "from" and "to" portion of the vector.
+
+
+----
+
+
 Instruction Set
 ---------------
 
@@ -33,6 +340,8 @@ Instruction Set
 
 Object instructions
 ^^^^^^^^^^^^^^^^^^^
+
+Instructions that interact with dynamic objects.
 
 .. table::
 
@@ -84,6 +393,8 @@ Object instructions
 Control instructions
 ^^^^^^^^^^^^^^^^^^^^
 
+Instructions that direct control flow of executions.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -108,6 +419,8 @@ Control instructions
 Function instructions
 ^^^^^^^^^^^^^^^^^^^^^
 
+Instructions related to functions and call invocations.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -130,6 +443,8 @@ Function instructions
 Runtime instructions
 ^^^^^^^^^^^^^^^^^^^^
 
+Instructions related to a wide range of runtime functionalities.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -149,6 +464,8 @@ Runtime instructions
 
 Arithmetic and logic instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Instructions that deal with arithmetic and logical operations.
 
 .. table::
 
@@ -191,6 +508,8 @@ Arithmetic and logic instructions
 Native type creation instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Instructions for creating native type handles.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -217,6 +536,8 @@ Native type creation instructions
 
 Native type conversion instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Instructions for conversions between native type handles.
 
 .. table::
 
@@ -245,6 +566,8 @@ Native type conversion instructions
 Native type manipulation instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Instructions for manipulating native type handles.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -264,6 +587,8 @@ Native type manipulation instructions
 
 String type instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+Instructions for manipulating native type handles of the native string type.
 
 .. table::
 
@@ -295,6 +620,8 @@ String type instructions
 Array type instructions
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+Instructions for manipulating native type handles of the native array type.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -320,6 +647,8 @@ Array type instructions
 Map type instructions
 ^^^^^^^^^^^^^^^^^^^^^
 
+Instructions for manipulating native type handles of the native map type.
+
 .. table::
 
   ============  ========  ============  ===============
@@ -340,27 +669,33 @@ Map type instructions
   ============  ========  ============  ===============
 
 
+----
+
+
 APIs
 ----
 
-  The coreVM library provides a set of powerful APIs that offer additional
-  capabilities beyond the functionalities from the instruction set. They provide
-  greater flexibilities and more granular controls to the execution of bytecodes
-  to developers.
+The coreVM library provides a set of powerful APIs that offer additional
+capabilities beyond the functionalities from the instruction set. They provide
+greater flexibilities and more granular controls to the execution of bytecodes
+to developers.
 
-  The library is consisted of the following APIs:
+The library is consisted of the following APIs:
 
-    * :ref:`entry-api`
-    * Debugging and Profiling API (coming soon)
-    * Embedder API (coming soon)
-    * Extension API (coming soon)
-    * Threading API (coming soon)
+  * :ref:`entry-api`
+  * Debugging and Profiling API (coming soon)
+  * Embedder API (coming soon)
+  * Extension API (coming soon)
+  * Threading API (coming soon)
 
 
 .. _entry-api:
 
 Entry API
 ^^^^^^^^^
+
+The *Entry API* is the gateway to coreVM's fundamental functionalities.
+
 
 **Bytecode execution configuration**
 
