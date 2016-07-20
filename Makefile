@@ -37,6 +37,27 @@ DOCS_BUILD_DIR=$(DOCS_DIR)/build
 SANITY_TESTS_ARGS=--sanity-test
 DYNAMIC_ANALYSIS_TESTS_ARGS=--dynamic-analysis
 PYTHON=`which python`
+RESOURCES_DIR=$(TOP_DIR)/resources
+SRC_DIR=$(TOP_DIR)/src
+TESTS_DIR=$(TOP_DIR)/tests
+BENCHMARKS_DIR=$(TOP_DIR)/benchmarks
+SCHEMAS_DIR=$(TOP_DIR)/schemas
+TOOLS_DIR=$(TOP_DIR)/tools
+VALGRIND_DIR=$(TOP_DIR)/valgrind
+
+## -----------------------------------------------------------------------------
+
+VERSION=v0.1.0-alpha-1.0
+LIBCOREVM=libcorevm
+LIBCOREVM_A=$(LIBCOREVM).a
+LIBCOREVM_GZIP=$(LIBCOREVM)-$(VERSION).tar.gz
+LIBCOREVM_DBG=libcorevm_dbg
+LIBCOREVM_DBG_A=$(LIBCOREVM_DBG).a
+
+LIB_INSTALL_DIR=/usr/local/lib
+LIB_INSTALL_PATH=$(LIB_INSTALL_DIR)/$(LIBCOREVM_A)
+LIB_DBG_INSTALL_PATH=$(LIB_INSTALL_DIR)/$(LIBCOREVM_DBG_A)
+HEADER_INSTALL_PATH=/usr/local/include/corevm/
 
 ## -----------------------------------------------------------------------------
 
@@ -113,6 +134,33 @@ dynamic_analysis_tests:
 .PHONY: benchmarks
 benchmarks:
 	$(BUILD_DIR)/benchmarks/run_benchmarks
+
+## -----------------------------------------------------------------------------
+
+.PHONY: install
+install:
+	@echo "\033[32mInstalling $(VERSION)...\033[39m";
+	sudo mkdir -p $(HEADER_INSTALL_PATH)
+	sudo cp -vr src/api/*.h $(HEADER_INSTALL_PATH)
+	sudo mkdir -p $(LIB_INSTALL_DIR)
+	sudo cp -v $(BUILD_DIR)/src/$(LIBCOREVM_A) $(LIB_INSTALL_DIR)
+	sudo cp -v $(BUILD_DIR)/src/$(LIBCOREVM_DBG_A) $(LIB_INSTALL_DIR)
+	tar -zcvf $(LIBCOREVM_GZIP) $(SRC_DIR) $(TESTS_DIR) $(BENCHMARKS_DIR) $(RESOURCES_DIR) $(SCHEMAS_DIR) $(TOOLS_DIR) $(VALGRIND_DIR) $(DOCS) LICENSE Makefile README.md
+	@echo "\033[32mInstall complete...\033[39m";
+	@echo "\033[32mHeader files: \033[35m$(HEADER_INSTALL_PATH)\033[39m";
+	@echo "\033[32mStatic lib: \033[35m$(LIB_INSTALL_PATH)\033[39m";
+	@echo "\033[32mStatic lib: \033[35m$(LIB_DBG_INSTALL_PATH)\033[39m";
+
+## -----------------------------------------------------------------------------
+
+.PHONY: uninstall
+uninstall:
+	@echo "\033[32mUninstalling coreVM version $(VERSION)\033[39m";
+	sudo rm -rf $(HEADER_INSTALL_PATH)
+	sudo rm -f $(LIB_INSTALL_PATH)
+	sudo rm -f $(LIB_DBG_INSTALL_PATH)
+	rm -rf ./*.tar.gz
+	@echo "\033[32mUninstalling complete.\033[39m";
 
 ## -----------------------------------------------------------------------------
 
