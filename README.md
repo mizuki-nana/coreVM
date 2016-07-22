@@ -70,6 +70,7 @@ Here is a list of recommended steps to get started on the project:
   > `python python/pyta.py python/tests/int.py`
 
 3. Checkout more wiki pages if you are interested:
+  * [Just in Time Compilation](https://github.com/yanzhengli/coreVM/wiki/Just-in-Time-Compilation)
   * [Current State and Roadmap](https://github.com/yanzhengli/coreVM/wiki/Current-State-and-Roadmap)
   * [Focus Areas](https://github.com/yanzhengli/coreVM/wiki/Focus-Areas)
 
