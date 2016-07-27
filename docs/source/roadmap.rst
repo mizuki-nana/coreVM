@@ -109,3 +109,7 @@ Below is a table of all the past milestones and some of the goals defined in the
    Parallelism support                                     TBD
    Address space layout randomization                      TBD
    =============================================  ============================
+
+Here's an illustration of the envisioned future architecture of coreVM:
+
+  .. figure:: ../../resources/corevm_envisioned_future_architecture_overview.png
