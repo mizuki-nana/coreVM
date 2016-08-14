@@ -52,10 +52,6 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   m_return_addr(NONESET_INSTR_ADDR),
   m_visible_vars(),
   m_invisible_vars(),
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  m_visible_vars_cache(),
-  m_invisible_vars_cache(),
-#endif
   m_eval_stack(),
   m_exc_obj(NULL)
 {
@@ -78,10 +74,6 @@ Frame::Frame(const runtime::ClosureCtx& closure_ctx,
   m_return_addr(return_addr),
   m_visible_vars(),
   m_invisible_vars(),
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  m_visible_vars_cache(),
-  m_invisible_vars_cache(),
-#endif
   m_eval_stack(),
   m_exc_obj(NULL)
 {
@@ -306,14 +298,6 @@ Frame::get_visible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
     return true;
   }
 
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  if (m_visible_vars_cache.get(key, obj))
-  {
-    *obj_ptr = obj;
-    return true;
-  }
-#endif
-
   Frame* frame = parent();
   if (!frame)
   {
@@ -331,10 +315,6 @@ Frame::get_visible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr)
   }
 
   *obj_ptr = obj;
-
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  m_visible_vars_cache.insert(key, obj);
-#endif
 
   return true;
 }
@@ -410,14 +390,6 @@ Frame::get_invisible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr
     return true;
   }
 
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  if (m_invisible_vars_cache.get(key, obj))
-  {
-    *obj_ptr = obj;
-    return true;
-  }
-#endif
-
   Frame* frame = parent();
   if (!frame)
   {
@@ -435,10 +407,6 @@ Frame::get_invisible_var_through_ancestry(variable_key_t key, dyobj_ptr* obj_ptr
   }
 
   *obj_ptr = obj;
-
-#if COREVM_USE_LRU_CACHE_IN_FRAME
-  m_invisible_vars_cache.insert(key, obj);
-#endif
 
   return true;
 }

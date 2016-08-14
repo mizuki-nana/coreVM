@@ -25,7 +25,7 @@ Steps for building coreVM:
 
   * `Boost <http://www.boost.org/>`_ version 1.55
   * `Google Test <https://code.google.com/p/googletest/>`_ version 1.6.0
-  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.0
+  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.1
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
   * `LLVM <http://www.llvm.org/>`_ version 3.4.0
   * `benchmark <https://github.com/google/benchmark>`_ version 1.0.0
