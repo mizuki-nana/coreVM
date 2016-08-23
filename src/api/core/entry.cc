@@ -20,13 +20,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_API_CONFIGURATION_H_
-#define COREVM_API_CONFIGURATION_H_
-
-#include <boost/optional.hpp>
-
-#include <cstdint>
-#include <string>
+#include "entry.h"
+#include "configuration.h"
+#include "frontend/configuration.h"
+#include "frontend/runner.h"
 
 
 namespace corevm {
@@ -35,51 +32,36 @@ namespace corevm {
 namespace api {
 
 
-/**
- * An encapsulation of a set of configuration parameters for bytecode execution.
- */
-class Configuration
+namespace core {
+
+
+// -----------------------------------------------------------------------------
+
+int invoke_from_file(const char* filepath, const Configuration& config)
 {
-public:
-  Configuration();
+  // TODO: [COREVM-525] Consolidate `api::core::Configuration` and `frontend::Configuration` classes
+  frontend::Configuration frontend_config;
 
-  /* Value accessors. */
-  uint64_t heap_alloc_size() const;
+  frontend_config.set_heap_alloc_size(config.heap_alloc_size());
+  frontend_config.set_pool_alloc_size(config.pool_alloc_size());
+  frontend_config.set_gc_interval(config.gc_interval());
+  frontend_config.set_log_mode(config.log_mode());
 
-  uint64_t pool_alloc_size() const;
+  if (config.has_gc_flag())
+  {
+    frontend_config.set_gc_flag(config.gc_flag());
+  }
 
-  uint32_t gc_interval() const;
+  return frontend::Runner(filepath, frontend_config).run();
+}
 
-  bool has_gc_flag() const;
-
-  uint8_t gc_flag() const;
-
-  const std::string& log_mode() const;
-
-  /* Value setters. */
-  void set_heap_alloc_size(uint64_t);
-
-  void set_pool_alloc_size(uint64_t);
-
-  void set_gc_interval(uint32_t);
-
-  void set_gc_flag(uint8_t);
-
-  void set_log_mode(const std::string&);
-
-private:
-  uint64_t m_heap_alloc_size;
-  uint64_t m_pool_alloc_size;
-  uint32_t m_gc_interval;
-  boost::optional<uint8_t> m_gc_flag;
-  std::string m_log_mode;
-};
+// -----------------------------------------------------------------------------
 
 
-} /* end namespace frontend */
+} /* end namespace core */
+
+
+} /* end namespace api */
 
 
 } /* end namespace corevm */
-
-
-#endif /* COREVM_API_CONFIGURATION_H_ */

@@ -58,8 +58,8 @@ set(sources
     frontend/runner.cc
     corevm/errors.cc
     corevm/logging.cc
-    api/configuration.cc
-    api/entry.cc
+    api/core/configuration.cc
+    api/core/entry.cc
     corevm/corevm_bytecode_schema.h
     )
 

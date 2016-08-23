@@ -737,26 +737,27 @@ to developers.
 
 The library is consisted of the following APIs:
 
-  * :ref:`entry-api`
+  * :ref:`core-api`
   * Debugging and Profiling API (coming soon)
   * Embedder API (coming soon)
   * Extension API (coming soon)
   * Threading API (coming soon)
 
 
-.. _entry-api:
+.. _core-api:
 
-Entry API
-^^^^^^^^^
+Core API
+^^^^^^^^
 
-The *Entry API* is the gateway to coreVM's fundamental functionalities.
+The *Core API* provides interfaces of fundamental functionalities provided
+by coreVM.
 
 
 **Bytecode execution configuration**
 
-Header: `corevm/api/configuration.h`
+Header: `corevm/api/core/configuration.h`
 
-.. cpp:class:: corevm::api::Configuration
+.. cpp:class:: corevm::api::core::Configuration
 
   An encapsulation of a set of configuration parameters for bytecode execution.
 
@@ -828,9 +829,9 @@ Header: `corevm/api/configuration.h`
 
 **Invoking bytecode execution**
 
-Header: `corevm/api/entry.h`
+Header: `corevm/api/core/entry.h`
 
-.. cpp:function:: int corevm::api::invoke_from_file(const char* filepath, const Configuration& config)
+.. cpp:function:: int corevm::api::core::invoke_from_file(const char* filepath, const corevm::api::core::Configuration& config)
   
   Executes the bytecode stored in `filepath`, along with the specified
   configuration object.

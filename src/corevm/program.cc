@@ -22,8 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "program.h"
 
-#include "api/configuration.h"
-#include "api/entry.h"
+#include "api/core/configuration.h"
+#include "api/core/entry.h"
 #include "corevm/version.h"
 
 #include <boost/format.hpp>
@@ -82,7 +82,7 @@ Program::check_parameters() const
 int
 Program::do_run()
 {
-  api::Configuration configuration;
+  api::core::Configuration configuration;
 
   // TODO: [COREVM-525] Consolidate `api::Configuration` and `frontend::Configuration` classes
 #if 0
@@ -114,7 +114,7 @@ Program::do_run()
 
   configuration.set_log_mode(m_log_mode);
 
-  return api::invoke_from_file(m_input_path.c_str(), configuration);
+  return api::core::invoke_from_file(m_input_path.c_str(), configuration);
 }
 
 // -----------------------------------------------------------------------------

@@ -29,6 +29,9 @@ namespace corevm {
 namespace api {
 
 
+namespace core {
+
+
 // -----------------------------------------------------------------------------
 
 Configuration::Configuration()
@@ -130,6 +133,9 @@ Configuration::set_log_mode(const std::string& log_mode)
 }
 
 // -----------------------------------------------------------------------------
+
+
+} /* end namespace core */
 
 
 } /* end namespace api */

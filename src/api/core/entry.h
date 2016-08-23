@@ -30,6 +30,9 @@ namespace corevm {
 namespace api {
 
 
+namespace core {
+
+
 /** Forward declaration. */
 class Configuration;
 
@@ -41,6 +44,9 @@ class Configuration;
  * Returns 0 on successful execution, non-zero values otherwise.
  */
 int invoke_from_file(const char* filepath, const Configuration& config);
+
+
+} /* end namespace core */
 
 
 } /* end namespace api */
