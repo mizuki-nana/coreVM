@@ -27,20 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 enum DebugOptions : uint32_t
 {
   OPT_SHOW_CANONICAL_FORM = (1 << 0)
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

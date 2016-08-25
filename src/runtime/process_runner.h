@@ -32,10 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /** Forward declaration of `corevm::runtime::Process` */
 class Process;
@@ -68,10 +65,7 @@ private:
   struct itimerval m_interval;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

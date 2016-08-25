@@ -27,10 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace frontend {
-
 
 /** Forward declaration of `corevm::frontend::Configuration` */
 class Configuration;
@@ -48,10 +45,7 @@ private:
   Configuration& m_configuration;
 };
 
-
 } /* end namespace frontend */
-
-
 } /* end namespace corevm */
 
 

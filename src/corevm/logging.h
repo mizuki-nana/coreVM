@@ -30,7 +30,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 // -----------------------------------------------------------------------------
 
 typedef sneaker::logging::logger<
@@ -54,7 +53,6 @@ protected:
 };
 
 // -----------------------------------------------------------------------------
-
 
 } /* end namespace corevm */
 

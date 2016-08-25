@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 // -----------------------------------------------------------------------------
 
@@ -100,10 +97,7 @@ typedef native_type_typed_binary_visitor<cmp, int32> native_type_cmp_visitor;
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

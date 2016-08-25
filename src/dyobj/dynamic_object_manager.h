@@ -25,10 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 class DynamicObjectManager
 {
@@ -77,10 +74,7 @@ protected:
   bool m_locked;
 };
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

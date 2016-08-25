@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 typedef corevm::instr Instr;
 
@@ -1269,10 +1266,7 @@ enum InstrEnum : uint32_t
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

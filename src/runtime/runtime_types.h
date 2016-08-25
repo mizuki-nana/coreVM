@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /**
  * Global declaration of types used in the runtime sub-system.
@@ -44,10 +41,7 @@ struct RuntimeTypes
   typedef dynamic_object_type::dyobj_ptr dyobj_ptr_type;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

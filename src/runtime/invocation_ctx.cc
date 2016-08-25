@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -184,8 +181,5 @@ InvocationCtx::param_value_pair_keys() const
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

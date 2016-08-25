@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 const uint32_t COREVM_DEFAULT_GC_INTERVAL_MILLISECOND = 10;
 
@@ -85,9 +82,6 @@ const size_t COREVM_DEFAULT_STACK_UNWIND_COUNT = 5;
 
 
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
-
 
 #endif /* COREVM_RUNTIME_COMMON_H_ */

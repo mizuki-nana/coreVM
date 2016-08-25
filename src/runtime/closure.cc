@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -64,7 +61,7 @@ ClosurePrinter::operator()(std::ostream& ost) const
 
   for (const auto& instr : m_closure.vector)
   {
-    instr_printer instr_printer(instr, m_opts);
+    InstrPrinter instr_printer(instr, m_opts);
     instr_printer(ost) << std::endl;
   }
 
@@ -73,8 +70,5 @@ ClosurePrinter::operator()(std::ostream& ost) const
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

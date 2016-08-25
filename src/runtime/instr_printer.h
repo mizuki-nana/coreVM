@@ -29,15 +29,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
 
-
-class instr_printer
+class InstrPrinter
 {
 public:
-  instr_printer(const Instr&, uint32_t opts);
+  InstrPrinter(const Instr&, uint32_t opts);
 
   std::ostream& operator()(std::ostream&) const;
 private:
@@ -45,10 +42,7 @@ private:
   const uint32_t m_opts;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

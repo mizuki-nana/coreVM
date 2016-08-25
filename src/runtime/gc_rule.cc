@@ -26,10 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -76,8 +73,5 @@ gc_rule_by_ntvhndl_pool_size(const Process& process)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

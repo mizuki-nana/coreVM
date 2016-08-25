@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 // -----------------------------------------------------------------------------
 
@@ -348,8 +345,5 @@ native_string::replace(size_type pos, size_type len, const native_string& str)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */

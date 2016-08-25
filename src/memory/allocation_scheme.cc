@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 // -----------------------------------------------------------------------------
 
@@ -39,8 +36,5 @@ AllocationScheme::~AllocationScheme()
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */

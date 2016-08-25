@@ -34,10 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /** Forward declaration of `Compartment`. */
 class Compartment;
@@ -111,10 +108,7 @@ getattr(const ObjPtrType& obj, Compartment* compartment,
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

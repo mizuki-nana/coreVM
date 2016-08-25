@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace gc {
-
 
 // -----------------------------------------------------------------------------
 
@@ -138,10 +135,7 @@ GarbageCollector<garbage_collection_scheme>::free(Callback* f) noexcept
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace gc */
-
-
 } /* end namespace corevm */
 
 

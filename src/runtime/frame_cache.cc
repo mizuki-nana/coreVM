@@ -27,10 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -83,8 +80,5 @@ FrameCache::parent_frame_of(const ClosureCtx& ctx)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

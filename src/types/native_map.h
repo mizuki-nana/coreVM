@@ -30,10 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 typedef uint64_t native_map_key_type;
 typedef uint64_t native_map_mapped_type;
@@ -107,10 +104,7 @@ public:
   const mapped_type& at(const key_type& k) const;
 };
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

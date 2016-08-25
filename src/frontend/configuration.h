@@ -36,10 +36,7 @@ using sneaker::json::JSON;
 
 
 namespace corevm {
-
-
 namespace frontend {
-
 
 class Configuration
 {
@@ -86,10 +83,7 @@ private:
   static const std::string schema;
 };
 
-
 } /* end namespace frontend */
-
-
 } /* end namespace corevm */
 
 

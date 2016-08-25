@@ -28,7 +28,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 class RuntimeError
 {
 public:
@@ -39,7 +38,6 @@ public:
 private:
   std::string m_what_arg;
 };
-
 
 } /* end namespace corevm */
 

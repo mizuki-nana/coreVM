@@ -27,10 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -140,8 +137,5 @@ void pretty_print_measurements(const ContainerType& measurements)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

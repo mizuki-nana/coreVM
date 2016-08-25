@@ -34,15 +34,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 // -----------------------------------------------------------------------------
 
 namespace {
-
 
 #if defined(__clang__) and __clang__
   #pragma clang diagnostic push
@@ -691,10 +687,7 @@ BlockAllocator<T>::cend() const
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */
 
 

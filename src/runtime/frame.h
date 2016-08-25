@@ -46,10 +46,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /**
  * Each frame is consisted of:
@@ -177,10 +174,7 @@ protected:
   dyobj_ptr m_exc_obj;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

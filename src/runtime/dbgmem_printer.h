@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 class DbgMemPrinter
 {
@@ -50,10 +47,7 @@ private:
   const uint32_t m_opts;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

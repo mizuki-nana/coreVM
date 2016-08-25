@@ -30,13 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace api {
-
-
 namespace core {
-
 
 /**
  * An encapsulation of a set of configuration parameters for bytecode execution.
@@ -78,13 +73,8 @@ private:
   std::string m_log_mode;
 };
 
-
 } /* end namespace core */
-
-
 } /* end namespace api */
-
-
 } /* end namespace corevm */
 
 

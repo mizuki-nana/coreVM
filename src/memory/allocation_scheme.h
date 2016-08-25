@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 class AllocationScheme
 {
@@ -44,10 +41,7 @@ protected:
   virtual ~AllocationScheme();
 };
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */
 
 

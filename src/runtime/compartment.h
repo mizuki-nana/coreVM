@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /** Forward declaration of `CompartmentPrinter` */
 class CompartmentPrinter;
@@ -82,10 +79,7 @@ private:
   ClosureTable m_closure_table;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

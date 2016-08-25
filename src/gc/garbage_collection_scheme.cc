@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace gc {
-
 
 // -----------------------------------------------------------------------------
 
@@ -47,8 +44,5 @@ GarbageCollectionScheme::~GarbageCollectionScheme()
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace gc */
-
-
 } /* end namespace corevm */

@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace gc {
-
 
 class GarbageCollectionScheme : public Loggable
 {
@@ -42,10 +39,7 @@ public:
   virtual ~GarbageCollectionScheme();
 };
 
-
 } /* end namespace gc */
-
-
 } /* end namespace corevm */
 
 

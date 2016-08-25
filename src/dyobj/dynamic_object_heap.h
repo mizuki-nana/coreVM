@@ -42,10 +42,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 template<class DynamicObjectManager>
 class DynamicObjectHeap
@@ -345,10 +342,7 @@ operator<<(std::ostream& ost, const DynamicObjectHeap<DynamicObjectManager>& hea
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

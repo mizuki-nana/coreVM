@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 typedef uint64_t native_array_element_type;
 
@@ -108,10 +105,7 @@ public:
   void erase(size_type n);
 };
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

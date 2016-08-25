@@ -24,10 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 // -----------------------------------------------------------------------------
 
@@ -39,8 +36,5 @@ is_valid_flag_bit(char bit)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */

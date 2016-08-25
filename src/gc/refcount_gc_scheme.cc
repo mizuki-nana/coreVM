@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace gc {
-
 
 // -----------------------------------------------------------------------------
 
@@ -330,8 +327,5 @@ RefCountGarbageCollectionScheme::remove_cycles(
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace gc */
-
-
 } /* end namespace corevm */

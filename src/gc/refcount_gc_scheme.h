@@ -35,10 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace gc {
-
 
 class RefCountGarbageCollectionScheme : public GarbageCollectionScheme
 {
@@ -140,10 +137,7 @@ protected:
   void remove_cycles(dynamic_object_heap_type&) const;
 };
 
-
 } /* end namespace gc */
-
-
 } /* end namespace corevm */
 
 

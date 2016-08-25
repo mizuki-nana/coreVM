@@ -39,10 +39,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace frontend {
-
 
 // -----------------------------------------------------------------------------
 
@@ -160,8 +157,5 @@ Runner::run() const noexcept
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace frontend */
-
-
 } /* end namespace corevm */

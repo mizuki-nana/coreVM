@@ -31,7 +31,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 // -----------------------------------------------------------------------------
 
 Program::Program()
@@ -118,6 +117,5 @@ Program::do_run()
 }
 
 // -----------------------------------------------------------------------------
-
 
 } /* end namespace corevm */

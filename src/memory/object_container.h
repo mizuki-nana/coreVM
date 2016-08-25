@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 /**
  * A generic container class responsible for storing and managing objects
@@ -369,10 +366,7 @@ operator<<(std::ostream& ost, const ObjectContainer<T, AllocatorType>& container
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */
 
 

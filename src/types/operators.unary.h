@@ -35,10 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 // -----------------------------------------------------------------------------
 
@@ -191,10 +188,7 @@ bitwise_not::operator()(const map& handle)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

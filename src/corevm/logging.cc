@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 // -----------------------------------------------------------------------------
 
 class void_log_scheme : public sneaker::logging::log_scheme
@@ -86,6 +85,5 @@ Loggable::set_logger(Logger* logger)
 }
 
 // -----------------------------------------------------------------------------
-
 
 } /* end namespace corevm */

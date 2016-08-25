@@ -25,10 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 // -----------------------------------------------------------------------------
 
@@ -62,10 +59,7 @@ struct typed_cast_binary_op_tag {};
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

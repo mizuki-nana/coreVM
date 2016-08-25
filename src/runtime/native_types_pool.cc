@@ -42,10 +42,7 @@ typedef corevm::runtime::NativeTypesPool _MyType;
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
@@ -172,8 +169,5 @@ operator<<(std::ostream& ost, const NativeTypesPool& pool)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

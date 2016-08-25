@@ -28,10 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 /**
  * Dynamic object flags are represented by 32-bit unsigned integers.
@@ -75,10 +72,7 @@ DYOBJ_FLAG_VALUES_ARRAY {
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

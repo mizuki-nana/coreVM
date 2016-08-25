@@ -35,10 +35,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 template<class AllocationScheme>
 class Allocator
@@ -241,10 +238,7 @@ Allocator<AllocationScheme>::debug_print() const noexcept
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */
 
 

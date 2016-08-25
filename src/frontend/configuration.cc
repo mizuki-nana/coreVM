@@ -40,10 +40,7 @@ using sneaker::json::JSON;
 
 
 namespace corevm {
-
-
 namespace frontend {
-
 
 // -----------------------------------------------------------------------------
 
@@ -281,8 +278,5 @@ Configuration::set_values(Configuration& configuration, const JSON& config_json)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace frontend */
-
-
 } /* end namespace corevm */

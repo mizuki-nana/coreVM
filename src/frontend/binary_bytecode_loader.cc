@@ -36,10 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace frontend {
-
 
 // -----------------------------------------------------------------------------
 
@@ -74,8 +71,5 @@ BinaryBytecodeLoader::load(const std::string& path, runtime::Process& process)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace frontend */
-
-
 } /* end namespace corevm */

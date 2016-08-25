@@ -31,12 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
-
-// -----------------------------------------------------------------------------
 
 typedef int8_t int8;
 typedef uint8_t uint8;
@@ -53,12 +48,7 @@ typedef native_string string;
 typedef native_array array;
 typedef native_map map;
 
-// -----------------------------------------------------------------------------
-
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

@@ -30,14 +30,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 // -----------------------------------------------------------------------------
 
-instr_printer::instr_printer(
+InstrPrinter::InstrPrinter(
   const Instr& instr,
   uint32_t opts)
   :
@@ -50,7 +47,7 @@ instr_printer::instr_printer(
 // -----------------------------------------------------------------------------
 
 std::ostream&
-instr_printer::operator()(std::ostream& ost) const
+InstrPrinter::operator()(std::ostream& ost) const
 {
   const bool show_canonical_form = m_opts & OPT_SHOW_CANONICAL_FORM;
 
@@ -79,8 +76,5 @@ instr_printer::operator()(std::ostream& ost) const
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

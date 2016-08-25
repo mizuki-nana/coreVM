@@ -25,7 +25,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 // -----------------------------------------------------------------------------
 
 RuntimeError::RuntimeError(const std::string& what_arg)
@@ -43,6 +42,5 @@ RuntimeError::what() const noexcept
 }
 
 // -----------------------------------------------------------------------------
-
 
 } /* end namespace corevm */

@@ -25,10 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
 
 // -----------------------------------------------------------------------------
 
@@ -1164,8 +1161,5 @@ interface_map_merge(NativeTypeHandle& operand, NativeTypeHandle& other_operand)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */

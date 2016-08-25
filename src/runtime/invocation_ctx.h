@@ -33,10 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 /** Forward declaration of `Compartment` */
 class Compartment;
@@ -91,10 +88,7 @@ private:
   size_t m_params_list_pop_index;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

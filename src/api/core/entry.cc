@@ -27,13 +27,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace api {
-
-
 namespace core {
-
 
 // -----------------------------------------------------------------------------
 
@@ -57,11 +52,6 @@ int invoke_from_file(const char* filepath, const Configuration& config)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace core */
-
-
 } /* end namespace api */
-
-
 } /* end namespace corevm */

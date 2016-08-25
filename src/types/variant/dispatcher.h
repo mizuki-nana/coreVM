@@ -30,16 +30,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
-
-
 namespace variant {
-
-
 namespace impl {
-
 
 // -----------------------------------------------------------------------------
 
@@ -281,16 +274,9 @@ struct binary_dispatcher<F, V, R>
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace impl */
-
-
 } /* end namespace variant */
-
-
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 

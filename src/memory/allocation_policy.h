@@ -31,10 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace memory {
-
 
 template<typename T, typename CoreAllocatorType>
 class AllocationPolicy : public sneaker::allocator::standard_alloc_policy<T>
@@ -90,10 +87,8 @@ protected:
 
 namespace {
 
-
 template<typename T, typename CoreAllocatorType>
 using _MyType = typename corevm::memory::AllocationPolicy<T, CoreAllocatorType>;
-
 
 } /* end namespace */
 
@@ -317,10 +312,7 @@ bool operator!=(
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace memory */
-
-
 } /* end namespace corevm */
 
 

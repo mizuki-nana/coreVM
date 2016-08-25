@@ -30,10 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 class DbgvarPrinter
 {
@@ -50,10 +47,7 @@ private:
   RuntimeTypes::dyobj_ptr_type m_obj;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

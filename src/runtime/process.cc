@@ -63,13 +63,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
-
 namespace internal {
-
 
 // -----------------------------------------------------------------------------
 
@@ -101,7 +96,6 @@ NtvhndlCollectorGcCallback::operator()(const dynamic_object_type& obj)
 }
 
 // -----------------------------------------------------------------------------
-
 
 } /* end namespace internal */
 
@@ -1778,8 +1772,5 @@ Process::Printer::operator()(std::ostream& ost) const
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */

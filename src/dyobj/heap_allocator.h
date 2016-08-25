@@ -32,10 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 using sneaker::allocator::object_traits;
 
@@ -177,10 +174,7 @@ bool operator!=(HeapAllocator<T, CoreAllocatorType> const& lhs, OtherAllocatorTy
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

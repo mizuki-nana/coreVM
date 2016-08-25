@@ -31,7 +31,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace corevm {
 
-
 class Program : public sneaker::utility::cmdline_program
 {
 public:
@@ -53,7 +52,6 @@ private:
   uint32_t m_gc_interval;
   uint32_t m_gc_flag;
 };
-
 
 } /* end namespace corevm */
 

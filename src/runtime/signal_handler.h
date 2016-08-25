@@ -25,11 +25,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
 
-
+/** Forward declaration */
 class Process;
 
 
@@ -44,10 +42,7 @@ private:
   static void handle_signal(int);
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

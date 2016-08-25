@@ -24,13 +24,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace api {
-
-
 namespace core {
-
 
 // -----------------------------------------------------------------------------
 
@@ -134,11 +129,6 @@ Configuration::set_log_mode(const std::string& log_mode)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace core */
-
-
 } /* end namespace api */
-
-
 } /* end namespace corevm */

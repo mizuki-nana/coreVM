@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 template<typename K, typename V, typename CoreType=std::vector<std::pair<K, V>>>
 class LinearMap
@@ -129,10 +126,7 @@ private:
   core_type m_vec;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 

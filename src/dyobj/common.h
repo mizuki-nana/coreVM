@@ -34,26 +34,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
 
+// -----------------------------------------------------------------------------
 
 // Default size of heap: 256 MB.
 const uint32_t COREVM_DEFAULT_HEAP_SIZE = 1024 * 1024 * 256;
 
+// -----------------------------------------------------------------------------
 
 typedef uint32_t attr_key_t;
 
+// -----------------------------------------------------------------------------
 
 typedef uint32_t flag_t;
 
+// -----------------------------------------------------------------------------
 
 typedef uint64_t dyobj_id_t;
 
+// -----------------------------------------------------------------------------
 
 const uint64_t DYOBJ_LIMIT = ULLONG_MAX;
-
 
 // -----------------------------------------------------------------------------
 
@@ -64,10 +66,7 @@ inline void* obj_id_to_ptr(dyobj_id_t id)
 
 // -----------------------------------------------------------------------------
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

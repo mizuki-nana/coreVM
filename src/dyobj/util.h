@@ -28,18 +28,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace dyobj {
-
 
 attr_key_t
 hash_attr_str(const std::string&);
 
-
 } /* end namespace dyobj */
-
-
 } /* end namespace corevm */
 
 

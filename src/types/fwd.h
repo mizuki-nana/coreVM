@@ -27,21 +27,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace types {
 
-
+// -----------------------------------------------------------------------------
 
 namespace variant {
-
 
 template<typename... Types>
 class variant;
 
-
 } /* end namespace variant */
 
+// -----------------------------------------------------------------------------
 
 typedef variant::variant<
   int8,
@@ -60,10 +57,9 @@ typedef variant::variant<
   map
 > NativeTypeHandle;
 
+// -----------------------------------------------------------------------------
 
 } /* end namespace types */
-
-
 } /* end namespace corevm */
 
 
