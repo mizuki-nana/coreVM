@@ -24,7 +24,7 @@ Steps for building coreVM:
   coreVM currently has the following dependencies:
 
   * `Boost <http://www.boost.org/>`_ version 1.55
-  * `Google Test <https://code.google.com/p/googletest/>`_ version 1.6.0
+  * `Google Test <https://code.google.com/p/googletest/>`_ version 1.7.0
   * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.1
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
   * `LLVM <http://www.llvm.org/>`_ version 3.4.0
@@ -34,7 +34,7 @@ Steps for building coreVM:
 
   `make`
 
-  This builds the following main binaries:
+  This builds the following binaries:
 
   ===================  ==========================================
         Binary                        Description
@@ -44,8 +44,8 @@ Steps for building coreVM:
     coreVM              coreVM client (release version)
   ===================  ==========================================
 
-3. Build all targets, including benchmarks, sanity tests, and dynamic analysis
-   tests (optional)
+3. Optionally, build all targets, including benchmarks, sanity tests, and
+   dynamic analysis tests
 
   `make full=2`
 
@@ -65,7 +65,7 @@ Internally referred as "structured bytecode", the encoding scheme makes both
 encoding and decoding straightforward while aiming to encode bytecode data in an
 efficient manner.
 
-First of all, coreVM relies on the `Apache Avro data serialization system <https://avro.apache.org/docs/current/>`_
+coreVM relies on the `Apache Avro data serialization system <https://avro.apache.org/docs/current/>`_
 for bytecode serialization and deserialization, which offers a diverse range of
 language supports, including C++, Java, and Python. This offers tremendous
 flexibilities to language developers. For example, the bytecode decoder in
@@ -227,7 +227,7 @@ Below is the coreVM bytecode schema:
     ]
   }
 
-Below are explanations on the fields in the schema.
+Below are descriptions on the fields in the schema.
 
 **Field "format"**
 
@@ -388,7 +388,7 @@ functionalities:
 
 .. _object-instructions:
 
-Object instructions
+Object Instructions
 ^^^^^^^^^^^^^^^^^^^
 
 Instructions that interact with dynamic objects.
@@ -396,7 +396,7 @@ Instructions that interact with dynamic objects.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   new           0         0             Creates a new object and place it on top of the stack.
   ldobj         1         1             Load an object by its key and push it onto stack.
@@ -440,15 +440,15 @@ Instructions that interact with dynamic objects.
 
 .. _control-instructions:
 
-Control instructions
+Control Instructions
 ^^^^^^^^^^^^^^^^^^^^
 
-Instructions that direct control flow of executions.
+Instructions that directly control flow of executions.
 
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   pinvk         37        0             Prepares the invocation of a function. Creates a new frame on top of the call stack, and sets its closure context using the context of the object on top of the stack.
   invk          38        0             Invokes the vector of the object on top of the stack.
@@ -466,7 +466,7 @@ Instructions that direct control flow of executions.
 
 .. _function-instructions:
 
-Function instructions
+Function Instructions
 ^^^^^^^^^^^^^^^^^^^^^
 
 Instructions related to functions and call invocations.
@@ -474,7 +474,7 @@ Instructions related to functions and call invocations.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   putarg        48        0             Pops the top object off the stack and assign it as the next argument for the next call.
   putkwarg      49        1             Pops the top object off the stack and assign it as the next keyword-argument for the next call.
@@ -490,7 +490,7 @@ Instructions related to functions and call invocations.
 
 .. _runtime-instructions:
 
-Runtime instructions
+Runtime Instructions
 ^^^^^^^^^^^^^^^^^^^^
 
 Instructions related to a wide range of runtime functionalities.
@@ -498,7 +498,7 @@ Instructions related to a wide range of runtime functionalities.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   gc            57        0             Manually performs garbage collection.
   debug         58        1             Show debug information. The first operand is the set of debug options: 1. Show instructions in canonical form.
@@ -512,7 +512,7 @@ Instructions related to a wide range of runtime functionalities.
 
 .. _arithmetic-and-logic-instructions:
 
-Arithmetic and logic instructions
+Arithmetic and Logic Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions that deal with arithmetic and logical operations.
@@ -520,7 +520,7 @@ Instructions that deal with arithmetic and logical operations.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   pos           64        0             Apply the positive operation on the top element on the evaluation stack.
   neg           65        0             Apply the negation operation on the top element on the evaluation stack.
@@ -555,7 +555,7 @@ Instructions that deal with arithmetic and logical operations.
 
 .. _native-type-creation-instructions:
 
-Native type creation instructions
+Native Type Creation Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for creating native type handles.
@@ -563,7 +563,7 @@ Instructions for creating native type handles.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   int8          92        1             Creates an instance of type `int8` and place it on top of eval stack.
   uint8         93        1             Creates an instance of type `uint8` and place it on top of eval stack.
@@ -584,7 +584,7 @@ Instructions for creating native type handles.
 
 .. _native-type-conversion-instructions:
 
-Native type conversion instructions
+Native Type Conversion Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for native type conversions.
@@ -597,7 +597,7 @@ an error will occur.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   toint8        106       0             Converts the element on top of the eval stack to type `int8`.
   touint8       107       0             Converts the element on top of the eval stack to type `uint8`.
@@ -618,7 +618,7 @@ an error will occur.
 
 .. _native-type-manipulation-instructions:
 
-Native type manipulation instructions
+Native Type Manipulation Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for manipulating native type handles.
@@ -626,7 +626,7 @@ Instructions for manipulating native type handles.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   truthy        120       0             Computes a boolean truthy value based on the top element on the eval stack, and puts it on top of the stack.
   repr          121       0             Computes the string equivalent representation of the element on top of the eval stack, and push it on top of the stack.
@@ -640,7 +640,7 @@ Instructions for manipulating native type handles.
 
 .. _native-string-type-instructions:
 
-Native string type instructions
+Native String Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for manipulating native type handles of the native string type.
@@ -648,7 +648,7 @@ Instructions for manipulating native type handles of the native string type.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   strlen        127       0             Pops the top element on the eval stack, and performs the "string size" operation.
   strat         128       0             Pops the top two elements on the eval stack, and performs the "string at" operation.
@@ -672,7 +672,7 @@ Instructions for manipulating native type handles of the native string type.
 
 .. _native-array-type-instructions:
 
-Native array type instructions
+Native Array Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for manipulating native type handles of the native array type.
@@ -680,7 +680,7 @@ Instructions for manipulating native type handles of the native array type.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   arylen        144       0             Pops the top element on the eval stack, and performs the "array size" operation.
   aryemp        145       0             Pops the top element on the eval stack, and performs the "array empty" operation.
@@ -699,7 +699,7 @@ Instructions for manipulating native type handles of the native array type.
 
 .. _native-map-type-instructions:
 
-Native map type instructions
+Native Map Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Instructions for manipulating native type handles of the native map type.
@@ -707,7 +707,7 @@ Instructions for manipulating native type handles of the native map type.
 .. table::
 
   ============  ========  ============  ===============
-    Mnemonic      Code      Operands      Description
+    Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
   maplen        156       0             Pops the top element on the eval stack, and performs the "map size" operation.
   mapemp        157       0             Pops the top element on the eval stack, and performs the "map empty" operation.
@@ -749,11 +749,10 @@ The library is consisted of the following APIs:
 Core API
 ^^^^^^^^
 
-The *Core API* provides interfaces of fundamental functionalities provided
-by coreVM.
+The *Core API* provides interfaces that expose coreVM's fundamental functionalities.
 
 
-**Bytecode execution configuration**
+**Bytecode Execution Configuration**
 
 Header: `corevm/api/core/configuration.h`
 
@@ -827,7 +826,7 @@ Header: `corevm/api/core/configuration.h`
     Gets the the logging mode.
 
 
-**Invoking bytecode execution**
+**Bytecode Execution Invocation**
 
 Header: `corevm/api/core/entry.h`
 
