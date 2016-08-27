@@ -29,10 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-
-
 namespace runtime {
-
 
 class CompartmentPrinter
 {
@@ -45,11 +42,9 @@ private:
   const uint32_t m_opts;
 };
 
-
 } /* end namespace runtime */
-
-
 } /* end namespace corevm */
 
 
 #endif /* COREVM_COMPARTMENT_PRINTER_H_ */
+

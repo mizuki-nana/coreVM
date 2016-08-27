@@ -41,6 +41,8 @@ class Configuration
 public:
   Configuration();
 
+  static bool load_config(const char*, Configuration&);
+
   /* Value accessors. */
   uint64_t heap_alloc_size() const;
 
@@ -63,7 +65,10 @@ public:
 
   void set_gc_flag(uint8_t);
 
-  void set_log_mode(const std::string&);
+  void set_log_mode(const char*);
+
+private:
+  static const char* schema;
 
 private:
   uint64_t m_heap_alloc_size;

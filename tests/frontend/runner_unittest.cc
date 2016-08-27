@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "frontend/runner.h"
 
-#include "frontend/configuration.h"
+#include "api/core/configuration.h"
 
 #include <gtest/gtest.h>
 
@@ -34,7 +34,7 @@ class RunnerUnitTest : public ::testing::Test {};
 
 TEST_F(RunnerUnitTest, TestRun)
 {
-  corevm::frontend::Configuration configuration;
+  corevm::api::core::Configuration configuration;
 
   int res = corevm::frontend::Runner("./sample.core", configuration).run();
 

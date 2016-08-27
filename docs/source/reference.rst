@@ -765,6 +765,37 @@ Header: `corevm/api/core/configuration.h`
 
     Constructor.
 
+  .. cpp:function:: static bool load_config(const char*, Configuration&)
+    :noindex:
+
+    Loads configuration values from a file that encapsulates the values in
+    JSON format. Returns a boolean value indicating whether the operation has
+    succeeded. Below is the schema for the JSON content:
+
+    .. code-block:: json
+
+      {
+        "type": "object",
+        "properties":
+        {
+          "heap-alloc-size": {
+            "type": "integer"
+          },
+          "pool-alloc-size": {
+            "type": "integer"
+          },
+          "gc-interval": {
+            "type": "integer"
+          },
+          "gc-flag": {
+            "type": "integer"
+          },
+          "logging": {
+            "type": "string"
+          }
+        }
+      }
+
   .. cpp:function:: void set_heap_alloc_size(uint64_t)
     :noindex:
 
@@ -788,7 +819,7 @@ Header: `corevm/api/core/configuration.h`
 
     Sets a flag for garbage collection. This is optional.
 
-  .. cpp:function:: void set_log_mode(const std::string&)
+  .. cpp:function:: void set_log_mode(const char*)
     :noindex:
 
     Sets the logging mode. Acceptable values are "stdout", "stderr", and "file".

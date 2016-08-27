@@ -27,22 +27,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
-namespace frontend {
 
-/** Forward declaration of `corevm::frontend::Configuration` */
+namespace api {
+namespace core {
 class Configuration;
+} /* end namespace core */
+} /* end namespace api */
 
+namespace frontend {
 
 class Runner
 {
 public:
-  Runner(const std::string&, Configuration&);
+  Runner(const std::string&, const api::core::Configuration&);
 
   int run() const noexcept;
 
 private:
   const std::string m_path;
-  Configuration& m_configuration;
+  const api::core::Configuration& m_configuration;
 };
 
 } /* end namespace frontend */

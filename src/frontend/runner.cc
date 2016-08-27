@@ -24,11 +24,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "errors.h"
 #include "binary_bytecode_loader.h"
-#include "configuration.h"
 #include "corevm/macros.h"
 #include "dyobj/errors.h"
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
+
+#include <api/core/configuration.h>
 
 #include <boost/format.hpp>
 #include <sneaker/utility/stack_trace.h>
@@ -54,7 +55,8 @@ print_stack_trace()
 
 // -----------------------------------------------------------------------------
 
-Runner::Runner(const std::string& path, Configuration& configuration)
+Runner::Runner(const std::string& path,
+  const api::core::Configuration& configuration)
   :
   m_path(path),
   m_configuration(configuration)

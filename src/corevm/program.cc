@@ -83,13 +83,10 @@ Program::do_run()
 {
   api::core::Configuration configuration;
 
-  // TODO: [COREVM-525] Consolidate `api::Configuration` and `frontend::Configuration` classes
-#if 0
   if (option_provided("config"))
   {
-    configuration = Configuration::load_config(m_config_path);
+    api::core::Configuration::load_config(m_config_path.c_str(), configuration);
   }
-#endif
 
   if (option_provided("heap-alloc-size"))
   {
@@ -111,7 +108,7 @@ Program::do_run()
     configuration.set_gc_flag(static_cast<uint8_t>(m_gc_flag));
   }
 
-  configuration.set_log_mode(m_log_mode);
+  configuration.set_log_mode(m_log_mode.c_str());
 
   return api::core::invoke_from_file(m_input_path.c_str(), configuration);
 }

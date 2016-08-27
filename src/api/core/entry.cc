@@ -22,7 +22,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "entry.h"
 #include "configuration.h"
-#include "frontend/configuration.h"
 #include "frontend/runner.h"
 
 
@@ -32,22 +31,9 @@ namespace core {
 
 // -----------------------------------------------------------------------------
 
-int invoke_from_file(const char* filepath, const Configuration& config)
+int invoke_from_file(const char* filepath, const Configuration& configuration)
 {
-  // TODO: [COREVM-525] Consolidate `api::core::Configuration` and `frontend::Configuration` classes
-  frontend::Configuration frontend_config;
-
-  frontend_config.set_heap_alloc_size(config.heap_alloc_size());
-  frontend_config.set_pool_alloc_size(config.pool_alloc_size());
-  frontend_config.set_gc_interval(config.gc_interval());
-  frontend_config.set_log_mode(config.log_mode());
-
-  if (config.has_gc_flag())
-  {
-    frontend_config.set_gc_flag(config.gc_flag());
-  }
-
-  return frontend::Runner(filepath, frontend_config).run();
+  return frontend::Runner(filepath, configuration).run();
 }
 
 // -----------------------------------------------------------------------------

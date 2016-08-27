@@ -54,7 +54,6 @@ set(sources
     runtime/utils.cc
     frontend/binary_bytecode_loader.cc
     frontend/bytecode_loader.cc
-    frontend/configuration.cc
     frontend/runner.cc
     corevm/errors.cc
     corevm/logging.cc

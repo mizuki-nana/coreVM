@@ -45,18 +45,6 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class ConfigurationLoadingError : public RuntimeError
-{
-public:
-  explicit ConfigurationLoadingError(const char* what_arg)
-    :
-    RuntimeError(what_arg)
-  {
-  }
-};
-
-// -----------------------------------------------------------------------------
-
 } /* end namespace frontend */
 } /* end namespace corevm */
 

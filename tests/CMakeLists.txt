@@ -51,9 +51,9 @@ add_executable(run_tests
     runtime/native_types_pool_unittest.cc
     runtime/process_unittest.cc
     runtime/utils_unittest.cc
-    frontend/configuration_unittest.cc
     frontend/program_unittest.cc
     frontend/runner_unittest.cc
+    api/core/configuration_unittest.cc
     ../src/corevm/program.cc
     main.cc
     )

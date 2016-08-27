@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "frontend/configuration.h"
+#include "api/core/configuration.h"
 
 #include <gtest/gtest.h>
 
@@ -70,9 +70,16 @@ const char* ConfigurationUnitTest::PATH = "./sample-config.config";
 
 // -----------------------------------------------------------------------------
 
+using corevm::api::core::Configuration;
+
+// -----------------------------------------------------------------------------
+
 TEST_F(ConfigurationUnitTest, TestLoadSuccessful)
 {
-  auto configuration = corevm::frontend::Configuration::load_config(PATH);
+  corevm::api::core::Configuration configuration;
+  const bool res = Configuration::load_config(PATH, configuration);
+
+  ASSERT_EQ(true, res);
 
   ASSERT_EQ(2048, configuration.heap_alloc_size());
   ASSERT_EQ(1024, configuration.pool_alloc_size());
@@ -86,19 +93,18 @@ TEST_F(ConfigurationUnitTest, TestLoadSuccessful)
 
 TEST_F(ConfigurationUnitTest, TestLoadFailsWithInvalidPath)
 {
-  ASSERT_THROW(
-    {
-      corevm::frontend::Configuration::load_config("$%^some-invalid-path!@#");
-    },
-    corevm::frontend::ConfigurationLoadingError
-  );
+  corevm::api::core::Configuration configuration;
+  const bool res = Configuration::load_config("$%^some-invalid-path!@#",
+    configuration);
+
+  ASSERT_EQ(false, res);
 }
 
 // -----------------------------------------------------------------------------
 
 TEST_F(ConfigurationUnitTest, TestGetAndSet)
 {
-  corevm::frontend::Configuration configuration;
+  Configuration configuration;
 
   ASSERT_EQ(0, configuration.heap_alloc_size());
   ASSERT_EQ(0, configuration.pool_alloc_size());
@@ -116,7 +122,7 @@ TEST_F(ConfigurationUnitTest, TestGetAndSet)
   configuration.set_pool_alloc_size(expected_pool_alloc_size);
   configuration.set_gc_interval(expected_gc_interval);
   configuration.set_gc_flag(expected_gc_flag);
-  configuration.set_log_mode(expected_log_mode);
+  configuration.set_log_mode(expected_log_mode.c_str());
 
   ASSERT_EQ(expected_heap_alloc_size, configuration.heap_alloc_size());
   ASSERT_EQ(expected_pool_alloc_size, configuration.pool_alloc_size());
