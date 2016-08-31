@@ -854,7 +854,7 @@ Header: `corevm/api/core/configuration.h`
   .. cpp:function:: const std::string& log_mode() const
     :noindex:
 
-    Gets the the logging mode.
+    Gets the logging mode.
 
 
 **Bytecode Execution Invocation**
