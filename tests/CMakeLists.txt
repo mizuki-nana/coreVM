@@ -63,17 +63,9 @@ set_target_properties(run_tests PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -g -Wno-
 
 
 target_link_libraries(run_tests
-    libcorevm_dbg
-    boost_system
-    boost_regex
-    boost_iostreams
-    boost_timer
-    boost_program_options
-    pthread
-    sneaker
-    avrocpp_s
-    gtest
-    LLVMSupport
+    libcorevm
+    ${LIBGTEST_LIBRARY}
+    ${DEPENDENCY_LINK_LIBRARIES}
     )
 
 

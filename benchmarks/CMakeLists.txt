@@ -59,13 +59,6 @@ endif()
 
 target_link_libraries(run_benchmarks
     libcorevm
-    boost_system
-    boost_regex
-    boost_iostreams
-    boost_program_options
-    pthread
-    sneaker
-    avrocpp_s
-    LLVMSupport
-    benchmark
+    ${LIBBENCHMARK_LIBRARY}
+    ${DEPENDENCY_LINK_LIBRARIES}
     )

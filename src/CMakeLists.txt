@@ -88,14 +88,8 @@ set_target_properties(coreVM PROPERTIES COMPILE_FLAGS "-O3")
 
 target_link_libraries(coreVM
     libcorevm
-    avrocpp_s
-    sneaker
-    boost_system
-    boost_regex
-    boost_iostreams
-    boost_program_options
-    pthread
-    LLVMSupport)
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
 
 
 add_custom_command(TARGET coreVM POST_BUILD COMMAND ls -al ./coreVM)
@@ -123,15 +117,7 @@ add_executable(coreVM_dbg ${coreVM_sources})
 
 target_link_libraries(coreVM_dbg
     libcorevm_dbg
-    avrocpp_s
-    sneaker
-    boost_system
-    boost_regex
-    boost_timer
-    boost_iostreams
-    boost_program_options
-    pthread
-    LLVMSupport
+    ${DEPENDENCY_LINK_LIBRARIES}
     )
 
 
@@ -168,15 +154,8 @@ add_executable(coreVM_dbg_asan ${coreVM_sources})
 
 
 target_link_libraries(coreVM_dbg_asan
-    libcorevm
-    avrocpp_s
-    sneaker
-    boost_system
-    boost_regex
-    boost_iostreams
-    boost_program_options
-    pthread
-    LLVMSupport
+    libcorevm_dbg_asan
+    ${DEPENDENCY_LINK_LIBRARIES}
     )
 
 

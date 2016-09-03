@@ -61,7 +61,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 endif ()
 
 
-# Packages.
+# Find Boost.
 find_package(Boost 1.55 REQUIRED COMPONENTS
     system
     regex
@@ -71,12 +71,74 @@ find_package(Boost 1.55 REQUIRED COMPONENTS
     )
 
 
+message("Boost libraries found: ${Boost_LIBRARIES}")
+
+
+# Find LLVM.
+find_library(LIBLLVM_LIBRARY NAMES "LLVMSupport"
+    PATH_SUFFIXES "lib" "lib32" "lib64")
+
+
+message("LLVMSupport library path found: " ${LIBLLVM_LIBRARY})
+
+
+# Find Sneaker.
+find_path(LIBSNEAKER_INCLUDE_DIR NAMES "sneaker"
+    PATHS
+    "/opt/local/include"
+    "/usr/local/include"
+    "/usr/include"
+    )
+
+
+find_library(LIBSNEAKER_LIBRARY NAMES "sneaker"
+    PATH_SUFFIXES "lib" "lib32" "lib64")
+
+
+message("Sneaker include path found: " ${LIBSNEAKER_INCLUDE_DIR})
+message("Sneaker library path found: " ${LIBSNEAKER_LIBRARY})
+
+
+# Find avrocpp.
+find_library(LIBAVROCPP_LIBRARY NAMES "avrocpp_s"
+    PATH_SUFFIXES "lib" "lib32" "lib64")
+
+
+message("avrocpp library path found: " ${LIBAVROCPP_LIBRARY})
+
+
+# Find googletest.
+find_library(LIBGTEST_LIBRARY NAMES "gtest"
+    PATH_SUFFIXES "lib" "lib32" "lib64")
+
+message("gtest library path found: " ${LIBGTEST_LIBRARY})
+
+
+# Find benchmark.
+find_library(LIBBENCHMARK_LIBRARY NAMES "benchmark"
+    PATH_SUFFIXES "lib" "lib32" "lib64")
+
+
+message("benchmark library path found: " ${LIBBENCHMARK_LIBRARY})
+
+
 # Paths.
+include_directories(SYSTEM ${LIBSNEAKER_INCLUDE_DIR})
 include_directories("${CMAKE_SOURCE_DIR}/src/")
 set(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 set(TESTS_DIR ${PROJECT_SOURCE_DIR}/tests)
 set(TOOLS_DIR ${PROJECT_SOURCE_DIR}/tools)
 set(BENCHMARKS_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
+
+
+# Dependency libraries.
+set(DEPENDENCY_LINK_LIBRARIES
+    pthread
+    ${Boost_LIBRARIES}
+    ${LIBAVROCPP_LIBRARY}
+    ${LIBSNEAKER_LIBRARY}
+    ${LIBLLVM_LIBRARY}
+    )
 
 
 # Sub-directories.

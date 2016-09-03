@@ -538,7 +538,7 @@ Process::Impl::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
   ASSERT(compartment);
   ASSERT(closure);
   check_call_stack_capacity();
-  m_call_stack.emplace_back(ctx, compartment, closure);
+  m_call_stack.push_back(Frame(ctx, compartment, closure));
 
   set_parent_for_top_frame();
 }
@@ -552,7 +552,7 @@ Process::Impl::emplace_frame(const ClosureCtx& ctx, Compartment* compartment,
   ASSERT(compartment);
   ASSERT(closure);
   check_call_stack_capacity();
-  m_call_stack.emplace_back(ctx, compartment, closure, return_addr);
+  m_call_stack.push_back(Frame(ctx, compartment, closure, return_addr));
 
   set_parent_for_top_frame();
 }
@@ -644,7 +644,7 @@ Process::Impl::emplace_invocation_ctx(const ClosureCtx& ctx,
   ASSERT(compartment);
   ASSERT(closure);
   check_invk_ctx_stack_capacity();
-  m_invocation_ctx_stack.emplace_back(ctx, compartment, closure);
+  m_invocation_ctx_stack.push_back(InvocationCtx(ctx, compartment, closure));
 }
 
 // -----------------------------------------------------------------------------
