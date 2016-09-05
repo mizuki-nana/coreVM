@@ -145,7 +145,7 @@ ExtractMetadata::extract_instr_info() const
 
   ss << INDENTATION << "}";
 
-  return std::move(ss.str());
+  return ss.str();
 }
 
 
@@ -178,7 +178,7 @@ ExtractMetadata::extract_flags_info() const
 
   ss << INDENTATION << "}";
 
-  return std::move(ss.str());
+  return ss.str();
 }
 
 // -----------------------------------------------------------------------------

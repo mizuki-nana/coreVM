@@ -1244,7 +1244,7 @@ Process::Impl::unwind_stack(size_t limit)
 
     line_ss << " in " << closure->name;
 
-    output_lines.push_back(std::move(line_ss.str()));
+    output_lines.push_back(line_ss.str());
 
     pop_frame_safe();
 

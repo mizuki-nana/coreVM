@@ -211,7 +211,7 @@ repr::operator()(const decimal& handle)
 {
   char buf[20];
   snprintf(buf, sizeof(buf), "%0.6f", handle);
-  return std::move(string(buf));
+  return string(buf);
 }
 
 // -----------------------------------------------------------------------------
@@ -223,7 +223,7 @@ repr::operator()(const decimal2& handle)
 {
   char buf[20];
   snprintf(buf, sizeof(buf), "%0.6f", handle);
-  return std::move(string(buf));
+  return string(buf);
 }
 
 // -----------------------------------------------------------------------------

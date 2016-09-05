@@ -856,7 +856,7 @@ instr_handler_sethndl(const Instr& /* instr */, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle hndl(std::move(frame->pop_eval_stack()));
+  types::NativeTypeHandle hndl(frame->pop_eval_stack());
 
   auto obj = process.top_stack();
 
@@ -1200,7 +1200,7 @@ instr_handler_setattrs(const Instr& instr, Process& process,
     process.insert_attr_name(attr_key, attr_name.c_str());
   }
 
-  frame->push_eval_stack(std::move( types::NativeTypeHandle(map) ));
+  frame->push_eval_stack(types::NativeTypeHandle(map));
 }
 
 // -----------------------------------------------------------------------------
