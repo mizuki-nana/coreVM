@@ -867,3 +867,772 @@ Header: `corevm/api/core/entry.h`
   configuration object.
 
   Returns 0 on successful execution, non-zero values otherwise.
+
+
+coreVM Intermediate Representation
+----------------------------------
+
+The coreVM Intermediate Representation, also referred as "coreVM IR", is an
+abstract format that can represent the imperative and declarative semantics of
+most programming languages. It is also the entry point of which coreVM's JIT
+pipeline starts.
+
+The coreVM IR captures the constructs and semantics of programming languages
+in a high-level and generalized form. Compared to some other language
+intermediate representations, such as LLVM IR, coreVM's syntax and semantics are
+much simpler, and consequently it is not designed to capture all the low-level
+details. The coreVM IR is designed this way so that it is easy to generate IR
+from either raw source code or coreVM bytecode. In addition, it is subject to
+additional lowering processes in order to be translated into lower-form
+representations.
+
+
+IR Format and Structure
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Similar to the coreVM bytecode format, the IR is currently defined as a schema
+based on the `Apache Avro data serialization system <https://avro.apache.org/docs/current/>`_.
+Below is the IR schema:
+
+.. code-block:: json
+
+  {
+    "namespace": "corevm.ir",
+    "type": "record",
+    "name": "IRModule",
+    "fields": [
+      {
+        "name": "meta",
+        "type": {
+          "type": "record",
+          "name": "IRModuleMeta",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "format_version",
+              "type": "string"
+            },
+            {
+              "name": "target_version",
+              "type": "string"
+            },
+            {
+              "name": "path",
+              "type": "string"
+            },
+            {
+              "name": "author",
+              "type": "string"
+            },
+            {
+              "name": "timestamp",
+              "type": "long"
+            }
+          ]
+        }
+      },
+      {
+        "name": "types",
+        "type": {
+          "type": "array",
+          "items": {
+            "name": "IRStructDecl",
+            "type": "record",
+            "fields": [
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "name": "fields",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "IRStructField",
+                    "fields": [
+                      {
+                        "name": "identifier",
+                        "type": "string"
+                      },
+                      {
+                        "name": "ref_type",
+                        "type": {
+                          "type": "enum",
+                          "name": "IRValueRefType",
+                          "symbols": [
+                            "value",
+                            "pointer"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "type",
+                        "type": [
+                          "string",
+                          {
+                            "type": "enum",
+                            "name": "IRValueType",
+                            "symbols": [
+                              "voidtype",
+                              "boolean",
+                              "i8",
+                              "ui8",
+                              "i16",
+                              "ui16",
+                              "i32",
+                              "ui32",
+                              "i64",
+                              "ui64",
+                              "spf",
+                              "dpf",
+                              "string",
+                              "array",
+                              "structtype",
+                              "ptrtype"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "closures",
+        "type": {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "IRClosure",
+            "fields": [
+              {
+                "name": "name",
+                "type": "string"
+              },
+              {
+                "name": "id",
+                "type": "long"
+              },
+              {
+                "name": "parent_id",
+                "type": "long",
+                "default": -1
+              },
+              {
+                "name": "rettype",
+                "type": "corevm.ir.IRValueType"
+              },
+              {
+                "name": "ret_reftype",
+                "type": "corevm.ir.IRValueRefType"
+              },
+              {
+                "name": "parameters",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "IRParameter",
+                    "fields": [
+                      {
+                        "name": "identifier",
+                        "type": "string"
+                      },
+                      {
+                        "name": "ref_type",
+                        "type": "corevm.ir.IRValueRefType"
+                      },
+                      {
+                        "name": "type",
+                        "type": "corevm.ir.IRValueType"
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "name": "blocks",
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "record",
+                    "name": "IRBasicBlock",
+                    "fields": [
+                      {
+                        "name": "label",
+                        "type": "string"
+                      },
+                      {
+                        "name": "body",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "record",
+                            "name": "IRInstruction",
+                            "fields": [
+                              {
+                                "name": "target",
+                                "type": [
+                                  "null",
+                                  "string"
+                                ],
+                                "default": null
+                              },
+                              {
+                                "name": "type",
+                                "type": "corevm.ir.IRValueType"
+                              },
+                              {
+                                "name": "opcode",
+                                "type": {
+                                  "type": "enum",
+                                  "name": "IROpcode",
+                                  "symbols": [
+                                    "alloca",
+                                    "load",
+                                    "store",
+                                    "getattr",
+                                    "setattr",
+                                    "delattr",
+                                    "getelement",
+                                    "putelement",
+                                    "len",
+                                    "ret",
+                                    "br",
+                                    "switch2",
+                                    "pos",
+                                    "neg",
+                                    "inc",
+                                    "dec",
+                                    "add",
+                                    "sub",
+                                    "mul",
+                                    "div",
+                                    "mod",
+                                    "bnot",
+                                    "band",
+                                    "bor",
+                                    "bxor",
+                                    "bls",
+                                    "brs",
+                                    "eq",
+                                    "neq",
+                                    "gt",
+                                    "lt",
+                                    "gte",
+                                    "lte",
+                                    "lnot",
+                                    "land",
+                                    "lor",
+                                    "cmp",
+                                    "call"
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "opcodeval",
+                                "type": {
+                                  "type": "record",
+                                  "name": "IRValue",
+                                  "fields": [
+                                    {
+                                      "name": "type",
+                                      "type": "corevm.ir.IRValueType"
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": [
+                                        "null",
+                                        "boolean",
+                                        "int",
+                                        "long",
+                                        "float",
+                                        "double",
+                                        "string",
+                                        {
+                                          "type": "record",
+                                          "name": "IRArrayValue",
+                                          "fields": [
+                                            {
+                                              "type": "corevm.ir.IRValueType",
+                                              "name": "type"
+                                            },
+                                            {
+                                              "type": "int",
+                                              "name": "len"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "oprds",
+                                "type": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "IROperand",
+                                    "fields": [
+                                      {
+                                        "name": "type",
+                                        "type": {
+                                          "type": "enum",
+                                          "name": "IROperandType",
+                                          "symbols": [
+                                            "constant",
+                                            "ref"
+                                          ]
+                                        }
+                                      },
+                                      {
+                                        "name": "value",
+                                        "type": [
+                                          "corevm.ir.IRValue",
+                                          "string"
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "name": "labels",
+                                "type": [
+                                  "null",
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "record",
+                                      "name": "IRLabel",
+                                      "fields": [
+                                        {
+                                          "name": "name",
+                                          "type": "string"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                ],
+                                "default": null
+                              }
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+
+Below are descriptions of the entities defined in the schema.
+
+**Entity 'IRModule'**
+
+Highest level of entity in IR, encapsulates all the data and metadata associated
+with a module, which corresponds to a physical translation unit.
+
+**Entity 'IRModuleMeta'**
+
+Entity that captures all the metadata of a module.
+
+**Entity 'IRStructDecl'**
+
+Represents a custom structure declaration.
+
+**Entity 'IRStructField'**
+
+Represents a single field in a structure declaration.
+
+**Enumeration 'IRValueRefType'**
+
+Represents a set of types that a value can be referenced. Currently a value can
+be referenced either via by-value or by-pointer.
+
+.. table::
+
+  =============  =================================
+       Type             Description
+  =============  =================================
+    `value`         Reference-by-value.
+    `pointer`       Reference-by-pointer.
+  =============  =================================
+
+**Enumeration 'IRValueType'**
+
+Represents a set of primitive types. Possible values are:
+
+.. table::
+
+  ==============  ========================================
+       Type         Description
+  ==============  ========================================
+    `voidtype`      Void type.
+    `boolean`       Boolean type.
+    `i8`            Signed 8-bit integer.
+    `ui8`           Unsigned 8-bit integer.
+    `i16`           Signed 16-bit integer.
+    `ui16`          Unsigned 16-bit integer.
+    `i32`           Signed 32-bit integer.
+    `ui32`          Unsigned 32-bit integer.
+    `i64`           Signed 64-bit integer.
+    `ui64`          Unsigned 64-bit integer.
+    `spf`           Single-precision floating point.
+    `dpf`           Double-precision floating point.
+    `string`        String type.
+    `array`         Fixed-size array type.
+    `structtype`    Statically-declared structure type.
+    `ptrtype`       Object pointer type.
+  ==============  ========================================
+
+**Entity 'IRArrayValue'**
+
+Represents a fixed and typed array type. The entity is consisted of the type
+of the encapsulated elements, as well as the size of the array.
+
+**Entity 'IRClosure'**
+
+Represents a scoped function declaration. Closures allow function declarations
+to be hierarchically scoped.
+
+**Entity 'IRParameter'**
+
+Represents a function parameter.
+
+**Entity 'IRBasicBlock'**
+
+Represents a basic block within a function. Each basic block is uniquely
+identified by its label. A function body can be consisted of one or multiple
+basic blocks.
+
+**Entity 'IRInstruction'**
+
+Represents a single instruction statement. Each instruction is consisted of an
+opcode, an instruction value (primary operand value), an instruction value type,
+an optional target (for instructions that return values), one or multiple
+operands, and an optional set of labeled jump locations.
+
+**Enumeration 'IROpcode'**
+
+The set of opcodes defined in the IR.
+
+**Entity 'IRValue'**
+
+Represents a constant value.
+
+**Enumeration 'IROperand'**
+
+Represents an operand in an instruction statement.
+
+**Enumeration 'IROperandType'**
+
+Type of an instruction operand, can be either a "variable" reference or a
+constant.
+
+  ==============  ==============================
+       Type         Description
+  ==============  ==============================
+    `constant`      Literal constant.
+    `ref`           Variable reference.
+  ==============  ==============================
+
+**Entity 'IRLabel'**
+
+Represents a labeled jump location used in an instruction.
+
+----
+
+IR Instruction Set
+^^^^^^^^^^^^^^^^^^
+
+This section describes the IR's instruction set.
+
+'alloca' Instruction
+####################
+
+`target = alloca <type>`
+
+Allocates a object on the stack, and returns a pointer that references the
+object.
+
+'load' Instruction
+##################
+
+`target = load <type> <oprd>`
+
+Reads the value from a variable.
+
+'store' Instruction
+###################
+
+`store <type> #constant-value <dst>`
+
+Writes a value to a referenced variable.
+
+'getattr' Instruction
+#####################
+
+`target = getattr #constant-string <oprd>`
+
+Retrieves the attribute of an object and returns a pointer that references the
+value.
+
+'setattr' Instruction
+#####################
+
+`setattr #constant-string <src> <dst>`
+
+Sets the attribute value `src` to `dst`.
+
+'delattr' Instruction
+#####################
+
+`delattr #constant-string <dst>`
+
+Deletes the attribute value in `dst`.
+
+'getelement' Instruction
+########################
+
+`target = getelement <type> <src> <idx>`
+
+Gets the element from an array with an index value.
+
+'putelement' Instruction
+########################
+
+`putelement <src> <dst> <idx>`
+
+Inserts the element specified by `src` into the array `dst` at index `idx`.
+
+'len' Instruction
+#################
+
+`target = len <oprd>`
+
+Gets the length of an array.
+
+'ret' Instruction
+#################
+
+`ret`
+
+`ret <type> <oprd>`
+
+Returns control back to previous frame.
+
+'br' Instruction
+################
+
+`br <cond> [ label #iftrue, label #iffalse ]`
+
+Branches to either one of two labels depending on a conditional value.
+
+
+'switch2' Instruction
+#####################
+
+`switch2 <value> <case1>, <case2>, .... [ label #case1, label #case2, ... ]`
+
+Switch statement. Jumps to one of a set of labels based on a target value, and
+a set of predicates specified as the rest of the operands.
+
+'pos' Instruction
+#################
+
+`target = pos <type> <oprd>`
+
+Evaluates to the positive expression of the specified operand.
+
+'neg' Instruction
+#################
+
+`target = neg <type> <oprd>`
+
+Evaluates to the negative expression of the specified operand.
+
+'inc' Instruction
+#################
+
+`target = inc <type> <oprd>`
+
+Increases the value by 1 of the specified instruction.
+
+'dec' Instruction
+#################
+
+`target = dec <type> <oprd>`
+
+Decreases the value by 1 of the specified instruction.
+
+'add' Instruction
+#################
+
+`target = add <type> <oprd1> <oprd2>`
+
+Adds the values of two expressions.
+
+'sub' Instruction
+#################
+
+`target = sub <type> <oprd1> <oprd2>`
+
+Subtracts the values of two expressions.
+
+'mul' Instruction
+#################
+
+`target = mul <type> <oprd1> <oprd2>`
+
+Multiplies the values of two expressions.
+
+'div' Instruction
+#################
+
+`target = div <type> <oprd1> <oprd2>`
+
+Divides the values of two expressions.
+
+'mod' Instruction
+#################
+
+`target = mod <type> <oprd1> <oprd2>`
+
+Computes the modulus value of two expressions.
+
+'bnot' Instruction
+##################
+
+`target = bnot <type> <oprd>`
+
+Computes the bitwise NOT evaluation of a value.
+
+'band' Instruction
+##################
+
+`target = band <type> <oprd1> <oprd2>`
+
+Computes the bitwise AND evaluation of two values.
+
+'bor' Instruction
+#################
+
+`target = bor <type> <oprd1> <oprd2>`
+
+Computes the bitwise OR evaluation of two values.
+
+'bxor' Instruction
+##################
+
+`target = bxor <type> <oprd1> <oprd2>`
+
+Computes the bitwise XOR evaluation of two values.
+
+'bls' Instruction
+#################
+
+`target = bls <type> <oprd>`
+
+Computes the bitwise-left-shift evaluation of the specified value.
+
+'brs' Instruction
+#################
+
+`target = brs <type> <oprd>`
+
+Computes the bitwise-right-shift evaluation of the specified value.
+
+'eq' Instruction
+################
+
+`target = eq <oprd1> <oprd2>`
+
+Computes the equality evaluation of two values.
+
+'neq' Instruction
+#################
+
+`target = neq <oprd1> <oprd2>`
+
+Computes the non-equality evaluation of two values.
+
+'gt' Instruction
+################
+
+`target = gt <oprd1> <oprd2>`
+
+Computes the greater-than evaluation of two values.
+
+'lt' Instruction
+################
+
+`target = lt <oprd1> <oprd2>`
+
+Computes the less-than evaluation of two values.
+
+'gte' Instruction
+#################
+
+`target = gte <oprd1> <oprd2>`
+
+Computes the greater-or-equal-to evaluation of two values.
+
+'lte' Instruction
+#################
+
+`target = lte <type> <oprd1> <oprd2>`
+
+Computes the less-or-equal-to evaluation of two values.
+
+'lnot' Instruction
+##################
+
+`target = lnot <type> <oprd>`
+
+Computes the logical NOT evaluation of a value.
+
+'land' Instruction
+##################
+
+`target = land <type> <oprd1> <oprd2>`
+
+Computes the logical AND evaluation of two values.
+
+'lor' Instruction
+#################
+
+`target = lor <type> <oprd1> <oprd2>`
+
+Computes the logical OR evaluation of two values.
+
+'cmp' Instruction
+#################
+
+`target = cmp <oprd1> <oprd2>`
+
+Equality comparison between two operands. Results in `-1` if the left-hand-side
+is considered less than the right-hand-side, `0` if they are evaluated to be
+equal, and `1` otherwise.
+
+'call' Instruction
+##################
+
+`target = call <ret-type> <call-target>(<oprd1>, <oprd2>, ...)`
+
+Invokes a function call by calling the specified call target.

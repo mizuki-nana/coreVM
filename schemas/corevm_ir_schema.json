@@ -1,0 +1,344 @@
+{
+  "namespace": "corevm.ir",
+  "type": "record",
+  "name": "IRModule",
+  "fields": [
+    {
+      "name": "meta",
+      "type": {
+        "type": "record",
+        "name": "IRModuleMeta",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "format_version",
+            "type": "string"
+          },
+          {
+            "name": "target_version",
+            "type": "string"
+          },
+          {
+            "name": "path",
+            "type": "string"
+          },
+          {
+            "name": "author",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "long"
+          }
+        ]
+      }
+    },
+    {
+      "name": "types",
+      "type": {
+        "type": "array",
+        "items": {
+          "name": "IRStructDecl",
+          "type": "record",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "fields",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "IRStructField",
+                  "fields": [
+                    {
+                      "name": "identifier",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ref_type",
+                      "type": {
+                        "type": "enum",
+                        "name": "IRValueRefType",
+                        "symbols": [
+                          "value",
+                          "pointer"
+                        ]
+                      }
+                    },
+                    {
+                      "name": "type",
+                      "type": [
+                        "string",
+                        {
+                          "type": "enum",
+                          "name": "IRValueType",
+                          "symbols": [
+                            "voidtype",
+                            "boolean",
+                            "i8",
+                            "ui8",
+                            "i16",
+                            "ui16",
+                            "i32",
+                            "ui32",
+                            "i64",
+                            "ui64",
+                            "spf",
+                            "dpf",
+                            "string",
+                            "array",
+                            "structtype",
+                            "ptrtype"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "closures",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "IRClosure",
+          "fields": [
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "id",
+              "type": "long"
+            },
+            {
+              "name": "parent_id",
+              "type": "long",
+              "default": -1
+            },
+            {
+              "name": "rettype",
+              "type": "corevm.ir.IRValueType"
+            },
+            {
+              "name": "ret_reftype",
+              "type": "corevm.ir.IRValueRefType"
+            },
+            {
+              "name": "parameters",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "IRParameter",
+                  "fields": [
+                    {
+                      "name": "identifier",
+                      "type": "string"
+                    },
+                    {
+                      "name": "ref_type",
+                      "type": "corevm.ir.IRValueRefType"
+                    },
+                    {
+                      "name": "type",
+                      "type": "corevm.ir.IRValueType"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "blocks",
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "record",
+                  "name": "IRBasicBlock",
+                  "fields": [
+                    {
+                      "name": "label",
+                      "type": "string"
+                    },
+                    {
+                      "name": "body",
+                      "type": {
+                        "type": "array",
+                        "items": {
+                          "type": "record",
+                          "name": "IRInstruction",
+                          "fields": [
+                            {
+                              "name": "target",
+                              "type": [
+                                "null",
+                                "string"
+                              ],
+                              "default": null
+                            },
+                            {
+                              "name": "type",
+                              "type": "corevm.ir.IRValueType"
+                            },
+                            {
+                              "name": "opcode",
+                              "type": {
+                                "type": "enum",
+                                "name": "IROpcode",
+                                "symbols": [
+                                  "alloca",
+                                  "load",
+                                  "store",
+                                  "getattr",
+                                  "setattr",
+                                  "delattr",
+                                  "getelement",
+                                  "putelement",
+                                  "len",
+                                  "ret",
+                                  "br",
+                                  "switch2",
+                                  "pos",
+                                  "neg",
+                                  "inc",
+                                  "dec",
+                                  "add",
+                                  "sub",
+                                  "mul",
+                                  "div",
+                                  "mod",
+                                  "bnot",
+                                  "band",
+                                  "bor",
+                                  "bxor",
+                                  "bls",
+                                  "brs",
+                                  "eq",
+                                  "neq",
+                                  "gt",
+                                  "lt",
+                                  "gte",
+                                  "lte",
+                                  "lnot",
+                                  "land",
+                                  "lor",
+                                  "cmp",
+                                  "call"
+                                ]
+                              }
+                            },
+                            {
+                              "name": "opcodeval",
+                              "type": {
+                                "type": "record",
+                                "name": "IRValue",
+                                "fields": [
+                                  {
+                                    "name": "type",
+                                    "type": "corevm.ir.IRValueType"
+                                  },
+                                  {
+                                    "name": "value",
+                                    "type": [
+                                      "null",
+                                      "boolean",
+                                      "int",
+                                      "long",
+                                      "float",
+                                      "double",
+                                      "string",
+                                      {
+                                        "type": "record",
+                                        "name": "IRArrayValue",
+                                        "fields": [
+                                          {
+                                            "type": "corevm.ir.IRValueType",
+                                            "name": "type"
+                                          },
+                                          {
+                                            "type": "int",
+                                            "name": "len"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            {
+                              "name": "oprds",
+                              "type": {
+                                "type": "array",
+                                "items": {
+                                  "type": "record",
+                                  "name": "IROperand",
+                                  "fields": [
+                                    {
+                                      "name": "type",
+                                      "type": {
+                                        "type": "enum",
+                                        "name": "IROperandType",
+                                        "symbols": [
+                                          "constant",
+                                          "ref"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "name": "value",
+                                      "type": [
+                                        "corevm.ir.IRValue",
+                                        "string"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            },
+                            {
+                              "name": "labels",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "record",
+                                    "name": "IRLabel",
+                                    "fields": [
+                                      {
+                                        "name": "name",
+                                        "type": "string"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ],
+                              "default": null
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

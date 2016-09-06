@@ -22,7 +22,13 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
+add_custom_target(IRFormat WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMAND sh scripts/compile_ir_schema.sh)
+
+
 set(sources
+    ir/reader.cc
+    ir/verifier.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
     dyobj/dynamic_object_manager.cc
@@ -65,6 +71,9 @@ set(sources
 
 # Library `libcorevm`.
 add_library(libcorevm ${sources})
+
+
+add_dependencies(libcorevm IRFormat)
 
 
 set_target_properties(libcorevm PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "corevm")

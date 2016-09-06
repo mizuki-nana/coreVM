@@ -44,6 +44,7 @@ BENCHMARKS_DIR=$(TOP_DIR)/benchmarks
 SCHEMAS_DIR=$(TOP_DIR)/schemas
 TOOLS_DIR=$(TOP_DIR)/tools
 VALGRIND_DIR=$(TOP_DIR)/valgrind
+IR_FORMAT_FILEPATH=$(SRC_DIR)/ir/format.h
 
 ## -----------------------------------------------------------------------------
 
@@ -166,6 +167,7 @@ uninstall:
 
 .PHONY: clean
 clean:
+	rm -f $(IR_FORMAT_FILEPATH)
 	rm -rf $(BUILD_DIR)
 	rm -rf $(BUILD_GCC_DIR)
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py

@@ -37,6 +37,36 @@ target_link_libraries(extract_metadata
     )
 
 
+# Build executable `ir_stats`.
+add_executable(ir_stats
+    ir_stats.cc
+    )
+
+
+set_target_properties(ir_stats PROPERTIES COMPILE_FLAGS "-O3")
+
+
+target_link_libraries(ir_stats
+    libcorevm
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
+
+
+# Build executable `ir_dis`.
+add_executable(ir_dis
+    ir_dis.cc
+    )
+
+
+set_target_properties(ir_dis PROPERTIES COMPILE_FLAGS "-O3")
+
+
+target_link_libraries(ir_dis
+    libcorevm
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
+
+
 # Generate artifacts.
 set(ARTIFACTS_DIR "${PROJECT_SOURCE_DIR}/build/artifacts")
 add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
