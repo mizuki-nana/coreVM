@@ -46,5 +46,6 @@ script:
   - clang++ --version
   - g++ --version
   - python --version
+  - sphinx-build --version
   - make -C libs full=1
   - make full=1 travis_ci=1

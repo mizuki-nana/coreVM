@@ -10,12 +10,13 @@ make use of coreVM's functionalities.
 Build and Install coreVM
 ------------------------
 
+Steps for building coreVM
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The project strives the make the build and installation process as
 straightforward as possible. Currently, the build system requires
 `GNU Make <https://www.gnu.org/software/make/>`_ and
 `CMake <https://cmake.org/>`_.
-
-Steps for building coreVM:
 
 1. Build and install all dependencies
 
@@ -53,8 +54,107 @@ Steps for building coreVM:
 
   `make install`
 
-If you are unsure whether your system meets the requirements for building
-coreVM, please refer to `this page <https://github.com/yanzhengli/coreVM/wiki/Dependencies-and-Build-Environments#build-environments>`_.
+
+
+Build Environments
+^^^^^^^^^^^^^^^^^^
+
+This sections describes the build environments used for development and testing.
+Please refer to this as a reference if you are unsure whether your system meets
+the requirements for building coreVM.
+
+Development 1
+#############
+
+**Operating System:**
+`Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.4 LTS)`
+
+**Compiler:**
+`Ubuntu clang version 3.4-1ubuntu3 (tags/RELEASE_34/final) (based on LLVM 3.4) Target: x86_64-pc-linux-gnu Thread model: posix`
+
+**Python:**
+`Python 2.7.6 (default, Jun 22 2015, 17:58:13)`
+
+**CMake:**
+`cmake version 2.8.12.2`
+
+**GNU Make:**
+`GNU Make 3.81 This program built for x86_64-pc-linux-gnu`
+
+**Valgrind:**
+`valgrind-3.10.1`
+
+**Sphinx:**
+`Sphinx v1.2.2`
+
+----
+
+Development 2
+#############
+
+**Operating System:**
+`OS X 10.11.6 (15G1004) Darwin 15.6.0 root:xnu-3248.60.11~1/RELEASE_X86_64 x86_64`
+
+**Compiler:**
+`Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
+
+**Python:**
+`Python 2.7.10`
+
+**CMake:**
+`cmake version 3.4.3`
+
+**GNU Make:**
+`GNU Make 3.81 This program built for i386-apple-darwin11.3.0`
+
+**Sphinx:**
+`Sphinx v1.3.5`
+
+----
+
+Continuous Integration 1
+########################
+
+**Operating System:**
+`Linux 3.13.0-63-generic #104~precise1-Ubuntu SMP x86_64 GNU/Linux`
+
+**Compiler:**
+`clang version 3.4 (tags/RELEASE_34/final) Target: x86_64-unknown-linux-gnu Thread model: posix`
+
+**Python:**
+`Python 2.7.3`
+
+**CMake:**
+`cmake version 2.8.7`
+
+**GNU Make:**
+`GNU Make 3.81 This program built for x86_64-pc-linux-gnu`
+
+**Sphinx:**
+`Sphinx (sphinx-build) 1.4.6`
+
+----
+
+Continuous Integration 2
+########################
+
+**Operating System:**
+`OS X 10.9.5 Darwin Kernel Version 13.4.0`
+
+**Compiler:**
+`Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn) Target: x86_64-apple-darwin13.4.0 Thread model: posix`
+
+**Python:**
+`Python 2.7.5`
+
+**CMake:**
+`cmake version 3.0.2`
+
+**GNU Make:**
+`GNU Make 3.81 This program built for i386-apple-darwin11.3.0`
+
+**Sphinx:**
+`Sphinx (sphinx-build) 1.4.6`
 
 
 Bytecode Format and Encoding
