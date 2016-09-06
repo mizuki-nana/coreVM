@@ -1636,3 +1636,189 @@ equal, and `1` otherwise.
 `target = call <ret-type> <call-target>(<oprd1>, <oprd2>, ...)`
 
 Invokes a function call by calling the specified call target.
+
+
+coreVM Toolchain
+----------------
+
+The coreVM repo comes with a set of tools used for facilitating developments
+and debugging when working with coreVM. These reside under the top level
+`tools/ <https://github.com/yanzhengli/coreVM/tree/dev/tools>`_ directory.
+
+Below are descriptions of each of the tools:
+
+diff_benchmarks.py
+^^^^^^^^^^^^^^^^^^
+
+Computes and prints the diff between two benchmark runs, with each run's result
+written in JSON format outputted by `benchmark <https://www.github.com/google/benchmark>`__.
+
+Usage:
+
+  .. code::
+
+    python tools/diff_benchmarks.py --help
+
+    Usage: diff_benchmarks.py LEFT_FILE RIGHT_FILE [options]
+
+    Options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -c, --color           Display outputs in colors
+      -m COMPARISON_METRIC, --metric=COMPARISON_METRIC
+                            Comparion metric=<real_time|cpu_time>
+
+extract_metadata
+^^^^^^^^^^^^^^^^
+
+Prints out the coreVM instruction set data and the dynamic object flags data
+in JSON format. This is useful for compilers or other programs that need to
+generate coreVM bytecode.
+
+Usage:
+
+  .. code::
+
+    ./build/tools/extract_metadata --help
+  
+    Extract coreVM info
+    Usage: ./build/tools/extract_metadata [options]
+    Options:
+      --help                Print a help message and exit
+      --output arg          Output file
+
+Example:
+
+  .. code::
+
+    ./build/tools/extract_metadata --output out.txt
+
+ir_dis
+^^^^^^
+
+coreVM IR disassembler. Prints out the IR textual representation when specified
+an input file that contains the binary representation.
+
+Usage:
+
+  .. code::
+
+    ./build/tools/ir_dis --help
+
+    coreVM IR disassembler
+    Usage: ./build/tools/ir_dis [options]
+    Options:
+      --help                Print a help message and exit
+      --input arg           input file
+      --output arg          output file
+
+Example:
+
+  .. code::
+
+    ./build/tools/ir_dis --input sample.ir
+
+Sample Output:
+
+  .. code::
+
+    module name : Dummy_IR
+    format version : v0.1.0
+    target version : v0.1.0
+    path : ./dummy_ir.ir
+    author : Yanzheng Li
+    timestamp : 1472959465
+
+    structure Person {
+            string name
+            ui8 age
+            Person* sibling
+            Location* address
+    }
+
+    structure Location {
+            string street_address
+            string* country
+            string zipcode
+    }
+
+    def structure* find_friends(structure* person, ui32 id) {
+    entry:
+            %sibling = alloca 16 ui8 16 ui8
+            br 32 ui32 %cond1, %cond2 [ label #br1, label #br2, label #br3 ]
+    cond1:
+            %name = getattr name 16 ui8
+    }
+
+ir_gen
+^^^^^^
+
+Generates dummy IR and write to a specified output file.
+
+Usage:
+
+  .. code::
+
+    python tools/ir_gen.py --help
+
+    Usage: ir_gen.py [options]
+
+    Generates dummy coreVM IR
+
+    Options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -o OUTPUT_FILE, --output=OUTPUT_FILE
+                            Output file
+
+Example:
+
+  .. code::
+
+    python tools/ir_gen.py --output sample.ir
+
+ir_stats
+^^^^^^^^
+
+Prints out stats of a IR module.
+
+Usage:
+
+  .. code::
+
+    ./build/tools/ir_stats --help
+
+    Print stats of coreVM IR
+    Usage: ./build/tools/ir_stats [options]
+    Options:
+      --help                Print a help message and exit
+      --input arg           input file
+
+Example:
+
+  .. code::
+
+    ./build/tools/ir_stats --input sample.ir
+
+Sample Output:
+
+  .. code::
+
+    Module name: Dummy_IR
+    Format version: v0.1.0
+    Target version: v0.1.0
+    Path: ./dummy_ir.ir
+    Author: Yanzheng Li
+    Timestamp: 1472959465
+
+    Struct decls: 2
+    Struct decl: Person
+            Fields: 4
+    Struct decl: Location
+            Fields: 3
+
+    Closures: 1
+    Closure: find_friends
+            Blocks: 2
+
+    Total instruction count: 3
