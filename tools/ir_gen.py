@@ -58,7 +58,8 @@ class IRGen(object):
                 self.ir_struct_decl_2()
             ],
             'closures': [
-                self.ir_closure()
+                self.ir_closure_1(),
+                self.ir_closure_2()
             ]
         }
 
@@ -121,7 +122,7 @@ class IRGen(object):
             ]
         }
 
-    def ir_closure(self):
+    def ir_closure_1(self):
         return {
             'name': 'find_friends',
             'id': 1,
@@ -214,6 +215,82 @@ class IRGen(object):
                                 }
                             ],
                             'labels': []
+                        }
+                    ]
+                }
+            ]
+        }
+
+    def ir_closure_2(self):
+        return {
+            'name': 'compute',
+            'id': 2,
+            'parent_id': 1,
+            'rettype': 'string',
+            'ret_reftype': 'value',
+            'parameters': [
+                {
+                    'identifier': 'lhs_val',
+                    'ref_type': 'value',
+                    'type': 'ui32'
+                },
+                {
+                    'identifier': 'rhs_val',
+                    'ref_type': 'value',
+                    'type': 'dpf'
+                },
+                {
+                    'identifier': 'values',
+                    'ref_type': 'pointer',
+                    'type': 'array'
+                }
+            ],
+            'blocks': [
+                {
+                    'label': 'entry',
+                    'body': [
+                        {
+                            'target': 'sum',
+                            'type': 'ui64',
+                            'opcode': 'add',
+                            'opcodeval': {
+                                'type': 'ui8',
+                                'value': 16
+                            },
+                            'oprds': [
+                                {
+                                    'type': 'ref',
+                                    'value': 'lhs_val'
+                                },
+                                {
+                                    'type': 'ref',
+                                    'value': 'rhs_val'
+                                }
+                            ]
+                        },
+                        {
+                            'type': 'array',
+                            'opcode': 'store',
+                            'opcodeval': {
+                                'type': 'string',
+                                'value': 'val'
+                            },
+                            'oprds': [
+                                {
+                                    'type': 'constant',
+                                    'value': {
+                                        'type': 'array',
+                                        'value': {
+                                            'type': 'i32',
+                                            'len': 6
+                                        }
+                                    }
+                                },
+                                {
+                                    'type': 'ref',
+                                    'value': 'values' 
+                                }
+                            ]
                         }
                     ]
                 }

@@ -47,6 +47,7 @@ class IRValidator(object):
             raise ex
 
     def run(self):
+        # TODO: [COREVM-548] Implement IR verification pass
         pass
 
 ## -----------------------------------------------------------------------------

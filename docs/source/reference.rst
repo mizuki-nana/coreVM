@@ -1793,6 +1793,33 @@ Example:
 
     ./build/tools/extract_metadata --output out.txt
 
+ir_gen
+^^^^^^
+
+Generates dummy IR and write to a specified output file.
+
+Usage:
+
+  .. code::
+
+    python tools/ir_gen.py --help
+
+    Usage: ir_gen.py [options]
+
+    Generates dummy coreVM IR
+
+    Options:
+      --version             show program's version number and exit
+      -h, --help            show this help message and exit
+      -o OUTPUT_FILE, --output=OUTPUT_FILE
+                            Output file
+
+Example:
+
+  .. code::
+
+    python tools/ir_gen.py --output sample.ir
+
 ir_dis
 ^^^^^^
 
@@ -1830,52 +1857,56 @@ Sample Output:
     timestamp : 1472959465
 
     structure Person {
-            string name
-            ui8 age
-            Person* sibling
-            Location* address
+        string name
+        ui8 age
+        Person* sibling
+        Location* address
     }
 
     structure Location {
-            string street_address
-            string* country
-            string zipcode
+        string street_address
+        string* country
+        string zipcode
     }
 
-    def structure* find_friends(structure* person, ui32 id) {
+    def structtype* find_friends(structtype* person, ui32 id) {
     entry:
-            %sibling = alloca 16 ui8 16 ui8
-            br 32 ui32 %cond1, %cond2 [ label #br1, label #br2, label #br3 ]
+        %sibling = alloca ui8 16, ui8 16 
+        br ui32 32, %cond1 %cond2  [ label #br1, label #br2, label #br3 ]
     cond1:
-            %name = getattr name 16 ui8
+        %name = getattr string "name", ui8 16 
     }
 
-ir_gen
+    def string compute(ui32 lhs_val, dpf rhs_val, array* values) {
+    entry:
+        %sum = add ui8 16, %lhs_val %rhs_val 
+        store string "val", array [ 6 * i32 ] %values 
+    }
+
+ir_asm
 ^^^^^^
 
-Generates dummy IR and write to a specified output file.
+coreVM IR assembler. Converts IR from textual representation to binary format.
 
 Usage:
 
   .. code::
 
-    python tools/ir_gen.py --help
+    ./build/tools/ir_asm --help
 
-    Usage: ir_gen.py [options]
-
-    Generates dummy coreVM IR
-
+    coreVM IR assembler
+    Usage: ./build/tools/ir_asm [options]
     Options:
-      --version             show program's version number and exit
-      -h, --help            show this help message and exit
-      -o OUTPUT_FILE, --output=OUTPUT_FILE
-                            Output file
+      --help                Print a help message and exit
+      --input arg           input file
+      --output arg          output file
+      --debug               debug mode
 
 Example:
 
   .. code::
 
-    python tools/ir_gen.py --output sample.ir
+    ./build/tools/ir_asm --input sample.ir.txt --output sample_copy.ir
 
 ir_stats
 ^^^^^^^^

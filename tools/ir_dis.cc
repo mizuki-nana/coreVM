@@ -71,7 +71,7 @@ ir_value_type_to_string(corevm::IRValueType value)
   case corevm::IRValueType::array:
     return "array";
   case corevm::IRValueType::structtype:
-    return "structure";
+    return "structtype";
   case corevm::IRValueType::ptrtype:
     return "ptr";
   }
@@ -422,15 +422,17 @@ IRDisassembler::disassemble(const corevm::IRInstruction& instr,
   }
   stream << ir_opcode_to_string(instr.opcode) << " ";
   disassemble(instr.opcodeval, stream);
+
+  if (!instr.oprds.empty())
+  {
+    stream << ",";
+  }
   stream << " ";
 
   for (size_t i = 0; i < instr.oprds.size(); ++i)
   {
     disassemble(instr.oprds[i], stream);
-    if (i < instr.oprds.size() - 1)
-    {
-      stream << ", ";
-    }
+    stream << " ";
   }
 
   if (!instr.labels.is_null())
@@ -460,10 +462,13 @@ void
 IRDisassembler::disassemble(const corevm::IRValue& val,
   std::ostream& stream) const
 {
+  stream << ir_value_type_to_string(val.type) << " ";
+
   switch (val.value.idx())
   {
   case 0:
     // do nothing.
+    stream << val.value.get_bool();
     break;
   case 1:
     stream << val.value.get_bool();
@@ -481,24 +486,12 @@ IRDisassembler::disassemble(const corevm::IRValue& val,
     stream << val.value.get_double();
     break;
   case 6:
-    stream << val.value.get_string();
+    stream << '"' << val.value.get_string() << '"';
     break;
   case 7:
     const auto& array_val = val.value.get_IRArrayValue();
-    stream << "[ " << array_val.len << " x "
+    stream << "[ " << array_val.len << " * "
       << ir_value_type_to_string(array_val.type) << " ]";
-    break;
-  }
-
-  switch (val.value.idx())
-  {
-  case 2:
-  case 3:
-  case 4:
-  case 5:
-    stream << " " << ir_value_type_to_string(val.type);
-    break;
-  default:
     break;
   }
 }

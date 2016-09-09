@@ -67,6 +67,21 @@ target_link_libraries(ir_dis
     )
 
 
+# Build executable `ir_asm`.
+add_executable(ir_asm
+    ir_asm.cc
+    )
+
+
+set_target_properties(ir_asm PROPERTIES COMPILE_FLAGS "-O3")
+
+
+target_link_libraries(ir_asm
+    libcorevm
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
+
+
 # Generate artifacts.
 set(ARTIFACTS_DIR "${PROJECT_SOURCE_DIR}/build/artifacts")
 add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
