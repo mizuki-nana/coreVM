@@ -49,6 +49,7 @@ Contents
    reference.rst
    roadmap.rst
    focus.rst
+   contribute.rst
 
 
 Indices and tables
