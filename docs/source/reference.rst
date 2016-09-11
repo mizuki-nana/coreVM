@@ -1118,13 +1118,8 @@ Below is the IR schema:
                 "type": "string"
               },
               {
-                "name": "id",
-                "type": "long"
-              },
-              {
-                "name": "parent_id",
-                "type": "long",
-                "default": -1
+                "name": "parent",
+                "type": ["null", "string"]
               },
               {
                 "name": "rettype",
@@ -1877,7 +1872,7 @@ Sample Output:
         %name = getattr string "name", ui8 16 
     }
 
-    def string compute(ui32 lhs_val, dpf rhs_val, array* values) {
+    def string compute(ui32 lhs_val, dpf rhs_val, array* values) :find_friends {
     entry:
         %sum = add ui8 16, %lhs_val %rhs_val 
         store string "val", array [ 6 * i32 ] %values 

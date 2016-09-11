@@ -375,7 +375,14 @@ IRDisassembler::disassemble(const corevm::IRClosure& closure,
       stream << ", ";
     }
   }
-  stream << ") {" << std::endl;
+  stream << ")";
+
+  if (!closure.parent.is_null())
+  {
+    stream <<  " :" << closure.parent.get_string();
+  }
+
+  stream << " {" << std::endl;
 
   for (const auto& block : closure.blocks)
   {

@@ -678,7 +678,21 @@ IRAssembler::Parser::parse_closure(corevm::IRModule& module)
     closure.parameters.push_back(parameter);
   }
 
-  if (getNextToken() != '{')
+  if (getNextToken() == ':')
+  {
+    if (getNextToken() == Lexer::tok_identifier)
+    {
+      closure.parent.set_string(lexer.IdentifierStr);
+      getNextToken();
+    }
+    else
+    {
+      error("Expected string-type parent closure name");
+      return false;
+    }
+  }
+
+  if (CurTok != '{')
   {
     error("Expected closure open brace");
     return false;

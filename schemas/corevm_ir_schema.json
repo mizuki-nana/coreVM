@@ -120,13 +120,8 @@
               "type": "string"
             },
             {
-              "name": "id",
-              "type": "long"
-            },
-            {
-              "name": "parent_id",
-              "type": "long",
-              "default": -1
+              "name": "parent",
+              "type": ["null", "string"]
             },
             {
               "name": "rettype",

@@ -44,7 +44,7 @@ class IRGen(object):
             self.schema = avro.schema.parse(schema_file.read())
 
     def run(self):
-        with open(self.output_file, 'w') as fd:
+        with open(self.output_file, 'wb') as fd:
             writer = avro.datafile.DataFileWriter(
                 fd, avro.io.DatumWriter(), self.schema)
             writer.append(self.ir())
@@ -125,8 +125,6 @@ class IRGen(object):
     def ir_closure_1(self):
         return {
             'name': 'find_friends',
-            'id': 1,
-            'parent_id': 0,
             'rettype': 'structtype',
             'ret_reftype': 'pointer',
             'parameters': [
@@ -224,8 +222,7 @@ class IRGen(object):
     def ir_closure_2(self):
         return {
             'name': 'compute',
-            'id': 2,
-            'parent_id': 1,
+            'parent': 'find_friends',
             'rettype': 'string',
             'ret_reftype': 'value',
             'parameters': [
