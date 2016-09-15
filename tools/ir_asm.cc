@@ -44,6 +44,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace {
 
+// -----------------------------------------------------------------------------
+
 static const std::vector<const char*> TYPE_KEYWORDS {
   "void",
   "bool",
@@ -62,6 +64,8 @@ static const std::vector<const char*> TYPE_KEYWORDS {
   "structtype",
   "ptr"
 };
+
+// -----------------------------------------------------------------------------
 
 static const std::vector<const char*> OPCODES {
   "alloca",
@@ -104,6 +108,8 @@ static const std::vector<const char*> OPCODES {
   "call"
 };
 
+// -----------------------------------------------------------------------------
+
 corevm::IRValueType
 str_to_ir_value_type(const std::string& str)
 {
@@ -119,6 +125,8 @@ str_to_ir_value_type(const std::string& str)
   return corevm::IRValueType::voidtype;
 }
 
+// -----------------------------------------------------------------------------
+
 corevm::IROpcode
 str_to_ir_opcode(const std::string& str)
 {
@@ -132,6 +140,22 @@ str_to_ir_opcode(const std::string& str)
   assert(0);
   return static_cast<corevm::IROpcode>(0);
 }
+
+// -----------------------------------------------------------------------------
+
+std::string
+extract_metadata_value(const std::string& line, const char* key)
+{
+  std::string value;
+  if (line.find(key) == 0)
+  {
+    value = line.substr(strlen(key) + 1);
+  }
+
+  return value;
+}
+
+// -----------------------------------------------------------------------------
 
 } /* end anonymous namespace */
 
@@ -403,75 +427,56 @@ IRAssembler::Parser::parse_module_metadata(corevm::IRModule& module)
       break;
     }
 
-    if (line.find("module name :") != std::string::npos)
+    std::string value;
+    if (!(value = extract_metadata_value(line, "module name :")).empty())
     {
-      char buf[256] = {0};
-      if (sscanf(line.c_str(), "module name : %s", buf))
+      module.meta.name = value;
+      if (m_debug)
       {
-        module.meta.name.assign(buf);
-        if (m_debug)
-        {
-          printf("Module name : %s\n", module.meta.name.c_str());
-        }
+        printf("Module name : %s\n", module.meta.name.c_str());
       }
     }
-    else if (line.find("format version :") != std::string::npos)
+    else if (!(value = extract_metadata_value(line, "format version :")).empty())
     {
-      char buf[256] = {0};
-      if (sscanf(line.c_str(), "format version : %s", buf))
+      module.meta.format_version = value;
+      if (m_debug)
       {
-        module.meta.format_version.assign(buf);
-        if (m_debug)
-        {
-          printf("Module format version : %s\n",
-            module.meta.format_version.c_str());
-        }
+        printf("Module format version : %s\n",
+          module.meta.format_version.c_str());
       }
     }
-    else if (line.find("target version : ") != std::string::npos)
+    else if (!(value = extract_metadata_value(line, "target version :")).empty())
     {
-      char buf[256] = {0};
-      if (sscanf(line.c_str(), "target version : %s", buf))
+      module.meta.target_version = value;
+      if (m_debug)
       {
-        module.meta.target_version.assign(buf);
-        if (m_debug)
-        {
-          printf("Module target version : %s\n",
-            module.meta.target_version.c_str());
-        }
+        printf("Module target version : %s\n",
+          module.meta.target_version.c_str());
       }
     }
-    else if (line.find("path : ") != std::string::npos)
+    else if (!(value = extract_metadata_value(line, "path :")).empty())
     {
-      char buf[256] = {0};
-      if (sscanf(line.c_str(), "path : %s", buf))
+      module.meta.path = value;
+      if (m_debug)
       {
-        module.meta.path.assign(buf);
-        if (m_debug)
-        {
-          printf("Module path : %s\n", module.meta.path.c_str());
-        }
+        printf("Module path : %s\n", module.meta.path.c_str());
       }
     }
-    else if (line.find("author : ") != std::string::npos)
+    else if (!(value = extract_metadata_value(line, "author :")).empty())
     {
-      char buf[256] = {0};
-      if (sscanf(line.c_str(), "author : %s", buf))
+      module.meta.author = value;
+      if (m_debug)
       {
-        module.meta.author.assign(buf);
-        if (m_debug)
-        {
-          printf("Module author : %s\n", module.meta.author.c_str());
-        }
+        printf("Module author : %s\n", module.meta.author.c_str());
       }
     }
     else if (line.find("timestamp : ") != std::string::npos)
     {
       int64_t timestamp;
 #ifdef __linux__
-      if (sscanf(line.c_str(), "timestamp : %ld", &timestamp))
+      if (sscanf(line.c_str(), "timestamp : %ld\n", &timestamp))
 #else
-      if (sscanf(line.c_str(), "timestamp : %lld", &timestamp))
+      if (sscanf(line.c_str(), "timestamp : %lld\n", &timestamp))
 #endif
       {
         module.meta.timestamp = timestamp;

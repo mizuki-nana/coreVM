@@ -1948,3 +1948,28 @@ Sample Output:
             Blocks: 2
 
     Total instruction count: 3
+
+ir_tools_integrity.py
+^^^^^^^^^^^^^^^^^^^^^
+
+Tests the integrity between the coreVM IR assembler and disassembler.
+
+Usage:
+
+  .. code::
+
+    python tools/ir_tools_integrity.py
+
+Example:
+
+  .. code::
+
+    python tools/ir_tools_integrity.py
+
+    Running IR tools integrity checker...
+    python tools/ir_gen.py --output sample.ir
+    ./build/tools/ir_dis --input sample.ir --output sample.ir.txt
+    ./build/tools/ir_asm --input sample.ir.txt --output sample2.ir
+    ./build/tools/ir_dis --input sample2.ir --output sample2.ir.txt
+    diff sample.ir.txt sample2.ir.txt
+    PASS
