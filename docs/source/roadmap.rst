@@ -147,8 +147,9 @@ roadmap in the near future, with their respective completion dates and ETAs:
    Benchmark infrastructure                                Jun, 2015
    Python features convergence (cont'd)                    Oct, 2015
    Optimizations (cont'd)                                  Feb, 2016
-   JIT optimizations                                       Jul, 2016
-   Multi-threaded runtime                                  Nov, 2016
+   Entry API                                               Jul, 2016
+   JIT pipeline                                            Dec, 2016
+   Multi-threaded runtime                                  TBD
    Debugging and Profiling API                             TBD
    Embedder API                                            TBD
    Extension API                                           TBD
