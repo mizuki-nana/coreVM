@@ -114,6 +114,9 @@ if (NOT CMAKE_COMPILER_IS_GNUCXX)
 add_library(libcorevm_dbg ${sources})
 
 
+add_dependencies(libcorevm_dbg IRFormat)
+
+
 set_target_properties(libcorevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg")
 
 
@@ -150,6 +153,9 @@ if(BUILD_SANITY_BIN)
 
 
 add_library(libcorevm_dbg_asan ${sources})
+
+
+add_dependencies(libcorevm_dbg_asan IRFormat)
 
 
 set_target_properties(libcorevm_dbg_asan PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg_asan")

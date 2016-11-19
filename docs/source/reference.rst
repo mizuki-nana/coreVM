@@ -26,7 +26,7 @@ straightforward as possible. Currently, the build system requires
 
   * `Boost <http://www.boost.org/>`_ version 1.55
   * `Google Test <https://code.google.com/p/googletest/>`_ version 1.7.0
-  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.1
+  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.2 beta (001c1ef)
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
   * `LLVM <http://www.llvm.org/>`_ version 3.4.0
   * `benchmark <https://github.com/google/benchmark>`_ version 1.0.0
@@ -116,10 +116,13 @@ Continuous Integration 1
 ########################
 
 **Operating System:**
-`Linux 3.13.0-63-generic #104~precise1-Ubuntu SMP x86_64 GNU/Linux`
+`Linux testing-gce-6d2a2bc6-283a-470a-90b9-9443d55ea351 3.13.0-92-generic #139~precise1-Ubuntu SMP Wed Jun 29 21:30:37 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux`
 
-**Compiler:**
+**Compiler (Clang):**
 `clang version 3.4 (tags/RELEASE_34/final) Target: x86_64-unknown-linux-gnu Thread model: posix`
+
+**Compiler (gcc/g++):**
+`g++ (Ubuntu 4.8.1-2ubuntu1~12.04) 4.8.1`
 
 **Python:**
 `Python 2.7.3`
@@ -131,7 +134,7 @@ Continuous Integration 1
 `GNU Make 3.81 This program built for x86_64-pc-linux-gnu`
 
 **Sphinx:**
-`Sphinx (sphinx-build) 1.4.6`
+`Sphinx (sphinx-build) 1.4.8`
 
 ----
 
@@ -139,22 +142,22 @@ Continuous Integration 2
 ########################
 
 **Operating System:**
-`OS X 10.9.5 Darwin Kernel Version 13.4.0`
+`Darwin Traviss-Mac-1126.local 15.6.0 Darwin Kernel Version 15.6.0: Mon Aug 29 20:21:34 PDT 2016; root:xnu-3248.60.11~1/RELEASE_X86_64 x86_64`
 
-**Compiler:**
-`Apple LLVM version 6.0 (clang-600.0.54) (based on LLVM 3.5svn) Target: x86_64-apple-darwin13.4.0 Thread model: posix`
+**Compiler (Clang):**
+`Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
 
 **Python:**
-`Python 2.7.5`
+`Python 2.7.12`
 
 **CMake:**
-`cmake version 3.0.2`
+`cmake version 3.6.2`
 
 **GNU Make:**
 `GNU Make 3.81 This program built for i386-apple-darwin11.3.0`
 
 **Sphinx:**
-`Sphinx (sphinx-build) 1.4.6`
+`Sphinx (sphinx-build) 1.4.8`
 
 
 Bytecode Format and Encoding

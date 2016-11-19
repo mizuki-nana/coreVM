@@ -42,13 +42,16 @@ set(CMAKE_BUILD_TYPE Release ... FORCE)
 set(CMAKE_CXX_COMPILER "clang++" CACHE string "")
 
 
+set(CMAKE_MACOSX_RPATH 1)
+
+
 # General compiler flags.
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "-std=c++11 -w")
 else ()
     set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} MATCHES "7.3.0")
-        # Settings for local OS X dev machine.
+        # Settings for local macOS dev machine.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-id-macro -Wno-shorten-64-to-32 -Wno-double-promotion")
     endif()
 endif (CMAKE_COMPILER_IS_GNUCXX)

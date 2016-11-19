@@ -33,6 +33,8 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == 'linux' ]]; then export PATH=/usr/local/bin:$PATH ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then brew update ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then brew install boost155 ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then export BOOST_LIBRARYDIR=/usr/local/lib/boost ; fi
+  - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then export BOOST_INCLUDEDIR=/usr/local/opt/boost155/include ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then sudo pip install sphinx; fi
   - sudo pip install --upgrade pip
   - sudo pip install sphinx_rtd_theme
