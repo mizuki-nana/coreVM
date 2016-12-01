@@ -98,6 +98,9 @@ Development 2
 **Compiler:**
 `Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
 
+**Xcode:**
+`Version 7.3.1 (7D1014)`
+
 **Python:**
 `Python 2.7.10`
 

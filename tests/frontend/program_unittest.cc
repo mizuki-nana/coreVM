@@ -30,7 +30,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class ProgramUnitTest : public ::testing::Test {};
 
-
+// NOTE: This test makes Xcode emit error even on success.
+#ifndef __APPLE__
 TEST_F(ProgramUnitTest, TestRun)
 {
   corevm::Program program;
@@ -49,3 +50,4 @@ TEST_F(ProgramUnitTest, TestRun)
 
   std::cout << "(error here expected)" << std::endl;
 }
+#endif

@@ -25,6 +25,8 @@ Validates the consistency and integrity of the IR assembler and disassembler
 tools.
 """
 
+import optparse
+import os
 import subprocess
 import sys
 
@@ -58,12 +60,15 @@ class Step(object):
 
 ## -----------------------------------------------------------------------------
 
-def run():
+def run(opts):
+    ir_dis_path = os.path.join(opts.build_dir, 'ir_dis')
+    ir_asm_path = os.path.join(opts.build_dir, 'ir_asm')
+
     cmds = (
         'python tools/ir_gen.py --output sample.ir',
-        './build/tools/ir_dis --input sample.ir --output sample.ir.txt',
-        './build/tools/ir_asm --input sample.ir.txt --output sample2.ir',
-        './build/tools/ir_dis --input sample2.ir --output sample2.ir.txt',
+        '%s --input sample.ir --output sample.ir.txt' % ir_dis_path,
+        '%s --input sample.ir.txt --output sample2.ir' % ir_asm_path,
+        '%s --input sample2.ir --output sample2.ir.txt' % ir_dis_path,
         'diff sample.ir.txt sample2.ir.txt',
     )
 
@@ -77,8 +82,23 @@ def run():
 ## -----------------------------------------------------------------------------
 
 def main():
+    parser = optparse.OptionParser(
+       usage='usage: %prog [options]',
+       version='%prog v1.0') 
+
+    parser.add_option(
+        '-d',
+        '--build_dir',
+        action='store',
+        dest='build_dir',
+        default='',
+        help='Build directory of IR tools'
+    )
+
+    opts, _ = parser.parse_args()
+
     print 'Running IR tools integrity checker...'
-    if run():
+    if run(opts):
         print '{color}{status}{reset}'.format(
             color=colors.OKGREEN, status='PASS', reset=colors.ENDC)
     else:

@@ -85,7 +85,7 @@ target_link_libraries(ir_asm
 # Validate IR tools.
 add_custom_command(OUTPUT ir_validation_output WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ir_dis ir_asm
-    COMMAND python tools/ir_tools_integrity.py)
+    COMMAND python tools/ir_tools_integrity.py  --build_dir $<TARGET_FILE_DIR:ir_asm>)
 add_custom_target(ir_validation_target ALL DEPENDS ir_validation_output)
 
 
@@ -94,4 +94,4 @@ set(ARTIFACTS_DIR "${PROJECT_SOURCE_DIR}/build/artifacts")
 add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
     mkdir -p ${ARTIFACTS_DIR}/build/artifacts)
 add_custom_command(TARGET extract_metadata POST_BUILD COMMAND
-    ./extract_metadata ${ARTIFACTS_DIR}/corevm_metadata.json)
+    $<TARGET_FILE:extract_metadata> ${ARTIFACTS_DIR}/corevm_metadata.json)

@@ -79,7 +79,7 @@ add_dependencies(libcorevm IRFormat)
 set_target_properties(libcorevm PROPERTIES COMPILE_FLAGS "-O3" OUTPUT_NAME "corevm")
 
 
-add_custom_command(TARGET libcorevm POST_BUILD COMMAND ls -al ./libcorevm.a)
+add_custom_command(TARGET libcorevm POST_BUILD COMMAND ls -al $<TARGET_FILE:libcorevm>)
 
 
 # Binary `coreVM`.
@@ -101,7 +101,7 @@ target_link_libraries(coreVM
     )
 
 
-add_custom_command(TARGET coreVM POST_BUILD COMMAND ls -al ./coreVM)
+add_custom_command(TARGET coreVM POST_BUILD COMMAND ls -al $<TARGET_FILE:coreVM>)
 
 
 ### Debug version (pure).
@@ -120,7 +120,7 @@ add_dependencies(libcorevm_dbg IRFormat)
 set_target_properties(libcorevm_dbg PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg")
 
 
-add_custom_command(TARGET libcorevm_dbg POST_BUILD COMMAND ls -al ./libcorevm_dbg.a)
+add_custom_command(TARGET libcorevm_dbg POST_BUILD COMMAND ls -al $<TARGET_FILE:libcorevm_dbg>)
 
 
 # Binary `coreVM_dbg`.
@@ -136,7 +136,7 @@ target_link_libraries(coreVM_dbg
 set_target_properties(coreVM_dbg PROPERTIES LINK_FLAGS "-rdynamic -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 
-add_custom_command(TARGET coreVM_dbg POST_BUILD COMMAND ls -al ./coreVM_dbg)
+add_custom_command(TARGET coreVM_dbg POST_BUILD COMMAND ls -al $<TARGET_FILE:coreVM_dbg>)
 
 
 endif() # if (NOT CMAKE_COMPILER_IS_GNUCXX)
@@ -161,7 +161,7 @@ add_dependencies(libcorevm_dbg_asan IRFormat)
 set_target_properties(libcorevm_dbg_asan PROPERTIES COMPILE_FLAGS "-D__DEBUG__=1 -DINSTRUMENTAL_MEASUREMENT=1 -g -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls" OUTPUT_NAME "corevm_dbg_asan")
 
 
-add_custom_command(TARGET libcorevm_dbg_asan POST_BUILD COMMAND ls -al ./libcorevm_dbg_asan.a)
+add_custom_command(TARGET libcorevm_dbg_asan POST_BUILD COMMAND ls -al $<TARGET_FILE:libcorevm_dbg_asan>)
 
 
 # Binary `coreVM_dbg_asan`.
@@ -177,7 +177,7 @@ target_link_libraries(coreVM_dbg_asan
 set_target_properties(coreVM_dbg_asan PROPERTIES LINK_FLAGS "-rdynamic -fno-inline -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 
 
-add_custom_command(TARGET coreVM_dbg_asan POST_BUILD COMMAND ls -al ./coreVM_dbg_asan)
+add_custom_command(TARGET coreVM_dbg_asan POST_BUILD COMMAND ls -al $<TARGET_FILE:coreVM_dbg_asan>)
 
 
 endif() # if(BUILD_SANITY_BIN)

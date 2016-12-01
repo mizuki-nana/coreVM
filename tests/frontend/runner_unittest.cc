@@ -31,7 +31,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 class RunnerUnitTest : public ::testing::Test {};
 
-
+// NOTE: This test makes Xcode emit error even on success.
+#ifndef __APPLE__
 TEST_F(RunnerUnitTest, TestRun)
 {
   corevm::api::core::Configuration configuration;
@@ -42,3 +43,4 @@ TEST_F(RunnerUnitTest, TestRun)
 
   std::cout << "(error here expected)" << std::endl;
 }
+#endif
