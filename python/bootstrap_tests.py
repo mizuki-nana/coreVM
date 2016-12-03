@@ -104,6 +104,8 @@ def run(options):
     SUCCESS = 'SUCCESS'
     FAILED = 'FAILED'
 
+    end_color = colors.ENDC if options.show_color else ''
+
     for path in real_inputs:
         info = path
 
@@ -114,7 +116,7 @@ def run(options):
         begin_time = time.time()
 
         if not (options.sanity_test or options.dynamic_analysis):
-            retcode = StdoutComparator(lhs_args, rhs_args).run()
+            retcode = StdoutComparator(lhs_args, rhs_args).run(show_color=options.show_color)
         else:
             retcode = subprocess.call(lhs_args, stdout=subprocess.PIPE)
 
@@ -130,22 +132,23 @@ def run(options):
             passed_tests_count += 1
 
         status_str = SUCCESS if success else FAILED
-        color = colors.OKGREEN if success else colors.FAIL
+        begin_color = (colors.OKGREEN if success else colors.FAIL) if options.show_color else ''
 
         print '{path:<30}{begin_color} [{status_str:<7}] {elapsed_time:3.3f} s{end_color}'.format(
             path=path,
-            begin_color=color,
+            begin_color=begin_color,
             status_str=status_str,
             elapsed_time=elapsed_time,
-            end_color=colors.ENDC)
+            end_color=end_color)
 
     # Print overall status.
     success = passed_tests_count == total_tests_count
     print
+    begin_color = (colors.OKGREEN if success else colors.FAIL) if options.show_color else ''
     print '{begin_color}{success}{end_color}'.format(
-        begin_color=colors.OKGREEN if success else colors.FAIL,
+        begin_color=begin_color,
         success=SUCCESS if success else FAILED,
-        end_color=colors.ENDC)
+        end_color=end_color)
     print '%d / %d tests passed' % (passed_tests_count, total_tests_count)
     print 'Cumulated execution time: {cumulated_time:3.3f} s'.format(
         cumulated_time=cumulated_time)
@@ -202,6 +205,15 @@ def main():
         dest='strict_mode',
         default=False,
         help='Run in strict mode (all tests must pass)'
+    )
+
+    parser.add_option(
+        '-c',
+        '--color',
+        action='store_true',
+        dest='show_color',
+        default=False,
+        help='Whether to show colored output'
     )
 
     options, _ = parser.parse_args()

@@ -31,7 +31,7 @@ class StdoutComparator(object):
         self.lhs_args = lhs_args
         self.rhs_args = rhs_args
 
-    def run(self):
+    def run(self, show_color=True):
         try:
             lhs_output = subprocess.check_output(self.lhs_args)
         except subprocess.CalledProcessError:
@@ -45,13 +45,25 @@ class StdoutComparator(object):
         if lhs_output == rhs_output:
             return 0
 
-        output = colors.HEADER + 'Difference in output:\n'
-        output += colors.FAIL
+        output = ''
+        if show_color:
+            output = colors.HEADER
+
+        output += 'Difference in output:\n'
+
+        if show_color:
+            output += colors.FAIL
+
         output += lhs_output
         output += '\n'
-        output += colors.OKBLUE
+
+        if show_color:
+            output += colors.OKBLUE
         output += rhs_output
-        output += colors.ENDC
+
+        if show_color:
+            output += colors.ENDC
+
         output += '\n'
 
         print output
