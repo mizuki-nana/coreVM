@@ -33,7 +33,7 @@ using corevm::benchmarks::InstrBenchmarksFixture;
 // -----------------------------------------------------------------------------
 
 static void
-BenchmarkNtvhndlCreationInstrs(benchmark::State& state,
+BenchmarkNativeTypeCreationInstrs(benchmark::State& state,
   corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
@@ -54,29 +54,29 @@ BenchmarkNtvhndlCreationInstrs(benchmark::State& state,
 
 // -----------------------------------------------------------------------------
 
-#define BENCHMARK_NTVHNDL_CREATION_INSTR(name, handler)        \
+#define BENCHMARK_NATIVE_TYPE_CREATION_INSTR(name, handler)    \
 static void                                                    \
 Benchmark##name##Instr(benchmark::State& state)                \
 {                                                              \
-  BenchmarkNtvhndlCreationInstrs(state, (handler));            \
+  BenchmarkNativeTypeCreationInstrs(state, (handler));         \
 }                                                              \
 BENCHMARK(Benchmark##name##Instr)
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_NTVHNDL_CREATION_INSTR(INT8, corevm::runtime::instr_handler_int8);
-BENCHMARK_NTVHNDL_CREATION_INSTR(UINT8, corevm::runtime::instr_handler_uint8);
-BENCHMARK_NTVHNDL_CREATION_INSTR(INT16, corevm::runtime::instr_handler_int16);
-BENCHMARK_NTVHNDL_CREATION_INSTR(UINT16, corevm::runtime::instr_handler_uint16);
-BENCHMARK_NTVHNDL_CREATION_INSTR(INT32, corevm::runtime::instr_handler_int32);
-BENCHMARK_NTVHNDL_CREATION_INSTR(UINT32, corevm::runtime::instr_handler_uint32);
-BENCHMARK_NTVHNDL_CREATION_INSTR(INT64, corevm::runtime::instr_handler_int64);
-BENCHMARK_NTVHNDL_CREATION_INSTR(UINT64, corevm::runtime::instr_handler_uint64);
-BENCHMARK_NTVHNDL_CREATION_INSTR(BOOL, corevm::runtime::instr_handler_bool);
-BENCHMARK_NTVHNDL_CREATION_INSTR(DEC1, corevm::runtime::instr_handler_dec1);
-BENCHMARK_NTVHNDL_CREATION_INSTR(DEC2, corevm::runtime::instr_handler_dec2);
-BENCHMARK_NTVHNDL_CREATION_INSTR(STR, corevm::runtime::instr_handler_str);
-BENCHMARK_NTVHNDL_CREATION_INSTR(ARY, corevm::runtime::instr_handler_ary);
-BENCHMARK_NTVHNDL_CREATION_INSTR(MAP, corevm::runtime::instr_handler_map);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(INT8, corevm::runtime::instr_handler_int8);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(UINT8, corevm::runtime::instr_handler_uint8);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(INT16, corevm::runtime::instr_handler_int16);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(UINT16, corevm::runtime::instr_handler_uint16);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(INT32, corevm::runtime::instr_handler_int32);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(UINT32, corevm::runtime::instr_handler_uint32);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(INT64, corevm::runtime::instr_handler_int64);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(UINT64, corevm::runtime::instr_handler_uint64);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(BOOL, corevm::runtime::instr_handler_bool);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(DEC1, corevm::runtime::instr_handler_dec1);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(DEC2, corevm::runtime::instr_handler_dec2);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(STR, corevm::runtime::instr_handler_str);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(ARY, corevm::runtime::instr_handler_ary);
+BENCHMARK_NATIVE_TYPE_CREATION_INSTR(MAP, corevm::runtime::instr_handler_map);
 
 // -----------------------------------------------------------------------------

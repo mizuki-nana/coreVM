@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "common.h"
 #include "utils.h"
 #include "corevm/macros.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <ostream>
 
@@ -95,7 +95,7 @@ NativeTypesPool::at(_MyType::const_pointer ptr)
 
   if (ptr == nullptr)
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
   return *const_cast<_MyType::pointer>(ptr);
@@ -103,15 +103,15 @@ NativeTypesPool::at(_MyType::const_pointer ptr)
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle*
+types::NativeTypeValue*
 NativeTypesPool::create()
 {
   auto ptr = m_container.create();
 
   if (ptr == nullptr)
   {
-    THROW(NativeTypeHandleInsertionError(
-      "insufficient memory to store native type handle"));
+    THROW(NativeTypeValueInsertionError(
+      "insufficient memory to store native type value"));
   }
 
   return ptr;
@@ -119,15 +119,15 @@ NativeTypesPool::create()
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle*
-NativeTypesPool::create(const types::NativeTypeHandle& hndl)
+types::NativeTypeValue*
+NativeTypesPool::create(const types::NativeTypeValue& type_val)
 {
-  auto ptr = m_container.create(hndl);
+  auto ptr = m_container.create(type_val);
 
   if (ptr == nullptr)
   {
-    THROW(NativeTypeHandleInsertionError(
-      "insufficient memory to store native type handle"));
+    THROW(NativeTypeValueInsertionError(
+      "insufficient memory to store native type value"));
   }
 
   return ptr;
@@ -142,7 +142,7 @@ NativeTypesPool::erase(_MyType::pointer ptr)
 
   if (ptr == nullptr)
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
   m_container.destroy(ptr);

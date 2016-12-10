@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "runtime/instr.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/types.h"
 
 #include "instr_benchmarks_fixture.h"
@@ -40,7 +40,7 @@ void BenchmarkInstrSTRLEN(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -50,7 +50,7 @@ void BenchmarkInstrSTRLEN(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strlen(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -64,7 +64,7 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -72,7 +72,7 @@ void BenchmarkInstrSTRCLR(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -88,10 +88,10 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("!!!");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -99,8 +99,8 @@ void BenchmarkInstrSTRAPD(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -116,10 +116,10 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(8);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -127,8 +127,8 @@ void BenchmarkInstrSTRPSH(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -144,13 +144,13 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Helloworld");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::native_string(" ");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -158,9 +158,9 @@ void BenchmarkInstrSTRIST(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl3);
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd3);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -176,13 +176,13 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(10);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8('!');
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -190,9 +190,9 @@ void BenchmarkInstrSTRIST2(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl3);
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd3);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -208,10 +208,10 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello  world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -219,8 +219,8 @@ void BenchmarkInstrSTRERS(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -237,13 +237,13 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello  world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8(1);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -253,9 +253,9 @@ void BenchmarkInstrSTRERS2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl3);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd3);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strers2(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -270,16 +270,16 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello  world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8(1);
 
-  corevm::types::NativeTypeHandle hndl4 =
+  corevm::types::NativeTypeValue oprd4 =
     corevm::types::native_string(" ");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -287,10 +287,10 @@ void BenchmarkInstrSTRRPLC(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl4);
-  frame->push_eval_stack(hndl3);
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd4);
+  frame->push_eval_stack(oprd3);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -306,10 +306,10 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("Greetings!");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -317,8 +317,8 @@ void BenchmarkInstrSTRSWP(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -334,10 +334,10 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -347,8 +347,8 @@ void BenchmarkInstrSTRSUB(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strsub(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -363,13 +363,13 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint8(4);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8(5);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -379,9 +379,9 @@ void BenchmarkInstrSTRSUB2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl3);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd3);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strsub2(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -397,10 +397,10 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("world");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -410,8 +410,8 @@ void BenchmarkInstrSTRFND(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strfnd(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -427,13 +427,13 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("world");
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8(4);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -443,9 +443,9 @@ void BenchmarkInstrSTRFND2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl3);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd3);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strfnd2(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -461,10 +461,10 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("world");
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -474,8 +474,8 @@ void BenchmarkInstrSTRRFND(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strrfnd(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -491,13 +491,13 @@ void BenchmarkInstrSTRRFND2(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue oprd =
     corevm::types::native_string("Hello world");
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::native_string("hello");
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint8(4);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -507,9 +507,9 @@ void BenchmarkInstrSTRRFND2(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl3);
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd3);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_strrfnd2(
       instr, fixture.process(), &frame, &invk_ctx);

@@ -31,35 +31,35 @@ namespace types {
 
 /* --------------------------- UNARY OPERATIONS ----------------------------- */
 
-void interface_apply_positive_operator(NativeTypeHandle& operand);
+void interface_apply_positive_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_negation_operator(NativeTypeHandle& operand);
+void interface_apply_negation_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_increment_operator(NativeTypeHandle& operand);
+void interface_apply_increment_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_decrement_operator(NativeTypeHandle& operand);
+void interface_apply_decrement_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_logical_not_operator(NativeTypeHandle& operand);
+void interface_apply_logical_not_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_bitwise_not_operator(NativeTypeHandle& operand);
+void interface_apply_bitwise_not_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_abs_operator(NativeTypeHandle& operand);
+void interface_apply_abs_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_apply_sqrt_operator(NativeTypeHandle& operand);
+void interface_apply_sqrt_operator(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
@@ -69,115 +69,115 @@ void interface_apply_sqrt_operator(NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_addition_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_addition_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_subtraction_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_subtraction_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_multiplication_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_multiplication_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_division_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_division_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_modulus_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_modulus_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_pow_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_pow_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_logical_and_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_logical_and_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_logical_or_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_logical_or_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_bitwise_and_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_bitwise_and_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_bitwise_or_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_bitwise_or_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_bitwise_xor_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_bitwise_xor_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_bitwise_left_shift_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_bitwise_left_shift_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_bitwise_right_shift_operator(NativeTypeHandle& lhs,
-  NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_bitwise_right_shift_operator(NativeTypeValue& lhs,
+  NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_eq_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_eq_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_neq_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_neq_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_lt_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_lt_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_gt_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_gt_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_lte_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_lte_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_gte_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_gte_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_apply_cmp_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
+NativeTypeValue
+interface_apply_cmp_operator(NativeTypeValue& lhs, NativeTypeValue& rhs);
 
 // -----------------------------------------------------------------------------
 
@@ -187,59 +187,59 @@ interface_apply_cmp_operator(NativeTypeHandle& lhs, NativeTypeHandle& rhs);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int8(NativeTypeHandle& operand);
+void interface_to_int8(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint8(NativeTypeHandle& operand);
+void interface_to_uint8(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int16(NativeTypeHandle& operand);
+void interface_to_int16(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint16(NativeTypeHandle& operand);
+void interface_to_uint16(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int32(NativeTypeHandle& operand);
+void interface_to_int32(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint32(NativeTypeHandle& operand);
+void interface_to_uint32(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_int64(NativeTypeHandle& operand);
+void interface_to_int64(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_uint64(NativeTypeHandle& operand);
+void interface_to_uint64(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_bool(NativeTypeHandle& operand);
+void interface_to_bool(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec1(NativeTypeHandle& operand);
+void interface_to_dec1(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_dec2(NativeTypeHandle& operand);
+void interface_to_dec2(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_str(NativeTypeHandle& operand);
+void interface_to_str(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_ary(NativeTypeHandle& operand);
+void interface_to_ary(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_to_map(NativeTypeHandle& operand);
+void interface_to_map(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
@@ -249,34 +249,34 @@ void interface_to_map(NativeTypeHandle& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_truthy_value(const NativeTypeHandle& operand);
+NativeTypeValue interface_compute_truthy_value(const NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_repr_value(const NativeTypeHandle& operand);
+NativeTypeValue interface_compute_repr_value(const NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_hash_value(NativeTypeHandle& operand);
+NativeTypeValue interface_compute_hash_value(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_slice(NativeTypeHandle& operand,
-  NativeTypeHandle& start, NativeTypeHandle& stop);
+NativeTypeValue interface_compute_slice(NativeTypeValue& operand,
+  NativeTypeValue& start, NativeTypeValue& stop);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_stride(NativeTypeHandle& operand,
-  NativeTypeHandle& stride);
+NativeTypeValue interface_compute_stride(NativeTypeValue& operand,
+  NativeTypeValue& stride);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_compute_reverse(NativeTypeHandle& operand);
+NativeTypeValue interface_compute_reverse(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_apply_rounding(NativeTypeHandle& operand,
-  NativeTypeHandle& ndigits);
+NativeTypeValue interface_apply_rounding(NativeTypeValue& operand,
+  NativeTypeValue& ndigits);
 
 // -----------------------------------------------------------------------------
 
@@ -286,99 +286,99 @@ NativeTypeHandle interface_apply_rounding(NativeTypeHandle& operand,
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_string_get_size(NativeTypeHandle& operand);
+NativeTypeValue interface_string_get_size(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-void interface_string_clear(NativeTypeHandle& operand);
+void interface_string_clear(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_at(NativeTypeHandle& operand, NativeTypeHandle& index);
+NativeTypeValue
+interface_string_at(NativeTypeValue& operand, NativeTypeValue& index);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_at_2(NativeTypeHandle& operand, NativeTypeHandle& index);
-
-// -----------------------------------------------------------------------------
-
-void
-interface_string_append(NativeTypeHandle& operand, NativeTypeHandle& str);
+NativeTypeValue
+interface_string_at_2(NativeTypeValue& operand, NativeTypeValue& index);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_pushback(NativeTypeHandle& operand, NativeTypeHandle& c);
+interface_string_append(NativeTypeValue& operand, NativeTypeValue& str);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_insert_str(NativeTypeHandle& operand,
-  NativeTypeHandle& pos, NativeTypeHandle& str);
+interface_string_pushback(NativeTypeValue& operand, NativeTypeValue& c);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_insert_char(NativeTypeHandle& operand,
-  NativeTypeHandle& pos, NativeTypeHandle& c);
+interface_string_insert_str(NativeTypeValue& operand,
+  NativeTypeValue& pos, NativeTypeValue& str);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_erase(NativeTypeHandle& operand,
-  NativeTypeHandle& pos);
+interface_string_insert_char(NativeTypeValue& operand,
+  NativeTypeValue& pos, NativeTypeValue& c);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_erase2(NativeTypeHandle& operand,
-  NativeTypeHandle& pos, NativeTypeHandle& len);
+interface_string_erase(NativeTypeValue& operand,
+  NativeTypeValue& pos);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_replace_str(NativeTypeHandle& operand,
-  NativeTypeHandle& pos, NativeTypeHandle& len, NativeTypeHandle& str);
+interface_string_erase2(NativeTypeValue& operand,
+  NativeTypeValue& pos, NativeTypeValue& len);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_string_swap(NativeTypeHandle& operand, NativeTypeHandle& str);
+interface_string_replace_str(NativeTypeValue& operand,
+  NativeTypeValue& pos, NativeTypeValue& len, NativeTypeValue& str);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_substr(NativeTypeHandle& operand, NativeTypeHandle& pos);
+void
+interface_string_swap(NativeTypeValue& operand, NativeTypeValue& str);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_substr2(NativeTypeHandle& operand, NativeTypeHandle& pos,
-  NativeTypeHandle& len);
+NativeTypeValue
+interface_string_substr(NativeTypeValue& operand, NativeTypeValue& pos);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_find(NativeTypeHandle& operand, NativeTypeHandle& str);
+NativeTypeValue
+interface_string_substr2(NativeTypeValue& operand, NativeTypeValue& pos,
+  NativeTypeValue& len);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_find2(NativeTypeHandle& operand, NativeTypeHandle& str,
-  NativeTypeHandle& pos);
+NativeTypeValue
+interface_string_find(NativeTypeValue& operand, NativeTypeValue& str);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_rfind(NativeTypeHandle& operand, NativeTypeHandle& str);
+NativeTypeValue
+interface_string_find2(NativeTypeValue& operand, NativeTypeValue& str,
+  NativeTypeValue& pos);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_string_rfind2(NativeTypeHandle& operand, NativeTypeHandle& str,
-  NativeTypeHandle& pos);
+NativeTypeValue
+interface_string_rfind(NativeTypeValue& operand, NativeTypeValue& str);
+
+// -----------------------------------------------------------------------------
+
+NativeTypeValue
+interface_string_rfind2(NativeTypeValue& operand, NativeTypeValue& str,
+  NativeTypeValue& pos);
 
 // -----------------------------------------------------------------------------
 
@@ -388,61 +388,61 @@ interface_string_rfind2(NativeTypeHandle& operand, NativeTypeHandle& str,
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_array_size(NativeTypeHandle& operand);
+NativeTypeValue
+interface_array_size(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_array_empty(NativeTypeHandle& operand);
+NativeTypeValue
+interface_array_empty(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_array_at(NativeTypeHandle& operand, NativeTypeHandle& index);
+NativeTypeValue
+interface_array_at(NativeTypeValue& operand, NativeTypeValue& index);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_array_front(NativeTypeHandle& operand);
+NativeTypeValue interface_array_front(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_array_back(NativeTypeHandle& operand);
-
-// -----------------------------------------------------------------------------
-
-void
-interface_array_put(NativeTypeHandle& operand, NativeTypeHandle& index,
-  NativeTypeHandle& value);
+NativeTypeValue interface_array_back(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_array_append(NativeTypeHandle& operand, NativeTypeHandle& data);
+interface_array_put(NativeTypeValue& operand, NativeTypeValue& index,
+  NativeTypeValue& value);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_array_erase(NativeTypeHandle& operand, NativeTypeHandle& index);
-
-// -----------------------------------------------------------------------------
-
-NativeTypeHandle interface_array_pop(NativeTypeHandle& operand);
+interface_array_append(NativeTypeValue& operand, NativeTypeValue& data);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_array_swap(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
+interface_array_erase(NativeTypeValue& operand, NativeTypeValue& index);
 
 // -----------------------------------------------------------------------------
 
-void interface_array_clear(NativeTypeHandle& operand);
+NativeTypeValue interface_array_pop(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_array_merge(NativeTypeHandle& operand,
-  NativeTypeHandle& other_operand);
+void
+interface_array_swap(NativeTypeValue& operand, NativeTypeValue& other_operand);
+
+// -----------------------------------------------------------------------------
+
+void interface_array_clear(NativeTypeValue& operand);
+
+// -----------------------------------------------------------------------------
+
+NativeTypeValue
+interface_array_merge(NativeTypeValue& operand,
+  NativeTypeValue& other_operand);
 
 // -----------------------------------------------------------------------------
 
@@ -452,54 +452,54 @@ interface_array_merge(NativeTypeHandle& operand,
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_map_size(NativeTypeHandle& operand);
+NativeTypeValue interface_map_size(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_map_empty(NativeTypeHandle& operand);
+NativeTypeValue interface_map_empty(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_map_find(NativeTypeHandle& operand, NativeTypeHandle& key);
+NativeTypeValue
+interface_map_find(NativeTypeValue& operand, NativeTypeValue& key);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_map_at(NativeTypeHandle& operand, NativeTypeHandle& key);
-
-// -----------------------------------------------------------------------------
-
-void
-interface_map_put(NativeTypeHandle& operand, NativeTypeHandle& key,
-  NativeTypeHandle& data);
+NativeTypeValue
+interface_map_at(NativeTypeValue& operand, NativeTypeValue& key);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_map_erase(NativeTypeHandle& operand, NativeTypeHandle& key);
-
-// -----------------------------------------------------------------------------
-
-void interface_map_clear(NativeTypeHandle& operand);
+interface_map_put(NativeTypeValue& operand, NativeTypeValue& key,
+  NativeTypeValue& data);
 
 // -----------------------------------------------------------------------------
 
 void
-interface_map_swap(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
+interface_map_erase(NativeTypeValue& operand, NativeTypeValue& key);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_map_keys(NativeTypeHandle& operand);
+void interface_map_clear(NativeTypeValue& operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle interface_map_vals(NativeTypeHandle& operand);
+void
+interface_map_swap(NativeTypeValue& operand, NativeTypeValue& other_operand);
 
 // -----------------------------------------------------------------------------
 
-NativeTypeHandle
-interface_map_merge(NativeTypeHandle& operand, NativeTypeHandle& other_operand);
+NativeTypeValue interface_map_keys(NativeTypeValue& operand);
+
+// -----------------------------------------------------------------------------
+
+NativeTypeValue interface_map_vals(NativeTypeValue& operand);
+
+// -----------------------------------------------------------------------------
+
+NativeTypeValue
+interface_map_merge(NativeTypeValue& operand, NativeTypeValue& other_operand);
 
 // -----------------------------------------------------------------------------
 

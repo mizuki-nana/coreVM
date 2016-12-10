@@ -40,7 +40,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/common.h"
 #include "dyobj/dynamic_object_heap.h"
 #include "gc/garbage_collector.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "corevm/llvm_smallvector.h"
 
 #if __MEASURE_INSTRS__
@@ -68,30 +68,30 @@ namespace internal {
 
 // -----------------------------------------------------------------------------
 
-class NtvhndlCollectorGcCallback :
+class TypeValueCollectorGcCallback :
   public gc::GarbageCollector<Process::garbage_collection_scheme>::Callback
 {
 public:
   virtual void operator()(const dynamic_object_type& obj);
 
-  const std::vector<const types::NativeTypeHandle*>& list() const
+  const std::vector<const types::NativeTypeValue*>& list() const
   {
-    return m_ntvhndls;
+    return m_type_values;
   }
 
 private:
-  std::vector<const types::NativeTypeHandle*> m_ntvhndls;
+  std::vector<const types::NativeTypeValue*> m_type_values;
 };
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
 void
-NtvhndlCollectorGcCallback::operator()(const dynamic_object_type& obj)
+TypeValueCollectorGcCallback::operator()(const dynamic_object_type& obj)
 {
-  if (obj.has_ntvhndl())
+  if (obj.has_type_value())
   {
-    m_ntvhndls.push_back(&obj.ntvhndl());
+    m_type_values.push_back(&obj.type_value());
   }
 }
 
@@ -206,11 +206,11 @@ public:
 
   void push_stack(dyobj_ptr);
 
-  types::NativeTypeHandle& get_ntvhndl(const types::NativeTypeHandle*);
+  types::NativeTypeValue& get_type_value(const types::NativeTypeValue*);
 
-  types::NativeTypeHandle* insert_ntvhndl(const types::NativeTypeHandle&);
+  types::NativeTypeValue* insert_type_value(const types::NativeTypeValue&);
 
-  void erase_ntvhndl(const types::NativeTypeHandle*);
+  void erase_type_value(const types::NativeTypeValue*);
 
   void insert_attr_name(dyobj::attr_key_t, const char*);
 
@@ -244,9 +244,9 @@ public:
 
   dynamic_object_heap_type::size_type max_heap_size() const;
 
-  NativeTypesPool::size_type ntvhndl_pool_size() const;
+  NativeTypesPool::size_type native_type_pool_size() const;
 
-  NativeTypesPool::size_type max_ntvhndl_pool_size() const;
+  NativeTypesPool::size_type max_native_type_pool_size() const;
 
   size_t compartment_count() const;
 
@@ -295,7 +295,7 @@ private:
   DynamicObjectStack m_dyobj_stack;
   CallStack m_call_stack;
   InvocationCtxStack m_invocation_ctx_stack;
-  NativeTypesPool m_ntvhndl_pool;
+  NativeTypesPool m_native_type_pool;
   CompartmentStore m_compartments;
   FrameCache m_frame_cache;
   AttributeNameStore m_attr_name_store;
@@ -314,7 +314,7 @@ Process::Impl::Impl(Process* owner)
   m_dyobj_stack(),
   m_call_stack(),
   m_invocation_ctx_stack(),
-  m_ntvhndl_pool(),
+  m_native_type_pool(),
   m_compartments(),
   m_frame_cache(),
   m_attr_name_store(),
@@ -335,7 +335,7 @@ Process::Impl::Impl(Process* owner, uint64_t heap_alloc_size,
   m_dyobj_stack(),
   m_call_stack(),
   m_invocation_ctx_stack(),
-  m_ntvhndl_pool(pool_alloc_size),
+  m_native_type_pool(pool_alloc_size),
   m_compartments(),
   m_frame_cache(),
   m_attr_name_store(),
@@ -355,7 +355,7 @@ Process::Impl::Impl(Process* owner, const Process::Options& options)
   m_dyobj_stack(),
   m_call_stack(),
   m_invocation_ctx_stack(),
-  m_ntvhndl_pool(options.pool_alloc_size),
+  m_native_type_pool(options.pool_alloc_size),
   m_compartments(),
   m_frame_cache(),
   m_attr_name_store(),
@@ -742,41 +742,41 @@ Process::Impl::max_heap_size() const
 // -----------------------------------------------------------------------------
 
 NativeTypesPool::size_type
-Process::Impl::ntvhndl_pool_size() const
+Process::Impl::native_type_pool_size() const
 {
-  return m_ntvhndl_pool.size();
+  return m_native_type_pool.size();
 }
 
 // -----------------------------------------------------------------------------
 
 NativeTypesPool::size_type
-Process::Impl::max_ntvhndl_pool_size() const
+Process::Impl::max_native_type_pool_size() const
 {
-  return m_ntvhndl_pool.max_size();
+  return m_native_type_pool.max_size();
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle&
-Process::Impl::get_ntvhndl(const types::NativeTypeHandle* hndl)
+types::NativeTypeValue&
+Process::Impl::get_type_value(const types::NativeTypeValue* type_val)
 {
-  return m_ntvhndl_pool.at(hndl);
+  return m_native_type_pool.at(type_val);
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle*
-Process::Impl::insert_ntvhndl(const types::NativeTypeHandle& hndl)
+types::NativeTypeValue*
+Process::Impl::insert_type_value(const types::NativeTypeValue& type_val)
 {
-  return m_ntvhndl_pool.create(hndl);
+  return m_native_type_pool.create(type_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Process::Impl::erase_ntvhndl(const types::NativeTypeHandle* ptr)
+Process::Impl::erase_type_value(const types::NativeTypeValue* ptr)
 {
-  m_ntvhndl_pool.erase(const_cast<types::NativeTypeHandle*>(ptr));
+  m_native_type_pool.erase(const_cast<types::NativeTypeValue*>(ptr));
 }
 
 // -----------------------------------------------------------------------------
@@ -967,14 +967,14 @@ Process::Impl::do_gc()
 
   garbage_collector.set_logger(m_owner->m_logger);
 
-  internal::NtvhndlCollectorGcCallback callback;
+  internal::TypeValueCollectorGcCallback callback;
   garbage_collector.gc(&callback);
 
   std::for_each(
     callback.list().begin(),
     callback.list().end(),
-    [&](const types::NativeTypeHandle* ptr) {
-      this->erase_ntvhndl(ptr);
+    [&](const types::NativeTypeValue* ptr) {
+      this->erase_type_value(ptr);
     }
   );
 
@@ -1518,41 +1518,41 @@ Process::max_heap_size() const
 // -----------------------------------------------------------------------------
 
 NativeTypesPool::size_type
-Process::ntvhndl_pool_size() const
+Process::native_type_pool_size() const
 {
-  return m_impl->ntvhndl_pool_size();
+  return m_impl->native_type_pool_size();
 }
 
 // -----------------------------------------------------------------------------
 
 NativeTypesPool::size_type
-Process::max_ntvhndl_pool_size() const
+Process::max_native_type_pool_size() const
 {
-  return m_impl->max_ntvhndl_pool_size();
+  return m_impl->max_native_type_pool_size();
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle&
-Process::get_ntvhndl(const types::NativeTypeHandle* hndl)
+types::NativeTypeValue&
+Process::get_type_value(const types::NativeTypeValue* type_val)
 {
-  return m_impl->get_ntvhndl(hndl);
+  return m_impl->get_type_value(type_val);
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle*
-Process::insert_ntvhndl(const types::NativeTypeHandle& hndl)
+types::NativeTypeValue*
+Process::insert_type_value(const types::NativeTypeValue& type_val)
 {
-  return m_impl->insert_ntvhndl(hndl);
+  return m_impl->insert_type_value(type_val);
 }
 
 // -----------------------------------------------------------------------------
 
 void
-Process::erase_ntvhndl(const types::NativeTypeHandle* ptr)
+Process::erase_type_value(const types::NativeTypeValue* ptr)
 {
-  m_impl->erase_ntvhndl(ptr);
+  m_impl->erase_type_value(ptr);
 }
 
 // -----------------------------------------------------------------------------
@@ -1751,8 +1751,8 @@ Process::Printer::operator()(std::ostream& ost) const
 
   ost << "Heap size: " << m_process.heap_size() << std::endl;
   ost << "Max heap size: " << m_process.max_heap_size() << std::endl;
-  ost << "Native types pool size: " << m_process.ntvhndl_pool_size() << std::endl;
-  ost << "Max native types pool size: " << m_process.max_ntvhndl_pool_size() << std::endl;
+  ost << "Native types pool size: " << m_process.native_type_pool_size() << std::endl;
+  ost << "Max native types pool size: " << m_process.max_native_type_pool_size() << std::endl;
   ost << "Compartments: " << m_process.compartment_count() << std::endl;
 
   for (const auto& compartment : m_process.m_impl.get()->m_compartments)
@@ -1762,7 +1762,7 @@ Process::Printer::operator()(std::ostream& ost) const
   }
 
   ost << m_process.m_impl->m_dynamic_object_heap << std::endl;
-  ost << m_process.m_impl->m_ntvhndl_pool << std::endl;
+  ost << m_process.m_impl->m_native_type_pool << std::endl;
 
   ost << "-- END --" << std::endl;
   ost << std::endl;

@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "runtime/instr.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/types.h"
 
 #include "instr_benchmarks_fixture.h"
@@ -74,14 +74,14 @@ struct instr_handler_reverse_wrapper
 // -----------------------------------------------------------------------------
 
 template <typename handler_wrapper_cls, class IntrinsicType=corevm::types::int64>
-static void BenchmarkNtvhndlManipulationInstrs(benchmark::State& state)
+static void BenchmarkNativeTypeValueManipulationInstrs(benchmark::State& state)
 {
   corevm::runtime::Instr instr(0, 0, 0);
 
-  corevm::types::NativeTypeHandle hndl = IntrinsicType();
+  corevm::types::NativeTypeValue oprd = IntrinsicType();
 
   InstrBenchmarksFixture fixture;
-  fixture.process().top_frame().push_eval_stack(hndl);
+  fixture.process().top_frame().push_eval_stack(oprd);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -96,30 +96,30 @@ static void BenchmarkNtvhndlManipulationInstrs(benchmark::State& state)
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_truthy_wrapper);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_truthy_wrapper, corevm::types::boolean);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_truthy_wrapper, corevm::types::decimal2);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_truthy_wrapper);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_truthy_wrapper, corevm::types::boolean);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_truthy_wrapper, corevm::types::decimal2);
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::boolean);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::decimal);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::decimal2);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_string);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_array);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_map);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::boolean);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::decimal);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::decimal2);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_string);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_array);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_repr_wrapper, corevm::types::native_map);
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_hash_wrapper);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_string);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_array);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_map);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_hash_wrapper);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_string);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_array);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_hash_wrapper, corevm::types::native_map);
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_reverse_wrapper, corevm::types::native_array);
-BENCHMARK_TEMPLATE(BenchmarkNtvhndlManipulationInstrs, instr_handler_reverse_wrapper, corevm::types::native_string);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_reverse_wrapper, corevm::types::native_array);
+BENCHMARK_TEMPLATE(BenchmarkNativeTypeValueManipulationInstrs, instr_handler_reverse_wrapper, corevm::types::native_string);
 
 // -----------------------------------------------------------------------------

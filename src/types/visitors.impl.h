@@ -42,13 +42,13 @@ namespace types {
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_unary_visitor : public variant::static_visitor<NativeTypeHandle>
+class native_type_unary_visitor : public variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
 
   template<typename T>
-  NativeTypeHandle operator()(const T& operand) const
+  NativeTypeValue operator()(const T& operand) const
   {
     return op().template operator()(operand);
   }
@@ -57,7 +57,7 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_parameterized_unary_visitor : public variant::static_visitor<NativeTypeHandle>
+class native_type_parameterized_unary_visitor : public variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, unary_op_tag>::value, "");
@@ -70,7 +70,7 @@ public:
   }
 
   template<typename T>
-  NativeTypeHandle operator()(const T& operand) const
+  NativeTypeValue operator()(const T& operand) const
   {
     return m_op.template operator()(operand);
   }
@@ -98,13 +98,13 @@ public:
 // -----------------------------------------------------------------------------
 
 template<class op>
-class native_type_binary_visitor : public variant::static_visitor<NativeTypeHandle>
+class native_type_binary_visitor : public variant::static_visitor<NativeTypeValue>
 {
 public:
   static_assert(std::is_same<typename op::operator_category, binary_op_tag>::value, "");
 
   template<typename T, typename U>
-  NativeTypeHandle operator()(const T& lhs, const U& rhs) const
+  NativeTypeValue operator()(const T& lhs, const U& rhs) const
   {
     if (sizeof(lhs) >= sizeof(rhs))
     {

@@ -29,16 +29,16 @@ add_executable(run_benchmarks
     micro/variant_benchmark.cc
     micro/complex_native_type_benchmark.cc
     micro/object_container_benchmark.cc
-    micro/ntvhndl_benchmark.cc
+    micro/native_type_benchmark.cc
     micro/process_benchmark.cc
     micro/frame_benchmark.cc
     micro/object_instrs_benchmark.cc
     micro/control_instrs_benchmark.cc
     micro/function_instrs_benchmark.cc
-    micro/ntvhndl_arithmetic_instrs_benchmark.cc
-    micro/ntvhndl_creation_instrs_benchmark.cc
-    micro/ntvhndl_conversion_instrs_benchmark.cc
-    micro/ntvhndl_manipulation_instrs_benchmark.cc
+    micro/native_type_arithmetic_instrs_benchmark.cc
+    micro/native_type_creation_instrs_benchmark.cc
+    micro/native_type_conversion_instrs_benchmark.cc
+    micro/native_type_manipulation_instrs_benchmark.cc
     micro/native_string_instrs_benchmark.cc
     micro/native_array_instrs_benchmark.cc
     micro/native_map_instrs_benchmark.cc

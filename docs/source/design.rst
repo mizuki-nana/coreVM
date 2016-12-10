@@ -70,9 +70,9 @@ their modeling provides the flexibility for language developers to incorporate
 their custom object abstractions and meta-programming features.
 
 Dynamic object can also reference native types. For example, one may implement
-boxed integers in a programming language as dynamic objects that each holds a
-native type handle of type 32-bit signed integer, in order to perform integer
-arithmetic operations.
+boxed integers in a programming language as dynamic objects that each holds an
+instance of native type value of type 32-bit signed integer, in order to perform
+integer arithmetic operations.
 
 
 .. _garbage-collection:

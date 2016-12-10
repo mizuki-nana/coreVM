@@ -21,7 +21,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "runtime/native_types_pool.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <gtest/gtest.h>
 
@@ -46,20 +46,20 @@ TEST_F(NativeTypesPoolUnitTest, TestCreateAndAccess)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  auto created_hndl = pool.create();
+  auto created_type_val = pool.create();
 
-  ASSERT_NE(nullptr, created_hndl);
+  ASSERT_NE(nullptr, created_type_val);
 
   ASSERT_EQ(1, pool.size());
 
-  corevm::types::NativeTypeHandle& hndl = pool.at(created_hndl);
+  corevm::types::NativeTypeValue& type_val = pool.at(created_type_val);
 
   int value = 8;
-  hndl = corevm::types::int8(value);
+  type_val = corevm::types::int8(value);
 
-  corevm::types::NativeTypeHandle& hndl2 = pool.at(created_hndl);
+  corevm::types::NativeTypeValue& type_val2 = pool.at(created_type_val);
 
-  int actual_value = corevm::types::get_value_from_handle<int8_t>(hndl2);
+  int actual_value = corevm::types::get_intrinsic_value_from_type_value<int8_t>(type_val2);
 
   ASSERT_EQ(value, actual_value);
 }
@@ -70,13 +70,13 @@ TEST_F(NativeTypesPoolUnitTest, TestInvalidAccess)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  corevm::types::NativeTypeHandle hndl;
+  corevm::types::NativeTypeValue type_val;
 
   ASSERT_THROW(
     {
-      pool.at(&hndl);
+      pool.at(&type_val);
     },
-    corevm::runtime::NativeTypeHandleNotFoundError
+    corevm::runtime::NativeTypeValueNotFoundError
   );
 }
 
@@ -86,29 +86,29 @@ TEST_F(NativeTypesPoolUnitTest, TestCreateAndErase)
 {
   corevm::runtime::NativeTypesPool pool;
 
-  auto created_hndl = pool.create();
+  auto created_type_val = pool.create();
 
-  ASSERT_NE(nullptr, created_hndl);
+  ASSERT_NE(nullptr, created_type_val);
 
   ASSERT_EQ(1, pool.size());
 
-  pool.erase(created_hndl);
+  pool.erase(created_type_val);
 
   ASSERT_EQ(0, pool.size());
 
   // Second time calling `.erase`
   ASSERT_THROW(
     {
-      pool.erase(created_hndl);
+      pool.erase(created_type_val);
     },
-    corevm::runtime::NativeTypeHandleNotFoundError
+    corevm::runtime::NativeTypeValueNotFoundError
   );
 
   ASSERT_THROW(
     {
-      pool.at(created_hndl);
+      pool.at(created_type_val);
     },
-    corevm::runtime::NativeTypeHandleNotFoundError
+    corevm::runtime::NativeTypeValueNotFoundError
   );
 }
 

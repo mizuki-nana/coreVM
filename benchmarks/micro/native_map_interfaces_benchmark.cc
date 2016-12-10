@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "types/interfaces.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 
 // -----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 static
 void Benchmark_InterfaceMapSize(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -39,7 +39,7 @@ void Benchmark_InterfaceMapSize(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_size(hndl);
+    auto res = corevm::types::interface_map_size(oprd);
   }
 }
 
@@ -48,7 +48,7 @@ void Benchmark_InterfaceMapSize(benchmark::State& state)
 static
 void Benchmark_InterfaceMapEmpty(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -56,7 +56,7 @@ void Benchmark_InterfaceMapEmpty(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_empty(hndl);
+    auto res = corevm::types::interface_map_empty(oprd);
   }
 }
 
@@ -65,16 +65,16 @@ void Benchmark_InterfaceMapEmpty(benchmark::State& state)
 static
 void Benchmark_InterfaceMapFind(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeValue oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_find(hndl, oprd2);
+    auto res = corevm::types::interface_map_find(oprd, oprd2);
   }
 }
 
@@ -83,16 +83,16 @@ void Benchmark_InterfaceMapFind(benchmark::State& state)
 static
 void Benchmark_InterfaceMapAt(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeValue oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_at(hndl, oprd2);
+    auto res = corevm::types::interface_map_at(oprd, oprd2);
   }
 }
 
@@ -101,17 +101,17 @@ void Benchmark_InterfaceMapAt(benchmark::State& state)
 static
 void Benchmark_InterfaceMapPut(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
-  corevm::types::NativeTypeHandle oprd3((corevm::types::uint32(200)));
+  corevm::types::NativeTypeValue oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeValue oprd3((corevm::types::uint32(200)));
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_map_put(hndl, oprd2, oprd3);
+    corevm::types::interface_map_put(oprd, oprd2, oprd3);
   }
 }
 
@@ -120,16 +120,16 @@ void Benchmark_InterfaceMapPut(benchmark::State& state)
 static
 void Benchmark_InterfaceMapErase(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
-  corevm::types::NativeTypeHandle oprd2((corevm::types::uint32(2)));
+  corevm::types::NativeTypeValue oprd2((corevm::types::uint32(2)));
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_map_erase(hndl, oprd2);
+    corevm::types::interface_map_erase(oprd, oprd2);
   }
 }
 
@@ -138,7 +138,7 @@ void Benchmark_InterfaceMapErase(benchmark::State& state)
 static
 void Benchmark_InterfaceMapClear(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -146,7 +146,7 @@ void Benchmark_InterfaceMapClear(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_map_clear(hndl);
+    corevm::types::interface_map_clear(oprd);
   }
 }
 
@@ -155,13 +155,13 @@ void Benchmark_InterfaceMapClear(benchmark::State& state)
 static
 void Benchmark_InterfaceMapSwap(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
   })));
 
-  corevm::types::NativeTypeHandle oprd2((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd2((corevm::types::native_map({
     { 100, 1 },
     { 200, 2 },
     { 300, 3 }
@@ -169,7 +169,7 @@ void Benchmark_InterfaceMapSwap(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::types::interface_map_swap(hndl, oprd2);
+    corevm::types::interface_map_swap(oprd, oprd2);
   }
 }
 
@@ -178,7 +178,7 @@ void Benchmark_InterfaceMapSwap(benchmark::State& state)
 static
 void Benchmark_InterfaceMapKeys(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -186,7 +186,7 @@ void Benchmark_InterfaceMapKeys(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_keys(hndl);
+    auto res = corevm::types::interface_map_keys(oprd);
   }
 }
 
@@ -195,7 +195,7 @@ void Benchmark_InterfaceMapKeys(benchmark::State& state)
 static
 void Benchmark_InterfaceMapVals(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle hndl((corevm::types::native_map({
+  corevm::types::NativeTypeValue oprd((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 }
@@ -203,7 +203,7 @@ void Benchmark_InterfaceMapVals(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    auto res = corevm::types::interface_map_vals(hndl);
+    auto res = corevm::types::interface_map_vals(oprd);
   }
 }
 

@@ -184,7 +184,7 @@ set_values(Configuration& configuration, const sneaker::json::JSON& config_json)
     configuration.set_heap_alloc_size(heap_alloc_size);
   }
 
-  // Set ntv hndl pool alloc size.
+  // Set native type pool alloc size.
   if (config_obj.find("pool-alloc-size") != config_obj.end())
   {
     const JSON& pool_alloc_size_raw = config_obj.at("pool-alloc-size");

@@ -1,7 +1,6 @@
 language: cpp
 
 os:
-  - linux
   - osx
 
 addons:
@@ -37,6 +36,7 @@ install:
   - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then export BOOST_INCLUDEDIR=/usr/local/opt/boost155/include ; fi
   - if [[ "$TRAVIS_OS_NAME" == 'osx' ]]; then sudo pip install sphinx; fi
   - sudo pip install --upgrade pip
+  - sudo pip install --upgrade pyopenssl
   - sudo pip install sphinx_rtd_theme
 
 script:

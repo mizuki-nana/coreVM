@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/compartment.h"
 #include "runtime/instr.h"
 #include "runtime/process.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include "instr_benchmarks_fixture.h"
 
@@ -162,8 +162,8 @@ void BenchmarkInstrJMPIF(benchmark::State& state)
 
   corevm::runtime::Instr instr(0, 0, 0);
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::boolean(true);
-  fixture.process().top_frame().push_eval_stack(hndl);
+  corevm::types::NativeTypeValue type_val = corevm::types::boolean(true);
+  fixture.process().top_frame().push_eval_stack(type_val);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();

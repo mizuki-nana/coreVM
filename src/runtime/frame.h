@@ -88,19 +88,19 @@ public:
 
   void set_return_addr(instr_addr_t);
 
-  void push_eval_stack(const types::NativeTypeHandle&);
+  void push_eval_stack(const types::NativeTypeValue&);
 
-  void push_eval_stack(types::NativeTypeHandle&&);
+  void push_eval_stack(types::NativeTypeValue&&);
 
-  types::NativeTypeHandle pop_eval_stack();
+  types::NativeTypeValue pop_eval_stack();
 
-  types::NativeTypeHandle& top_eval_stack();
+  types::NativeTypeValue& top_eval_stack();
 
   void swap_eval_stack();
 
-  const std::vector<types::NativeTypeHandle>& eval_stack() const;
+  const std::vector<types::NativeTypeValue>& eval_stack() const;
 
-  types::NativeTypeHandle& eval_stack_element(size_t i);
+  types::NativeTypeValue& eval_stack_element(size_t i);
 
   size_t visible_var_count() const;
 
@@ -170,7 +170,7 @@ protected:
   instr_addr_t m_return_addr;
   VariableTable m_visible_vars;
   VariableTable m_invisible_vars;
-  std::vector<types::NativeTypeHandle> m_eval_stack;
+  std::vector<types::NativeTypeValue> m_eval_stack;
   dyobj_ptr m_exc_obj;
 };
 

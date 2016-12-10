@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include <benchmark/benchmark.h>
 
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/interfaces.h"
 #include "types/types.h"
 
@@ -30,21 +30,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlAssginment(benchmark::State& state)
+void BenchmarkNativeTypeValueAssginment(benchmark::State& state)
 {
   while (state.KeepRunning())
   {
-    corevm::types::NativeTypeHandle hndl = corevm::types::uint32(32);
+    corevm::types::NativeTypeValue type_val = corevm::types::uint32(32);
   }
 }
 
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlBinaryOperator(benchmark::State& state)
+void BenchmarkNativeTypeValueBinaryOperator(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::uint32(32);
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::int64(64);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::uint32(32);
+  corevm::types::NativeTypeValue oprd2 = corevm::types::int64(64);
 
   while (state.KeepRunning())
   {
@@ -56,10 +56,10 @@ void BenchmarkNtvhndlBinaryOperator(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlBinaryOperatorInterface(benchmark::State& state)
+void BenchmarkNativeTypeValueBinaryOperatorInterface(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::uint32(32);
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::int64(64);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::uint32(32);
+  corevm::types::NativeTypeValue oprd2 = corevm::types::int64(64);
 
   while (state.KeepRunning())
   {
@@ -70,11 +70,11 @@ void BenchmarkNtvhndlBinaryOperatorInterface(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand(benchmark::State& state)
+void BenchmarkNativeTypeValueSliceOperatorInterfaceWithArrayOperand(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle start = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle stop = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue start = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue stop = corevm::types::uint32(3);
 
   while (state.KeepRunning())
   {
@@ -85,11 +85,11 @@ void BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand(benchmark::State& st
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand(benchmark::State& state)
+void BenchmarkNativeTypeValueSliceOperatorInterfaceWithStringOperand(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle start = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle stop = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue start = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue stop = corevm::types::uint32(3);
 
   while (state.KeepRunning())
   {
@@ -100,10 +100,10 @@ void BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand(benchmark::State& s
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand(benchmark::State& state)
+void BenchmarkNativeTypeValueStrideOperatorInterfaceWithArrayOperand(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle stride = corevm::types::uint32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue stride = corevm::types::uint32(2);
 
   while (state.KeepRunning())
   {
@@ -114,10 +114,10 @@ void BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand(benchmark::State& s
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand(benchmark::State& state)
+void BenchmarkNativeTypeValueStrideOperatorInterfaceWithStringOperand(benchmark::State& state)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle stride = corevm::types::uint32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue stride = corevm::types::uint32(2);
 
   while (state.KeepRunning())
   {
@@ -127,12 +127,12 @@ void BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand(benchmark::State& 
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK(BenchmarkNtvhndlAssginment);
-BENCHMARK(BenchmarkNtvhndlBinaryOperator);
-BENCHMARK(BenchmarkNtvhndlBinaryOperatorInterface);
-BENCHMARK(BenchmarkNtvhndlSliceOperatorInterfaceWithArrayOperand);
-BENCHMARK(BenchmarkNtvhndlSliceOperatorInterfaceWithStringOperand);
-BENCHMARK(BenchmarkNtvhndlStrideOperatorInterfaceWithArrayOperand);
-BENCHMARK(BenchmarkNtvhndlStrideOperatorInterfaceWithStringOperand);
+BENCHMARK(BenchmarkNativeTypeValueAssginment);
+BENCHMARK(BenchmarkNativeTypeValueBinaryOperator);
+BENCHMARK(BenchmarkNativeTypeValueBinaryOperatorInterface);
+BENCHMARK(BenchmarkNativeTypeValueSliceOperatorInterfaceWithArrayOperand);
+BENCHMARK(BenchmarkNativeTypeValueSliceOperatorInterfaceWithStringOperand);
+BENCHMARK(BenchmarkNativeTypeValueStrideOperatorInterfaceWithArrayOperand);
+BENCHMARK(BenchmarkNativeTypeValueStrideOperatorInterfaceWithStringOperand);
 
 // -----------------------------------------------------------------------------

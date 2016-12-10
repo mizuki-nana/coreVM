@@ -49,7 +49,7 @@ namespace runtime {
  * - A heap for holding dynamic objects.
  * - A call stack for executing blocks of instructions.
  * - A stack of invocation contexts.
- * - A pool of native type handles.
+ * - A pool of native type values.
  * - A set of compartments.
  */
 class Process : public Loggable
@@ -160,11 +160,11 @@ public:
 
   void push_stack(dyobj_ptr);
 
-  types::NativeTypeHandle& get_ntvhndl(const types::NativeTypeHandle*);
+  types::NativeTypeValue& get_type_value(const types::NativeTypeValue*);
 
-  types::NativeTypeHandle* insert_ntvhndl(const types::NativeTypeHandle&);
+  types::NativeTypeValue* insert_type_value(const types::NativeTypeValue&);
 
-  void erase_ntvhndl(const types::NativeTypeHandle*);
+  void erase_type_value(const types::NativeTypeValue*);
 
   void insert_attr_name(dyobj::attr_key_t, const char*);
 
@@ -198,9 +198,9 @@ public:
 
   dynamic_object_heap_type::size_type max_heap_size() const;
 
-  size_t ntvhndl_pool_size() const;
+  size_t native_type_pool_size() const;
 
-  size_t max_ntvhndl_pool_size() const;
+  size_t max_native_type_pool_size() const;
 
   size_t compartment_count() const;
 

@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "runtime/frame.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 
 // -----------------------------------------------------------------------------
@@ -36,12 +36,12 @@ void BenchmarkPushEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue type_val =
     corevm::types::native_string("hello world");
 
   while (state.KeepRunning())
   {
-    frame.push_eval_stack(hndl);
+    frame.push_eval_stack(type_val);
   }
 }
 
@@ -55,12 +55,12 @@ void BenchmarkPushEvalStack2(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue type_val =
     corevm::types::native_string("hello world");
 
   while (state.KeepRunning())
   {
-    frame.push_eval_stack(std::move(hndl));
+    frame.push_eval_stack(std::move(type_val));
   }
 }
 
@@ -74,12 +74,12 @@ void BenchmarkPopEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::NativeTypeHandle hndl =
+  corevm::types::NativeTypeValue type_val =
     corevm::types::native_string("hello world");
 
   for (size_t i = 0; i < state.max_iterations; ++i)
   {
-    frame.push_eval_stack(hndl);
+    frame.push_eval_stack(type_val);
   }
 
   while (state.KeepRunning())
@@ -119,8 +119,8 @@ void BenchmarkSwapEvalStack(benchmark::State& state)
 
   corevm::runtime::Frame frame(ctx, NULL, NULL);
 
-  corevm::types::NativeTypeHandle hndl1((corevm::types::native_string("Hello world I'm FAT")));
-  corevm::types::NativeTypeHandle hndl2((corevm::types::native_map({
+  corevm::types::NativeTypeValue type_val1((corevm::types::native_string("Hello world I'm FAT")));
+  corevm::types::NativeTypeValue type_val2((corevm::types::native_map({
     { 1, 10 },
     { 2, 20 },
     { 3, 30 },
@@ -133,8 +133,8 @@ void BenchmarkSwapEvalStack(benchmark::State& state)
     { 10, 100 }
   })));
 
-  frame.push_eval_stack(hndl1);
-  frame.push_eval_stack(hndl2);
+  frame.push_eval_stack(type_val1);
+  frame.push_eval_stack(type_val2);
 
   while (state.KeepRunning())
   {

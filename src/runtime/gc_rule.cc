@@ -38,7 +38,7 @@ GCRule
 GCRuleMeta::gc_rules[GC_RULE_MAX] {
   gc_rule_always,
   gc_rule_by_heap_size,
-  gc_rule_by_ntvhndl_pool_size
+  gc_rule_by_native_type_pool_size
 };
 
 // -----------------------------------------------------------------------------
@@ -63,11 +63,11 @@ gc_rule_by_heap_size(const Process& process)
 // -----------------------------------------------------------------------------
 
 bool
-gc_rule_by_ntvhndl_pool_size(const Process& process)
+gc_rule_by_native_type_pool_size(const Process& process)
 {
   static const double GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF = 0.75f;
-  return process.ntvhndl_pool_size() > (
-    process.max_ntvhndl_pool_size() * GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF
+  return process.native_type_pool_size() > (
+    process.max_native_type_pool_size() * GC_RULE_BY_NTVHNDL_POOL_SIZE_DEFAULT_CUTOFF
   );
 }
 

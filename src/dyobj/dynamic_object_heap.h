@@ -330,7 +330,7 @@ operator<<(std::ostream& ost, const DynamicObjectHeap<DynamicObjectManager>& hea
     ost << "flags[" << std::setw(4) << std::hex << std::showbase << t->flags() << std::noshowbase << std::dec << "] ";
     ost << "attrs[" << std::setw(4) << t->attr_count() << "] ";
     ost << "garbage-collectible[" << std::setw(1) << t->is_garbage_collectible() << "] ";
-    ost << "ntvhndl[" << std::setw(4) << std::hex << std::showbase << (t->has_ntvhndl() ? &t->ntvhndl() : NULL) << std::noshowbase << std::dec << "] ";
+    ost << "type-value[" << std::setw(4) << std::hex << std::showbase << (t->has_type_value() ? &t->type_value() : NULL) << std::noshowbase << std::dec << "] ";
     ost << "closure[" << std::setw(8) << t->closure_ctx().compartment_id << ":" << t->closure_ctx().closure_id << "] ";
     ost << std::endl;
   }

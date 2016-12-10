@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "compartment.h"
 #include "errors.h"
 #include "corevm/macros.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <cstdint>
 
@@ -166,7 +166,7 @@ Frame::set_return_addr(instr_addr_t return_addr)
 // -----------------------------------------------------------------------------
 
 void
-Frame::push_eval_stack(const types::NativeTypeHandle& operand)
+Frame::push_eval_stack(const types::NativeTypeValue& operand)
 {
   m_eval_stack.push_back(operand);
 }
@@ -174,15 +174,15 @@ Frame::push_eval_stack(const types::NativeTypeHandle& operand)
 // -----------------------------------------------------------------------------
 
 void
-Frame::push_eval_stack(types::NativeTypeHandle&& operand)
+Frame::push_eval_stack(types::NativeTypeValue&& operand)
 {
   m_eval_stack.push_back(
-    std::forward<types::NativeTypeHandle>(operand));
+    std::forward<types::NativeTypeValue>(operand));
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle
+types::NativeTypeValue
 Frame::pop_eval_stack()
 {
   if (m_eval_stack.empty())
@@ -190,14 +190,14 @@ Frame::pop_eval_stack()
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle operand = m_eval_stack.back();
+  types::NativeTypeValue operand = m_eval_stack.back();
   m_eval_stack.pop_back();
   return operand;
 }
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle&
+types::NativeTypeValue&
 Frame::top_eval_stack()
 {
   if (m_eval_stack.empty())
@@ -228,7 +228,7 @@ Frame::swap_eval_stack()
 
 // -----------------------------------------------------------------------------
 
-const std::vector<types::NativeTypeHandle>&
+const std::vector<types::NativeTypeValue>&
 Frame::eval_stack() const
 {
   return m_eval_stack;
@@ -236,7 +236,7 @@ Frame::eval_stack() const
 
 // -----------------------------------------------------------------------------
 
-types::NativeTypeHandle&
+types::NativeTypeValue&
 Frame::eval_stack_element(size_t i)
 {
   return m_eval_stack[i];

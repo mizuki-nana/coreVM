@@ -108,12 +108,12 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleNotFoundError : public RuntimeError
+class NativeTypeValueNotFoundError : public RuntimeError
 {
 public:
-  NativeTypeHandleNotFoundError()
+  NativeTypeValueNotFoundError()
     :
-    RuntimeError("Native type handle not found")
+    RuntimeError("Native type value not found")
   {
   }
 };
@@ -169,13 +169,13 @@ public:
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleInsertionError : public RuntimeError
+class NativeTypeValueInsertionError : public RuntimeError
 {
 public:
-  explicit NativeTypeHandleInsertionError(const char* what_arg)
+  explicit NativeTypeValueInsertionError(const char* what_arg)
     :
     RuntimeError(str(boost::format(
-      "Cannot insert native type handle: %s") % what_arg))
+      "Cannot insert native type value: %s") % what_arg))
   {
   }
 };

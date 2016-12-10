@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "runtime/instr.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/types.h"
 
 #include "instr_benchmarks_fixture.h"
@@ -40,7 +40,7 @@ void BenchmarkInstrMAPLEN(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -53,7 +53,7 @@ void BenchmarkInstrMAPLEN(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_maplen(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -67,7 +67,7 @@ void BenchmarkInstrMAPEMP(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -80,7 +80,7 @@ void BenchmarkInstrMAPEMP(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapemp(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -94,13 +94,13 @@ void BenchmarkInstrMAPFIND(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint32(2);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -110,8 +110,8 @@ void BenchmarkInstrMAPFIND(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapfind(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -125,13 +125,13 @@ void BenchmarkInstrMAPAT(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint32(2);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -141,8 +141,8 @@ void BenchmarkInstrMAPAT(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapat(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -156,16 +156,16 @@ void BenchmarkInstrMAPPUT(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint32(2);
 
-  corevm::types::NativeTypeHandle hndl3 =
+  corevm::types::NativeTypeValue oprd3 =
     corevm::types::uint32(222);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -173,9 +173,9 @@ void BenchmarkInstrMAPPUT(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl3);
-  frame->push_eval_stack(hndl2);
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd3);
+  frame->push_eval_stack(oprd2);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -191,7 +191,7 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -210,7 +210,7 @@ void BenchmarkInstrMAPSET(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapset(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -224,13 +224,13 @@ void BenchmarkInstrMAPERS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 =
+  corevm::types::NativeTypeValue oprd2 =
     corevm::types::uint32(2);
 
   corevm::runtime::Instr instr(0, 0, 0);
@@ -240,8 +240,8 @@ void BenchmarkInstrMAPERS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapers(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -255,7 +255,7 @@ void BenchmarkInstrMAPCLR(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -266,7 +266,7 @@ void BenchmarkInstrMAPCLR(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl);
+  frame->push_eval_stack(oprd);
 
   while (state.KeepRunning())
   {
@@ -282,13 +282,13 @@ void BenchmarkInstrMAPSWP(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd2 = corevm::types::native_map {
     { 11, 1 },
     { 22, 2 },
     { 33, 3 },
@@ -299,8 +299,8 @@ void BenchmarkInstrMAPSWP(benchmark::State& state)
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
 
-  frame->push_eval_stack(hndl);
-  frame->push_eval_stack(hndl2);
+  frame->push_eval_stack(oprd);
+  frame->push_eval_stack(oprd2);
 
   while (state.KeepRunning())
   {
@@ -316,7 +316,7 @@ void BenchmarkInstrMAPKEYS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -329,7 +329,7 @@ void BenchmarkInstrMAPKEYS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapkeys(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -343,7 +343,7 @@ void BenchmarkInstrMAPVALS(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
@@ -356,7 +356,7 @@ void BenchmarkInstrMAPVALS(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapvals(
       instr, fixture.process(), &frame, &invk_ctx);
@@ -371,13 +371,13 @@ void BenchmarkInstrMAPMRG(benchmark::State& state)
 {
   InstrBenchmarksFixture fixture;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
 
-  corevm::types::NativeTypeHandle hndl2 = corevm::types::native_map {
+  corevm::types::NativeTypeValue oprd2 = corevm::types::native_map {
     { 11, 1 },
     { 22, 2 },
     { 33, 3 },
@@ -390,8 +390,8 @@ void BenchmarkInstrMAPMRG(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    frame->push_eval_stack(hndl2);
-    frame->push_eval_stack(hndl);
+    frame->push_eval_stack(oprd2);
+    frame->push_eval_stack(oprd);
 
     corevm::runtime::instr_handler_mapmrg(
       instr, fixture.process(), &frame, &invk_ctx);

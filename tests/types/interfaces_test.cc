@@ -32,11 +32,11 @@ class NativeTypeUnaryOperatorInterfacesTest : public NativeTypeInterfacesTestBas
 public:
   template<typename T, typename F>
   void apply_unary_operator_and_assert_result(
-    corevm::types::NativeTypeHandle& operand, F func, T expected_value,
+    corevm::types::NativeTypeValue& operand, F func, T expected_value,
     bool is_decimal=false)
   {
     func(operand);
-    T actual_result = corevm::types::get_value_from_handle<T>(operand);
+    T actual_result = corevm::types::get_intrinsic_value_from_type_value<T>(operand);
 
     if (is_decimal)
     {
@@ -53,7 +53,7 @@ public:
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestPositiveOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
 
   apply_unary_operator_and_assert_result<int>(
     operand,
@@ -66,7 +66,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestPositiveOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestNegationOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
 
   apply_unary_operator_and_assert_result<int>(
     operand,
@@ -79,7 +79,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestNegationOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestIncrementOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
   apply_unary_operator_and_assert_result<int>(
     operand,
     corevm::types::interface_apply_increment_operator,
@@ -91,7 +91,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestIncrementOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestDecrementOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
 
   apply_unary_operator_and_assert_result<int>(
     operand,
@@ -104,7 +104,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestDecrementOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestLogicalNotOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
 
   apply_unary_operator_and_assert_result<int>(
     operand,
@@ -117,7 +117,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestLogicalNotOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestBitwiseNotOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::int32(5);
+  corevm::types::NativeTypeValue operand = corevm::types::int32(5);
 
   apply_unary_operator_and_assert_result<int>(
     operand,
@@ -130,7 +130,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestBitwiseNotOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestAbsOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::decimal(-912.54689);
+  corevm::types::NativeTypeValue operand = corevm::types::decimal(-912.54689);
 
   apply_unary_operator_and_assert_result<float>(
     operand,
@@ -144,7 +144,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestAbsOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestSqrtOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::decimal(9.869600);
+  corevm::types::NativeTypeValue operand = corevm::types::decimal(9.869600);
 
   apply_unary_operator_and_assert_result<float>(
     operand,
@@ -158,7 +158,7 @@ TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestSqrtOperator)
 
 TEST_F(NativeTypeUnaryOperatorInterfacesTest, TestInvalidOperator)
 {
-  corevm::types::NativeTypeHandle operand = corevm::types::array();
+  corevm::types::NativeTypeValue operand = corevm::types::array();
 
   ASSERT_THROW(
     {
@@ -179,14 +179,14 @@ class NativeTypeBinaryOperatorInterfacesTest : public NativeTypeInterfacesTestBa
 public:
   template<typename T, typename F>
   void apply_binary_operator_and_assert_result(
-    corevm::types::NativeTypeHandle& lhs,
-    corevm::types::NativeTypeHandle& rhs,
+    corevm::types::NativeTypeValue& lhs,
+    corevm::types::NativeTypeValue& rhs,
     F func,
     T expected_value,
     bool is_decimal=false)
   {
     auto res = func(lhs, rhs);
-    T actual_result = corevm::types::get_value_from_handle<T>(res);
+    T actual_result = corevm::types::get_intrinsic_value_from_type_value<T>(res);
 
     if (!is_decimal)
     {
@@ -203,8 +203,8 @@ public:
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestAdditionOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -218,8 +218,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestAdditionOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestSubtractionOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -233,8 +233,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestSubtractionOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestMultiplicationOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -248,8 +248,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestMultiplicationOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestDivisionOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -263,8 +263,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestDivisionOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -278,8 +278,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPointOperands)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::decimal2(100.000001);
-  corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(33.000000);
+  corevm::types::NativeTypeValue lhs = corevm::types::decimal2(100.000001);
+  corevm::types::NativeTypeValue rhs = corevm::types::decimal2(33.000000);
 
   apply_binary_operator_and_assert_result<double>(
     lhs,
@@ -294,8 +294,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPo
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPointOperandsWithOppositeSigns)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::decimal2(-180.0);
-  corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(3.141592);
+  corevm::types::NativeTypeValue lhs = corevm::types::decimal2(-180.0);
+  corevm::types::NativeTypeValue rhs = corevm::types::decimal2(3.141592);
 
   apply_binary_operator_and_assert_result<double>(
     lhs,
@@ -310,8 +310,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestModulusOperatorWithFloatingPo
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestPowOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::decimal(2.3);
-  corevm::types::NativeTypeHandle rhs = corevm::types::decimal2(1.4);
+  corevm::types::NativeTypeValue lhs = corevm::types::decimal(2.3);
+  corevm::types::NativeTypeValue rhs = corevm::types::decimal2(1.4);
 
   apply_binary_operator_and_assert_result<double>(
     lhs,
@@ -326,8 +326,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestPowOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalANDOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -341,8 +341,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalANDOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalOROperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -356,8 +356,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLogicalOROperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseANDOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -371,8 +371,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseANDOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseOROperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -386,8 +386,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseOROperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseXOROperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -401,8 +401,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseXOROperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseLeftShiftOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(1);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(1);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -416,8 +416,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseLeftShiftOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseRightShiftOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(1);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(1);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -431,8 +431,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestBitwiseRightShiftOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestEqOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -446,8 +446,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestEqOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestNeqOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -461,8 +461,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestNeqOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLtOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -475,8 +475,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLtOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGtOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -490,8 +490,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGtOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLteOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -505,8 +505,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestLteOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGteOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int>(
     lhs,
@@ -520,8 +520,8 @@ TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestGteOperator)
 
 TEST_F(NativeTypeBinaryOperatorInterfacesTest, TestCmpOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::int32(10);
-  corevm::types::NativeTypeHandle rhs = corevm::types::int32(5);
+  corevm::types::NativeTypeValue lhs = corevm::types::int32(10);
+  corevm::types::NativeTypeValue rhs = corevm::types::int32(5);
 
   apply_binary_operator_and_assert_result<int32_t>(
     lhs,
@@ -538,7 +538,7 @@ class NativeTypeInvalidBinaryOperatorInterfacesTest : public NativeTypeBinaryOpe
 public:
   template<typename ErrorType, typename F>
   void apply_binary_operator_and_assert_result(
-    corevm::types::NativeTypeHandle& lhs, corevm::types::NativeTypeHandle& rhs, F func)
+    corevm::types::NativeTypeValue& lhs, corevm::types::NativeTypeValue& rhs, F func)
   {
     ASSERT_THROW(
       {
@@ -553,8 +553,8 @@ public:
 
 TEST_F(NativeTypeInvalidBinaryOperatorInterfacesTest, TestInvalidOperator)
 {
-  corevm::types::NativeTypeHandle lhs = corevm::types::array();
-  corevm::types::NativeTypeHandle rhs = corevm::types::map();
+  corevm::types::NativeTypeValue lhs = corevm::types::array();
+  corevm::types::NativeTypeValue rhs = corevm::types::map();
 
   apply_binary_operator_and_assert_result<corevm::types::ConversionError>(
     lhs,
@@ -578,9 +578,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithEmptyArrayOperandAndEmptyRan
   /**
    * Slicing [] with [0:0] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array();
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array();
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(0);
 
   corevm::types::array expected_result;
 
@@ -599,9 +599,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithEmptyArrayOperandAndInvalidR
   /**
    * Slicing [] with [1:10] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array();
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array();
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(10);
 
   corevm::types::array expected_result;
 
@@ -620,9 +620,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndValidRange)
   /**
    * Slicing [1, 2, 3, 4, 5] with [1:3] = [2, 3].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(3);
 
   corevm::types::array expected_result { 2, 3 };
 
@@ -641,9 +641,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndValidRange2)
   /**
    * Slicing [1, 2, 3, 4, 5] with [0:3] = [1, 2, 3].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(3);
 
   corevm::types::array expected_result { 1, 2, 3 };
 
@@ -662,9 +662,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndValidRange3)
   /**
    * Slicing [1, 2, 3, 4, 5] with [1:1] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(1);
 
   corevm::types::array expected_result;
 
@@ -683,9 +683,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndInValidRangeW
   /**
    * Slicing [1, 2, 3, 4, 5] with [0:5] = [1, 2, 3, 4, 5].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(5);
 
   corevm::types::array expected_result { 1, 2, 3, 4, 5 };
 
@@ -704,9 +704,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndInValidRangeW
   /**
    * Slicing [1, 2, 3, 4, 5] with [5:10] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(5);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(10);
 
   corevm::types::array expected_result;
 
@@ -725,9 +725,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndInValidRangeW
   /**
    * Slicing [1, 2, 3, 4, 5] with [4:0] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(4);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(4);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(0);
 
   corevm::types::array expected_result;
 
@@ -746,9 +746,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithArrayOperandAndInValidRangeW
   /**
    * Slicing [1, 2, 3, 4, 5] with [10:5] = [].
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(10);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(5);
 
   corevm::types::array expected_result;
 
@@ -767,9 +767,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithEmptyStringOperandAndEmptyRa
   /**
    * Slicing "" with [0:0] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string();
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string();
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(0);
 
   corevm::types::string expected_result;
 
@@ -788,9 +788,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithEmptyStringOperandAndInvalid
   /**
    * Slicing "" with [1:10] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string();
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string();
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(10);
 
   corevm::types::string expected_result;
 
@@ -809,9 +809,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndValidRange)
   /**
    * Slicing "Hello" with [1:3] = "ll".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(3);
 
   corevm::types::string expected_result("el");
 
@@ -830,9 +830,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndValidRange2)
   /**
    * Slicing "Hello" with [0:3] = "ell".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(3);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(3);
 
   corevm::types::string expected_result("Hel");
 
@@ -851,9 +851,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndValidRange3)
   /**
    * Slicing "Hello" with [1:1] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(1);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(1);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(1);
 
   corevm::types::string expected_result;
 
@@ -872,9 +872,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndInValidRange
   /**
    * Slicing "Hello" with [0:5] = "Hello".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(0);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(5);
 
   corevm::types::string expected_result("Hello");
 
@@ -893,9 +893,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndInValidRange
   /**
    * Slicing "Hello" with [5:10] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(5);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(10);
 
   corevm::types::string expected_result;
 
@@ -914,9 +914,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndInValidRange
   /**
    * Slicing "Hello" with [4:0] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(4);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(0);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(4);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(0);
 
   corevm::types::string expected_result;
 
@@ -935,9 +935,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndInValidRange
   /**
    * Slicing "Hello" with [10:5] = "".
    */
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(10);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(5);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(5);
 
   corevm::types::string expected_result;
 
@@ -953,9 +953,9 @@ TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithStringOperandAndInValidRange
 
 TEST_F(NativeTypeInterfaceComputeSliceTest, TestWithInvalidType)
 {
-  corevm::types::NativeTypeHandle oprd1 = corevm::types::uint32(100);
-  corevm::types::NativeTypeHandle oprd2 = corevm::types::uint32(10);
-  corevm::types::NativeTypeHandle oprd3 = corevm::types::uint32(20);
+  corevm::types::NativeTypeValue oprd1 = corevm::types::uint32(100);
+  corevm::types::NativeTypeValue oprd2 = corevm::types::uint32(10);
+  corevm::types::NativeTypeValue oprd3 = corevm::types::uint32(20);
 
   ASSERT_THROW(
     {
@@ -973,8 +973,8 @@ class NativeTypeInterfaceComputeStrideTest : public NativeTypeGenericInterfacesT
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyArrayOperandAndZeroStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array();
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(0);
+  corevm::types::NativeTypeValue oprd = corevm::types::array();
+  corevm::types::NativeTypeValue stride = corevm::types::int32(0);
 
   corevm::types::array expected_result;
 
@@ -989,8 +989,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyArrayOperandAndZeroStr
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyArrayOperandAndPositiveStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array();
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::array();
+  corevm::types::NativeTypeValue stride = corevm::types::int32(2);
 
   corevm::types::array expected_result;
 
@@ -1005,8 +1005,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyArrayOperandAndPositiv
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndZeroStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(0);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue stride = corevm::types::int32(0);
 
   corevm::types::array expected_result;
 
@@ -1021,8 +1021,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndZeroStride)
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndValidStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue stride = corevm::types::int32(2);
 
   corevm::types::array expected_result { 1, 3, 5 };
 
@@ -1037,8 +1037,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndValidStride)
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndInvalidStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(5);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue stride = corevm::types::int32(5);
 
   corevm::types::array expected_result { 1 };
 
@@ -1053,8 +1053,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndInvalidStrid
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndNegativeStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(-1);
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue stride = corevm::types::int32(-1);
 
   corevm::types::array expected_result;
 
@@ -1069,8 +1069,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithArrayOperandAndNegativeStri
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyStringOperandAndZeroStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string();
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(0);
+  corevm::types::NativeTypeValue oprd = corevm::types::string();
+  corevm::types::NativeTypeValue stride = corevm::types::int32(0);
 
   corevm::types::string expected_result;
 
@@ -1085,8 +1085,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyStringOperandAndZeroSt
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyStringOperandAndPositiveStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string();
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::string();
+  corevm::types::NativeTypeValue stride = corevm::types::int32(2);
 
   corevm::types::string expected_result;
 
@@ -1101,8 +1101,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithEmptyStringOperandAndPositi
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndZeroStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(0);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue stride = corevm::types::int32(0);
 
   corevm::types::string expected_result;
 
@@ -1117,8 +1117,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndZeroStride)
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndValidStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(2);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue stride = corevm::types::int32(2);
 
   corevm::types::string expected_result("Hlo");
 
@@ -1133,8 +1133,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndValidStride
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndInvalidStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(5);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue stride = corevm::types::int32(5);
 
   corevm::types::string expected_result("H");
 
@@ -1149,8 +1149,8 @@ TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndInvalidStri
 
 TEST_F(NativeTypeInterfaceComputeStrideTest, TestWithStringOperandAndNegativeStride)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
-  corevm::types::NativeTypeHandle stride = corevm::types::int32(-1);
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue stride = corevm::types::int32(-1);
 
   corevm::types::string expected_result;
 
@@ -1169,7 +1169,7 @@ class NativeTypeInterfaceComputeReverseTest : public NativeTypeGenericInterfaces
 
 TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithEmptyArrayOperand)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array();
+  corevm::types::NativeTypeValue oprd = corevm::types::array();
 
   corevm::types::array expected_result;
 
@@ -1183,7 +1183,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithEmptyArrayOperand)
 
 TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithArrayOperand)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::array({1, 2, 3, 4, 5});
+  corevm::types::NativeTypeValue oprd = corevm::types::array({1, 2, 3, 4, 5});
 
   corevm::types::array expected_result { 5, 4, 3, 2, 1 };
 
@@ -1197,7 +1197,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithArrayOperand)
 
 TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithEmptyStringOperand)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string();
+  corevm::types::NativeTypeValue oprd = corevm::types::string();
 
   corevm::types::string expected_result;
 
@@ -1211,7 +1211,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithEmptyStringOperand)
 
 TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithStringOperand)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::string("Hello");
+  corevm::types::NativeTypeValue oprd = corevm::types::string("Hello");
 
   corevm::types::string expected_result("olleH");
 
@@ -1225,7 +1225,7 @@ TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithStringOperand)
 
 TEST_F(NativeTypeInterfaceComputeReverseTest, TestWithInvalidTypeOperand)
 {
-  corevm::types::NativeTypeHandle oprd = corevm::types::decimal(3.1415);
+  corevm::types::NativeTypeValue oprd = corevm::types::decimal(3.1415);
 
   ASSERT_THROW(
     {
@@ -1243,8 +1243,8 @@ class NativeTypeInterfaceApplyRoundingTest : public NativeTypeGenericInterfacesT
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithFloatingOperand)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::decimal2(103.141592));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(5));
+  corevm::types::NativeTypeValue oprd(corevm::types::decimal2(103.141592));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(5));
 
   const corevm::types::decimal2 expected_result = 103.14159;
 
@@ -1259,8 +1259,8 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithFloatingOperand)
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithSecondOperandEqualsToZero)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::decimal2(103.141592));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(0));
+  corevm::types::NativeTypeValue oprd(corevm::types::decimal2(103.141592));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(0));
 
   const corevm::types::decimal2 expected_result = 103.0;
 
@@ -1275,8 +1275,8 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithSecondOperandEqualsToZero)
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithLargeSecondOperand)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::decimal2(103.141592));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(10));
+  corevm::types::NativeTypeValue oprd(corevm::types::decimal2(103.141592));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(10));
 
   const corevm::types::decimal2 expected_result = 103.141592;
 
@@ -1291,8 +1291,8 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithLargeSecondOperand)
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithNegativeFloatingOperand)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::decimal2(-103.141592));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(5));
+  corevm::types::NativeTypeValue oprd(corevm::types::decimal2(-103.141592));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(5));
 
   const corevm::types::decimal2 expected_result = -103.14159;
 
@@ -1307,8 +1307,8 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithNegativeFloatingOperand)
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithFirstOperandEqualsToZero)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::decimal2(0.0));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(5));
+  corevm::types::NativeTypeValue oprd(corevm::types::decimal2(0.0));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(5));
 
   const corevm::types::decimal2 expected_result = 0.0;
 
@@ -1323,8 +1323,8 @@ TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithFirstOperandEqualsToZero)
 
 TEST_F(NativeTypeInterfaceApplyRoundingTest, TestWithInvalidFirstOperand)
 {
-  corevm::types::NativeTypeHandle oprd(corevm::types::string("hello"));
-  corevm::types::NativeTypeHandle oprd2(corevm::types::uint32(5));
+  corevm::types::NativeTypeValue oprd(corevm::types::string("hello"));
+  corevm::types::NativeTypeValue oprd2(corevm::types::uint32(5));
 
   ASSERT_THROW(
     {

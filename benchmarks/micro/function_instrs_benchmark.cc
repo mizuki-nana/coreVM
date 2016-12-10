@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/common.h"
 #include "runtime/instr.h"
 #include "runtime/process.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include "instr_benchmarks_fixture.h"
 
@@ -109,10 +109,10 @@ void BenchmarkInstrPUTARGS(benchmark::State& state)
     fixture.process().push_stack(id);
   }
 
-  corevm::types::native_type_handle hndl = corevm::types::native_array {1, 2, 3};
-  auto ntvhndl_key = fixture.process().insert_ntvhndl(hndl);
+  corevm::types::native_type_value type_val = corevm::types::native_array {1, 2, 3};
+  auto type_value_ptr = fixture.process().insert_type_value(type_val);
 
-  obj.set_ntvhndl_key(ntvhndl_key);
+  obj.set_type_value(type_value_ptr);
 
   corevm::runtime::Instr instr(0, 0, 0);
 
@@ -144,14 +144,14 @@ void BenchmarkInstrPUTKWARGS(benchmark::State& state)
     fixture.process().push_stack(id);
   }
 
-  corevm::types::native_type_handle hndl = corevm::types::native_map {
+  corevm::types::native_type_value type_val = corevm::types::native_map {
     { 1, 11 },
     { 2, 22 },
     { 3, 33 },
   };
-  auto ntvhndl_key = fixture.process().insert_ntvhndl(hndl);
+  auto type_value_ptr = fixture.process().insert_type_value(type_val);
 
-  obj.set_ntvhndl_key(ntvhndl_key);
+  obj.set_type_value(type_value_ptr);
 
   corevm::runtime::Instr instr(0, 0, 0);
 

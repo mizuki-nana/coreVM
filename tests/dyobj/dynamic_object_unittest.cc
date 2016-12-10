@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "dyobj/dynamic_object.h"
 #include "dyobj/dynamic_object_manager.h"
 #include "dyobj/flags.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <gtest/gtest.h>
 
@@ -62,7 +62,7 @@ TEST_F(DynamicObjectUnitTest, TestInitialization)
   ASSERT_FALSE(obj.hasattr(0));
   ASSERT_FALSE(obj.hasattr(1));
   ASSERT_FALSE(obj.hasattr(123));
-  ASSERT_FALSE(obj.has_ntvhndl());
+  ASSERT_FALSE(obj.has_type_value());
 }
 
 // -----------------------------------------------------------------------------
@@ -103,23 +103,23 @@ TEST_F(DynamicObjectUnitTest, TestGetAndSetFlags)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(DynamicObjectUnitTest, TestGetAndSetNtvhndl)
+TEST_F(DynamicObjectUnitTest, TestGetAndSetTypeValue)
 {
   dynamic_object_type obj;
 
-  ASSERT_FALSE(obj.has_ntvhndl());
+  ASSERT_FALSE(obj.has_type_value());
 
-  corevm::types::NativeTypeHandle hndl(corevm::types::uint32(32));
+  corevm::types::NativeTypeValue type_val(corevm::types::uint32(32));
 
-  obj.set_ntvhndl(&hndl);
+  obj.set_type_value(&type_val);
 
-  ASSERT_TRUE(obj.has_ntvhndl());
+  ASSERT_TRUE(obj.has_type_value());
 
-  ASSERT_EQ(hndl, obj.ntvhndl());
+  ASSERT_EQ(type_val, obj.type_value());
 
-  obj.clear_ntvhndl();
+  obj.clear_type_value();
 
-  ASSERT_FALSE(obj.has_ntvhndl());
+  ASSERT_FALSE(obj.has_type_value());
 }
 
 // -----------------------------------------------------------------------------

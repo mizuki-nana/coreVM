@@ -25,7 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/closure.h"
 #include "runtime/compartment.h"
 #include "runtime/runtime_types.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <gtest/gtest.h>
 
@@ -89,10 +89,10 @@ TEST_F(FrameUnitTest, TestGetAndSetReturnAddr)
 TEST_F(FrameUnitTest, TestPushAndPopEvalStack)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::types::NativeTypeHandle handle = corevm::types::uint8(5);
+  corevm::types::NativeTypeValue type_value = corevm::types::uint8(5);
 
-  frame.push_eval_stack(handle);
-  corevm::types::NativeTypeHandle popped_handle = frame.pop_eval_stack();
+  frame.push_eval_stack(type_value);
+  corevm::types::NativeTypeValue popped_value = frame.pop_eval_stack();
 
   ASSERT_THROW(
     {
@@ -107,10 +107,10 @@ TEST_F(FrameUnitTest, TestPushAndPopEvalStack)
 TEST_F(FrameUnitTest, TestMovePushAndPopEvalStack)
 {
   corevm::runtime::Frame frame(m_closure_ctx, m_compartment, &m_closure);
-  corevm::types::NativeTypeHandle handle = corevm::types::uint8(5);
+  corevm::types::NativeTypeValue type_value = corevm::types::uint8(5);
 
-  frame.push_eval_stack(std::move(handle));
-  corevm::types::NativeTypeHandle popped_handle = frame.pop_eval_stack();
+  frame.push_eval_stack(std::move(type_value));
+  corevm::types::NativeTypeValue popped_type_value = frame.pop_eval_stack();
 
   ASSERT_THROW(
     {

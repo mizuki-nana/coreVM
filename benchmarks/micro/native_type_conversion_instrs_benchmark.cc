@@ -23,7 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <benchmark/benchmark.h>
 
 #include "runtime/instr.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/types.h"
 
 #include "instr_benchmarks_fixture.h"
@@ -34,15 +34,15 @@ using corevm::benchmarks::InstrBenchmarksFixture;
 // -----------------------------------------------------------------------------
 
 static void
-BenchmarkNtvhndlConversionInstrs(benchmark::State& state,
+BenchmarkNativeTypeValueConversionInstrs(benchmark::State& state,
   corevm::runtime::InstrHandler handler)
 {
   corevm::runtime::Instr instr(0, 0, 0);
 
-  corevm::types::NativeTypeHandle hndl(corevm::types::int64(1));
+  corevm::types::NativeTypeValue type_val(corevm::types::int64(1));
 
   InstrBenchmarksFixture fixture;
-  fixture.process().top_frame().push_eval_stack(hndl);
+  fixture.process().top_frame().push_eval_stack(type_val);
 
   auto frame = &fixture.process().top_frame();
   auto invk_ctx = &fixture.process().top_invocation_ctx();
@@ -55,24 +55,24 @@ BenchmarkNtvhndlConversionInstrs(benchmark::State& state,
 
 // -----------------------------------------------------------------------------
 
-#define BENCHMARK_NTVHNDL_CONVERSION_INSTR(name, handler)      \
+#define BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(name, handler)      \
 static void                                                    \
 Benchmark##name##Instr(benchmark::State& state)                \
 {                                                              \
-  BenchmarkNtvhndlConversionInstrs(state, (handler));          \
+  BenchmarkNativeTypeValueConversionInstrs(state, (handler));          \
 }                                                              \
 BENCHMARK(Benchmark##name##Instr)
 
 // -----------------------------------------------------------------------------
 
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT8, corevm::runtime::instr_handler_2int8);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT8, corevm::runtime::instr_handler_2uint8);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT16, corevm::runtime::instr_handler_2int16);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT16, corevm::runtime::instr_handler_2uint16);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT32, corevm::runtime::instr_handler_2int32);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT32, corevm::runtime::instr_handler_2uint32);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2INT64, corevm::runtime::instr_handler_2int64);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2UINT64, corevm::runtime::instr_handler_2uint64);
-BENCHMARK_NTVHNDL_CONVERSION_INSTR(2BOOL, corevm::runtime::instr_handler_2bool);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2INT8, corevm::runtime::instr_handler_2int8);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2UINT8, corevm::runtime::instr_handler_2uint8);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2INT16, corevm::runtime::instr_handler_2int16);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2UINT16, corevm::runtime::instr_handler_2uint16);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2INT32, corevm::runtime::instr_handler_2int32);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2UINT32, corevm::runtime::instr_handler_2uint32);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2INT64, corevm::runtime::instr_handler_2int64);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2UINT64, corevm::runtime::instr_handler_2uint64);
+BENCHMARK_NATIVE_TYPE_VALUE_CONVERSION_INSTR(2BOOL, corevm::runtime::instr_handler_2bool);
 
 // -----------------------------------------------------------------------------

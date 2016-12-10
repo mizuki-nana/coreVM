@@ -20,7 +20,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <gtest/gtest.h>
 
@@ -28,16 +28,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 
-class NativeTypeHandleUnitTest : public ::testing::Test
+class NativeTypeValueUnitTest : public ::testing::Test
 {
 public:
   template<typename T>
-  void assert_handle_value(
-    corevm::types::NativeTypeHandle& handle,
+  void assert_native_type_value(
+    corevm::types::NativeTypeValue& type_value,
     T expected_value,
     bool decimal_value=false)
   {
-    T actual_value = corevm::types::get_value_from_handle<T>(handle);
+    T actual_value = corevm::types::get_intrinsic_value_from_type_value<T>(type_value);
 
     if (!decimal_value)
     {
@@ -51,44 +51,44 @@ public:
 
   template<typename VisitorType, typename T>
   void apply_unary_visitor_and_check_result(
-    corevm::types::NativeTypeHandle& handle,
+    corevm::types::NativeTypeValue& type_value,
     T expected_value,
     bool decimal_value=false,
     bool on_self=false)
   {
-    typename corevm::types::NativeTypeHandle result =
-      corevm::types::apply_unary_visitor<VisitorType>(handle);
+    typename corevm::types::NativeTypeValue result =
+      corevm::types::apply_unary_visitor<VisitorType>(type_value);
 
     if (on_self)
     {
-      assert_handle_value(handle, expected_value, decimal_value);
+      assert_native_type_value(type_value, expected_value, decimal_value);
     }
     else
     {
-      assert_handle_value(result, expected_value, decimal_value);
+      assert_native_type_value(result, expected_value, decimal_value);
     }
   }
 
   template<typename VisitorType, typename T>
   void apply_binary_visitor_and_check_result(
-    corevm::types::NativeTypeHandle& h1,
-    corevm::types::NativeTypeHandle& h2,
+    corevm::types::NativeTypeValue& h1,
+    corevm::types::NativeTypeValue& h2,
     T expected_value,
     bool decimal_value=false)
   {
-    typename corevm::types::NativeTypeHandle result =
+    typename corevm::types::NativeTypeValue result =
       corevm::types::apply_binary_visitor<VisitorType>(h1, h2);
 
-    assert_handle_value(result, expected_value, decimal_value);
+    assert_native_type_value(result, expected_value, decimal_value);
   }
 
   template<class VisitorType, class ExceptionType>
   void apply_unary_visitor_and_check_exception(
-    corevm::types::NativeTypeHandle& handle)
+    corevm::types::NativeTypeValue& type_value)
   {
     ASSERT_THROW(
       {
-        corevm::types::apply_unary_visitor<VisitorType>(handle);
+        corevm::types::apply_unary_visitor<VisitorType>(type_value);
       },
       ExceptionType
     );
@@ -96,7 +96,7 @@ public:
 
   template<class VisitorType, class ExceptionType>
   void apply_binary_visitor_and_check_exception(
-    corevm::types::NativeTypeHandle& lhs, corevm::types::NativeTypeHandle& rhs)
+    corevm::types::NativeTypeValue& lhs, corevm::types::NativeTypeValue& rhs)
   {
     ASSERT_THROW(
       {
@@ -109,27 +109,27 @@ public:
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleUnitTest, TestGetValueFromHandle)
+TEST_F(NativeTypeValueUnitTest, TestGetIntrinsicValueFromTypeValue)
 {
   corevm::types::native_string str = "Hello world";
-  corevm::types::NativeTypeHandle hndl = str;
+  corevm::types::NativeTypeValue type_val = str;
 
   corevm::types::native_string actual_string =
-    corevm::types::get_value_from_handle<corevm::types::native_string>(hndl);
+    corevm::types::get_intrinsic_value_from_type_value<corevm::types::native_string>(type_val);
 
   ASSERT_EQ(actual_string, str);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleUnitTest, TestGetValueFromHandleWithInvalidType)
+TEST_F(NativeTypeValueUnitTest, TestGetIntrinsicValueFromTypeValueWithInvalidType)
 {
   corevm::types::native_string str = "Hello world";
-  corevm::types::NativeTypeHandle hndl = str;
+  corevm::types::NativeTypeValue type_val = str;
 
   ASSERT_THROW(
     {
-      corevm::types::get_value_from_handle<corevm::types::native_map>(hndl);
+      corevm::types::get_intrinsic_value_from_type_value<corevm::types::native_map>(type_val);
     },
     corevm::types::ConversionError
   );
@@ -137,29 +137,29 @@ TEST_F(NativeTypeHandleUnitTest, TestGetValueFromHandleWithInvalidType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleUnitTest, TestGetValueFromHandleWithCompatibleType)
+TEST_F(NativeTypeValueUnitTest, TestGetIntrinsicValueFromTypeValueWithCompatibleType)
 {
   corevm::types::uint64 value = 10;
-  corevm::types::NativeTypeHandle hndl = value;
+  corevm::types::NativeTypeValue type_val = value;
 
-  bool actual_value = corevm::types::get_value_from_handle<bool>(hndl);
+  bool actual_value = corevm::types::get_intrinsic_value_from_type_value<bool>(type_val);
 
   ASSERT_EQ(static_cast<bool>(value), actual_value);
 }
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleUnaryOperatorUnitTest : public NativeTypeHandleUnitTest {};
+class NativeTypeValueUnaryOperatorUnitTest : public NativeTypeValueUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandlePositiveUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValuePositiveUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(-1);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(-1);
 
   int8_t expected_value = -1;
 
@@ -171,9 +171,9 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(-3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(-3.14);
 
   double expected_value = -3.14;
 
@@ -186,9 +186,9 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
 
   const bool expected_value = false;
 
@@ -200,9 +200,9 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnStringType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_positive_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -210,9 +210,9 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_positive_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -220,9 +220,9 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePositiveUnitTest, TestOnMapType)
+TEST_F(NativeTypeValuePositiveUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_positive_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -230,13 +230,13 @@ TEST_F(NativeTypeHandlePositiveUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleNegationUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueNegationUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(-1);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(-1);
 
   int8_t expected_value = -(-1);
 
@@ -248,9 +248,9 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(-3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(-3.14);
 
   double expected_value = -(-3.14);
 
@@ -263,10 +263,10 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(false);
 
   const bool expected_value = true;
 
@@ -285,9 +285,9 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_negation_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -295,9 +295,9 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_negation_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -305,9 +305,9 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNegationUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueNegationUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_negation_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -315,13 +315,13 @@ TEST_F(NativeTypeHandleNegationUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleIncrementUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueIncrementUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
 
   int8_t expected_value = 2;
 
@@ -335,9 +335,9 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14);
 
   double expected_value = 4.14;
 
@@ -351,9 +351,9 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   const bool expected_value = true;
 
@@ -367,9 +367,9 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_increment_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -377,9 +377,9 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_increment_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -387,9 +387,9 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleIncrementUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueIncrementUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_increment_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -397,13 +397,13 @@ TEST_F(NativeTypeHandleIncrementUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleDecrementUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueDecrementUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(-10);
 
   int8_t expected_value = -11;
 
@@ -416,9 +416,9 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14);
 
   double expected_value = 2.14;
 
@@ -432,9 +432,9 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_decrement_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -442,9 +442,9 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_decrement_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -452,9 +452,9 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_decrement_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -462,9 +462,9 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDecrementUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueDecrementUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_decrement_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -472,13 +472,13 @@ TEST_F(NativeTypeHandleDecrementUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleLogicalNotUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueLogicalNotUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(99);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(99);
 
   int8_t expected_value = 0;
 
@@ -490,9 +490,9 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14);
 
   double expected_value = 0.0;
 
@@ -505,9 +505,9 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   const bool expected_value = false;
 
@@ -519,9 +519,9 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_logical_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -529,9 +529,9 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_logical_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -539,9 +539,9 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueLogicalNotUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_logical_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -549,13 +549,13 @@ TEST_F(NativeTypeHandleLogicalNotUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseNotUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueBitwiseNotUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(9);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(9);
 
   int8_t expected_value = ~9;
 
@@ -567,9 +567,9 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14);
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -577,9 +577,9 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   const bool expected_value = true;
 
@@ -591,9 +591,9 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -601,9 +601,9 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -611,9 +611,9 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueBitwiseNotUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_not_visitor, corevm::types::InvalidOperatorError>(h1);
@@ -621,13 +621,13 @@ TEST_F(NativeTypeHandleBitwiseNotUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleAbsUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueAbsUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(-9);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(-9);
 
   int8_t expected_value = 9;
 
@@ -639,9 +639,9 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(-3.1415926);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(-3.1415926);
 
   double expected_value = 3.1415926;
 
@@ -654,9 +654,9 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   const bool expected_value = true;
 
@@ -668,9 +668,9 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_abs_visitor, corevm::types::ConversionError>(h1);
@@ -678,9 +678,9 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_abs_visitor, corevm::types::ConversionError>(h1);
@@ -688,9 +688,9 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAbsUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueAbsUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_abs_visitor, corevm::types::ConversionError>(h1);
@@ -698,13 +698,13 @@ TEST_F(NativeTypeHandleAbsUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleSqrtUnitTest : public NativeTypeHandleUnaryOperatorUnitTest {};
+class NativeTypeValueSqrtUnitTest : public NativeTypeValueUnaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnIntegerType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnIntegerType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(9);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(9);
 
   int8_t expected_value = 3;
 
@@ -716,9 +716,9 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnIntegerType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnDecimalType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnDecimalType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(9.869600);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(9.869600);
 
   double expected_value = 3.1415926;
 
@@ -731,9 +731,9 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnDecimalType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnBooleanType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnBooleanType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
 
   const bool expected_value = true;
 
@@ -745,9 +745,9 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnBooleanType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnStringType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnStringType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_sqrt_visitor, corevm::types::ConversionError>(h1);
@@ -755,9 +755,9 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnStringType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnArrayType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnArrayType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_sqrt_visitor, corevm::types::ConversionError>(h1);
@@ -765,9 +765,9 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnArrayType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSqrtUnitTest, TestOnMapType)
+TEST_F(NativeTypeValueSqrtUnitTest, TestOnMapType)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
 
   apply_unary_visitor_and_check_exception<
     corevm::types::native_type_sqrt_visitor, corevm::types::ConversionError>(h1);
@@ -775,18 +775,18 @@ TEST_F(NativeTypeHandleSqrtUnitTest, TestOnMapType)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBinaryOperatorUnitTest : public NativeTypeHandleUnitTest {};
+class NativeTypeValueBinaryOperatorUnitTest : public NativeTypeValueUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleAdditionUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueAdditionUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::uint8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::uint8(2);
 
   uint8_t expected_value = 3;
 
@@ -799,10 +799,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14159);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.22);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14159);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.22);
 
   const double expected_value = 3.14159 + 2.22;
 
@@ -816,10 +816,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(false);
 
   const bool expected_value = true;
 
@@ -832,10 +832,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello ");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello ");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("world!!!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_addition_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -843,10 +843,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_addition_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -854,10 +854,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_addition_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -865,10 +865,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestAddtionBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestAddtionBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(3.14);
 
   double expected_value = 4.14;
 
@@ -889,10 +889,10 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestAddtionBetweenTypesOfDifferentSizes
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueAdditionUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_addition_visitor, corevm::types::ConversionError>(h1, h2);
@@ -900,14 +900,14 @@ TEST_F(NativeTypeHandleAdditionUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleSubtractionUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueSubtractionUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint8(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::uint8(12);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint8(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::uint8(12);
 
   uint8_t expected_value = 100 - 12; // I'm too lazy to calculate that...
 
@@ -920,10 +920,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14159);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.22);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14159);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.22);
 
   const double expected_value = 3.14159 - 2.22;
 
@@ -937,10 +937,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(false);
 
   const bool expected_value = true;
 
@@ -953,10 +953,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_subtraction_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -964,10 +964,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_subtraction_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -975,10 +975,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_subtraction_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -986,10 +986,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(1);
 
   double expected_value = 2.14;
 
@@ -1012,10 +1012,10 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueSubtractionUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_subtraction_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1023,14 +1023,14 @@ TEST_F(NativeTypeHandleSubtractionUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleMultiplicationUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueMultiplicationUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(33);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-36);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(33);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-36);
 
   int32_t expected_value = 33 * (-36);
 
@@ -1043,10 +1043,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(3.14159);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.22);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(3.14159);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.22);
 
   const double expected_value = 3.14159 * 2.22;
 
@@ -1060,10 +1060,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(false);
 
   const bool expected_value = false;
 
@@ -1076,10 +1076,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_multiplication_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1087,10 +1087,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_multiplication_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1098,10 +1098,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_multiplication_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1109,10 +1109,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   double expected_value = 3.14 * 2;
 
@@ -1135,10 +1135,10 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueMultiplicationUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_multiplication_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1146,14 +1146,14 @@ TEST_F(NativeTypeHandleMultiplicationUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleDivisionUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueDivisionUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = 100 / (-10);
 
@@ -1166,10 +1166,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const double expected_value = 6.12 / 2.0;
 
@@ -1183,10 +1183,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const bool expected_value = false;
 
@@ -1199,10 +1199,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_division_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1210,10 +1210,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_division_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1221,10 +1221,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_division_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1232,10 +1232,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   double expected_value = 3.14 / 2;
 
@@ -1258,10 +1258,10 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueDivisionUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_division_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1269,14 +1269,14 @@ TEST_F(NativeTypeHandleDivisionUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleModulusUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueModulusUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = 100 % (-10);
 
@@ -1289,10 +1289,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 6 % 2;
 
@@ -1306,10 +1306,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = 0 % 1;
 
@@ -1322,10 +1322,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_modulus_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1333,10 +1333,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_modulus_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1344,10 +1344,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_modulus_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1355,10 +1355,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueModulusUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 % 2;
 
@@ -1381,10 +1381,10 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueModulusUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_modulus_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1392,14 +1392,14 @@ TEST_F(NativeTypeHandleModulusUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandlePowUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValuePowUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(2);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::uint32(4);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(2);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::uint32(4);
 
   double expected_value = pow(2, 4);
 
@@ -1413,10 +1413,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(-1.2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(-1.2);
 
   const double expected_value = pow(6, -1.2);
 
@@ -1430,10 +1430,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIntegerAndDecimalTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenIntegerAndDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint32(6);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(-1.2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint32(6);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(-1.2);
 
   const double expected_value = pow(6u, -1.2);
 
@@ -1446,10 +1446,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIntegerAndDecimalTypes)
 }
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(true);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(false);
 
   const double expected_value = pow(1, 0);
 
@@ -1463,10 +1463,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_pow_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1474,10 +1474,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_pow_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1485,10 +1485,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_pow_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1496,10 +1496,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   double expected_value = pow(3.14, 2);
 
@@ -1522,10 +1522,10 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValuePowUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_pow_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1533,14 +1533,14 @@ TEST_F(NativeTypeHandlePowUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleLogicalAND_UnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueLogicalAND_UnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = 1; // (100) && (-10)
 
@@ -1553,10 +1553,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 1; // (6.12) && (2.0)
 
@@ -1570,10 +1570,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value =  0; // 0 && 1
 
@@ -1586,10 +1586,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_and_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1597,10 +1597,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_and_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1608,10 +1608,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_and_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1619,10 +1619,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 1; // 3.14 && 2
 
@@ -1642,10 +1642,10 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueLogicalAND_UnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_and_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1653,14 +1653,14 @@ TEST_F(NativeTypeHandleLogicalAND_UnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleLogicalOR_UnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueLogicalOR_UnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = 1; // (100) || (-10)
 
@@ -1673,10 +1673,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 1.0; // (6.12) || (2.0)
 
@@ -1690,10 +1690,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = 1; // 0 || 1
 
@@ -1706,10 +1706,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_or_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1717,10 +1717,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_or_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1728,10 +1728,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_or_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -1739,10 +1739,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 1; // 3.14 || 2
 
@@ -1765,10 +1765,10 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueLogicalOR_UnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_logical_or_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1776,14 +1776,14 @@ TEST_F(NativeTypeHandleLogicalOR_UnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseAND_UnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueBitwiseAND_UnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = (100) & (-10);
 
@@ -1796,10 +1796,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6) & (2);
 
@@ -1813,10 +1813,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = (0) & (1);
 
@@ -1829,10 +1829,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_and_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1840,10 +1840,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_and_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1851,10 +1851,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_and_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1862,10 +1862,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 & 2;
 
@@ -1888,10 +1888,10 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueBitwiseAND_UnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_and_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1899,14 +1899,14 @@ TEST_F(NativeTypeHandleBitwiseAND_UnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseOR_UnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueBitwiseOR_UnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = (100) | (-10);
 
@@ -1919,10 +1919,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 6 | 2;
 
@@ -1936,10 +1936,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = 0 | 1;
 
@@ -1952,10 +1952,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_or_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1963,10 +1963,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_or_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1974,10 +1974,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_or_visitor, corevm::types::ConversionError>(h1, h2);
@@ -1985,10 +1985,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 | 2;
 
@@ -2011,10 +2011,10 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueBitwiseOR_UnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_or_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2022,14 +2022,14 @@ TEST_F(NativeTypeHandleBitwiseOR_UnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseXOR_UnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueBitwiseXOR_UnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(-10);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(-10);
 
   int32_t expected_value = (100) ^ (-10);
 
@@ -2042,10 +2042,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 6 ^ 2;
 
@@ -2059,10 +2059,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false ^ true;
 
@@ -2075,10 +2075,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_xor_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2086,10 +2086,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_xor_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2097,10 +2097,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_xor_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2108,10 +2108,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 ^ 2;
 
@@ -2134,10 +2134,10 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueBitwiseXOR_UnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_xor_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2145,14 +2145,14 @@ TEST_F(NativeTypeHandleBitwiseXOR_UnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseLeftShiftUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueBitwiseLeftShiftUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100) << (2);
 
@@ -2165,10 +2165,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 6 << 2;
 
@@ -2182,10 +2182,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false << true;
 
@@ -2198,10 +2198,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2209,10 +2209,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2220,10 +2220,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2231,10 +2231,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 << 2;
 
@@ -2257,10 +2257,10 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenTypesOfDifferentSize
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueBitwiseLeftShiftUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_left_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2268,14 +2268,14 @@ TEST_F(NativeTypeHandleBitwiseLeftShiftUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleBitwiseRightShiftUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueBitwiseRightShiftUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100) >> (2);
 
@@ -2289,10 +2289,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = 6 >> 2;
 
@@ -2306,10 +2306,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false >> true;
 
@@ -2322,10 +2322,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2333,10 +2333,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2344,10 +2344,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2355,10 +2355,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = 3 >> 2;
 
@@ -2381,10 +2381,10 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenTypesOfDifferentSiz
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueBitwiseRightShiftUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_bitwise_right_shift_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2392,14 +2392,14 @@ TEST_F(NativeTypeHandleBitwiseRightShiftUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleCmpUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueCmpUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = 1;
 
@@ -2433,10 +2433,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(16.12);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(16.12);
 
   int32_t expected_value = -1;
 
@@ -2470,10 +2470,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   int32_t expected_value = -1;
 
@@ -2504,10 +2504,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello world!!!");
 
   int32_t expected_value = 0;
 
@@ -2538,10 +2538,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestWithArrayTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestWithArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_cmp_visitor, corevm::RuntimeError>(h1, h2);
@@ -2549,10 +2549,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestWithArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestWithMapTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestWithMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_cmp_visitor, corevm::RuntimeError>(h1, h2);
@@ -2560,10 +2560,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestWithMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueCmpUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int32_t expected_value = 1;
 
@@ -2586,10 +2586,10 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueCmpUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_cmp_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2597,14 +2597,14 @@ TEST_F(NativeTypeHandleCmpUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleEqUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueEqUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 == 2);
 
@@ -2617,10 +2617,10 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 == 2.0);
 
@@ -2634,10 +2634,10 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false == true;
 
@@ -2650,11 +2650,11 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = true;
 
@@ -2683,11 +2683,11 @@ TEST_F(NativeTypeHandleEqUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = true;
 
@@ -2708,11 +2708,11 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = true;
 
@@ -2733,10 +2733,10 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 == 2);
 
@@ -2759,10 +2759,10 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleEqUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueEqUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_eq_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2770,14 +2770,14 @@ TEST_F(NativeTypeHandleEqUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleNeqUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueNeqUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 != 2);
 
@@ -2790,10 +2790,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 != 2.0);
 
@@ -2807,10 +2807,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false != true;
 
@@ -2823,11 +2823,11 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = false;
 
@@ -2856,10 +2856,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   const bool expected_value = false;
 
@@ -2872,10 +2872,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   const bool expected_value = false;
 
@@ -2888,10 +2888,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 != 2);
 
@@ -2914,10 +2914,10 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueNeqUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_neq_visitor, corevm::types::ConversionError>(h1, h2);
@@ -2925,14 +2925,14 @@ TEST_F(NativeTypeHandleNeqUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleGtUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueGtUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 > 2);
 
@@ -2946,10 +2946,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 > 2.0);
 
@@ -2963,10 +2963,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false > true;
 
@@ -2979,11 +2979,11 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = false;
 
@@ -3020,10 +3020,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   const bool expected_value = false;
 
@@ -3036,10 +3036,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_gt_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -3047,10 +3047,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 > 2);
 
@@ -3073,10 +3073,10 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGtUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueGtUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_gt_visitor, corevm::types::ConversionError>(h1, h2);
@@ -3084,14 +3084,14 @@ TEST_F(NativeTypeHandleGtUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleLtUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueLtUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 < 2);
 
@@ -3104,10 +3104,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 < 2.0);
 
@@ -3121,10 +3121,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false < true;
 
@@ -3137,11 +3137,11 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = false;
 
@@ -3178,10 +3178,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   const bool expected_value = false;
 
@@ -3194,10 +3194,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_lt_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -3205,10 +3205,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 < 2);
 
@@ -3231,10 +3231,10 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLtUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueLtUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_lt_visitor, corevm::types::ConversionError>(h1, h2);
@@ -3242,14 +3242,14 @@ TEST_F(NativeTypeHandleLtUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleGteUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueGteUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 >= 2);
 
@@ -3262,10 +3262,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 >= 2.0);
 
@@ -3279,10 +3279,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false >= true;
 
@@ -3295,11 +3295,11 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = true;
 
@@ -3336,10 +3336,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   const bool expected_value = true;
 
@@ -3352,10 +3352,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_gte_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -3363,10 +3363,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 >= 2);
 
@@ -3389,10 +3389,10 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleGteUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueGteUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_gte_visitor, corevm::types::ConversionError>(h1, h2);
@@ -3400,14 +3400,14 @@ TEST_F(NativeTypeHandleGteUnitTest, TestBetweenIncompatibleTypes)
 
 // -----------------------------------------------------------------------------
 
-class NativeTypeHandleLteUnitTest : public NativeTypeHandleBinaryOperatorUnitTest {};
+class NativeTypeValueLteUnitTest : public NativeTypeValueBinaryOperatorUnitTest {};
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenIntegerTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenIntegerTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::uint16(100);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int32(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::uint16(100);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int32(2);
 
   int32_t expected_value = (100 <= 2);
 
@@ -3420,10 +3420,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenIntegerTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenDecimalTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenDecimalTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal(6.12);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::decimal2(2.0);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal(6.12);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::decimal2(2.0);
 
   const int64_t expected_value = (6.12 <= 2.0);
 
@@ -3437,10 +3437,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenDecimalTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenBooleanTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenBooleanTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::boolean(false);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::boolean(true);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::boolean(false);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::boolean(true);
 
   const int64_t expected_value = false <= true;
 
@@ -3453,11 +3453,11 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenBooleanTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestWithStringTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestWithStringTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::string("Hello world!!!");
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello");
-  typename corevm::types::NativeTypeHandle h3 = h2;
+  typename corevm::types::NativeTypeValue h1 = corevm::types::string("Hello world!!!");
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello");
+  typename corevm::types::NativeTypeValue h3 = h2;
 
   const bool expected_value = true;
 
@@ -3494,10 +3494,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestWithStringTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenArrayTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenArrayTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::array();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::array();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::array();
 
   const bool expected_value = true;
 
@@ -3510,10 +3510,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenArrayTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenMapTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenMapTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::map();
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h1 = corevm::types::map();
+  typename corevm::types::NativeTypeValue h2 = corevm::types::map();
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_lte_visitor, corevm::types::InvalidOperatorError>(h1, h2);
@@ -3521,10 +3521,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenMapTypes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenTypesOfDifferentSizes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenTypesOfDifferentSizes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::decimal2(3.14);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::int8(2);
+  typename corevm::types::NativeTypeValue h1 = corevm::types::decimal2(3.14);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::int8(2);
 
   int64_t expected_value = (3 <= 2);
 
@@ -3547,10 +3547,10 @@ TEST_F(NativeTypeHandleLteUnitTest, TestBetweenTypesOfDifferentSizes)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(NativeTypeHandleLteUnitTest, TestBetweenIncompatibleTypes)
+TEST_F(NativeTypeValueLteUnitTest, TestBetweenIncompatibleTypes)
 {
-  typename corevm::types::NativeTypeHandle h1 = corevm::types::int8(1);
-  typename corevm::types::NativeTypeHandle h2 = corevm::types::string("Hello World!");
+  typename corevm::types::NativeTypeValue h1 = corevm::types::int8(1);
+  typename corevm::types::NativeTypeValue h2 = corevm::types::string("Hello World!");
 
   apply_binary_visitor_and_check_exception<
     corevm::types::native_type_lte_visitor, corevm::types::ConversionError>(h1, h2);

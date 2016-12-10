@@ -31,7 +31,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "runtime/process.h"
 #include "runtime/process_runner.h"
 #include "runtime/vector.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 #include "types/types.h"
 
 #include <gtest/gtest.h>
@@ -73,10 +73,10 @@ TEST_F(ProcessUnitTest, TestDefaultAndMaxSizes)
   corevm::runtime::Process process;
 
   ASSERT_EQ(0, process.heap_size());
-  ASSERT_EQ(0, process.ntvhndl_pool_size());
+  ASSERT_EQ(0, process.native_type_pool_size());
 
   ASSERT_LT(0, process.max_heap_size());
-  ASSERT_LT(0, process.max_ntvhndl_pool_size());
+  ASSERT_LT(0, process.max_native_type_pool_size());
 }
 
 // -----------------------------------------------------------------------------
@@ -89,10 +89,10 @@ TEST_F(ProcessUnitTest, TestInstantiateWithParameters)
   corevm::runtime::Process process(heap_alloc_size, pool_alloc_size);
 
   ASSERT_EQ(0, process.heap_size());
-  ASSERT_EQ(0, process.ntvhndl_pool_size());
+  ASSERT_EQ(0, process.native_type_pool_size());
 
   ASSERT_LT(0, process.max_heap_size());
-  ASSERT_LT(0, process.max_ntvhndl_pool_size());
+  ASSERT_LT(0, process.max_native_type_pool_size());
 }
 
 // -----------------------------------------------------------------------------
@@ -356,53 +356,53 @@ TEST_F(ProcessUnitTest, TestTopNthFrame)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(ProcessUnitTest, TestInsertAndAccessNativeTypeHandle)
+TEST_F(ProcessUnitTest, TestInsertAndAccessNativeTypeValue)
 {
   corevm::runtime::Process process;
   int value = 8;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
+  corevm::types::NativeTypeValue type_val = corevm::types::int8(value);
 
-  auto saved_hndl = process.insert_ntvhndl(hndl);
+  auto saved_type_val = process.insert_type_value(type_val);
 
-  auto actual_hndl = process.get_ntvhndl(saved_hndl);
+  auto actual_type_val = process.get_type_value(saved_type_val);
 
-  int8_t actual_value = corevm::types::get_value_from_handle<int8_t>(actual_hndl);
+  int8_t actual_value = corevm::types::get_intrinsic_value_from_type_value<int8_t>(actual_type_val);
 
   ASSERT_EQ(value, actual_value);
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(ProcessUnitTest, TestInsertAndEraseNativeTypeHandle)
+TEST_F(ProcessUnitTest, TestInsertAndEraseNativeTypeValue)
 {
   corevm::runtime::Process process;
   int value = 8;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::int8(value);
+  corevm::types::NativeTypeValue type_val = corevm::types::int8(value);
 
-  auto saved_hndl = process.insert_ntvhndl(hndl);
+  auto saved_type_val = process.insert_type_value(type_val);
 
   ASSERT_NO_THROW(
     {
-      process.erase_ntvhndl(saved_hndl);
+      process.erase_type_value(saved_type_val);
     }
   );
 
   // Try erase again
   ASSERT_THROW(
     {
-      process.erase_ntvhndl(saved_hndl);
+      process.erase_type_value(saved_type_val);
     },
-    corevm::runtime::NativeTypeHandleNotFoundError
+    corevm::runtime::NativeTypeValueNotFoundError
   );
 
   // Try access it
   ASSERT_THROW(
     {
-      process.get_ntvhndl(saved_hndl);
+      process.get_type_value(saved_type_val);
     },
-    corevm::runtime::NativeTypeHandleNotFoundError
+    corevm::runtime::NativeTypeValueNotFoundError
   );
 }
 
@@ -511,9 +511,9 @@ TEST_F(ProcessGCRuleUnitTest, TestGCRuleByHeapSize)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(ProcessGCRuleUnitTest, TestGCRuleByNtvhndlPoolSize)
+TEST_F(ProcessGCRuleUnitTest, TestGCRuleByNativeTypePoolSize)
 {
-  ASSERT_EQ(false, corevm::runtime::gc_rule_by_ntvhndl_pool_size(_process));
+  ASSERT_EQ(false, corevm::runtime::gc_rule_by_native_type_pool_size(_process));
 }
 
 // -----------------------------------------------------------------------------

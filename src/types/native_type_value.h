@@ -20,8 +20,8 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_NATIVE_TYPE_HANDLE_H_
-#define COREVM_NATIVE_TYPE_HANDLE_H_
+#ifndef COREVM_NATIVE_TYPE_VALUE_H_
+#define COREVM_NATIVE_TYPE_VALUE_H_
 
 #include "visitors.h"
 #include "variant/variant.h"
@@ -34,10 +34,10 @@ namespace types {
 
 template<typename T>
 T
-get_value_from_handle(const NativeTypeHandle& handle)
+get_intrinsic_value_from_type_value(const NativeTypeValue& type_val)
 {
   return variant::apply_visitor(
-    native_type_value_visitor<T>(), handle
+    native_type_value_visitor<T>(), type_val
   );
 }
 
@@ -45,35 +45,35 @@ get_value_from_handle(const NativeTypeHandle& handle)
 
 template<typename T>
 T&
-get_value_ref_from_handle(NativeTypeHandle& handle)
+get_value_ref_from_type_value(NativeTypeValue& type_val)
 {
-  return handle.get<T>();
+  return type_val.get<T>();
 }
 
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-NativeTypeHandle
-apply_unary_visitor(const NativeTypeHandle& handle)
+NativeTypeValue
+apply_unary_visitor(const NativeTypeValue& type_val)
 {
-  return variant::apply_visitor(operator_visitor(), handle);
+  return variant::apply_visitor(operator_visitor(), type_val);
 }
 
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor, typename... Arguments>
-NativeTypeHandle
-apply_unary_visitor_parameterized(NativeTypeHandle& handle, Arguments... args)
+NativeTypeValue
+apply_unary_visitor_parameterized(NativeTypeValue& type_val, Arguments... args)
 {
-  return variant::apply_visitor(operator_visitor(args...), handle);
+  return variant::apply_visitor(operator_visitor(args...), type_val);
 }
 
 // -----------------------------------------------------------------------------
 
 template<class operator_visitor>
-NativeTypeHandle
+NativeTypeValue
 apply_binary_visitor(
-  NativeTypeHandle& lhs, NativeTypeHandle& rhs)
+  NativeTypeValue& lhs, NativeTypeValue& rhs)
 {
   return variant::apply_visitor(operator_visitor(), lhs, rhs);
 }
@@ -84,4 +84,4 @@ apply_binary_visitor(
 } /* end namespace corevm */
 
 
-#endif /* COREVM_NATIVE_TYPE_HANDLE_H_ */
+#endif /* COREVM_NATIVE_TYPE_VALUE_H_ */

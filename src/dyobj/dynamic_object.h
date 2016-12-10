@@ -86,10 +86,10 @@ public:
 
   DynamicObjectManager& manager() noexcept;
 
-  const types::NativeTypeHandle& ntvhndl() const noexcept;
-  void set_ntvhndl(types::NativeTypeHandle*) noexcept;
-  void clear_ntvhndl() noexcept;
-  bool has_ntvhndl() const noexcept;
+  const types::NativeTypeValue& type_value() const noexcept;
+  void set_type_value(types::NativeTypeValue*) noexcept;
+  void clear_type_value() noexcept;
+  bool has_type_value() const noexcept;
 
   bool get_flag(char) const;
   void set_flag(char);
@@ -160,7 +160,7 @@ private:
   flag_t m_flags;
   attr_map_type m_attrs;
   DynamicObjectManager m_manager;
-  types::NativeTypeHandle* m_ntvhndl;
+  types::NativeTypeValue* m_type_value_ptr;
   runtime::ClosureCtx m_closure_ctx;
 };
 
@@ -180,7 +180,7 @@ DynamicObject<DynamicObjectManager>::DynamicObject()
   m_flags(COREVM_DYNAMIC_OBJECT_DEFAULT_FLAG_VALUE),
   m_attrs(),
   m_manager(),
-  m_ntvhndl(NULL),
+  m_type_value_ptr(NULL),
   m_closure_ctx(runtime::ClosureCtx(
     runtime::NONESET_COMPARTMENT_ID, runtime::NONESET_CLOSURE_ID))
 {
@@ -282,40 +282,40 @@ DynamicObject<DynamicObjectManager>::manager() noexcept
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
-const types::NativeTypeHandle&
-DynamicObject<DynamicObjectManager>::ntvhndl() const noexcept
+const types::NativeTypeValue&
+DynamicObject<DynamicObjectManager>::type_value() const noexcept
 {
 #if __DEBUG__
-  ASSERT(m_ntvhndl);
+  ASSERT(m_type_value_ptr);
 #endif
-  return *m_ntvhndl;
+  return *m_type_value_ptr;
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::set_ntvhndl(types::NativeTypeHandle* ntvhndl) noexcept
+DynamicObject<DynamicObjectManager>::set_type_value(types::NativeTypeValue* type_value) noexcept
 {
-  m_ntvhndl = ntvhndl;
+  m_type_value_ptr = type_value;
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
 void
-DynamicObject<DynamicObjectManager>::clear_ntvhndl() noexcept
+DynamicObject<DynamicObjectManager>::clear_type_value() noexcept
 {
-  m_ntvhndl = NULL;
+  m_type_value_ptr = NULL;
 }
 
 // -----------------------------------------------------------------------------
 
 template<class DynamicObjectManager>
 bool
-DynamicObject<DynamicObjectManager>::has_ntvhndl() const noexcept
+DynamicObject<DynamicObjectManager>::has_type_value() const noexcept
 {
-  return m_ntvhndl != NULL;
+  return m_type_value_ptr != NULL;
 }
 
 // -----------------------------------------------------------------------------

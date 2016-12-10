@@ -520,18 +520,18 @@ Instructions that interact with dynamic objects.
   stobj2        13        1             Pops the object on top of the stack and stores it with a key into the frame as an invisible object.
   delobj        14        1             Deletes an object from the current scope.
   delobj2       15        1             Deletes an invisible object from the current scope.
-  gethndl       16        0             Copies the native handle of the top object of the stack and push it on top of the eval-stack.
-  sethndl       17        0             Pops off the native handle off the eval-stack and assigns it to the top object of the stack.
-  gethndl2      18        1             Copies of the native type handle of the named object in the current frame, and pushes it on top of the eval stack.
-  clrhndl       19        0             Clears the native handle from the top object of the stack.
-  cpyhndl       20        1             Copies the native type handle associated from the object on top of the stack onto the next object on the stack. The first operand is a value specifying the type of conversion to perform on the native type handle copied.
-  cpyrepr       21        0             Copies the string representation of the native type handle from the object on top of the stack onto the next object onto the stack.
-  istruthy      22        0             Computes the truthy value of the native type handle associated with the object on top of the stack, and push the result on top of the eval stack.
+  gethndl       16        0             Copies the native type value of the top object of the stack and push it on top of the eval-stack.
+  sethndl       17        0             Pops off the native type value off the eval-stack and assigns it to the top object of the stack.
+  gethndl2      18        1             Copies of the native type value of the named object in the current frame, and pushes it on top of the eval stack.
+  clrhndl       19        0             Clears the native type value from the top object of the stack.
+  cpyhndl       20        1             Copies the native type value associated from the object on top of the stack onto the next object on the stack. The first operand is a value specifying the type of conversion to perform on the native type value copied.
+  cpyrepr       21        0             Copies the string representation of the native type value from the object on top of the stack onto the next object onto the stack.
+  istruthy      22        0             Computes the truthy value of the native type value associated with the object on top of the stack, and push the result on top of the eval stack.
   objeq         23        0             Pops off the top two objects on the stack and tests if they are the same object.
   objneq        24        0             Pops off the top two objects on the stack and tests if they are different objects.
   setctx        25        1             Sets the closure context of the object. The first operand is the closure ID.
   cldobj        26        2             Conditionally loads an object associated with the variable key value represented by either `oprd1` or `oprd2`, by evaluating the boolean equivalent of the object on top of the evaluation stack. Loads `oprd1` if the value evaluates to true, `oprd2` otherwise.
-  setattrs      27        2             Pops off the object on top of the stack, and convert its native type handle to a native map. Then use its key-value pairs as attribute name-value pairs to set on the next object on the top of the stack. The first operand is a boolean value specifying whether each mapped object should be cloned before set on the target object. The second operand is a boolean value indicating if the native map values should be overriden with the cloned object IDs.
+  setattrs      27        2             Pops off the object on top of the stack, and convert its native type value to a native map. Then use its key-value pairs as attribute name-value pairs to set on the next object on the top of the stack. The first operand is a boolean value specifying whether each mapped object should be cloned before set on the target object. The second operand is a boolean value indicating if the native map values should be overriden with the cloned object IDs.
   rsetattrs     28        1             Reverse set attributes. Set the object on top of stack as the attribute values onto the objects pointed to as values in the native map equivalent on top of the eval stack.
   setattrs2     29        1             Pops off the object on top of the stack, and set copies of all of its attributes onto the next on the stack. For each of the copied objects, set the second object on the stack as an attribute using the first operand as the attribute key.
   putobj        30        0             Pops the object on top of the stack, and pushes its value onto the top of the current evaluation stack.
@@ -584,8 +584,8 @@ Instructions related to functions and call invocations.
   ============  ========  ============  ===============
   putarg        48        0             Pops the top object off the stack and assign it as the next argument for the next call.
   putkwarg      49        1             Pops the top object off the stack and assign it as the next keyword-argument for the next call.
-  putargs       50        0             Pops the top object off the stack, retrieves its native type handle as a native type array, and then iterate through each array element, use it as an object ID to retrieve an object from the heap, and assigns it as the next argument for the next call.
-  putkwargs     51        0             Pops the top object off the stack, retrieves its native type handle as a native type map, and then iterate through each key-value pair, use the value as an object ID to retrieve an object from the heap, and use the key as an encoding ID to assign the object as the next keyword-argument for the next call.
+  putargs       50        0             Pops the top object off the stack, retrieves its native type value as a native type array, and then iterate through each array element, use it as an object ID to retrieve an object from the heap, and assigns it as the next argument for the next call.
+  putkwargs     51        0             Pops the top object off the stack, retrieves its native type value as a native type map, and then iterate through each key-value pair, use the value as an object ID to retrieve an object from the heap, and use the key as an encoding ID to assign the object as the next keyword-argument for the next call.
   getarg        52        1             Pops off the first argument for the current call and put it on the current frame using the encoding key specified in the first operand.
   getkwarg      53        2             If the top frame has the keyword-argument pair with the key specified as the first operand, pops off the pair and stores the value into the frame using the key. And, advance the program counter by the value specified in the second operand.
   getargs       54        0             Pops off all the arguments for the current call, insert them into a native-list and push it on top of eval-stack.
@@ -611,7 +611,7 @@ Instructions related to a wide range of runtime functionalities.
   dbgfrm        59        1             Show debug information on the current frame. The first operand is the set of debug options: 1. Show instructions in canonical form.
   dbgmem        60        1             Show information of current process memory usages. The first operand is the set of options: 1. Show peak virtual memory size and resident set size.
   dbgvar        61        1             Show information of a variable.
-  print         62        2             Converts the native type handle associated with the object on top of the stack into a native string, and prints it to std output. The second operand is a boolean value specifying whether a trailing new line character should be printed. Defaults to `false`.
+  print         62        2             Converts the native type value associated with the object on top of the stack into a native string, and prints it to std output. The second operand is a boolean value specifying whether a trailing new line character should be printed. Defaults to `false`.
   swap2         63        0             Swaps the top two elements on the evaluation stack.
   ============  ========  ============  ===============
 

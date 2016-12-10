@@ -34,7 +34,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "corevm/macros.h"
 #include "dyobj/util.h"
 #include "types/interfaces.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -283,7 +283,7 @@ static
 void
 execute_unary_operator_instr(Frame* frame, InterfaceFunc interface_func)
 {
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
 
   interface_func(oprd);
 }
@@ -302,8 +302,8 @@ execute_binary_operator_instr(Frame* frame, InterfaceFunc interface_func)
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& lhs = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& rhs = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& lhs = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& rhs = frame->eval_stack_element(eval_stack_size - 2);
 
   lhs = interface_func(lhs, rhs);
 }
@@ -315,9 +315,9 @@ static
 void
 execute_native_integer_type_creation_instr(const Instr& instr, Frame* frame)
 {
-  types::NativeTypeHandle hndl(NativeType(instr.oprd1));
+  types::NativeTypeValue type_val(NativeType(instr.oprd1));
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -332,9 +332,9 @@ execute_native_floating_type_creation_instr(const Instr& instr, Frame* frame)
   auto encoding_key = static_cast<encoding_key_t>(instr.oprd1);
   auto fpt_literal = static_cast<NativeType>(compartment->get_fpt_literal(encoding_key));
 
-  types::NativeTypeHandle hndl(fpt_literal);
+  types::NativeTypeValue type_val(fpt_literal);
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -346,9 +346,9 @@ execute_native_complex_type_creation_instr(
   const Instr& /* instr */, Frame* frame)
 {
   NativeType value;
-  types::NativeTypeHandle hndl(value);
+  types::NativeTypeValue type_val(value);
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -358,7 +358,7 @@ static
 void
 execute_native_type_conversion_instr(Frame* frame, InterfaceFunc interface_func)
 {
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
 
   interface_func(oprd);
 }
@@ -371,7 +371,7 @@ void
 execute_native_type_complex_instr_with_single_operand(
   Frame* frame, InterfaceFunc interface_func)
 {
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
 
   oprd = interface_func(oprd);
 }
@@ -384,7 +384,7 @@ void
 execute_native_type_complex_instr_with_single_operand_in_place(
   Frame* frame, InterfaceFunc interface_func)
 {
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
 
   interface_func(oprd);
 }
@@ -404,8 +404,8 @@ execute_native_type_complex_instr_with_two_operands(
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
 
   oprd1 = interface_func(oprd1, oprd2);
 }
@@ -425,8 +425,8 @@ execute_native_type_complex_instr_with_two_operands_in_place(Frame* frame,
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
 
   interface_func(oprd1, oprd2);
 }
@@ -446,9 +446,9 @@ execute_native_type_complex_instr_with_three_operands(Frame* frame,
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
-  types::NativeTypeHandle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
 
   oprd1 = interface_func(oprd1, oprd2, oprd3);
 }
@@ -468,9 +468,9 @@ execute_native_type_complex_instr_with_three_operands_in_place(Frame* frame,
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
-  types::NativeTypeHandle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
 
   interface_func(oprd1, oprd2, oprd3);
 }
@@ -490,10 +490,10 @@ execute_native_type_complex_instr_with_four_operands(Frame* frame,
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
-  types::NativeTypeHandle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
-  types::NativeTypeHandle& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
+  types::NativeTypeValue& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
 
   oprd1 = interface_func(oprd1, oprd2, oprd3, oprd4);
 }
@@ -513,10 +513,10 @@ execute_native_type_complex_instr_with_four_operands_in_place(Frame* frame,
     THROW(EvaluationStackEmptyError());
   }
 
-  types::NativeTypeHandle& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
-  types::NativeTypeHandle& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
-  types::NativeTypeHandle& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
-  types::NativeTypeHandle& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
+  types::NativeTypeValue& oprd1 = frame->eval_stack_element(eval_stack_size - 1);
+  types::NativeTypeValue& oprd2 = frame->eval_stack_element(eval_stack_size - 2);
+  types::NativeTypeValue& oprd3 = frame->eval_stack_element(eval_stack_size - 3);
+  types::NativeTypeValue& oprd4 = frame->eval_stack_element(eval_stack_size - 4);
 
   interface_func(oprd1, oprd2, oprd3, oprd4);
 }
@@ -667,16 +667,16 @@ instr_handler_hasattr2(const Instr& /* instr */, Process& process,
   auto obj = process.top_stack();
 
   const auto frame = *frame_ptr;
-  types::NativeTypeHandle hndl = frame->top_eval_stack();
+  types::NativeTypeValue type_val = frame->top_eval_stack();
 
-  auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
+  auto attr_str = types::get_intrinsic_value_from_type_value<types::native_string>(type_val);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
   dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
 
   const bool res_value = obj->hasattr(attr_key);
 
-  types::NativeTypeHandle res( (types::boolean(res_value)) );
+  types::NativeTypeValue res( (types::boolean(res_value)) );
 
   frame->push_eval_stack(std::move(res));
 }
@@ -690,9 +690,9 @@ instr_handler_getattr2(const Instr& /* instr */, Process& process,
   auto obj = process.pop_stack();
 
   const auto frame = *frame_ptr;
-  types::NativeTypeHandle hndl = frame->top_eval_stack();
+  types::NativeTypeValue type_val = frame->top_eval_stack();
 
-  auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
+  auto attr_str = types::get_intrinsic_value_from_type_value<types::native_string>(type_val);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
   auto attr_obj = getattr(obj, attr_str_value);
@@ -710,9 +710,9 @@ instr_handler_setattr2(const Instr& /* instr */, Process& process,
   auto target_obj = process.top_stack();
 
   const auto frame = *frame_ptr;
-  types::NativeTypeHandle hndl = frame->top_eval_stack();
+  types::NativeTypeValue type_val = frame->top_eval_stack();
 
-  auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
+  auto attr_str = types::get_intrinsic_value_from_type_value<types::native_string>(type_val);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
   dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
@@ -733,9 +733,9 @@ instr_handler_delattr2(const Instr& /* instr */, Process& process,
   auto obj = process.top_stack();
 
   const auto frame = *frame_ptr;
-  types::NativeTypeHandle hndl = frame->top_eval_stack();
+  types::NativeTypeValue type_val = frame->top_eval_stack();
 
-  auto attr_str = types::get_value_from_handle<types::native_string>(hndl);
+  auto attr_str = types::get_intrinsic_value_from_type_value<types::native_string>(type_val);
   std::string attr_str_value = static_cast<std::string>(attr_str);
 
   dyobj::attr_key_t attr_key = dyobj::hash_attr_str(attr_str);
@@ -840,12 +840,12 @@ instr_handler_gethndl(const Instr& /* instr */, Process& process,
   Frame* frame = *frame_ptr;
   auto obj = process.top_stack();
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  frame->push_eval_stack(obj->ntvhndl());
+  frame->push_eval_stack(obj->type_value());
 }
 
 // -----------------------------------------------------------------------------
@@ -856,19 +856,19 @@ instr_handler_sethndl(const Instr& /* instr */, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle hndl(frame->pop_eval_stack());
+  types::NativeTypeValue type_val(frame->pop_eval_stack());
 
   auto obj = process.top_stack();
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    auto new_ntvhndl = process.insert_ntvhndl(hndl);
+    auto new_type_val = process.insert_type_value(type_val);
 
-    obj->set_ntvhndl(new_ntvhndl);
+    obj->set_type_value(new_type_val);
   }
   else
   {
-    process.get_ntvhndl(&obj->ntvhndl()) = std::move(hndl);
+    process.get_type_value(&obj->type_value()) = std::move(type_val);
   }
 }
 
@@ -883,12 +883,12 @@ instr_handler_gethndl2(const Instr& instr, Process& /* process */,
 
   auto obj = frame->get_visible_var(key);
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  frame->push_eval_stack(obj->ntvhndl());
+  frame->push_eval_stack(obj->type_value());
 }
 
 // -----------------------------------------------------------------------------
@@ -899,13 +899,13 @@ instr_handler_clrhndl(const Instr& /* instr */, Process& process,
 {
   auto obj = process.top_stack();
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  process.erase_ntvhndl(&obj->ntvhndl());
-  obj->clear_ntvhndl();
+  process.erase_type_value(&obj->type_value());
+  obj->clear_type_value();
 }
 
 // -----------------------------------------------------------------------------
@@ -917,12 +917,12 @@ instr_handler_cpyhndl(const Instr& instr, Process& process,
   auto src_obj = process.pop_stack();
   auto target_obj = process.pop_stack();
 
-  if (!src_obj->has_ntvhndl())
+  if (!src_obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  types::NativeTypeHandle res = src_obj->ntvhndl();
+  types::NativeTypeValue res = src_obj->type_value();
 
   uint32_t type = static_cast<uint32_t>(instr.oprd1);
 
@@ -1003,8 +1003,8 @@ instr_handler_cpyhndl(const Instr& instr, Process& process,
       break;
   }
 
-  auto new_ntvhndl = process.insert_ntvhndl(res);
-  target_obj->set_ntvhndl(new_ntvhndl);
+  auto new_type_val = process.insert_type_value(res);
+  target_obj->set_type_value(new_type_val);
 }
 
 // -----------------------------------------------------------------------------
@@ -1016,16 +1016,16 @@ instr_handler_cpyrepr(const Instr& /* instr */, Process& process,
   Process::dyobj_ptr src_obj = process.pop_stack();
   Process::dyobj_ptr target_obj = process.pop_stack();
 
-  if (!src_obj->has_ntvhndl())
+  if (!src_obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  const types::NativeTypeHandle& hndl = src_obj->ntvhndl();
-  auto res = types::interface_compute_repr_value(hndl);
+  const types::NativeTypeValue& type_val = src_obj->type_value();
+  auto res = types::interface_compute_repr_value(type_val);
 
-  auto new_ntvhndl = process.insert_ntvhndl(res);
-  target_obj->set_ntvhndl(new_ntvhndl);
+  auto new_type_val = process.insert_type_value(res);
+  target_obj->set_type_value(new_type_val);
 }
 
 // -----------------------------------------------------------------------------
@@ -1038,14 +1038,14 @@ instr_handler_istruthy(const Instr& /* instr */, Process& process,
 
   auto obj = process.top_stack();
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  const types::NativeTypeHandle& hndl = obj->ntvhndl();
+  const types::NativeTypeValue& type_val = obj->type_value();
 
-  auto res = types::interface_compute_truthy_value(hndl);
+  auto res = types::interface_compute_truthy_value(type_val);
 
   frame->push_eval_stack(std::move(res));
 }
@@ -1059,10 +1059,10 @@ instr_handler_objeq(const Instr& /* instr */, Process& process,
   auto obj1 = process.pop_stack();
   auto obj2 = process.pop_stack();
 
-  types::NativeTypeHandle hndl(types::boolean(obj1 == obj2));
+  types::NativeTypeValue type_val(types::boolean(obj1 == obj2));
 
   Frame* frame = *frame_ptr;
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1074,10 +1074,10 @@ instr_handler_objneq(const Instr& /* instr */, Process& process,
   auto obj1 = process.pop_stack();
   auto obj2 = process.pop_stack();
 
-  types::NativeTypeHandle hndl(types::boolean(obj1 != obj2));
+  types::NativeTypeValue type_val(types::boolean(obj1 != obj2));
 
   Frame* frame = *frame_ptr;
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1104,9 +1104,9 @@ instr_handler_cldobj(const Instr& instr, Process& process,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle hndl = frame->pop_eval_stack();
+  types::NativeTypeValue type_val = frame->pop_eval_stack();
 
-  bool value = types::get_value_from_handle<bool>(hndl);
+  bool value = types::get_intrinsic_value_from_type_value<bool>(type_val);
 
   variable_key_t key1 = static_cast<variable_key_t>(instr.oprd1);
   variable_key_t key2 = static_cast<variable_key_t>(instr.oprd2);
@@ -1147,9 +1147,9 @@ instr_handler_setattrs(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
 
-  const types::NativeTypeHandle& hndl = src_obj->ntvhndl();
+  const types::NativeTypeValue& type_val = src_obj->type_value();
 
-  types::native_map map = types::get_value_from_handle<types::native_map>(hndl);
+  types::native_map map = types::get_intrinsic_value_from_type_value<types::native_map>(type_val);
 
   // If we should clone each mapped object before setting it.
   bool should_clone = static_cast<bool>(instr.oprd1);
@@ -1200,7 +1200,7 @@ instr_handler_setattrs(const Instr& instr, Process& process,
     process.insert_attr_name(attr_key, attr_name.c_str());
   }
 
-  frame->push_eval_stack(types::NativeTypeHandle(map));
+  frame->push_eval_stack(types::NativeTypeValue(map));
 }
 
 // -----------------------------------------------------------------------------
@@ -1216,10 +1216,10 @@ instr_handler_rsetattrs(const Instr& instr, Process& process,
 
   auto attr_obj = process.top_stack();
 
-  types::NativeTypeHandle& hndl = frame->top_eval_stack();
+  types::NativeTypeValue& type_val = frame->top_eval_stack();
 
-  types::native_map map = types::get_value_from_handle<
-    types::native_map>(hndl);
+  types::native_map map = types::get_intrinsic_value_from_type_value<
+    types::native_map>(type_val);
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
@@ -1284,9 +1284,9 @@ instr_handler_putobj(const Instr& /* instr */, Process& process,
   Frame* frame = *frame_ptr;
 
   types::uint64 value(ptr->id());
-  types::NativeTypeHandle hndl(value);
+  types::NativeTypeValue type_val(value);
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1296,9 +1296,9 @@ instr_handler_getobj(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
-  auto hndl = frame->pop_eval_stack();
+  auto type_val = frame->pop_eval_stack();
 
-  dyobj::dyobj_id_t id = types::get_value_from_handle<dyobj::dyobj_id_t>(hndl);
+  dyobj::dyobj_id_t id = types::get_intrinsic_value_from_type_value<dyobj::dyobj_id_t>(type_val);
 
   process.push_stack(&process.get_dyobj(id));
 }
@@ -1515,9 +1515,9 @@ instr_handler_jmpif(const Instr& instr, Process& process,
     THROW(InvalidInstrAddrError());
   }
 
-  types::NativeTypeHandle& hndl = frame->top_eval_stack();
+  types::NativeTypeValue& type_val = frame->top_eval_stack();
 
-  bool value = types::get_value_from_handle<bool>(hndl);
+  bool value = types::get_intrinsic_value_from_type_value<bool>(type_val);
 
   if (value)
   {
@@ -1735,10 +1735,10 @@ instr_handler_putargs(const Instr& /* instr */, Process& process,
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto obj = process.pop_stack();
 
-  const types::NativeTypeHandle& hndl = obj->ntvhndl();
+  const types::NativeTypeValue& type_val = obj->type_value();
 
   types::native_array array =
-    types::get_value_from_handle<types::native_array>(hndl);
+    types::get_intrinsic_value_from_type_value<types::native_array>(type_val);
 
   for (auto itr = array.begin(); itr != array.end(); ++itr)
   {
@@ -1758,10 +1758,10 @@ instr_handler_putkwargs(const Instr& /* instr */, Process& process,
   InvocationCtx* invk_ctx = *invk_ctx_ptr;
   auto obj = process.pop_stack();
 
-  const types::NativeTypeHandle& result = obj->ntvhndl();
+  const types::NativeTypeValue& result = obj->type_value();
 
   types::native_map map =
-    types::get_value_from_handle<types::native_map>(result);
+    types::get_intrinsic_value_from_type_value<types::native_map>(result);
 
   for (auto itr = map.begin(); itr != map.end(); ++itr)
   {
@@ -1829,9 +1829,9 @@ instr_handler_getargs(const Instr& /* instr */, Process& /* process */,
     array.push_back(obj->id());
   }
 
-  types::NativeTypeHandle hndl(std::move(array));
+  types::NativeTypeValue type_val(std::move(array));
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1856,9 +1856,9 @@ instr_handler_getkwargs(const Instr& /* instr */, Process& /* process */,
     map[key_val] = obj->id();
   }
 
-  types::NativeTypeHandle hndl(std::move(map));
+  types::NativeTypeValue type_val(std::move(map));
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1872,9 +1872,9 @@ instr_handler_hasargs(const Instr& /* instr */, Process& /* process */,
 
   const bool result = invk_ctx->has_params();
 
-  types::NativeTypeHandle hndl( (types::boolean(result)) );
+  types::NativeTypeValue type_val( (types::boolean(result)) );
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -1961,15 +1961,15 @@ instr_handler_print(const Instr& instr, Process& process,
 {
   auto obj = process.top_stack();
 
-  if (!obj->has_ntvhndl())
+  if (!obj->has_type_value())
   {
-    THROW(NativeTypeHandleNotFoundError());
+    THROW(NativeTypeValueNotFoundError());
   }
 
-  const types::NativeTypeHandle& hndl = obj->ntvhndl();
+  const types::NativeTypeValue& type_val = obj->type_value();
 
   types::native_string native_str =
-    types::get_value_from_handle<types::native_string>(hndl);
+    types::get_intrinsic_value_from_type_value<types::native_string>(type_val);
 
   static const char* PRINT_FORMATS[2] = { "%s", "%s\n" };
 
@@ -2360,9 +2360,9 @@ instr_handler_str(const Instr& instr, Process& /* process */,
     str = compartment->get_string_literal(encoding_key);
   }
 
-  types::NativeTypeHandle hndl = types::string(str);
+  types::NativeTypeValue type_val = types::string(str);
 
-  frame->push_eval_stack(std::move(hndl));
+  frame->push_eval_stack(std::move(type_val));
 }
 
 // -----------------------------------------------------------------------------
@@ -2519,8 +2519,8 @@ instr_handler_truthy(const Instr& /* instr */, Process& /* process */,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
-  types::NativeTypeHandle result =
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
+  types::NativeTypeValue result =
     types::interface_compute_truthy_value(oprd);
 
   frame->push_eval_stack(std::move(result));
@@ -2534,8 +2534,8 @@ instr_handler_repr(const Instr& /* instr */, Process& /* process */,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
-  types::NativeTypeHandle result =
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
+  types::NativeTypeValue result =
     types::interface_compute_repr_value(oprd);
 
   frame->push_eval_stack(std::move(result));
@@ -2549,8 +2549,8 @@ instr_handler_hash(const Instr& /* instr */, Process& /* process */,
 {
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& oprd = frame->top_eval_stack();
-  types::NativeTypeHandle result =
+  types::NativeTypeValue& oprd = frame->top_eval_stack();
+  types::NativeTypeValue result =
     types::interface_compute_hash_value(oprd);
 
   frame->push_eval_stack(std::move(result));
@@ -2950,9 +2950,9 @@ instr_handler_mapset(const Instr& instr, Process& process,
 
   Frame* frame = *frame_ptr;
 
-  types::NativeTypeHandle& res = frame->top_eval_stack();
+  types::NativeTypeValue& res = frame->top_eval_stack();
 
-  types::native_map map = types::get_value_from_handle<types::native_map>(res);
+  types::native_map map = types::get_intrinsic_value_from_type_value<types::native_map>(res);
 
   map[key] = ptr->id();
 

@@ -55,7 +55,7 @@ typedef variant::variant<
   string,
   array,
   map
-> NativeTypeHandle;
+> NativeTypeValue;
 
 // -----------------------------------------------------------------------------
 

@@ -24,7 +24,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "corevm/macros.h"
 #include "runtime/process.h"
-#include "types/native_type_handle.h"
+#include "types/native_type_value.h"
 
 
 // -----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void BenchmarkProcessPushStack(benchmark::State& state)
 
 #ifdef BUILD_BENCHMARKS_STRICT
 static
-void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
+void BenchmarkProcessInsertTypeValue(benchmark::State& state)
 {
   corevm::runtime::Process::Options opts;
 
@@ -93,11 +93,11 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 
   corevm::runtime::Process process(opts);
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::string("Hello world");
+  corevm::types::NativeTypeValue type_val = corevm::types::string("Hello world");
 
   while (state.KeepRunning())
   {
-    process.insert_ntvhndl(hndl);
+    process.insert_type_value(type_val);
   }
 }
 #endif
@@ -105,16 +105,16 @@ void BenchmarkProcessInsertNtvHndl(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkProcessGetNtvHndl(benchmark::State& state)
+void BenchmarkProcessGetTypeValue(benchmark::State& state)
 {
   corevm::runtime::Process process;
 
-  corevm::types::NativeTypeHandle hndl = corevm::types::string("Hello world");
-  auto key = process.insert_ntvhndl(hndl);
+  corevm::types::NativeTypeValue type_val = corevm::types::string("Hello world");
+  auto key = process.insert_type_value(type_val);
 
   while (state.KeepRunning())
   {
-    process.get_ntvhndl(key);
+    process.get_type_value(key);
   }
 }
 
@@ -124,10 +124,10 @@ void BenchmarkProcessGetNtvHndl(benchmark::State& state)
 BENCHMARK(BenchmarkProcessCreateDyobj);
 #endif
 BENCHMARK(BenchmarkProcessGetDyobj);
-BENCHMARK(BenchmarkProcessGetNtvHndl);
+BENCHMARK(BenchmarkProcessGetTypeValue);
 #ifdef BUILD_BENCHMARKS_STRICT
 BENCHMARK(BenchmarkProcessPushStack);
-BENCHMARK(BenchmarkProcessInsertNtvHndl);
+BENCHMARK(BenchmarkProcessInsertTypeValue);
 #endif
 
 // -----------------------------------------------------------------------------

@@ -47,7 +47,7 @@ bool gc_rule_by_heap_size(const Process&);
 
 // -----------------------------------------------------------------------------
 
-bool gc_rule_by_ntvhndl_pool_size(const Process&);
+bool gc_rule_by_native_type_pool_size(const Process&);
 
 // -----------------------------------------------------------------------------
 
