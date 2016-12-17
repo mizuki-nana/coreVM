@@ -172,10 +172,10 @@ void BenchmarkSTOBJ2Instr(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkGETHNDLInstr(benchmark::State& state)
+void BenchmarkGETVALInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithOneObjectOnStack(state,
-    corevm::runtime::instr_handler_gethndl);
+    corevm::runtime::instr_handler_getval);
 }
 
 // -----------------------------------------------------------------------------
@@ -324,10 +324,10 @@ void BenchmarkObjectInstrsWithOneObjectOnStackWithNativeTypeValue(benchmark::Sta
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkSETHNDLInstr(benchmark::State& state)
+void BenchmarkSETVALInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithOneObjectOnStackWithNativeTypeValue(state,
-    corevm::runtime::instr_handler_sethndl);
+    corevm::runtime::instr_handler_setval);
 }
 
 // -----------------------------------------------------------------------------
@@ -364,7 +364,7 @@ void BenchmarkGETOBJInstr(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkCLRHNDLInstr(benchmark::State& state)
+void BenchmarkCLRVALInstr(benchmark::State& state)
 {
   corevm::runtime::Instr instr(0, 0, 0);
 
@@ -381,7 +381,7 @@ void BenchmarkCLRHNDLInstr(benchmark::State& state)
     fixture.process().push_stack(obj);
     obj->set_type_value(fixture.process().insert_type_value(type_val));
 
-    instr_handler_clrhndl(instr, fixture.process(), &frame, &invk_ctx);
+    instr_handler_clrval(instr, fixture.process(), &frame, &invk_ctx);
   }
 }
 
@@ -451,10 +451,10 @@ void BenchmarkSETATTRInstr(benchmark::State& state)
 // -----------------------------------------------------------------------------
 
 static
-void BenchmarkCPYHNDLInstr(benchmark::State& state)
+void BenchmarkCPYVALInstr(benchmark::State& state)
 {
   BenchmarkObjectInstrsWithTwoObjectsOnStack(state,
-    corevm::runtime::instr_handler_cpyhndl);
+    corevm::runtime::instr_handler_cpyval);
 }
 
 // -----------------------------------------------------------------------------
@@ -737,47 +737,6 @@ BenchmarkDELATTR2Instr(benchmark::State& state)
 
 static
 void
-BenchmarkSETATTRSInstr(benchmark::State& state)
-{
-  corevm::runtime::Instr instr(0, 1, 1);
-
-  InstrBenchmarksFixture fixture;
-
-  auto obj = fixture.process().create_dyobj();
-  auto obj2 = fixture.process().create_dyobj();
-
-  corevm::types::native_map attr_map {
-    { 1, obj2->id() }
-  };
-
-  corevm::types::NativeTypeValue type_val = attr_map;
-  obj->set_type_value(fixture.process().insert_type_value(type_val));
-
-  corevm::runtime::ClosureCtx ctx(0, 0);
-
-  obj->set_closure_ctx(ctx);
-
-  fixture.process().push_stack(obj2);
-
-  for (size_t i = 0; i < state.max_iterations; ++i)
-  {
-    fixture.process().push_stack(obj);
-  }
-
-  auto frame = &fixture.process().top_frame();
-  auto invk_ctx = &fixture.process().top_invocation_ctx();
-
-  while (state.KeepRunning())
-  {
-    corevm::runtime::instr_handler_setattrs(
-      instr, fixture.process(), &frame, &invk_ctx);
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-static
-void
 BenchmarkRSETATTRSInstr(benchmark::State& state)
 {
   const std::string attr_str = "hello_world";
@@ -822,7 +781,7 @@ BenchmarkRSETATTRSInstr(benchmark::State& state)
 #if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 static
 void
-BenchmarkSETATTRS2Instr(benchmark::State& state)
+BenchmarkSETATTRSInstr(benchmark::State& state)
 {
   const std::string attr_str = "hello_world";
   auto attr_key = 0;
@@ -876,7 +835,7 @@ BenchmarkSETATTRS2Instr(benchmark::State& state)
 
   while (state.KeepRunning())
   {
-    corevm::runtime::instr_handler_setattrs2(
+    corevm::runtime::instr_handler_setattrs(
       instr, fixture.process(), &frame, &invk_ctx);
   }
 }
@@ -888,7 +847,7 @@ BENCHMARK(BenchmarkLDOBJInstr);
 BENCHMARK(BenchmarkLDOBJ2Instr);
 BENCHMARK(BenchmarkDELOBJInstr);
 BENCHMARK(BenchmarkDELOBJ2Instr);
-BENCHMARK(BenchmarkCLRHNDLInstr);
+BENCHMARK(BenchmarkCLRVALInstr);
 BENCHMARK(BenchmarkCLDOBJInstr);
 #if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
 BENCHMARK(BenchmarkNEWInstr);
@@ -897,7 +856,7 @@ BENCHMARK(BenchmarkSTOBJInstr);
 BENCHMARK(BenchmarkSTOBJ2Instr);
 BENCHMARK(BenchmarkGETATTRInstr);
 BENCHMARK(BenchmarkDELATTRInstr);
-BENCHMARK(BenchmarkGETHNDLInstr);
+BENCHMARK(BenchmarkGETVALInstr);
 BENCHMARK(BenchmarkISTRUTHYInstr);
 BENCHMARK(BenchmarkSETCTXInstr);
 BENCHMARK(BenchmarkSWAPInstr);
@@ -905,20 +864,19 @@ BENCHMARK(BenchmarkHASATTR2Instr);
 BENCHMARK(BenchmarkGETATTR2Instr);
 BENCHMARK(BenchmarkSETATTR2Instr);
 BENCHMARK(BenchmarkDELATTR2Instr);
-BENCHMARK(BenchmarkSETATTRSInstr);
 BENCHMARK(BenchmarkRSETATTRSInstr);
 #if !COREVM_USE_SMALL_ATTRIBUTE_TABLE
-BENCHMARK(BenchmarkSETATTRS2Instr);
+BENCHMARK(BenchmarkSETATTRSInstr);
 #endif
 BENCHMARK(BenchmarkSETFLGCInstr);
 BENCHMARK(BenchmarkSETFLDELInstr);
 BENCHMARK(BenchmarkSETFLCALLInstr);
 BENCHMARK(BenchmarkSETFLMUTEInstr);
-BENCHMARK(BenchmarkSETHNDLInstr);
+BENCHMARK(BenchmarkSETVALInstr);
 BENCHMARK(BenchmarkPUTOBJLInstr);
 BENCHMARK(BenchmarkGETOBJInstr);
 BENCHMARK(BenchmarkSETATTRInstr);
-BENCHMARK(BenchmarkCPYHNDLInstr);
+BENCHMARK(BenchmarkCPYVALInstr);
 BENCHMARK(BenchmarkCPYREPRInstr);
 BENCHMARK(BenchmarkOBJEQInstr);
 BENCHMARK(BenchmarkOBJNEQInstr);

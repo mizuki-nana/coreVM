@@ -163,9 +163,9 @@ class native_type_value_visitor : public variant::static_visitor<T>
 {
 public:
   template<typename H>
-  T operator()(const H& handle) const
+  T operator()(const H& oprd) const
   {
-    return static_cast<T>(handle);
+    return static_cast<T>(oprd);
   }
 };
 

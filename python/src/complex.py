@@ -84,9 +84,9 @@ class complex(object):
         """
         ### BEGIN VECTOR ###
         [ldobj, res_sqrt, 0]
-        [gethndl2, res_sum, 0]
+        [getval2, res_sum, 0]
         [sqrt, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 

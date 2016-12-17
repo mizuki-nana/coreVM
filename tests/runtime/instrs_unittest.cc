@@ -631,7 +631,7 @@ TEST_F(InstrsObjUnitTest, TestInstrDELOBJ2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
+TEST_F(InstrsObjUnitTest, TestInstrGETVAL)
 {
   uint32_t expected_value = 123;
 
@@ -647,7 +647,7 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
   obj->set_type_value(saved_type_val);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  execute_instr(corevm::runtime::instr_handler_gethndl, instr, 1);
+  execute_instr(corevm::runtime::instr_handler_getval, instr, 1);
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
   corevm::types::NativeTypeValue actual_type_val = actual_frame.pop_eval_stack();
@@ -661,7 +661,7 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrSETHNDL)
+TEST_F(InstrsObjUnitTest, TestInstrSETVAL)
 {
   uint32_t expected_value = 123;
 
@@ -674,14 +674,14 @@ TEST_F(InstrsObjUnitTest, TestInstrSETHNDL)
   m_process.push_frame(frame);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  execute_instr(corevm::runtime::instr_handler_sethndl, instr, 1);
+  execute_instr(corevm::runtime::instr_handler_setval, instr, 1);
 
   ASSERT_TRUE(obj->has_type_value());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
+TEST_F(InstrsObjUnitTest, TestInstrGETVAL2)
 {
   uint32_t expected_value = 123;
 
@@ -700,7 +700,7 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(key), 0);
 
-  execute_instr(corevm::runtime::instr_handler_gethndl2, instr, 0);
+  execute_instr(corevm::runtime::instr_handler_getval2, instr, 0);
 
   corevm::runtime::Frame& actual_frame = m_process.top_frame();
   corevm::types::NativeTypeValue actual_type_val = actual_frame.pop_eval_stack();
@@ -714,7 +714,7 @@ TEST_F(InstrsObjUnitTest, TestInstrGETHNDL2)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrCLRHNDL)
+TEST_F(InstrsObjUnitTest, TestInstrCLRVAL)
 {
   auto obj = m_process.create_dyobj();
   m_process.push_stack(obj);
@@ -725,14 +725,14 @@ TEST_F(InstrsObjUnitTest, TestInstrCLRHNDL)
   obj->set_type_value(saved_type_val);
 
   corevm::runtime::Instr instr(0, 0, 0);
-  execute_instr(corevm::runtime::instr_handler_clrhndl, instr, 1);
+  execute_instr(corevm::runtime::instr_handler_clrval, instr, 1);
 
   ASSERT_FALSE(obj->has_type_value());
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrCPYHNDL)
+TEST_F(InstrsObjUnitTest, TestInstrCPYVAL)
 {
   auto target_obj = m_process.create_dyobj();
   m_process.push_stack(target_obj);
@@ -746,7 +746,7 @@ TEST_F(InstrsObjUnitTest, TestInstrCPYHNDL)
   src_obj->set_type_value(saved_type_val);
 
   corevm::runtime::Instr instr(0, 6, 0);
-  execute_instr(corevm::runtime::instr_handler_cpyhndl, instr, 0);
+  execute_instr(corevm::runtime::instr_handler_cpyval, instr, 0);
 
   ASSERT_TRUE(target_obj->has_type_value());
 
@@ -958,68 +958,6 @@ TEST_F(InstrsObjUnitTest, TestInstrCLDOBJ)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
-{
-  auto obj1 = m_process.create_dyobj();
-  auto obj2 = m_process.create_dyobj();
-  auto obj3 = m_process.create_dyobj();
-
-  corevm::types::NativeTypeValue type_val = corevm::types::native_map {
-    { 0, static_cast<corevm::types::native_map_mapped_type>(obj1->id()) },
-    { 1, static_cast<corevm::types::native_map_mapped_type>(obj2->id()) },
-    { 2, static_cast<corevm::types::native_map_mapped_type>(obj3->id()) },
-  };
-
-  auto saved_type_val = m_process.insert_type_value(type_val);
-
-  corevm::runtime::compartment_id_t compartment_id = 0;
-  corevm::runtime::closure_id_t closure_id = 10;
-
-  corevm::runtime::Compartment compartment(DUMMY_PATH);
-
-  const std::string attr_str1 = "__init__";
-  const std::string attr_str2 = "__len__";
-  const std::string attr_str3 = "__iter__";
-
-  corevm::runtime::StringLiteralTable encoding_map {
-    attr_str1,
-    attr_str2,
-    attr_str3,
-  };
-
-  compartment.set_string_literal_table(encoding_map);
-  m_process.insert_compartment(compartment);
-
-  corevm::dyobj::attr_key_t attr_key1 = corevm::dyobj::hash_attr_str(attr_str1);
-  corevm::dyobj::attr_key_t attr_key2 = corevm::dyobj::hash_attr_str(attr_str2);
-  corevm::dyobj::attr_key_t attr_key3 = corevm::dyobj::hash_attr_str(attr_str3);
-
-  corevm::runtime::ClosureCtx ctx(compartment_id, closure_id);
-
-  auto dst_obj = m_process.create_dyobj();
-  m_process.push_stack(dst_obj);
-
-  auto src_obj = m_process.create_dyobj();
-  src_obj->set_type_value(saved_type_val);
-  src_obj->set_closure_ctx(ctx);
-
-  m_process.push_stack(src_obj);
-
-  corevm::runtime::Instr instr(0, 0, 0);
-
-  execute_instr(corevm::runtime::instr_handler_setattrs, instr, 1);
-
-  auto actual_obj = m_process.top_stack();
-
-  ASSERT_EQ(dst_obj, actual_obj);
-
-  ASSERT_EQ(obj1, actual_obj->getattr(attr_key1));
-  ASSERT_EQ(obj2, actual_obj->getattr(attr_key2));
-  ASSERT_EQ(obj3, actual_obj->getattr(attr_key3));
-}
-
-// -----------------------------------------------------------------------------
-
 TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
 {
   auto obj1 = m_process.create_dyobj();
@@ -1068,7 +1006,7 @@ TEST_F(InstrsObjUnitTest, TestInstrRSETATTRS)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(InstrsObjUnitTest, TestInstrSETATTRS2)
+TEST_F(InstrsObjUnitTest, TestInstrSETATTRS)
 {
   const std::string attr_str1 = "__init__";
   const std::string attr_str2 = "__len__";
@@ -1125,7 +1063,7 @@ TEST_F(InstrsObjUnitTest, TestInstrSETATTRS2)
   corevm::runtime::Instr instr(
     0, static_cast<corevm::runtime::instr_oprd_t>(attr_str_key), 0);
 
-  execute_instr(corevm::runtime::instr_handler_setattrs2, instr, 2);
+  execute_instr(corevm::runtime::instr_handler_setattrs, instr, 2);
 
   auto actual_obj = m_process.top_stack();
 

@@ -37,17 +37,17 @@ class tuple(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [ldobj, arg, 0]
-        [cpyhndl, 13, 0]
+        [cpyval, 13, 0]
         ### END VECTOR ###
         """
 
     def __len__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [arylen, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -56,11 +56,11 @@ class tuple(object):
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, other, 0]
-        [gethndl2, self, 0]
+        [getval2, other, 0]
+        [getval2, self, 0]
         [arymrg, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -116,8 +116,8 @@ class tuple(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, i, 0]
-        [gethndl2, self, 0]
+        [getval2, i, 0]
+        [getval2, self, 0]
         [aryat, 0, 0]
         [getobj, 0, 0]
         ### END VECTOR ###
@@ -144,9 +144,9 @@ class tuple(object):
                 """
                 ### BEGIN VECTOR ###
                 [ldobj, res_, 0]
-                [gethndl, 0, 0]
+                [getval, 0, 0]
                 [reverse, 0, 0]
-                [sethndl, 0, 0]
+                [setval, 0, 0]
                 ### END VECTOR ###
                 """
                 if start is not None:
@@ -175,23 +175,23 @@ class tuple(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, stop, 0]
-        [gethndl2, start, 0]
+        [getval2, stop, 0]
+        [getval2, start, 0]
         [ldobj, res_, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [slice, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
         if step is not None:
             """
             ### BEGIN VECTOR ###
-            [gethndl2, step, 0]
+            [getval2, step, 0]
             [ldobj, res_, 0]
-            [gethndl, 0, 0]
+            [getval, 0, 0]
             [stride, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             ### END VECTOR ###
             """
 

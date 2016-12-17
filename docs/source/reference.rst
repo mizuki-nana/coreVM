@@ -516,31 +516,30 @@ Instructions that interact with dynamic objects.
   setattr2      9         0             Pop the object at the top of the stack as the attribtue value, and set it as an attribute value on the next object on top of the stack, using the attribute name that is the string value of the element on top of the eval stack.
   delattr2      10        0             Deletes an attribute from the object on top of the stack, with the attribute name being the string value of the element on top of the eval stack.
   pop           11        0             Pops the object on top of the stack.
-  ldbobj2        12        1             Load an invisible object by a key and push it onto the stack.
+  ldbobj2       12        1             Load an invisible object by a key and push it onto the stack.
   stobj2        13        1             Pops the object on top of the stack and stores it with a key into the frame as an invisible object.
   delobj        14        1             Deletes an object from the current scope.
   delobj2       15        1             Deletes an invisible object from the current scope.
-  gethndl       16        0             Copies the native type value of the top object of the stack and push it on top of the eval-stack.
-  sethndl       17        0             Pops off the native type value off the eval-stack and assigns it to the top object of the stack.
-  gethndl2      18        1             Copies of the native type value of the named object in the current frame, and pushes it on top of the eval stack.
-  clrhndl       19        0             Clears the native type value from the top object of the stack.
-  cpyhndl       20        1             Copies the native type value associated from the object on top of the stack onto the next object on the stack. The first operand is a value specifying the type of conversion to perform on the native type value copied.
+  getval        16        0             Copies the native type value of the top object of the stack and push it on top of the eval-stack.
+  setval        17        0             Pops off the native type value off the eval-stack and assigns it to the top object of the stack.
+  getval2       18        1             Copies of the native type value of the named object in the current frame, and pushes it on top of the eval stack.
+  clrval        19        0             Clears the native type value from the top object of the stack.
+  cpyval        20        1             Copies the native type value associated from the object on top of the stack onto the next object on the stack. The first operand is a value specifying the type of conversion to perform on the native type value copied.
   cpyrepr       21        0             Copies the string representation of the native type value from the object on top of the stack onto the next object onto the stack.
   istruthy      22        0             Computes the truthy value of the native type value associated with the object on top of the stack, and push the result on top of the eval stack.
   objeq         23        0             Pops off the top two objects on the stack and tests if they are the same object.
   objneq        24        0             Pops off the top two objects on the stack and tests if they are different objects.
   setctx        25        1             Sets the closure context of the object. The first operand is the closure ID.
   cldobj        26        2             Conditionally loads an object associated with the variable key value represented by either `oprd1` or `oprd2`, by evaluating the boolean equivalent of the object on top of the evaluation stack. Loads `oprd1` if the value evaluates to true, `oprd2` otherwise.
-  setattrs      27        2             Pops off the object on top of the stack, and convert its native type value to a native map. Then use its key-value pairs as attribute name-value pairs to set on the next object on the top of the stack. The first operand is a boolean value specifying whether each mapped object should be cloned before set on the target object. The second operand is a boolean value indicating if the native map values should be overriden with the cloned object IDs.
-  rsetattrs     28        1             Reverse set attributes. Set the object on top of stack as the attribute values onto the objects pointed to as values in the native map equivalent on top of the eval stack.
-  setattrs2     29        1             Pops off the object on top of the stack, and set copies of all of its attributes onto the next on the stack. For each of the copied objects, set the second object on the stack as an attribute using the first operand as the attribute key.
-  putobj        30        0             Pops the object on top of the stack, and pushes its value onto the top of the current evaluation stack.
-  getobj        31        0             Pops the top of the eval stack, and put its value on the object stack.
-  swap          32        0             Swaps the top two objects on top of the stack.
-  setflgc       33        1             Sets the `IS_NOT_GARBAGE_COLLECTIBLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
-  setfldel      34        1             Sets the `IS_INDELIBLE` flag on the object on top of the stack. The first operand is a boolean vlaue used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
-  setflcall     35        1             Sets the `IS_NON_CALLABLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
-  setflmute     36        1             Sets the `IS_IMMUTABLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
+  rsetattrs     27        1             Reverse set attributes. Set the object on top of stack as the attribute values onto the objects pointed to as values in the native map equivalent on top of the eval stack.
+  setattrs      28        1             Pops off the object on top of the stack, and set copies of all of its attributes onto the next on the stack. For each of the copied objects, set the second object on the stack as an attribute using the first operand as the attribute key.
+  putobj        29        0             Pops the object on top of the stack, and pushes its value onto the top of the current evaluation stack.
+  getobj        30        0             Pops the top of the eval stack, and put its value on the object stack.
+  swap          31        0             Swaps the top two objects on top of the stack.
+  setflgc       32        1             Sets the `IS_NOT_GARBAGE_COLLECTIBLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
+  setfldel      33        1             Sets the `IS_INDELIBLE` flag on the object on top of the stack. The first operand is a boolean vlaue used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
+  setflcall     34        1             Sets the `IS_NON_CALLABLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
+  setflmute     35        1             Sets the `IS_IMMUTABLE` flag on the object on top of the stack. The first operand is a boolean value used to set the value of the flag. A value of `1` sets the flag, `0` otherwise.
   ============  ========  ============  ===============
 
 
@@ -556,17 +555,17 @@ Instructions that directly control flow of executions.
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  pinvk         37        0             Prepares the invocation of a function. Creates a new frame on top of the call stack, and sets its closure context using the context of the object on top of the stack.
-  invk          38        0             Invokes the vector of the object on top of the stack.
-  rtrn          39        0             Unwinds from the current call frame and jumps to the previous one.
-  jmp           40        1             Unconditionally jumps to a particular instruction address.
-  jmpif         41        1             Conditionally jumps to a particular instruction address only if the top element on the eval stacks evaluates to True.
-  jmpr          42        1             Unconditionally jumps to an instruction with an offset starting from the beginning of the current frame.
-  exc           43        1             Pop the object at the top and raise it as an exception. The first operand is a boolean value indicating whether the runtime should search for a catch site in the current closure. A value of `false` will make the runtime pop the current frame.
-  excobj        44        0             Gets the exception object associated with the current frame, and pushes it on top of the stack.
-  clrexc        45        0             Clears the exception object associated with the frame on top of the call stack.
-  jmpexc        46        2             Jumps to the specified address, based on the state of the exception object associated with the frame on top of the call stack. The first operand is the number of addresses to jump over starting from the current program counter. The second operand specifies whether or not to jump based on if the top of stack frame has an exception object. A value of `1` specifies the jump if the frame has an exception object, `0` otherwise.
-  exit          47        1             Halts the execution of instructions and exits the program (with an optional exit code).
+  pinvk         36        0             Prepares the invocation of a function. Creates a new frame on top of the call stack, and sets its closure context using the context of the object on top of the stack.
+  invk          37        0             Invokes the vector of the object on top of the stack.
+  rtrn          38        0             Unwinds from the current call frame and jumps to the previous one.
+  jmp           39        1             Unconditionally jumps to a particular instruction address.
+  jmpif         40        1             Conditionally jumps to a particular instruction address only if the top element on the eval stacks evaluates to True.
+  jmpr          41        1             Unconditionally jumps to an instruction with an offset starting from the beginning of the current frame.
+  exc           42        1             Pop the object at the top and raise it as an exception. The first operand is a boolean value indicating whether the runtime should search for a catch site in the current closure. A value of `false` will make the runtime pop the current frame.
+  excobj        43        0             Gets the exception object associated with the current frame, and pushes it on top of the stack.
+  clrexc        44        0             Clears the exception object associated with the frame on top of the call stack.
+  jmpexc        45        2             Jumps to the specified address, based on the state of the exception object associated with the frame on top of the call stack. The first operand is the number of addresses to jump over starting from the current program counter. The second operand specifies whether or not to jump based on if the top of stack frame has an exception object. A value of `1` specifies the jump if the frame has an exception object, `0` otherwise.
+  exit          46        1             Halts the execution of instructions and exits the program (with an optional exit code).
   ============  ========  ============  ===============
 
 
@@ -582,15 +581,15 @@ Instructions related to functions and call invocations.
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  putarg        48        0             Pops the top object off the stack and assign it as the next argument for the next call.
-  putkwarg      49        1             Pops the top object off the stack and assign it as the next keyword-argument for the next call.
-  putargs       50        0             Pops the top object off the stack, retrieves its native type value as a native type array, and then iterate through each array element, use it as an object ID to retrieve an object from the heap, and assigns it as the next argument for the next call.
-  putkwargs     51        0             Pops the top object off the stack, retrieves its native type value as a native type map, and then iterate through each key-value pair, use the value as an object ID to retrieve an object from the heap, and use the key as an encoding ID to assign the object as the next keyword-argument for the next call.
-  getarg        52        1             Pops off the first argument for the current call and put it on the current frame using the encoding key specified in the first operand.
-  getkwarg      53        2             If the top frame has the keyword-argument pair with the key specified as the first operand, pops off the pair and stores the value into the frame using the key. And, advance the program counter by the value specified in the second operand.
-  getargs       54        0             Pops off all the arguments for the current call, insert them into a native-list and push it on top of eval-stack.
-  getkwargs     55        0             Pops off all the keyword-arguments for the current call, insert them into a native-map and push it on top of eval-stack.
-  hasargs       56        0             Determines if there are any arguments remaining on the current frame, and pushes the result onto the top of the eval stack.
+  putarg        47        0             Pops the top object off the stack and assign it as the next argument for the next call.
+  putkwarg      48        1             Pops the top object off the stack and assign it as the next keyword-argument for the next call.
+  putargs       49        0             Pops the top object off the stack, retrieves its native type value as a native type array, and then iterate through each array element, use it as an object ID to retrieve an object from the heap, and assigns it as the next argument for the next call.
+  putkwargs     50        0             Pops the top object off the stack, retrieves its native type value as a native type map, and then iterate through each key-value pair, use the value as an object ID to retrieve an object from the heap, and use the key as an encoding ID to assign the object as the next keyword-argument for the next call.
+  getarg        51        1             Pops off the first argument for the current call and put it on the current frame using the encoding key specified in the first operand.
+  getkwarg      52        2             If the top frame has the keyword-argument pair with the key specified as the first operand, pops off the pair and stores the value into the frame using the key. And, advance the program counter by the value specified in the second operand.
+  getargs       53        0             Pops off all the arguments for the current call, insert them into a native-list and push it on top of eval-stack.
+  getkwargs     54        0             Pops off all the keyword-arguments for the current call, insert them into a native-map and push it on top of eval-stack.
+  hasargs       55        0             Determines if there are any arguments remaining on the current frame, and pushes the result onto the top of the eval stack.
   ============  ========  ============  ===============
 
 
@@ -606,13 +605,13 @@ Instructions related to a wide range of runtime functionalities.
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  gc            57        0             Manually performs garbage collection.
-  debug         58        1             Show debug information. The first operand is the set of debug options: 1. Show instructions in canonical form.
-  dbgfrm        59        1             Show debug information on the current frame. The first operand is the set of debug options: 1. Show instructions in canonical form.
-  dbgmem        60        1             Show information of current process memory usages. The first operand is the set of options: 1. Show peak virtual memory size and resident set size.
-  dbgvar        61        1             Show information of a variable.
-  print         62        2             Converts the native type value associated with the object on top of the stack into a native string, and prints it to std output. The second operand is a boolean value specifying whether a trailing new line character should be printed. Defaults to `false`.
-  swap2         63        0             Swaps the top two elements on the evaluation stack.
+  gc            56        0             Manually performs garbage collection.
+  debug         57        1             Show debug information. The first operand is the set of debug options: 1. Show instructions in canonical form.
+  dbgfrm        58        1             Show debug information on the current frame. The first operand is the set of debug options: 1. Show instructions in canonical form.
+  dbgmem        59        1             Show information of current process memory usages. The first operand is the set of options: 1. Show peak virtual memory size and resident set size.
+  dbgvar        60        1             Show information of a variable.
+  print         61        2             Converts the native type value associated with the object on top of the stack into a native string, and prints it to std output. The second operand is a boolean value specifying whether a trailing new line character should be printed. Defaults to `false`.
+  swap2         62        0             Swaps the top two elements on the evaluation stack.
   ============  ========  ============  ===============
 
 
@@ -628,34 +627,34 @@ Instructions that deal with arithmetic and logical operations.
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  pos           64        0             Apply the positive operation on the top element on the evaluation stack.
-  neg           65        0             Apply the negation operation on the top element on the evaluation stack.
-  inc           66        0             Apply the increment operation on the top element on the evaluation stack.
-  dec           67        0             Apply the decrement operation on the top element on the evaluation stack.
-  abs           68        0             Apply the `abs` operation on the top element on the evaluation stack.
-  sqrt          69        0             Apply the `sqrt` operation on the top element on the evaluation stack.
-  add           70        0             Pops the top two elements on the eval stack, applies the addition operation and push result onto eval stack.
-  sub           71        0             Pops the top two elements on the eval stack, applies the subtraction operation and push result onto eval stack.
-  mul           72        0             Pops the top two elements on the eval stack, applies the multiplication operation and push result onto eval stack.
-  div           73        0             Pops the top two elements on the eval stack, applies the division operation and push result onto eval stack.
-  mod           74        0             Pops the top two elements on the eval stack, applies the modulus operation and push result onto eval stack.
-  pow           75        0             Pops the top two elements on the eval stack, applies the power operation and push result onto eval stack.
-  bnot          76        0             Applies the bitwise NOT operation on the top element on the evaluation stack.
-  band          77        0             Pops the top two elements on the eval stack, applies the bitwise AND operation and push result onto eval stack.
-  bor           78        0             Pops the top two elements on the eval stack, applies the bitwise OR operation and push result onto eval stack.
-  bxor          79        0             Pops the top two elements on the eval stack, applies the bitwise XOR operation and push result onto eval stack.
-  bls           80        0             Pops the top two elements on the eval stack, applies the bitwise left shift operation and push result onto eval stack.
-  brs           81        0             Pops the top two elements on the eval stack, applies the bitwise right shift operation and push result onto eval stack.
-  eq            82        0             Pops the top two elements on the eval stack, applies the equality operation and push result onto eval stack.
-  neq           83        0             Pops the top two elements on the eval stack, applies the inequality operation and push result onto eval stack.
-  gt            84        0             Pops the top two elements on the eval stack, applies the greater than operation and push result onto eval stack.
-  lt            85        0             Pops the top two elements on the eval stack, applies the less than operation and push result onto eval stack.
-  gte           86        0             Pops the top two elements on the eval stack, applies the greater or equality operation and push result onto eval stack.
-  lte           87        0             Pops the top two elements on the eval stack, applies the less or equality operation and push result onto eval stack.
-  lnot          88        0             Apply the logic NOT operation on the top element on the evaluation stack.
-  land          89        0             Pops the top two elements on the eval stack, applies the logical AND operation and push result onto eval stack.
-  lor           90        0             Pops the top two elements on the eval stack, applies the logical OR operation and push result onto eval stack.
-  cmp           91        0             Pops the top two elements on the eval stack, applies the "cmp" operation and push result onto eval stack.
+  pos           63        0             Apply the positive operation on the top element on the evaluation stack.
+  neg           64        0             Apply the negation operation on the top element on the evaluation stack.
+  inc           65        0             Apply the increment operation on the top element on the evaluation stack.
+  dec           66        0             Apply the decrement operation on the top element on the evaluation stack.
+  abs           67        0             Apply the `abs` operation on the top element on the evaluation stack.
+  sqrt          68        0             Apply the `sqrt` operation on the top element on the evaluation stack.
+  add           69        0             Pops the top two elements on the eval stack, applies the addition operation and push result onto eval stack.
+  sub           70        0             Pops the top two elements on the eval stack, applies the subtraction operation and push result onto eval stack.
+  mul           71        0             Pops the top two elements on the eval stack, applies the multiplication operation and push result onto eval stack.
+  div           72        0             Pops the top two elements on the eval stack, applies the division operation and push result onto eval stack.
+  mod           73        0             Pops the top two elements on the eval stack, applies the modulus operation and push result onto eval stack.
+  pow           74        0             Pops the top two elements on the eval stack, applies the power operation and push result onto eval stack.
+  bnot          75        0             Applies the bitwise NOT operation on the top element on the evaluation stack.
+  band          76        0             Pops the top two elements on the eval stack, applies the bitwise AND operation and push result onto eval stack.
+  bor           77        0             Pops the top two elements on the eval stack, applies the bitwise OR operation and push result onto eval stack.
+  bxor          78        0             Pops the top two elements on the eval stack, applies the bitwise XOR operation and push result onto eval stack.
+  bls           79        0             Pops the top two elements on the eval stack, applies the bitwise left shift operation and push result onto eval stack.
+  brs           80        0             Pops the top two elements on the eval stack, applies the bitwise right shift operation and push result onto eval stack.
+  eq            81        0             Pops the top two elements on the eval stack, applies the equality operation and push result onto eval stack.
+  neq           82        0             Pops the top two elements on the eval stack, applies the inequality operation and push result onto eval stack.
+  gt            83        0             Pops the top two elements on the eval stack, applies the greater than operation and push result onto eval stack.
+  lt            84        0             Pops the top two elements on the eval stack, applies the less than operation and push result onto eval stack.
+  gte           85        0             Pops the top two elements on the eval stack, applies the greater or equality operation and push result onto eval stack.
+  lte           86        0             Pops the top two elements on the eval stack, applies the less or equality operation and push result onto eval stack.
+  lnot          87        0             Apply the logic NOT operation on the top element on the evaluation stack.
+  land          88        0             Pops the top two elements on the eval stack, applies the logical AND operation and push result onto eval stack.
+  lor           89        0             Pops the top two elements on the eval stack, applies the logical OR operation and push result onto eval stack.
+  cmp           90        0             Pops the top two elements on the eval stack, applies the "cmp" operation and push result onto eval stack.
   ============  ========  ============  ===============
 
 
@@ -664,27 +663,27 @@ Instructions that deal with arithmetic and logical operations.
 Native Type Creation Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for creating native type handles.
+Instructions for creating native type values.
 
 .. table::
 
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  int8          92        1             Creates an instance of type `int8` and place it on top of eval stack.
-  uint8         93        1             Creates an instance of type `uint8` and place it on top of eval stack.
-  int16         94        1             Creates an instance of type `int16` and place it on top of eval stack.
-  uint16        95        1             Creates an instance of type `uint16` and place it on top of eval stack.
-  int32         96        1             Creates an instance of type `int32` and place it on top of eval stack.
-  uint32        97        1             Creates an instance of type `uint32` and place it on top of eval stack.
-  int64         98        1             Creates an instance of type `int64` and place it on top of eval stack.
-  uint64        99        1             Creates an instance of type `uint64` and place it on top of eval stack.
-  bool          100       1             Creates an instance of type `bool` and place it on top of eval stack.
-  dec1          101       1             Creates an instance of type `dec` and place it on top of eval stack. The first operand represents the index of the floating-point literal stored in the corresponding compartment.
-  dec2          102       1             Creates an instance of type `dec2` and place it on top of eval stack. The first operand represents the index of the floating-point literal stored in the corresponding compartment.
-  str           103       1             Creates an instance of type `str` and place it on top of eval stack.
-  ary           104       0             Creates an instance of type `array` and place it on top of eval stack.
-  map           105       0             Creates an instance of type `map` and place it on top of eval stack.
+  int8          91        1             Creates an instance of type `int8` and place it on top of eval stack.
+  uint8         92        1             Creates an instance of type `uint8` and place it on top of eval stack.
+  int16         93        1             Creates an instance of type `int16` and place it on top of eval stack.
+  uint16        94        1             Creates an instance of type `uint16` and place it on top of eval stack.
+  int32         95        1             Creates an instance of type `int32` and place it on top of eval stack.
+  uint32        96        1             Creates an instance of type `uint32` and place it on top of eval stack.
+  int64         97        1             Creates an instance of type `int64` and place it on top of eval stack.
+  uint64        98        1             Creates an instance of type `uint64` and place it on top of eval stack.
+  bool          99        1             Creates an instance of type `bool` and place it on top of eval stack.
+  dec1          100       1             Creates an instance of type `dec` and place it on top of eval stack. The first operand represents the index of the floating-point literal stored in the corresponding compartment.
+  dec2          101       1             Creates an instance of type `dec2` and place it on top of eval stack. The first operand represents the index of the floating-point literal stored in the corresponding compartment.
+  str           102       1             Creates an instance of type `str` and place it on top of eval stack.
+  ary           103       0             Creates an instance of type `array` and place it on top of eval stack.
+  map           104       0             Creates an instance of type `map` and place it on top of eval stack.
   ============  ========  ============  ===============
 
 
@@ -705,20 +704,20 @@ an error will occur.
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  toint8        106       0             Converts the element on top of the eval stack to type `int8`.
-  touint8       107       0             Converts the element on top of the eval stack to type `uint8`.
-  toint16       108       0             Converts the element on top of the eval stack to type `int16`.
-  touint16      109       0             Converts the element on top of the eval stack to type `uint16`.
-  toint32       110       0             Converts the element on top of the eval stack to type `int32`.
-  touint32      111       0             Converts the element on top of the eval stack to type `uint32`.
-  toint64       112       0             Converts the element on top of the eval stack to type `int64`.
-  touint64      113       0             Converts the element on top of the eval stack to type `uint64`.
-  tobool        114       0             Converts the element on top of the eval stack to type `bool`.
-  todec1        115       0             Converts the element on top of the eval stack to type `dec`.
-  todec2        116       0             Converts the element on top of the eval stack to type `dec2`
-  tostr         117       0             Converts the element on top of the eval stack to type `string`.
-  toary         118       0             Converts the element on top of the eval stack to type `array`.
-  tomap         119       0             Converts the element on top of the eval stack to type `map`.
+  toint8        105       0             Converts the element on top of the eval stack to type `int8`.
+  touint8       106       0             Converts the element on top of the eval stack to type `uint8`.
+  toint16       107       0             Converts the element on top of the eval stack to type `int16`.
+  touint16      108       0             Converts the element on top of the eval stack to type `uint16`.
+  toint32       109       0             Converts the element on top of the eval stack to type `int32`.
+  touint32      110       0             Converts the element on top of the eval stack to type `uint32`.
+  toint64       111       0             Converts the element on top of the eval stack to type `int64`.
+  touint64      112       0             Converts the element on top of the eval stack to type `uint64`.
+  tobool        113       0             Converts the element on top of the eval stack to type `bool`.
+  todec1        114       0             Converts the element on top of the eval stack to type `dec`.
+  todec2        115       0             Converts the element on top of the eval stack to type `dec2`
+  tostr         116       0             Converts the element on top of the eval stack to type `string`.
+  toary         117       0             Converts the element on top of the eval stack to type `array`.
+  tomap         118       0             Converts the element on top of the eval stack to type `map`.
   ============  ========  ============  ===============
 
 
@@ -727,20 +726,20 @@ an error will occur.
 Native Type Manipulation Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for manipulating native type handles.
+Instructions for manipulating native type values.
 
 .. table::
 
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  truthy        120       0             Computes a boolean truthy value based on the top element on the eval stack, and puts it on top of the stack.
-  repr          121       0             Computes the string equivalent representation of the element on top of the eval stack, and push it on top of the stack.
-  hash          122       0             Computes the non-crytographic hash value of the element on top of the eval stack, and push the result on top of the eval stack.
-  slice         123       0             Computes the portion of the element on the top 3rd element of the eval stack as a sequence, using the 2nd and 1st top elements as the `start` and `stop` values as the indices range [start, stop).
-  stride        124       0             Computes a new sequence of the element on the 2nd top eval stack as a sequence, using the top element as the `stride` interval.
-  reverse       125       0             Computes the reverse of the element on top of the eval stack as a sequence.
-  round         126       0             Rounds the second element on top of the eval stack using the number converted from the element on top of the eval stack.
+  truthy        119       0             Computes a boolean truthy value based on the top element on the eval stack, and puts it on top of the stack.
+  repr          120       0             Computes the string equivalent representation of the element on top of the eval stack, and push it on top of the stack.
+  hash          121       0             Computes the non-crytographic hash value of the element on top of the eval stack, and push the result on top of the eval stack.
+  slice         122       0             Computes the portion of the element on the top 3rd element of the eval stack as a sequence, using the 2nd and 1st top elements as the `start` and `stop` values as the indices range [start, stop).
+  stride        123       0             Computes a new sequence of the element on the 2nd top eval stack as a sequence, using the top element as the `stride` interval.
+  reverse       124       0             Computes the reverse of the element on top of the eval stack as a sequence.
+  round         125       0             Rounds the second element on top of the eval stack using the number converted from the element on top of the eval stack.
   ============  ========  ============  ===============
 
 
@@ -749,30 +748,30 @@ Instructions for manipulating native type handles.
 Native String Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for manipulating native type handles of the native string type.
+Instructions for manipulating native type values of the native string type.
 
 .. table::
 
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  strlen        127       0             Pops the top element on the eval stack, and performs the "string size" operation.
-  strat         128       0             Pops the top two elements on the eval stack, and performs the "string at" operation.
-  strclr        129       0             Pops the top element on the eval stack, and performs the "string clear" operation.
-  strapd        130       0             Pops the top two elements on the eval stack, and performs the "string append" operation.
-  strpsh        131       0             Pops the top two elements on the eval stack, and performs the "string pushback" operation.
-  strist        132       0             Pops the top three elements on the eval stack, and performs the "string insertion" operation.
-  strist2       133       0             Pops the top three elements on the eval stack, and performs the "string insertion" operation.
-  strers        134       0             Pops the top two elements on the eval stack, and performs the "string erase" operation.
-  strers2       135       0             Pops the top two elements on the eval stack, and performs the "string erase" operation.
-  strrplc       136       0             Pops the top four elements on the eval stack, and performs the "string replace" operation.
-  strswp        137       0             Pops the top two elements on the eval stack, and performs the "string swap" operation.
-  strsub        138       0             Pops the top two elements on the eval stack, and performs the "string substring" operation.
-  strsub2       139       0             Pops the top three elements on the eval stack, and performs the "string substring" operation.
-  strfnd        140       0             Pops the top two elements on the eval stack, and performs the "string find" operation.
-  strfnd2       141       0             Pops the top three elements on the eval stack, and performs the "string find" operation.
-  strrfnd       142       0             Pops the top two elements on the eval stack, and performs the "string rfind" operation.
-  strrfnd2      143       0             Pops the top three elements on the eval stack, and performs the "string rfind2" operation.
+  strlen        126       0             Pops the top element on the eval stack, and performs the "string size" operation.
+  strat         127       0             Pops the top two elements on the eval stack, and performs the "string at" operation.
+  strclr        128       0             Pops the top element on the eval stack, and performs the "string clear" operation.
+  strapd        129       0             Pops the top two elements on the eval stack, and performs the "string append" operation.
+  strpsh        130       0             Pops the top two elements on the eval stack, and performs the "string pushback" operation.
+  strist        131       0             Pops the top three elements on the eval stack, and performs the "string insertion" operation.
+  strist2       132       0             Pops the top three elements on the eval stack, and performs the "string insertion" operation.
+  strers        133       0             Pops the top two elements on the eval stack, and performs the "string erase" operation.
+  strers2       134       0             Pops the top two elements on the eval stack, and performs the "string erase" operation.
+  strrplc       135       0             Pops the top four elements on the eval stack, and performs the "string replace" operation.
+  strswp        136       0             Pops the top two elements on the eval stack, and performs the "string swap" operation.
+  strsub        137       0             Pops the top two elements on the eval stack, and performs the "string substring" operation.
+  strsub2       138       0             Pops the top three elements on the eval stack, and performs the "string substring" operation.
+  strfnd        139       0             Pops the top two elements on the eval stack, and performs the "string find" operation.
+  strfnd2       140       0             Pops the top three elements on the eval stack, and performs the "string find" operation.
+  strrfnd       141       0             Pops the top two elements on the eval stack, and performs the "string rfind" operation.
+  strrfnd2      142       0             Pops the top three elements on the eval stack, and performs the "string rfind2" operation.
   ============  ========  ============  ===============
 
 
@@ -781,25 +780,25 @@ Instructions for manipulating native type handles of the native string type.
 Native Array Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for manipulating native type handles of the native array type.
+Instructions for manipulating native type values of the native array type.
 
 .. table::
 
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  arylen        144       0             Pops the top element on the eval stack, and performs the "array size" operation.
-  aryemp        145       0             Pops the top element on the eval stack, and performs the "array empty" operation.
-  aryat         146       0             Pops the top two elements on the eval stack, and performs the "array at" operation.
-  aryfrt        147       0             Pops the top element on the eval stack, and performs the "array front" operation.
-  arybak        148       0             Pops the top element on the eval stack, and performs the "array back" operation.
-  aryput        149       0             Pops the top three elements on the eval stack, and performs the "array put" operation.
-  aryapnd       150       0             Pops the top two elements on the eval stack, and performs the "array append" operation.
-  aryers        151       0             Pop the top two elements on the eval stack, and performs the "array erase" operation.
-  arypop        152       0             Pops the top element on the eval stack, and performs the "array pop" operation.
-  aryswp        153       0             Pops the top two elements on the eval stack, and performs the "array swap" operation.
-  aryclr        154       0             Pops the top element on the eval stack, and performs the "array clear" operation.
-  arymrg        155       0             Pops the top two elements on the eval stack, converts them to arrays, merge them into one single array, and put it back to the eval stack.
+  arylen        143       0             Pops the top element on the eval stack, and performs the "array size" operation.
+  aryemp        144       0             Pops the top element on the eval stack, and performs the "array empty" operation.
+  aryat         145       0             Pops the top two elements on the eval stack, and performs the "array at" operation.
+  aryfrt        146       0             Pops the top element on the eval stack, and performs the "array front" operation.
+  arybak        147       0             Pops the top element on the eval stack, and performs the "array back" operation.
+  aryput        148       0             Pops the top three elements on the eval stack, and performs the "array put" operation.
+  aryapnd       149       0             Pops the top two elements on the eval stack, and performs the "array append" operation.
+  aryers        150       0             Pop the top two elements on the eval stack, and performs the "array erase" operation.
+  arypop        151       0             Pops the top element on the eval stack, and performs the "array pop" operation.
+  aryswp        152       0             Pops the top two elements on the eval stack, and performs the "array swap" operation.
+  aryclr        153       0             Pops the top element on the eval stack, and performs the "array clear" operation.
+  arymrg        154       0             Pops the top two elements on the eval stack, converts them to arrays, merge them into one single array, and put it back to the eval stack.
   ============  ========  ============  ===============
 
 
@@ -808,25 +807,25 @@ Instructions for manipulating native type handles of the native array type.
 Native Map Type Instructions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Instructions for manipulating native type handles of the native map type.
+Instructions for manipulating native type values of the native map type.
 
 .. table::
 
   ============  ========  ============  ===============
     Mnemonic     Opcode     Operands      Description
   ============  ========  ============  ===============
-  maplen        156       0             Pops the top element on the eval stack, and performs the "map size" operation.
-  mapemp        157       0             Pops the top element on the eval stack, and performs the "map empty" operation.
-  mapfind       158       0             Pops the top two elements on the eval stack, and performs the "map find" operation.
-  mapat         159       0             Pops the top two elements on the eval stack, and performs the "map at" operation.
-  mapput        160       0             Pops the top three elements on the eval stack, and performs the "map put" operation.
-  mapset        161       1             Converts the top element on the eval stack to a native map, and insert a key-value pair into it, with the key represented as the first operand, and the value as the object on top of the stack.
-  mapers        162       0             Pops the top element on the eval stack, and performs the "map erase" operation.
-  mapclr        163       0             Pops the top element on the eval stack, and performs the "map clear" operation.
-  mapswp        164       0             Pops the top two elements on the eval stack, and performs the "map swap" operation.
-  mapkeys       165       0             Inserts the keys of the map on top of the eval stack into an array, and place it on top of the eval stack.
-  mapvals       166       0             Inserts the values of the map on top of the eval stack into an array, and place it on top of the eval stack.
-  mapmrg        167       0             Pops the top two elements on the eval stack, converts them to maps, merge them into one single map, and put it back to the eval stack.
+  maplen        155       0             Pops the top element on the eval stack, and performs the "map size" operation.
+  mapemp        156       0             Pops the top element on the eval stack, and performs the "map empty" operation.
+  mapfind       157       0             Pops the top two elements on the eval stack, and performs the "map find" operation.
+  mapat         158       0             Pops the top two elements on the eval stack, and performs the "map at" operation.
+  mapput        159       0             Pops the top three elements on the eval stack, and performs the "map put" operation.
+  mapset        160       1             Converts the top element on the eval stack to a native map, and insert a key-value pair into it, with the key represented as the first operand, and the value as the object on top of the stack.
+  mapers        161       0             Pops the top element on the eval stack, and performs the "map erase" operation.
+  mapclr        162       0             Pops the top element on the eval stack, and performs the "map clear" operation.
+  mapswp        163       0             Pops the top two elements on the eval stack, and performs the "map swap" operation.
+  mapkeys       164       0             Inserts the keys of the map on top of the eval stack into an array, and place it on top of the eval stack.
+  mapvals       165       0             Inserts the values of the map on top of the eval stack into an array, and place it on top of the eval stack.
+  mapmrg        166       0             Pops the top two elements on the eval stack, converts them to maps, merge them into one single map, and put it back to the eval stack.
   ============  ========  ============  ===============
 
 

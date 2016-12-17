@@ -35,7 +35,7 @@ class str(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [ldobj, value, 0]
-        [cpyhndl, 12, 0]
+        [cpyval, 12, 0]
         ### END VECTOR ###
         """
 
@@ -53,10 +53,10 @@ class str(object):
     def __hash__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [hash, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -65,7 +65,7 @@ class str(object):
     def __nonzero__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [strlen, 0, 0]
         [uint8, 0, 0]
         [neq, 0, 0]
@@ -76,19 +76,19 @@ class str(object):
     def __add__(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, other, 0]
+        [getval2, other, 0]
         [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [strapd, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
     def __eq__(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, other, 0]
-        [gethndl2, self, 0]
+        [getval2, other, 0]
+        [getval2, self, 0]
         [eq, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -97,8 +97,8 @@ class str(object):
     def __ne__(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, other, 0]
-        [gethndl2, self, 0]
+        [getval2, other, 0]
+        [getval2, self, 0]
         [neq, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -107,10 +107,10 @@ class str(object):
     def __len__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [strlen, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -123,11 +123,11 @@ class str(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, i, 0]
-        [gethndl2, self, 0]
+        [getval2, i, 0]
+        [getval2, self, 0]
         [strat, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -154,9 +154,9 @@ class str(object):
                 """
                 ### BEGIN VECTOR ###
                 [ldobj, res_, 0]
-                [gethndl, 0, 0]
+                [getval, 0, 0]
                 [reverse, 0, 0]
-                [sethndl, 0, 0]
+                [setval, 0, 0]
                 ### END VECTOR ###
                 """
                 if start is not None:
@@ -185,23 +185,23 @@ class str(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, stop, 0]
-        [gethndl2, start, 0]
+        [getval2, stop, 0]
+        [getval2, start, 0]
         [ldobj, res_, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [slice, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
         if step is not None:
             """
             ### BEGIN VECTOR ###
-            [gethndl2, step, 0]
+            [getval2, step, 0]
             [ldobj, res_, 0]
-            [gethndl, 0, 0]
+            [getval, 0, 0]
             [stride, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             ### END VECTOR ###
             """
 

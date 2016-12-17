@@ -44,7 +44,7 @@ class object:
         ### BEGIN VECTOR ###
         [new, 0, 0]
         [ldobj, cls, 0]
-        [setattrs2, im_self, 0]
+        [setattrs, im_self, 0]
         [ldobj, cls, 0]
         [setattr, __class__, 0]
         ### END VECTOR ###
@@ -123,7 +123,7 @@ def __call_cls_builtin(cls, obj):
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
     [ldobj, cls, 0]
-    [setattrs2, im_self, 0]
+    [setattrs, im_self, 0]
     [ldobj, cls, 0]
     [setattr, __class__, 0]
     ### END VECTOR ###
@@ -394,9 +394,9 @@ def bin(x):
         """
         ### BEGIN VECTOR ###
         [ldobj, res, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [reverse, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
         return res
@@ -612,9 +612,9 @@ def chr(i):
         """
         ### BEGIN VECTOR ###
         [ldobj, res, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [reverse, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
         return res
@@ -705,11 +705,11 @@ def cmp(x, y):
         def inner(x, y):
             """
             ### BEGIN VECTOR ###
-            [gethndl2, y, 0]
-            [gethndl2, x, 0]
+            [getval2, y, 0]
+            [getval2, x, 0]
             [cmp, 0, 0]
             [new, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             [stobj, res_, 0]
             ### END VECTOR ###
             """
@@ -752,7 +752,7 @@ def delattr(obj, name):
     """
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
-    [gethndl2, name, 0]
+    [getval2, name, 0]
     [hasattr2, 0, 0]
     [lnot, 0, 0]
     [jmpif, 5, 0]
@@ -762,7 +762,7 @@ def delattr(obj, name):
     """
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
-    [gethndl2, name, 0]
+    [getval2, name, 0]
     [delattr2, 0, 0]
     [ldobj, None, 0]
     [rtrn, 0, 0]
@@ -831,7 +831,7 @@ def getattr(obj, name):
     """
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
-    [gethndl2, name, 0]
+    [getval2, name, 0]
     [hasattr2, 0, 0]
     [lnot, 0, 0]
     [jmpif, 3, 0]
@@ -840,7 +840,7 @@ def getattr(obj, name):
 
     """
     ### BEGIN VECTOR ###
-    [gethndl2, name, 0]
+    [getval2, name, 0]
     [getattr2, 0, 0]
     [rtrn, 0, 0]
     ### END VECTOR ###
@@ -881,7 +881,7 @@ def hash(obj):
     [putobj, 0, 0]
     [hash, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, res_, 0]
     ### END VECTOR ###
     """
@@ -952,9 +952,9 @@ def hex(x):
         """
         ### BEGIN VECTOR ###
         [ldobj, res, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [reverse, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
         return res
@@ -993,7 +993,7 @@ def id(obj):
     [ldobj, obj, 0]
     [putobj, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, res_, 0]
     ### END VECTOR ###
     """
@@ -1194,7 +1194,7 @@ def next(iterator):
     [hasargs, 0, 0]
     [truthy, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, has_default, 0]
     [jmpif, 3, 0]
 
@@ -1260,9 +1260,9 @@ def oct(x):
         """
         ### BEGIN VECTOR ###
         [ldobj, res, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [reverse, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
@@ -1364,7 +1364,7 @@ def range(arg):
     [hasargs, 0, 0]
     [truthy, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, has_arg2, 0]
     [jmpif, 3, 0]
 
@@ -1382,7 +1382,7 @@ def range(arg):
     [hasargs, 0, 0]
     [truthy, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, has_step, 0]
     [jmpif, 3, 0]
 
@@ -1560,11 +1560,11 @@ def round(number):
 
     """
     ### BEGIN VECTOR ###
-    [gethndl2, ndigits, 0]
-    [gethndl2, number_, 0]
+    [getval2, ndigits, 0]
+    [getval2, number_, 0]
     [round, 0, 0]
     [new, 0, 0]
-    [sethndl, 0, 0]
+    [setval, 0, 0]
     [stobj, res_, 0]
     ### END VECTOR ###
     """
@@ -1589,7 +1589,7 @@ def setattr(obj, name, value):
     ### BEGIN VECTOR ###
     [ldobj, obj, 0]
     [ldobj, value, 0]
-    [gethndl2, name, 0]
+    [getval2, name, 0]
     [setattr2, 0, 0]
     ### END VECTOR ###
     """

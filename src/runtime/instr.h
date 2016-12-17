@@ -107,23 +107,23 @@ void instr_handler_delobj2(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_gethndl(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_getval(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_sethndl(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_setval(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_gethndl2(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_getval2(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_clrhndl(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_clrval(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_cpyhndl(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_cpyval(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
@@ -151,15 +151,11 @@ void instr_handler_cldobj(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_setattrs(const Instr&, Process&, Frame**, InvocationCtx**);
-
-// -----------------------------------------------------------------------------
-
 void instr_handler_rsetattrs(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 
-void instr_handler_setattrs2(const Instr&, Process&, Frame**, InvocationCtx**);
+void instr_handler_setattrs(const Instr&, Process&, Frame**, InvocationCtx**);
 
 // -----------------------------------------------------------------------------
 

@@ -27,7 +27,7 @@ class NoneType(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [bool, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 

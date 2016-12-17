@@ -41,17 +41,17 @@ class set(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [ldobj, arg, 0]
-        [cpyhndl, 14, 0]
+        [cpyval, 14, 0]
         ### END VECTOR ###
         """
 
     def __len__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [maplen, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -72,8 +72,8 @@ class set(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, value_hash, 0]
-        [gethndl2, self, 0]
+        [getval2, value_hash, 0]
+        [getval2, self, 0]
         [mapfind, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -108,10 +108,10 @@ class set(object):
         """
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [mapkeys, 0, 0]
         [ldobj, other, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [mapkeys, 0, 0]
         [eq, 0, 0]
         [cldobj, True, False]
@@ -142,11 +142,11 @@ class set(object):
         [putobj, 0, 0]
         [ldobj, item, 0]
         [getattr, hash, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [mapput, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
@@ -154,9 +154,9 @@ class set(object):
         """
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
-        [gethndl, 0, 0]
+        [getval, 0, 0]
         [mapclr, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
@@ -165,11 +165,11 @@ class set(object):
             value_hash = __call_method_0(value.__hash__)
             """
             ### BEGIN VECTOR ###
-            [gethndl2, value_hash, 0]
+            [getval2, value_hash, 0]
             [ldobj, self, 0]
-            [gethndl, 0, 0]
+            [getval, 0, 0]
             [mapers, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             ### END VECTOR ###
             """
             return None
@@ -185,11 +185,11 @@ class set(object):
     def update(self, other):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, other, 0]
-        [gethndl2, self, 0]
+        [getval2, other, 0]
+        [getval2, self, 0]
         [mapmrg, 0, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
@@ -340,9 +340,9 @@ class set(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, new_set, 0]
+        [getval2, new_set, 0]
         [ldobj, self, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         ### END VECTOR ###
         """
 
@@ -353,10 +353,10 @@ class setiterator(object):
     def __init__(self, iterable_):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, iterable_, 0]
+        [getval2, iterable_, 0]
         [mapvals, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, items_, 0]
         ### END VECTOR ###
         """

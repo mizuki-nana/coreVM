@@ -157,39 +157,39 @@ enum InstrEnum : uint32_t
   DELOBJ2,
 
   /**
-   * <gethndl, _, _>
-   * Copies the native handle of the top object of the stack and push it
+   * <getval, _, _>
+   * Copies the native value of the top object of the stack and push it
    * on top of the eval-stack.
    */
-  GETHNDL,
+  GETVAL,
 
   /**
-   * <sethndl, _, _>
-   * Pops off the native handle off the eval-stack and assigns it to the top
+   * <setval, _, _>
+   * Pops off the native type value off the eval-stack and assigns it to the top
    * object of the stack.
    */
-  SETHNDL,
+  SETVAL,
 
   /**
-   * <gethndl2, key, _>
-   * Copies of the native type handle of the named object in the current frame,
+   * <getval2, key, _>
+   * Copies of the native type value of the named object in the current frame,
    * and pushes it on top of the eval stack.
    */
-  GETHNDL2,
+  GETVAL2,
 
   /**
-   * <clrhndl, _, _>
-   * Clears the native handle from the top object of the stack.
+   * <clrval, _, _>
+   * Clears the native type value from the top object of the stack.
    */
-  CLRHNDL,
+  CLRVAL,
 
   /**
-   * <cpyhndl, #, _>
-   * Copies the native type handle associated from the object on top of the stack
+   * <cpyval, #, _>
+   * Copies the native type value associated from the object on top of the stack
    * onto the next object on the stack.
    *
    * The first operand is a value specifying the type of conversion to perform
-   * on the native type handle copied. The values are:
+   * on the native type value copied. The values are:
    *
    * 0. None
    * 1. int8
@@ -207,18 +207,18 @@ enum InstrEnum : uint32_t
    * 13. array
    * 14. map
    */
-  CPYHNDL,
+  CPYVAL,
 
   /**
    * <cpyrepr, _, _>
-   * Copies the string representation of the native type handle from the object
+   * Copies the string representation of the native type value from the object
    * on top of the stack onto the next object onto the stack.
    */
   CPYREPR,
 
   /*
    * <istruthy, _, _>
-   * Computes the truthy value of the native type handle associated with the
+   * Computes the truthy value of the native type value associated with the
    * object on top of the stack, and push the result on top of the eval stack.
    */
   ISTRUTHY,
@@ -254,18 +254,6 @@ enum InstrEnum : uint32_t
   CLDOBJ,
 
   /**
-   * <setattrs, #, #>
-   * Pops off the object on top of the stack, and convert its native type
-   * handle to a native map.
-   * Then use its key-value pairs as attribute name-value pairs to set on the
-   * next object on the top of the stack. The first operand is a boolean value
-   * specifying whether each mapped object should be cloned before set on the
-   * target object. The second operand is a boolean value indicating if
-   * the native map values should be overriden with the cloned object IDs.
-   */
-  SETATTRS,
-
-  /**
    * <rsetattrs, attr, _>
    * Reverse set attributes. Set the object on top of stack as the attribute
    * values onto the objects pointed to as values in the native map equivalent
@@ -274,13 +262,13 @@ enum InstrEnum : uint32_t
   RSETATTRS,
 
   /**
-   * <setattrs2, attr, _>
+   * <setattrs, attr, _>
    * Pops off the object on top of the stack, and set copies of all of its
    * attributes onto the next on the stack. For each of the copied objects,
    * set the second object on the stack as an attribute using the first operand
    * as the attribute key.
    */
-  SETATTRS2,
+  SETATTRS,
 
   /**
    * <putobj, _, _>
@@ -438,7 +426,7 @@ enum InstrEnum : uint32_t
 
   /**
    * <putargs, _, _>
-   * Pops the top object off the stack, retrieves its native type handle
+   * Pops the top object off the stack, retrieves its native type value
    * as a native type array, and then iterate through each array element,
    * use it as an object ID to retrieve an object from the heap, and assigns
    * it as the next argument for the next call.
@@ -447,7 +435,7 @@ enum InstrEnum : uint32_t
 
   /**
    * <putkwargs, _, _>
-   * Pops the top object off the stack, retrieves its native type handle
+   * Pops the top object off the stack, retrieves its native type value
    * as a native type map, and then iterate through each key-value pair,
    * use the value as an object ID to retrieve an object from the heap,
    * and use the key as an encoding ID to assign the object as the next
@@ -534,7 +522,7 @@ enum InstrEnum : uint32_t
 
   /**
    * <print, <trailing_new_line>, _>
-   * Converts the native type handle associated with the object on top of the
+   * Converts the native type value associated with the object on top of the
    * stack into a native string, and prints it to std output. The second operand
    * is a boolean value specifying whether a trailing new line character should
    * be printed. Defaults to `false`.

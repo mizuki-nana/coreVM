@@ -52,17 +52,17 @@ class dict(object):
         ### BEGIN VECTOR ###
         [ldobj, self, 0]
         [ldobj, arg, 0]
-        [cpyhndl, 14, 0]
+        [cpyval, 14, 0]
         ### END VECTOR ###
         """
 
     def __len__(self):
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [maplen, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, res_, 0]
         ### END VECTOR ###
         """
@@ -100,10 +100,10 @@ class dict(object):
         # TODO: Convert `__dict_KeyValuePair` instances to tuples.
         """
         ### BEGIN VECTOR ###
-        [gethndl2, self, 0]
+        [getval2, self, 0]
         [mapvals, 0, 0]
         [new, 0, 0]
-        [sethndl, 0, 0]
+        [setval, 0, 0]
         [stobj, items_, 0]
         ### END VECTOR ###
         """
@@ -114,8 +114,8 @@ class dict(object):
 
         """
         ### BEGIN VECTOR ###
-        [gethndl2, key_hash, 0]
-        [gethndl2, self, 0]
+        [getval2, key_hash, 0]
+        [getval2, self, 0]
         [mapfind, 0, 0]
         [cldobj, True, False]
         ### END VECTOR ###
@@ -127,8 +127,8 @@ class dict(object):
 
             """
             ### BEGIN VECTOR ###
-            [gethndl2, key_hash, 0]
-            [gethndl2, self, 0]
+            [getval2, key_hash, 0]
+            [getval2, self, 0]
             [mapat, 0, 0]
             [getobj, 0, 0]
             [stobj, key_val_pair, 0]
@@ -144,8 +144,8 @@ class dict(object):
         if __call_method_1(self.__contains__, key):
             """
             ### BEGIN VECTOR ###
-            [gethndl2, key_hash, 0]
-            [gethndl2, self, 0]
+            [getval2, key_hash, 0]
+            [getval2, self, 0]
             [mapat, 0, 0]
             [getobj, 0, 0]
             [stobj, key_val_pair, 0]
@@ -158,11 +158,11 @@ class dict(object):
             ### BEGIN VECTOR ###
             [ldobj, key_val_pair, 0]
             [putobj, 0, 0]
-            [gethndl2, key_hash, 0]
+            [getval2, key_hash, 0]
             [ldobj, self, 0]
-            [gethndl, 0, 0]
+            [getval, 0, 0]
             [mapput, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             ### END VECTOR ###
             """
 
@@ -174,11 +174,11 @@ class dict(object):
 
             """
             ### BEGIN VECTOR ###
-            [gethndl2, key_hash, 0]
+            [getval2, key_hash, 0]
             [ldobj, self, 0]
-            [gethndl, 0, 0]
+            [getval, 0, 0]
             [mapers, 0, 0]
-            [sethndl, 0, 0]
+            [setval, 0, 0]
             ### END VECTOR ###
             """
         else:

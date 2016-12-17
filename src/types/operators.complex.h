@@ -52,9 +52,9 @@ class absolute : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    decimal2 value = static_cast<decimal2>(handle);
+    decimal2 value = static_cast<decimal2>(oprd);
     return std::abs(value);
   }
 };
@@ -64,10 +64,10 @@ public:
 template<>
 inline
 string
-absolute::operator()(const string& handle)
+absolute::operator()(const string& oprd)
 {
   return string(
-    std::abs(static_cast<int64>(handle)));
+    std::abs(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -75,10 +75,10 @@ absolute::operator()(const string& handle)
 template<>
 inline
 array
-absolute::operator()(const array& handle)
+absolute::operator()(const array& oprd)
 {
   return array(
-    std::abs(static_cast<int64>(handle)));
+    std::abs(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -86,10 +86,10 @@ absolute::operator()(const array& handle)
 template<>
 inline
 map
-absolute::operator()(const map& handle)
+absolute::operator()(const map& oprd)
 {
   return map(
-    std::abs(static_cast<int64>(handle)));
+    std::abs(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -98,9 +98,9 @@ class sqrt : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    decimal2 value = static_cast<decimal2>(handle);
+    decimal2 value = static_cast<decimal2>(oprd);
     return std::sqrt(value);
   }
 };
@@ -110,10 +110,10 @@ public:
 template<>
 inline
 string
-sqrt::operator()(const string& handle)
+sqrt::operator()(const string& oprd)
 {
   return string(
-    std::sqrt(static_cast<int64>(handle)));
+    std::sqrt(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -121,10 +121,10 @@ sqrt::operator()(const string& handle)
 template<>
 inline
 array
-sqrt::operator()(const array& handle)
+sqrt::operator()(const array& oprd)
 {
   return array(
-    std::sqrt(static_cast<int64>(handle)));
+    std::sqrt(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -132,10 +132,10 @@ sqrt::operator()(const array& handle)
 template<>
 inline
 map
-sqrt::operator()(const map& handle)
+sqrt::operator()(const map& oprd)
 {
   return map(
-    std::sqrt(static_cast<int64>(handle)));
+    std::sqrt(static_cast<int64>(oprd)));
 }
 
 // -----------------------------------------------------------------------------
@@ -144,9 +144,9 @@ class truthy : public op<typed_unary_op_tag, boolean>
 {
 public:
   template<typename T>
-  result_type operator()(const T& handle)
+  result_type operator()(const T& oprd)
   {
-    boolean value = static_cast<boolean>(handle);
+    boolean value = static_cast<boolean>(oprd);
     return value;
   }
 };
@@ -156,9 +156,9 @@ public:
 template<>
 inline
 truthy::result_type
-truthy::operator()(const string& handle)
+truthy::operator()(const string& oprd)
 {
-  return !handle.empty();
+  return !oprd.empty();
 }
 
 // -----------------------------------------------------------------------------
@@ -166,9 +166,9 @@ truthy::operator()(const string& handle)
 template<>
 inline
 truthy::result_type
-truthy::operator()(const array& handle)
+truthy::operator()(const array& oprd)
 {
-  return !handle.empty();
+  return !oprd.empty();
 }
 
 // -----------------------------------------------------------------------------
@@ -176,9 +176,9 @@ truthy::operator()(const array& handle)
 template<>
 inline
 truthy::result_type
-truthy::operator()(const map& handle)
+truthy::operator()(const map& oprd)
 {
-  return !handle.empty();
+  return !oprd.empty();
 }
 
 // -----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ class repr: public op<typed_unary_op_tag, string>
 {
 public:
   template<typename T>
-  result_type operator()(const T& handle)
+  result_type operator()(const T& oprd)
   {
     // NOTES:
     //  (1) The curent approach has precision and accuracy issues.
@@ -198,7 +198,7 @@ public:
     // http://www.boost.org/doc/libs/1_58_0/doc/html/boost_lexical_cast/performance.html
     //
     // TODO: consider using `sprintf` here.
-    return boost::lexical_cast<string>(handle);
+    return boost::lexical_cast<string>(oprd);
   }
 };
 
@@ -207,10 +207,10 @@ public:
 template<>
 inline
 repr::result_type
-repr::operator()(const decimal& handle)
+repr::operator()(const decimal& oprd)
 {
   char buf[20];
-  snprintf(buf, sizeof(buf), "%0.6f", handle);
+  snprintf(buf, sizeof(buf), "%0.6f", oprd);
   return string(buf);
 }
 
@@ -219,10 +219,10 @@ repr::operator()(const decimal& handle)
 template<>
 inline
 repr::result_type
-repr::operator()(const decimal2& handle)
+repr::operator()(const decimal2& oprd)
 {
   char buf[20];
-  snprintf(buf, sizeof(buf), "%0.6f", handle);
+  snprintf(buf, sizeof(buf), "%0.6f", oprd);
   return string(buf);
 }
 
@@ -231,9 +231,9 @@ repr::operator()(const decimal2& handle)
 template<>
 inline
 repr::result_type
-repr::operator()(const string& handle)
+repr::operator()(const string& oprd)
 {
-  return handle;
+  return oprd;
 }
 
 // -----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ repr::operator()(const string& handle)
 template<>
 inline
 repr::result_type
-repr::operator()(const array& /* handle */)
+repr::operator()(const array& /* oprd */)
 {
   return static_cast<string>("<array>");
 }
@@ -251,7 +251,7 @@ repr::operator()(const array& /* handle */)
 template<>
 inline
 repr::result_type
-repr::operator()(const map& /* handle */)
+repr::operator()(const map& /* oprd */)
 {
   return static_cast<string>("<map>");
 }
@@ -262,10 +262,10 @@ class hash: public op<typed_unary_op_tag, int64>
 {
 public:
   template<typename T>
-  result_type operator()(const T& handle)
+  result_type operator()(const T& oprd)
   {
     std::hash<T> hash_func;
-    uint64 value = hash_func(handle);
+    uint64 value = hash_func(oprd);
     return static_cast<result_type>(value);
   }
 };
@@ -275,13 +275,13 @@ public:
 template<>
 inline
 hash::result_type
-hash::operator()(const string& handle)
+hash::operator()(const string& oprd)
 {
   uint64_t res = 0;
 
   std::hash<native_string_base> hash_func;
 
-  res = hash_func(handle);
+  res = hash_func(oprd);
 
   return static_cast<int64>(res);
 }
@@ -291,13 +291,13 @@ hash::operator()(const string& handle)
 template<>
 inline
 hash::result_type
-hash::operator()(const array& handle)
+hash::operator()(const array& oprd)
 {
   uint64_t res = 0;
 
   std::hash<native_array_element_type> element_hash;
 
-  for (auto itr = handle.cbegin(); itr != handle.cend(); ++itr)
+  for (auto itr = oprd.cbegin(); itr != oprd.cend(); ++itr)
   {
     const auto& value = *itr;
     res += element_hash(value);
@@ -311,14 +311,14 @@ hash::operator()(const array& handle)
 template<>
 inline
 hash::result_type
-hash::operator()(const map& handle)
+hash::operator()(const map& oprd)
 {
   uint64_t res = 0;
 
   std::hash<native_map_key_type> key_hash;
   std::hash<native_map_mapped_type> value_hash;
 
-  for (auto itr = handle.begin(); itr != handle.end(); ++itr)
+  for (auto itr = oprd.begin(); itr != oprd.end(); ++itr)
   {
     const auto& key = itr->first;
     const auto& value = itr->second;
@@ -343,7 +343,7 @@ public:
   }
 
   template<typename T>
-  T operator()(const T& /* handle */) const
+  T operator()(const T& /* oprd */) const
   {
     THROW(RuntimeError("Calling 'slice' operator on invalid type"));
   }
@@ -372,9 +372,9 @@ private:
 template<>
 inline
 string
-slice::operator()(const string& handle) const
+slice::operator()(const string& oprd) const
 {
-  return slice_impl(handle);
+  return slice_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -382,9 +382,9 @@ slice::operator()(const string& handle) const
 template<>
 inline
 array
-slice::operator()(const array& handle) const
+slice::operator()(const array& oprd) const
 {
-  return slice_impl(handle);
+  return slice_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -399,7 +399,7 @@ public:
   }
 
   template<typename T>
-  T operator()(const T& /* handle */) const
+  T operator()(const T& /* oprd */) const
   {
     THROW(RuntimeError("Calling 'stride' operator on invalid type"));
   }
@@ -438,9 +438,9 @@ private:
 template<>
 inline
 string
-stride::operator()(const string& handle) const
+stride::operator()(const string& oprd) const
 {
-  return stride_impl(handle);
+  return stride_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -448,9 +448,9 @@ stride::operator()(const string& handle) const
 template<>
 inline
 array
-stride::operator()(const array& handle) const
+stride::operator()(const array& oprd) const
 {
-  return stride_impl(handle);
+  return stride_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -459,7 +459,7 @@ class reverse : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& /* handle */) const
+  T operator()(const T& /* oprd */) const
   {
     THROW(RuntimeError("Calling 'reverse' operator on invalid type"));
   }
@@ -482,9 +482,9 @@ private:
 template<>
 inline
 string
-reverse::operator()(const string& handle) const
+reverse::operator()(const string& oprd) const
 {
-  return reverse_impl(handle);
+  return reverse_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -492,9 +492,9 @@ reverse::operator()(const string& handle) const
 template<>
 inline
 array
-reverse::operator()(const array& handle) const
+reverse::operator()(const array& oprd) const
 {
-  return reverse_impl(handle);
+  return reverse_impl(oprd);
 }
 
 // -----------------------------------------------------------------------------

@@ -45,7 +45,7 @@ def test_staticmethod_on_instance():
     o = MyObject()
     print o.sum(4, 5)
 
-    # This currently evalates to `True` because of `setattrs2` in
+    # This currently evalates to `True` because of `setattrs` in
     # `object.__new__`.
     #
     ## print hasattr(o.sum, "im_self")

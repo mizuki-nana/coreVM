@@ -43,9 +43,9 @@ class positive : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    return +handle;
+    return +oprd;
   }
 };
 
@@ -55,9 +55,9 @@ class negation : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    return -handle;
+    return -oprd;
   }
 };
 
@@ -67,10 +67,10 @@ class increment : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    T& handle_ = const_cast<T&>(handle);
-    return ++handle_;
+    T& oprd_ = const_cast<T&>(oprd);
+    return ++oprd_;
   }
 };
 
@@ -81,9 +81,9 @@ public:
 template<>
 inline
 boolean
-increment::operator()(const boolean& handle)
+increment::operator()(const boolean& oprd)
 {
-  uint64_t int_val = static_cast<uint64_t>(handle);
+  uint64_t int_val = static_cast<uint64_t>(oprd);
   ++int_val;
   return int_val;
 }
@@ -94,11 +94,11 @@ class decrement : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    T& handle_ = const_cast<T&>(handle);
-    --handle_;
-    return handle;
+    T& oprd_ = const_cast<T&>(oprd);
+    --oprd_;
+    return oprd;
   }
 };
 
@@ -107,7 +107,7 @@ public:
 template<>
 inline
 boolean
-decrement::operator()(const boolean& /* handle */)
+decrement::operator()(const boolean& /* oprd */)
 {
   THROW(InvalidOperatorError("--", "boolean"));
 }
@@ -118,9 +118,9 @@ class logical_not : public op<typed_unary_op_tag, boolean>
 {
 public:
   template<typename T>
-  result_type operator()(const T& handle)
+  result_type operator()(const T& oprd)
   {
-    return boolean(!handle);
+    return boolean(!oprd);
   }
 };
 
@@ -130,9 +130,9 @@ class bitwise_not : public op<unary_op_tag>
 {
 public:
   template<typename T>
-  T operator()(const T& handle)
+  T operator()(const T& oprd)
   {
-    return ~handle;
+    return ~oprd;
   }
 };
 
@@ -141,7 +141,7 @@ public:
 template<>
 inline
 decimal
-bitwise_not::operator()(const decimal& /* handle */)
+bitwise_not::operator()(const decimal& /* oprd */)
 {
   THROW(InvalidOperatorError("~", "decimal"));
 }
@@ -151,7 +151,7 @@ bitwise_not::operator()(const decimal& /* handle */)
 template<>
 inline
 decimal2
-bitwise_not::operator()(const decimal2& /* handle */)
+bitwise_not::operator()(const decimal2& /* oprd */)
 {
   THROW(InvalidOperatorError("~", "decimal2"));
 }
@@ -161,9 +161,9 @@ bitwise_not::operator()(const decimal2& /* handle */)
 template<>
 inline
 string
-bitwise_not::operator()(const string& handle)
+bitwise_not::operator()(const string& oprd)
 {
-  return static_cast<string>(~handle);
+  return static_cast<string>(~oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -171,9 +171,9 @@ bitwise_not::operator()(const string& handle)
 template<>
 inline
 array
-bitwise_not::operator()(const array& handle)
+bitwise_not::operator()(const array& oprd)
 {
-  return static_cast<array>(~handle);
+  return static_cast<array>(~oprd);
 }
 
 // -----------------------------------------------------------------------------
@@ -181,9 +181,9 @@ bitwise_not::operator()(const array& handle)
 template<>
 inline
 map
-bitwise_not::operator()(const map& handle)
+bitwise_not::operator()(const map& oprd)
 {
-  return static_cast<map>(~handle);
+  return static_cast<map>(~oprd);
 }
 
 // -----------------------------------------------------------------------------

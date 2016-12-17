@@ -81,20 +81,19 @@ InstrHandlerMeta::instr_handlers[INSTR_CODE_MAX] {
   /* STOBJ2    */    instr_handler_stobj2    ,
   /* DELOBJ    */    instr_handler_delobj    ,
   /* DELOBJ2   */    instr_handler_delobj2   ,
-  /* GETHNDL   */    instr_handler_gethndl   ,
-  /* SETHNDL   */    instr_handler_sethndl   ,
-  /* GETHNDL2  */    instr_handler_gethndl2  ,
-  /* CLRHNDL   */    instr_handler_clrhndl   ,
-  /* CPYHNDL   */    instr_handler_cpyhndl   ,
+  /* GETVAL    */    instr_handler_getval    ,
+  /* SETVAL    */    instr_handler_setval    ,
+  /* GETVAL2   */    instr_handler_getval2   ,
+  /* CLRVAL    */    instr_handler_clrval    ,
+  /* CPYVAL    */    instr_handler_cpyval    ,
   /* CPYREPR   */    instr_handler_cpyrepr   ,
   /* ISTRUTHY  */    instr_handler_istruthy  ,
   /* OBJEQ     */    instr_handler_objeq     ,
   /* OBJNEQ    */    instr_handler_objneq    ,
   /* SETCTX    */    instr_handler_setctx    ,
   /* CLDOBJ    */    instr_handler_cldobj    ,
-  /* SETATTRS  */    instr_handler_setattrs  ,
   /* RSETATTRS */    instr_handler_rsetattrs ,
-  /* SETATTRS2  */   instr_handler_setattrs2 ,
+  /* SETATTRS  */    instr_handler_setattrs  ,
   /* PUTOBJ    */    instr_handler_putobj    ,
   /* GETOBJ    */    instr_handler_getobj    ,
   /* SWAP      */    instr_handler_swap      ,
@@ -834,7 +833,7 @@ instr_handler_delobj2(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gethndl(const Instr& /* instr */, Process& process,
+instr_handler_getval(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -851,7 +850,7 @@ instr_handler_gethndl(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_sethndl(const Instr& /* instr */, Process& process,
+instr_handler_setval(const Instr& /* instr */, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -875,7 +874,7 @@ instr_handler_sethndl(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_gethndl2(const Instr& instr, Process& /* process */,
+instr_handler_getval2(const Instr& instr, Process& /* process */,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   Frame* frame = *frame_ptr;
@@ -894,7 +893,7 @@ instr_handler_gethndl2(const Instr& instr, Process& /* process */,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_clrhndl(const Instr& /* instr */, Process& process,
+instr_handler_clrval(const Instr& /* instr */, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto obj = process.top_stack();
@@ -911,7 +910,7 @@ instr_handler_clrhndl(const Instr& /* instr */, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_cpyhndl(const Instr& instr, Process& process,
+instr_handler_cpyval(const Instr& instr, Process& process,
   Frame** /* frame_ptr */, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto src_obj = process.pop_stack();
@@ -1138,74 +1137,6 @@ instr_handler_cldobj(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattrs(const Instr& instr, Process& process,
-  Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
-{
-  auto src_obj = process.pop_stack();
-
-  auto obj = process.top_stack();
-
-  Frame* frame = *frame_ptr;
-
-  const types::NativeTypeValue& type_val = src_obj->type_value();
-
-  types::native_map map = types::get_intrinsic_value_from_type_value<types::native_map>(type_val);
-
-  // If we should clone each mapped object before setting it.
-  bool should_clone = static_cast<bool>(instr.oprd1);
-  bool should_override_map_values = static_cast<bool>(instr.oprd2);
-
-  auto compartment_id = src_obj->closure_ctx().compartment_id;
-
-  Compartment* compartment = nullptr;
-  process.get_compartment(compartment_id, &compartment);
-
-  if (!compartment)
-  {
-    THROW(CompartmentNotFoundError(compartment_id));
-  }
-
-  for (auto itr = map.begin(); itr != map.end(); ++itr)
-  {
-    uint64_t str_key = static_cast<uint64_t>(itr->first);
-
-    dyobj::attr_key_t attr_key = get_attr_key(compartment, str_key);
-
-    dyobj::dyobj_id_t attr_id = static_cast<dyobj::dyobj_id_t>(itr->second);
-
-    auto &attr_obj = process.get_dyobj(attr_id);
-
-    if (should_clone)
-    {
-      auto cloned_attr_obj = process.create_dyobj();
-
-      cloned_attr_obj->copy_from(attr_obj);
-      cloned_attr_obj->manager().on_setattr();
-      obj->putattr(attr_key, cloned_attr_obj);
-
-      if (should_override_map_values)
-      {
-        itr->second = static_cast<types::native_map_mapped_type>(cloned_attr_obj->id());
-      }
-    }
-    else
-    {
-      attr_obj.manager().on_setattr();
-      obj->putattr(attr_key, &attr_obj);
-    }
-
-    std::string attr_name;
-    frame->compartment()->get_string_literal(
-      static_cast<encoding_key_t>(str_key), &attr_name);
-    process.insert_attr_name(attr_key, attr_name.c_str());
-  }
-
-  frame->push_eval_stack(types::NativeTypeValue(map));
-}
-
-// -----------------------------------------------------------------------------
-
-void
 instr_handler_rsetattrs(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
@@ -1239,7 +1170,7 @@ instr_handler_rsetattrs(const Instr& instr, Process& process,
 // -----------------------------------------------------------------------------
 
 void
-instr_handler_setattrs2(const Instr& instr, Process& process,
+instr_handler_setattrs(const Instr& instr, Process& process,
   Frame** frame_ptr, InvocationCtx** /* invk_ctx_ptr */)
 {
   auto self_str_key = static_cast<encoding_key_t>(instr.oprd1);
