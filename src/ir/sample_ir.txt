@@ -1,0 +1,29 @@
+structure Person {
+    string name;
+    ui8 age;
+    Person* sibling;
+    Location* address;
+}
+
+structure Location {
+    string street_address;
+    string* country;
+    string zipcode;
+}
+
+def structtype* find_friends(structtype* person, ui32 id) {
+entry:
+    %sibling = alloca ui8 16, ui8 16;
+    br ui32 32, %cond1 %cond2  [ label #br1, label #br2, label #br3 ];
+cond1:
+    %name = getattr string "name", ui8 16;
+}
+
+def string compute(ui32 lhs_val, dpf rhs_val, array* values) : find_friends {
+entry:
+    %sum = add ui8 16, %lhs_val %rhs_val;
+    store string "val", array [ 6 * i32 ] %values;
+}
+
+def void doNothing() {
+}

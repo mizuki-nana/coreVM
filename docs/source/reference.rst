@@ -29,6 +29,8 @@ straightforward as possible. Currently, the build system requires
   * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.2 beta (001c1ef)
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
   * `LLVM <http://www.llvm.org/>`_ version 3.4.0
+  * `Flex <https://github.com/westes/flex>`_ version 2.6.2
+  * `Bison <https://www.gnu.org/software/bison/>`_ version 3.0.4
   * `benchmark <https://github.com/google/benchmark>`_ version 1.0.0
 
 2. Build main binaries and run tests
@@ -93,7 +95,7 @@ Development 2
 #############
 
 **Operating System:**
-`OS X 10.11.6 (15G1004) Darwin 15.6.0 root:xnu-3248.60.11~1/RELEASE_X86_64 x86_64`
+`OS X 10.11.6 (15G1108) Darwin 15.6.0 root:xnu-3248.60.11~2/RELEASE_X86_64 x86_64`
 
 **Compiler:**
 `Apple LLVM version 7.3.0 (clang-703.0.31) Target: x86_64-apple-darwin15.6.0 Thread model: posix`
@@ -109,6 +111,12 @@ Development 2
 
 **GNU Make:**
 `GNU Make 3.81 This program built for i386-apple-darwin11.3.0`
+
+**Flex:**
+`flex 2.6.2`
+
+**Bison:**
+`bison (GNU Bison) 3.0.4` `Written by Robert Corbett and Richard Stallman`
 
 **Sphinx:**
 `Sphinx v1.3.5`

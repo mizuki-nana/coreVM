@@ -82,6 +82,21 @@ target_link_libraries(ir_asm
     )
 
 
+# Build executable `ir_parser_driver`
+add_executable(ir_parser_driver
+    ir_parser_driver.cc
+    )
+
+
+set_target_properties(ir_parser_driver PROPERTIES COMPILE_FLAGS "-O3")
+
+
+target_link_libraries(ir_parser_driver
+    libcorevm
+    ${DEPENDENCY_LINK_LIBRARIES}
+    )
+
+
 # Validate IR tools.
 add_custom_command(OUTPUT ir_validation_output WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS ir_dis ir_asm

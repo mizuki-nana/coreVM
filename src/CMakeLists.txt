@@ -29,6 +29,10 @@ add_custom_target(IRFormat WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 set(sources
     ir/reader.cc
     ir/verifier.cc
+    ir/format_util.cc
+    ir/ir_parser.tab.cc
+    ir/lex.yy.cc
+    ir/ir_parser_driver.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
     dyobj/dynamic_object_manager.cc
