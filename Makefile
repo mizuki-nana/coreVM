@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2016 Yanzheng Li
+# Copyright (c) 2017 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -92,8 +92,14 @@ all: $(BUILD_TARGETS)
 
 ## -----------------------------------------------------------------------------
 
+# TODO: Move this to CMake.
+pre-build:
+	sh scripts/compile_ir_grammar.sh
+
+## -----------------------------------------------------------------------------
+
 .PHONY: build
-build:
+build: pre-build
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make
 

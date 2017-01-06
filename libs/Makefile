@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-# Copyright (c) 2016 Yanzheng Li
+# Copyright (c) 2017 Yanzheng Li
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal in
@@ -32,13 +32,16 @@ AVRO_CPP_DIR=$(AVRO_DIR)/lang/c++
 AVRO_PY_DIR=$(AVRO_DIR)/lang/py
 LLVM_TMP_DIR=llvm_tmp
 LLVM_BUILD_DIR=$(LLVM_TMP_DIR)/build
+TMP_BUILD_DIR=$(TOP_DIR)/tmp
+BISON_DIR=$(TMP_BUILD_DIR)/bison-3.0.4
+FLEX_DIR=$(TMP_BUILD_DIR)/flex-2.6.2
 BENCHMARK_HEADER_INSTALL_PATH=/usr/local/include/benchmark/
 
 ## -----------------------------------------------------------------------------
 
 # NOTE: llvm needs to be installed before sneaker. This is because both targets
 # will install libgtest, but the version we need is the one installed by sneaker.
-BASE_TARGETS=avro llvm sneaker
+BASE_TARGETS=avro llvm sneaker bison flex
 
 ifeq ($(TRAVIS_OS_NAME), linux)
 	BASE_TARGETS:=cmake_target $(BASE_TARGETS)
@@ -48,7 +51,7 @@ endif
 
 .PHONY: all
 ifeq ($(full), 1)
-all: $(BASE_TARGETS) benchmark
+all: benchmark $(BASE_TARGETS)
 else
 all: $(BASE_TARGETS)
 endif
@@ -58,7 +61,7 @@ endif
 .PHONY: sneaker
 sneaker:
 	cd $(SNEAKER_DIR) && make gtest
-	$(MAKE) -C sneaker fast=1
+	$(MAKE) -C sneaker run-test=0
 	$(MAKE) -C sneaker install
 
 ## -----------------------------------------------------------------------------
@@ -109,7 +112,30 @@ llvm:
 	cd $(LLVM_TMP_DIR) && tar xfJ llvm-3.6.0.src.tar.xz
 	mkdir -p $(LLVM_BUILD_DIR)
 	cd $(LLVM_BUILD_DIR) && cmake ../llvm-3.6.0.src -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="X86"
-	cd $(LLVM_BUILD_DIR) && make --quiet && sudo make install --quiet >/dev/null
+	cd $(LLVM_BUILD_DIR) && make --quiet > /dev/null && sudo make install --quiet >/dev/null
 	rm -rf $(LLVM_TMP_DIR)
 
 ## -----------------------------------------------------------------------------
+
+.PHONY: bison
+bison:
+	mkdir -p $(TMP_BUILD_DIR)
+	cd $(TMP_BUILD_DIR) && wget http://ftp.gnu.org/gnu/bison/bison-3.0.4.tar.gz
+	cd $(TMP_BUILD_DIR) && tar -zxvf bison-3.0.4.tar.gz
+	cd $(BISON_DIR) && ./configure && make && sudo make install
+	rm -rf $(TMP_BUILD_DIR)
+
+## -----------------------------------------------------------------------------
+
+# Flex needs m4. On Ubuntu, install m4 by:
+# sudo apt-get update && sudo apt-get install m4
+.PHONY: flex
+flex:
+	mkdir -p $(TMP_BUILD_DIR)
+	cd $(TMP_BUILD_DIR) && wget https://github.com/westes/flex/releases/download/v2.6.2/flex-2.6.2.tar.gz
+	cd $(TMP_BUILD_DIR) && tar -zxvf flex-2.6.2.tar.gz
+	cd $(FLEX_DIR) && ./configure && make && sudo make install
+	rm -rf $(TMP_BUILD_DIR)
+
+## -----------------------------------------------------------------------------
+

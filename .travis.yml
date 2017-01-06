@@ -50,4 +50,6 @@ script:
   - python --version
   - sphinx-build --version
   - make -C libs full=1
+  - flex --version
+  - bison --version
   - make full=1 travis_ci=1

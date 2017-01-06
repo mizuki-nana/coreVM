@@ -26,7 +26,7 @@ straightforward as possible. Currently, the build system requires
 
   * `Boost <http://www.boost.org/>`_ version 1.55
   * `Google Test <https://code.google.com/p/googletest/>`_ version 1.7.0
-  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.2 beta (001c1ef)
+  * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.2 beta (0820a28)
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
   * `LLVM <http://www.llvm.org/>`_ version 3.4.0
   * `Flex <https://github.com/westes/flex>`_ version 2.6.2
