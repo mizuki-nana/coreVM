@@ -29,14 +29,15 @@ namespace corevm {
 
 struct IRModule;
 struct IRModuleMeta;
-struct IRStructDecl;
-struct IRStructField;
-struct IRArrayValue;
+struct IRTypeDecl;
+struct IRTypeField;
+struct IRValue;
+struct IRArrayType;
+struct IRIdentifierType;
+struct IRInstruction;
 struct IRClosure;
 struct IRParameter;
 struct IRBasicBlock;
-struct IRInstruction;
-struct IRValue;
 
 } /* end namespace corevm */
 

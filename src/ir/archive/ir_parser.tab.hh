@@ -43,6 +43,7 @@
 #line 9 "src/ir/ir_parser.yy" // lalr1.cc:392
 
 # include <string>
+# include <utility>
 # include "format.h"
 # include "format_util.h"
 namespace corevm {
@@ -51,7 +52,7 @@ class IRParserDriver;
 } /* end namespace ir */
 } /* end namespace corevm */
 
-#line 55 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
+#line 56 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -128,7 +129,7 @@ class IRParserDriver;
 
 
 namespace yy {
-#line 132 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
+#line 133 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
 
 
 
@@ -2298,7 +2299,7 @@ namespace yy {
 
 
 } // yy
-#line 2302 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
+#line 2303 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
 
 
 

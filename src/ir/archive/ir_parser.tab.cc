@@ -49,7 +49,7 @@
 
 #line 51 "src/ir/ir_parser.tab.cc" // lalr1.cc:412
 // Unqualified %code blocks.
-#line 32 "src/ir/ir_parser.yy" // lalr1.cc:413
+#line 33 "src/ir/ir_parser.yy" // lalr1.cc:413
 
 # include "ir_parser_driver.h"
 
@@ -723,7 +723,7 @@ namespace yy {
 
 
     // User initialization code.
-    #line 24 "src/ir/ir_parser.yy" // lalr1.cc:745
+    #line 25 "src/ir/ir_parser.yy" // lalr1.cc:745
 {
   // Initialize the initial location.
   if (!driver.input_file().empty())
@@ -998,11 +998,11 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 118 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 119 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRModule > () = corevm::IRModule();
-            yylhs.value.as< corevm::IRModule > ().types = yystack_[1].value.as< std::vector<corevm::IRTypeDecl> > ();
-            yylhs.value.as< corevm::IRModule > ().closures = yystack_[0].value.as< std::vector<corevm::IRClosure> > ();
+            yylhs.value.as< corevm::IRModule > ().types = std::move(yystack_[1].value.as< std::vector<corevm::IRTypeDecl> > ());
+            yylhs.value.as< corevm::IRModule > ().closures = std::move(yystack_[0].value.as< std::vector<corevm::IRClosure> > ());
             set_metadata(yystack_[2].value.as< std::vector<MetadataPair> > (), yylhs.value.as< corevm::IRModule > ());
             driver.set_module(std::move(yylhs.value.as< corevm::IRModule > ()));
         }
@@ -1010,7 +1010,7 @@ namespace yy {
     break;
 
   case 3:
-#line 129 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 130 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<MetadataPair> > () = std::vector<MetadataPair>();
         }
@@ -1018,16 +1018,16 @@ namespace yy {
     break;
 
   case 4:
-#line 133 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 134 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<MetadataPair> > () = yystack_[1].value.as< std::vector<MetadataPair> > ();
+            yylhs.value.as< std::vector<MetadataPair> > () = std::move(yystack_[1].value.as< std::vector<MetadataPair> > ());
             yylhs.value.as< std::vector<MetadataPair> > ().push_back(yystack_[0].value.as< MetadataPair > ());
         }
 #line 1027 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 5:
-#line 141 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 142 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< MetadataPair > () = std::make_pair(yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());      
         }
@@ -1035,7 +1035,7 @@ namespace yy {
     break;
 
   case 6:
-#line 148 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 149 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRClosure> > () = std::vector<corevm::IRClosure>();
         }
@@ -1043,16 +1043,16 @@ namespace yy {
     break;
 
   case 7:
-#line 152 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 153 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRClosure> > () = yystack_[1].value.as< std::vector<corevm::IRClosure> > ();
+            yylhs.value.as< std::vector<corevm::IRClosure> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRClosure> > ());
             yylhs.value.as< std::vector<corevm::IRClosure> > ().push_back(yystack_[0].value.as< corevm::IRClosure > ());
         }
 #line 1052 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 8:
-#line 160 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 161 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRTypeDecl> > () = std::vector<corevm::IRTypeDecl>();
         }
@@ -1060,26 +1060,26 @@ namespace yy {
     break;
 
   case 9:
-#line 164 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 165 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRTypeDecl> > () = yystack_[1].value.as< std::vector<corevm::IRTypeDecl> > ();
+            yylhs.value.as< std::vector<corevm::IRTypeDecl> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRTypeDecl> > ());
             yylhs.value.as< std::vector<corevm::IRTypeDecl> > ().push_back(yystack_[0].value.as< corevm::IRTypeDecl > ());
         }
 #line 1069 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 10:
-#line 172 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 173 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRTypeDecl > () = corevm::IRTypeDecl();
-            yylhs.value.as< corevm::IRTypeDecl > ().name = yystack_[3].value.as< std::string > ();
-            yylhs.value.as< corevm::IRTypeDecl > ().fields = yystack_[1].value.as< std::vector<corevm::IRTypeField> > ();
+            yylhs.value.as< corevm::IRTypeDecl > ().name = std::move(yystack_[3].value.as< std::string > ());
+            yylhs.value.as< corevm::IRTypeDecl > ().fields = std::move(yystack_[1].value.as< std::vector<corevm::IRTypeField> > ());
         }
 #line 1079 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 11:
-#line 181 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 182 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRTypeField> > () = std::vector<corevm::IRTypeField>();
         }
@@ -1087,92 +1087,92 @@ namespace yy {
     break;
 
   case 12:
-#line 185 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 186 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRTypeField> > () = yystack_[1].value.as< std::vector<corevm::IRTypeField> > ();
+            yylhs.value.as< std::vector<corevm::IRTypeField> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRTypeField> > ());
             yylhs.value.as< std::vector<corevm::IRTypeField> > ().push_back(yystack_[0].value.as< corevm::IRTypeField > ());
         }
 #line 1096 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 13:
-#line 193 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 194 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRTypeField > () = corevm::IRTypeField();
-            yylhs.value.as< corevm::IRTypeField > ().type = yystack_[2].value.as< corevm::IRIdentifierType > ();
+            yylhs.value.as< corevm::IRTypeField > ().type = std::move(yystack_[2].value.as< corevm::IRIdentifierType > ());
             yylhs.value.as< corevm::IRTypeField > ().ref_type = corevm::value;
-            yylhs.value.as< corevm::IRTypeField > ().identifier = yystack_[1].value.as< std::string > ();
+            yylhs.value.as< corevm::IRTypeField > ().identifier = std::move(yystack_[1].value.as< std::string > ());
         }
 #line 1107 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 14:
-#line 200 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 201 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRTypeField > () = corevm::IRTypeField();
-            yylhs.value.as< corevm::IRTypeField > ().type = yystack_[3].value.as< corevm::IRIdentifierType > ();
+            yylhs.value.as< corevm::IRTypeField > ().type = std::move(yystack_[3].value.as< corevm::IRIdentifierType > ());
             yylhs.value.as< corevm::IRTypeField > ().ref_type = corevm::pointer;
-            yylhs.value.as< corevm::IRTypeField > ().identifier = yystack_[1].value.as< std::string > ();
+            yylhs.value.as< corevm::IRTypeField > ().identifier = std::move(yystack_[1].value.as< std::string > ());
         }
 #line 1118 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 15:
-#line 210 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 211 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRClosure > () = corevm::IRClosure();
             yylhs.value.as< corevm::IRClosure > ().rettype = yystack_[5].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRClosure > ().name = yystack_[4].value.as< std::string > ();
-            yylhs.value.as< corevm::IRClosure > ().parameters = yystack_[3].value.as< std::vector<corevm::IRParameter> > ();
-            yylhs.value.as< corevm::IRClosure > ().blocks = yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ();
+            yylhs.value.as< corevm::IRClosure > ().name = std::move(yystack_[4].value.as< std::string > ());
+            yylhs.value.as< corevm::IRClosure > ().parameters = std::move(yystack_[3].value.as< std::vector<corevm::IRParameter> > ());
+            yylhs.value.as< corevm::IRClosure > ().blocks = std::move(yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ());
             yylhs.value.as< corevm::IRClosure > ().ret_reftype = corevm::value;
         }
 #line 1131 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 16:
-#line 219 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 220 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRClosure > () = corevm::IRClosure();
             yylhs.value.as< corevm::IRClosure > ().rettype = yystack_[6].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRClosure > ().name = yystack_[4].value.as< std::string > ();
-            yylhs.value.as< corevm::IRClosure > ().parameters = yystack_[3].value.as< std::vector<corevm::IRParameter> > ();
-            yylhs.value.as< corevm::IRClosure > ().blocks = yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ();
+            yylhs.value.as< corevm::IRClosure > ().name = std::move(yystack_[4].value.as< std::string > ());
+            yylhs.value.as< corevm::IRClosure > ().parameters = std::move(yystack_[3].value.as< std::vector<corevm::IRParameter> > ());
+            yylhs.value.as< corevm::IRClosure > ().blocks = std::move(yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ());
             yylhs.value.as< corevm::IRClosure > ().ret_reftype = corevm::pointer;
         }
 #line 1144 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 17:
-#line 228 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 229 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRClosure > () = corevm::IRClosure();
             yylhs.value.as< corevm::IRClosure > ().rettype = yystack_[7].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRClosure > ().name = yystack_[6].value.as< std::string > ();
-            yylhs.value.as< corevm::IRClosure > ().parameters = yystack_[5].value.as< std::vector<corevm::IRParameter> > ();
+            yylhs.value.as< corevm::IRClosure > ().name = std::move(yystack_[6].value.as< std::string > ());
+            yylhs.value.as< corevm::IRClosure > ().parameters = std::move(yystack_[5].value.as< std::vector<corevm::IRParameter> > ());
             yylhs.value.as< corevm::IRClosure > ().parent.set_string(yystack_[3].value.as< std::string > ());
-            yylhs.value.as< corevm::IRClosure > ().blocks = yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ();
+            yylhs.value.as< corevm::IRClosure > ().blocks = std::move(yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ());
             yylhs.value.as< corevm::IRClosure > ().ret_reftype = corevm::value;
         }
 #line 1158 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 18:
-#line 238 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 239 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRClosure > () = corevm::IRClosure();
             yylhs.value.as< corevm::IRClosure > ().rettype = yystack_[8].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRClosure > ().name = yystack_[6].value.as< std::string > ();
-            yylhs.value.as< corevm::IRClosure > ().parameters = yystack_[5].value.as< std::vector<corevm::IRParameter> > ();
+            yylhs.value.as< corevm::IRClosure > ().name = std::move(yystack_[6].value.as< std::string > ());
+            yylhs.value.as< corevm::IRClosure > ().parameters = std::move(yystack_[5].value.as< std::vector<corevm::IRParameter> > ());
             yylhs.value.as< corevm::IRClosure > ().parent.set_string(yystack_[3].value.as< std::string > ());
-            yylhs.value.as< corevm::IRClosure > ().blocks = yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ();
+            yylhs.value.as< corevm::IRClosure > ().blocks = std::move(yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ());
             yylhs.value.as< corevm::IRClosure > ().ret_reftype = corevm::pointer;
         }
 #line 1172 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 19:
-#line 251 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 252 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRParameter> > () = std::vector<corevm::IRParameter>();
         }
@@ -1180,15 +1180,15 @@ namespace yy {
     break;
 
   case 20:
-#line 255 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 256 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRParameter> > () = yystack_[1].value.as< std::vector<corevm::IRParameter> > ();
+            yylhs.value.as< std::vector<corevm::IRParameter> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRParameter> > ());
         }
 #line 1188 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 21:
-#line 262 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 263 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRParameter> > () = std::vector<corevm::IRParameter>();
             yylhs.value.as< std::vector<corevm::IRParameter> > ().push_back(yystack_[0].value.as< corevm::IRParameter > ());
@@ -1197,38 +1197,38 @@ namespace yy {
     break;
 
   case 22:
-#line 267 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 268 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRParameter> > () = yystack_[2].value.as< std::vector<corevm::IRParameter> > ();
+            yylhs.value.as< std::vector<corevm::IRParameter> > () = std::move(yystack_[2].value.as< std::vector<corevm::IRParameter> > ());
             yylhs.value.as< std::vector<corevm::IRParameter> > ().push_back(yystack_[0].value.as< corevm::IRParameter > ());
         }
 #line 1206 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 23:
-#line 275 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 276 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRParameter > () = corevm::IRParameter();
-            yylhs.value.as< corevm::IRParameter > ().type = yystack_[1].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRParameter > ().identifier = yystack_[0].value.as< std::string > ();
+            yylhs.value.as< corevm::IRParameter > ().type = std::move(yystack_[1].value.as< corevm::IRIdentifierType > ());
+            yylhs.value.as< corevm::IRParameter > ().identifier = std::move(yystack_[0].value.as< std::string > ());
             yylhs.value.as< corevm::IRParameter > ().ref_type = corevm::value;
         }
 #line 1217 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 24:
-#line 282 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 283 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRParameter > () = corevm::IRParameter();
-            yylhs.value.as< corevm::IRParameter > ().type = yystack_[2].value.as< corevm::IRIdentifierType > ();
-            yylhs.value.as< corevm::IRParameter > ().identifier = yystack_[0].value.as< std::string > ();
+            yylhs.value.as< corevm::IRParameter > ().type = std::move(yystack_[2].value.as< corevm::IRIdentifierType > ());
+            yylhs.value.as< corevm::IRParameter > ().identifier = std::move(yystack_[0].value.as< std::string > ());
             yylhs.value.as< corevm::IRParameter > ().ref_type = corevm::pointer;
         }
 #line 1228 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 25:
-#line 292 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 293 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRBasicBlock> > () = std::vector<corevm::IRBasicBlock>();
         }
@@ -1236,26 +1236,26 @@ namespace yy {
     break;
 
   case 26:
-#line 296 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 297 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRBasicBlock> > () = yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ();
+            yylhs.value.as< std::vector<corevm::IRBasicBlock> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRBasicBlock> > ());
             yylhs.value.as< std::vector<corevm::IRBasicBlock> > ().push_back(yystack_[0].value.as< corevm::IRBasicBlock > ());
         }
 #line 1245 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 27:
-#line 304 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 305 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRBasicBlock > () = corevm::IRBasicBlock();
-            yylhs.value.as< corevm::IRBasicBlock > ().label = yystack_[2].value.as< std::string > ();
-            yylhs.value.as< corevm::IRBasicBlock > ().body = yystack_[0].value.as< std::vector<corevm::IRInstruction > > ();
+            yylhs.value.as< corevm::IRBasicBlock > ().label = std::move(yystack_[2].value.as< std::string > ());
+            yylhs.value.as< corevm::IRBasicBlock > ().body = std::move(yystack_[0].value.as< std::vector<corevm::IRInstruction > > ());
         }
 #line 1255 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 28:
-#line 313 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 314 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRInstruction > > () = std::vector<corevm::IRInstruction>();
             yylhs.value.as< std::vector<corevm::IRInstruction > > ().push_back(yystack_[0].value.as< corevm::IRInstruction > ());
@@ -1264,73 +1264,73 @@ namespace yy {
     break;
 
   case 29:
-#line 318 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 319 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRInstruction > > () = yystack_[1].value.as< std::vector<corevm::IRInstruction > > ();
+            yylhs.value.as< std::vector<corevm::IRInstruction > > () = std::move(yystack_[1].value.as< std::vector<corevm::IRInstruction > > ());
             yylhs.value.as< std::vector<corevm::IRInstruction > > ().push_back(yystack_[0].value.as< corevm::IRInstruction > ());
         }
 #line 1273 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 30:
-#line 326 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 327 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< corevm::IRInstruction > () = yystack_[1].value.as< corevm::IRInstruction > ();
+            yylhs.value.as< corevm::IRInstruction > () = std::move(yystack_[1].value.as< corevm::IRInstruction > ());
             yylhs.value.as< corevm::IRInstruction > ().target.set_string(yystack_[3].value.as< std::string > ());
         }
 #line 1282 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 31:
-#line 331 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 332 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< corevm::IRInstruction > () = yystack_[1].value.as< corevm::IRInstruction > ();
+            yylhs.value.as< corevm::IRInstruction > () = std::move(yystack_[1].value.as< corevm::IRInstruction > ());
             yylhs.value.as< corevm::IRInstruction > ().target.set_null();
         }
 #line 1291 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 32:
-#line 339 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 340 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[1].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[0].value.as< std::vector<std::string> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[0].value.as< std::vector<std::string> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_null();
         }
 #line 1302 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 33:
-#line 346 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 347 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[2].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[1].value.as< std::vector<std::string> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[1].value.as< std::vector<std::string> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_IRIdentifierType(yystack_[0].value.as< corevm::IRIdentifierType > ());
         }
 #line 1313 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 34:
-#line 353 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 354 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[2].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[1].value.as< std::vector<std::string> > ();
-            yylhs.value.as< corevm::IRInstruction > ().oprds = yystack_[0].value.as< std::vector<corevm::IROperand> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[1].value.as< std::vector<std::string> > ());
+            yylhs.value.as< corevm::IRInstruction > ().oprds = std::move(yystack_[0].value.as< std::vector<corevm::IROperand> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_null();
         }
 #line 1325 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 35:
-#line 361 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 362 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[3].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[2].value.as< std::vector<std::string> > ();
-            yylhs.value.as< corevm::IRInstruction > ().oprds = yystack_[1].value.as< std::vector<corevm::IROperand> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[2].value.as< std::vector<std::string> > ());
+            yylhs.value.as< corevm::IRInstruction > ().oprds = std::move(yystack_[1].value.as< std::vector<corevm::IROperand> > ());
             yylhs.value.as< corevm::IRInstruction > ().labels.set_array(yystack_[0].value.as< std::vector<corevm::IRLabel> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_null();
         }
@@ -1338,32 +1338,32 @@ namespace yy {
     break;
 
   case 36:
-#line 370 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 371 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[3].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[2].value.as< std::vector<std::string> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[2].value.as< std::vector<std::string> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_IRIdentifierType(yystack_[1].value.as< corevm::IRIdentifierType > ());
-            yylhs.value.as< corevm::IRInstruction > ().oprds = yystack_[0].value.as< std::vector<corevm::IROperand> > ();
+            yylhs.value.as< corevm::IRInstruction > ().oprds = std::move(yystack_[0].value.as< std::vector<corevm::IROperand> > ());
         }
 #line 1350 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 37:
-#line 378 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 379 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRInstruction > () = corevm::IRInstruction();
             yylhs.value.as< corevm::IRInstruction > ().opcode = yystack_[4].value.as< corevm::IROpcode > ();
-            yylhs.value.as< corevm::IRInstruction > ().options = yystack_[3].value.as< std::vector<std::string> > ();
+            yylhs.value.as< corevm::IRInstruction > ().options = std::move(yystack_[3].value.as< std::vector<std::string> > ());
             yylhs.value.as< corevm::IRInstruction > ().type.set_IRIdentifierType(yystack_[2].value.as< corevm::IRIdentifierType > ());
-            yylhs.value.as< corevm::IRInstruction > ().oprds = yystack_[1].value.as< std::vector<corevm::IROperand> > ();
+            yylhs.value.as< corevm::IRInstruction > ().oprds = std::move(yystack_[1].value.as< std::vector<corevm::IROperand> > ());
             yylhs.value.as< corevm::IRInstruction > ().labels.set_array(yystack_[0].value.as< std::vector<corevm::IRLabel> > ());
         }
 #line 1363 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 38:
-#line 390 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 391 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
         }
@@ -1371,15 +1371,15 @@ namespace yy {
     break;
 
   case 39:
-#line 394 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 395 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<std::string> > () = yystack_[1].value.as< std::vector<std::string> > ();
+            yylhs.value.as< std::vector<std::string> > () = std::move(yystack_[1].value.as< std::vector<std::string> > ());
         }
 #line 1379 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 40:
-#line 401 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 402 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<std::string> > () = std::vector<std::string>();
             yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
@@ -1388,24 +1388,24 @@ namespace yy {
     break;
 
   case 41:
-#line 406 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 407 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<std::string> > () = yystack_[1].value.as< std::vector<std::string> > ();
+            yylhs.value.as< std::vector<std::string> > () = std::move(yystack_[1].value.as< std::vector<std::string> > ());
             yylhs.value.as< std::vector<std::string> > ().push_back(yystack_[0].value.as< std::string > ());
         }
 #line 1397 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 42:
-#line 414 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 415 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRLabel> > () = yystack_[1].value.as< std::vector<corevm::IRLabel> > ();
+            yylhs.value.as< std::vector<corevm::IRLabel> > () = std::move(yystack_[1].value.as< std::vector<corevm::IRLabel> > ());
         }
 #line 1405 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 43:
-#line 421 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 422 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IRLabel> > () = std::vector<corevm::IRLabel>();
             yylhs.value.as< std::vector<corevm::IRLabel> > ().push_back(yystack_[0].value.as< corevm::IRLabel > ());
@@ -1414,25 +1414,25 @@ namespace yy {
     break;
 
   case 44:
-#line 426 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 427 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IRLabel> > () = yystack_[2].value.as< std::vector<corevm::IRLabel> > ();
+            yylhs.value.as< std::vector<corevm::IRLabel> > () = std::move(yystack_[2].value.as< std::vector<corevm::IRLabel> > ());
             yylhs.value.as< std::vector<corevm::IRLabel> > ().push_back(yystack_[0].value.as< corevm::IRLabel > ());
         }
 #line 1423 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 45:
-#line 434 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 435 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRLabel > () = corevm::IRLabel();
-            yylhs.value.as< corevm::IRLabel > ().name = yystack_[0].value.as< std::string > ();
+            yylhs.value.as< corevm::IRLabel > ().name = std::move(yystack_[0].value.as< std::string > ());
         }
 #line 1432 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 46:
-#line 442 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 443 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< std::vector<corevm::IROperand> > () = std::vector<corevm::IROperand>();
             yylhs.value.as< std::vector<corevm::IROperand> > ().push_back(yystack_[0].value.as< corevm::IROperand > ());
@@ -1441,16 +1441,16 @@ namespace yy {
     break;
 
   case 47:
-#line 447 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 448 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<corevm::IROperand> > () = yystack_[1].value.as< std::vector<corevm::IROperand> > ();
+            yylhs.value.as< std::vector<corevm::IROperand> > () = std::move(yystack_[1].value.as< std::vector<corevm::IROperand> > ());
             yylhs.value.as< std::vector<corevm::IROperand> > ().push_back(yystack_[0].value.as< corevm::IROperand > ());
         }
 #line 1450 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 48:
-#line 455 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 456 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IROperand > () = corevm::IROperand();
             yylhs.value.as< corevm::IROperand > ().type = corevm::constant;
@@ -1460,7 +1460,7 @@ namespace yy {
     break;
 
   case 49:
-#line 461 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 462 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IROperand > () = corevm::IROperand();
             yylhs.value.as< corevm::IROperand > ().type = corevm::ref;
@@ -1470,15 +1470,15 @@ namespace yy {
     break;
 
   case 50:
-#line 470 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 471 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::string > () = yystack_[0].value.as< std::string > ();
+            yylhs.value.as< std::string > () = std::move(yystack_[0].value.as< std::string > ());
         }
 #line 1478 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 51:
-#line 477 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 478 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Identifier;
@@ -1488,7 +1488,7 @@ namespace yy {
     break;
 
   case 52:
-#line 483 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 484 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_ValueType;
@@ -1498,7 +1498,7 @@ namespace yy {
     break;
 
   case 53:
-#line 489 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 490 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRIdentifierType > () = corevm::IRIdentifierType();
             yylhs.value.as< corevm::IRIdentifierType > ().type = corevm::IdentifierType_Array;
@@ -1508,7 +1508,7 @@ namespace yy {
     break;
 
   case 54:
-#line 498 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 499 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
@@ -1518,7 +1518,7 @@ namespace yy {
     break;
 
   case 55:
-#line 504 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 505 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
@@ -1528,7 +1528,7 @@ namespace yy {
     break;
 
   case 56:
-#line 510 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 511 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = corevm::spf;
@@ -1538,7 +1538,7 @@ namespace yy {
     break;
 
   case 57:
-#line 516 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 517 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = corevm::dpf;
@@ -1548,7 +1548,7 @@ namespace yy {
     break;
 
   case 58:
-#line 522 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 523 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = yystack_[1].value.as< corevm::IRValueType > ();
@@ -1558,7 +1558,7 @@ namespace yy {
     break;
 
   case 59:
-#line 528 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 529 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = corevm::boolean;
@@ -1568,7 +1568,7 @@ namespace yy {
     break;
 
   case 60:
-#line 534 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 535 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRValue > () = corevm::IRValue();
             yylhs.value.as< corevm::IRValue > ().type = corevm::boolean;
@@ -1578,125 +1578,125 @@ namespace yy {
     break;
 
   case 61:
-#line 542 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 543 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
 #line 1584 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 62:
-#line 543 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 544 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
 #line 1590 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 63:
-#line 544 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 545 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
 #line 1596 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 64:
-#line 545 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 546 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::voidtype;   }
 #line 1602 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 65:
-#line 546 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 547 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::boolean;    }
 #line 1608 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 66:
-#line 547 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 548 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::object;     }
 #line 1614 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 67:
-#line 552 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 553 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
             yylhs.value.as< corevm::IRArrayType > () = corevm::IRArrayType();
             yylhs.value.as< corevm::IRArrayType > ().len = yystack_[3].value.as< int64_t > ();
-            yylhs.value.as< corevm::IRArrayType > ().type = yystack_[1].value.as< corevm::IRIdentifierType > ();
+            yylhs.value.as< corevm::IRArrayType > ().type = std::move(yystack_[1].value.as< corevm::IRIdentifierType > ());
         }
 #line 1624 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 68:
-#line 560 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 561 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::string; }
 #line 1630 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 69:
-#line 564 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 565 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::spf; }
 #line 1636 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 70:
-#line 565 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 566 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::dpf; }
 #line 1642 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 71:
-#line 569 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 570 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
 #line 1648 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 72:
-#line 570 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 571 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = yystack_[0].value.as< corevm::IRValueType > (); }
 #line 1654 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 73:
-#line 574 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 575 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::i64;  }
 #line 1660 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 74:
-#line 575 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 576 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::ui64; }
 #line 1666 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 75:
-#line 579 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 580 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::i8;   }
 #line 1672 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 76:
-#line 580 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 581 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::ui8;  }
 #line 1678 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 77:
-#line 581 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 582 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::i16;  }
 #line 1684 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 78:
-#line 582 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 583 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::ui16; }
 #line 1690 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 79:
-#line 583 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 584 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::i32;  }
 #line 1696 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
 
   case 80:
-#line 584 "src/ir/ir_parser.yy" // lalr1.cc:859
+#line 585 "src/ir/ir_parser.yy" // lalr1.cc:859
     { yylhs.value.as< corevm::IRValueType > () = corevm::ui32; }
 #line 1702 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -2149,15 +2149,15 @@ namespace yy {
   const unsigned short int
   ir_parser::yyrline_[] =
   {
-       0,   117,   117,   129,   132,   140,   148,   151,   160,   163,
-     171,   181,   184,   192,   199,   209,   218,   227,   237,   250,
-     254,   261,   266,   274,   281,   292,   295,   303,   312,   317,
-     325,   330,   338,   345,   352,   360,   369,   377,   390,   393,
-     400,   405,   413,   420,   425,   433,   441,   446,   454,   460,
-     469,   476,   482,   488,   497,   503,   509,   515,   521,   527,
-     533,   542,   543,   544,   545,   546,   547,   551,   560,   564,
-     565,   569,   570,   574,   575,   579,   580,   581,   582,   583,
-     584
+       0,   118,   118,   130,   133,   141,   149,   152,   161,   164,
+     172,   182,   185,   193,   200,   210,   219,   228,   238,   251,
+     255,   262,   267,   275,   282,   293,   296,   304,   313,   318,
+     326,   331,   339,   346,   353,   361,   370,   378,   391,   394,
+     401,   406,   414,   421,   426,   434,   442,   447,   455,   461,
+     470,   477,   483,   489,   498,   504,   510,   516,   522,   528,
+     534,   543,   544,   545,   546,   547,   548,   552,   561,   565,
+     566,   570,   571,   575,   576,   580,   581,   582,   583,   584,
+     585
   };
 
   // Print the state stack on the debug stream.
@@ -2193,7 +2193,7 @@ namespace yy {
 
 } // yy
 #line 2196 "src/ir/ir_parser.tab.cc" // lalr1.cc:1167
-#line 587 "src/ir/ir_parser.yy" // lalr1.cc:1168
+#line 588 "src/ir/ir_parser.yy" // lalr1.cc:1168
 
 
 void
