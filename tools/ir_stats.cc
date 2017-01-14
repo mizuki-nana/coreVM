@@ -46,7 +46,7 @@ private:
 
   void print_stats(const corevm::IRModuleMeta&);
 
-  void print_stats(const corevm::IRStructDecl&);
+  void print_stats(const corevm::IRTypeDecl&);
 
   void print_stats(const corevm::IRClosure&);
 
@@ -122,7 +122,7 @@ IRStats::print_stats(const corevm::IRModule& module)
   print_stats(module.meta);
   printf("\n");
 
-  printf("Struct decls: %ld\n", module.types.size());
+  printf("Type decls: %ld\n", module.types.size());
   for (const auto& type : module.types)
   {
     print_stats(type);
@@ -145,8 +145,8 @@ void
 IRStats::print_stats(const corevm::IRModuleMeta& meta)
 {
   printf("Module name: %s\n", meta.name.c_str());
-  printf("Format version: %s\n", meta.format_version.c_str());
-  printf("Target version: %s\n", meta.target_version.c_str());
+  printf("Format version: %lld\n", meta.format_version);
+  printf("Target version: %lld\n", meta.target_version);
   printf("Path: %s\n", meta.path.c_str());
   printf("Author: %s\n", meta.author.c_str());
   printf("Timestamp: %lld\n", meta.timestamp);
@@ -155,9 +155,9 @@ IRStats::print_stats(const corevm::IRModuleMeta& meta)
 // -----------------------------------------------------------------------------
 
 void
-IRStats::print_stats(const corevm::IRStructDecl& decl)
+IRStats::print_stats(const corevm::IRTypeDecl& decl)
 {
-  printf("Struct decl: %s\n", decl.name.c_str());
+  printf("Type decl: %s\n", decl.name.c_str());
   printf("\tFields: %ld\n", decl.fields.size());
 }
 

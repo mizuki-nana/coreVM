@@ -1026,11 +1026,11 @@ Below is the IR schema:
             },
             {
               "name": "format_version",
-              "type": "string"
+              "type": "long"
             },
             {
               "name": "target_version",
-              "type": "string"
+              "type": "long"
             },
             {
               "name": "path",
@@ -1052,7 +1052,7 @@ Below is the IR schema:
         "type": {
           "type": "array",
           "items": {
-            "name": "IRStructDecl",
+            "name": "IRTypeDecl",
             "type": "record",
             "fields": [
               {
@@ -1065,7 +1065,7 @@ Below is the IR schema:
                   "type": "array",
                   "items": {
                     "type": "record",
-                    "name": "IRStructField",
+                    "name": "IRTypeField",
                     "fields": [
                       {
                         "name": "identifier",
@@ -1084,31 +1084,64 @@ Below is the IR schema:
                       },
                       {
                         "name": "type",
-                        "type": [
-                          "string",
-                          {
-                            "type": "enum",
-                            "name": "IRValueType",
-                            "symbols": [
-                              "voidtype",
-                              "boolean",
-                              "i8",
-                              "ui8",
-                              "i16",
-                              "ui16",
-                              "i32",
-                              "ui32",
-                              "i64",
-                              "ui64",
-                              "spf",
-                              "dpf",
-                              "string",
-                              "array",
-                              "structtype",
-                              "ptrtype"
-                            ]
-                          }
-                        ]
+                        "type": {
+                          "type": "record",
+                          "name": "IRIdentifierType",
+                          "fields": [
+                            {
+                              "name": "type",
+                              "type": {
+                                "type": "enum",
+                                "name": "IRIdentifierTypeType",
+                                "symbols": [
+                                  "IdentifierType_Identifier",
+                                  "IdentifierType_Array",
+                                  "IdentifierType_ValueType"
+                                ]
+                              }
+                            },
+                            {
+                              "name": "value",
+                              "type": [
+                                "string",
+                                {
+                                  "type": "record",
+                                  "name": "IRArrayType",
+                                  "fields": [
+                                    {
+                                      "type": "corevm.ir.IRIdentifierType",
+                                      "name": "type"
+                                    },
+                                    {
+                                      "type": "int",
+                                      "name": "len"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "enum",
+                                  "name": "IRValueType",
+                                  "symbols": [
+                                    "voidtype",
+                                    "boolean",
+                                    "i8",
+                                    "ui8",
+                                    "i16",
+                                    "ui16",
+                                    "i32",
+                                    "ui32",
+                                    "i64",
+                                    "ui64",
+                                    "spf",
+                                    "dpf",
+                                    "string",
+                                    "object"
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
                       }
                     ]
                   }
@@ -1136,7 +1169,7 @@ Below is the IR schema:
               },
               {
                 "name": "rettype",
-                "type": "corevm.ir.IRValueType"
+                "type": "corevm.ir.IRIdentifierType"
               },
               {
                 "name": "ret_reftype",
@@ -1160,7 +1193,7 @@ Below is the IR schema:
                       },
                       {
                         "name": "type",
-                        "type": "corevm.ir.IRValueType"
+                        "type": "corevm.ir.IRIdentifierType"
                       }
                     ]
                   }
@@ -1193,10 +1226,6 @@ Below is the IR schema:
                                   "string"
                                 ],
                                 "default": null
-                              },
-                              {
-                                "name": "type",
-                                "type": "corevm.ir.IRValueType"
                               },
                               {
                                 "name": "opcode",
@@ -1246,42 +1275,19 @@ Below is the IR schema:
                                 }
                               },
                               {
-                                "name": "opcodeval",
+                                "name": "type",
+                                "type": [
+                                  "null",
+                                  "corevm.ir.IRIdentifierType"
+                                ]
+                              },
+                              {
+                                "name": "options",
                                 "type": {
-                                  "type": "record",
-                                  "name": "IRValue",
-                                  "fields": [
-                                    {
-                                      "name": "type",
-                                      "type": "corevm.ir.IRValueType"
-                                    },
-                                    {
-                                      "name": "value",
-                                      "type": [
-                                        "null",
-                                        "boolean",
-                                        "int",
-                                        "long",
-                                        "float",
-                                        "double",
-                                        "string",
-                                        {
-                                          "type": "record",
-                                          "name": "IRArrayValue",
-                                          "fields": [
-                                            {
-                                              "type": "corevm.ir.IRValueType",
-                                              "name": "type"
-                                            },
-                                            {
-                                              "type": "int",
-                                              "name": "len"
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
                                 }
                               },
                               {
@@ -1306,8 +1312,29 @@ Below is the IR schema:
                                       {
                                         "name": "value",
                                         "type": [
-                                          "corevm.ir.IRValue",
-                                          "string"
+                                          "string",
+                                          {
+                                            "type": "record",
+                                            "name": "IRValue",
+                                            "fields": [
+                                              {
+                                                "name": "type",
+                                                "type": "corevm.ir.IRValueType"
+                                              },
+                                              {
+                                                "name": "value",
+                                                "type": [
+                                                  "null",
+                                                  "boolean",
+                                                  "int",
+                                                  "long",
+                                                  "float",
+                                                  "double",
+                                                  "string"
+                                                ]
+                                              }
+                                            ]
+                                          }
                                         ]
                                       }
                                     ]
@@ -1358,15 +1385,29 @@ with a module, which corresponds to a physical translation unit.
 
 **Entity 'IRModuleMeta'**
 
-Entity that captures all the metadata of a module.
+Entity that captures all the metadata of a module. Below are the allowed fields
+encapsulated in the metadata:
 
-**Entity 'IRStructDecl'**
+.. table::
 
-Represents a custom structure declaration.
+  ====================  ==========  ===================================================
+    Field                  Type          Description
+  ====================  ==========  ===================================================
+    `name`                string      Name of module.
+    `format_version`      long        Version of the IR format.
+    `target_version`      long        Target version of coreVM.
+    `path`                string      Absolute file path of module.
+    `author`              string      Author of module.
+    `timestamp`           long        UNIX timestamp of when the module was authored.
+  ====================  ==========  ===================================================
 
-**Entity 'IRStructField'**
+**Entity 'IRTypeDecl'**
 
-Represents a single field in a structure declaration.
+Represents a type definition.
+
+**Entity 'IRTypeField'**
+
+Represents a single field in a type definition.
 
 **Enumeration 'IRValueRefType'**
 
@@ -1404,15 +1445,18 @@ Represents a set of primitive types. Possible values are:
     `spf`           Single-precision floating point.
     `dpf`           Double-precision floating point.
     `string`        String type.
-    `array`         Fixed-size array type.
-    `structtype`    Statically-declared structure type.
-    `ptrtype`       Object pointer type.
+    `object`        Dynamic object type.
   ==============  ========================================
 
-**Entity 'IRArrayValue'**
+**Entity 'IRArrayType'**
 
-Represents a fixed and typed array type. The entity is consisted of the type
-of the encapsulated elements, as well as the size of the array.
+Represents a fixed size array type. The entity is consisted of the type of the
+encapsulated elements, as well as the size of the array.
+
+**Entity 'IRIdentifierType'**
+
+Represents a type that can be associated with an identifier. Can be either a
+custom type, primitive type, or array type.
 
 **Entity 'IRClosure'**
 
@@ -1432,13 +1476,13 @@ basic blocks.
 **Entity 'IRInstruction'**
 
 Represents a single instruction statement. Each instruction is consisted of an
-opcode, an instruction value (primary operand value), an instruction value type,
-an optional target (for instructions that return values), one or multiple
-operands, and an optional set of labeled jump locations.
+opcode, an optional instruction value type, an optional target (for instructions
+that return values), one or multiple operands, and an optional set of label
+locations.
 
 **Enumeration 'IROpcode'**
 
-The set of opcodes defined in the IR.
+Represents the set of opcodes defined in the IR.
 
 **Entity 'IRValue'**
 
@@ -1471,79 +1515,96 @@ IR Instruction Set
 
 This section describes the IR's instruction set.
 
+
 'alloca' Instruction
 ####################
 
 `target = alloca <type>`
 
-Allocates a object on the stack, and returns a pointer that references the
-object.
+`target = alloca [static|auto] <type>`
+
+Allocates memory and creates an instance of the specified type, and returns the
+pointer of the created instance.
+
+Object creation can be of two types. One is based on static allocation, specified
+by the `static` option, in which memories are allocated on the stack, and the
+lifetime of the object is bounded by its scope. The second type of creation,
+specified by the `auto` option, is based on dynamically allocated memories, and
+the object's lifespan is automatically managed by the runtime.
+
 
 'load' Instruction
 ##################
 
-`target = load <type> <oprd>`
+`target = load <type> %oprd`
 
-Reads the value from a variable.
+Reads content from memory, and converts to a target type.
+
 
 'store' Instruction
 ###################
 
-`store <type> #constant-value <dst>`
+`store <type> <src> %dst`
 
-Writes a value to a referenced variable.
+Writes content of the specified type from source to destination memory address.
+
 
 'getattr' Instruction
 #####################
 
-`target = getattr #constant-string <oprd>`
+`target = getattr #constant-string %oprd`
 
 Retrieves the attribute of an object and returns a pointer that references the
 value.
 
+
 'setattr' Instruction
 #####################
 
-`setattr #constant-string <src> <dst>`
+`setattr #constant-string %value %target-object`
 
-Sets the attribute value `src` to `dst`.
+Sets the attribute value from source onto target object.
+
 
 'delattr' Instruction
 #####################
 
-`delattr #constant-string <dst>`
+`delattr #constant-string %dst`
 
-Deletes the attribute value in `dst`.
+Remove a particular attribute of a specified object.
+
 
 'getelement' Instruction
 ########################
 
-`target = getelement <type> <src> <idx>`
+`target = getelement <type> %src <idx>`
 
-Gets the element from an array with an index value.
+Retrieves the element from an array with an index value.
+
 
 'putelement' Instruction
 ########################
 
-`putelement <src> <dst> <idx>`
+`putelement <src> %dst <idx>`
 
-Inserts the element specified by `src` into the array `dst` at index `idx`.
+Sets a specified element to an array at an index.
+
 
 'len' Instruction
 #################
 
-`target = len <oprd>`
+`target = len %oprd`
 
-Gets the length of an array.
+Retrieves the length of an array. The result is of type `ui64`.
+
 
 'ret' Instruction
 #################
 
-`ret`
-
 `ret <type> <oprd>`
 
-Returns control back to previous frame.
+Returns from the current function.
+
 
 'br' Instruction
 ################
@@ -1558,8 +1619,9 @@ Branches to either one of two labels depending on a conditional value.
 
 `switch2 <value> <case1>, <case2>, .... [ label #case1, label #case2, ... ]`
 
-Switch statement. Jumps to one of a set of labels based on a target value, and
-a set of predicates specified as the rest of the operands.
+Jumps to one of a set of labels based on a target value, and a set of
+predicates specified as the rest of the operands.
+
 
 'pos' Instruction
 #################
@@ -1568,12 +1630,14 @@ a set of predicates specified as the rest of the operands.
 
 Evaluates to the positive expression of the specified operand.
 
+
 'neg' Instruction
 #################
 
 `target = neg <type> <oprd>`
 
 Evaluates to the negative expression of the specified operand.
+
 
 'inc' Instruction
 #################
@@ -1582,12 +1646,14 @@ Evaluates to the negative expression of the specified operand.
 
 Increases the value by 1 of the specified instruction.
 
+
 'dec' Instruction
 #################
 
 `target = dec <type> <oprd>`
 
 Decreases the value by 1 of the specified instruction.
+
 
 'add' Instruction
 #################
@@ -1596,12 +1662,14 @@ Decreases the value by 1 of the specified instruction.
 
 Adds the values of two expressions.
 
+
 'sub' Instruction
 #################
 
 `target = sub <type> <oprd1> <oprd2>`
 
 Subtracts the values of two expressions.
+
 
 'mul' Instruction
 #################
@@ -1610,12 +1678,14 @@ Subtracts the values of two expressions.
 
 Multiplies the values of two expressions.
 
+
 'div' Instruction
 #################
 
 `target = div <type> <oprd1> <oprd2>`
 
 Divides the values of two expressions.
+
 
 'mod' Instruction
 #################
@@ -1624,110 +1694,137 @@ Divides the values of two expressions.
 
 Computes the modulus value of two expressions.
 
+
 'bnot' Instruction
 ##################
 
-`target = bnot <type> <oprd>`
+`target = bnot <oprd>`
 
-Computes the bitwise NOT evaluation of a value.
+Computes the bitwise NOT evaluation of a value. The result is of type `ui64`.
+
 
 'band' Instruction
 ##################
 
-`target = band <type> <oprd1> <oprd2>`
+`target = band <oprd1> <oprd2>`
 
-Computes the bitwise AND evaluation of two values.
+Computes the bitwise AND evaluation of two values. The result is of type `ui64`.
+
 
 'bor' Instruction
 #################
 
-`target = bor <type> <oprd1> <oprd2>`
+`target = bor <oprd1> <oprd2>`
 
-Computes the bitwise OR evaluation of two values.
+Computes the bitwise OR evaluation of two values. Both operands must be of
+integer type. The result is of type `ui64`.
+
 
 'bxor' Instruction
 ##################
 
-`target = bxor <type> <oprd1> <oprd2>`
+`target = bxor <oprd1> <oprd2>`
 
-Computes the bitwise XOR evaluation of two values.
+Computes the bitwise XOR evaluation of two values. Both operands must be of
+integer type. The result is of type `ui64`.
+
 
 'bls' Instruction
 #################
 
 `target = bls <type> <oprd>`
 
-Computes the bitwise-left-shift evaluation of the specified value.
+Computes the bitwise-left-shift evaluation of the specified value. Both operands
+must be of integer type. The result is of type `ui64`.
+
 
 'brs' Instruction
 #################
 
 `target = brs <type> <oprd>`
 
-Computes the bitwise-right-shift evaluation of the specified value.
+Computes the bitwise-right-shift evaluation of the specified value. Both
+operands must be of integer type. The result is of type `ui64`.
+
 
 'eq' Instruction
 ################
 
 `target = eq <oprd1> <oprd2>`
 
-Computes the equality evaluation of two values.
+Computes the equality evaluation of two values. The result is of type `boolean`.
+
 
 'neq' Instruction
 #################
 
 `target = neq <oprd1> <oprd2>`
 
-Computes the non-equality evaluation of two values.
+Computes the non-equality evaluation of two values. The result is of type
+`boolean`.
+
 
 'gt' Instruction
 ################
 
 `target = gt <oprd1> <oprd2>`
 
-Computes the greater-than evaluation of two values.
+Computes the greater-than evaluation of two values. The result is of type
+`boolean`.
+
 
 'lt' Instruction
 ################
 
 `target = lt <oprd1> <oprd2>`
 
-Computes the less-than evaluation of two values.
+Computes the less-than evaluation of two values. The result is of type
+`boolean`.
+
 
 'gte' Instruction
 #################
 
 `target = gte <oprd1> <oprd2>`
 
-Computes the greater-or-equal-to evaluation of two values.
+Computes the greater-or-equal-to evaluation of two values. The result is of type
+`boolean`.
+
 
 'lte' Instruction
 #################
 
-`target = lte <type> <oprd1> <oprd2>`
+`target = lte <oprd1> <oprd2>`
 
-Computes the less-or-equal-to evaluation of two values.
+Computes the less-or-equal-to evaluation of two values. The result is of type
+`boolean`.
+
 
 'lnot' Instruction
 ##################
 
-`target = lnot <type> <oprd>`
+`target = lnot <oprd>`
 
-Computes the logical NOT evaluation of a value.
+Computes the logical NOT evaluation of a value. The result is of type `boolean`.
+
 
 'land' Instruction
 ##################
 
-`target = land <type> <oprd1> <oprd2>`
+`target = land <oprd1> <oprd2>`
 
-Computes the logical AND evaluation of two values.
+Computes the logical AND evaluation of two values. The result is of type
+`boolean`.
+
 
 'lor' Instruction
 #################
 
-`target = lor <type> <oprd1> <oprd2>`
+`target = lor <oprd1> <oprd2>`
 
-Computes the logical OR evaluation of two values.
+Computes the logical OR evaluation of two values. The result is of type
+`boolean`.
+
 
 'cmp' Instruction
 #################
@@ -1736,14 +1833,16 @@ Computes the logical OR evaluation of two values.
 
 Equality comparison between two operands. Results in `-1` if the left-hand-side
 is considered less than the right-hand-side, `0` if they are evaluated to be
-equal, and `1` otherwise.
+equal, and `1` otherwise. The result is of type `i32`.
+
 
 'call' Instruction
 ##################
 
-`target = call <ret-type> <call-target>(<oprd1>, <oprd2>, ...)`
+`target = call <ret-type> #call-target> <arg1> <arg2> ...`
 
-Invokes a function call by calling the specified call target.
+Invokes a function call by calling the specified call target with a set of
+arguments.
 
 
 coreVM Toolchain
@@ -1857,39 +1956,49 @@ Sample Output:
 
   .. code::
 
-    module name : Dummy_IR
-    format version : v0.1.0
-    target version : v0.1.0
-    path : ./dummy_ir.ir
-    author : Yanzheng Li
-    timestamp : 1472959465
+    "module name" : "Dummy_IR"
+    "format version" : "1000"
+    "target version" : "10"
+    "path" : "./dummy_ir.ir"
+    "author" : "Yanzheng Li"
+    "timestamp" : "1472959465"
 
-    structure Person {
-        string name
-        ui8 age
-        Person* sibling
-        Location* address
+    type Person {
+        string name;
+        ui8 age;
+        Person* sibling;
+        Location* address;
+        array [ 10 * Person ] friends;
     }
 
-    structure Location {
-        string street_address
-        string* country
-        string zipcode
+    type Location {
+        string street_address;
+        string* country;
+        string zipcode;
     }
 
-    def structtype* find_friends(structtype* person, ui32 id) {
+    type NullType {
+    }
+
+    def Person* createPerson(string* name, ui32 age) {
     entry:
-        %sibling = alloca ui8 16, ui8 16 
-        br ui32 32, %cond1 %cond2  [ label #br1, label #br2, label #br3 ]
-    cond1:
-        %name = getattr string "name", ui8 16 
+        %person = alloca [ auto ] Person;
+        setattr string "age" %age %person;
+        br %age [ label #end, label #end ];
+    end:
+        ret Person %person;
     }
 
-    def string compute(ui32 lhs_val, dpf rhs_val, array* values) :find_friends {
+    def string compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf ]* values) : createPerson {
     entry:
-        %sum = add ui8 16, %lhs_val %rhs_val 
-        store string "val", array [ 6 * i32 ] %values 
+        %sum = add ui64 %lhs_val %rhs_val;
+        putelement ui8 16 %values ui32 2;
     }
+
+    def void doNothing() {
+    }
+
+ 
 
 ir_asm
 ^^^^^^

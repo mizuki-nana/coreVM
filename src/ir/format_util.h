@@ -22,6 +22,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "format.h"
 #include <string>
+#include <utility>
+#include <vector>
+
 
 corevm::IROpcode
 string_to_IROpcode(const std::string& val);
+
+typedef std::pair<std::string, std::string> MetadataPair;
+
+void set_metadata(const MetadataPair&, corevm::IRModule&);
+
+void set_metadata(const std::vector<MetadataPair>&, corevm::IRModule&);

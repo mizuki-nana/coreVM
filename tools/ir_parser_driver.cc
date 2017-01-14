@@ -71,7 +71,7 @@ ir_parser_driver::check_parameters() const
 int
 ir_parser_driver::do_run()
 {
-  IRParserDriver driver;
+  corevm::ir::IRParserDriver driver;
 
   if (m_debug)
   {

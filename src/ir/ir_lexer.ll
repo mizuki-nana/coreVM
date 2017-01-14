@@ -20,6 +20,8 @@ static yy::location loc;
 %option noyywrap nounput batch debug noinput
 integer ([0]|[0-9]*)
 floating_number [0-9]*\.[0-9]+([eE][-+]?[0-9]+)? 
+string_literal \"(\\.|[^\\"])*\"
+blank [ \t]
 
 %{
   // Code run each time a pattern is matched.
@@ -47,9 +49,7 @@ floating_number [0-9]*\.[0-9]+([eE][-+]?[0-9]+)?
 "spf"                                     return yy::ir_parser::make_TYPE_NAME_SPF(yytext, loc);
 "dpf"                                     return yy::ir_parser::make_TYPE_NAME_DPF(yytext, loc);
 "string"                                  return yy::ir_parser::make_TYPE_NAME_STRING(yytext, loc);
-"array"                                   return yy::ir_parser::make_TYPE_NAME_ARRAY(yytext, loc);
-"structtype"                              return yy::ir_parser::make_TYPE_NAME_STRUCTTYPE(yytext, loc);
-"ptr"                                     return yy::ir_parser::make_TYPE_NAME_PTRTYPE(yytext, loc);
+"object"                                  return yy::ir_parser::make_TYPE_NAME_OBJECT(yytext, loc);
 
 #opcodes
 "alloca"                                  return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
@@ -92,15 +92,25 @@ floating_number [0-9]*\.[0-9]+([eE][-+]?[0-9]+)?
 "call"                                    return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
 
 #keywords
+"array"                                   return yy::ir_parser::make_ARRAY(yytext, loc);
 "def"                                     return yy::ir_parser::make_DEF(yytext, loc);
-"structure"                               return yy::ir_parser::make_STRUCTURE(yytext, loc);
 "label"                                   return yy::ir_parser::make_LABEL(yytext, loc);
+"type"                                    return yy::ir_parser::make_TYPE(yytext, loc);
+
+#boolean
+"true"                                    return yy::ir_parser::make_BOOLEAN_CONSTANT(true, loc);
+"false"                                   return yy::ir_parser::make_BOOLEAN_CONSTANT(false, loc);
 
 #identifiers
 [_a-zA-Z][_a-zA-Z0-9]*                    return yy::ir_parser::make_IDENTIFIER(yytext, loc);
 
 #string_literal
-L?\"(\\.|[^\\"])*\"                       return yy::ir_parser::make_STRING_LITERAL(yytext, loc);
+{string_literal} {
+  std::string s(yytext);
+  s.erase(s.begin());
+  s.pop_back();
+  return yy::ir_parser::make_STRING_LITERAL(s, loc);
+}
 
 #integer
 {integer} {
@@ -154,6 +164,9 @@ L?\"(\\.|[^\\"])*\"                       return yy::ir_parser::make_STRING_LITE
 #curly_braces
 "{"                                       return yy::ir_parser::make_LBRACE(yytext, loc);
 "}"                                       return yy::ir_parser::make_RBRACE(yytext, loc);
+
+{blank}+                                  loc.step();
+[\n]+                                     loc.lines(yyleng); loc.step();
 
 .                                         {
                                             /* ignore bad characters */

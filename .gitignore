@@ -1,6 +1,3 @@
-# Compiled headers files
-src/ir/format.h
-
 # Compiled Object files
 *.slo
 *.lo

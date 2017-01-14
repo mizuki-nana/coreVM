@@ -54,89 +54,141 @@ class IRGen(object):
         return {
             'meta': self.ir_meta(),
             'types': [
-                self.ir_struct_decl_1(),
-                self.ir_struct_decl_2()
+                self.ir_type_decl_1(),
+                self.ir_type_decl_2(),
+                self.ir_type_decl_3()
             ],
             'closures': [
                 self.ir_closure_1(),
-                self.ir_closure_2()
+                self.ir_closure_2(),
+                self.ir_closure_3()
             ]
         }
 
     def ir_meta(self):
         return {
             'name': 'Dummy_IR',
-            'format_version': 'v0.1.0',
-            'target_version': 'v0.1.0',
+            'format_version': 1000,
+            'target_version': 10,
             'path': './dummy_ir.ir',
             'author': 'Yanzheng Li',
             'timestamp': 1472959465
         }
 
-    def ir_struct_decl_1(self):
+    def ir_type_decl_1(self):
         return {
             'name': 'Person',
             'fields': [
                 {
                     'identifier': 'name',
                     'ref_type': 'value',
-                    'type': 'string'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'string'
+                    }
                 },
                 {
                     'identifier': 'age',
                     'ref_type': 'value',
-                    'type': 'ui8'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'ui8'
+                    }
                 },
                 {
                     'identifier': 'sibling',
                     'ref_type': 'pointer',
-                    'type': 'Person'
+                    'type': {
+                        'type': 'IdentifierType_Identifier',
+                        'value': 'Person'
+                    }
                 },
                 {
                     'identifier': 'address',
                     'ref_type': 'pointer',
-                    'type': 'Location'
+                    'type': {
+                        'type': 'IdentifierType_Identifier',
+                        'value': 'Location'
+                    }
+                },
+                {
+                    'identifier': 'friends',
+                    'ref_type': 'value',
+                    'type': {
+                        'type': 'IdentifierType_Array',
+                        'value': {
+                            'len': 10,
+                            'type': {
+                                'type': 'IdentifierType_Identifier',
+                                'value': 'Person'
+                            }
+                        }
+                    }
                 }
             ]
         }
 
-    def ir_struct_decl_2(self):
+    def ir_type_decl_2(self):
         return {
             'name': 'Location',
             'fields': [
                 {
                     'identifier': 'street_address',
                     'ref_type': 'value',
-                    'type': 'string'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'string'
+                    }
                 },
                 {
                     'identifier': 'country',
                     'ref_type': 'pointer',
-                    'type': 'string'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'string'
+                    }
                 },
                 {
                     'identifier': 'zipcode',
                     'ref_type': 'value',
-                    'type': 'string'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'string'
+                    }
                 }
             ]
         }
 
+    def ir_type_decl_3(self):
+        return {
+            'name': 'NullType',
+            'fields': []
+        }
+
     def ir_closure_1(self):
         return {
-            'name': 'find_friends',
-            'rettype': 'structtype',
+            'name': 'createPerson',
+            'rettype': {
+                'type': 'IdentifierType_Identifier',
+                'value': 'Person'
+            },
             'ret_reftype': 'pointer',
             'parameters': [
                 {
-                    'identifier': 'person',
+                    'identifier': 'name',
                     'ref_type': 'pointer',
-                    'type': 'structtype'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'string'
+                    },
                 },
                 {
-                    'identifier': 'id',
+                    'identifier': 'age',
                     'ref_type': 'value',
-                    'type': 'ui32'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'ui32'
+                    },
                 }
             ],
             'blocks': [
@@ -144,73 +196,74 @@ class IRGen(object):
                     'label': 'entry',
                     'body': [
                         {
-                            'target': 'sibling',
-                            'type': 'ui8',
-                            'opcode': 'alloca',
-                            'opcodeval': {
-                                'type': 'ui8',
-                                'value': 16
+                            'target': 'person',
+                            'type': {
+                                'type': 'IdentifierType_Identifier',
+                                'value': 'Person'
                             },
+                            'opcode': 'alloca',
+                            'options': [
+                                'auto'
+                            ],
+                            'oprds': []
+                        },
+                        {
+                            'opcode':  'setattr',
+                            'options': [],
                             'oprds': [
                                 {
                                     'type': 'constant',
                                     'value': {
-                                        'type': 'ui8',
-                                        'value': 16
+                                        'type': 'string',
+                                        'value': 'age'
                                     }
+                                },
+                                {
+                                    'type': 'ref',
+                                    'value': 'age'
+                                },
+                                {
+                                    'type': 'ref',
+                                    'value': 'person'
                                 }
-                            ]
+                            ],
+                            'labels': []
                         },
                         {
-                            'type': 'voidtype',
                             'opcode': 'br',
-                            'opcodeval': {
-                                'type': 'ui32',
-                                'value': 32
-                            },
+                            'options': [],
                             'oprds': [
                                 {
                                     'type': 'ref',
-                                    'value': 'cond1'
+                                    'value': 'age'
                                 },
-                                {
-                                    'type': 'ref',
-                                    'value': 'cond2'
-                                }
                             ],
                             'labels': [
                                 {
-                                    "name": "br1"
+                                    "name": "end"
                                 },
                                 {
-                                    "name": "br2"
+                                    "name": "end"
                                 },
-                                {
-                                    "name": "br3"
-                                }
                             ]
                         }
                     ]
                 },
                 {
-                    'label': 'cond1',
+                    'label': 'end',
                     'body': [
                         {
-                            'target': 'name',
-                            'type': 'ptrtype',
-                            'opcode': 'getattr',
-                            'opcodeval': {
-                                'type': 'string',
-                                'value': 'name'
+                            'type': {
+                                'type': 'IdentifierType_Identifier',
+                                'value': 'Person'
                             },
+                            'opcode': 'ret',
+                            'options': [],
                             'oprds': [
                                 {
-                                    'type': 'constant',
-                                    'value': {
-                                        'type': 'ui8',
-                                        'value': 16
-                                    }
-                                }
+                                    'type': 'ref',
+                                    'value': 'person'
+                                },
                             ],
                             'labels': []
                         }
@@ -222,24 +275,42 @@ class IRGen(object):
     def ir_closure_2(self):
         return {
             'name': 'compute',
-            'parent': 'find_friends',
-            'rettype': 'string',
+            'parent': 'createPerson',
+            'rettype': {
+                'type': 'IdentifierType_ValueType',
+                'value': 'string'
+            },
             'ret_reftype': 'value',
             'parameters': [
                 {
                     'identifier': 'lhs_val',
                     'ref_type': 'value',
-                    'type': 'ui32'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'ui32'
+                    }
                 },
                 {
                     'identifier': 'rhs_val',
                     'ref_type': 'value',
-                    'type': 'dpf'
+                    'type': {
+                        'type': 'IdentifierType_ValueType',
+                        'value': 'dpf'
+                    }
                 },
                 {
                     'identifier': 'values',
                     'ref_type': 'pointer',
-                    'type': 'array'
+                    'type': {
+                        'type': 'IdentifierType_Array',
+                        'value': {
+                            'len': 4,
+                            'type': {
+                                'type': 'IdentifierType_ValueType',
+                                'value': 'dpf'
+                            }
+                        }
+                    }
                 }
             ],
             'blocks': [
@@ -248,12 +319,12 @@ class IRGen(object):
                     'body': [
                         {
                             'target': 'sum',
-                            'type': 'ui64',
-                            'opcode': 'add',
-                            'opcodeval': {
-                                'type': 'ui8',
-                                'value': 16
+                            'type': {
+                                'type': 'IdentifierType_ValueType',
+                                'value': 'ui64'
                             },
+                            'opcode': 'add',
+                            'options': [],
                             'oprds': [
                                 {
                                     'type': 'ref',
@@ -266,32 +337,44 @@ class IRGen(object):
                             ]
                         },
                         {
-                            'type': 'array',
-                            'opcode': 'store',
-                            'opcodeval': {
-                                'type': 'string',
-                                'value': 'val'
-                            },
+                            'opcode': 'putelement',
+                            'options': [],
                             'oprds': [
                                 {
                                     'type': 'constant',
                                     'value': {
-                                        'type': 'array',
-                                        'value': {
-                                            'type': 'i32',
-                                            'len': 6
-                                        }
+                                        'type': 'ui8',
+                                        'value': 16
                                     }
                                 },
                                 {
                                     'type': 'ref',
                                     'value': 'values' 
-                                }
+                                },
+                                {
+                                    'type': 'constant',
+                                    'value': {
+                                        'type': 'ui32',
+                                        'value': 2
+                                    }
+                                },
                             ]
                         }
                     ]
                 }
             ]
+        }
+
+    def ir_closure_3(self):
+        return {
+            'name': 'doNothing',
+            'rettype': {
+                'type': 'IdentifierType_ValueType',
+                'value': 'voidtype'
+            },
+            'ret_reftype': 'value',
+            'parameters': [],
+            'blocks': []
         }
 
 ## -----------------------------------------------------------------------------
@@ -322,4 +405,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

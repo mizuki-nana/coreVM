@@ -27,12 +27,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 // Tell Flex the lexer's prototype ...
-#define YY_DECL yy::ir_parser::symbol_type yylex (IRParserDriver& driver)
+#define YY_DECL yy::ir_parser::symbol_type yylex (corevm::ir::IRParserDriver& driver)
 // ... and declare it for the parser's sake.
 YY_DECL;
 
 // TODO: [COREVM-573] Make IR parser pure reentrant
-// TODO: [COREVM-571] Refine format and grammar of Intermediate Representation
+
+namespace corevm {
+namespace ir {
 
 class IRParserDriver
 {
@@ -59,9 +61,12 @@ public:
   void error(const yy::location& l, const std::string& m);
   void error(const std::string& m);
 
+  void set_module(corevm::IRModule&&);
+
+  const corevm::IRModule& module() const;
 private:
   // Handling the scanner.
-  void scan_begin();
+  bool scan_begin();
   void scan_end();
 
   bool m_trace_scanning;
@@ -70,6 +75,11 @@ private:
   bool m_trace_parsing;
 
   std::string m_input_file;
+
+  corevm::IRModule m_module;
 };
+
+} /* end namespace ir */
+} /* end namespace corevm */
 
 #endif /* COREVM_IR_PARSER_DRIVER */

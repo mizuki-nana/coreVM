@@ -1,29 +1,42 @@
-structure Person {
+"module name" : "Dummy_IR"
+"format version" : "1000"
+"target version" : "10"
+"path" : "./dummy_ir.ir"
+"author" : "Yanzheng Li"
+"timestamp" : "1472959465"
+
+type Person {
     string name;
     ui8 age;
     Person* sibling;
     Location* address;
+    array [ 10 * Person ] friends;
 }
 
-structure Location {
+type Location {
     string street_address;
     string* country;
     string zipcode;
 }
 
-def structtype* find_friends(structtype* person, ui32 id) {
-entry:
-    %sibling = alloca ui8 16, ui8 16;
-    br ui32 32, %cond1 %cond2  [ label #br1, label #br2, label #br3 ];
-cond1:
-    %name = getattr string "name", ui8 16;
+type NullType {
 }
 
-def string compute(ui32 lhs_val, dpf rhs_val, array* values) : find_friends {
+def Person* createPerson(string* name, ui32 age) {
 entry:
-    %sum = add ui8 16, %lhs_val %rhs_val;
-    store string "val", array [ 6 * i32 ] %values;
+    %person = alloca [ auto ] Person;
+    setattr string "age" %age %person;
+    br %age [ label #end, label #end ];
+end:
+    ret Person %person;
+}
+
+def string compute(ui32 lhs_val, dpf rhs_val, array [ 4 * dpf ]* values) : createPerson {
+entry:
+    %sum = add ui64 %lhs_val %rhs_val;
+    putelement ui8 16 %values ui32 2;
 }
 
 def void doNothing() {
 }
+

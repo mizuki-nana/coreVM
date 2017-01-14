@@ -173,7 +173,8 @@ uninstall:
 
 .PHONY: clean
 clean:
-	rm -f $(IR_FORMAT_FILEPATH)
+	# TODO: [COREVM-579] Re-enable IR schema compilation during builds
+	# rm -f $(IR_FORMAT_FILEPATH)
 	rm -rf $(BUILD_DIR)
 	rm -rf $(BUILD_GCC_DIR)
 	rm -f $(PYTHON_TESTS_DIR)/*.tmp.py

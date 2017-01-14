@@ -27,6 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iostream>
 
 
+namespace corevm {
+namespace ir {
+
 // -----------------------------------------------------------------------------
 
 IRParserDriver::IRParserDriver()
@@ -81,7 +84,10 @@ int
 IRParserDriver::parse_from_file(const std::string &f)
 {
   m_input_file = f;
-  scan_begin();
+  if (!scan_begin())
+  {
+    return -1;
+  }
   yy::ir_parser parser(*this);
   parser.set_debug_level(trace_parsing());
   int res = parser.parse();
@@ -110,7 +116,7 @@ IRParserDriver::input_file()
 void
 IRParserDriver::error(const yy::location& l, const std::string& m)
 {
-  std::cerr << l << ": " << m << std::endl;
+  std::cerr << "Parser error [" << l << "] : " << m << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -118,12 +124,28 @@ IRParserDriver::error(const yy::location& l, const std::string& m)
 void
 IRParserDriver::error(const std::string& m)
 {
-  std::cerr << m << std::endl;
+  std::cerr << "Parser error: " << m << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
 void
+IRParserDriver::set_module(corevm::IRModule&& module)
+{
+  m_module = std::move(module);
+}
+
+// -----------------------------------------------------------------------------
+
+const corevm::IRModule&
+IRParserDriver::module() const
+{
+  return m_module;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 IRParserDriver::scan_begin()
 {
   yyset_debug(trace_scanning());
@@ -134,7 +156,7 @@ IRParserDriver::scan_begin()
   else if (!(yyin = fopen (m_input_file.c_str (), "r")))
   {
     error("cannot open " + m_input_file + ": " + strerror(errno));
-    exit(EXIT_FAILURE);
+    return -1;
   }
 }
 
@@ -147,3 +169,6 @@ IRParserDriver::scan_end()
 }
 
 // -----------------------------------------------------------------------------
+
+} /* end namespace ir */
+} /* end namespace corevm */

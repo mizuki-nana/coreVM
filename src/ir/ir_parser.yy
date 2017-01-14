@@ -9,10 +9,15 @@
 {
 # include <string>
 # include "format.h"
+# include "format_util.h"
+namespace corevm {
+namespace ir {
 class IRParserDriver;
+} /* end namespace ir */
+} /* end namespace corevm */
 }
 // The parsing context.
-%param { IRParserDriver& driver }
+%param { corevm::ir::IRParserDriver& driver }
 %locations
 %define parse.error verbose
 %initial-action
@@ -40,17 +45,17 @@ class IRParserDriver;
 %token <std::string>      TYPE_NAME_BOOLEAN
 %token <std::string>      TYPE_NAME_VOID
 %token <std::string>      TYPE_NAME_STRING
-%token <std::string>      TYPE_NAME_ARRAY
-%token <std::string>      TYPE_NAME_STRUCTTYPE
-%token <std::string>      TYPE_NAME_PTRTYPE
+%token <std::string>      TYPE_NAME_OBJECT
 
 %token <corevm::IROpcode> OPCODE
+%token <std::string>      ARRAY
 %token <std::string>      DEF
-%token <std::string>      STRUCTURE
+%token <std::string>      TYPE
 %token <std::string>      IDENTIFIER
 %token <std::string>      STRING_LITERAL
 %token <int64_t>          DECIMALINTEGER
 %token <double>           FLOATINGNUM
+%token <bool>             BOOLEAN_CONSTANT
 %token <std::string>      COMMA
 %token <std::string>      COLON
 %token <std::string>      SEMICOLON
@@ -72,55 +77,69 @@ class IRParserDriver;
 %type <corevm::IRValueType> ir_value_type_integer_numeric;
 %type <corevm::IRValueType> ir_value_type_floating_numeric;
 %type <corevm::IRValueType> ir_value_type_string;
-%type <corevm::IRValueType> ir_value_type_array;
 %type <corevm::IRValueType> ir_value_type;
-%type <corevm::IRArrayValue> ir_array_value;
 %type <corevm::IRValue> ir_value;
+%type <corevm::IRArrayType> ir_value_type_array;
+%type <corevm::IRIdentifierType> ir_identifier_type;
 %type <std::string> identifier;
 %type <corevm::IROperand> operand;
 %type <std::vector<corevm::IROperand>> operand_list;
 %type <corevm::IRLabel> label;
 %type <std::vector<corevm::IRLabel>> label_list_core;
 %type <std::vector<corevm::IRLabel>> label_list;
+%type <std::vector<std::string>> instruction_option_list;
+%type <std::vector<std::string>> instruction_options;
 %type <corevm::IRInstruction> expr;
-%type <corevm::IRInstruction> stmt;
-%type <std::vector<corevm::IRInstruction >> stmt_group;
-%type <corevm::IRBasicBlock> function_block;
-%type <std::vector<corevm::IRBasicBlock>> function_block_list;
+%type <corevm::IRInstruction> instruction;
+%type <std::vector<corevm::IRInstruction >> instruction_group;
+%type <corevm::IRBasicBlock> basic_block;
+%type <std::vector<corevm::IRBasicBlock>> basic_block_list;
 %type <corevm::IRParameter> function_arg;
 %type <std::vector<corevm::IRParameter>> function_arg_list;
 %type <std::vector<corevm::IRParameter>> function_arg_list_core;
 %type <corevm::IRClosure> function_def;
 %type <std::vector<corevm::IRClosure>> function_def_list;
-%type <corevm::IRStructField> structure_field;
-%type <std::vector<corevm::IRStructField>> structure_field_list;
-%type <corevm::IRStructDecl> structure_def;
-%type <std::vector<corevm::IRStructDecl>> structure_def_list;
+%type <corevm::IRTypeField> type_field;
+%type <std::vector<corevm::IRTypeField>> type_field_list;
+%type <corevm::IRTypeDecl> type_def;
+%type <std::vector<corevm::IRTypeDecl>> type_def_list;
+%type <MetadataPair> metadata_def;
+%type <std::vector<MetadataPair>> metadata_def_list;
 %type <corevm::IRModule> input;
 
 %debug
-
-%{
-    /**
-     * TODO: Grammar currently cannot handle the following:
-     *
-     *     - Module metadata.
-     *     - Use identifiers and string literlas in instructions.
-     *
-     * TODO: [COREVM-571] Refine format and grammar of Intermediate Representation
-     */
-%}
 
 %%
 
 %start input;
 
 input
-    : structure_def_list function_def_list
+    : metadata_def_list type_def_list function_def_list
         {
             $$ = corevm::IRModule();
-            $$.types = $1;
-            $$.closures = $2;
+            $$.types = $2;
+            $$.closures = $3;
+            set_metadata($1, $$);
+            driver.set_module(std::move($$));
+        }
+    ;
+
+metadata_def_list
+    :
+        {
+            $$ = std::vector<MetadataPair>();
+        }
+    |   metadata_def_list metadata_def
+        {
+            $$ = $1;
+            $$.push_back($2);
+        }
+    ;
+
+metadata_def
+    : STRING_LITERAL COLON STRING_LITERAL
+        {
+            $$ = std::make_pair($1, $3);      
         }
     ;
 
@@ -136,72 +155,58 @@ function_def_list
         }
     ;
 
-structure_def_list
+type_def_list
     :
         {
-            $$ = std::vector<corevm::IRStructDecl>();
+            $$ = std::vector<corevm::IRTypeDecl>();
         }
-    | structure_def_list structure_def
+    | type_def_list type_def
         {
             $$ = $1;
             $$.push_back($2);
         }
     ;
 
-structure_def
-    : STRUCTURE IDENTIFIER LBRACE structure_field_list RBRACE
+type_def
+    : TYPE IDENTIFIER LBRACE type_field_list RBRACE
         {
-            $$ = corevm::IRStructDecl();
+            $$ = corevm::IRTypeDecl();
             $$.name = $2;
             $$.fields = $4;
         }
     ;
 
-structure_field_list
+type_field_list
     :
         {
-            $$ = std::vector<corevm::IRStructField>();
+            $$ = std::vector<corevm::IRTypeField>();
         }
-    | structure_field_list structure_field
+    | type_field_list type_field
         {
             $$ = $1;
             $$.push_back($2);
         }
     ;
 
-structure_field
-    : IDENTIFIER IDENTIFIER SEMICOLON
+type_field
+    : ir_identifier_type IDENTIFIER SEMICOLON
         {
-            $$ = corevm::IRStructField();
-            $$.type.set_string($1);
+            $$ = corevm::IRTypeField();
+            $$.type = $1;
             $$.ref_type = corevm::value;
             $$.identifier = $2;
         }
-    | IDENTIFIER STAR IDENTIFIER SEMICOLON
+    | ir_identifier_type STAR IDENTIFIER SEMICOLON
         {
-            $$ = corevm::IRStructField();
-            $$.type.set_string($1);
-            $$.ref_type = corevm::pointer;
-            $$.identifier = $3;
-        }
-    | ir_value_type IDENTIFIER SEMICOLON
-        {
-            $$ = corevm::IRStructField();
-            $$.type.set_IRValueType($1);
-            $$.ref_type = corevm::value;
-            $$.identifier = $2;
-        }
-    | ir_value_type STAR IDENTIFIER SEMICOLON
-        {
-            $$ = corevm::IRStructField();
-            $$.type.set_IRValueType($1);
+            $$ = corevm::IRTypeField();
+            $$.type = $1;
             $$.ref_type = corevm::pointer;
             $$.identifier = $3;
         }
     ;
 
 function_def
-    : DEF ir_value_type IDENTIFIER function_arg_list LBRACE function_block_list RBRACE
+    : DEF ir_identifier_type IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
@@ -210,7 +215,7 @@ function_def
             $$.blocks = $6;
             $$.ret_reftype = corevm::value;
         }
-    | DEF ir_value_type STAR IDENTIFIER function_arg_list LBRACE function_block_list RBRACE
+    | DEF ir_identifier_type STAR IDENTIFIER function_arg_list LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
@@ -219,7 +224,7 @@ function_def
             $$.blocks = $7;
             $$.ret_reftype = corevm::pointer;
         }
-    | DEF ir_value_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE function_block_list RBRACE
+    | DEF ir_identifier_type IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
@@ -229,7 +234,7 @@ function_def
             $$.blocks = $8;
             $$.ret_reftype = corevm::value;
         }
-    | DEF ir_value_type STAR IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE function_block_list RBRACE
+    | DEF ir_identifier_type STAR IDENTIFIER function_arg_list COLON IDENTIFIER LBRACE basic_block_list RBRACE
         {
             $$ = corevm::IRClosure();
             $$.rettype = $2;
@@ -266,14 +271,14 @@ function_arg_list_core
     ;
 
 function_arg
-    : ir_value_type IDENTIFIER
+    : ir_identifier_type IDENTIFIER
         {
             $$ = corevm::IRParameter();
             $$.type = $1;
             $$.identifier = $2;
             $$.ref_type = corevm::value;
         }
-    | ir_value_type STAR IDENTIFIER
+    | ir_identifier_type STAR IDENTIFIER
         {
             $$ = corevm::IRParameter();
             $$.type = $1;
@@ -282,20 +287,20 @@ function_arg
         }
     ;
 
-function_block_list
+basic_block_list
     :
         {
             $$ = std::vector<corevm::IRBasicBlock>();
         }
-    | function_block_list function_block
+    | basic_block_list basic_block
         {
             $$ = $1;
             $$.push_back($2);
         }
     ;
 
-function_block
-    : IDENTIFIER COLON stmt_group
+basic_block
+    : IDENTIFIER COLON instruction_group
         {
             $$ = corevm::IRBasicBlock();
             $$.label = $1;
@@ -303,19 +308,20 @@ function_block
         }
     ;
 
-stmt_group
-    : stmt
+instruction_group
+    : instruction
         {
             $$ = std::vector<corevm::IRInstruction>();
+            $$.push_back($1);
         }
-    | stmt_group stmt
+    | instruction_group instruction
         {
             $$ = $1;
             $$.push_back($2);
         }
     ;
 
-stmt
+instruction
     : identifier ASSIGN expr SEMICOLON
         {
             $$ = $3;
@@ -329,33 +335,77 @@ stmt
     ;
 
 expr
-    // TODO: consider remove 'type' field of IRInstruction. It doesn't seem to
-    // be needed/used here.
-    : OPCODE
+    : OPCODE instruction_options
         {
             $$ = corevm::IRInstruction();
             $$.opcode = $1;
+            $$.options = $2;
+            $$.type.set_null();
         }
-    | OPCODE ir_value
+    | OPCODE instruction_options ir_identifier_type
         {
             $$ = corevm::IRInstruction();
             $$.opcode = $1;
-            $$.opcodeval = $2;
+            $$.options = $2;
+            $$.type.set_IRIdentifierType($3);
         }
-    | OPCODE ir_value COMMA operand_list
+    | OPCODE instruction_options operand_list
         {
             $$ = corevm::IRInstruction();
             $$.opcode = $1;
-            $$.opcodeval = $2;
+            $$.options = $2;
+            $$.oprds = $3;
+            $$.type.set_null();
+        }
+    | OPCODE instruction_options operand_list label_list
+        {
+            $$ = corevm::IRInstruction();
+            $$.opcode = $1;
+            $$.options = $2;
+            $$.oprds = $3;
+            $$.labels.set_array($4);
+            $$.type.set_null();
+        }
+    | OPCODE instruction_options ir_identifier_type operand_list
+        {
+            $$ = corevm::IRInstruction();
+            $$.opcode = $1;
+            $$.options = $2;
+            $$.type.set_IRIdentifierType($3);
             $$.oprds = $4;
         }
-    | OPCODE ir_value COMMA operand_list label_list
+    | OPCODE instruction_options ir_identifier_type operand_list label_list
         {
             $$ = corevm::IRInstruction();
             $$.opcode = $1;
-            $$.opcodeval = $2;
+            $$.options = $2;
+            $$.type.set_IRIdentifierType($3);
             $$.oprds = $4;
             $$.labels.set_array($5);
+        }
+    ;
+
+instruction_options
+    :
+        {
+            $$ = std::vector<std::string>();
+        }
+    | LBRACKET instruction_option_list RBRACKET
+        {
+            $$ = $2;
+        }
+    ;
+
+instruction_option_list
+    : IDENTIFIER
+        {
+            $$ = std::vector<std::string>();
+            $$.push_back($1);
+        }
+    | instruction_option_list IDENTIFIER
+        {
+            $$ = $1;
+            $$.push_back($2);
         }
     ;
 
@@ -422,6 +472,27 @@ identifier
         }
     ;
 
+ir_identifier_type
+    : IDENTIFIER
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_Identifier;
+            $$.value.set_string($1);
+        }
+    | ir_value_type
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_ValueType;
+            $$.value.set_IRValueType($1);
+        }
+    | ir_value_type_array
+        {
+            $$ = corevm::IRIdentifierType();
+            $$.type = corevm::IdentifierType_Array;
+            $$.value.set_IRArrayType($1);
+        }
+    ;
+
 ir_value
     : ir_value_type_short_integer_numeric DECIMALINTEGER
         {
@@ -453,27 +524,17 @@ ir_value
             $$.type = $1;
             $$.value.set_string($2);
         }
-    | ir_value_type_array ir_array_value
+    | TYPE_NAME_BOOLEAN BOOLEAN_CONSTANT
         {
             $$ = corevm::IRValue();
-            $$.type = $1;
-            $$.value.set_IRArrayValue($2);
+            $$.type = corevm::boolean;
+            $$.value.set_bool($2);
         }
     | TYPE_NAME_BOOLEAN DECIMALINTEGER
         {
             $$ = corevm::IRValue();
             $$.type = corevm::boolean;
-            // TODO: consider adding "true" and "false" as tokens.
             $$.value.set_bool(static_cast<bool>($2));
-        }
-    ;
-
-ir_array_value
-    : LBRACKET DECIMALINTEGER STAR ir_value_type RBRACKET
-        {
-            $$ = corevm::IRArrayValue();
-            $$.len = $2;
-            $$.type = $4;
         }
     ;
 
@@ -481,15 +542,18 @@ ir_value_type
     : ir_value_type_integer_numeric             { $$ = $1; }
     | ir_value_type_floating_numeric            { $$ = $1; }
     | ir_value_type_string                      { $$ = $1; }
-    | ir_value_type_array                       { $$ = $1; }
     | TYPE_NAME_VOID                            { $$ = corevm::voidtype;   }
-    | TYPE_NAME_STRUCTTYPE                      { $$ = corevm::structtype; }
-    | TYPE_NAME_PTRTYPE                         { $$ = corevm::ptrtype;    }
     | TYPE_NAME_BOOLEAN                         { $$ = corevm::boolean;    }
+    | TYPE_NAME_OBJECT                          { $$ = corevm::object;     }
     ;
 
 ir_value_type_array
-    : TYPE_NAME_ARRAY                           { $$ = corevm::array; }
+    : ARRAY LBRACKET DECIMALINTEGER STAR ir_identifier_type RBRACKET
+        {
+            $$ = corevm::IRArrayType();
+            $$.len = $3;
+            $$.type = $5;
+        }
     ;
 
 ir_value_type_string

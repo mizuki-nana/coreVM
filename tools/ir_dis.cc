@@ -68,12 +68,8 @@ ir_value_type_to_string(corevm::IRValueType value)
     return "dpf";
   case corevm::IRValueType::string:
     return "string";
-  case corevm::IRValueType::array:
-    return "array";
-  case corevm::IRValueType::structtype:
-    return "structtype";
-  case corevm::IRValueType::ptrtype:
-    return "ptr";
+  case corevm::IRValueType::object:
+    return "object";
   }
 }
 
@@ -199,9 +195,9 @@ private:
 
   void disassemble(const corevm::IRModuleMeta&, std::ostream&) const;
 
-  void disassemble(const corevm::IRStructDecl&, std::ostream&) const;
+  void disassemble(const corevm::IRTypeDecl&, std::ostream&) const;
 
-  void disassemble(const corevm::IRStructField&, std::ostream&) const;
+  void disassemble(const corevm::IRTypeField&, std::ostream&) const;
 
   void disassemble(const corevm::IRClosure&, std::ostream&) const;
 
@@ -210,6 +206,12 @@ private:
   void disassemble(const corevm::IRBasicBlock&, std::ostream&) const;
 
   void disassemble(const corevm::IRInstruction&, std::ostream&) const;
+
+  void disassemble(const corevm::IRIdentifierType&, std::ostream&) const;
+
+  void disassemble(const corevm::IRValueType&, std::ostream&) const;
+
+  void disassemble(const corevm::IRArrayType&, std::ostream&) const;
 
   void disassemble(const corevm::IRValue&, std::ostream&) const;
 
@@ -306,28 +308,26 @@ void
 IRDisassembler::disassemble(const corevm::IRModuleMeta& meta,
   std::ostream& stream) const
 {
-  stream << "module name : " << meta.name << std::endl;
-  stream << "format version : " << meta.format_version << std::endl;
-  stream << "target version : " << meta.target_version << std::endl;
-  stream << "path : " << meta.path << std::endl;
-  stream << "author : " << meta.author << std::endl;
-  stream << "timestamp : " << meta.timestamp << std::endl;
+  stream << "\"module name\" : \"" << meta.name << '\"' << std::endl;
+  stream << "\"format version\" : \"" << meta.format_version << '\"' << std::endl;
+  stream << "\"target version\" : \"" << meta.target_version << '\"' << std::endl;
+  stream << "\"path\" : \"" << meta.path << '\"' << std::endl;
+  stream << "\"author\" : \"" << meta.author << '\"' << std::endl;
+  stream << "\"timestamp\" : \"" << meta.timestamp << '\"' << std::endl;
   stream << std::endl;
 }
 
 // -----------------------------------------------------------------------------
 
 void
-IRDisassembler::disassemble(const corevm::IRStructDecl& decl,
+IRDisassembler::disassemble(const corevm::IRTypeDecl& decl,
   std::ostream& stream) const
 {
-  stream << "structure " << decl.name << " {" << std::endl;
+  stream << "type " << decl.name << " {" << std::endl;
   for (const auto& field : decl.fields)
   {
     stream << '\t';
     disassemble(field, stream);
-    stream << ir_value_ref_type_to_string(field.ref_type)
-      << " " << field.identifier << std::endl;
   }
   stream << "}" << std::endl;
   stream << std::endl;
@@ -336,24 +336,12 @@ IRDisassembler::disassemble(const corevm::IRStructDecl& decl,
 // -----------------------------------------------------------------------------
 
 void
-IRDisassembler::disassemble(const corevm::IRStructField& field,
+IRDisassembler::disassemble(const corevm::IRTypeField& field,
   std::ostream& stream) const
 {
-  switch (field.type.idx())
-  {
-  case 0:
-    {
-      stream << field.type.get_string();
-    }
-    break;
-  case 1:
-    {
-      stream << ir_value_type_to_string(field.type.get_IRValueType());
-    }
-    break;
-  default:
-    break;
-  }
+  disassemble(field.type, stream);
+  stream << ir_value_ref_type_to_string(field.ref_type)
+    << " " << field.identifier << ';' << std::endl;
 }
 
 // -----------------------------------------------------------------------------
@@ -362,8 +350,9 @@ void
 IRDisassembler::disassemble(const corevm::IRClosure& closure,
   std::ostream& stream) const
 {
-  stream << "def " << ir_value_type_to_string(closure.rettype)
-    << ir_value_ref_type_to_string(closure.ret_reftype)
+  stream << "def ";
+  disassemble(closure.rettype, stream);
+  stream << ir_value_ref_type_to_string(closure.ret_reftype)
     << " " << closure.name << "(";
 
   size_t len = closure.parameters.size();
@@ -379,7 +368,7 @@ IRDisassembler::disassemble(const corevm::IRClosure& closure,
 
   if (!closure.parent.is_null())
   {
-    stream <<  " :" << closure.parent.get_string();
+    stream <<  " : " << closure.parent.get_string();
   }
 
   stream << " {" << std::endl;
@@ -398,8 +387,8 @@ void
 IRDisassembler::disassemble(const corevm::IRParameter& parameter,
   std::ostream& stream) const
 {
-  stream << ir_value_type_to_string(parameter.type)
-    << ir_value_ref_type_to_string(parameter.ref_type)
+  disassemble(parameter.type, stream);
+  stream << ir_value_ref_type_to_string(parameter.ref_type)
     << " " << parameter.identifier;
 }
 
@@ -427,19 +416,35 @@ IRDisassembler::disassemble(const corevm::IRInstruction& instr,
   {
     stream << "%" << instr.target.get_string() << " = ";
   }
-  stream << ir_opcode_to_string(instr.opcode) << " ";
-  disassemble(instr.opcodeval, stream);
+  stream << ir_opcode_to_string(instr.opcode);
+
+  if (!instr.options.empty())
+  {
+    stream << " [ ";
+    for (const auto& option : instr.options)
+    {
+      stream << option << ' ';
+    }
+    stream << "]";
+  }
+
+  if (!instr.type.is_null())
+  {
+    stream << " ";
+    disassemble(instr.type.get_IRIdentifierType(), stream);
+  }
 
   if (!instr.oprds.empty())
   {
-    stream << ",";
-  }
-  stream << " ";
-
-  for (size_t i = 0; i < instr.oprds.size(); ++i)
-  {
-    disassemble(instr.oprds[i], stream);
     stream << " ";
+    for (size_t i = 0; i < instr.oprds.size(); ++i)
+    {
+      disassemble(instr.oprds[i], stream);
+      if (i < instr.oprds.size() - 1)
+      {
+        stream << " ";
+      }
+    }
   }
 
   if (!instr.labels.is_null())
@@ -460,7 +465,40 @@ IRDisassembler::disassemble(const corevm::IRInstruction& instr,
       stream << " ]";
     }
   }
+  stream << ';';
   stream << std::endl;
+}
+
+// -----------------------------------------------------------------------------
+
+void
+IRDisassembler::disassemble(const corevm::IRIdentifierType& identifier_type,
+  std::ostream& stream) const
+{
+  switch (identifier_type.type)
+  {
+  case corevm::IdentifierType_Identifier:
+    stream << identifier_type.value.get_string();
+    break;
+  case corevm::IdentifierType_Array:
+    disassemble(identifier_type.value.get_IRArrayType(), stream);
+    break;
+  case corevm::IdentifierType_ValueType:
+    stream << ir_value_type_to_string(identifier_type.value.get_IRValueType());
+    break;
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+IRDisassembler::disassemble(const corevm::IRArrayType& array_type,
+  std::ostream& stream) const
+{
+  stream << "array ";
+  stream << "[ " << array_type.len << " * ";
+  disassemble(array_type.type, stream);
+  stream << " ]";
 }
 
 // -----------------------------------------------------------------------------
@@ -494,11 +532,6 @@ IRDisassembler::disassemble(const corevm::IRValue& val,
     break;
   case 6:
     stream << '"' << val.value.get_string() << '"';
-    break;
-  case 7:
-    const auto& array_val = val.value.get_IRArrayValue();
-    stream << "[ " << array_val.len << " * "
-      << ir_value_type_to_string(array_val.type) << " ]";
     break;
   }
 }

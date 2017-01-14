@@ -23,6 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "format_util.h"
 
 #include <cassert>
+#include <cstdint>
+#include <cstdlib>
 
 
 // -----------------------------------------------------------------------------
@@ -185,6 +187,51 @@ string_to_IROpcode(const std::string& val)
 
   assert(0);
   return static_cast<corevm::IROpcode>(0);
+}
+
+// -----------------------------------------------------------------------------
+
+void set_metadata(const MetadataPair& pair, corevm::IRModule& module)
+{
+  const auto& key = pair.first;
+  const auto& value = pair.second;
+
+  if (key == "module name")
+  {
+    module.meta.name = value;
+  }
+  else if (key == "format version")
+  {
+    module.meta.format_version = std::stoll(value);
+  }
+  else if (key == "target version")
+  {
+    module.meta.target_version = std::stoll(value);
+  }
+  else if (key == "path")
+  {
+    module.meta.path = value;
+  }
+  else if (key == "author")
+  {
+    module.meta.author = value;
+  }
+  else if (key == "timestamp")
+  {
+    module.meta.timestamp = std::stoll(value);
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+void
+set_metadata(const std::vector<MetadataPair>& metadata,
+  corevm::IRModule& module)
+{
+  for (const auto& pair : metadata)
+  {
+    set_metadata(pair, module);
+  }
 }
 
 // -----------------------------------------------------------------------------
