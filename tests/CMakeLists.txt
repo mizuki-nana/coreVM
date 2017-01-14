@@ -54,6 +54,7 @@ add_executable(run_tests
     frontend/program_unittest.cc
     frontend/runner_unittest.cc
     api/core/configuration_unittest.cc
+    api/ir/version_unittest.cc
     ../src/corevm/program.cc
     main.cc
     )

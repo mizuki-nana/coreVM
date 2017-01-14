@@ -851,6 +851,7 @@ to developers.
 The library is consisted of the following APIs:
 
   * :ref:`core-api`
+  * :ref:`ir-api`
   * Debugging and Profiling API (coming soon)
   * Embedder API (coming soon)
   * Extension API (coming soon)
@@ -980,6 +981,34 @@ Header: `corevm/api/core/entry.h`
   configuration object.
 
   Returns 0 on successful execution, non-zero values otherwise.
+
+
+.. _ir-api:
+
+IR API
+^^^^^^^
+
+The *IR API* provides interfaces for creating and manipulating bitcode in the
+coreVM Intermediate Representation.
+
+**IR Version**
+
+Header: `corevm/api/ir/version.h`
+
+.. cpp:enum:: corevm::api::ir::IR_VERSION
+
+  An integer value that defines the current version of the IR format. The table
+  below illustrates how to interpret the value:
+
+  .. table::
+
+    =================  =============================
+       Description               Formulae
+    =================  =============================
+      Major version      `IR_VERSION / 100000`
+      Minor version      `IR_VERSION / 100 % 1000`
+      Patch version      `IR_VERSION % 100`
+    =================  =============================
 
 
 coreVM Intermediate Representation
