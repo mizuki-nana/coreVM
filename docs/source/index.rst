@@ -47,6 +47,7 @@ Contents
    design.rst
    jit.rst
    reference.rst
+   ir_reference.rst
    roadmap.rst
    focus.rst
    contribute.rst

@@ -1,17 +1,18 @@
 .. Copyright Yanzheng Li. All rights reserved.
 
+================
 Reference Manual
 ================
 
 This reference manual contains useful information for developers who wish to
 make use of coreVM's functionalities.
 
-
+************************
 Build and Install coreVM
-------------------------
+************************
 
 Steps for building coreVM
-^^^^^^^^^^^^^^^^^^^^^^^^^
+=========================
 
 The project strives the make the build and installation process as
 straightforward as possible. Currently, the build system requires
@@ -59,14 +60,14 @@ straightforward as possible. Currently, the build system requires
 
 
 Build Environments
-^^^^^^^^^^^^^^^^^^
+==================
 
 This sections describes the build environments used for development and testing.
 Please refer to this as a reference if you are unsure whether your system meets
 the requirements for building coreVM.
 
 Development 1
-#############
+-------------
 
 **Operating System:**
 `Linux 3.8.0-29-generic #42~precise1-Ubuntu SMP x86_64 GNU/Linux (Ubuntu 14.04.4 LTS)`
@@ -92,7 +93,7 @@ Development 1
 ----
 
 Development 2
-#############
+-------------
 
 **Operating System:**
 `OS X 10.11.6 (15G1108) Darwin 15.6.0 root:xnu-3248.60.11~2/RELEASE_X86_64 x86_64`
@@ -124,7 +125,7 @@ Development 2
 ----
 
 Continuous Integration 1
-########################
+------------------------
 
 **Operating System:**
 `Linux testing-gce-6d2a2bc6-283a-470a-90b9-9443d55ea351 3.13.0-92-generic #139~precise1-Ubuntu SMP Wed Jun 29 21:30:37 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux`
@@ -150,7 +151,7 @@ Continuous Integration 1
 ----
 
 Continuous Integration 2
-########################
+------------------------
 
 **Operating System:**
 `Darwin Traviss-Mac-1126.local 15.6.0 Darwin Kernel Version 15.6.0: Mon Aug 29 20:21:34 PDT 2016; root:xnu-3248.60.11~1/RELEASE_X86_64 x86_64`
@@ -171,8 +172,9 @@ Continuous Integration 2
 `Sphinx (sphinx-build) 1.4.8`
 
 
+****************************
 Bytecode Format and Encoding
-----------------------------
+****************************
 
 coreVM employs a binary encoding format that is versioned and structured.
 Internally referred as "structured bytecode", the encoding scheme makes both
@@ -479,7 +481,7 @@ should an exception occurs between the "from" and "to" portion of the vector.
 
 
 Instruction Set
----------------
+===============
 
 The coreVM instruction set contains a set of instructions in three-address
 form that cover a huge range of capabilities. Each instruction is
@@ -503,7 +505,7 @@ functionalities:
 .. _object-instructions:
 
 Object Instructions
-^^^^^^^^^^^^^^^^^^^
+-------------------
 
 Instructions that interact with dynamic objects.
 
@@ -554,7 +556,7 @@ Instructions that interact with dynamic objects.
 .. _control-instructions:
 
 Control Instructions
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Instructions that directly control flow of executions.
 
@@ -580,7 +582,7 @@ Instructions that directly control flow of executions.
 .. _function-instructions:
 
 Function Instructions
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Instructions related to functions and call invocations.
 
@@ -604,7 +606,7 @@ Instructions related to functions and call invocations.
 .. _runtime-instructions:
 
 Runtime Instructions
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Instructions related to a wide range of runtime functionalities.
 
@@ -626,7 +628,7 @@ Instructions related to a wide range of runtime functionalities.
 .. _arithmetic-and-logic-instructions:
 
 Arithmetic and Logic Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 Instructions that deal with arithmetic and logical operations.
 
@@ -669,7 +671,7 @@ Instructions that deal with arithmetic and logical operations.
 .. _native-type-creation-instructions:
 
 Native Type Creation Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 Instructions for creating native type values.
 
@@ -698,7 +700,7 @@ Instructions for creating native type values.
 .. _native-type-conversion-instructions:
 
 Native Type Conversion Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------
 
 Instructions for native type conversions.
 
@@ -732,7 +734,7 @@ an error will occur.
 .. _native-type-manipulation-instructions:
 
 Native Type Manipulation Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 
 Instructions for manipulating native type values.
 
@@ -754,7 +756,7 @@ Instructions for manipulating native type values.
 .. _native-string-type-instructions:
 
 Native String Type Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------
 
 Instructions for manipulating native type values of the native string type.
 
@@ -786,7 +788,7 @@ Instructions for manipulating native type values of the native string type.
 .. _native-array-type-instructions:
 
 Native Array Type Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 Instructions for manipulating native type values of the native array type.
 
@@ -813,7 +815,7 @@ Instructions for manipulating native type values of the native array type.
 .. _native-map-type-instructions:
 
 Native Map Type Instructions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 Instructions for manipulating native type values of the native map type.
 
@@ -839,9 +841,9 @@ Instructions for manipulating native type values of the native map type.
 
 ----
 
-
+****
 APIs
-----
+****
 
 The coreVM library provides a set of powerful APIs that offer additional
 capabilities beyond the functionalities from the instruction set. They provide
@@ -861,7 +863,7 @@ The library is consisted of the following APIs:
 .. _core-api:
 
 Core API
-^^^^^^^^
+========
 
 The *Core API* provides interfaces that expose coreVM's fundamental functionalities.
 
@@ -986,7 +988,7 @@ Header: `corevm/api/core/entry.h`
 .. _ir-api:
 
 IR API
-^^^^^^^
+======
 
 The *IR API* provides interfaces for creating and manipulating bitcode in the
 coreVM Intermediate Representation.
@@ -1011,871 +1013,16 @@ Header: `corevm/api/ir/version.h`
     =================  =============================
 
 
+**********************************
 coreVM Intermediate Representation
-----------------------------------
+**********************************
 
-The coreVM Intermediate Representation, also referred as "coreVM IR", is an
-abstract format that can represent the imperative and declarative semantics of
-most programming languages. It is also the entry point of which coreVM's JIT
-pipeline starts.
+Please refer to the `coreVM Intermediate Representation Reference Manual <ir_reference.html>`_.
 
-The coreVM IR captures the constructs and semantics of programming languages
-in a high-level and generalized form. Compared to some other language
-intermediate representations, such as LLVM IR, coreVM's syntax and semantics are
-much simpler, and consequently it is not designed to capture all the low-level
-details. The coreVM IR is designed this way so that it is easy to generate IR
-from either raw source code or coreVM bytecode. In addition, it is subject to
-additional lowering processes in order to be translated into lower-form
-representations.
 
-
-IR Format and Structure
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Similar to the coreVM bytecode format, the IR is currently defined as a schema
-based on the `Apache Avro data serialization system <https://avro.apache.org/docs/current/>`_.
-Below is the IR schema:
-
-.. code-block:: json
-
-  {
-    "namespace": "corevm.ir",
-    "type": "record",
-    "name": "IRModule",
-    "fields": [
-      {
-        "name": "meta",
-        "type": {
-          "type": "record",
-          "name": "IRModuleMeta",
-          "fields": [
-            {
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "name": "format_version",
-              "type": "long"
-            },
-            {
-              "name": "target_version",
-              "type": "long"
-            },
-            {
-              "name": "path",
-              "type": "string"
-            },
-            {
-              "name": "author",
-              "type": "string"
-            },
-            {
-              "name": "timestamp",
-              "type": "long"
-            }
-          ]
-        }
-      },
-      {
-        "name": "types",
-        "type": {
-          "type": "array",
-          "items": {
-            "name": "IRTypeDecl",
-            "type": "record",
-            "fields": [
-              {
-                "name": "name",
-                "type": "string"
-              },
-              {
-                "name": "fields",
-                "type": {
-                  "type": "array",
-                  "items": {
-                    "type": "record",
-                    "name": "IRTypeField",
-                    "fields": [
-                      {
-                        "name": "identifier",
-                        "type": "string"
-                      },
-                      {
-                        "name": "ref_type",
-                        "type": {
-                          "type": "enum",
-                          "name": "IRValueRefType",
-                          "symbols": [
-                            "value",
-                            "pointer"
-                          ]
-                        }
-                      },
-                      {
-                        "name": "type",
-                        "type": {
-                          "type": "record",
-                          "name": "IRIdentifierType",
-                          "fields": [
-                            {
-                              "name": "type",
-                              "type": {
-                                "type": "enum",
-                                "name": "IRIdentifierTypeType",
-                                "symbols": [
-                                  "IdentifierType_Identifier",
-                                  "IdentifierType_Array",
-                                  "IdentifierType_ValueType"
-                                ]
-                              }
-                            },
-                            {
-                              "name": "value",
-                              "type": [
-                                "string",
-                                {
-                                  "type": "record",
-                                  "name": "IRArrayType",
-                                  "fields": [
-                                    {
-                                      "type": "corevm.ir.IRIdentifierType",
-                                      "name": "type"
-                                    },
-                                    {
-                                      "type": "int",
-                                      "name": "len"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "enum",
-                                  "name": "IRValueType",
-                                  "symbols": [
-                                    "voidtype",
-                                    "boolean",
-                                    "i8",
-                                    "ui8",
-                                    "i16",
-                                    "ui16",
-                                    "i32",
-                                    "ui32",
-                                    "i64",
-                                    "ui64",
-                                    "spf",
-                                    "dpf",
-                                    "string",
-                                    "object"
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      {
-        "name": "closures",
-        "type": {
-          "type": "array",
-          "items": {
-            "type": "record",
-            "name": "IRClosure",
-            "fields": [
-              {
-                "name": "name",
-                "type": "string"
-              },
-              {
-                "name": "parent",
-                "type": ["null", "string"]
-              },
-              {
-                "name": "rettype",
-                "type": "corevm.ir.IRIdentifierType"
-              },
-              {
-                "name": "ret_reftype",
-                "type": "corevm.ir.IRValueRefType"
-              },
-              {
-                "name": "parameters",
-                "type": {
-                  "type": "array",
-                  "items": {
-                    "type": "record",
-                    "name": "IRParameter",
-                    "fields": [
-                      {
-                        "name": "identifier",
-                        "type": "string"
-                      },
-                      {
-                        "name": "ref_type",
-                        "type": "corevm.ir.IRValueRefType"
-                      },
-                      {
-                        "name": "type",
-                        "type": "corevm.ir.IRIdentifierType"
-                      }
-                    ]
-                  }
-                }
-              },
-              {
-                "name": "blocks",
-                "type": {
-                  "type": "array",
-                  "items": {
-                    "type": "record",
-                    "name": "IRBasicBlock",
-                    "fields": [
-                      {
-                        "name": "label",
-                        "type": "string"
-                      },
-                      {
-                        "name": "body",
-                        "type": {
-                          "type": "array",
-                          "items": {
-                            "type": "record",
-                            "name": "IRInstruction",
-                            "fields": [
-                              {
-                                "name": "target",
-                                "type": [
-                                  "null",
-                                  "string"
-                                ],
-                                "default": null
-                              },
-                              {
-                                "name": "opcode",
-                                "type": {
-                                  "type": "enum",
-                                  "name": "IROpcode",
-                                  "symbols": [
-                                    "alloca",
-                                    "load",
-                                    "store",
-                                    "getattr",
-                                    "setattr",
-                                    "delattr",
-                                    "getelement",
-                                    "putelement",
-                                    "len",
-                                    "ret",
-                                    "br",
-                                    "switch2",
-                                    "pos",
-                                    "neg",
-                                    "inc",
-                                    "dec",
-                                    "add",
-                                    "sub",
-                                    "mul",
-                                    "div",
-                                    "mod",
-                                    "bnot",
-                                    "band",
-                                    "bor",
-                                    "bxor",
-                                    "bls",
-                                    "brs",
-                                    "eq",
-                                    "neq",
-                                    "gt",
-                                    "lt",
-                                    "gte",
-                                    "lte",
-                                    "lnot",
-                                    "land",
-                                    "lor",
-                                    "cmp",
-                                    "call"
-                                  ]
-                                }
-                              },
-                              {
-                                "name": "type",
-                                "type": [
-                                  "null",
-                                  "corevm.ir.IRIdentifierType"
-                                ]
-                              },
-                              {
-                                "name": "options",
-                                "type": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string"
-                                  }
-                                }
-                              },
-                              {
-                                "name": "oprds",
-                                "type": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "record",
-                                    "name": "IROperand",
-                                    "fields": [
-                                      {
-                                        "name": "type",
-                                        "type": {
-                                          "type": "enum",
-                                          "name": "IROperandType",
-                                          "symbols": [
-                                            "constant",
-                                            "ref"
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        "name": "value",
-                                        "type": [
-                                          "string",
-                                          {
-                                            "type": "record",
-                                            "name": "IRValue",
-                                            "fields": [
-                                              {
-                                                "name": "type",
-                                                "type": "corevm.ir.IRValueType"
-                                              },
-                                              {
-                                                "name": "value",
-                                                "type": [
-                                                  "null",
-                                                  "boolean",
-                                                  "int",
-                                                  "long",
-                                                  "float",
-                                                  "double",
-                                                  "string"
-                                                ]
-                                              }
-                                            ]
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                }
-                              },
-                              {
-                                "name": "labels",
-                                "type": [
-                                  "null",
-                                  {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "record",
-                                      "name": "IRLabel",
-                                      "fields": [
-                                        {
-                                          "name": "name",
-                                          "type": "string"
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ],
-                                "default": null
-                              }
-                            ]
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            ]
-          }
-        }
-      }
-    ]
-  }
-
-Below are descriptions of the entities defined in the schema.
-
-**Entity 'IRModule'**
-
-Highest level of entity in IR, encapsulates all the data and metadata associated
-with a module, which corresponds to a physical translation unit.
-
-**Entity 'IRModuleMeta'**
-
-Entity that captures all the metadata of a module. Below are the allowed fields
-encapsulated in the metadata:
-
-.. table::
-
-  ====================  ==========  ===================================================
-    Field                  Type          Description
-  ====================  ==========  ===================================================
-    `name`                string      Name of module.
-    `format_version`      long        Version of the IR format.
-    `target_version`      long        Target version of coreVM.
-    `path`                string      Absolute file path of module.
-    `author`              string      Author of module.
-    `timestamp`           long        UNIX timestamp of when the module was authored.
-  ====================  ==========  ===================================================
-
-**Entity 'IRTypeDecl'**
-
-Represents a type definition.
-
-**Entity 'IRTypeField'**
-
-Represents a single field in a type definition.
-
-**Enumeration 'IRValueRefType'**
-
-Represents a set of types that a value can be referenced. Currently a value can
-be referenced either via by-value or by-pointer.
-
-.. table::
-
-  =============  =================================
-       Type             Description
-  =============  =================================
-    `value`         Reference-by-value.
-    `pointer`       Reference-by-pointer.
-  =============  =================================
-
-**Enumeration 'IRValueType'**
-
-Represents a set of primitive types. Possible values are:
-
-.. table::
-
-  ==============  ========================================
-       Type         Description
-  ==============  ========================================
-    `voidtype`      Void type.
-    `boolean`       Boolean type.
-    `i8`            Signed 8-bit integer.
-    `ui8`           Unsigned 8-bit integer.
-    `i16`           Signed 16-bit integer.
-    `ui16`          Unsigned 16-bit integer.
-    `i32`           Signed 32-bit integer.
-    `ui32`          Unsigned 32-bit integer.
-    `i64`           Signed 64-bit integer.
-    `ui64`          Unsigned 64-bit integer.
-    `spf`           Single-precision floating point.
-    `dpf`           Double-precision floating point.
-    `string`        String type.
-    `object`        Dynamic object type.
-  ==============  ========================================
-
-**Entity 'IRArrayType'**
-
-Represents a fixed size array type. The entity is consisted of the type of the
-encapsulated elements, as well as the size of the array.
-
-**Entity 'IRIdentifierType'**
-
-Represents a type that can be associated with an identifier. Can be either a
-custom type, primitive type, or array type.
-
-**Entity 'IRClosure'**
-
-Represents a scoped function declaration. Closures allow function declarations
-to be hierarchically scoped.
-
-**Entity 'IRParameter'**
-
-Represents a function parameter.
-
-**Entity 'IRBasicBlock'**
-
-Represents a basic block within a function. Each basic block is uniquely
-identified by its label. A function body can be consisted of one or multiple
-basic blocks.
-
-**Entity 'IRInstruction'**
-
-Represents a single instruction statement. Each instruction is consisted of an
-opcode, an optional instruction value type, an optional target (for instructions
-that return values), one or multiple operands, and an optional set of label
-locations.
-
-**Enumeration 'IROpcode'**
-
-Represents the set of opcodes defined in the IR.
-
-**Entity 'IRValue'**
-
-Represents a constant value.
-
-**Enumeration 'IROperand'**
-
-Represents an operand in an instruction statement.
-
-**Enumeration 'IROperandType'**
-
-Type of an instruction operand, can be either a "variable" reference or a
-constant.
-
-  ==============  ==============================
-       Type         Description
-  ==============  ==============================
-    `constant`      Literal constant.
-    `ref`           Variable reference.
-  ==============  ==============================
-
-**Entity 'IRLabel'**
-
-Represents a labeled jump location used in an instruction.
-
-----
-
-IR Instruction Set
-^^^^^^^^^^^^^^^^^^
-
-This section describes the IR's instruction set.
-
-
-'alloca' Instruction
-####################
-
-`target = alloca <type>`
-
-`target = alloca [static|auto] <type>`
-
-Allocates memory and creates an instance of the specified type, and returns the
-pointer of the created instance.
-
-Object creation can be of two types. One is based on static allocation, specified
-by the `static` option, in which memories are allocated on the stack, and the
-lifetime of the object is bounded by its scope. The second type of creation,
-specified by the `auto` option, is based on dynamically allocated memories, and
-the object's lifespan is automatically managed by the runtime.
-
-
-'load' Instruction
-##################
-
-`target = load <type> %oprd`
-
-Reads content from memory, and converts to a target type.
-
-
-'store' Instruction
-###################
-
-`store <type> <src> %dst`
-
-Writes content of the specified type from source to destination memory address.
-
-
-'getattr' Instruction
-#####################
-
-`target = getattr #constant-string %oprd`
-
-Retrieves the attribute of an object and returns a pointer that references the
-value.
-
-
-'setattr' Instruction
-#####################
-
-`setattr #constant-string %value %target-object`
-
-Sets the attribute value from source onto target object.
-
-
-'delattr' Instruction
-#####################
-
-`delattr #constant-string %dst`
-
-Remove a particular attribute of a specified object.
-
-
-'getelement' Instruction
-########################
-
-`target = getelement <type> %src <idx>`
-
-Retrieves the element from an array with an index value.
-
-
-'putelement' Instruction
-########################
-
-`putelement <src> %dst <idx>`
-
-Sets a specified element to an array at an index.
-
-
-'len' Instruction
-#################
-
-`target = len %oprd`
-
-Retrieves the length of an array. The result is of type `ui64`.
-
-
-'ret' Instruction
-#################
-
-`ret <type> <oprd>`
-
-Returns from the current function.
-
-
-'br' Instruction
-################
-
-`br <cond> [ label #iftrue, label #iffalse ]`
-
-Branches to either one of two labels depending on a conditional value.
-
-
-'switch2' Instruction
-#####################
-
-`switch2 <value> <case1>, <case2>, .... [ label #case1, label #case2, ... ]`
-
-Jumps to one of a set of labels based on a target value, and a set of
-predicates specified as the rest of the operands.
-
-
-'pos' Instruction
-#################
-
-`target = pos <type> <oprd>`
-
-Evaluates to the positive expression of the specified operand.
-
-
-'neg' Instruction
-#################
-
-`target = neg <type> <oprd>`
-
-Evaluates to the negative expression of the specified operand.
-
-
-'inc' Instruction
-#################
-
-`target = inc <type> <oprd>`
-
-Increases the value by 1 of the specified instruction.
-
-
-'dec' Instruction
-#################
-
-`target = dec <type> <oprd>`
-
-Decreases the value by 1 of the specified instruction.
-
-
-'add' Instruction
-#################
-
-`target = add <type> <oprd1> <oprd2>`
-
-Adds the values of two expressions.
-
-
-'sub' Instruction
-#################
-
-`target = sub <type> <oprd1> <oprd2>`
-
-Subtracts the values of two expressions.
-
-
-'mul' Instruction
-#################
-
-`target = mul <type> <oprd1> <oprd2>`
-
-Multiplies the values of two expressions.
-
-
-'div' Instruction
-#################
-
-`target = div <type> <oprd1> <oprd2>`
-
-Divides the values of two expressions.
-
-
-'mod' Instruction
-#################
-
-`target = mod <type> <oprd1> <oprd2>`
-
-Computes the modulus value of two expressions.
-
-
-'bnot' Instruction
-##################
-
-`target = bnot <oprd>`
-
-Computes the bitwise NOT evaluation of a value. The result is of type `ui64`.
-
-
-'band' Instruction
-##################
-
-`target = band <oprd1> <oprd2>`
-
-Computes the bitwise AND evaluation of two values. The result is of type `ui64`.
-
-
-'bor' Instruction
-#################
-
-`target = bor <oprd1> <oprd2>`
-
-Computes the bitwise OR evaluation of two values. Both operands must be of
-integer type. The result is of type `ui64`.
-
-
-'bxor' Instruction
-##################
-
-`target = bxor <oprd1> <oprd2>`
-
-Computes the bitwise XOR evaluation of two values. Both operands must be of
-integer type. The result is of type `ui64`.
-
-
-'bls' Instruction
-#################
-
-`target = bls <type> <oprd>`
-
-Computes the bitwise-left-shift evaluation of the specified value. Both operands
-must be of integer type. The result is of type `ui64`.
-
-
-'brs' Instruction
-#################
-
-`target = brs <type> <oprd>`
-
-Computes the bitwise-right-shift evaluation of the specified value. Both
-operands must be of integer type. The result is of type `ui64`.
-
-
-'eq' Instruction
-################
-
-`target = eq <oprd1> <oprd2>`
-
-Computes the equality evaluation of two values. The result is of type `boolean`.
-
-
-'neq' Instruction
-#################
-
-`target = neq <oprd1> <oprd2>`
-
-Computes the non-equality evaluation of two values. The result is of type
-`boolean`.
-
-
-'gt' Instruction
-################
-
-`target = gt <oprd1> <oprd2>`
-
-Computes the greater-than evaluation of two values. The result is of type
-`boolean`.
-
-
-'lt' Instruction
-################
-
-`target = lt <oprd1> <oprd2>`
-
-Computes the less-than evaluation of two values. The result is of type
-`boolean`.
-
-
-'gte' Instruction
-#################
-
-`target = gte <oprd1> <oprd2>`
-
-Computes the greater-or-equal-to evaluation of two values. The result is of type
-`boolean`.
-
-
-'lte' Instruction
-#################
-
-`target = lte <oprd1> <oprd2>`
-
-Computes the less-or-equal-to evaluation of two values. The result is of type
-`boolean`.
-
-
-'lnot' Instruction
-##################
-
-`target = lnot <oprd>`
-
-Computes the logical NOT evaluation of a value. The result is of type `boolean`.
-
-
-'land' Instruction
-##################
-
-`target = land <oprd1> <oprd2>`
-
-Computes the logical AND evaluation of two values. The result is of type
-`boolean`.
-
-
-'lor' Instruction
-#################
-
-`target = lor <oprd1> <oprd2>`
-
-Computes the logical OR evaluation of two values. The result is of type
-`boolean`.
-
-
-'cmp' Instruction
-#################
-
-`target = cmp <oprd1> <oprd2>`
-
-Equality comparison between two operands. Results in `-1` if the left-hand-side
-is considered less than the right-hand-side, `0` if they are evaluated to be
-equal, and `1` otherwise. The result is of type `i32`.
-
-
-'call' Instruction
-##################
-
-`target = call <ret-type> #call-target> <arg1> <arg2> ...`
-
-Invokes a function call by calling the specified call target with a set of
-arguments.
-
-
+****************
 coreVM Toolchain
-----------------
+****************
 
 The coreVM repo comes with a set of tools used for facilitating developments
 and debugging when working with coreVM. These reside under the top level
@@ -1884,7 +1031,7 @@ and debugging when working with coreVM. These reside under the top level
 Below are descriptions of each of the tools:
 
 diff_benchmarks.py
-^^^^^^^^^^^^^^^^^^
+==================
 
 Computes and prints the diff between two benchmark runs, with each run's result
 written in JSON format outputted by `benchmark <https://www.github.com/google/benchmark>`__.
@@ -1905,7 +1052,7 @@ Usage:
                             Comparion metric=<real_time|cpu_time>
 
 extract_metadata
-^^^^^^^^^^^^^^^^
+================
 
 Prints out the coreVM instruction set data and the dynamic object flags data
 in JSON format. This is useful for compilers or other programs that need to
@@ -1930,7 +1077,7 @@ Example:
     ./build/tools/extract_metadata --output out.txt
 
 ir_gen
-^^^^^^
+======
 
 Generates dummy IR and write to a specified output file.
 
@@ -1957,7 +1104,7 @@ Example:
     python tools/ir_gen.py --output sample.ir
 
 ir_dis
-^^^^^^
+======
 
 coreVM IR disassembler. Prints out the IR textual representation when specified
 an input file that contains the binary representation.
@@ -2030,7 +1177,7 @@ Sample Output:
  
 
 ir_asm
-^^^^^^
+======
 
 coreVM IR assembler. Converts IR from textual representation to binary format.
 
@@ -2055,7 +1202,7 @@ Example:
     ./build/tools/ir_asm --input sample.ir.txt --output sample_copy.ir
 
 ir_stats
-^^^^^^^^
+========
 
 Prints out stats of a IR module.
 
@@ -2099,28 +1246,3 @@ Sample Output:
             Blocks: 2
 
     Total instruction count: 3
-
-ir_tools_integrity.py
-^^^^^^^^^^^^^^^^^^^^^
-
-Tests the integrity between the coreVM IR assembler and disassembler.
-
-Usage:
-
-  .. code::
-
-    python tools/ir_tools_integrity.py
-
-Example:
-
-  .. code::
-
-    python tools/ir_tools_integrity.py
-
-    Running IR tools integrity checker...
-    python tools/ir_gen.py --output sample.ir
-    ./build/tools/ir_dis --input sample.ir --output sample.ir.txt
-    ./build/tools/ir_asm --input sample.ir.txt --output sample2.ir
-    ./build/tools/ir_dis --input sample2.ir --output sample2.ir.txt
-    diff sample.ir.txt sample2.ir.txt
-    PASS

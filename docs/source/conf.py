@@ -46,7 +46,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'coreVM'
-copyright = u'2016, Yanzheng Li'
+copyright = u'2017, Yanzheng Li'
 author = u'Yanzheng Li'
 
 # The version info for the project you're documenting, acts as replacement for
