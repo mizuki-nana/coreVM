@@ -1,7 +1,7 @@
 ![logo](/resources/banners/v1/coreVM_banner_v1_RES_LOW.jpg)
 
-A virtual machine designed to revolutionize the development of modern dynamic
-programming languages and to refine the art of programming.
+Language runtime framework designed to empower developers devise modern and
+novel programming language features.
 
 [![Build status](https://travis-ci.org/yanzhengli/coreVM.svg?branch=dev)](https://travis-ci.org/yanzhengli/coreVM)
 [![Docs build status](https://readthedocs.org/projects/corevm/badge/?version=latest)](http://corevm.readthedocs.io/en/latest/)
@@ -15,33 +15,32 @@ programming languages and to refine the art of programming.
 * [Inquiries] (#inquiries)
 
 ## Overview
-With the proliferation of dynamic programming languages being a dominating trend
-in the software industry, many developers have taken the endeavor to invent
-their own in attempts to illustrate their unique visions of how modern software
-systems can be developed. However, such tasks are usually massive undertakings
-as the steps involved in developing a custom language runtime tend to be
-extremely complex, error prone and resource consuming. Consequently, these steps
-end up becoming a very intimidating part in the process. Although there are
-candidates of generic runtimes for dynamic languages that are available, many of
-them lack the robustness, efficiency and versatility that can meet the language
-requirements.
+With the proliferation of high-level general purpose programming languages being
+a dominant trend in the software industry, many developers have taken the
+endeavor to invent their own in attempts to illustrate their unique visions of
+how modern software systems can be developed. However, such tasks are usually
+massive undertakings as the steps involved in developing a custom language
+runtime tend to be extremely complex, error prone and resource consuming.
+Consequently, these steps end up becoming a very intimidating part in the
+process. Although there are candidates of generic runtimes for high-level
+languages that are available, many of them lack the robustness, efficiency and
+versatility that can meet the language requirements.
 
-coreVM is a language-agnostic virtual machine designed to provide a runtime
-platform for dynamic programming languages. Its design strives to achieve
+coreVM is a language-agnostic runtime framework. Its design strives to achieve
 extremely versatile interfaces and modern runtime functionalities, which
 unfetters language developers from the burden of developing their own. Instead
 of re-inventing the wheel, developers can focus on the design and development of
 language features. coreVM strives to provide versatile capabilities that can
-meet the demands of most dynamic programming languages through the following:
+meet the demands of most high-level programming languages through the following:
 
-* An [instruction set](http://corevm.readthedocs.io/en/latest/reference.html#instruction-set) that can broadly cover most demands.
-* A [set of APIs](http://corevm.readthedocs.io/en/latest/reference.html#apis) for extensions, customizations, and optimizations for special needs.
+* An [instruction set](http://corevm.readthedocs.io/en/latest/reference.html#instruction-set) that can broadly cover fundamental language functionalities.
+* An [abstract language representation](http://corevm.readthedocs.io/en/latest/ir_reference.html) that can capture high-level language constructs.
+* A [set of APIs](http://corevm.readthedocs.io/en/latest/reference.html#apis) for extensions, customizations, and optimizations.
 * A well thought and extensible [architecture](http://corevm.readthedocs.io/en/latest/design.html).
 
 The points above together illustrate the core philosophy of the project that
-language developers should be able to use coreVM as a powerful platform for
-developing modern dynamic programming languages in an intuitive and
-efficient manner. Hopefully, as the project evolves, it will help guide
+coreVM can be a powerful platform for developers to devise modern high-level
+programming languages. Hopefully, as the project evolves, it will help guide
 language developers devise novel language designs and implementations that can
 shape the next generation of computing.
 
@@ -77,8 +76,8 @@ Here is a list of recommended steps to get started on the project:
 
 ## Moonshots
 While the ultimate goal of this project is to facilitate the design and
-development of modern dynamic programming languages for language developers,
-I personally have two use cases of the project that I have envisioned for the
+development of modern programming languages for language developers, I
+personally have two use cases of the project that I have envisioned for the
 foreseeable future.
 
 ### Support the HEX programming language
@@ -100,14 +99,15 @@ Python compiler that lives under [python/compiler](python/compiler), which
 compiles Python source code into coreVM bytecode. In addition, there is a
 command-line program [python/pyta.py](python/pyta.py) that can directly execute
 a given Python program by invoking the compiler to generate coreVM bytecode,
-and feeds the output to the VM. Click [here](python/README.md) to view the
+and feeds the output to coreVM. Click [here](python/README.md) to view the
 project summary page.
 
-The development of the VM and the language complements each other well, as the
-language serves as a great target to test and benchmark the VM, and at the same
-time the VM provides more capabilities to facilitate the growth of the language
-as it evolves. The parallel developments of the two forms a positive feedback
-loop that accelerates the growth of both.
+The development of the runtime framework and the language complements each other
+well, as the language serves to validate, test and benchmark the functionalities
+of the framework, and at the same time the framework provides more capabilities
+to facilitate the growth of the language as it evolves. The parallel
+developments of the two forms a positive feedback loop that accelerates the
+growth of both.
 
 To run the entire Python test suite after compilation, run:
 > `python python/bootstrap_tests.py`

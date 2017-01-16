@@ -147,8 +147,9 @@ roadmap in the near future, with their respective completion dates and ETAs:
    Benchmark infrastructure                                Jun, 2015
    Python features convergence (cont'd)                    Oct, 2015
    Optimizations (cont'd)                                  Feb, 2016
-   Entry API                                               Jul, 2016
-   JIT pipeline                                            Dec, 2016
+   Core API (cont'd)                                       Jul, 2016
+   Intermediate Representation (done)                      Jan, 2017
+   JIT pipeline                                            TBD
    Multi-threaded runtime                                  TBD
    Debugging and Profiling API                             TBD
    Embedder API                                            TBD
@@ -157,7 +158,3 @@ roadmap in the near future, with their respective completion dates and ETAs:
    Parallelism support                                     TBD
    Address space layout randomization                      TBD
    =============================================  ============================
-
-Here's an illustration of the envisioned future architecture of coreVM:
-
-  .. figure:: ../../resources/corevm_envisioned_future_architecture_overview.png

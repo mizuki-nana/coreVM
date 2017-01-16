@@ -3,13 +3,14 @@
 Design and Architecture
 =======================
 
-coreVM's architecture can be generalized into 6 components:
+coreVM's architecture can be generalized into 7 components:
 
   * :ref:`memory-management`
   * :ref:`native-types-system`
   * :ref:`object-management`
   * :ref:`garbage-collection`
   * :ref:`core-runtime`
+  * :ref:`jit-pipeline`
   * :ref:`front-end`
 
 Here's an illustration of the high level architecture:
@@ -63,11 +64,12 @@ Object Management
 -----------------
 
 One component that directly relates to the :ref:`memory-management` layer is the
-object management layer. At its core, it is consisted of a heap that stores
+object management layer. At its core, it is consisted of a heap that manages 
 objects from memories allocated from the memory layer. Objects in coreVM are
-referred as *dynamic objects*. Their properties can be changed dynamically, and
-their modeling provides the flexibility for language developers to incorporate
-their custom object abstractions and meta-programming features.
+referred as *dynamic objects*, as their properties can be changed dynamically,
+and coreVM does not specify any object model by default. This design provides
+the flexibility for language developers to incorporate custom object
+abstractions and meta-programming features.
 
 Dynamic object can also reference native types. For example, one may implement
 boxed integers in a programming language as dynamic objects that each holds an
@@ -101,13 +103,26 @@ responsible for managing a variety of operations such as thread management,
 signal handling, garbage collection, and many more.
 
 
+.. _jit-pipeline:
+
+JIT Pipeline
+------------
+
+The just-in-time compilation pipeline is a separate process that compiles
+code represented in `coreVM Intermediate Representation <ir_reference.html>`_
+to machine code. The pipeline's front-end is responsible for loading IR
+bytecode, its middle-end is a chain of optimization and lowering processes that
+operate on the input IR bytecode. Finally, its back-end is consisted of several
+compilation processes, each with its own unique input type as well as strengths
+and drawbacks. Visit `Just-in-Time Compilation <jit.html>`_ for more details.
+
+
 .. _front-end:
 
 Front-end
 ---------
 
-The front-end component is an intermediate layer that interacts between the core
-runtime and the external world, and mainly serves as a bridge between the
-system’s internals and its public APIs. Its responsibilities include loading
-instructions and definitions into the runtime, as well as configurations for
-various components of the system.
+The front-end component is an intermediate layer that interacts between the
+internals of the system and the public APIs. Its responsibilities include
+loading instructions and definitions into the runtime, as well as configurations
+for various components of the system.
