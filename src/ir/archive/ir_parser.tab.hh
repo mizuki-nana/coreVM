@@ -800,7 +800,7 @@ namespace yy {
 
 
     /// Build a parser object.
-    ir_parser (corevm::ir::IRParserDriver& driver_yyarg);
+    ir_parser (corevm::ir::IRParserDriver& driver_yyarg, void* yyscanner_yyarg);
     virtual ~ir_parser ();
 
     /// Parse.
@@ -1014,6 +1014,7 @@ namespace yy {
 
     // User arguments.
     corevm::ir::IRParserDriver& driver;
+    void* yyscanner;
   };
 
   // Symbol number corresponding to token number t.
@@ -2299,7 +2300,7 @@ namespace yy {
 
 
 } // yy
-#line 2303 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
+#line 2304 "src/ir/ir_parser.tab.hh" // lalr1.cc:392
 
 
 

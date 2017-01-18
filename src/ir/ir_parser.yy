@@ -19,6 +19,7 @@ class IRParserDriver;
 }
 // The parsing context.
 %param { corevm::ir::IRParserDriver& driver }
+%param { void* yyscanner }
 %locations
 %define parse.error verbose
 %initial-action

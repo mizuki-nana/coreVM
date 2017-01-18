@@ -27,11 +27,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string>
 
 // Tell Flex the lexer's prototype ...
-#define YY_DECL yy::ir_parser::symbol_type yylex (corevm::ir::IRParserDriver& driver)
+#define YY_DECL yy::ir_parser::symbol_type yylex (corevm::ir::IRParserDriver& driver, void* yyscanner)
 // ... and declare it for the parser's sake.
 YY_DECL;
 
-// TODO: [COREVM-573] Make IR parser pure reentrant
 
 namespace corevm {
 namespace ir {
@@ -42,15 +41,16 @@ public:
   IRParserDriver();
   virtual ~IRParserDriver();
 
-  bool trace_scanning() const;
-  void set_trace_scanning(bool);
-
   bool trace_parsing() const;
   void set_trace_parsing(bool);
 
   // Run the parser on input file.
   // Return 0 on success.
   int parse_from_file(const std::string& filepath);
+
+  // Run the parser on input string.
+  // Return 0 on success.
+  int parse_from_string(const char*);
 
   // The name of the file being parsed.
   // Used later to pass the file name to the location tracker.
@@ -65,12 +65,6 @@ public:
 
   const corevm::IRModule& module() const;
 private:
-  // Handling the scanner.
-  bool scan_begin();
-  void scan_end();
-
-  bool m_trace_scanning;
-
   // Whether parser traces should be generated.
   bool m_trace_parsing;
 

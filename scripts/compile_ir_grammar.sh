@@ -27,7 +27,7 @@
 
 # Lexer.
 # NOTE: It's important to run in non-C++ mode and instead save the output in C++ file.
-/usr/local/bin/flex -o src/ir/lex.yy.cc --header-file=src/ir/lex.yy.hh src/ir/ir_lexer.ll
+/usr/local/bin/flex --reentrant -o src/ir/lex.yy.cc --header-file=src/ir/lex.yy.hh src/ir/ir_lexer.ll
 
 # Parser.
 bison --language=c++ --verbose --warnings=error --output src/ir/ir_parser.tab.cc src/ir/ir_parser.yy

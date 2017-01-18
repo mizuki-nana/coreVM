@@ -25,6 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "lex.yy.hh"
 
 #include <iostream>
+#include <iterator>
+#include <fstream>
 
 
 namespace corevm {
@@ -34,7 +36,6 @@ namespace ir {
 
 IRParserDriver::IRParserDriver()
   :
-  m_trace_scanning(false),
   m_trace_parsing(false),
   m_input_file()
 {
@@ -44,22 +45,6 @@ IRParserDriver::IRParserDriver()
 
 IRParserDriver::~IRParserDriver()
 {
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-IRParserDriver::trace_scanning() const
-{
-  return m_trace_scanning;
-}
-
-// -----------------------------------------------------------------------------
-
-void
-IRParserDriver::set_trace_scanning(bool val)
-{
-  m_trace_scanning = val;
 }
 
 // -----------------------------------------------------------------------------
@@ -81,18 +66,29 @@ IRParserDriver::set_trace_parsing(bool val)
 // -----------------------------------------------------------------------------
 
 int
-IRParserDriver::parse_from_file(const std::string &f)
+IRParserDriver::parse_from_file(const std::string& filepath)
 {
-  m_input_file = f;
-  if (!scan_begin())
-  {
-    return -1;
-  }
-  yy::ir_parser parser(*this);
+  m_input_file = filepath;
+  std::ifstream infile(filepath.c_str());
+  std::string file_contents((std::istreambuf_iterator<char>(infile)),
+    std::istreambuf_iterator<char>());
+  return parse_from_string(file_contents.c_str());
+}
+
+// -----------------------------------------------------------------------------
+
+int IRParserDriver::parse_from_string(const char* input)
+{
+  yyscan_t scanner;
+  YY_BUFFER_STATE buf;
+  yylex_init(&scanner);
+  buf = yy_scan_string(input, scanner);
+  yy::ir_parser parser(*this, scanner);
   parser.set_debug_level(trace_parsing());
-  int res = parser.parse();
-  scan_end();
-  return res;
+  parser.parse();
+  yy_delete_buffer(buf, scanner);
+  yylex_destroy(scanner);
+  return 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -141,31 +137,6 @@ const corevm::IRModule&
 IRParserDriver::module() const
 {
   return m_module;
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-IRParserDriver::scan_begin()
-{
-  yyset_debug(trace_scanning());
-  if (m_input_file.empty () || m_input_file == "-")
-  {
-    yyin = stdin;
-  }
-  else if (!(yyin = fopen (m_input_file.c_str (), "r")))
-  {
-    error("cannot open " + m_input_file + ": " + strerror(errno));
-    return -1;
-  }
-}
-
-// -----------------------------------------------------------------------------
-
-void
-IRParserDriver::scan_end()
-{
-  fclose(yyin);
 }
 
 // -----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2016 Yanzheng Li
+Copyright (c) 2017 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -22,72 +22,82 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ir/ir_parser_driver.h"
 
-#include <sneaker/utility/cmdline_program.h>
+#include <gtest/gtest.h>
 
-#include <cstdio>
-#include <string>
+#include <fstream>
 
 
 // -----------------------------------------------------------------------------
 
-class ir_parser_driver : public sneaker::utility::cmdline_program
+class IRParserDriverUnitTest : public ::testing::Test
 {
-public:
-  ir_parser_driver();
-  virtual ~ir_parser_driver() = default;
-
 protected:
-  virtual int do_run();
-  virtual bool check_parameters() const;
+  static const char* IR_STRING;
 
-private:
-  std::string m_input;
-  bool m_debug;
+  void validate_parsed_module(const corevm::IRModule& module)
+  {
+    ASSERT_EQ("Dummy_IR", module.meta.name); 
+    ASSERT_EQ(1, module.types.size());
+    ASSERT_EQ("Person", module.types.front().name);
+    ASSERT_EQ(1, module.closures.size());
+    ASSERT_EQ("doNothing", module.closures.front().name);
+  }
 };
 
-// -----------------------------------------------------------------------------
-
-ir_parser_driver::ir_parser_driver()
-  :
-  sneaker::utility::cmdline_program("coreVM IR parser driver"),
-  m_input(),
-  m_debug(false)
-{
-  add_positional_parameter("input", 1);
-  add_string_parameter("input", "input file", &m_input);
-  add_boolean_parameter("debug", "debug mode", &m_debug);
-}
+const char* IRParserDriverUnitTest::IR_STRING = 
+  "\"module name\" : \"Dummy_IR\""
+  "type Person {"
+  "string name;"
+  "}"
+  ""
+  "def void doNothing() {"
+  "}";
 
 // -----------------------------------------------------------------------------
 
-bool
-ir_parser_driver::check_parameters() const
+class IRParserDriverFileBasedUnitTest : public IRParserDriverUnitTest
 {
-  return !m_input.empty();
-}
+protected:
+  static const char* PATH;
 
-// -----------------------------------------------------------------------------
-
-int
-ir_parser_driver::do_run()
-{
-  corevm::ir::IRParserDriver driver;
-
-  if (m_debug)
+  virtual void SetUp()
   {
-    printf("Debug mode ON\n");
-    driver.set_trace_parsing(true);
+    std::ofstream f(PATH, std::ios::binary);
+    f << IRParserDriverUnitTest::IR_STRING;
+    f.close();
   }
 
-  return driver.parse_from_file(m_input);
+  virtual void TearDown()
+  {
+    remove(PATH);
+  }
+};
+
+const char* IRParserDriverFileBasedUnitTest::PATH = "Dummy_IR.txt";
+
+// -----------------------------------------------------------------------------
+
+TEST_F(IRParserDriverUnitTest, TestParseFromString)
+{
+  corevm::ir::IRParserDriver driver;
+  const int res = driver.parse_from_string(IR_STRING);
+
+  ASSERT_EQ(0, res);
+
+  const corevm::IRModule& module = driver.module();
+  validate_parsed_module(module); 
 }
 
 // -----------------------------------------------------------------------------
 
-int main(int argc, char** argv)
+TEST_F(IRParserDriverFileBasedUnitTest, TestParseFromFile)
 {
-  ir_parser_driver driver;
-  return driver.run(argc, argv);
+  corevm::ir::IRParserDriver driver;
+  const int res = driver.parse_from_file(PATH);
+  ASSERT_EQ(0, res);
+
+  const corevm::IRModule& module = driver.module();
+  validate_parsed_module(module); 
 }
 
 // -----------------------------------------------------------------------------

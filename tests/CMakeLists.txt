@@ -55,6 +55,7 @@ add_executable(run_tests
     frontend/runner_unittest.cc
     api/core/configuration_unittest.cc
     api/ir/version_unittest.cc
+    ir/ir_parser_driver_unittest.cc
     jit/pass_manager_unittest.cc
     ../src/corevm/program.cc
     main.cc
