@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2016 Yanzheng Li
+Copyright (c) 2017 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -20,33 +20,43 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_IR_VERIFIER_H_
-#define COREVM_IR_VERIFIER_H_
+#ifndef COREVM_JIT_PASS_H_
+#define COREVM_JIT_PASS_H_
 
-#include "fwd.h"
-
-#include <memory>
+#include "ir/fwd.h"
+#include <cstdint>
 
 
 namespace corevm {
-namespace ir {
+namespace jit {
 
-class Verifier
+class Pass
 {
 public:
-  Verifier();
+  enum PassType : uint32_t
+  {
+    PassType_Module = 0x01,
+    PassType_Function,
+    PassType_BasicBlock,
+    PassType_Instr
+  };
 
-  bool verify(const IRModule&);
+  virtual ~Pass() {}
 
-  const char* msg() const;
+  /**
+   * Initialization steps before a pass gets run.
+   * Default implementation does nothing, to be overriden in subclasses.
+   */
+  virtual void init(const IRModule&);
 
-private:
-  class Impl;
-
-  std::unique_ptr<Impl> m_impl;
+  /**
+   * Clean up steps after a pass gets run.
+   * Default implementation does nothing, to be overriden in subclasses.
+   */
+  virtual void finalize(const IRModule&);
 };
 
-} /* end namespace ir */
+} /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_IR_VERIFIER_H_ */
+#endif /* COREVM_JIT_PASS_H_ */

@@ -1,7 +1,7 @@
 /*******************************************************************************
 The MIT License (MIT)
 
-Copyright (c) 2016 Yanzheng Li
+Copyright (c) 2017 Yanzheng Li
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -20,89 +20,27 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#include "verifier.h"
-#include "format.h"
-
-#include <string>
+#include "pass.h"
+#include "ir/format.h"
 
 namespace corevm {
-namespace ir {
+namespace jit {
 
 // -----------------------------------------------------------------------------
 
-class Verifier::Impl
-{
-public:
-  Impl();
-
-  bool verify(const IRModule&);
-
-  const char* msg() const;
-private:
-  bool verify(const IRClosure&);
-
-  std::string m_msg;
-};
-
-// -----------------------------------------------------------------------------
-
-Verifier::Verifier()
-  :
-  m_impl(new Verifier::Impl())
+/* virtual */
+void Pass::init(const IRModule&)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-bool
-Verifier::verify(const IRModule& module)
-{
-  return m_impl->verify(module);
-}
-
-// -----------------------------------------------------------------------------
-
-const char*
-Verifier::msg() const
-{
-  return m_impl->msg();
-}
-
-// -----------------------------------------------------------------------------
-
-Verifier::Impl::Impl()
-  :
-  m_msg()
+/* virtual */
+void Pass::finalize(const IRModule&)
 {
 }
 
 // -----------------------------------------------------------------------------
 
-bool
-Verifier::Impl::verify(const IRModule& /* module */)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
-  return false;
-}
-
-// -----------------------------------------------------------------------------
-
-bool
-Verifier::Impl::verify(const IRClosure& /* closure */)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
-  return false;
-}
-
-// -----------------------------------------------------------------------------
-
-const char*
-Verifier::Impl::msg() const
-{
-    return m_msg.c_str();
-}
-
-// -----------------------------------------------------------------------------
-
-} /* end namespace ir */
+} /* end namespace jit */
 } /* end namespace corevm */

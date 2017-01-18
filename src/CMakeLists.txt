@@ -29,11 +29,15 @@
 
 set(sources
     ir/reader.cc
-    ir/verifier.cc
     ir/format_util.cc
     ir/ir_parser.tab.cc
     ir/lex.yy.cc
     ir/ir_parser_driver.cc
+    jit/pass.cc
+    jit/analysis_pass.cc
+    jit/transform_pass.cc
+    jit/verification_pass.cc
+    jit/pass_manager.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
     dyobj/dynamic_object_manager.cc
