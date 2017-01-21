@@ -92,14 +92,8 @@ all: $(BUILD_TARGETS)
 
 ## -----------------------------------------------------------------------------
 
-# TODO: Move this to CMake.
-pre-build:
-	sh scripts/compile_ir_grammar.sh
-
-## -----------------------------------------------------------------------------
-
 .PHONY: build
-build: pre-build
+build:
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR); cmake $(BUILD_TARGET_CMAKE_ARGS) ../ && make
 
