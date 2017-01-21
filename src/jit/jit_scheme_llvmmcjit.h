@@ -20,18 +20,29 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#ifndef COREVM_JIT_SCHEME_LLVM_MCJIT_H_
+#define COREVM_JIT_SCHEME_LLVM_MCJIT_H_
+
+#include "jit_compiler_llvmmcjit_backend.h"
+#include "lowering_pass_target_llvm_ir.h"
+#include "ir/format.h"
 
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+/**
+ * JIT scheme based on LLVM's MCJIT framework.
+ */
+struct JITSchemeLLVMMCJIT
 {
-virtual ~AnalysisResult();
+typedef JITCompilerLLVMMCJITBackend BackendType;
+typedef IRModule InputModuleType;
+typedef llvm::Module TargetModuleType;
+typedef LoweringPassTargetLLVMIR TargetLoweringPassType;
+typedef LLVMModuleAnalysisResult TargetLoweringPassAnalysisResultType;
 };
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+#endif /* COREVM_JIT_SCHEME_LLVM_MCJIT_H_ */

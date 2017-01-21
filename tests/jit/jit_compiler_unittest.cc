@@ -20,18 +20,32 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#include "jit/jit_compiler.h"
+#include "jit/jit_scheme_llvmmcjit.h"
 
-namespace corevm {
-namespace jit {
+#include <gtest/gtest.h>
 
-struct AnalysisResult
+
+// -----------------------------------------------------------------------------
+
+class JITCompilerUnitTest : public ::testing::Test {};
+
+// -----------------------------------------------------------------------------
+
+TEST_F(JITCompilerUnitTest, TestCompilation)
 {
-virtual ~AnalysisResult();
-};
+  corevm::jit::JITCompiler<corevm::jit::JITSchemeLLVMMCJIT> compiler;
+  corevm::IRModule input_module;
+  std::string func_name("hello_world");
+  std::string msg;
+  const bool res = compiler.run(input_module, func_name, msg);
+  ASSERT_EQ(false, res);
+  ASSERT_EQ("Target module lowering failed.", msg);
+  ASSERT_EQ(false, compiler.compiled());
 
-} /* end namespace jit */
-} /* end namespace corevm */
+  std::vector<corevm::jit::RuntimeValue> args;
+  corevm::jit::RuntimeValue return_val;
+  ASSERT_EQ(false, compiler.eval_func(args, return_val));
+}
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+// -----------------------------------------------------------------------------

@@ -20,18 +20,19 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#include "analysis_result.h"
 
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+// -----------------------------------------------------------------------------
+
+/* virtual */
+AnalysisResult::~AnalysisResult()
 {
-virtual ~AnalysisResult();
-};
+}
+
+// -----------------------------------------------------------------------------
 
 } /* end namespace jit */
 } /* end namespace corevm */
-
-#endif /* COREVM_ANALYSIS_RESULT_H_ */

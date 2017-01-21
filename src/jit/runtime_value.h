@@ -20,18 +20,30 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#ifndef COREVM_RUNTIME_VALUE_H_
+#define COREVM_RUNTIME_VALUE_H_
 
+#include <llvm/ADT/APInt.h>
+#include <vector>
+
+/**
+ * Represents a generic runtime value.
+ */
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+struct RuntimeValue
 {
-virtual ~AnalysisResult();
+  union {
+    double DoubleVal;
+    float FloatVal;
+    void* PointerVal;
+  };
+  llvm::APInt IntVal;
+  std::vector<RuntimeValue> AggregateVal;
 };
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+#endif /* COREVM_RUNTIME_VALUE_H_ */

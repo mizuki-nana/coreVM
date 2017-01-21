@@ -33,6 +33,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace jit {
 
+/**
+ * A "static" pass manager responsible for managing the operations of a set
+ * of "pass"es in serial order.
+ */
 class PassManager
 {
 public:

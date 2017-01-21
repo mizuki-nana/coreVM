@@ -49,7 +49,8 @@ set(CMAKE_MACOSX_RPATH 1)
 if (CMAKE_COMPILER_IS_GNUCXX)
   set (CMAKE_CXX_FLAGS "-std=c++11 -w")
 else ()
-    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral")
+    set(CMAKE_CXX_FLAGS "-std=c++11 -Weverything -Wno-old-style-cast -Wno-sign-conversion -Wno-deprecated -Wno-padded -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-documentation -Wno-missing-prototypes -Wno-format-nonliteral -Wno-unused-macros -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS")
+
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} MATCHES "7.3.0")
         # Settings for local macOS dev machine.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-reserved-id-macro -Wno-shorten-64-to-32 -Wno-double-promotion")
@@ -79,14 +80,6 @@ find_package(Boost 1.55 REQUIRED COMPONENTS
 
 
 message("Boost libraries found: ${Boost_LIBRARIES}")
-
-
-# Find LLVM.
-find_library(LIBLLVM_LIBRARY NAMES "LLVMSupport"
-    PATH_SUFFIXES "lib" "lib32" "lib64")
-
-
-message("LLVMSupport library path found: " ${LIBLLVM_LIBRARY})
 
 
 # Find Sneaker.
@@ -139,14 +132,82 @@ set(PYTHON_DIR ${PROJECT_SOURCE_DIR}/python)
 set(BENCHMARKS_DIR ${PROJECT_SOURCE_DIR}/benchmarks)
 
 
+# Need this to locate LLVM libraries on macOS.
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    link_directories("/usr/local/lib" "/usr/lib")
+endif ()
+
+
+# LLVM libraries.
+set(LLVM_LIBRARIES
+    LLVMLTO
+    LLVMLinker
+    LLVMipo
+    LLVMVectorize
+    LLVMBitWriter
+    LLVMTableGen
+    LLVMDebugInfo
+    LLVMOption
+    LLVMX86Disassembler
+    LLVMX86AsmParser
+    LLVMX86CodeGen
+    LLVMSelectionDAG
+    LLVMAsmPrinter
+    LLVMX86Desc
+    LLVMX86Info
+    LLVMX86AsmPrinter
+    LLVMX86Utils
+    LLVMIRReader
+    LLVMBitReader
+    LLVMAsmParser
+    LLVMMCDisassembler
+    LLVMMCParser
+    LLVMInstrumentation
+    LLVMInterpreter
+    LLVMMCJIT
+    LLVMJIT
+    LLVMCodeGen
+    LLVMObjCARCOpts
+    LLVMScalarOpts
+    LLVMInstCombine
+    LLVMTransformUtils
+    LLVMipa
+    LLVMAnalysis
+    LLVMRuntimeDyld
+    LLVMExecutionEngine
+    LLVMTarget
+    LLVMMC
+    LLVMObject
+    LLVMCore
+    LLVMSupport
+    )
+
+
 # Dependency libraries.
 set(DEPENDENCY_LINK_LIBRARIES
     pthread
     ${Boost_LIBRARIES}
     ${LIBAVROCPP_LIBRARY}
     ${LIBSNEAKER_LIBRARY}
-    ${LIBLLVM_LIBRARY}
+    ${LLVM_LIBRARIES}
     )
+
+
+# Locate LLVM dependencies.
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    # LLVM depends on ncurses on macOS.
+    list(APPEND DEPENDENCY_LINK_LIBRARIES "ncurses")
+endif()
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(LLVM_DEPENDENCIES
+        dl
+        rt
+        tinfo
+        z
+        )
+
+    list(APPEND DEPENDENCY_LINK_LIBRARIES ${LLVM_DEPENDENCIES})
+endif ()
 
 
 # Sub-directories.

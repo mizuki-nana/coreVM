@@ -20,18 +20,54 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#ifndef COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
+#define COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_
+
+#include "jit_compiler_backend.h"
+#include <llvm/IR/Module.h>
+
 
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+/**
+ * JIT backend based on LLVM's MCJIT framework.
+ */
+class JITCompilerLLVMMCJITBackend : public JITCompilerBackend
 {
-virtual ~AnalysisResult();
+public:
+  typedef llvm::Module ModuleType;
+
+  explicit JITCompilerLLVMMCJITBackend(const ModuleType&);
+
+  virtual ~JITCompilerLLVMMCJITBackend();
+
+  /**
+   * Implements `JITCompilerBackend::init()`.
+   */
+  virtual bool init();
+
+  /**
+   * Implements `JITCompilerBackend::run()`.
+   */
+  virtual bool run(const std::string& func_name);
+
+  /**
+   * Implements `JITCompilerBackend::eval_func()`.
+   */
+  virtual bool eval_func(const std::vector<RuntimeValue>& args,
+    RuntimeValue& result);
+
+  /**
+   * Implements `JITCompilerBackend::finalize()`.
+   */
+  virtual bool finalize();
+
+private:
+  const ModuleType& m_module;
 };
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+#endif /* COREVM_JIT_COMPILER_LLVM_MCJIT_BACKEND_H_ */

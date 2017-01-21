@@ -29,7 +29,7 @@ straightforward as possible. Currently, the build system requires
   * `Google Test <https://code.google.com/p/googletest/>`_ version 1.7.0
   * `Sneaker <http://www.libsneaker.org/>`_ version 0.3.2 beta (0820a28)
   * `Apache Avro <https://avro.apache.org/docs/current/api/cpp/html/>`_ version 1.7.7
-  * `LLVM <http://www.llvm.org/>`_ version 3.4.0
+  * `LLVM <http://www.llvm.org/>`_ version 3.4
   * `Flex <https://github.com/westes/flex>`_ version 2.6.2
   * `Bison <https://www.gnu.org/software/bison/>`_ version 3.0.4
   * `benchmark <https://github.com/google/benchmark>`_ version 1.0.0

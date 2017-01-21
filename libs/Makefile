@@ -105,13 +105,14 @@ endif
 ## -----------------------------------------------------------------------------
 
 # LLVM Download Page: http://llvm.org/releases/download.html
+# Using version 3.4.
 .PHONY: llvm
 llvm:
 	mkdir -p $(LLVM_TMP_DIR)
-	cd $(LLVM_TMP_DIR) && wget http://llvm.org/releases/3.6.0/llvm-3.6.0.src.tar.xz
-	cd $(LLVM_TMP_DIR) && tar xfJ llvm-3.6.0.src.tar.xz
+	cd $(LLVM_TMP_DIR) && wget http://releases.llvm.org/3.4/llvm-3.4.src.tar.gz
+	cd $(LLVM_TMP_DIR) && tar xvfz llvm-3.4.src.tar.gz
 	mkdir -p $(LLVM_BUILD_DIR)
-	cd $(LLVM_BUILD_DIR) && cmake ../llvm-3.6.0.src -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="X86"
+	cd $(LLVM_BUILD_DIR) && cmake ../llvm-3.4 -G "Unix Makefiles" -DLLVM_TARGETS_TO_BUILD="X86"
 	cd $(LLVM_BUILD_DIR) && make --quiet > /dev/null && sudo make install --quiet >/dev/null
 	rm -rf $(LLVM_TMP_DIR)
 

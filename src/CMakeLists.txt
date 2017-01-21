@@ -35,9 +35,15 @@ set(sources
     ir/ir_parser_driver.cc
     jit/pass.cc
     jit/analysis_pass.cc
+    jit/analysis_result.cc
     jit/transform_pass.cc
     jit/verification_pass.cc
+    jit/constant_folding_pass.cc
+    jit/cse_pass.cc
     jit/pass_manager.cc
+    jit/jit_compiler_backend.cc
+    jit/jit_compiler_llvmmcjit_backend.cc
+    jit/lowering_pass_target_llvm_ir.cc
     memory/allocation_scheme.cc
     memory/sequential_allocation_scheme.cc
     dyobj/dynamic_object_manager.cc

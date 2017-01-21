@@ -20,18 +20,30 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#ifndef COREVM_CONSTANT_FOLDING_PASS_H_
+#define COREVM_CONSTANT_FOLDING_PASS_H_
+
+#include "transform_pass.h"
+
 
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+class ConstantFoldingPass : public TransformPass
 {
-virtual ~AnalysisResult();
+public:
+  static const char* Name;
+
+  static const Pass::PassType Type;
+
+  virtual bool run(IRModule&, const AnalysisResult* = nullptr);
+  virtual bool run(IRTypeDecl&, const AnalysisResult* = nullptr);
+  virtual bool run(IRClosure&, const AnalysisResult* = nullptr);
+  virtual bool run(IRBasicBlock&, const AnalysisResult* = nullptr);
+  virtual bool run(IRInstruction&, const AnalysisResult* = nullptr);
 };
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+#endif /* COREVM_CONSTANT_FOLDING_PASS_H_ */

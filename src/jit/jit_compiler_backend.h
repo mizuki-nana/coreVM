@@ -20,18 +20,58 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
-#ifndef COREVM_ANALYSIS_RESULT_H_
-#define COREVM_ANALYSIS_RESULT_H_
+#ifndef COREVM_JIT_COMPILER_BACKEND_H_
+#define COREVM_JIT_COMPILER_BACKEND_H_
+
+#include "runtime_value.h"
+
+#include <string>
+#include <vector>
+
 
 namespace corevm {
 namespace jit {
 
-struct AnalysisResult
+/**
+ * Abstract representation of a JIT compilation backend.
+ */
+class JITCompilerBackend
 {
-virtual ~AnalysisResult();
+public:
+  JITCompilerBackend();
+  
+  virtual ~JITCompilerBackend();
+
+  /**
+   * Performs the necessary initialization work before compilation.
+   * Return a boolean value indicating whether the initialization is successful.
+   */
+  virtual bool init() = 0;
+
+  /**
+   * Performs the actual compilation operation of the specified function.
+   * Return a boolean value indicating whether the compilation is successful.
+   */
+  virtual bool run(const std::string& func_name) = 0;
+
+  /**
+   * Evaluates a compiled function by specifying a set of arguments, as well as
+   * pointer to the value that is to be returned from the function call,
+   * if one exists.
+   *
+   * Returns a boolean value indicating whether the evaluation is successful.
+   */
+  virtual bool eval_func(const std::vector<RuntimeValue>& args,
+    RuntimeValue& result) = 0;
+
+  /**
+   * Performs the necessary clean-up work after compilation.
+   * Return a boolean value indicating whether the clean-up work is successful.
+   */
+  virtual bool finalize() = 0;
 };
 
 } /* end namespace jit */
 } /* end namespace corevm */
 
-#endif /* COREVM_ANALYSIS_RESULT_H_ */
+#endif /* COREVM_JIT_COMPILER_BACKEND_H_ */
