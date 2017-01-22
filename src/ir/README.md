@@ -7,7 +7,7 @@ representation.
 
 ### Environment
 Operating System:
-`OS X 10.11.6 (15G1108)`
+`OS X 10.11.6 (15G1217)`
 
 Flex:
 `flex 2.6.2` ([Link](https://github.com/westes/flex/releases/tag/v2.6.2))
