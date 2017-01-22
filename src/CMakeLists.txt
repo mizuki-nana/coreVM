@@ -33,6 +33,7 @@ set(sources
     ir/ir_parser.tab.cc
     ir/lex.yy.cc
     ir/ir_parser_driver.cc
+    ir/ir_module_index.cc
     jit/pass.cc
     jit/analysis_pass.cc
     jit/analysis_result.cc
