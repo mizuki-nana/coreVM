@@ -34,6 +34,7 @@ set(sources
     ir/lex.yy.cc
     ir/ir_parser_driver.cc
     ir/ir_module_index.cc
+    ir/verifier.cc
     jit/pass.cc
     jit/analysis_pass.cc
     jit/analysis_result.cc
