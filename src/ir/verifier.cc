@@ -314,11 +314,12 @@ Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx
     {
       return false;
     }
+  }
 
-    if (!check_instruction_dispatch(instr, ctx))
-    {
-      return false;
-    }
+  // Instruction specific check.
+  if (!check_instruction_dispatch(instr, ctx))
+  {
+    return false;
   }
 
   return true;
@@ -418,7 +419,12 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
     {
       const std::string ref = oprd.value.get_string();
       const auto itr = ctx.target_set.find(ref);
-      if (itr == ctx.target_set.end())
+
+      const auto& parameter_index =
+        m_index->function_index[ctx.closure->name].parameter_index;
+      const auto parameter_itr = parameter_index.find(ref);
+
+      if (itr == ctx.target_set.end() && parameter_itr == parameter_index.end())
       {
         char buf[256] = {0};
         snprintf(buf, sizeof(buf),
@@ -471,7 +477,8 @@ Verifier::check_identifier_type(const IRIdentifierType& identifier_type)
   default:
     {
       char buf[256] = {0};
-      snprintf(buf, sizeof(buf), "Invalid type field type: %u", identifier_type.type);
+      snprintf(buf, sizeof(buf), "Invalid type field type: %u",
+        identifier_type.type);
       m_msg.assign(buf);
       return false;
     }
@@ -575,7 +582,7 @@ Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
   else
   {
     const auto& option = instr.options.front();
-    if (option != "auto" || option != "static")
+    if (option != "auto" && option != "static")
     {
       char buf[256] = {0};
       snprintf(buf, sizeof(buf),

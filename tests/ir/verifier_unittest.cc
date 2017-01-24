@@ -342,7 +342,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithUndeclaredOperand)
     "}";
 
   check_verification(IR_STRING,
-    "Undeclared operand used in instruction \"setattr\" in function \"helloWorld\": \"i\"");
+    "Undeclared operand used in instruction \"setattr\" in function \"helloWorld\": \"person\"");
 }
 
 // -----------------------------------------------------------------------------
@@ -357,6 +357,50 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabel)
 
   check_verification(IR_STRING,
     "Invalid label used in instruction \"br\" in function \"helloWorld\": \"end\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrOptionCount)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %x = alloca [ auto static ] string;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Instruction \"alloca\" in function \"helloWorld\" has incorrect number of options");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrOperandCount)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %x = alloca [ auto ] string ui32 5;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Instruction \"alloca\" in function \"helloWorld\" has incorrect number of operands");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabelCount)
+{
+  const char* IR_STRING =
+    "def void helloWorld(i32 i) {"
+    "entry:"
+    "    br %i [ label #goto, label #goto, label #goto ];"
+    "goto:"
+    "    ret void;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Instruction \"br\" in function \"helloWorld\" has incorrect number of labels");
 }
 
 // -----------------------------------------------------------------------------
