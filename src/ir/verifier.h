@@ -34,7 +34,7 @@ namespace ir {
 struct IRModuleIndex;
 
 /**
- * Class encapsulating logic that validates the wellformedness and correctness
+ * Class encapsulating logic that validates the well-formedness and correctness
  * of an IR module.
  */
 class Verifier
