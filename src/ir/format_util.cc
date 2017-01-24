@@ -283,3 +283,18 @@ set_metadata(const std::vector<MetadataPair>& metadata,
 }
 
 // -----------------------------------------------------------------------------
+
+bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
+{
+  // TODO: to be implemented.
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator!=(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
+{
+  return operator==(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------

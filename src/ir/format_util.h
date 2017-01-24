@@ -36,3 +36,7 @@ typedef std::pair<std::string, std::string> MetadataPair;
 void set_metadata(const MetadataPair&, corevm::IRModule&);
 
 void set_metadata(const std::vector<MetadataPair>&, corevm::IRModule&);
+
+bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);
+
+bool operator!=(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);

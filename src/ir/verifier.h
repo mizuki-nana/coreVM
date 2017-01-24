@@ -95,27 +95,32 @@ private:
    * Check whether an instruction is valid in the context of its basic block
    * and function definition.
    */
-  bool check_instruction_dispatch(const IRInstruction&, const FuncDefCheckContext&);
+  bool check_instruction_dispatch(const IRInstruction&,
+    const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of options.
    */
-  bool check_instruction_options_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_options_count(
+    const IRInstruction&, size_t, const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of operands.
    */
-  bool check_instruction_operands_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_operands_count(
+    const IRInstruction&, size_t, const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction has the correct number of labels.
    */
-  bool check_instruction_labels_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+  bool check_instruction_labels_count(
+    const IRInstruction&, size_t, const FuncDefCheckContext&);
 
   /**
    * Check whether an instruction operand is valid.
    */
-  bool check_operand(const IROperand&, const IRInstruction&, FuncDefCheckContext&);
+  bool check_operand(const IROperand&, const IRInstruction&,
+    FuncDefCheckContext&);
 
   /**
    * Checks whether an identifier type is valid.
@@ -128,6 +133,7 @@ private:
   bool check_type_string(const std::string&);
 
 private:
+  /** Opcode specific checks. */
   bool check_instr_with_OPCODE_ALLOCA(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_OPCODE_LOAD(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_OPCODE_STORE(const IRInstruction&, const FuncDefCheckContext&);

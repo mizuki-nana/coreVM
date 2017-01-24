@@ -420,8 +420,8 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
       const std::string ref = oprd.value.get_string();
       const auto itr = ctx.target_set.find(ref);
 
-      const auto& parameter_index =
-        m_index->function_index[ctx.closure->name].parameter_index;
+      auto& function_index = m_index->function_index[ctx.closure->name];
+      const auto& parameter_index = function_index.parameter_index;
       const auto parameter_itr = parameter_index.find(ref);
 
       if (itr == ctx.target_set.end() && parameter_itr == parameter_index.end())
@@ -432,6 +432,28 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
           IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), ref.c_str());
         m_msg.assign(buf);
         return false;
+      }
+
+      if (!instr.type.is_null())
+      {
+        auto& instr_index = function_index.bb_index[ctx.bb->label];
+
+        const auto& oprd_type = instr_index.find(ref) != instr_index.end() ?
+          instr_index[ref]->type.get_IRIdentifierType() : parameter_itr->second->type;
+
+        if (oprd_type != instr.type.get_IRIdentifierType())
+        {
+          char buf[256] = {0};
+          snprintf(buf, sizeof(buf),
+            "Incompatible operand type in instruction \"%s\" in function \"%s\"",
+            IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
+          m_msg.assign(buf);
+          return false;
+        }
+      }
+      else
+      {
+        // TODO: ignore?
       }
     }
     break;
@@ -617,7 +639,7 @@ Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
     return false;
   }
 
-  if (!check_instruction_operands_count(instr, 0, ctx))
+  if (!check_instruction_operands_count(instr, 1, ctx))
   {
     return false;
   }
@@ -626,8 +648,6 @@ Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
   {
     return false;
   }
-
-  // TODO: check operands' type compatibility.
 
   return true;
 }

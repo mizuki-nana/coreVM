@@ -404,3 +404,17 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabelCount
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithWithIncompatibleInstrAndOperandType)
+{
+  const char* IR_STRING =
+    "def void helloWorld(i32 i) {"
+    "entry:"
+    "    %x = load string %i;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Incompatible operand type in instruction \"load\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
