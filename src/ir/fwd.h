@@ -35,6 +35,7 @@ struct IRValue;
 struct IRArrayType;
 struct IRIdentifierType;
 struct IRInstruction;
+struct IROperand;
 struct IRClosure;
 struct IRParameter;
 struct IRBasicBlock;

@@ -312,3 +312,51 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidSSAForm)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrType)
+{
+  const char* IR_STRING =
+    "def string helloWorld(string person) {"
+    "entry:"
+    "    %x = alloca [auto] Person;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid type used in instruction \"alloca\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithUndeclaredOperand)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    string location;"
+    "}"
+    ""
+    "def string helloWorld(i32 i) {"
+    "entry:"
+    "    %x = alloca [auto] Person;"
+    "    setattr string \"age\" %i %person;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Undeclared operand used in instruction \"setattr\" in function \"helloWorld\": \"i\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabel)
+{
+  const char* IR_STRING =
+    "def string helloWorld(i32 i) {"
+    "entry:"
+    "    br %i [ label #end, label #end ];"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid label used in instruction \"br\" in function \"helloWorld\": \"end\"");
+}
+
+// -----------------------------------------------------------------------------

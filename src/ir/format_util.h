@@ -29,6 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 corevm::IROpcode
 string_to_IROpcode(const std::string& val);
 
+const char* IROpcode_to_string(corevm::IROpcode);
+
 typedef std::pair<std::string, std::string> MetadataPair;
 
 void set_metadata(const MetadataPair&, corevm::IRModule&);

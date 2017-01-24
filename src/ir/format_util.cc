@@ -191,6 +191,54 @@ string_to_IROpcode(const std::string& val)
 
 // -----------------------------------------------------------------------------
 
+const char* IROpcode_to_string(corevm::IROpcode val)
+{
+  static const char* OPCODE_STRS[] {
+    "alloca",
+    "load",
+    "store",
+    "getattr",
+    "setattr",
+    "delattr",
+    "getelement",
+    "putelement",
+    "len",
+    "ret",
+    "br",
+    "switch2",
+    "pos",
+    "neg",
+    "inc",
+    "dec",
+    "add",
+    "sub",
+    "mul",
+    "div",
+    "mod",
+    "bnot",
+    "band",
+    "bor",
+    "bxor",
+    "bls",
+    "brs",
+    "eq",
+    "neq",
+    "gt",
+    "lt",
+    "gte",
+    "lte",
+    "lnot",
+    "land",
+    "lor",
+    "cmp",
+    "call"
+  };
+
+  return OPCODE_STRS[val];
+}
+
+// -----------------------------------------------------------------------------
+
 void set_metadata(const MetadataPair& pair, corevm::IRModule& module)
 {
   const auto& key = pair.first;

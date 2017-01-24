@@ -22,6 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "verifier.h"
 #include "format.h"
+#include "format_util.h"
 #include "ir_module_index.h"
 #include <cstdio>
 #include <unordered_set>
@@ -202,6 +203,7 @@ Verifier::check_func_def(const IRClosure& closure)
   std::unordered_set<std::string> bb_set;
   FuncDefCheckContext ctx;
   ctx.closure = &closure;
+  ctx.bb = nullptr;
   for (const auto& bb : closure.blocks)
   {
     const auto itr = bb_set.find(bb.label);
@@ -219,6 +221,7 @@ Verifier::check_func_def(const IRClosure& closure)
       return false;
     }
 
+    ctx.bb = &bb;
     if (!check_basic_block(bb, ctx))
     {
       return false;
@@ -256,7 +259,7 @@ Verifier::check_basic_block(const IRBasicBlock& bb, FuncDefCheckContext& ctx)
       }
     }
 
-    if (!check_instruction(instr))
+    if (!check_instruction(instr, ctx))
     {
       return false;
     }
@@ -268,9 +271,173 @@ Verifier::check_basic_block(const IRBasicBlock& bb, FuncDefCheckContext& ctx)
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::check_instruction(const IRInstruction& instr)
+Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx)
 {
-  // TODO: to be implemented.
+  // Target type.
+  if (!instr.type.is_null())
+  {
+    if (!check_identifier_type(instr.type.get_IRIdentifierType()))
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Invalid type used in instruction \"%s\"",
+        IROpcode_to_string(instr.opcode));
+      m_msg.assign(buf);
+      return false;
+    }
+  }
+
+  // Labels.
+  if (!instr.labels.is_null())
+  {
+    const auto& labels = instr.labels.get_array();
+    for (const auto& label : labels)
+    {
+      const auto& bb_index = m_index->function_index[ctx.closure->name].bb_index;
+      const auto itr = bb_index.find(label.name);
+      if (itr == bb_index.end())
+      {
+        char buf[256] = {0};
+        snprintf(buf, sizeof(buf),
+          "Invalid label used in instruction \"%s\" in function \"%s\": \"%s\"",
+          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), label.name.c_str());
+        m_msg.assign(buf);
+        return false;
+      }
+    }
+  }
+
+  // Operands.
+  for (const auto& oprd : instr.oprds)
+  {
+    if (!check_operand(oprd, instr, ctx))
+    {
+      return false;
+    }
+
+    if (!check_instruction_dispatch(instr, ctx))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instruction_dispatch(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  switch (instr.opcode)
+  {
+  case corevm::alloca:
+    return check_instr_with_OPCODE_ALLOCA(instr, ctx);
+  case corevm::load:
+    return check_instr_with_OPCODE_LOAD(instr, ctx);
+  case corevm::store:
+    return check_instr_with_OPCODE_STORE(instr, ctx);
+  case corevm::getattr:
+    return check_instr_with_OPCODE_GETATTR(instr, ctx);
+  case corevm::setattr:
+    return check_instr_with_OPCODE_SETATTR(instr, ctx);
+  case corevm::delattr:
+    return check_instr_with_OPCODE_DELATTR(instr, ctx);
+  case corevm::getelement:
+    return check_instr_with_OPCODE_GETELEMENT(instr, ctx);
+  case corevm::putelement:
+    return check_instr_with_OPCODE_PUTELEMENT(instr, ctx);
+  case corevm::len:
+    return check_instr_with_OPCODE_LEN(instr, ctx);
+  case corevm::ret:
+    return check_instr_with_OPCODE_RET(instr, ctx);
+  case corevm::br:
+    return check_instr_with_OPCODE_BR(instr, ctx);
+  case switch2:
+    return check_instr_with_OPCODE_SWITCH2(instr, ctx);
+  case corevm::pos:
+  case corevm::neg:
+  case corevm::inc:
+  case corevm::dec:
+    return check_instr_with_UNARY_ARITHMETOC_OPCODE(instr, ctx);
+  case corevm::add:
+  case corevm::sub:
+  case corevm::mul:
+  case corevm::div:
+  case corevm::mod:
+    return check_instr_with_BINARY_ARITHMETIC_OPCODE(instr, ctx);
+  case corevm::bnot:
+    return check_instr_with_OPCODE_BNOT(instr, ctx);
+  case corevm::band:
+  case corevm::bor:
+  case corevm::bxor:
+    return check_instr_with_BINARY_BITWISE_OPCODE(instr, ctx);
+  case corevm::bls:
+  case corevm::brs:
+    return check_instr_with_BITSHIFT_OPCODE(instr, ctx);
+  case corevm::eq:
+  case corevm::neq:
+  case corevm::gt:
+  case corevm::lt:
+  case corevm::gte:
+  case corevm::lte:
+    return check_instr_with_EQUALITY_OPCODE(instr, ctx);
+  case corevm::lnot:
+    return check_instr_with_OPCODE_LNOT(instr, ctx);
+  case corevm::land:
+  case corevm::lor:
+    return check_instr_with_BINARY_LOGICAL_OPCODE(instr, ctx);
+  case corevm::cmp:
+    return check_instr_with_OPCODE_CMP(instr, ctx);
+  case corevm::call:
+    return check_instr_with_OPCODE_CALL(instr, ctx);
+  default:
+    char buf[256] = {0};
+    snprintf(buf, sizeof(buf),
+      "Invalid instruction code encountered");
+    m_msg.assign(buf);
+    return false;
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
+  FuncDefCheckContext& ctx)
+{
+  switch (oprd.type)
+  {
+  case corevm::constant:
+    // No need to do anything here actually.
+    break;
+  case corevm::ref:
+    {
+      const std::string ref = oprd.value.get_string();
+      const auto itr = ctx.target_set.find(ref);
+      if (itr == ctx.target_set.end())
+      {
+        char buf[256] = {0};
+        snprintf(buf, sizeof(buf),
+          "Undeclared operand used in instruction \"%s\" in function \"%s\": \"%s\"",
+          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), ref.c_str());
+        m_msg.assign(buf);
+        return false;
+      }
+    }
+    break;
+  default:
+    char buf[256] = {0};
+    snprintf(buf, sizeof(buf),
+      "Invalid operand type in instruction \"%s\"",
+      IROpcode_to_string(instr.opcode));
+    m_msg.assign(buf);
+    return false;
+  }
+
   return true;
 }
 
@@ -300,7 +467,6 @@ Verifier::check_identifier_type(const IRIdentifierType& identifier_type)
     }
     break;
   case IdentifierType_ValueType:
-    // Do nothing.
     break;
   default:
     {
@@ -320,6 +486,204 @@ bool
 Verifier::check_type_string(const std::string& type_name)
 {
   return m_index->type_index.find(type_name) != m_index->type_index.end();
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_STORE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_GETATTR(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_SETATTR(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_DELATTR(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_GETELEMENT(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_PUTELEMENT(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_LEN(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_RET(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_BR(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_SWITCH2(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_UNARY_ARITHMETOC_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_BNOT(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_BITSHIFT_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_EQUALITY_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_LNOT(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_BINARY_LOGICAL_OPCODE(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_CMP(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instr_with_OPCODE_CALL(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  return true;
 }
 
 // -----------------------------------------------------------------------------
