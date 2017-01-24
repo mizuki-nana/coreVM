@@ -76,8 +76,25 @@ IRModuleIndex::create_func_def_index(const IRClosure& closure)
 {
   IRModuleIndex::FunctionDefIndex func_def_index;
   func_def_index.closure = &closure;
+  func_def_index.parameter_index = create_parameter_index(closure);
   func_def_index.bb_index = create_bb_index(closure);
   return func_def_index;
+}
+
+// -----------------------------------------------------------------------------
+
+IRModuleIndex::FunctionDefIndex::ParameterIndex
+IRModuleIndex::create_parameter_index(const IRClosure& closure)
+{
+  FunctionDefIndex::ParameterIndex parameter_index;
+
+  for (const auto& parameter : closure.parameters)
+  {
+    parameter_index.insert(
+      std::make_pair(parameter.identifier, &parameter));
+  }
+
+  return parameter_index;
 }
 
 // -----------------------------------------------------------------------------

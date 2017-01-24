@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "fwd.h"
 #include <string>
 #include <memory>
+#include <unordered_set>
 
 namespace corevm {
 namespace ir {
@@ -66,6 +67,28 @@ private:
    * Checks function definitions in the module.
    */
   bool check_func_defs();
+
+  /**
+   * Check whether a function definition is valid in the module.
+   */
+  bool check_func_def(const IRClosure&);
+
+  struct FuncDefCheckContext
+  {
+    const IRClosure* closure;
+    std::unordered_set<std::string> target_set;
+  };
+
+  /**
+   * Check whether a basic block is valid in the module.
+   */
+  bool check_basic_block(const IRBasicBlock&, FuncDefCheckContext& ctx);
+
+  /**
+   * Check whether an instruction is valid in the context of its basic block
+   * and function definition.
+   */
+  bool check_instruction(const IRInstruction&);
 
   /**
    * Checks whether an identifier type is valid.

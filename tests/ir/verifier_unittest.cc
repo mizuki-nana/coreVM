@@ -69,7 +69,7 @@ TEST_F(VerifierUnitTest, TestInitialization)
 
 TEST_F(VerifierUnitTest, TestWithSingleValidTypeDefinition)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    string name;"
     "}";
@@ -81,7 +81,7 @@ TEST_F(VerifierUnitTest, TestWithSingleValidTypeDefinition)
 
 TEST_F(VerifierUnitTest, TestWithSingleInvalidTypeDefinition)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    Address address;"
     "}";
@@ -94,7 +94,7 @@ TEST_F(VerifierUnitTest, TestWithSingleInvalidTypeDefinition)
 
 TEST_F(VerifierUnitTest, TestWithTwoValidTypeDefinitions)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    string name;"
     "    Location location;"
@@ -113,7 +113,7 @@ TEST_F(VerifierUnitTest, TestWithTwoValidTypeDefinitions)
 
 TEST_F(VerifierUnitTest, TestWithOneInvalidTypeDefinition)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    string name;"
     "    Location location;"
@@ -134,7 +134,7 @@ TEST_F(VerifierUnitTest, TestWithOneInvalidTypeDefinition)
 
 TEST_F(VerifierUnitTest, TestWithOneInvalidTypeDefinitionWithRecursiveInvalidTypeUsage)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    string name;"
     "    Location location;"
@@ -163,7 +163,7 @@ TEST_F(VerifierUnitTest, TestWithOneInvalidTypeDefinitionWithRecursiveInvalidTyp
 
 TEST_F(VerifierUnitTest, TestGetIndex)
 {
-  const char* IR_STRING = 
+  const char* IR_STRING =
     "type Person {"
     "    string name;"
     "}";
@@ -182,6 +182,133 @@ TEST_F(VerifierUnitTest, TestGetIndex)
   ASSERT_NE(nullptr, index);
 
   ASSERT_EQ(1, index->type_index.size());
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithSingleValidFunctionDefinition)
+{
+  const char* IR_STRING =
+    "def void doNothing() {"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithTwoValidFunctionDefinitions)
+{
+  const char* IR_STRING =
+    "def void doNothing() {"
+    "}"
+    ""
+    "def string helloWorld() {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidParent)
+{
+  const char* IR_STRING =
+    "def void doNothing() {"
+    "}"
+    ""
+    "def string helloWorld() : doSomething {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid parent of function of \"helloWorld\": \"doSomething\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidReturnType)
+{
+  const char* IR_STRING =
+    "def MyType doNothing() {"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid return type for function \"doNothing\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithOneInvalidParameter)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    string location;"
+    "}"
+    "def void doNothing() {"
+    "}"
+    ""
+    "def string helloWorld(Person person, Location location) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid type for parameter \"location\" of function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicateParameters)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "}"
+    ""
+    "def string helloWorld(Person person, string person) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate parameter \"person\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithDuplicateBasicBlocks)
+{
+  const char* IR_STRING =
+    "def string helloWorld(string person) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "entry:"
+    "    ret string \"We should not be here\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate basic block \"entry\" in function \"helloWorld\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidSSAForm)
+{
+  const char* IR_STRING =
+    "def string helloWorld(string person) {"
+    "entry:"
+    "    %x = alloca [auto] string;"
+    "bb2:"
+    "    %x = alloca [auto] uint64;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Duplicate instruction target \"x\" in function \"helloWorld\"");
 }
 
 // -----------------------------------------------------------------------------

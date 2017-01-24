@@ -109,6 +109,167 @@ Verifier::check_type_decls()
 bool
 Verifier::check_func_defs()
 {
+  std::unordered_set<std::string> closure_names;
+  for (const auto& closure : m_module.closures)
+  {
+    const auto itr = closure_names.find(closure.name);
+    if (itr == closure_names.cend())
+    {
+      closure_names.insert(closure.name);
+    }
+    else
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Duplicate function definition of \"%s\"", closure.name.c_str());
+      m_msg.assign(buf);
+      return false;
+    }
+  }
+
+  for (const auto& closure : m_module.closures)
+  {
+    if (!check_func_def(closure))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_func_def(const IRClosure& closure)
+{
+  // Check parent.
+  if (!closure.parent.is_null())
+  {
+    const std::string parent_name = closure.parent.get_string();
+    if (m_index->function_index.find(parent_name) == m_index->function_index.cend())
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Invalid parent of function of \"%s\": \"%s\"",
+        closure.name.c_str(), parent_name.c_str());
+      m_msg.assign(buf);
+      return false;
+    }
+  }
+
+  // Return type.
+  if (!check_identifier_type(closure.rettype))
+  {
+    char buf[256] = {0};
+    snprintf(buf, sizeof(buf),
+      "Invalid return type for function \"%s\"", closure.name.c_str());
+    m_msg.assign(buf);
+    return false;
+  }
+
+  // Parameters.
+  std::unordered_set<std::string> parameters_set;
+  for (const auto& parameter : closure.parameters)
+  {
+    const auto itr = parameters_set.find(parameter.identifier);
+    if (itr == parameters_set.end())
+    {
+      parameters_set.insert(parameter.identifier);
+    }
+    else
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Duplicate parameter \"%s\" in function \"%s\"",
+        parameter.identifier.c_str(), closure.name.c_str());
+      m_msg.assign(buf);
+      return false;
+    }
+
+    if (!check_identifier_type(parameter.type))
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Invalid type for parameter \"%s\" of function \"%s\"",
+        parameter.identifier.c_str(), closure.name.c_str());
+      m_msg.assign(buf);
+      return false;
+    }
+  }
+
+  // Basic blocks.
+  std::unordered_set<std::string> bb_set;
+  FuncDefCheckContext ctx;
+  ctx.closure = &closure;
+  for (const auto& bb : closure.blocks)
+  {
+    const auto itr = bb_set.find(bb.label);
+    if (itr == bb_set.end())
+    {
+      bb_set.insert(bb.label);
+    }
+    else
+    {
+      char buf[256] = {0};
+      snprintf(buf, sizeof(buf),
+        "Duplicate basic block \"%s\" in function \"%s\"",
+        bb.label.c_str(), closure.name.c_str());
+      m_msg.assign(buf);
+      return false;
+    }
+
+    if (!check_basic_block(bb, ctx))
+    {
+      return false;
+    } 
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_basic_block(const IRBasicBlock& bb, FuncDefCheckContext& ctx)
+{
+  for (const auto& instr : bb.body)
+  {
+    if (!instr.target.is_null())
+    {
+      const std::string target = instr.target.get_string();
+      const auto itr = ctx.target_set.find(target);
+      {
+        if (itr == ctx.target_set.end())
+        {
+          ctx.target_set.insert(target);
+        }
+        else
+        {
+          char buf[256] = {0};
+          snprintf(buf, sizeof(buf),
+            "Duplicate instruction target \"%s\" in function \"%s\"",
+            target.c_str(), ctx.closure->name.c_str());
+          m_msg.assign(buf);
+          return false;
+        }
+      }
+    }
+
+    if (!check_instruction(instr))
+    {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_instruction(const IRInstruction& instr)
+{
   // TODO: to be implemented.
   return true;
 }
