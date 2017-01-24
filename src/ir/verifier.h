@@ -98,6 +98,21 @@ private:
   bool check_instruction_dispatch(const IRInstruction&, const FuncDefCheckContext&);
 
   /**
+   * Check whether an instruction has the correct number of options.
+   */
+  bool check_instruction_options_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+
+  /**
+   * Check whether an instruction has the correct number of operands.
+   */
+  bool check_instruction_operands_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+
+  /**
+   * Check whether an instruction has the correct number of labels.
+   */
+  bool check_instruction_labels_count(const IRInstruction&, size_t, const FuncDefCheckContext&);
+
+  /**
    * Check whether an instruction operand is valid.
    */
   bool check_operand(const IROperand&, const IRInstruction&, FuncDefCheckContext&);
