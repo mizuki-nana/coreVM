@@ -505,3 +505,115 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithValidReturnType)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithCallInstructionWithInvalidFunctionName)
+{
+  const char* IR_STRING =
+    "def string helloWorld() {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call i32 string \"worldHello\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid callee in instruction \"call\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithCallInstructionWithValidFunctionName)
+{
+  const char* IR_STRING =
+    "def string helloWorld() {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call string string \"helloWorld\";"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithCallInstructionWithInvalidInstructionType)
+{
+  const char* IR_STRING =
+    "def string helloWorld() {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call i32 string \"helloWorld\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid type of instruction \"call\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithCallInstructionWithInvalidArgumentType)
+{
+  const char* IR_STRING =
+    "def string helloWorld(i32 i) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call string string \"helloWorld\" dpf 3.14 ;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid argument type in instruction \"call\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithCallInstructionWithInvalidArgumentCount)
+{
+  const char* IR_STRING =
+    "def string helloWorld(i32 i, i64 k) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call string string \"helloWorld\" i32 5;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid number of arguments in instruction \"call\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithValidCallInstruction)
+{
+  const char* IR_STRING =
+    "def string helloWorld(i32 i, i64 k) {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}"
+    ""
+    "def void main() {"
+    "entry:"
+    "    call string string \"helloWorld\" i32 5 i64 10;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------

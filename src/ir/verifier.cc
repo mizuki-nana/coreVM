@@ -1388,7 +1388,78 @@ bool
 Verifier::check_instr_with_OPCODE_CALL(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
-  // TODO: to be implemented.
+  if (!check_instruction_options_count(instr, 0, ctx))
+  {
+    return false;
+  }
+
+  if (!check_instruction_labels_count(instr, 0, ctx))
+  {
+    return false;
+  }
+
+  if (instr.oprds.size() < 1)
+  {
+    ERROR("Expect at least 1 operand for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  const auto& first_operand = instr.oprds[0];
+  if (!is_operand_string_type(first_operand, ctx))
+  {
+    ERROR("Invalid type of first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  if (first_operand.type == corevm::constant)
+  {
+    const auto first_oprd_value = first_operand.value.get_IRValue();
+    if (!is_string_type(first_oprd_value.type))
+    {
+      ERROR("Invalid type of first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+    const std::string func_name = first_oprd_value.value.get_string();
+    const auto itr = m_index->function_index.find(func_name);
+    if (itr == m_index->function_index.end())
+    {
+      ERROR("Invalid callee in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    // Check instruction type matches with function return type.
+    const IRClosure* target_closure = itr->second.closure;
+    if (get_type_of_instr(instr) != target_closure->rettype)
+    {
+      ERROR("Invalid type of instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str()); 
+    }
+
+    // Validate arguments and parameter types match.
+    const size_t parameter_count = target_closure->parameters.size();
+    if ( instr.oprds.size() != (parameter_count + 1) )
+    {
+      ERROR("Invalid number of arguments in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    for (size_t i = 0; i < parameter_count; ++i)
+    {
+      if (get_operand_type(instr.oprds[i + 1], ctx) != target_closure->parameters[i].type)
+      {
+        ERROR("Invalid argument type in instruction \"%s\" in function \"%s\" under block \"%s\"",
+          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+          ctx.bb->label.c_str());
+      }
+    }
+  }
+
   return true;
 }
 
