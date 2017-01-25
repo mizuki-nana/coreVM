@@ -362,6 +362,100 @@ bool is_integer_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
+bool is_boolean_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::boolean:
+    return true;
+  default:
+    return false;
+  }
+
+  return false; 
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_numeric_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+  case corevm::spf:
+  case corevm::dpf:
+    return true;
+  default:
+    return false;
+  }
+
+  return false; 
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_numeric_or_boolean_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+  case corevm::spf:
+  case corevm::dpf:
+  case corevm::boolean:
+    return true;
+  default:
+    return false;
+  }
+
+  return false; 
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_string_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::string:
+    return true;
+  default:
+    return false;
+  }
+
+  return false; 
+}
+
+// -----------------------------------------------------------------------------
+
+bool is_object_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::object:
+    return true;
+  default:
+    return false;
+  }
+
+  return false; 
+}
+
+// -----------------------------------------------------------------------------
+
 corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction& instr)
 {
   if (instr.type.is_null())

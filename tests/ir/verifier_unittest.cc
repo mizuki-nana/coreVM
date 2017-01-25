@@ -461,3 +461,47 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithTwoCompatibleOperands)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithTwoIncompatibleOperandsInSwitch2Instr)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %i = alloca [ auto ] i32;"
+    "    switch2 %i dpf 3.14 [ label #end ];"
+    "end:"
+    "    ret void;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Operands at index 0 and 1 have incompatible type in instruction \"switch2\" in function \"helloWorld\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidReturnTypeInInstruction)
+{
+  const char* IR_STRING =
+    "def string helloWorld() {"
+    "entry:"
+    "    ret i32 5;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid return type for instruction \"ret\" in function \"helloWorld\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithValidReturnType)
+{
+  const char* IR_STRING =
+    "def string helloWorld() {"
+    "entry:"
+    "    ret string \"Hello world\";"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------

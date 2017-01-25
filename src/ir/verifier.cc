@@ -409,6 +409,80 @@ Verifier::get_operand_type(const IROperand& oprd,
 // -----------------------------------------------------------------------------
 
 bool
+Verifier::is_operand_integer_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_ValueType &&
+    is_integer_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_numeric_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_ValueType &&
+    is_numeric_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_numeric_or_boolean_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_ValueType &&
+    is_numeric_or_boolean_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_boolean_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_ValueType &&
+    is_boolean_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_array_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_Array;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_string_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_ValueType &&
+    is_string_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_struct_or_object_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_Identifier ||
+    is_object_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
   FuncDefCheckContext& ctx)
 {
@@ -605,6 +679,8 @@ Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
     return false;
   }
 
+  // TODO: check operand types.
+
   return true;
 }
 
@@ -628,6 +704,8 @@ Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
   {
     return false;
   }
+
+  // TODO: check operand types.
 
   return true;
 }
@@ -653,6 +731,8 @@ Verifier::check_instr_with_OPCODE_STORE(const IRInstruction& instr,
     return false;
   }
 
+  // TODO: check operand types.
+
   return true;
 }
 
@@ -675,6 +755,22 @@ Verifier::check_instr_with_OPCODE_GETATTR(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  // Check first operand is of string type.
+  if (!is_operand_string_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check second operand is of type struct or object.
+  if (!is_operand_struct_or_object_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -701,6 +797,24 @@ Verifier::check_instr_with_OPCODE_SETATTR(const IRInstruction& instr,
     return false;
   }
 
+  // Check first operand is of string type.
+  if (!is_operand_string_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // TODO: check second operand.
+
+  // Check third operand is of type struct or object.
+  if (!is_operand_struct_or_object_type(instr.oprds[2], ctx))
+  {
+    ERROR("Invalid type for third operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -723,6 +837,22 @@ Verifier::check_instr_with_OPCODE_DELATTR(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  // Check first operand is of string type.
+  if (!is_operand_string_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check second operand is of type struct or object.
+  if (!is_operand_struct_or_object_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -749,6 +879,33 @@ Verifier::check_instr_with_OPCODE_GETELEMENT(const IRInstruction& instr,
     return false;
   }
 
+  // Check first operand is of type array.
+  if (!is_operand_array_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check instruction type matches with first operand.
+  const auto src_identifier_type = get_operand_type(instr.oprds[0], ctx);
+  assert(src_identifier_type.type == IdentifierType_Array);
+  const auto src_array_type = src_identifier_type.value.get_IRArrayType();
+  if (instr.type.is_null() || instr.type.get_IRIdentifierType() != src_array_type.type)
+  {
+    ERROR("Incompatble types for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check second operand is of integer type.
+  if (!is_operand_integer_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -771,6 +928,34 @@ Verifier::check_instr_with_OPCODE_PUTELEMENT(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  // Check second operand is of array type.
+  if (!is_operand_array_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check first operand type matches with nested element type of second operand.
+  const auto dst_identifier_type = get_operand_type(instr.oprds[1], ctx);
+  assert(dst_identifier_type.type == IdentifierType_Array);
+  const auto dst_array_type = dst_identifier_type.value.get_IRArrayType();
+  const auto src_identifier_type = get_operand_type(instr.oprds[0], ctx);
+  if (src_identifier_type != dst_array_type.type)
+  {
+    ERROR("Incompatble types for first and second operands in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check third operand is of integer type.
+  if (!is_operand_integer_type(instr.oprds[2], ctx))
+  {
+    ERROR("Invalid type for third operand operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -797,6 +982,13 @@ Verifier::check_instr_with_OPCODE_LEN(const IRInstruction& instr,
     return false;
   }
 
+  if (!is_operand_array_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -819,6 +1011,15 @@ Verifier::check_instr_with_OPCODE_RET(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  // Check return type matches with function signature.
+  const auto oprd_type = get_operand_type(instr.oprds.front(), ctx);
+  if (oprd_type != ctx.closure->rettype)
+  {
+    ERROR("Invalid return type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -845,6 +1046,13 @@ Verifier::check_instr_with_OPCODE_BR(const IRInstruction& instr,
     return false;
   }
 
+  if (!is_operand_boolean_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -859,7 +1067,34 @@ Verifier::check_instr_with_OPCODE_SWITCH2(const IRInstruction& instr,
     return false;
   }
 
-  // TODO: check oprds count == labels count.
+  if (instr.oprds.size() < 2)
+  {
+    ERROR("Need at least 2 operands for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check oprds count == (labels count + 1).
+  const size_t label_count = instr.labels.is_null() ?
+    0 : instr.labels.get_array().size();
+  if ( instr.oprds.size() != (label_count + 1) )
+  {
+    ERROR("Number of operands and labels do not match for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  // Check if operands have the same type.
+  for (size_t i = 1; i < instr.oprds.size(); ++i)
+  {
+    const auto& first_operand = instr.oprds.front();
+    if (!are_operands_of_same_type(first_operand, instr.oprds[i], ctx))
+    {
+      ERROR("Operands at index %u and %u have incompatible type in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        0, i, IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+  }
 
   return true;
 }
@@ -883,6 +1118,13 @@ Verifier::check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  if (!is_operand_numeric_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -909,6 +1151,14 @@ Verifier::check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
     return false;
   }
 
+  if (!is_operand_numeric_type(instr.oprds[0], ctx) ||
+      !is_operand_numeric_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -931,6 +1181,13 @@ Verifier::check_instr_with_OPCODE_BNOT(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  if (!is_operand_numeric_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -957,6 +1214,14 @@ Verifier::check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction& instr,
     return false;
   }
 
+  if (!is_operand_numeric_type(instr.oprds[0], ctx) ||
+      !is_operand_numeric_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -979,6 +1244,14 @@ Verifier::check_instr_with_BITSHIFT_OPCODE(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  if (!is_operand_integer_type(instr.oprds[0], ctx) ||
+      !is_operand_integer_type(instr.oprds[1], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -1036,6 +1309,13 @@ Verifier::check_instr_with_OPCODE_LNOT(const IRInstruction& instr,
     return false;
   }
 
+  if (!is_operand_numeric_or_boolean_type(instr.oprds[0], ctx))
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -1060,6 +1340,14 @@ Verifier::check_instr_with_BINARY_LOGICAL_OPCODE(const IRInstruction& instr,
     return false;
   }
 
+  if (! (is_operand_numeric_or_boolean_type(instr.oprds[0], ctx) &&
+         is_operand_numeric_or_boolean_type(instr.oprds[1], ctx)) )
+  {
+    ERROR("Invalid operand type for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
   return true;
 }
 
@@ -1082,6 +1370,13 @@ Verifier::check_instr_with_OPCODE_CMP(const IRInstruction& instr,
   if (!check_instruction_labels_count(instr, 0, ctx))
   {
     return false;
+  }
+
+  if (!are_operands_of_same_type(instr.oprds[0], instr.oprds[1], ctx))
+  {
+    ERROR("Incompatible operand types for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;

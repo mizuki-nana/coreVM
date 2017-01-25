@@ -140,6 +140,41 @@ private:
     const FuncDefCheckContext&);
 
   /**
+   * Determines whether an operand is of integer type.
+   */
+  bool is_operand_integer_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of numeric type.
+   */
+  bool is_operand_numeric_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of numeric or boolean type.
+   */
+  bool is_operand_numeric_or_boolean_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of boolean type.
+   */
+  bool is_operand_boolean_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of array type.
+   */
+  bool is_operand_array_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of string type.
+   */
+  bool is_operand_string_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of struct or object type.
+   */
+  bool is_operand_struct_or_object_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
    * Checks whether an identifier type is valid.
    */
   bool check_identifier_type(const IRIdentifierType& type);
