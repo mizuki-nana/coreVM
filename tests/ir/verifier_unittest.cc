@@ -432,3 +432,18 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidOptionForAlloca
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithTwoIncompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %i = alloca [ auto ] i32;"
+    "    %same = eq %i string \"Hello wold\";"
+    "}";
+
+  check_verification(IR_STRING,
+    "Incompatible operand types for instruction \"eq\" in function \"helloWorld\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
