@@ -146,7 +146,7 @@ private:
   bool check_instr_with_OPCODE_RET(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_OPCODE_BR(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_OPCODE_SWITCH2(const IRInstruction&, const FuncDefCheckContext&);
-  bool check_instr_with_UNARY_ARITHMETOC_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
+  bool check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_OPCODE_BNOT(const IRInstruction&, const FuncDefCheckContext&);
   bool check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction&, const FuncDefCheckContext&);

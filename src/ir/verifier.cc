@@ -33,6 +33,16 @@ namespace ir {
 
 // -----------------------------------------------------------------------------
 
+#define ERROR(fmt, ...)                                 \
+  {                                                     \
+    char buf[256] = {0};                                \
+    snprintf(buf, sizeof(buf), (fmt), ##__VA_ARGS__);   \
+    m_msg.assign(buf);                                  \
+    return false;                                       \
+  }
+
+// -----------------------------------------------------------------------------
+
 Verifier::Verifier(const IRModule& module)
   :
   m_module(module),
@@ -78,11 +88,7 @@ Verifier::check_type_decls()
     }
     else
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Duplicate type definition of \"%s\"", type_decl.name.c_str());
-      m_msg.assign(buf);
-      return false;
+      ERROR("Duplicate type definition of \"%s\"", type_decl.name.c_str());
     }
   }
 
@@ -92,12 +98,8 @@ Verifier::check_type_decls()
     {
       if (!check_identifier_type(field.type))
       {
-        char buf[256] = {0};
-        snprintf(buf, sizeof(buf),
-          "Unknown type used for type member %s::%s",
+        ERROR("Unknown type used for type member %s::%s",
           type_decl.name.c_str(), field.identifier.c_str());
-        m_msg.assign(buf);
-        return false;
       }
     }
   }
@@ -120,11 +122,7 @@ Verifier::check_func_defs()
     }
     else
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Duplicate function definition of \"%s\"", closure.name.c_str());
-      m_msg.assign(buf);
-      return false;
+      ERROR("Duplicate function definition of \"%s\"", closure.name.c_str());
     }
   }
 
@@ -150,23 +148,15 @@ Verifier::check_func_def(const IRClosure& closure)
     const std::string parent_name = closure.parent.get_string();
     if (m_index->function_index.find(parent_name) == m_index->function_index.cend())
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Invalid parent of function of \"%s\": \"%s\"",
+      ERROR("Invalid parent of function of \"%s\": \"%s\"",
         closure.name.c_str(), parent_name.c_str());
-      m_msg.assign(buf);
-      return false;
     }
   }
 
   // Return type.
   if (!check_identifier_type(closure.rettype))
   {
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
-      "Invalid return type for function \"%s\"", closure.name.c_str());
-    m_msg.assign(buf);
-    return false;
+    ERROR("Invalid return type for function \"%s\"", closure.name.c_str());
   }
 
   // Parameters.
@@ -180,22 +170,14 @@ Verifier::check_func_def(const IRClosure& closure)
     }
     else
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Duplicate parameter \"%s\" in function \"%s\"",
+      ERROR("Duplicate parameter \"%s\" in function \"%s\"",
         parameter.identifier.c_str(), closure.name.c_str());
-      m_msg.assign(buf);
-      return false;
     }
 
     if (!check_identifier_type(parameter.type))
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Invalid type for parameter \"%s\" of function \"%s\"",
+      ERROR("Invalid type for parameter \"%s\" of function \"%s\"",
         parameter.identifier.c_str(), closure.name.c_str());
-      m_msg.assign(buf);
-      return false;
     }
   }
 
@@ -213,12 +195,8 @@ Verifier::check_func_def(const IRClosure& closure)
     }
     else
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Duplicate basic block \"%s\" in function \"%s\"",
+      ERROR("Duplicate basic block \"%s\" in function \"%s\"",
         bb.label.c_str(), closure.name.c_str());
-      m_msg.assign(buf);
-      return false;
     }
 
     ctx.bb = &bb;
@@ -249,12 +227,8 @@ Verifier::check_basic_block(const IRBasicBlock& bb, FuncDefCheckContext& ctx)
         }
         else
         {
-          char buf[256] = {0};
-          snprintf(buf, sizeof(buf),
-            "Duplicate instruction target \"%s\" in function \"%s\"",
+          ERROR("Duplicate instruction target \"%s\" in function \"%s\"",
             target.c_str(), ctx.closure->name.c_str());
-          m_msg.assign(buf);
-          return false;
         }
       }
     }
@@ -278,31 +252,24 @@ Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx
   {
     if (!check_identifier_type(instr.type.get_IRIdentifierType()))
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Invalid type used in instruction \"%s\"",
+      ERROR("Invalid type used in instruction \"%s\"",
         IROpcode_to_string(instr.opcode));
-      m_msg.assign(buf);
-      return false;
     }
   }
 
   // Labels.
   if (!instr.labels.is_null())
   {
+    const auto& bb_index = m_index->function_index[ctx.closure->name].bb_index;
     const auto& labels = instr.labels.get_array();
     for (const auto& label : labels)
     {
-      const auto& bb_index = m_index->function_index[ctx.closure->name].bb_index;
       const auto itr = bb_index.find(label.name);
       if (itr == bb_index.end())
       {
-        char buf[256] = {0};
-        snprintf(buf, sizeof(buf),
-          "Invalid label used in instruction \"%s\" in function \"%s\": \"%s\"",
-          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), label.name.c_str());
-        m_msg.assign(buf);
-        return false;
+        ERROR("Invalid label used in instruction \"%s\" in function \"%s\": \"%s\"",
+          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+          label.name.c_str());
       }
     }
   }
@@ -361,7 +328,7 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
   case corevm::neg:
   case corevm::inc:
   case corevm::dec:
-    return check_instr_with_UNARY_ARITHMETOC_OPCODE(instr, ctx);
+    return check_instr_with_UNARY_ARITHMETIC_OPCODE(instr, ctx);
   case corevm::add:
   case corevm::sub:
   case corevm::mul:
@@ -394,11 +361,7 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
   case corevm::call:
     return check_instr_with_OPCODE_CALL(instr, ctx);
   default:
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
-      "Invalid instruction code encountered");
-    m_msg.assign(buf);
-    return false;
+    ERROR("Invalid instruction code encountered");
   }
 
   return true;
@@ -426,14 +389,12 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
 
       if (itr == ctx.target_set.end() && parameter_itr == parameter_index.end())
       {
-        char buf[256] = {0};
-        snprintf(buf, sizeof(buf),
-          "Undeclared operand used in instruction \"%s\" in function \"%s\": \"%s\"",
-          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), ref.c_str());
-        m_msg.assign(buf);
-        return false;
+        ERROR("Undeclared operand used in instruction \"%s\" in function \"%s\": \"%s\"",
+          IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+          ref.c_str());
       }
 
+      // Check if operand type is compatible with instruction type.
       if (!instr.type.is_null())
       {
         auto& instr_index = function_index.bb_index[ctx.bb->label];
@@ -443,12 +404,8 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
 
         if (oprd_type != instr.type.get_IRIdentifierType())
         {
-          char buf[256] = {0};
-          snprintf(buf, sizeof(buf),
-            "Incompatible operand type in instruction \"%s\" in function \"%s\"",
+          ERROR("Incompatible operand type in instruction \"%s\" in function \"%s\"",
             IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
-          m_msg.assign(buf);
-          return false;
         }
       }
       else
@@ -458,11 +415,8 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
     }
     break;
   default:
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
-      "Invalid operand type in instruction \"%s\"",
+    ERROR("Invalid operand type in instruction \"%s\"",
       IROpcode_to_string(instr.opcode));
-    m_msg.assign(buf);
     return false;
   }
 
@@ -498,11 +452,7 @@ Verifier::check_identifier_type(const IRIdentifierType& identifier_type)
     break;
   default:
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf), "Invalid type field type: %u",
-        identifier_type.type);
-      m_msg.assign(buf);
-      return false;
+      ERROR("Invalid type field type: %u", identifier_type.type);
     }
   }
 
@@ -525,12 +475,9 @@ Verifier::check_instruction_options_count(const IRInstruction& instr,
 {
   if (instr.options.size() != count)
   {
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
+    ERROR(
       "Instruction \"%s\" in function \"%s\" has incorrect number of options",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
-    m_msg.assign(buf);
-    return false;
   }
 
   return true;
@@ -544,12 +491,8 @@ Verifier::check_instruction_operands_count(const IRInstruction& instr,
 {
   if (instr.oprds.size() != count)
   {
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
-      "Instruction \"%s\" in function \"%s\" has incorrect number of operands",
+    ERROR("Instruction \"%s\" in function \"%s\" has incorrect number of operands",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
-    m_msg.assign(buf);
-    return false;
   }
 
   return true;
@@ -580,12 +523,8 @@ Verifier::check_instruction_labels_count(const IRInstruction& instr,
 
   if (!res)
   {
-    char buf[256] = {0};
-    snprintf(buf, sizeof(buf),
-      "Instruction \"%s\" in function \"%s\" has incorrect number of labels",
+    ERROR("Instruction \"%s\" in function \"%s\" has incorrect number of labels",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
-    m_msg.assign(buf);
-    return false;
   }
 
   return res;
@@ -606,12 +545,8 @@ Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
     const auto& option = instr.options.front();
     if (option != "auto" && option != "static")
     {
-      char buf[256] = {0};
-      snprintf(buf, sizeof(buf),
-        "Unrecognized option in instruction \"%s\" in function \"%s\": \"%s\"",
+      ERROR("Unrecognized option in instruction \"%s\" in function \"%s\": \"%s\"",
         IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), option.c_str());
-      m_msg.assign(buf);
-      return false;
     }
   }
 
@@ -887,7 +822,7 @@ Verifier::check_instr_with_OPCODE_SWITCH2(const IRInstruction& instr,
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::check_instr_with_UNARY_ARITHMETOC_OPCODE(const IRInstruction& instr,
+Verifier::check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
   if (!check_instruction_options_count(instr, 0, ctx))
