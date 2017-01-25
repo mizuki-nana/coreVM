@@ -28,6 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <utility>
 #include <vector>
 
+
+/** Utilities for handling coreVM IR entities. */
+
 namespace corevm {
 namespace ir {
 
