@@ -511,9 +511,7 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
       if (!instr.type.is_null())
       {
         auto& instr_index = function_index.bb_index[ctx.bb->label];
-
-        const auto& oprd_type = instr_index.find(ref) != instr_index.end() ?
-          instr_index[ref]->type.get_IRIdentifierType() : parameter_itr->second->type;
+        const auto& oprd_type = get_operand_type(oprd, ctx);
 
         if (oprd_type != instr.type.get_IRIdentifierType())
         {
