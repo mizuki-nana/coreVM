@@ -968,6 +968,13 @@ Verifier::check_instr_with_EQUALITY_OPCODE(const IRInstruction& instr,
     return false;
   }
 
+  // if (!operator==(instr.oprds[0].type, instr.oprds[1].type))
+  // {
+  //   ERROR("Incompatible operand types for instruction \"%s\" in function \"%s\" under block \"%s\"",
+  //     IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+  //     ctx.bb->label.c_str());
+  // }
+
   return true;
 }
 

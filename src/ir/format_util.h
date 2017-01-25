@@ -52,6 +52,16 @@ bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
 
 bool is_integer_type(const corevm::IRValueType&);
 
+corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction&);
+
+corevm::IRIdentifierType create_ir_value_type(IRValueType);
+
+corevm::IRIdentifierType create_ir_boolean_value_type();
+
+corevm::IRIdentifierType create_ir_i32_value_type();
+
+corevm::IRIdentifierType create_ir_void_value_type();
+
 } /* end namespace ir */
 } /* end namespace corevm */
 

@@ -22,6 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "ir_module_index.h"
 #include "format.h"
+#include "format_util.h"
+
 
 namespace corevm {
 namespace ir {
@@ -76,9 +78,38 @@ IRModuleIndex::create_func_def_index(const IRClosure& closure)
 {
   IRModuleIndex::FunctionDefIndex func_def_index;
   func_def_index.closure = &closure;
+  func_def_index.identifier_type_index = create_identifier_type_index(closure);
   func_def_index.parameter_index = create_parameter_index(closure);
   func_def_index.bb_index = create_bb_index(closure);
   return func_def_index;
+}
+
+// -----------------------------------------------------------------------------
+
+IRModuleIndex::FunctionDefIndex::IdentifierTypeIndex
+IRModuleIndex::create_identifier_type_index(const IRClosure& closure)
+{
+  FunctionDefIndex::IdentifierTypeIndex identifier_type_index;
+
+  for (const auto& parameter : closure.parameters)
+  {
+    identifier_type_index.insert(
+      std::make_pair(parameter.identifier, parameter.type));
+  }
+
+  for (const auto& bb : closure.blocks)
+  {
+    for (const auto& instr : bb.body)
+    {
+      if (!instr.target.is_null())
+      {
+        identifier_type_index.insert(std::make_pair(instr.target.get_string(),
+          get_type_of_instr(instr)));
+      }
+    }
+  }
+
+  return identifier_type_index;
 }
 
 // -----------------------------------------------------------------------------

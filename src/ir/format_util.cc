@@ -362,5 +362,63 @@ bool is_integer_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
+corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction& instr)
+{
+  if (instr.type.is_null())
+  {
+    switch (instr.opcode)
+    {
+    case corevm::eq:
+    case corevm::neq:
+    case corevm::lt:
+    case corevm::gt:
+    case corevm::lte:
+    case corevm::gte:
+      return create_ir_boolean_value_type();
+    case corevm::cmp:
+      return create_ir_i32_value_type();
+    default:
+      return create_ir_void_value_type();
+    }
+  }
+  else
+  {
+    return instr.type.get_IRIdentifierType();
+  }
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_value_type(corevm::IRValueType value_type)
+{
+  corevm::IRIdentifierType identifier_type;
+  identifier_type.type = IdentifierType_ValueType;
+  identifier_type.value.set_IRValueType(value_type);
+  return identifier_type;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_boolean_value_type()
+{
+  return create_ir_value_type(corevm::boolean);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_i32_value_type()
+{
+  return create_ir_value_type(corevm::i32);
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType create_ir_void_value_type()
+{
+  return create_ir_value_type(corevm::voidtype);
+}
+
+// -----------------------------------------------------------------------------
+
 } /* end namespace ir */
 } /* end namespace corevm */
