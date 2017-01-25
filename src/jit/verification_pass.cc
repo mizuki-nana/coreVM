@@ -21,10 +21,20 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *******************************************************************************/
 #include "verification_pass.h"
+#include "ir/verifier.h"
+#include "ir/ir_module_index.h"
+#include "ir/format.h"
+#include <string>
 
 
 namespace corevm {
 namespace jit {
+
+// -----------------------------------------------------------------------------
+
+IRModuleIndexAnalysisResult::~IRModuleIndexAnalysisResult()
+{
+}
 
 // -----------------------------------------------------------------------------
 
@@ -36,56 +46,35 @@ const Pass::PassType VerificationPass::Type = PassType_Module;
 
 // -----------------------------------------------------------------------------
 
+VerificationPass::VerificationPass()
+  :
+  m_analysis_result(new IRModuleIndexAnalysisResult())
+{
+}
+
+// -----------------------------------------------------------------------------
+
 /* virtual */
 std::shared_ptr<const AnalysisResult>
 VerificationPass::get_analysis_result() const
 {
-  // TODO: [COREVM-548] Implement IR verification pass
-  return nullptr;
+  return m_analysis_result;
 }
 
 // -----------------------------------------------------------------------------
 
 /* virtual */
-bool VerificationPass::run(const IRModule&, const AnalysisResult*)
+bool VerificationPass::run(const IRModule& module, const AnalysisResult*)
 {
-  // TODO: [COREVM-548] Implement IR verification pass
-  return true;
-}
+  ir::Verifier verifier(module);
+  std::string msg;
+  if (!verifier.run(msg))
+  {
+    return false;
+  }
 
-// -----------------------------------------------------------------------------
+  verifier.get_index(m_analysis_result->module_index);
 
-/* virtual */
-bool VerificationPass::run(const IRTypeDecl&, const AnalysisResult*)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
-  return true;
-}
-
-// -----------------------------------------------------------------------------
-
-/* virtual */
-bool VerificationPass::run(const IRClosure&, const AnalysisResult*)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
-  return true;
-}
-
-// -----------------------------------------------------------------------------
-
-/* virtual */
-bool VerificationPass::run(const IRBasicBlock&, const AnalysisResult*)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
-  return true;
-}
-
-// -----------------------------------------------------------------------------
-
-/* virtual */
-bool VerificationPass::run(const IRInstruction&, const AnalysisResult*)
-{
-  // TODO: [COREVM-548] Implement IR verification pass
   return true;
 }
 

@@ -27,7 +27,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 namespace corevm {
+
+/** Forward declaration. */
+namespace ir {
+struct IRModuleIndex;
+} /* end namespace ir */
+
 namespace jit {
+
+struct IRModuleIndexAnalysisResult : public AnalysisResult
+{
+virtual ~IRModuleIndexAnalysisResult();
+mutable std::unique_ptr<ir::IRModuleIndex> module_index;
+};
 
 class VerificationPass : public AnalysisPass
 {
@@ -36,13 +48,14 @@ public:
 
   static const Pass::PassType Type;
 
+  VerificationPass();
+
   virtual std::shared_ptr<const AnalysisResult> get_analysis_result() const;
 
   virtual bool run(const IRModule&, const AnalysisResult* = nullptr);
-  virtual bool run(const IRTypeDecl&, const AnalysisResult* = nullptr);
-  virtual bool run(const IRClosure&, const AnalysisResult* = nullptr);
-  virtual bool run(const IRBasicBlock&, const AnalysisResult* = nullptr);
-  virtual bool run(const IRInstruction&, const AnalysisResult* = nullptr);
+
+private:
+  std::shared_ptr<const IRModuleIndexAnalysisResult> m_analysis_result;
 };
 
 } /* end namespace jit */
