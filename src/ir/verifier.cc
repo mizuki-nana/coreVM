@@ -227,8 +227,8 @@ Verifier::check_basic_block(const IRBasicBlock& bb, FuncDefCheckContext& ctx)
         }
         else
         {
-          ERROR("Duplicate instruction target \"%s\" in function \"%s\"",
-            target.c_str(), ctx.closure->name.c_str());
+          ERROR("Duplicate instruction target \"%s\" in function \"%s\" under block \"%s\"",
+            target.c_str(), ctx.closure->name.c_str(), ctx.bb->label.c_str());
         }
       }
     }
@@ -252,8 +252,9 @@ Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx
   {
     if (!check_identifier_type(instr.type.get_IRIdentifierType()))
     {
-      ERROR("Invalid type used in instruction \"%s\"",
-        IROpcode_to_string(instr.opcode));
+      ERROR("Invalid type used in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
     }
   }
 
@@ -267,9 +268,9 @@ Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx
       const auto itr = bb_index.find(label.name);
       if (itr == bb_index.end())
       {
-        ERROR("Invalid label used in instruction \"%s\" in function \"%s\": \"%s\"",
+        ERROR("Invalid label used in instruction \"%s\" in function \"%s\" under block \"%s\": \"%s\"",
           IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
-          label.name.c_str());
+          ctx.bb->label.c_str(), label.name.c_str());
       }
     }
   }
@@ -361,7 +362,8 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
   case corevm::call:
     return check_instr_with_OPCODE_CALL(instr, ctx);
   default:
-    ERROR("Invalid instruction code encountered");
+    ERROR("Invalid instruction code encountered in function \"%s\" under block \"%s\"",
+      ctx.closure->name.c_str(), ctx.bb->label.c_str());
   }
 
   return true;
@@ -389,9 +391,9 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
 
       if (itr == ctx.target_set.end() && parameter_itr == parameter_index.end())
       {
-        ERROR("Undeclared operand used in instruction \"%s\" in function \"%s\": \"%s\"",
+        ERROR("Undeclared operand used in instruction \"%s\" in function \"%s\" under block \"%s\": \"%s\"",
           IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
-          ref.c_str());
+          ctx.bb->label.c_str(), ref.c_str());
       }
 
       // Check if operand type is compatible with instruction type.
@@ -404,8 +406,9 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
 
         if (oprd_type != instr.type.get_IRIdentifierType())
         {
-          ERROR("Incompatible operand type in instruction \"%s\" in function \"%s\"",
-            IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
+          ERROR("Incompatible operand type in instruction \"%s\" in function \"%s\" under block \"%s\"",
+            IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+            ctx.bb->label.c_str());
         }
       }
       else
@@ -415,8 +418,9 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
     }
     break;
   default:
-    ERROR("Invalid operand type in instruction \"%s\"",
-      IROpcode_to_string(instr.opcode));
+    ERROR("Invalid operand type in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
     return false;
   }
 
@@ -476,8 +480,9 @@ Verifier::check_instruction_options_count(const IRInstruction& instr,
   if (instr.options.size() != count)
   {
     ERROR(
-      "Instruction \"%s\" in function \"%s\" has incorrect number of options",
-      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
+      "Instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of options",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -491,8 +496,9 @@ Verifier::check_instruction_operands_count(const IRInstruction& instr,
 {
   if (instr.oprds.size() != count)
   {
-    ERROR("Instruction \"%s\" in function \"%s\" has incorrect number of operands",
-      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
+    ERROR("Instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of operands",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return true;
@@ -523,8 +529,9 @@ Verifier::check_instruction_labels_count(const IRInstruction& instr,
 
   if (!res)
   {
-    ERROR("Instruction \"%s\" in function \"%s\" has incorrect number of labels",
-      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str());
+    ERROR("Instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of labels",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
   }
 
   return res;
@@ -545,8 +552,9 @@ Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
     const auto& option = instr.options.front();
     if (option != "auto" && option != "static")
     {
-      ERROR("Unrecognized option in instruction \"%s\" in function \"%s\": \"%s\"",
-        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(), option.c_str());
+      ERROR("Unrecognized option in instruction \"%s\" in function \"%s\" under block \"%s\": \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str(), option.c_str());
     }
   }
 

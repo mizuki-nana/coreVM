@@ -308,7 +308,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidSSAForm)
     "}";
 
   check_verification(IR_STRING,
-    "Duplicate instruction target \"x\" in function \"helloWorld\"");
+    "Duplicate instruction target \"x\" in function \"helloWorld\" under block \"bb2\"");
 }
 
 // -----------------------------------------------------------------------------
@@ -322,7 +322,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrType)
     "}";
 
   check_verification(IR_STRING,
-    "Invalid type used in instruction \"alloca\"");
+    "Invalid type used in instruction \"alloca\" in function \"helloWorld\" under block \"entry\"");
 }
 
 // -----------------------------------------------------------------------------
@@ -342,7 +342,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithUndeclaredOperand)
     "}";
 
   check_verification(IR_STRING,
-    "Undeclared operand used in instruction \"setattr\" in function \"helloWorld\": \"person\"");
+    "Undeclared operand used in instruction \"setattr\" in function \"helloWorld\" under block \"entry\": \"person\"");
 }
 
 // -----------------------------------------------------------------------------
@@ -356,7 +356,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabel)
     "}";
 
   check_verification(IR_STRING,
-    "Invalid label used in instruction \"br\" in function \"helloWorld\": \"end\"");
+    "Invalid label used in instruction \"br\" in function \"helloWorld\" under block \"entry\": \"end\"");
 }
 
 // -----------------------------------------------------------------------------
@@ -370,7 +370,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrOptionCoun
     "}";
 
   check_verification(IR_STRING,
-    "Instruction \"alloca\" in function \"helloWorld\" has incorrect number of options");
+    "Instruction \"alloca\" in function \"helloWorld\" under block \"entry\" has incorrect number of options");
 }
 
 // -----------------------------------------------------------------------------
@@ -384,7 +384,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrOperandCou
     "}";
 
   check_verification(IR_STRING,
-    "Instruction \"alloca\" in function \"helloWorld\" has incorrect number of operands");
+    "Instruction \"alloca\" in function \"helloWorld\" under block \"entry\" has incorrect number of operands");
 }
 
 // -----------------------------------------------------------------------------
@@ -400,12 +400,12 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidInstrLabelCount
     "}";
 
   check_verification(IR_STRING,
-    "Instruction \"br\" in function \"helloWorld\" has incorrect number of labels");
+    "Instruction \"br\" in function \"helloWorld\" under block \"entry\" has incorrect number of labels");
 }
 
 // -----------------------------------------------------------------------------
 
-TEST_F(VerifierUnitTest, TestWithWithIncompatibleInstrAndOperandType)
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithIncompatibleInstrAndOperandType)
 {
   const char* IR_STRING =
     "def void helloWorld(i32 i) {"
@@ -414,7 +414,21 @@ TEST_F(VerifierUnitTest, TestWithWithIncompatibleInstrAndOperandType)
     "}";
 
   check_verification(IR_STRING,
-    "Incompatible operand type in instruction \"load\" in function \"helloWorld\"");
+    "Incompatible operand type in instruction \"load\" in function \"helloWorld\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidOptionForAllocaInstr)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %i = alloca [ hello ] i32;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Unrecognized option in instruction \"alloca\" in function \"helloWorld\" under block \"entry\": \"hello\"");
 }
 
 // -----------------------------------------------------------------------------

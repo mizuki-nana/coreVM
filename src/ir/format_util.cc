@@ -237,6 +237,8 @@ const char* IROpcode_to_string(corevm::IROpcode val)
     "call"
   };
 
+  assert((sizeof(OPCODE_STRS) / sizeof(const char*)) > val);
+
   return OPCODE_STRS[val];
 }
 
