@@ -114,7 +114,8 @@ to machine code. The pipeline's front-end is responsible for loading IR
 bytecode, its middle-end is a chain of optimization and lowering processes that
 operate on the input IR bytecode. Finally, its back-end is consisted of several
 compilation processes, each with its own unique input type as well as strengths
-and drawbacks. Visit `Just-in-Time Compilation <jit.html>`_ for more details.
+and drawbacks. Visit `Just-in-Time Compilation Pipeline <jit.html>`_ for more
+details.
 
 
 .. _front-end:
