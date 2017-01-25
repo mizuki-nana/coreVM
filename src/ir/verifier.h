@@ -73,6 +73,9 @@ private:
    */
   bool check_func_def(const IRClosure&);
 
+  /**
+   * Context of a function definition check.
+   */
   struct FuncDefCheckContext
   {
     const IRClosure* closure;
@@ -93,7 +96,8 @@ private:
 
   /**
    * Check whether an instruction is valid in the context of its basic block
-   * and function definition.
+   * and function definition, and dispatches control to an opcode specific
+   * check.
    */
   bool check_instruction_dispatch(const IRInstruction&,
     const FuncDefCheckContext&);

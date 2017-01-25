@@ -242,7 +242,7 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithInvalidReturnType)
 
 // -----------------------------------------------------------------------------
 
-TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithOneInvalidParameter)
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithOneInvalidParameterType)
 {
   const char* IR_STRING =
     "type Person {"
