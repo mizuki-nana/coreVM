@@ -372,6 +372,43 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
 // -----------------------------------------------------------------------------
 
 bool
+Verifier::are_operands_of_type(const IROperand& lhs, const IROperand& rhs,
+  const FuncDefCheckContext& ctx)
+{
+  const auto lhs_type = get_operand_type(lhs, ctx);
+  const auto rhs_type = get_operand_type(rhs, ctx);
+  return operator==(lhs_type, rhs_type);
+}
+
+// -----------------------------------------------------------------------------
+
+const IRIdentifierType&
+Verifier::get_operand_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
+{
+  const auto& function_index = m_index->function_index[ctx.closure->name];
+  switch (oprd.type)
+  {
+  case corevm::constant:
+    return create_ir_value_type(oprd.value.get_IRValue().type);
+  case corevm::ref:
+    {
+      const std::string ref_name = oprd.value.get_string();
+      const auto itr = function_index.identifier_type_index.find(ref_name);
+      assert(itr != function_index.identifier_type_index.end());
+      return itr->second;
+    }
+    break;
+  default:
+    return create_ir_void_value_type();
+  }
+
+  return create_ir_void_value_type();
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
   FuncDefCheckContext& ctx)
 {
@@ -968,12 +1005,12 @@ Verifier::check_instr_with_EQUALITY_OPCODE(const IRInstruction& instr,
     return false;
   }
 
-  // if (!operator==(instr.oprds[0].type, instr.oprds[1].type))
-  // {
-  //   ERROR("Incompatible operand types for instruction \"%s\" in function \"%s\" under block \"%s\"",
-  //     IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
-  //     ctx.bb->label.c_str());
-  // }
+  if (!are_operands_of_type(instr.oprds[0], instr.oprds[1], ctx))
+  {
+    ERROR("Incompatible operand types for instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
 
   return true;
 }

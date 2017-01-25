@@ -127,6 +127,19 @@ private:
     FuncDefCheckContext&);
 
   /**
+   * Determines whether two operands in the same instruction have the same
+   * identifier type.
+   */
+  bool are_operands_of_type(const IROperand&, const IROperand&,
+    const FuncDefCheckContext&);
+
+  /**
+   * Get the identifier type of an operand.
+   */
+  const IRIdentifierType& get_operand_type(const IROperand&,
+    const FuncDefCheckContext&);
+
+  /**
    * Checks whether an identifier type is valid.
    */
   bool check_identifier_type(const IRIdentifierType& type);
