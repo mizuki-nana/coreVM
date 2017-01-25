@@ -447,3 +447,17 @@ TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithTwoIncompatibleOperand
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestWithOneFunctionDefinitionWithTwoCompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void helloWorld() {"
+    "entry:"
+    "    %i = alloca [ auto ] i32;"
+    "    %same = eq %i i32 5;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------

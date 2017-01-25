@@ -130,13 +130,13 @@ private:
    * Determines whether two operands in the same instruction have the same
    * identifier type.
    */
-  bool are_operands_of_type(const IROperand&, const IROperand&,
+  bool are_operands_of_same_type(const IROperand&, const IROperand&,
     const FuncDefCheckContext&);
 
   /**
    * Get the identifier type of an operand.
    */
-  const IRIdentifierType& get_operand_type(const IROperand&,
+  const IRIdentifierType get_operand_type(const IROperand&,
     const FuncDefCheckContext&);
 
   /**

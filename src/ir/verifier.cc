@@ -372,7 +372,7 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::are_operands_of_type(const IROperand& lhs, const IROperand& rhs,
+Verifier::are_operands_of_same_type(const IROperand& lhs, const IROperand& rhs,
   const FuncDefCheckContext& ctx)
 {
   const auto lhs_type = get_operand_type(lhs, ctx);
@@ -382,7 +382,7 @@ Verifier::are_operands_of_type(const IROperand& lhs, const IROperand& rhs,
 
 // -----------------------------------------------------------------------------
 
-const IRIdentifierType&
+const IRIdentifierType
 Verifier::get_operand_type(const IROperand& oprd,
   const FuncDefCheckContext& ctx)
 {
@@ -1005,7 +1005,7 @@ Verifier::check_instr_with_EQUALITY_OPCODE(const IRInstruction& instr,
     return false;
   }
 
-  if (!are_operands_of_type(instr.oprds[0], instr.oprds[1], ctx))
+  if (!are_operands_of_same_type(instr.oprds[0], instr.oprds[1], ctx))
   {
     ERROR("Incompatible operand types for instruction \"%s\" in function \"%s\" under block \"%s\"",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
