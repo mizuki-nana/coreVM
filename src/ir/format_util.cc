@@ -27,6 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdlib>
 
 
+namespace corevm {
+namespace ir {
+
 // -----------------------------------------------------------------------------
 
 corevm::IROpcode
@@ -286,15 +289,54 @@ set_metadata(const std::vector<MetadataPair>& metadata,
 
 bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
 {
-  // TODO: to be implemented.
+  if (lhs.type != rhs.type)
+  {
+    return false;
+  }
+
+  switch (lhs.type)
+  {
+  case IdentifierType_Identifier:
+    return lhs.value.get_string() == rhs.value.get_string();
+  case IdentifierType_Array:
+    return lhs.value.get_IRArrayType() == rhs.value.get_IRArrayType();
+  case IdentifierType_ValueType:
+    return lhs.value.get_IRValueType() == rhs.value.get_IRValueType();
+  default:
+    return false;
+  }
+
   return true;
 }
 
 // -----------------------------------------------------------------------------
 
-bool operator!=(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
+bool operator!=(const corevm::IRIdentifierType& lhs,
+  const corevm::IRIdentifierType& rhs)
 {
-  return operator==(lhs, rhs);
+  return !operator==(lhs, rhs);
 }
 
 // -----------------------------------------------------------------------------
+
+bool operator==(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
+{
+  if (lhs.len != rhs.len)
+  {
+    return false;
+  }
+
+  return operator==(lhs.type, rhs.type);
+}
+
+// -----------------------------------------------------------------------------
+
+bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
+{
+  return !operator==(lhs, rhs);
+}
+
+// -----------------------------------------------------------------------------
+
+} /* end namespace ir */
+} /* end namespace corevm */

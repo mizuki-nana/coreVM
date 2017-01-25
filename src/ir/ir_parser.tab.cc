@@ -252,10 +252,6 @@ namespace yy {
   {
       switch (that.type_get ())
     {
-      case 43: // metadata_def
-        value.move< MetadataPair > (that.value);
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.move< bool > (that.value);
         break;
@@ -322,6 +318,10 @@ namespace yy {
         value.move< corevm::IRValueType > (that.value);
         break;
 
+      case 43: // metadata_def
+        value.move< corevm::ir::MetadataPair > (that.value);
+        break;
+
       case 24: // FLOATINGNUM
         value.move< double > (that.value);
         break;
@@ -367,10 +367,6 @@ namespace yy {
         value.move< std::string > (that.value);
         break;
 
-      case 42: // metadata_def_list
-        value.move< std::vector<MetadataPair> > (that.value);
-        break;
-
       case 53: // basic_block_list
         value.move< std::vector<corevm::IRBasicBlock> > (that.value);
         break;
@@ -405,6 +401,10 @@ namespace yy {
         value.move< std::vector<corevm::IRTypeField> > (that.value);
         break;
 
+      case 42: // metadata_def_list
+        value.move< std::vector<corevm::ir::MetadataPair> > (that.value);
+        break;
+
       case 58: // instruction_options
       case 59: // instruction_option_list
         value.move< std::vector<std::string> > (that.value);
@@ -425,10 +425,6 @@ namespace yy {
     state = that.state;
       switch (that.type_get ())
     {
-      case 43: // metadata_def
-        value.copy< MetadataPair > (that.value);
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.copy< bool > (that.value);
         break;
@@ -495,6 +491,10 @@ namespace yy {
         value.copy< corevm::IRValueType > (that.value);
         break;
 
+      case 43: // metadata_def
+        value.copy< corevm::ir::MetadataPair > (that.value);
+        break;
+
       case 24: // FLOATINGNUM
         value.copy< double > (that.value);
         break;
@@ -540,10 +540,6 @@ namespace yy {
         value.copy< std::string > (that.value);
         break;
 
-      case 42: // metadata_def_list
-        value.copy< std::vector<MetadataPair> > (that.value);
-        break;
-
       case 53: // basic_block_list
         value.copy< std::vector<corevm::IRBasicBlock> > (that.value);
         break;
@@ -576,6 +572,10 @@ namespace yy {
 
       case 47: // type_field_list
         value.copy< std::vector<corevm::IRTypeField> > (that.value);
+        break;
+
+      case 42: // metadata_def_list
+        value.copy< std::vector<corevm::ir::MetadataPair> > (that.value);
         break;
 
       case 58: // instruction_options
@@ -823,10 +823,6 @@ namespace yy {
          when using variants.  */
         switch (yyr1_[yyn])
     {
-      case 43: // metadata_def
-        yylhs.value.build< MetadataPair > ();
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         yylhs.value.build< bool > ();
         break;
@@ -893,6 +889,10 @@ namespace yy {
         yylhs.value.build< corevm::IRValueType > ();
         break;
 
+      case 43: // metadata_def
+        yylhs.value.build< corevm::ir::MetadataPair > ();
+        break;
+
       case 24: // FLOATINGNUM
         yylhs.value.build< double > ();
         break;
@@ -938,10 +938,6 @@ namespace yy {
         yylhs.value.build< std::string > ();
         break;
 
-      case 42: // metadata_def_list
-        yylhs.value.build< std::vector<MetadataPair> > ();
-        break;
-
       case 53: // basic_block_list
         yylhs.value.build< std::vector<corevm::IRBasicBlock> > ();
         break;
@@ -976,6 +972,10 @@ namespace yy {
         yylhs.value.build< std::vector<corevm::IRTypeField> > ();
         break;
 
+      case 42: // metadata_def_list
+        yylhs.value.build< std::vector<corevm::ir::MetadataPair> > ();
+        break;
+
       case 58: // instruction_options
       case 59: // instruction_option_list
         yylhs.value.build< std::vector<std::string> > ();
@@ -1004,7 +1004,7 @@ namespace yy {
             yylhs.value.as< corevm::IRModule > () = corevm::IRModule();
             yylhs.value.as< corevm::IRModule > ().types = std::move(yystack_[1].value.as< std::vector<corevm::IRTypeDecl> > ());
             yylhs.value.as< corevm::IRModule > ().closures = std::move(yystack_[0].value.as< std::vector<corevm::IRClosure> > ());
-            set_metadata(yystack_[2].value.as< std::vector<MetadataPair> > (), yylhs.value.as< corevm::IRModule > ());
+            corevm::ir::set_metadata(yystack_[2].value.as< std::vector<corevm::ir::MetadataPair> > (), yylhs.value.as< corevm::IRModule > ());
             driver.set_module(std::move(yylhs.value.as< corevm::IRModule > ()));
         }
 #line 1011 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
@@ -1013,7 +1013,7 @@ namespace yy {
   case 3:
 #line 131 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<MetadataPair> > () = std::vector<MetadataPair>();
+            yylhs.value.as< std::vector<corevm::ir::MetadataPair> > () = std::vector<corevm::ir::MetadataPair>();
         }
 #line 1019 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1021,8 +1021,8 @@ namespace yy {
   case 4:
 #line 135 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< std::vector<MetadataPair> > () = std::move(yystack_[1].value.as< std::vector<MetadataPair> > ());
-            yylhs.value.as< std::vector<MetadataPair> > ().push_back(yystack_[0].value.as< MetadataPair > ());
+            yylhs.value.as< std::vector<corevm::ir::MetadataPair> > () = std::move(yystack_[1].value.as< std::vector<corevm::ir::MetadataPair> > ());
+            yylhs.value.as< std::vector<corevm::ir::MetadataPair> > ().push_back(yystack_[0].value.as< corevm::ir::MetadataPair > ());
         }
 #line 1028 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;
@@ -1030,7 +1030,7 @@ namespace yy {
   case 5:
 #line 143 "src/ir/ir_parser.yy" // lalr1.cc:859
     {
-            yylhs.value.as< MetadataPair > () = std::make_pair(yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());      
+            yylhs.value.as< corevm::ir::MetadataPair > () = std::make_pair(yystack_[2].value.as< std::string > (), yystack_[0].value.as< std::string > ());      
         }
 #line 1036 "src/ir/ir_parser.tab.cc" // lalr1.cc:859
     break;

@@ -1241,192 +1241,192 @@ YY_RULE_SETUP
 case 17:
 YY_RULE_SETUP
 #line 50 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 51 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 52 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 53 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 54 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 55 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 56 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 57 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 58 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 59 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 60 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 61 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 62 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 63 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 64 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 65 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 66 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 67 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 68 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 69 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 70 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 71 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 72 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 73 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 74 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 75 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 76 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 77 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 78 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 79 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 80 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 81 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 82 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 83 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 84 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 85 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 86 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 87 "src/ir/ir_lexer.ll"
-return yy::ir_parser::make_OPCODE(string_to_IROpcode(yytext), loc);
+return yy::ir_parser::make_OPCODE(corevm::ir::string_to_IROpcode(yytext), loc);
 	YY_BREAK
 case 55:
 YY_RULE_SETUP

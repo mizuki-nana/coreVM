@@ -105,8 +105,8 @@ class IRParserDriver;
 %type <std::vector<corevm::IRTypeField>> type_field_list;
 %type <corevm::IRTypeDecl> type_def;
 %type <std::vector<corevm::IRTypeDecl>> type_def_list;
-%type <MetadataPair> metadata_def;
-%type <std::vector<MetadataPair>> metadata_def_list;
+%type <corevm::ir::MetadataPair> metadata_def;
+%type <std::vector<corevm::ir::MetadataPair>> metadata_def_list;
 %type <corevm::IRModule> input;
 
 %debug
@@ -121,7 +121,7 @@ input
             $$ = corevm::IRModule();
             $$.types = std::move($2);
             $$.closures = std::move($3);
-            set_metadata($1, $$);
+            corevm::ir::set_metadata($1, $$);
             driver.set_module(std::move($$));
         }
     ;
@@ -129,7 +129,7 @@ input
 metadata_def_list
     :
         {
-            $$ = std::vector<MetadataPair>();
+            $$ = std::vector<corevm::ir::MetadataPair>();
         }
     |   metadata_def_list metadata_def
         {

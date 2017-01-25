@@ -296,51 +296,48 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // metadata_def
-      char dummy1[sizeof(MetadataPair)];
-
       // BOOLEAN_CONSTANT
-      char dummy2[sizeof(bool)];
+      char dummy1[sizeof(bool)];
 
       // ir_value_type_array
-      char dummy3[sizeof(corevm::IRArrayType)];
+      char dummy2[sizeof(corevm::IRArrayType)];
 
       // basic_block
-      char dummy4[sizeof(corevm::IRBasicBlock)];
+      char dummy3[sizeof(corevm::IRBasicBlock)];
 
       // function_def
-      char dummy5[sizeof(corevm::IRClosure)];
+      char dummy4[sizeof(corevm::IRClosure)];
 
       // ir_identifier_type
-      char dummy6[sizeof(corevm::IRIdentifierType)];
+      char dummy5[sizeof(corevm::IRIdentifierType)];
 
       // instruction
       // expr
-      char dummy7[sizeof(corevm::IRInstruction)];
+      char dummy6[sizeof(corevm::IRInstruction)];
 
       // label
-      char dummy8[sizeof(corevm::IRLabel)];
+      char dummy7[sizeof(corevm::IRLabel)];
 
       // input
-      char dummy9[sizeof(corevm::IRModule)];
+      char dummy8[sizeof(corevm::IRModule)];
 
       // OPCODE
-      char dummy10[sizeof(corevm::IROpcode)];
+      char dummy9[sizeof(corevm::IROpcode)];
 
       // operand
-      char dummy11[sizeof(corevm::IROperand)];
+      char dummy10[sizeof(corevm::IROperand)];
 
       // function_arg
-      char dummy12[sizeof(corevm::IRParameter)];
+      char dummy11[sizeof(corevm::IRParameter)];
 
       // type_def
-      char dummy13[sizeof(corevm::IRTypeDecl)];
+      char dummy12[sizeof(corevm::IRTypeDecl)];
 
       // type_field
-      char dummy14[sizeof(corevm::IRTypeField)];
+      char dummy13[sizeof(corevm::IRTypeField)];
 
       // ir_value
-      char dummy15[sizeof(corevm::IRValue)];
+      char dummy14[sizeof(corevm::IRValue)];
 
       // ir_value_type
       // ir_value_type_string
@@ -348,7 +345,10 @@ namespace yy {
       // ir_value_type_integer_numeric
       // ir_value_type_long_integer_numeric
       // ir_value_type_short_integer_numeric
-      char dummy16[sizeof(corevm::IRValueType)];
+      char dummy15[sizeof(corevm::IRValueType)];
+
+      // metadata_def
+      char dummy16[sizeof(corevm::ir::MetadataPair)];
 
       // FLOATINGNUM
       char dummy17[sizeof(double)];
@@ -392,34 +392,34 @@ namespace yy {
       // identifier
       char dummy19[sizeof(std::string)];
 
-      // metadata_def_list
-      char dummy20[sizeof(std::vector<MetadataPair>)];
-
       // basic_block_list
-      char dummy21[sizeof(std::vector<corevm::IRBasicBlock>)];
+      char dummy20[sizeof(std::vector<corevm::IRBasicBlock>)];
 
       // function_def_list
-      char dummy22[sizeof(std::vector<corevm::IRClosure>)];
+      char dummy21[sizeof(std::vector<corevm::IRClosure>)];
 
       // instruction_group
-      char dummy23[sizeof(std::vector<corevm::IRInstruction >)];
+      char dummy22[sizeof(std::vector<corevm::IRInstruction >)];
 
       // label_list
       // label_list_core
-      char dummy24[sizeof(std::vector<corevm::IRLabel>)];
+      char dummy23[sizeof(std::vector<corevm::IRLabel>)];
 
       // operand_list
-      char dummy25[sizeof(std::vector<corevm::IROperand>)];
+      char dummy24[sizeof(std::vector<corevm::IROperand>)];
 
       // function_arg_list
       // function_arg_list_core
-      char dummy26[sizeof(std::vector<corevm::IRParameter>)];
+      char dummy25[sizeof(std::vector<corevm::IRParameter>)];
 
       // type_def_list
-      char dummy27[sizeof(std::vector<corevm::IRTypeDecl>)];
+      char dummy26[sizeof(std::vector<corevm::IRTypeDecl>)];
 
       // type_field_list
-      char dummy28[sizeof(std::vector<corevm::IRTypeField>)];
+      char dummy27[sizeof(std::vector<corevm::IRTypeField>)];
+
+      // metadata_def_list
+      char dummy28[sizeof(std::vector<corevm::ir::MetadataPair>)];
 
       // instruction_options
       // instruction_option_list
@@ -521,8 +521,6 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const location_type& l);
 
-  basic_symbol (typename Base::kind_type t, const MetadataPair v, const location_type& l);
-
   basic_symbol (typename Base::kind_type t, const bool v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const corevm::IRArrayType v, const location_type& l);
@@ -553,13 +551,13 @@ namespace yy {
 
   basic_symbol (typename Base::kind_type t, const corevm::IRValueType v, const location_type& l);
 
+  basic_symbol (typename Base::kind_type t, const corevm::ir::MetadataPair v, const location_type& l);
+
   basic_symbol (typename Base::kind_type t, const double v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const int64_t v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l);
-
-  basic_symbol (typename Base::kind_type t, const std::vector<MetadataPair> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRBasicBlock> v, const location_type& l);
 
@@ -576,6 +574,8 @@ namespace yy {
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeDecl> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<corevm::IRTypeField> v, const location_type& l);
+
+  basic_symbol (typename Base::kind_type t, const std::vector<corevm::ir::MetadataPair> v, const location_type& l);
 
   basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l);
 
@@ -1090,10 +1090,6 @@ namespace yy {
   {
       switch (other.type_get ())
     {
-      case 43: // metadata_def
-        value.copy< MetadataPair > (other.value);
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.copy< bool > (other.value);
         break;
@@ -1160,6 +1156,10 @@ namespace yy {
         value.copy< corevm::IRValueType > (other.value);
         break;
 
+      case 43: // metadata_def
+        value.copy< corevm::ir::MetadataPair > (other.value);
+        break;
+
       case 24: // FLOATINGNUM
         value.copy< double > (other.value);
         break;
@@ -1205,10 +1205,6 @@ namespace yy {
         value.copy< std::string > (other.value);
         break;
 
-      case 42: // metadata_def_list
-        value.copy< std::vector<MetadataPair> > (other.value);
-        break;
-
       case 53: // basic_block_list
         value.copy< std::vector<corevm::IRBasicBlock> > (other.value);
         break;
@@ -1243,6 +1239,10 @@ namespace yy {
         value.copy< std::vector<corevm::IRTypeField> > (other.value);
         break;
 
+      case 42: // metadata_def_list
+        value.copy< std::vector<corevm::ir::MetadataPair> > (other.value);
+        break;
+
       case 58: // instruction_options
       case 59: // instruction_option_list
         value.copy< std::vector<std::string> > (other.value);
@@ -1265,10 +1265,6 @@ namespace yy {
     (void) v;
       switch (this->type_get ())
     {
-      case 43: // metadata_def
-        value.copy< MetadataPair > (v);
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.copy< bool > (v);
         break;
@@ -1335,6 +1331,10 @@ namespace yy {
         value.copy< corevm::IRValueType > (v);
         break;
 
+      case 43: // metadata_def
+        value.copy< corevm::ir::MetadataPair > (v);
+        break;
+
       case 24: // FLOATINGNUM
         value.copy< double > (v);
         break;
@@ -1380,10 +1380,6 @@ namespace yy {
         value.copy< std::string > (v);
         break;
 
-      case 42: // metadata_def_list
-        value.copy< std::vector<MetadataPair> > (v);
-        break;
-
       case 53: // basic_block_list
         value.copy< std::vector<corevm::IRBasicBlock> > (v);
         break;
@@ -1418,6 +1414,10 @@ namespace yy {
         value.copy< std::vector<corevm::IRTypeField> > (v);
         break;
 
+      case 42: // metadata_def_list
+        value.copy< std::vector<corevm::ir::MetadataPair> > (v);
+        break;
+
       case 58: // instruction_options
       case 59: // instruction_option_list
         value.copy< std::vector<std::string> > (v);
@@ -1435,13 +1435,6 @@ namespace yy {
   ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const location_type& l)
     : Base (t)
     , value ()
-    , location (l)
-  {}
-
-  template <typename Base>
-  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const MetadataPair v, const location_type& l)
-    : Base (t)
-    , value (v)
     , location (l)
   {}
 
@@ -1551,6 +1544,13 @@ namespace yy {
   {}
 
   template <typename Base>
+  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const corevm::ir::MetadataPair v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
   ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const double v, const location_type& l)
     : Base (t)
     , value (v)
@@ -1566,13 +1566,6 @@ namespace yy {
 
   template <typename Base>
   ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::string v, const location_type& l)
-    : Base (t)
-    , value (v)
-    , location (l)
-  {}
-
-  template <typename Base>
-  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<MetadataPair> v, const location_type& l)
     : Base (t)
     , value (v)
     , location (l)
@@ -1635,6 +1628,13 @@ namespace yy {
   {}
 
   template <typename Base>
+  ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<corevm::ir::MetadataPair> v, const location_type& l)
+    : Base (t)
+    , value (v)
+    , location (l)
+  {}
+
+  template <typename Base>
   ir_parser::basic_symbol<Base>::basic_symbol (typename Base::kind_type t, const std::vector<std::string> v, const location_type& l)
     : Base (t)
     , value (v)
@@ -1667,10 +1667,6 @@ namespace yy {
     // Type destructor.
     switch (yytype)
     {
-      case 43: // metadata_def
-        value.template destroy< MetadataPair > ();
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.template destroy< bool > ();
         break;
@@ -1737,6 +1733,10 @@ namespace yy {
         value.template destroy< corevm::IRValueType > ();
         break;
 
+      case 43: // metadata_def
+        value.template destroy< corevm::ir::MetadataPair > ();
+        break;
+
       case 24: // FLOATINGNUM
         value.template destroy< double > ();
         break;
@@ -1782,10 +1782,6 @@ namespace yy {
         value.template destroy< std::string > ();
         break;
 
-      case 42: // metadata_def_list
-        value.template destroy< std::vector<MetadataPair> > ();
-        break;
-
       case 53: // basic_block_list
         value.template destroy< std::vector<corevm::IRBasicBlock> > ();
         break;
@@ -1820,6 +1816,10 @@ namespace yy {
         value.template destroy< std::vector<corevm::IRTypeField> > ();
         break;
 
+      case 42: // metadata_def_list
+        value.template destroy< std::vector<corevm::ir::MetadataPair> > ();
+        break;
+
       case 58: // instruction_options
       case 59: // instruction_option_list
         value.template destroy< std::vector<std::string> > ();
@@ -1848,10 +1848,6 @@ namespace yy {
     super_type::move(s);
       switch (this->type_get ())
     {
-      case 43: // metadata_def
-        value.move< MetadataPair > (s.value);
-        break;
-
       case 25: // BOOLEAN_CONSTANT
         value.move< bool > (s.value);
         break;
@@ -1918,6 +1914,10 @@ namespace yy {
         value.move< corevm::IRValueType > (s.value);
         break;
 
+      case 43: // metadata_def
+        value.move< corevm::ir::MetadataPair > (s.value);
+        break;
+
       case 24: // FLOATINGNUM
         value.move< double > (s.value);
         break;
@@ -1963,10 +1963,6 @@ namespace yy {
         value.move< std::string > (s.value);
         break;
 
-      case 42: // metadata_def_list
-        value.move< std::vector<MetadataPair> > (s.value);
-        break;
-
       case 53: // basic_block_list
         value.move< std::vector<corevm::IRBasicBlock> > (s.value);
         break;
@@ -1999,6 +1995,10 @@ namespace yy {
 
       case 47: // type_field_list
         value.move< std::vector<corevm::IRTypeField> > (s.value);
+        break;
+
+      case 42: // metadata_def_list
+        value.move< std::vector<corevm::ir::MetadataPair> > (s.value);
         break;
 
       case 58: // instruction_options
