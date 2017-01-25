@@ -340,7 +340,7 @@ bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
 
 // -----------------------------------------------------------------------------
 
-bool is_integer_type(const corevm::IRValueType& value_type)
+bool is_ir_value_integer_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {
@@ -362,7 +362,7 @@ bool is_integer_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
-bool is_boolean_type(const corevm::IRValueType& value_type)
+bool is_ir_value_boolean_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {
@@ -377,7 +377,7 @@ bool is_boolean_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
-bool is_numeric_type(const corevm::IRValueType& value_type)
+bool is_ir_value_numeric_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {
@@ -401,7 +401,7 @@ bool is_numeric_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
-bool is_numeric_or_boolean_type(const corevm::IRValueType& value_type)
+bool is_ir_value_numeric_or_boolean_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {
@@ -426,7 +426,7 @@ bool is_numeric_or_boolean_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
-bool is_string_type(const corevm::IRValueType& value_type)
+bool is_ir_value_string_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {
@@ -441,7 +441,7 @@ bool is_string_type(const corevm::IRValueType& value_type)
 
 // -----------------------------------------------------------------------------
 
-bool is_object_type(const corevm::IRValueType& value_type)
+bool is_ir_value_object_type(const corevm::IRValueType& value_type)
 {
   switch (value_type)
   {

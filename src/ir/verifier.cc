@@ -414,7 +414,7 @@ Verifier::is_operand_integer_type(const IROperand& oprd,
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
-    is_integer_type(identifier_type.value.get_IRValueType());
+    is_ir_value_integer_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -425,7 +425,7 @@ Verifier::is_operand_numeric_type(const IROperand& oprd,
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
-    is_numeric_type(identifier_type.value.get_IRValueType());
+    is_ir_value_numeric_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -436,7 +436,7 @@ Verifier::is_operand_numeric_or_boolean_type(const IROperand& oprd,
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
-    is_numeric_or_boolean_type(identifier_type.value.get_IRValueType());
+    is_ir_value_numeric_or_boolean_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -447,7 +447,7 @@ Verifier::is_operand_boolean_type(const IROperand& oprd,
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
-    is_boolean_type(identifier_type.value.get_IRValueType());
+    is_ir_value_boolean_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -467,7 +467,7 @@ Verifier::is_operand_string_type(const IROperand& oprd, const FuncDefCheckContex
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
-    is_string_type(identifier_type.value.get_IRValueType());
+    is_ir_value_string_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -477,7 +477,7 @@ Verifier::is_operand_struct_or_object_type(const IROperand& oprd, const FuncDefC
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_Identifier ||
-    is_object_type(identifier_type.value.get_IRValueType());
+    is_ir_value_object_type(identifier_type.value.get_IRValueType());
 }
 
 // -----------------------------------------------------------------------------
@@ -1416,7 +1416,7 @@ Verifier::check_instr_with_OPCODE_CALL(const IRInstruction& instr,
   if (first_operand.type == corevm::constant)
   {
     const auto first_oprd_value = first_operand.value.get_IRValue();
-    if (!is_string_type(first_oprd_value.type))
+    if (!is_ir_value_string_type(first_oprd_value.type))
     {
       ERROR("Invalid type of first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
         IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),

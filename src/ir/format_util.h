@@ -53,17 +53,17 @@ bool operator==(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
 
 bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
 
-bool is_boolean_type(const corevm::IRValueType&);
+bool is_ir_value_boolean_type(const corevm::IRValueType&);
 
-bool is_integer_type(const corevm::IRValueType&);
+bool is_ir_value_integer_type(const corevm::IRValueType&);
 
-bool is_numeric_type(const corevm::IRValueType&);
+bool is_ir_value_numeric_type(const corevm::IRValueType&);
 
-bool is_numeric_or_boolean_type(const corevm::IRValueType&);
+bool is_ir_value_numeric_or_boolean_type(const corevm::IRValueType&);
 
-bool is_string_type(const corevm::IRValueType&);
+bool is_ir_value_string_type(const corevm::IRValueType&);
 
-bool is_object_type(const corevm::IRValueType&);
+bool is_ir_value_object_type(const corevm::IRValueType&);
 
 corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction&);
 
