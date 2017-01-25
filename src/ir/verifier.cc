@@ -531,16 +531,12 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
         auto& instr_index = function_index.bb_index[ctx.bb->label];
         const auto& oprd_type = get_operand_type(oprd, ctx);
 
-        if (oprd_type != instr.type.get_IRIdentifierType())
+        if (!are_compatible_types(oprd_type, instr.type.get_IRIdentifierType()))
         {
           ERROR("Incompatible operand type in instruction \"%s\" in function \"%s\" under block \"%s\"",
             IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
             ctx.bb->label.c_str());
         }
-      }
-      else
-      {
-        // TODO: ignore?
       }
     }
     break;
@@ -751,6 +747,22 @@ Verifier::check_instruction_labels_count(const IRInstruction& instr,
 // -----------------------------------------------------------------------------
 
 bool
+Verifier::check_instruction_has_type(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  if (instr.type.is_null())
+  {
+    ERROR("Expected type defined for instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of labels",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
@@ -779,8 +791,6 @@ Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
     return false;
   }
 
-  // TODO: check operand types.
-
   return true;
 }
 
@@ -805,7 +815,10 @@ Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
     return false;
   }
 
-  // TODO: check operand types.
+  if (!check_instruction_has_type(instr, ctx))
+  {
+    return false;
+  }
 
   return true;
 }
@@ -831,7 +844,17 @@ Verifier::check_instr_with_OPCODE_STORE(const IRInstruction& instr,
     return false;
   }
 
-  // TODO: check operand types.
+  if (!check_instruction_has_type(instr, ctx))
+  {
+    return false;
+  }
+
+  if (get_operand_type(instr.oprds[0], ctx) != get_type_of_instr(instr))
+  {
+    ERROR("Mismatch between instruction and first operand types in instruction \"%s\" in function \"%s\" under block \"%s\"",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
 
   return true;
 }

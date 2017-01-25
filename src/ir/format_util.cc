@@ -289,6 +289,31 @@ set_metadata(const std::vector<MetadataPair>& metadata,
 
 // -----------------------------------------------------------------------------
 
+bool are_compatible_types(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
+{
+  if (lhs.type != rhs.type)
+  {
+    return false;
+  }
+
+  switch (lhs.type)
+  {
+  case IdentifierType_Identifier:
+    return lhs.value.get_string() == rhs.value.get_string();
+  case IdentifierType_Array:
+    return lhs.value.get_IRArrayType() == rhs.value.get_IRArrayType();
+  case IdentifierType_ValueType:
+    return (is_ir_value_numeric_or_boolean_type(lhs.value.get_IRValueType()) ==
+            is_ir_value_numeric_or_boolean_type(rhs.value.get_IRValueType()));
+  default:
+    return false;
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
 bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs)
 {
   if (lhs.type != rhs.type)

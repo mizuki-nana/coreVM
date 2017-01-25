@@ -45,6 +45,8 @@ void set_metadata(const MetadataPair&, corevm::IRModule&);
 
 void set_metadata(const std::vector<MetadataPair>&, corevm::IRModule&);
 
+bool are_compatible_types(const corevm::IRIdentifierType&, const corevm::IRIdentifierType&);
+
 bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);
 
 bool operator!=(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);

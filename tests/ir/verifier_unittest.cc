@@ -720,3 +720,60 @@ TEST_F(VerifierUnitTest, TestSetattrInstrWithValidOperands)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestLoadInstrWithCompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void main(ui32 age) {"
+    "entry:"
+    "    %x = load i64 %age;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestLoadInstrWithIncompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void main(ui32 age) {"
+    "entry:"
+    "    %x = load string %age;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Incompatible operand type in instruction \"load\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestStoreInstrWithCompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void main() {"
+    "entry:"
+    "    %i = alloca [auto] i32;"
+    "    store ui64 ui64 55 %i;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestStoreInstrWithIncompatibleOperands)
+{
+  const char* IR_STRING =
+    "def void main() {"
+    "entry:"
+    "    %i = alloca [auto] i32;"
+    "    store string string \"Hello world\" %i;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Incompatible operand type in instruction \"store\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+

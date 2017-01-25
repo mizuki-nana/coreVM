@@ -121,6 +121,11 @@ private:
     const IRInstruction&, size_t, const FuncDefCheckContext&);
 
   /**
+   * Check whether an instruction has a type.
+   */
+  bool check_instruction_has_type(const IRInstruction&, const FuncDefCheckContext&);
+
+  /**
    * Check whether an instruction operand is valid.
    */
   bool check_operand(const IROperand&, const IRInstruction&,
