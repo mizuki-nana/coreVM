@@ -340,5 +340,27 @@ bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs)
 
 // -----------------------------------------------------------------------------
 
+bool is_integer_type(const corevm::IRValueType& value_type)
+{
+  switch (value_type)
+  {
+  case corevm::i8:
+  case corevm::ui8:
+  case corevm::i16:
+  case corevm::ui16:
+  case corevm::i32:
+  case corevm::ui32:
+  case corevm::i64:
+  case corevm::ui64:
+    return true;
+  default:
+    return false;
+  }
+
+  return false;  
+}
+
+// -----------------------------------------------------------------------------
+
 } /* end namespace ir */
 } /* end namespace corevm */

@@ -50,6 +50,8 @@ bool operator==(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
 
 bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
 
+bool is_integer_type(const corevm::IRValueType&);
+
 } /* end namespace ir */
 } /* end namespace corevm */
 
