@@ -36,7 +36,7 @@ namespace ir {
 #define ERROR(fmt, ...)                                 \
   {                                                     \
     char buf[256] = {0};                                \
-    snprintf(buf, sizeof(buf), (fmt), ##__VA_ARGS__);   \
+    snprintf(buf, sizeof(buf), (fmt), __VA_ARGS__);     \
     m_msg.assign(buf);                                  \
     return false;                                       \
   }
