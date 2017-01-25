@@ -514,5 +514,39 @@ corevm::IRIdentifierType create_ir_void_value_type()
 
 // -----------------------------------------------------------------------------
 
+bool type_decl_has_field(const corevm::IRTypeDecl& type_decl,
+  const std::string& field_name)
+{
+  for (const auto& field : type_decl.fields)
+  {
+    if (field.identifier == field_name)
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+// -----------------------------------------------------------------------------
+
+corevm::IRIdentifierType
+get_type_decl_field_type(const corevm::IRTypeDecl& type_decl, const std::string& field_name)
+{
+  for (const auto& field : type_decl.fields)
+  {
+    if (field.identifier == field_name)
+    {
+      return field.type;
+    }
+  }
+
+  assert(0);
+
+  return create_ir_void_value_type();
+}
+
+// -----------------------------------------------------------------------------
+
 } /* end namespace ir */
 } /* end namespace corevm */

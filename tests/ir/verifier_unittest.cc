@@ -617,3 +617,106 @@ TEST_F(VerifierUnitTest, TestWithValidCallInstruction)
 }
 
 // -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestGetattrInstrWithInvalidFieldAccessor)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "}"
+    ""
+    ""
+    "def void main() {"
+    "entry:"
+    "    %person = alloca [ auto ] Person;"
+    "    getattr string \"address\" %person;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid type accessor constant for first operand in instruction \"getattr\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestGetattrInstrWithValidFieldAccessor)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "}"
+    ""
+    ""
+    "def void main() {"
+    "entry:"
+    "    %person = alloca [ auto ] Person;"
+    "    getattr string \"age\" %person;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestSetattrInstrWithInvalidFieldAccessor)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "}"
+    ""
+    ""
+    "def void main(ui32 age) {"
+    "entry:"
+    "    %person = alloca [ auto ] Person;"
+    "    setattr string \"address\" %age %person;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Invalid type accessor constant for first operand in instruction \"setattr\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestSetattrInstrWithInvalidSourceType)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "}"
+    ""
+    ""
+    "def void main(ui32 age) {"
+    "entry:"
+    "    %person = alloca [ auto ] Person;"
+    "    setattr string \"age\" dpf 3.14 %person;"
+    "}";
+
+  check_verification(IR_STRING,
+    "Mismatch between source type and target field type in instruction \"setattr\" in function \"main\" under block \"entry\"");
+}
+
+// -----------------------------------------------------------------------------
+
+TEST_F(VerifierUnitTest, TestSetattrInstrWithValidOperands)
+{
+  const char* IR_STRING =
+    "type Person {"
+    "    string name;"
+    "    ui32 age;"
+    "}"
+    ""
+    ""
+    "def void main(ui32 age) {"
+    "entry:"
+    "    %person = alloca [ auto ] Person;"
+    "    setattr string \"age\" %age %person;"
+    "}";
+
+  check_verification(IR_STRING);
+}
+
+// -----------------------------------------------------------------------------

@@ -473,6 +473,24 @@ Verifier::is_operand_string_type(const IROperand& oprd, const FuncDefCheckContex
 // -----------------------------------------------------------------------------
 
 bool
+Verifier::is_operand_struct_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return identifier_type.type == IdentifierType_Identifier;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::is_operand_object_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+{
+  const auto identifier_type = get_operand_type(oprd, ctx);
+  return is_ir_value_object_type(identifier_type.value.get_IRValueType());
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 Verifier::is_operand_struct_or_object_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
@@ -578,6 +596,90 @@ bool
 Verifier::check_type_string(const std::string& type_name)
 {
   return m_index->type_index.find(type_name) != m_index->type_index.end();
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_type_attribute(const IROperand& attr_oprd,
+  const IROperand& object_oprd, const IRInstruction& instr,
+  const FuncDefCheckContext& ctx)
+{
+  if (attr_oprd.type == corevm::constant && is_operand_struct_type(object_oprd, ctx))
+  {
+    const std::string struct_name = get_operand_type(object_oprd, ctx).value.get_string();
+
+    if (!check_type_string(struct_name))
+    {
+      ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    const auto type_decl = m_index->type_index[struct_name];
+    const auto attr_name_value = attr_oprd.value.get_IRValue();
+    if (!is_ir_value_string_type(attr_name_value.type))
+    {
+      ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+    const std::string attr_name = attr_name_value.value.get_string();
+    if (!type_decl_has_field(*type_decl, attr_name))
+    {
+      ERROR("Invalid type accessor constant for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
+Verifier::check_type_attribute(const IROperand& attr_name_oprd,
+    const IROperand& attr_value_oprd, const IROperand& object_oprd,
+    const IRInstruction& instr, const FuncDefCheckContext& ctx)
+{
+  if (attr_name_oprd.type == corevm::constant && is_operand_struct_type(object_oprd, ctx))
+  {
+    const std::string struct_name = get_operand_type(object_oprd, ctx).value.get_string();
+
+    if (!check_type_string(struct_name))
+    {
+      ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    const auto type_decl = m_index->type_index[struct_name];
+    const auto attr_name_value = attr_name_oprd.value.get_IRValue();
+    if (!is_ir_value_string_type(attr_name_value.type))
+    {
+      ERROR("Invalid type for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+    const std::string attr_name = attr_name_value.value.get_string();
+    if (!type_decl_has_field(*type_decl, attr_name))
+    {
+      ERROR("Invalid type accessor constant for first operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+
+    const auto field_type = get_type_decl_field_type(*type_decl, attr_name);
+    if (field_type != get_operand_type(attr_value_oprd, ctx))
+    {
+      ERROR("Mismatch between source type and target field type in instruction \"%s\" in function \"%s\" under block \"%s\"",
+        IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+        ctx.bb->label.c_str());
+    }
+  }
+
+  return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -771,6 +873,11 @@ Verifier::check_instr_with_OPCODE_GETATTR(const IRInstruction& instr,
       ctx.bb->label.c_str());
   }
 
+  if (!check_type_attribute(instr.oprds[0], instr.oprds[1], instr, ctx))
+  {
+    return false;
+  }
+  
   return true;
 }
 
@@ -803,14 +910,20 @@ Verifier::check_instr_with_OPCODE_SETATTR(const IRInstruction& instr,
       ctx.bb->label.c_str());
   }
 
-  // TODO: check second operand.
-
   // Check third operand is of type struct or object.
   if (!is_operand_struct_or_object_type(instr.oprds[2], ctx))
   {
     ERROR("Invalid type for third operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
       ctx.bb->label.c_str());
+  }
+
+  if (is_operand_struct_type(instr.oprds[2], ctx))
+  {
+    if (!check_type_attribute(instr.oprds[0], instr.oprds[1], instr.oprds[2], instr, ctx))
+    {
+      return false;
+    }
   }
 
   return true;
@@ -845,8 +958,8 @@ Verifier::check_instr_with_OPCODE_DELATTR(const IRInstruction& instr,
       ctx.bb->label.c_str());
   }
 
-  // Check second operand is of type struct or object.
-  if (!is_operand_struct_or_object_type(instr.oprds[1], ctx))
+  // Check second operand is of type object.
+  if (!is_operand_object_type(instr.oprds[1], ctx))
   {
     ERROR("Invalid type for second operand in instruction \"%s\" in function \"%s\" under block \"%s\"",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),

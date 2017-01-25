@@ -170,6 +170,16 @@ private:
   bool is_operand_string_type(const IROperand&, const FuncDefCheckContext&);
 
   /**
+   * Determines whether an operand is of struct type.
+   */
+  bool is_operand_struct_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
+   * Determines whether an operand is of object type.
+   */   
+  bool is_operand_object_type(const IROperand&, const FuncDefCheckContext&);
+
+  /**
    * Determines whether an operand is of struct or object type.
    */
   bool is_operand_struct_or_object_type(const IROperand&, const FuncDefCheckContext&);
@@ -183,6 +193,16 @@ private:
    * Checks whether the use of a custom type is valid.
    */
   bool check_type_string(const std::string&);
+
+  /**
+   * Checks whether the attribute of an struct operand is valid.
+   */
+  bool check_type_attribute(const IROperand& attr_oprd,
+    const IROperand& object_oprd, const IRInstruction&, const FuncDefCheckContext&);
+
+  bool check_type_attribute(const IROperand& attr_name_oprd,
+    const IROperand& attr_value_oprd, const IROperand& object_oprd,
+    const IRInstruction&, const FuncDefCheckContext&);
 
 private:
   /** Opcode specific checks. */

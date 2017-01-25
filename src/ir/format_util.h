@@ -75,6 +75,10 @@ corevm::IRIdentifierType create_ir_i32_value_type();
 
 corevm::IRIdentifierType create_ir_void_value_type();
 
+bool type_decl_has_field(const corevm::IRTypeDecl&, const std::string&);
+
+corevm::IRIdentifierType get_type_decl_field_type(const corevm::IRTypeDecl&, const std::string&);
+
 } /* end namespace ir */
 } /* end namespace corevm */
 
