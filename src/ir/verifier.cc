@@ -462,7 +462,8 @@ Verifier::is_operand_array_type(const IROperand& oprd,
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::is_operand_string_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+Verifier::is_operand_string_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_ValueType &&
@@ -472,7 +473,8 @@ Verifier::is_operand_string_type(const IROperand& oprd, const FuncDefCheckContex
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::is_operand_struct_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+Verifier::is_operand_struct_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_Identifier;
@@ -481,7 +483,8 @@ Verifier::is_operand_struct_type(const IROperand& oprd, const FuncDefCheckContex
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::is_operand_object_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+Verifier::is_operand_object_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return is_ir_value_object_type(identifier_type.value.get_IRValueType());
@@ -490,7 +493,8 @@ Verifier::is_operand_object_type(const IROperand& oprd, const FuncDefCheckContex
 // -----------------------------------------------------------------------------
 
 bool
-Verifier::is_operand_struct_or_object_type(const IROperand& oprd, const FuncDefCheckContext& ctx)
+Verifier::is_operand_struct_or_object_type(const IROperand& oprd,
+  const FuncDefCheckContext& ctx)
 {
   const auto identifier_type = get_operand_type(oprd, ctx);
   return identifier_type.type == IdentifierType_Identifier ||
