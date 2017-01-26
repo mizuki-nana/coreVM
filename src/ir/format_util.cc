@@ -26,6 +26,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <cstdlib>
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wcovered-switch-default"
+  #pragma clang diagnostic ignored "-Wswitch-enum"
+#endif
 
 namespace corevm {
 namespace ir {
@@ -308,8 +313,6 @@ bool are_compatible_types(const corevm::IRIdentifierType& lhs, const corevm::IRI
   default:
     return false;
   }
-
-  return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -332,8 +335,6 @@ bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierT
   default:
     return false;
   }
-
-  return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -381,8 +382,6 @@ bool is_ir_value_integer_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false;  
 }
 
 // -----------------------------------------------------------------------------
@@ -396,8 +395,6 @@ bool is_ir_value_boolean_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false; 
 }
 
 // -----------------------------------------------------------------------------
@@ -420,8 +417,6 @@ bool is_ir_value_numeric_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false; 
 }
 
 // -----------------------------------------------------------------------------
@@ -445,8 +440,6 @@ bool is_ir_value_numeric_or_boolean_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false; 
 }
 
 // -----------------------------------------------------------------------------
@@ -460,8 +453,6 @@ bool is_ir_value_string_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false; 
 }
 
 // -----------------------------------------------------------------------------
@@ -475,8 +466,6 @@ bool is_ir_value_object_type(const corevm::IRValueType& value_type)
   default:
     return false;
   }
-
-  return false; 
 }
 
 // -----------------------------------------------------------------------------
@@ -575,3 +564,7 @@ get_type_decl_field_type(const corevm::IRTypeDecl& type_decl, const std::string&
 
 } /* end namespace ir */
 } /* end namespace corevm */
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
