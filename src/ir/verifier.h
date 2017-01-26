@@ -122,7 +122,8 @@ private:
   /**
    * Check whether an instruction has a type.
    */
-  bool check_instruction_has_type(const IRInstruction&, const FuncDefCheckContext&);
+  bool check_instruction_has_type(const IRInstruction&,
+    const FuncDefCheckContext&);
 
   /**
    * Check whether the presence of instruction's target is valid.
@@ -162,7 +163,8 @@ private:
   /**
    * Determines whether an operand is of numeric or boolean type.
    */
-  bool is_operand_numeric_or_boolean_type(const IROperand&, const FuncDefCheckContext&);
+  bool is_operand_numeric_or_boolean_type(const IROperand&,
+    const FuncDefCheckContext&);
 
   /**
    * Determines whether an operand is of boolean type.
@@ -192,7 +194,8 @@ private:
   /**
    * Determines whether an operand is of struct or object type.
    */
-  bool is_operand_struct_or_object_type(const IROperand&, const FuncDefCheckContext&);
+  bool is_operand_struct_or_object_type(const IROperand&,
+    const FuncDefCheckContext&);
 
   /**
    * Checks whether an identifier type is valid.
@@ -208,7 +211,8 @@ private:
    * Checks whether the attribute of an struct operand is valid.
    */
   bool check_type_attribute(const IROperand& attr_oprd,
-    const IROperand& object_oprd, const IRInstruction&, const FuncDefCheckContext&);
+    const IROperand& object_oprd, const IRInstruction&,
+    const FuncDefCheckContext&);
 
   /**
    * Checks whether the attribute of an struct operand is valid.
