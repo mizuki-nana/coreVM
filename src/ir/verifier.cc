@@ -764,9 +764,36 @@ Verifier::check_instruction_has_type(const IRInstruction& instr,
 // -----------------------------------------------------------------------------
 
 bool
+Verifier::check_instruction_target_presence(const IRInstruction& instr,
+  const FuncDefCheckContext& ctx, bool shouldHaveTarget)
+{
+  if (instr.target.is_null() && shouldHaveTarget)
+  {
+    ERROR("Expected target defined for instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of labels",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+  else if (!instr.target.is_null() && !shouldHaveTarget)
+  {
+    ERROR("Unneeded target defined for instruction \"%s\" in function \"%s\" under block \"%s\" has incorrect number of labels",
+      IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
+      ctx.bb->label.c_str());
+  }
+
+  return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool
 Verifier::check_instr_with_OPCODE_ALLOCA(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 1, ctx))
   {
     return false;
@@ -801,6 +828,11 @@ bool
 Verifier::check_instr_with_OPCODE_LOAD(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+ 
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -830,6 +862,11 @@ bool
 Verifier::check_instr_with_OPCODE_STORE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -866,6 +903,11 @@ bool
 Verifier::check_instr_with_OPCODE_GETATTR(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -911,6 +953,11 @@ bool
 Verifier::check_instr_with_OPCODE_SETATTR(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -959,6 +1006,11 @@ bool
 Verifier::check_instr_with_OPCODE_DELATTR(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -999,6 +1051,11 @@ bool
 Verifier::check_instr_with_OPCODE_GETELEMENT(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1050,6 +1107,11 @@ bool
 Verifier::check_instr_with_OPCODE_PUTELEMENT(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1102,6 +1164,11 @@ bool
 Verifier::check_instr_with_OPCODE_LEN(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1133,6 +1200,11 @@ bool
 Verifier::check_instr_with_OPCODE_RET(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1166,6 +1238,11 @@ bool
 Verifier::check_instr_with_OPCODE_BR(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1197,6 +1274,11 @@ bool
 Verifier::check_instr_with_OPCODE_SWITCH2(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, false))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1240,6 +1322,11 @@ bool
 Verifier::check_instr_with_UNARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1271,6 +1358,11 @@ bool
 Verifier::check_instr_with_BINARY_ARITHMETIC_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1303,6 +1395,11 @@ bool
 Verifier::check_instr_with_OPCODE_BNOT(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1334,6 +1431,11 @@ bool
 Verifier::check_instr_with_BINARY_BITWISE_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1366,6 +1468,11 @@ bool
 Verifier::check_instr_with_BITSHIFT_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1398,6 +1505,11 @@ bool
 Verifier::check_instr_with_EQUALITY_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1429,6 +1541,11 @@ bool
 Verifier::check_instr_with_OPCODE_LNOT(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1460,6 +1577,11 @@ bool
 Verifier::check_instr_with_BINARY_LOGICAL_OPCODE(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;
@@ -1492,6 +1614,11 @@ bool
 Verifier::check_instr_with_OPCODE_CMP(const IRInstruction& instr,
   const FuncDefCheckContext& ctx)
 {
+  if (!check_instruction_target_presence(instr, ctx, true))
+  {
+    return false;
+  }
+
   if (!check_instruction_options_count(instr, 0, ctx))
   {
     return false;

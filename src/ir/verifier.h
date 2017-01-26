@@ -125,6 +125,12 @@ private:
   bool check_instruction_has_type(const IRInstruction&, const FuncDefCheckContext&);
 
   /**
+   * Check whether the presence of instruction's target is valid.
+   */
+  bool check_instruction_target_presence(
+    const IRInstruction&, const FuncDefCheckContext&, bool);
+
+  /**
    * Check whether an instruction operand is valid.
    */
   bool check_operand(const IROperand&, const IRInstruction&,

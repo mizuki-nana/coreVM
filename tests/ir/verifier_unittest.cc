@@ -630,7 +630,7 @@ TEST_F(VerifierUnitTest, TestGetattrInstrWithInvalidFieldAccessor)
     "def void main() {"
     "entry:"
     "    %person = alloca [ auto ] Person;"
-    "    getattr string \"address\" %person;"
+    "    %addr = getattr string \"address\" %person;"
     "}";
 
   check_verification(IR_STRING,
@@ -651,7 +651,7 @@ TEST_F(VerifierUnitTest, TestGetattrInstrWithValidFieldAccessor)
     "def void main() {"
     "entry:"
     "    %person = alloca [ auto ] Person;"
-    "    getattr string \"age\" %person;"
+    "    %age = getattr string \"age\" %person;"
     "}";
 
   check_verification(IR_STRING);
