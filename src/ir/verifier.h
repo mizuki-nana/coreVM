@@ -205,6 +205,9 @@ private:
   bool check_type_attribute(const IROperand& attr_oprd,
     const IROperand& object_oprd, const IRInstruction&, const FuncDefCheckContext&);
 
+  /**
+   * Checks whether the attribute of an struct operand is valid.
+   */
   bool check_type_attribute(const IROperand& attr_name_oprd,
     const IROperand& attr_value_oprd, const IROperand& object_oprd,
     const IRInstruction&, const FuncDefCheckContext&);
