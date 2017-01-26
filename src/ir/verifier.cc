@@ -26,6 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdio>
 #include <unordered_set>
 
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wcovered-switch-default"
+#endif
 
 namespace corevm {
 namespace ir {
@@ -365,8 +369,6 @@ Verifier::check_instruction_dispatch(const IRInstruction& instr,
     ERROR("Invalid instruction code encountered in function \"%s\" under block \"%s\"",
       ctx.closure->name.c_str(), ctx.bb->label.c_str());
   }
-
-  return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -398,12 +400,9 @@ Verifier::get_operand_type(const IROperand& oprd,
       assert(itr != function_index.identifier_type_index.end());
       return itr->second;
     }
-    break;
   default:
     return create_ir_void_value_type();
   }
-
-  return create_ir_void_value_type();
 }
 
 // -----------------------------------------------------------------------------
@@ -528,7 +527,6 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
       // Check if operand type is compatible with instruction type.
       if (!instr.type.is_null())
       {
-        const auto& instr_index = function_index.bb_index.at(ctx.bb->label);
         const auto& oprd_type = get_operand_type(oprd, ctx);
 
         if (!are_compatible_types(oprd_type, instr.type.get_IRIdentifierType()))
@@ -544,7 +542,6 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
     ERROR("Invalid operand type in instruction \"%s\" in function \"%s\" under block \"%s\"",
       IROpcode_to_string(instr.opcode), ctx.closure->name.c_str(),
       ctx.bb->label.c_str());
-    return false;
   }
 
   return true;
@@ -1219,7 +1216,7 @@ Verifier::check_instr_with_OPCODE_SWITCH2(const IRInstruction& instr,
   }
 
   // Check if operands have the same type.
-  for (size_t i = 1; i < instr.oprds.size(); ++i)
+  for (uint32_t i = 1; i < instr.oprds.size(); ++i)
   {
     const auto& first_operand = instr.oprds.front();
     if (!are_operands_of_same_type(first_operand, instr.oprds[i], ctx))
@@ -1601,3 +1598,7 @@ Verifier::check_instr_with_OPCODE_CALL(const IRInstruction& instr,
 
 } /* end namespace ir */
 } /* end namespace corevm */
+
+#if defined(__clang__) and __clang__
+  #pragma clang diagnostic pop
+#endif
