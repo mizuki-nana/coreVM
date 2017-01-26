@@ -146,7 +146,7 @@ Verifier::check_func_def(const IRClosure& closure)
   if (!closure.parent.is_null())
   {
     const std::string parent_name = closure.parent.get_string();
-    if (m_index->function_index.find(parent_name) == m_index->function_index.cend())
+    if (!m_index->has_func_def(parent_name))
     {
       ERROR("Invalid parent of function of \"%s\": \"%s\"",
         closure.name.c_str(), parent_name.c_str());

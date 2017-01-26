@@ -48,6 +48,8 @@ struct IRModuleIndex
 
   typedef std::unordered_map<std::string, FunctionDefIndex> FunctionIndex;
 
+  bool has_func_def(const std::string&);
+
   explicit IRModuleIndex(const IRModule&);
 
   const IRModule* const module_indexed;

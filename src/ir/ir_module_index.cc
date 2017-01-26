@@ -164,5 +164,12 @@ IRModuleIndex::create_instr_index(const IRBasicBlock& bb)
 
 // -----------------------------------------------------------------------------
 
+bool IRModuleIndex::has_func_def(const std::string& func_name)
+{
+  return function_index.find(func_name) != function_index.end();
+}
+
+// -----------------------------------------------------------------------------
+
 } /* end namespace ir */
 } /* end namespace corevm */
