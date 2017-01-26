@@ -24,15 +24,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define COREVM_IR_VERIFIER_H_
 
 #include "fwd.h"
+#include "ir/ir_module_index.h"
 #include <string>
 #include <memory>
 #include <unordered_set>
 
 namespace corevm {
 namespace ir {
-
-/* Forward declaration. */
-struct IRModuleIndex;
 
 /**
  * Class encapsulating logic that validates the well-formedness and correctness
@@ -81,6 +79,7 @@ private:
     const IRClosure* closure;
     const IRBasicBlock* bb;
     std::unordered_set<std::string> target_set;
+    const IRModuleIndex::FunctionDefIndex* func_def_index;
   };
 
   /**

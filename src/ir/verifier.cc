@@ -23,7 +23,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "verifier.h"
 #include "format.h"
 #include "format_util.h"
-#include "ir_module_index.h"
 #include <cstdio>
 #include <unordered_set>
 
@@ -186,6 +185,7 @@ Verifier::check_func_def(const IRClosure& closure)
   FuncDefCheckContext ctx;
   ctx.closure = &closure;
   ctx.bb = nullptr;
+  ctx.func_def_index = &m_index->function_index[closure.name];
   for (const auto& bb : closure.blocks)
   {
     const auto itr = bb_set.find(bb.label);
@@ -261,7 +261,7 @@ Verifier::check_instruction(const IRInstruction& instr, FuncDefCheckContext& ctx
   // Labels.
   if (!instr.labels.is_null())
   {
-    const auto& bb_index = m_index->function_index[ctx.closure->name].bb_index;
+    const auto& bb_index = ctx.func_def_index->bb_index;
     const auto& labels = instr.labels.get_array();
     for (const auto& label : labels)
     {
@@ -386,7 +386,7 @@ const IRIdentifierType
 Verifier::get_operand_type(const IROperand& oprd,
   const FuncDefCheckContext& ctx)
 {
-  const auto& function_index = m_index->function_index[ctx.closure->name];
+  const auto& function_index = *ctx.func_def_index;
   switch (oprd.type)
   {
   case corevm::constant:
@@ -514,7 +514,7 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
       const std::string ref = oprd.value.get_string();
       const auto itr = ctx.target_set.find(ref);
 
-      auto& function_index = m_index->function_index[ctx.closure->name];
+      const auto& function_index = *ctx.func_def_index;
       const auto& parameter_index = function_index.parameter_index;
       const auto parameter_itr = parameter_index.find(ref);
 
@@ -528,7 +528,7 @@ Verifier::check_operand(const IROperand& oprd, const IRInstruction& instr,
       // Check if operand type is compatible with instruction type.
       if (!instr.type.is_null())
       {
-        auto& instr_index = function_index.bb_index[ctx.bb->label];
+        const auto& instr_index = function_index.bb_index.at(ctx.bb->label);
         const auto& oprd_type = get_operand_type(oprd, ctx);
 
         if (!are_compatible_types(oprd_type, instr.type.get_IRIdentifierType()))
