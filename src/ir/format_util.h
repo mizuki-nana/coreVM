@@ -34,52 +34,127 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 namespace corevm {
 namespace ir {
 
+/**
+ * Convert IR opcode string representation to enum value.
+ */
 corevm::IROpcode
 string_to_IROpcode(const std::string& val);
 
+/**
+ * Convert IR opcode to string representation.
+ */
 const char* IROpcode_to_string(corevm::IROpcode);
 
+/**
+ * IR module metadata key-value pair.
+ */
 typedef std::pair<std::string, std::string> MetadataPair;
 
+/**
+ * Set a metadata key-value pair to a IR module.
+ */
 void set_metadata(const MetadataPair&, corevm::IRModule&);
 
+/**
+ * Set a set of metadata key-value pair to a IR module.
+ */
 void set_metadata(const std::vector<MetadataPair>&, corevm::IRModule&);
 
-bool are_compatible_types(const corevm::IRIdentifierType&, const corevm::IRIdentifierType&);
+/**
+ * Determines if two IR identifier types are compatible.
+ */
+bool are_compatible_types(const corevm::IRIdentifierType&,
+  const corevm::IRIdentifierType&);
 
-bool operator==(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);
+/**
+ * Equality check between two IR identifier types.
+ */
+bool operator==(const corevm::IRIdentifierType&,
+  const corevm::IRIdentifierType&);
 
-bool operator!=(const corevm::IRIdentifierType& lhs, const corevm::IRIdentifierType& rhs);
+/**
+ * Equality check between two IR identifier types.
+ */
+bool operator!=(const corevm::IRIdentifierType&,
+  const corevm::IRIdentifierType&);
 
-bool operator==(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
+/**
+ * Equality check between two IR array types.
+ */
+bool operator==(const corevm::IRArrayType&, const corevm::IRArrayType&);
 
-bool operator!=(const corevm::IRArrayType& lhs, const corevm::IRArrayType& rhs);
+/**
+ * Equality check between two IR array types.
+ */
+bool operator!=(const corevm::IRArrayType&, const corevm::IRArrayType&);
 
+/**
+ * Determines if the specified IR value type is of 'boolean' value type.
+ */
 bool is_ir_value_boolean_type(const corevm::IRValueType&);
 
+/**
+ * Determines if the specified IR value type is of integer value type.
+ */
 bool is_ir_value_integer_type(const corevm::IRValueType&);
 
+/**
+ * Determines if the specified IR value type is of integer or float-point
+ * value type.
+ */
 bool is_ir_value_numeric_type(const corevm::IRValueType&);
 
+/**
+ * Determines if the specified IR value type is of numeric or 'boolean'
+ * value type.
+ */
 bool is_ir_value_numeric_or_boolean_type(const corevm::IRValueType&);
 
+/**
+ * Determines if the specified IR value type is of 'string' value type.
+ */
 bool is_ir_value_string_type(const corevm::IRValueType&);
 
+/**
+ * Determines if the specified IR value type is of 'object' value type.
+ */
 bool is_ir_value_object_type(const corevm::IRValueType&);
 
+/**
+ * Get the target identifier type of the specified instruction.
+ */
 corevm::IRIdentifierType get_type_of_instr(const corevm::IRInstruction&);
 
+/**
+ * Creates an instance of identifier type of the specified value type.
+ */
 corevm::IRIdentifierType create_ir_value_type(IRValueType);
 
+/**
+ * Creates an instance of identifier type of 'boolean' value type.
+ */
 corevm::IRIdentifierType create_ir_boolean_value_type();
 
+/**
+ * Creates an instance of identifier type of 'i32' value type.
+ */
 corevm::IRIdentifierType create_ir_i32_value_type();
 
+/**
+ * Creates an instance of identifier type of 'void' value type.
+ */
 corevm::IRIdentifierType create_ir_void_value_type();
 
+/**
+ * Determines whether a type declaration has the specified field.
+ */
 bool type_decl_has_field(const corevm::IRTypeDecl&, const std::string&);
 
-corevm::IRIdentifierType get_type_decl_field_type(const corevm::IRTypeDecl&, const std::string&);
+/**
+ * Get the identifier type of a type field.
+ */
+corevm::IRIdentifierType
+get_type_decl_field_type(const corevm::IRTypeDecl&, const std::string&);
 
 } /* end namespace ir */
 } /* end namespace corevm */
